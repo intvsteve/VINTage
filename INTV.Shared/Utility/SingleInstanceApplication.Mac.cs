@@ -41,6 +41,8 @@ namespace INTV.Shared.Utility
         private static System.Configuration.ApplicationSettingsBase _launchSettings;
         private static string _splashScreenResource;
         private SplashScreen _splashScreen;
+        private bool _registeredObserver;
+        private bool _handledDidFinishLaunching;
 
         #region Constructors
 
@@ -191,17 +193,17 @@ namespace INTV.Shared.Utility
         /// <inheritdoc />
         public override void SendEvent(NSEvent theEvent)
         {
-            if (theEvent.Handle == IntPtr.Zero)
-            {
-                return;
-            }
-            if (theEvent.Type == NSEventType.KeyDown)
-            {
-                LastKeyPressed = theEvent.KeyCode;
-                LastKeyPressedTimestamp = theEvent.Timestamp;
-            }
             try
             {
+                if (theEvent.Handle == IntPtr.Zero)
+                {
+                    return;
+                }
+                if (theEvent.Type == NSEventType.KeyDown)
+                {
+                    LastKeyPressed = theEvent.KeyCode;
+                    LastKeyPressedTimestamp = theEvent.Timestamp;
+                }
                 base.SendEvent(theEvent);
             }
             catch (InvalidCastException e)
@@ -237,8 +239,9 @@ namespace INTV.Shared.Utility
                     {
                         case MainWindowValueName:
                             var myMainWindow = newValue as NSWindow;
-                            if (myMainWindow != null)
+                            if ((myMainWindow != null) && !_registeredObserver)
                             {
+                                _registeredObserver = true;
                                 myMainWindow.AddObserver(this, (NSString)FirstResponderValueName, NSKeyValueObservingOptions.New, this.Handle);
                                 BeginInvokeOnMainThread(() => HandleDidFinishLaunching(this, EventArgs.Empty));
                             }
@@ -301,22 +304,25 @@ namespace INTV.Shared.Utility
         {
             if ((MainWindow != null) && MainWindow.IsVisible && !(MainWindow is NSPanel))
             {
-                if (_splashScreen != null)
+                if (!_handledDidFinishLaunching)
                 {
-                    BeginInvokeOnMainThread(() =>
-                        {
+                    _handledDidFinishLaunching = true;
+                    if (_splashScreen != null)
+                    {
+                        BeginInvokeOnMainThread(() => {
                             if (_splashScreen != null)
                             {
                                 _splashScreen.Hide();
                             }
                             _splashScreen = null;
                         });
-                }
-                BeginInvokeOnMainThread(() =>
-                    {
+                    }
+                    BeginInvokeOnMainThread(() => {
+                        // Resets the deferred HandleDid
                         ExecuteStartupActions();
                         CommandManager.InvalidateRequerySuggested();
                     });
+                }
             }
             else
             {

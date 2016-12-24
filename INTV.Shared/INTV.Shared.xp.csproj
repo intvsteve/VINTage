@@ -200,6 +200,7 @@
     <Compile Include="Utility\SharedSettings.cs" />
     <Compile Include="Utility\SingleInstanceApplication.cs" />
     <Compile Include="Utility\SingleInstanceApplication.WPF.cs" />
+    <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\VisualHelpers.cs" />
     <Compile Include="Behavior\ActualSizeObserver.cs" />

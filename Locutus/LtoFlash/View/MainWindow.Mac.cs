@@ -1,5 +1,5 @@
 ﻿// <copyright file="MainWindow.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -126,6 +126,7 @@ namespace Locutus.View
         /// At this time, no specific initialization needs to be done here - it is accomplished in the controller class instead.</remarks>
         public override void AwakeFromNib()
         {
+            // HACK This is required for the NIB constructor to be called!
             ////base.AwakeFromNib(); // There is no need to call the base class implementation -- it is a no-op. We only need this method to be present on the type.
         }
     }

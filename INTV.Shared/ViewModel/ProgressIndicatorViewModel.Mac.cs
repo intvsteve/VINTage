@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgressIndicatorViewModel.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,7 +21,10 @@
 ////#define ENABLE_DEBUG_OUTPUT
 
 using System;
+using MonoMac.AppKit;
+using MonoMac.ObjCRuntime;
 using INTV.Shared.Utility;
+using INTV.Shared.View;
 
 namespace INTV.Shared.ViewModel
 {
@@ -63,6 +66,16 @@ namespace INTV.Shared.ViewModel
         private bool MainWindowShouldClose(MonoMac.Foundation.NSObject sender)
         {
             return !IsVisible && (_timer == null);
+        }
+
+        static partial void InitializeProgressIndicatorIfNecessary(bool ready)
+        {
+            if (ready && (SingleInstanceApplication.Current.MainWindow.GetValue(ProgressIndicatorViewModelDataContextProperty) == null))
+            {
+                // Lazy-initialize the progress indicator.
+                var controller = SingleInstanceApplication.Current.MainWindow.WindowController as NSWindowController;
+                controller.TryToPerformwith(new Selector("finishInitialization:"), SingleInstanceApplication.Current.MainWindow);
+            }
         }
     }
 }

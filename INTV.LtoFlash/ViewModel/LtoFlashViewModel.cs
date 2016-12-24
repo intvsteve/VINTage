@@ -133,7 +133,7 @@ namespace INTV.LtoFlash.ViewModel
             if (Properties.Settings.Default.PromptToInstallFTDIDriver && (ftdiDriverVersion.Major == 0) && LtoFlashCommandGroup.LaunchFtdiDriverInstallerCommand.CanExecute(null))
             {
                 var startupAction = new System.Action(() => LtoFlashCommandGroup.LaunchFtdiDriverInstallerCommand.Execute(Resources.Strings.LaunchFtdiDriverInstallerCommand_NoDriverPromptMessageFormat));
-                SingleInstanceApplication.Instance.AddStartupAction("CheckFTDIDriver", startupAction, false);
+                SingleInstanceApplication.Instance.AddStartupAction("CheckFTDIDriver", startupAction, StartupTaskPriority.HighestAsyncTaskPriority - 20);
             }
 #endif // ENABLE_DRIVER_NAG
 
@@ -143,10 +143,10 @@ namespace INTV.LtoFlash.ViewModel
             {
                 var checkForDevices = new CheckForDevicesTaskData(INTV.LtoFlash.Properties.Settings.Default.LastActiveDevicePort, this);
                 var startupAction = new System.Action(() => checkForDevices.Start());
-                SingleInstanceApplication.Instance.AddStartupAction("SearchForDevices", startupAction, false);
+                SingleInstanceApplication.Instance.AddStartupAction("SearchForDevices", startupAction, StartupTaskPriority.HighestAsyncTaskPriority - 4);
                 if (Properties.Settings.Default.PromptToImportStarterRoms)
                 {
-                    SingleInstanceApplication.Instance.AddStartupAction("ImportStarterRoms", ImportStarterRoms, true);
+                    SingleInstanceApplication.Instance.AddStartupAction("ImportStarterRoms", ImportStarterRoms, StartupTaskPriority.LowestSyncTaskPriority);
                 }
             }
             SyncMode = MenuLayoutSynchronizationMode.RomList;

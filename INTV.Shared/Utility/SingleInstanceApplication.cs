@@ -38,13 +38,15 @@ namespace INTV.Shared.Utility
     /// </summary>
     public partial class SingleInstanceApplication
     {
+        private const string CheckForUpdatesStartupActionName = "CheckForUpdates";
+
         private static OSDispatcher _mainDispatcher;
 
         // These actions are executed when main application launch is done. The Tuple describes an Action to execute, and
-        // whether it must run synchronously, or can be run asynchronously. Typically, synchronous startup actions involve
+        // the priority of the task's execution. Typically, synchronous startup actions involve
         // actions that must not run in parallel, such as updating file formats, et. al. The "asynchronous" actions are
         // usually activities such as ROM or device discovery, which are relatively low impact.
-        private static ConcurrentDictionary<string, Tuple<Action, bool>> _postStartupActions = new ConcurrentDictionary<string, Tuple<Action, bool>>();
+        private static ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>> _postStartupActions = new ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>>();
         private List<System.Configuration.ApplicationSettingsBase> _settings;
 
         #region Properties
@@ -202,10 +204,10 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="actionId">A unique identifier for the action.</param>
         /// <param name="action">The action to execute.</param>
-        /// <param name="runsSynchronously">If <c>true</c>, the action must run synchronously.</param>
-        public void AddStartupAction(string actionId, Action action, bool runsSynchronously)
+        /// <param name="priority">The priority of the startup task.</param>
+        public void AddStartupAction(string actionId, Action action, StartupTaskPriority priority)
         {
-            _postStartupActions[actionId] = new Tuple<Action, bool>(action, runsSynchronously);
+            _postStartupActions[actionId] = new Tuple<Action, StartupTaskPriority>(action, priority);
         }
 
         /// <summary>
@@ -251,24 +253,20 @@ namespace INTV.Shared.Utility
             {
                 _settings.Add(settings);
             }
+            if (INTV.Shared.Properties.Settings.Default.CheckForAppUpdatesAtLaunch)
+            {
+                AddStartupAction(CheckForUpdatesStartupActionName, () => ApplicationCommandGroup.CheckForUpdatesCommand.Execute(true), StartupTaskPriority.LowestAsyncTaskPriority);
+            }
         }
 
         private void ExecuteStartupActions()
         {
-            var actions = new System.Collections.Generic.Dictionary<string, Tuple<Action, bool>>(_postStartupActions);
+            var actions = new System.Collections.Generic.Dictionary<string, Tuple<Action, StartupTaskPriority>>(_postStartupActions);
             _postStartupActions.Clear();
-
-            if (INTV.Shared.Properties.Settings.Default.CheckForAppUpdatesAtLaunch)
-            {
-                // Always (?) have this run last.
-                var checkForUpdates = new Tuple<Action, bool>(() => ApplicationCommandGroup.CheckForUpdatesCommand.Execute(true), false);
-                actions.Add("CheckForUpdates", checkForUpdates);
-            }
-
             var failedActions = new List<Tuple<string, Exception>>();
 
             // First, do all the synchronous actions.
-            foreach (var startupAction in actions.Where(a => a.Value.Item2))
+            foreach (var startupAction in actions.Where(a => a.Value.Item2 >= StartupTaskPriority.LowestSyncTaskPriority).OrderByDescending(a => a.Value.Item2))
             {
                 MainThreadDispatcher.Invoke(
                     () =>
@@ -289,7 +287,7 @@ namespace INTV.Shared.Utility
             ReportStartupActionErrors(failedActions);
 
             // Next, launch the remaining (asynchronous) actions.
-            foreach (var startupAction in actions.Where(a => !a.Value.Item2))
+            foreach (var startupAction in actions.Where(a => a.Value.Item2 <= StartupTaskPriority.HighestAsyncTaskPriority).OrderByDescending(a => a.Value.Item2))
             {
                 MainThreadDispatcher.BeginInvoke(startupAction.Value.Item1);
             }

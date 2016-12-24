@@ -240,12 +240,27 @@ namespace INTV.Shared.View
         public void CancelEdit()
         {
             DebugOutput("!$!$!$!$ CANCEL EDIT");
-            if (TextStorage != null)
+            var textStorage = TextStorage;
+            if (textStorage != null)
             {
                 var current = TextStorage.Value;
-                TextStorage.Replace(new NSRange(0, current.Length), InitialValue);
+                var length = current == null ? 0 : current.Length;
+                if (InitialValue == null)
+                {
+                    InitialValue = string.Empty;
+                }
+                textStorage.Replace(new NSRange(0, length), InitialValue);
             }
-            NSApplication.SharedApplication.MainWindow.MakeFirstResponder(ElementOwner);
+            var app = NSApplication.SharedApplication;
+            if (app != null)
+            {
+                var mainWindow = app.MainWindow;
+                var elementOwner = ElementOwner;
+                if ((mainWindow != null) && (elementOwner != null))
+                {
+                    mainWindow.MakeFirstResponder(elementOwner);
+                }
+            }
             var editorClosed = EditorClosed;
             if (editorClosed != null)
             {

@@ -1,5 +1,5 @@
 ﻿// <copyright file="AppDelegate.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -53,6 +53,7 @@ namespace Locutus.View
         public override void FinishedLaunching(NSObject notification)
         {
             mainWindowController = new MainWindowController();
+            mainWindowController.AppDelegate = this;
             mainWindowController.Window.MakeKeyAndOrderFront(this);
         }
 

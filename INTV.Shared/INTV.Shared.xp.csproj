@@ -1,0 +1,730 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C852CAA1-ABE8-45D7-8BC5-94B61B71617A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>INTV.Shared</RootNamespace>
+    <AssemblyName>INTV.Shared</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\xp\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\xp\</IntermediateOutputPath>
+    <DefineConstants>TRACE;DEBUG;WIN;WIN_XP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\xp\</OutputPath>
+    <IntermediateOutputPath>obj\Release\xp\</IntermediateOutputPath>
+    <DefineConstants>TRACE;WIN;WIN_XP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Behavior\ClickHyperlinkBehavior.cs" />
+    <Compile Include="Behavior\CollapsingGridSplitterBehavior.cs" />
+    <Compile Include="Behavior\DialogCloseBehavior.cs" />
+    <Compile Include="Behavior\DoubleClickBehavior.cs" />
+    <Compile Include="Behavior\DragDropBehavior.cs" />
+    <Compile Include="Behavior\DragDropFeedback.cs" />
+    <Compile Include="Behavior\DragDropRearrangeBehavior.cs" />
+    <Compile Include="Behavior\DropOnItemLocation.cs" />
+    <Compile Include="Behavior\DynamicContextMenuBehavior.cs" />
+    <Compile Include="Behavior\IDragDropFeedback.cs" />
+    <Compile Include="Behavior\MultiSelectDragDropBehavior.cs" />
+    <Compile Include="Behavior\MultiSelectDragStartCommand.cs" />
+    <Compile Include="Behavior\NumericTextEditBehavior.cs" />
+    <Compile Include="Behavior\ShowHideGridViewColumnBehavior.cs" />
+    <Compile Include="Behavior\UpdateSourceBindingOnCommand.cs" />
+    <Compile Include="Behavior\ValidEmailAddressBehavior.cs" />
+    <Compile Include="Behavior\ValidEmailAddressBehavior.WPF.cs" />
+    <Compile Include="Commands\ApplicationCommandGroup.cs" />
+    <Compile Include="Commands\ApplicationCommandsProvider.cs" />
+    <Compile Include="Commands\CommandGroup.cs" />
+    <Compile Include="Commands\CommandGroup.WPF.cs" />
+    <Compile Include="Commands\CommandLocation.cs" />
+    <Compile Include="Commands\CommandProvider.cs" />
+    <Compile Include="Commands\CommandProviderHelpers.cs" />
+    <Compile Include="Commands\CommandProviderHelpers.WPF.cs" />
+    <Compile Include="Commands\DebugCommandGroup.cs" />
+    <Compile Include="Commands\DebugCommandGroup.WPF.cs" />
+    <Compile Include="Commands\ICommandGroup.cs" />
+    <Compile Include="Commands\ICommandProvider.cs" />
+    <Compile Include="Commands\OSModifierKeys.WPF.cs" />
+    <Compile Include="Commands\RomListCommandGroup.cs" />
+    <Compile Include="Commands\RomListCommandGroup.WPF.cs" />
+    <Compile Include="Commands\RomListCommandsProvider.cs" />
+    <Compile Include="Commands\RootCommandGroup.cs" />
+    <Compile Include="Commands\RootCommandGroup.WPF.cs" />
+    <Compile Include="Commands\StandardMenuCommandId.cs" />
+    <Compile Include="Commands\StandardMenuId.cs" />
+    <Compile Include="ComponentModel\CommandManager.WPF.cs" />
+    <Compile Include="ComponentModel\CompositionHelpers.cs" />
+    <Compile Include="ComponentModel\IApplicationInfo.cs" />
+    <Compile Include="ComponentModel\ICommand.WPF.cs" />
+    <Compile Include="ComponentModel\IconAttribute.cs" />
+    <Compile Include="ComponentModel\IPrimaryComponent.cs" />
+    <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
+    <Compile Include="ComponentModel\RelayCommand.cs" />
+    <Compile Include="ComponentModel\PropertyChangedNotifierHelpers.cs" />
+    <Compile Include="ComponentModel\RelayCommand.WPF.cs" />
+    <Compile Include="ComponentModel\VisualRelayCommand.WPF.cs" />
+    <Compile Include="ComponentModel\WeightAttribute.cs" />
+    <Compile Include="Converter\InvertedBooleanToVisibilityConverter.cs" />
+    <Compile Include="Converter\ItemCountToVisibilityConverter.cs" />
+    <Compile Include="Converter\JlpFlashStorageUsageLevelToBrushConverter.WPF.cs" />
+    <Compile Include="Converter\LevelToIndentConverter.cs" />
+    <Compile Include="Converter\NullToBooleanConverter.cs" />
+    <Compile Include="Converter\OSTextWrappingConverter.cs" />
+    <Compile Include="Converter\RelativePathConverter.cs" />
+    <Compile Include="Converter\RomListColumnToGridViewColumnHeaderConverter.cs" />
+    <Compile Include="Converter\ShortenedPathConverter.cs" />
+    <Compile Include="Converter\ShortenedPathConverter.WPF.cs" />
+    <Compile Include="Converter\SingleOrPluralFormatConverter.cs" />
+    <Compile Include="Converter\TextFilePathToStringConverter.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChange.WPF.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChangeEventArgs.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceBroadcastHeader.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceBroadcastPort.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChangeEvent.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceType.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChange.cs" />
+    <Compile Include="Model\CanonicalRomComparer.cs" />
+    <Compile Include="Model\CanonicalRomComparerStrict.cs" />
+    <Compile Include="Model\Device\ConnectionMonitor.cs" />
+    <Compile Include="Model\Device\NamedPipeConnection.cs" />
+    <Compile Include="Model\Device\SerialPortConnection.cs" />
+    <Compile Include="Model\Device\SerialPortConnection.WPF.cs" />
+    <Compile Include="Model\IRomHelpers.cs" />
+    <Compile Include="Model\IStreamConnection.cs" />
+    <Compile Include="Model\Program\AddRomsFromFilesBeginEventArgs.cs" />
+    <Compile Include="Model\Program\AddRomsFromFilesEndEventArgs.cs" />
+    <Compile Include="Model\Program\Bee3FeatureSet.cs" />
+    <Compile Include="Model\Program\CuttleCart3FeatureSet.cs" />
+    <Compile Include="Model\Program\EcsFeatureSet.cs" />
+    <Compile Include="Model\Program\GeneralFeatureSet.cs" />
+    <Compile Include="Model\Program\HiveFeatureSet.cs" />
+    <Compile Include="Model\Program\IntellicartFeatureSet.cs" />
+    <Compile Include="Model\Program\IntellivisionIIFeatureSet.cs" />
+    <Compile Include="Model\Program\IntellivoiceFeatureSet.cs" />
+    <Compile Include="Model\Program\InvokeProgramEventArgs.cs" />
+    <Compile Include="Model\Program\IProgramFeatureSet.cs" />
+    <Compile Include="Model\Program\IProgramFeatureSet`T.cs" />
+    <Compile Include="Model\Program\JlpFeatureSet.cs" />
+    <Compile Include="Model\Program\KeyboardComponentFeatureSet.cs" />
+    <Compile Include="Model\Program\LtoFlashFeatureSet.cs" />
+    <Compile Include="Model\Program\NtscFeatureSet.cs" />
+    <Compile Include="Model\Program\PalFeatureSet.cs" />
+    <Compile Include="Model\Program\ProgramCollection.cs" />
+    <Compile Include="Model\Program\ProgramCollectionSaveFailedEventArgs.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesChangedEventArgs.cs" />
+    <Compile Include="Model\Program\ProgramFeatureSet`T.cs" />
+    <Compile Include="Model\Program\ProgramFileKindHelpers.cs" />
+    <Compile Include="Model\Program\SuperVideoArcadeFeatureSet.cs" />
+    <Compile Include="Model\Program\TutorvisionFeatureSet.cs" />
+    <Compile Include="Model\RomListConfiguration.cs" />
+    <Compile Include="Model\SearchDirectories.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\ASCIIBinaryReader.cs" />
+    <Compile Include="Utility\ASCIIBinaryWriter.cs" />
+    <Compile Include="Utility\AsyncTaskData.cs" />
+    <Compile Include="Utility\AsyncTaskWithProgress.cs" />
+    <Compile Include="Utility\ColorHelpers.cs" />
+    <Compile Include="Utility\ColorHelpers.WPF.cs" />
+    <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\ErrorReporting.cs" />
+    <Compile Include="Utility\FileBrowserDialogResult.cs" />
+    <Compile Include="Utility\FileDialogHelpers.cs" />
+    <Compile Include="Utility\FixedSizeCollection`T.cs" />
+    <Compile Include="Utility\IFileBrowserDialog.cs" />
+    <Compile Include="Utility\IFixedSizeCollection.cs" />
+    <Compile Include="Utility\Logger.cs" />
+    <Compile Include="Utility\NativeMethods.WPF.cs" />
+    <Compile Include="Utility\ObservableCollectionHelpers.cs" />
+    <Compile Include="Utility\OneShotLaunchTask.cs" />
+    <Compile Include="Utility\OSDispatcher.cs" />
+    <Compile Include="Utility\OSDispatcher.WPF.cs" />
+    <Compile Include="Utility\OSDispatcherPriority.WPF.cs" />
+    <Compile Include="Utility\OSDispatcherTimer.cs" />
+    <Compile Include="Utility\OSDispatcherTimer.WPF.cs" />
+    <Compile Include="Utility\OSDragDropOperation.WPF.cs" />
+    <Compile Include="Utility\OSExportAttribute.cs" />
+    <Compile Include="Utility\OSExportAttribute.WPF.cs" />
+    <Compile Include="Utility\OSVersion.cs" />
+    <Compile Include="Utility\OSVersion.WPF.cs" />
+    <Compile Include="Utility\PathComparer.cs" />
+    <Compile Include="Utility\PathUtils.cs" />
+    <Compile Include="Utility\PathUtils.WPF.cs" />
+    <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
+    <Compile Include="Utility\ReflectionHelpers.cs" />
+    <Compile Include="Utility\ResourceHelpers.cs" />
+    <Compile Include="Utility\ResourceHelpers.WPF.cs" />
+    <Compile Include="Utility\RunExternalProgram.cs" />
+    <Compile Include="Utility\RunExternalProgram.WPF.cs" />
+    <Compile Include="Utility\SerialPortDetector.cs" />
+    <Compile Include="Utility\SharedSettings.cs" />
+    <Compile Include="Utility\SingleInstanceApplication.cs" />
+    <Compile Include="Utility\SingleInstanceApplication.WPF.cs" />
+    <Compile Include="Utility\StopBitsHelpers.cs" />
+    <Compile Include="Utility\VisualHelpers.cs" />
+    <Compile Include="Behavior\ActualSizeObserver.cs" />
+    <Compile Include="Behavior\DragDropHelpers.cs" />
+    <Compile Include="Behavior\DragLeaveBehavior.cs" />
+    <Compile Include="Utility\VisualHelpers.WPF.cs" />
+    <Compile Include="ViewModel\BackupInfoViewModel.cs" />
+    <Compile Include="ViewModel\BaudRateViewModel.cs" />
+    <Compile Include="ViewModel\ControllerElementViewModel.cs" />
+    <Compile Include="ViewModel\EcsFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\GeneralFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\GeneralSettingsPageViewModel.cs" />
+    <Compile Include="ViewModel\ISettingsPageMetadata.cs" />
+    <Compile Include="ViewModel\JlpFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\JlpFlashStorageUsageLevel.cs" />
+    <Compile Include="ViewModel\KeyboardComponentFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\LtoFlashFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\ProgramDescriptionViewModel.WPF.cs" />
+    <Compile Include="ViewModel\ProgressIndicatorViewModel.WPF.cs" />
+    <Compile Include="ViewModel\ReportDialogViewModel.WPF.cs" />
+    <Compile Include="ViewModel\RomFeaturesConfigurationViewModel.WPF.cs" />
+    <Compile Include="ViewModel\SelectBackupDialogViewModel.cs" />
+    <Compile Include="ViewModel\SerialPortSelectorDialogViewModel.cs" />
+    <Compile Include="ViewModel\SerialPortSelectorViewModel.cs" />
+    <Compile Include="ViewModel\SerialPortViewModel.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel`T.WPF.cs" />
+    <Compile Include="ViewModel\SystemCompatibilityConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\ViewModelHelpers.cs" />
+    <Compile Include="View\EcsFeaturesConfigurationPage.xaml.cs">
+      <DependentUpon>EcsFeaturesConfigurationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\GeneralFeaturesConfigurationPage.xaml.cs">
+      <DependentUpon>GeneralFeaturesConfigurationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\IRomFeaturesConfigurationPage.cs" />
+    <Compile Include="ViewModel\ProgramFeatureImageViewModel.cs" />
+    <Compile Include="ViewModel\ReportDialogViewModel.cs" />
+    <Compile Include="ViewModel\RomFeaturesConfigurationViewModel.cs" />
+    <Compile Include="ViewModel\RomListViewModel.WPF.cs" />
+    <Compile Include="ViewModel\StartDragProgramsCommand.cs" />
+    <Compile Include="Behavior\DragStartBehavior.cs" />
+    <Compile Include="Behavior\IDragStartCommand.cs" />
+    <Compile Include="Behavior\IInPlaceEditor.cs" />
+    <Compile Include="Behavior\InPlaceEditBehavior.cs" />
+    <Compile Include="Behavior\InPlaceEditorClosedEventArgs.cs" />
+    <Compile Include="ViewModel\IObservableViewModelCollection.cs" />
+    <Compile Include="ViewModel\ISettingsPage.cs" />
+    <Compile Include="Behavior\WindowWillCloseBehavior.cs" />
+    <Compile Include="ViewModel\ObservableViewModelCollection`TViewModel`TModel.cs" />
+    <Compile Include="Behavior\DragEnterBehavior.cs" />
+    <Compile Include="Behavior\DragOverBehavior.cs" />
+    <Compile Include="Behavior\PreviewDragEnterBehavior.cs" />
+    <Compile Include="ViewModel\ProgramDescriptionViewModel.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\ProgressIndicatorViewModel.cs" />
+    <Compile Include="Behavior\RetainFocusBehavior.cs" />
+    <Compile Include="ViewModel\RomDiscoveryData.cs" />
+    <Compile Include="ViewModel\RomDiscoveryOptions.cs" />
+    <Compile Include="ViewModel\RomListColumn.cs" />
+    <Compile Include="ViewModel\RomListSettingsPageViewModel.cs" />
+    <Compile Include="ViewModel\RomListViewModel.cs" />
+    <Compile Include="Behavior\SelectedItemObserver.cs" />
+    <Compile Include="Behavior\SelectionChangedBehavior.cs" />
+    <Compile Include="Behavior\SelectionChangedCommandBehavior.cs" />
+    <Compile Include="ViewModel\SerialPortConnectionViewModel.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel`T.cs" />
+    <Compile Include="ViewModel\SingleInstanceApplicationCommands.cs" />
+    <Compile Include="Behavior\SortBehavior.cs" />
+    <Compile Include="Behavior\SortCommandData.cs" />
+    <Compile Include="Behavior\SynchronizedScrollBehavior.cs" />
+    <Compile Include="ComponentModel\VisualRelayCommand.cs" />
+    <Compile Include="View\DropItemLocationAdorner.cs" />
+    <Compile Include="View\FileBrowserDialog.xp.cs" />
+    <Compile Include="View\FileBrowserDialogBase.cs" />
+    <Compile Include="View\FilePathControl.xaml.cs">
+      <DependentUpon>FilePathControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FilePathIndicator.xaml.cs">
+      <DependentUpon>FilePathIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\GeneralSettingsPage.xaml.cs">
+      <DependentUpon>GeneralSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\JlpFeaturesConfigurationPage.xaml.cs">
+      <DependentUpon>JlpFeaturesConfigurationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\KeyboardComponentFeaturesConfigurationPage.xaml.cs">
+      <DependentUpon>KeyboardComponentFeaturesConfigurationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LtoFlashFeaturesConfigurationPage.xaml.cs">
+      <DependentUpon>LtoFlashFeaturesConfigurationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OSMessageBox.cs" />
+    <Compile Include="View\OSMessageBox.WPF.cs" />
+    <Compile Include="View\OSMessageBoxButton.WPF.cs" />
+    <Compile Include="View\OSMessageBoxIcon.WPF.cs" />
+    <Compile Include="View\OSMessageBoxResult.WPF.cs" />
+    <Compile Include="View\OSTextWrapping.WPF.cs" />
+    <Compile Include="View\OSWindowState.WPF.cs" />
+    <Compile Include="View\ProgramFeatureImages.xaml.cs">
+      <DependentUpon>ProgramFeatureImages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProgramFeaturesEditorAdorner.cs" />
+    <Compile Include="View\ProgramFeaturesEditorDialog.xaml.cs">
+      <DependentUpon>ProgramFeaturesEditorDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProgressIndicator.xaml.cs">
+      <DependentUpon>ProgressIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ReportDialog.cs" />
+    <Compile Include="View\ReportDialog.xaml.cs">
+      <DependentUpon>ReportDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RomFeaturesConfiguration.xaml.cs">
+      <DependentUpon>RomFeaturesConfiguration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RomListSettingsPage.xaml.cs">
+      <DependentUpon>RomListSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RomListView.xaml.cs">
+      <DependentUpon>RomListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SelectBackupDialog.cs" />
+    <Compile Include="View\SelectBackupDialog.xaml.cs">
+      <DependentUpon>SelectBackupDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SerialPortSelector.xaml.cs">
+      <DependentUpon>SerialPortSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SerialPortSelectorDialog.cs" />
+    <Compile Include="View\SerialPortSelectorDialog.xaml.cs">
+      <DependentUpon>SerialPortSelectorDialog.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\SettingsDialog.cs" />
+    <Compile Include="View\SettingsDialog.xaml.cs">
+      <DependentUpon>SettingsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SystemCompatibilityConfigurationPage.xaml.cs">
+      <DependentUpon>SystemCompatibilityConfigurationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TextBlockEditorAdorner.cs" />
+    <Compile Include="View\TreeListView.WPF.cs" />
+    <Compile Include="View\TreeListViewItem.WPF.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\add_files_32xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\download_Selection_32xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\Play_32xLG_color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\lto_logo_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\add_file_32xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\unrecognized_rom_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\fullscreen_32x32.png" />
+    <Resource Include="ViewModel\Resources\Images\resolution_320x200_selected_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\resolution_320x200_unselected_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\resolution_320x240_selected_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\resolution_320x240_unselected_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\resolution_640x480_selected_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\resolution_640x480_unselected_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\ScreenResolution_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\ecs_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\intellivoice_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\intv_ii_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\kc_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\microphone_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\sears_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\warning_16xLG_color.png" />
+    <Resource Include="ViewModel\Resources\Images\synth_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\tape_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\tutorvision_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\universally_compatible_16xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\printer_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\save_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\Information_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\intvfunhouse_info_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\ecs_incompatible_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\intv_ii_incompatible_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\kc_incompatible_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\ntsc_incompatible_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\pal_incompatible_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\sears_warning_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\intellivoice_incompatible_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\port-icon_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\port-icon_32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\kc_basic_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\ram_16_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\remove_file_32xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\INTV.Core\INTV.Core.xp.csproj">
+      <Project>{0d1617ba-2ac7-47ee-a71e-4edfb0140ea7}</Project>
+      <Name>INTV.Core.xp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.xp.csproj">
+      <Project>{aadd62f4-9002-4ce4-aaff-27ff12e3fa68}</Project>
+      <Name>INTV.jzIntv.xp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\blocked_16xMD_color.png" />
+    <Resource Include="ViewModel\Resources\Images\refresh_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\sunburst_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\warning_16xMD_color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\add_to_database_16xMD.png" />
+    <Resource Include="ViewModel\Resources\Images\add_to_database_32xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="View\EcsFeaturesConfigurationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FilePathControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\FilePathIndicator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\GeneralFeaturesConfigurationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\GeneralSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\JlpFeaturesConfigurationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\KeyboardComponentFeaturesConfigurationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\LtoFlashFeaturesConfigurationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ProgramFeatureImages.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProgramFeaturesEditorDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProgressIndicator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ReportDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\RomFeaturesConfiguration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RomListSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\RomListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SelectBackupDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SerialPortSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SerialPortSelectorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SettingsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SystemCompatibilityConfigurationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\error_16xLG_color.png" />
+    <Resource Include="ViewModel\Resources\Images\settings_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\settings_32xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\Information_32x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\delete_folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\remove_file_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\manual_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\delete_document_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\ecs_enhanced_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\intellivoice_enhanced_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\intv_ii_issues_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\bankswitch_16xMD.png" />
+    <Resource Include="ViewModel\Resources\Images\bee3_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\bee3_enhanced_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\bee3_incompatible_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\cuttlecart3_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\cuttlecart3_enhanced_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\cuttlecart3_incompatible_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\hive_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\hive_enhanced_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\hive_incompatible_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\intellicart_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\intellicart_enhanced_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\intellicart_incompatible_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\intellivisionproductions_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\jlp_9xSM.png" />
+    <Resource Include="ViewModel\Resources\Images\jlp_enhanced_9xSM.png" />
+    <Resource Include="ViewModel\Resources\Images\jlp_incompatible_9xSM.png" />
+    <Resource Include="ViewModel\Resources\Images\jlp_required_9xSM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\kc_basic_incompatible_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\lto_9xSM.png" />
+    <Resource Include="ViewModel\Resources\Images\lto_enhanced_9xSM.png" />
+    <Resource Include="ViewModel\Resources\Images\lto_incompatible_9xSM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\ntsc_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\pal_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\ram_08_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\sears_incompatible_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\save_enhanced_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\serialport_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\serialport_enhanced_16x16.png" />
+    <Resource Include="ViewModel\Resources\Images\tutorvision_enhanced_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\tutorvision_incompatible16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\ntsc_unknown_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\pal_unknown_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\tape_enhanced_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\add_files_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\add_file_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\console_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\cancel_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\ok_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\undo_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\kc_enhanced_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\usb_enhanced_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\usb_required_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\bankswitch_mattel_16XLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\controller_action_left_24x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_action_right_24x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_action_topleft_24x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_action_topright_24x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_0_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_1_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_2_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_3_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_4_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_5_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_6_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_7_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_8_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_9_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_clear_x64.png" />
+    <Resource Include="ViewModel\Resources\Images\controller_button_enter_x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\help_16xLG_color.png" />
+    <Resource Include="Resources\Images\help_32xMD_color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\baudrate_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\timeout_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\download_16xLG.png" />
+    <Resource Include="Resources\Images\download_32xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\rom_32xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\help_16xLG.png" />
+    <Resource Include="Resources\Images\help_32xLG.png" />
+    <Resource Include="Resources\Images\help_32xLG_color.png" />
+    <Resource Include="Resources\Images\help_32xMD.png" />
+    <Resource Include="Resources\Images\exit_16xLG_color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\jlp03_16xLG.png" />
+    <Resource Include="Resources\Images\jlp04_16xLG.png" />
+    <Resource Include="Resources\Images\jlp05_16xLG.png" />
+    <Resource Include="Resources\Images\led_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\remove_file_32xLG.png" />
+    <Resource Include="Resources\Images\rename_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\backup_16xLG.png" />
+    <Resource Include="Resources\Images\backup_32xLG.png" />
+    <Resource Include="Resources\Images\restore_16xLG.png" />
+    <Resource Include="Resources\Images\restore_32xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ViewModel\Resources\Images\refresh_32xMD.png" />
+    <Resource Include="ViewModel\Resources\Images\romsearch_16xLG.png" />
+    <Resource Include="ViewModel\Resources\Images\romsearch_32xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\lto_rom_compatible_9xSM.png" />
+    <Resource Include="Resources\Images\lto_rom_incompatible_9xSM.png" />
+    <Resource Include="Resources\Images\lto_rom_only_9xSM.png" />
+    <Resource Include="Resources\Images\lto_rom_unknown_device_9xSM.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

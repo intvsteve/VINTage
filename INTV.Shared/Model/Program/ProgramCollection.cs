@@ -1,0 +1,469 @@
+﻿// <copyright file="ProgramCollection.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2016 All Rights Reserved
+// <author>Steven A. Orth</author>
+//
+// This program is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation, either version 2 of the License, or (at your
+// option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+// for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this software. If not, see: http://www.gnu.org/licenses/.
+// or write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+// </copyright>
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using INTV.Core.Model;
+using INTV.Core.Model.Program;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
+
+namespace INTV.Shared.Model.Program
+{
+    /// <summary>
+    /// Defines a collection of ProgramDescription objects.
+    /// </summary>
+    [System.Xml.Serialization.XmlRoot("ProgramDescriptions")]
+    [System.ComponentModel.Composition.Export(typeof(ProgramCollection))]
+    public class ProgramCollection : ObservableCollection<ProgramDescription>
+    {
+        /// <summary>
+        /// Property name for use by property change handlers.
+        /// </summary>
+        public const string CanEditElementsPropertyName = "CanEditElements";
+
+        /// <summary>
+        /// Used for various silly things like making the XAML designer not crash.
+        /// </summary>
+        public static readonly ProgramCollection EmptyDummyList = new ProgramCollection();
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the ProgramCollection type.
+        /// </summary>
+        /// <remarks>Must be public for MONO version to deserialize.</remarks>
+        public ProgramCollection()
+        {
+            _canEditElements = true;
+            SelectionIndexes = new ObservableCollection<int>();
+        }
+
+        #endregion // Constructors
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the instance of the ROMs (from MEF). A bit hacky.
+        /// </summary>
+        public static ProgramCollection Roms
+        {
+            get
+            {
+                var theRoms = (SingleInstanceApplication.Instance != null) ? SingleInstanceApplication.Instance.Roms : EmptyDummyList;
+                return theRoms;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the elements in this <see cref="INTV.Shared.ViewModel.RomListViewModel"/> are editable.
+        /// </summary>
+        public bool CanEditElements
+        {
+            get
+            {
+                return _canEditElements;
+            }
+
+            set
+            {
+                _canEditElements = value;
+                OnPropertyChanged(new System.ComponentModel.PropertyChangedEventArgs(CanEditElementsPropertyName));
+            }
+        }
+        private bool _canEditElements;
+
+        public ObservableCollection<int> SelectionIndexes { get; private set; }
+
+        #endregion // Properties
+
+        #region Events
+
+        /// <summary>
+        /// Raised immediately prior to the addition of ROMs to the program collection.
+        /// </summary>
+        public event EventHandler<AddRomsFromFilesBeginEventArgs> AddRomsFromFilesBegin;
+
+        /// <summary>
+        /// Raised At the end of adding ROMs to the program collection.
+        /// </summary>
+        public event EventHandler<AddRomsFromFilesEndEventArgs> AddRomsFromFilesEnd;
+
+        /// <summary>
+        /// Raised to notify interested parties that a program should be invoked.
+        /// </summary>
+        public event EventHandler<InvokeProgramEventArgs> InvokeProgram;
+
+        /// <summary>
+        /// Raised to notify interested parties that program features have been modified.
+        /// </summary>
+        public event EventHandler<ProgramFeaturesChangedEventArgs> ProgramFeaturesChanged;
+
+        /// <summary>
+        /// Raised to notify interested parties that the status (availability) of ROMs has changed.
+        /// </summary>
+        public event EventHandler<ProgramFeaturesChangedEventArgs> ProgramStatusChanged;
+
+        /// <summary>
+        /// Raised to notify interested parties that a save operation failed. If unhandled, the error is thrown.
+        /// </summary>
+        public event EventHandler<ProgramCollectionSaveFailedEventArgs> SaveFailed;
+
+        #endregion // Events
+
+        /// <summary>
+        /// Load a ProgramCollection from disk.
+        /// </summary>
+        /// <param name="filePath">Absolute path to a serialized ProgramCollection.</param>
+        /// <returns>The deserialized collection of programs.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity", Justification = "We intern the string prior to locking, so it is not weak.")]
+        public static ProgramCollection Load(string filePath)
+        {
+            var path = string.Intern(filePath);
+            lock (path)
+            {
+                ProgramCollection programs = null;
+                if (File.Exists(path))
+                {
+                    using (var fileStream = new FileStream(path, FileMode.Open))
+                    {
+                        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(Program.ProgramCollection));
+                        programs = serializer.Deserialize(fileStream) as ProgramCollection;
+                    }
+                }
+                return programs;
+            }
+        }
+
+        // TODO This should be removed from this class. Loading should happen through RomListViewModel.
+        // There is, however, a usage of this when restoring a MenuLayout as well. Ideally, this would be
+        // done by
+
+        /// <summary>
+        /// Initializes the contents of the singleton from a file.
+        /// </summary>
+        /// <param name="romListFile">The absolute path to the file to read from.</param>
+        public static void InitializeFromFile(string romListFile)
+        {
+            if (File.Exists(romListFile))
+            {
+                try
+                {
+                    Roms.Initialize(romListFile);
+                }
+                catch (System.InvalidOperationException e)
+                {
+                    HandleLoadError(romListFile, e);
+                }
+                catch (System.Xml.XmlException e)
+                {
+                    HandleLoadError(romListFile, e);
+                }
+            }
+        }
+
+        private static void HandleLoadError(string romListFile, Exception exception)
+        {
+            var backupCopyPath = romListFile.GetUniqueBackupFilePath();
+            var errorDialog = INTV.Shared.View.ReportDialog.Create(Resources.Strings.RomList_LoadFailed_Title, Resources.Strings.RomList_LoadFailed_Message);
+            errorDialog.ReportText = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomList_LoadFailed_Error_Format, backupCopyPath, exception);
+            errorDialog.BeginInvokeDialog(
+                Resources.Strings.RomList_LoadFailed_BackupButton_Text,
+                new System.Action<bool?>((result) =>
+                {
+                    if (result.HasValue && result.Value)
+                    {
+                        try
+                        {
+                            File.Copy(romListFile, backupCopyPath);
+                        }
+                        catch (System.Exception x)
+                        {
+                            var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomList_LoadFailed_BackupFailed_Message_Format, x.Message);
+                            OSMessageBox.Show(message, Resources.Strings.RomList_LoadFailed_Title, x, OSMessageBoxButton.OK, OSMessageBoxIcon.Error);
+                        }
+                    }
+                }));
+        }
+
+        /// <summary>
+        /// Identifies ROMs in a list of files and returns them.
+        /// </summary>
+        /// <param name="romFiles">A list of ROM files.</param>
+        /// <param name="existingRoms">Existing, identified ROMs.</param>
+        /// <param name="duplicateRoms">Receives ROMs that were not added because duplicates are already in the list.</param>
+        /// <param name="acceptCancellation">A function that allows the operation to be cancelled.</param>
+        /// <param name="progressFunc">A function to call to report progress of the search.</param>
+        /// <param name="updateNumDiscovered">A function to call to indicate the number of valid ROMs discovered.</param>
+        /// <param name="filter">Optional custom filter function. If filter is non-<c>null</c>, it must return <c>true</c> for a ROM to be added.</param>
+        /// <returns>A list of program descriptions for the ROMs.</returns>
+        public static IList<ProgramDescription> GatherRomsFromFileList(IEnumerable<IRom> romFiles, IEnumerable<ProgramDescription> existingRoms, IList<string> duplicateRoms, Func<bool> acceptCancellation, Action<string> progressFunc, Action<int> updateNumDiscovered, Func<IProgramInformation, bool> filter)
+        {
+            var addedItems = new List<ProgramDescription>();
+#if DEBUGGING
+            using (RomComparer strict = RomComparer.GetComparer(RomComparison.Strict),
+                               strictCrcOnly = RomComparer.GetComparer(RomComparison.StrictRomCrcOnly),
+                               canonical = RomComparer.GetComparer(RomComparison.CanonicalStrict),
+                               canonicalCrcOnly = RomComparer.GetComparer(RomComparison.CanonicalRomCrcOnly))
+#else
+            using (RomComparer comparer = RomComparer.GetComparer(RomComparer.DefaultCompareMode))
+#endif
+            {
+                foreach (var romFile in romFiles)
+                {
+                    if (acceptCancellation())
+                    {
+                        break;
+                    }
+                    if (progressFunc != null)
+                    {
+                        progressFunc(romFile.RomPath);
+                    }
+                    bool alreadyAdded = (romFile.Crc != 0) && (addedItems.FirstOrDefault(p => p.Rom.IsEquivalentTo(romFile, comparer)) != null);
+                    if ((romFile.Crc != 0) && !alreadyAdded)
+                    {
+                        var programInfo = romFile.GetProgramInformation();
+                        if ((filter == null) || filter(programInfo))
+                        {
+                            var haveIt = existingRoms.Any(d => d.Rom.IsEquivalentTo(romFile, programInfo, comparer));
+                            if (!haveIt)
+                            {
+                                IRom localRomCopy = null;
+                                if (romFile.RomPath.IsPathOnRemovableDevice())
+                                {
+                                    localRomCopy = romFile.CopyToLocalRomsDirectory();
+                                }
+                                var programDescription = new ProgramDescription(romFile.Crc, romFile, programInfo);
+                                if (localRomCopy != null)
+                                {
+                                    programDescription.Files.AlternateRomImagePaths.Add(localRomCopy.RomPath);
+                                }
+                                if ((romFile.Format == RomFormat.Bin) && (string.IsNullOrEmpty(romFile.ConfigPath) || !File.Exists(romFile.ConfigPath) || (localRomCopy != null)))
+                                {
+                                    // Logic for .cfg file:
+                                    // OnRemovableDevice: NO                          | YES
+                                    // Has .cfg NO        Create (no local copy made) | Create (local copy made, original is null, copy is from stock - if original changes, update copy of both ROM and .cfg)
+                                    //          YES       Use (no local copy made)    | Create (update if original changes)
+                                    if (localRomCopy != null)
+                                    {
+                                        var cfgFilePath = localRomCopy.ConfigPath;
+                                        if (string.IsNullOrEmpty(cfgFilePath) || !File.Exists(cfgFilePath))
+                                        {
+                                            cfgFilePath = localRomCopy.GenerateStockCfgFile(programInfo);
+                                        }
+                                        if (!string.IsNullOrEmpty(cfgFilePath) && File.Exists(cfgFilePath))
+                                        {
+                                            programDescription.Files.AlternateRomConfigurationFilePaths.Add(cfgFilePath);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var cfgFilePath = romFile.GenerateStockCfgFile(programInfo);
+                                        if (!string.IsNullOrEmpty(cfgFilePath))
+                                        {
+                                            romFile.UpdateCfgFile(cfgFilePath);
+                                        }
+                                    }
+                                }
+                                addedItems.Add(programDescription);
+                                if (updateNumDiscovered != null)
+                                {
+                                    updateNumDiscovered(addedItems.Count);
+                                }
+                            }
+                            else if (duplicateRoms != null)
+                            {
+                                duplicateRoms.Add(romFile.RomPath);
+                            }
+                        }
+                    }
+                    else if (alreadyAdded && (duplicateRoms != null))
+                    {
+                        duplicateRoms.Add(romFile.RomPath);
+                    }
+                    else if ((romFile != null) && ((romFile.Crc == 0) || (romFile.Crc == INTV.Core.Utility.Crc32.InitialValue) || !romFile.IsValid))
+                    {
+                        // TODO: Report rejected ROMs?
+                    }
+                }
+            }
+            return addedItems;
+        }
+
+        /// <summary>
+        /// Replaces the contents of this instance with contents loaded from a file.
+        /// </summary>
+        /// <param name="filePath">Absolute path to a file containing a ProgramCollection.</param>
+        public void Initialize(string filePath)
+        {
+            var programs = ProgramCollection.Load(filePath);
+            Clear();
+            AddNewItemsFromList(programs);
+        }
+
+        /// <summary>
+        /// Save this instance of ProgramCollection to a file.
+        /// </summary>
+        /// <param name="filePath">The absolute path to save the data to.</param>
+        /// <param name="handleErrorIfPossible">If <c>true</c>, attempt to handle the error if possible, otherwise throw.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity", Justification = "We intern the string prior to locking, so it is not weak.")]
+        public void Save(string filePath, bool handleErrorIfPossible)
+        {
+            var path = string.Intern(filePath);
+            var backupPath = path.GetUniqueBackupFilePath();
+            try 
+            {
+                lock (path)
+                {
+                    if (System.IO.File.Exists(path))
+                    {
+                        System.IO.File.Copy(path, backupPath); // back up the current file
+                    }
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(Program.ProgramCollection));
+                        serializer.Serialize(fileStream, this);
+                    }
+                    if (!string.IsNullOrEmpty(backupPath) && System.IO.File.Exists(backupPath))
+                    {
+                        System.IO.File.Delete(backupPath);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                var saveFailed = SaveFailed;
+                if (handleErrorIfPossible && (saveFailed != null))
+                {
+                    var saveFailedArgs = new ProgramCollectionSaveFailedEventArgs(path, error, backupPath);
+                    saveFailed(this, saveFailedArgs);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds ProgramDescription entries to the collection by inspecting a collection of ROM files.
+        /// </summary>
+        /// <param name="programDescriptions">The collection of ROM files to create ProgramDescription entries for.</param>
+        /// <returns>A collection containing the ROMs that were actually added.</returns>
+        public IList<ProgramDescription> AddNewItemsFromList(IEnumerable<ProgramDescription> programDescriptions)
+        {
+            var addedItems = programDescriptions.Except(this).ToList();
+            OSDispatcher.Current.InvokeOnMainDispatcher(() =>
+                {
+                    foreach (var addedItem in addedItems)
+                    {
+                        Add(addedItem);
+                    }
+                });
+            return addedItems;
+        }
+
+        /// <summary>
+        /// Call this method to prepare the collection and any interested parties for the addition of objects.
+        /// This will raise the AddRomsFromFilesBegin event.
+        /// </summary>
+        /// <param name="addingStarterRoms">Indicates whether we are adding "starter ROMs".</param>
+        /// <returns><c>true</c> if the operation should be canceled.</returns>
+        internal bool BeginAddRomsFromFiles(bool addingStarterRoms)
+        {
+            var cancel = false;
+            var addRomsFromFilesBegin = AddRomsFromFilesBegin;
+            if (addRomsFromFilesBegin != null)
+            {
+                var addRomsArgs = new AddRomsFromFilesBeginEventArgs() { AddingStarterRoms = addingStarterRoms };
+                addRomsFromFilesBegin(this, addRomsArgs);
+                cancel = addRomsArgs.Cancel;
+            }
+            return cancel;
+        }
+
+        /// <summary>
+        /// Call this method to inform the collection and any interested parties that object addition is finished.
+        /// This will raise the AddRomsFromFilesEnd event.
+        /// </summary>
+        /// <param name="duplicateRomPaths">A collection of ROMs that were not added because duplicate entries were already in the main ROM list.</param>
+        internal void EndAddRomsFromFiles(IEnumerable<string> duplicateRomPaths)
+        {
+            var addRomsFromFilesEnd = AddRomsFromFilesEnd;
+            if (addRomsFromFilesEnd != null)
+            {
+                addRomsFromFilesEnd(this, new AddRomsFromFilesEndEventArgs(duplicateRomPaths));
+            }
+        }
+
+        /// <summary>
+        /// Called to raise the InvokeProgram event.
+        /// </summary>
+        /// <param name="program">The program to invoke.</param>
+        internal void InvokeProgramFromDescription(ProgramDescription program)
+        {
+            var invokeProgram = InvokeProgram;
+            if (invokeProgram != null)
+            {
+                var invocationList = invokeProgram.GetInvocationList();
+                if (invocationList.Length > 1)
+                {
+                    ErrorReporting.ReportNotImplementedError("Multiple InvokeProgram methods registered!");
+                }
+                else
+                {
+                    invokeProgram(this, new InvokeProgramEventArgs(program));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Called to raise the ProgramFeaturesChanged event.
+        /// </summary>
+        /// <param name="updatedPrograms">The programs whose ROM features have changed.</param>
+        /// <param name="resetToDefault">If <c>true</c>, features are being reset to default values.</param>
+        internal void ReportProgramFeaturesChanged(IEnumerable<ProgramDescription> updatedPrograms, bool resetToDefault)
+        {
+            var modifiedRoms = updatedPrograms.Select(p => p.Rom);
+            var programFeaturesChanged = ProgramFeaturesChanged;
+            if (programFeaturesChanged != null)
+            {
+                programFeaturesChanged(this, new ProgramFeaturesChangedEventArgs(modifiedRoms, resetToDefault));
+            }
+        }
+
+        /// <summary>
+        /// Called to raise the ProgramStatusChanged event.
+        /// </summary>
+        /// <param name="updatedPrograms">The programs whose ROM availability has changed.</param>
+        internal void ReportProgramStatusChanged(IEnumerable<ProgramDescription> updatedPrograms)
+        {
+            var updatedRoms = updatedPrograms.Select(p => p.Rom);
+            var programStatusChanged = ProgramStatusChanged;
+            if (programStatusChanged != null)
+            {
+                programStatusChanged(this, new ProgramFeaturesChangedEventArgs(updatedRoms, false));
+            }
+        }
+    }
+}

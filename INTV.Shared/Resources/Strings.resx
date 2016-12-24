@@ -1,0 +1,1588 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="IntellicartFeatures_Ram_Tip" xml:space="preserve">
+    <value>Requires 16-bit RAM as specified by Intellicart! technology</value>
+  </data>
+  <data name="EcsFeatures_Required_Tip" xml:space="preserve">
+    <value>Requires ECS</value>
+  </data>
+  <data name="IntellivoiceCompatibility_Enhanced_Tip" xml:space="preserve">
+    <value>Enhanced gameplay when Intellivoice available</value>
+  </data>
+  <data name="JlpFeatures_SaveDataRequired_Tip" xml:space="preserve">
+    <value>Requires save state features available on JLP cartridge technology</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Required_Tip" xml:space="preserve">
+    <value>Requires Keyboard Component</value>
+  </data>
+  <data name="LtoFlashFeatures_Required_Tip" xml:space="preserve">
+    <value>Requires LTO Flash! technology</value>
+  </data>
+  <data name="GeneralFeatures_UsesPageFlipping_Tip" xml:space="preserve">
+    <value>Uses bankswitching</value>
+  </data>
+  <data name="KeyboardComponentFeatures_TapeRequired_Tip" xml:space="preserve">
+    <value>Requires Keyboard Component cassette</value>
+  </data>
+  <data name="EcsFeatures_Tape_Tip" xml:space="preserve">
+    <value>Uses ECS cassette interface</value>
+  </data>
+  <data name="GeneralFeatures_UniversallyCompatible_Tip" xml:space="preserve">
+    <value>Runs on all Intellivision consoles</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Microphone_Tip" xml:space="preserve">
+    <value>Uses Keyboard Component microphone</value>
+  </data>
+  <data name="KeyboardComponentFeatures_BasicRequired_Tip" xml:space="preserve">
+    <value>Requires Microsoft BASIC Cartridge</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Printer_Tip" xml:space="preserve">
+    <value>Uses Keyboard Component printer</value>
+  </data>
+  <data name="EcsFeatures_Printer_Tip" xml:space="preserve">
+    <value>Uses ECS printer</value>
+  </data>
+  <data name="JlpFeatures_Required_Tip" xml:space="preserve">
+    <value>JLP RAM and hardware acceleration initially enabled; JLP Flash available</value>
+  </data>
+  <data name="EcsFeatures_Synthesizer_Tip" xml:space="preserve">
+    <value>Uses ECS Music Synthesizer</value>
+  </data>
+  <data name="IntellicartFeatures_Bankswitching_Tip" xml:space="preserve">
+    <value>Requires Intellicart-style bankswitching</value>
+  </data>
+  <data name="TutorvisionCompatibility_Required_Tip" xml:space="preserve">
+    <value>Requires World Book TutorVision</value>
+  </data>
+  <data name="RomListViewModel_DropFilesHere" xml:space="preserve">
+    <value>Drag Files or Click Add Files</value>
+    <comment>Teaser text shown for an empty file list</comment>
+  </data>
+  <data name="RomListViewModel_GridViewColumn_FeaturesHeader" xml:space="preserve">
+    <value>Features</value>
+    <comment>Features used or required by the program</comment>
+  </data>
+  <data name="RomListViewModel_GridViewColumn_RomFileHeader" xml:space="preserve">
+    <value>ROM File</value>
+    <comment>File name of the ROM (path appears in tip strip)</comment>
+  </data>
+  <data name="RomListViewModel_GridViewColumn_TitleHeader" xml:space="preserve">
+    <value>Title</value>
+    <comment>Title of a program ROM, including variant information</comment>
+  </data>
+  <data name="RomListViewModel_GridViewColumn_VendorHeader" xml:space="preserve">
+    <value>Vendor</value>
+    <comment>Company that released the program</comment>
+  </data>
+  <data name="AddRomFoldersCommand_Name" xml:space="preserve">
+    <value>Add Folders...</value>
+    <comment>Label for the Add Folders button</comment>
+  </data>
+  <data name="AddRomFilesCommand_Name" xml:space="preserve">
+    <value>Add Files...</value>
+    <comment>Label for the Add Files button</comment>
+  </data>
+  <data name="RomListCommandGroup_Name" xml:space="preserve">
+    <value>ROMs</value>
+    <comment>Header for the Add ROMs ribbon tab group</comment>
+  </data>
+  <data name="HomeRibbonTabCommand_Name" xml:space="preserve">
+    <value>Home</value>
+    <comment>Header for the Home ribbon tab</comment>
+  </data>
+  <data name="CuttleCart3Features_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with Cuttle Cart 3</value>
+  </data>
+  <data name="EcsFeatures_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with ECS</value>
+  </data>
+  <data name="IntellicartFeatures_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with Intellicart!</value>
+  </data>
+  <data name="IntellivisionII_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with Intellivision II</value>
+  </data>
+  <data name="IntellivoiceCompatibility_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with Intellivoice</value>
+  </data>
+  <data name="JlpFeatures_Incompatibility_Tip" xml:space="preserve">
+    <value>Does not use, or is incompatible with JLP cartridge technology</value>
+  </data>
+  <data name="LtoFlashFeatures_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with LTO Flash!</value>
+  </data>
+  <data name="SuperVideoArcadeCompatibility_Enhanced_Tip" xml:space="preserve">
+    <value>May not behave correctly on Sears Super Video Arcade consoles</value>
+  </data>
+  <data name="JlpFeatures_Bankswitching_Tip" xml:space="preserve">
+    <value>Uses Intellicart-style bankswitching on JLP cartridge technology</value>
+  </data>
+  <data name="JlpFeatures_Ram_Tip" xml:space="preserve">
+    <value>Requires additional 16-bit RAM available on JLP cartridge technology</value>
+  </data>
+  <data name="LtoFlashFeatures_Bankswitching_Tip" xml:space="preserve">
+    <value>Uses Intellicart-style bankswitching on LTO Flash! technology</value>
+  </data>
+  <data name="LtoFlashFeatures_SaveDataRequired_Tip" xml:space="preserve">
+    <value>Requires save state features available on LTO Flash! technology</value>
+  </data>
+  <data name="LtoFlashFeatures_UsbPortRequired_Tip" xml:space="preserve">
+    <value>Requires serial link available on LTO Flash! technology</value>
+  </data>
+  <data name="JlpFeatures_SerialPortRequired_Tip" xml:space="preserve">
+    <value>Requires serial link available on JLP cartridge technology</value>
+  </data>
+  <data name="FileDialog_SelectFilesPrompt" xml:space="preserve">
+    <value>Select Program ROMs</value>
+  </data>
+  <data name="FileDialog_SelectFoldersPrompt" xml:space="preserve">
+    <value>Select Directories Containing Program ROMs</value>
+  </data>
+  <data name="FileDialog_SelectRomFilesFilter" xml:space="preserve">
+    <value>ROM Files</value>
+  </data>
+  <data name="Color_Blue" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="Color_DarkGreen" xml:space="preserve">
+    <value>Dark Green</value>
+  </data>
+  <data name="Color_Green" xml:space="preserve">
+    <value>Green</value>
+  </data>
+  <data name="Color_NotAColor" xml:space="preserve">
+    <value>Not Assigned</value>
+  </data>
+  <data name="Color_Red" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="Color_Tan" xml:space="preserve">
+    <value>Tan</value>
+  </data>
+  <data name="Color_White" xml:space="preserve">
+    <value>White</value>
+  </data>
+  <data name="Color_Yellow" xml:space="preserve">
+    <value>Yellow</value>
+  </data>
+  <data name="GeneralFeatures_UnrecognizedRom_Tip" xml:space="preserve">
+    <value>Program ROM not found in database</value>
+  </data>
+  <data name="RomListViewModel_GridViewColumn_YearHeader" xml:space="preserve">
+    <value>Year</value>
+    <comment>Copyright year of program ROM</comment>
+  </data>
+  <data name="FileDialog_SelectAllFilesFilter" xml:space="preserve">
+    <value>All Files</value>
+  </data>
+  <data name="RomListViewModel_NumItemsFormat" xml:space="preserve">
+    <value>{0} Items;{0} Item</value>
+  </data>
+  <data name="RomListViewModel_NumItemsSelectedFormat" xml:space="preserve">
+    <value>{0} items selected;{0} item selected</value>
+  </data>
+  <data name="Color_Black" xml:space="preserve">
+    <value>Black</value>
+  </data>
+  <data name="Color_Brown" xml:space="preserve">
+    <value>Brown</value>
+  </data>
+  <data name="Color_Cyan" xml:space="preserve">
+    <value>Cyan</value>
+  </data>
+  <data name="Color_Grey" xml:space="preserve">
+    <value>Grey</value>
+  </data>
+  <data name="Color_LightBlue" xml:space="preserve">
+    <value>Light Blue</value>
+  </data>
+  <data name="Color_Orange" xml:space="preserve">
+    <value>Orange</value>
+  </data>
+  <data name="Color_Pink" xml:space="preserve">
+    <value>Pink</value>
+  </data>
+  <data name="Color_Purple" xml:space="preserve">
+    <value>Purple</value>
+  </data>
+  <data name="Color_YellowGreen" xml:space="preserve">
+    <value>Yellow-Green</value>
+  </data>
+  <data name="ReportDialog_Apology" xml:space="preserve">
+    <value>An error has occured and the application must close. Please include the information below, and a description of what caused the problem.</value>
+  </data>
+  <data name="ReportDialog_CopyToClipboard" xml:space="preserve">
+    <value>Copy to Clipboard</value>
+  </data>
+  <data name="ReportDialog_Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="ReportDialog_Title" xml:space="preserve">
+    <value>Unhandled Exception</value>
+  </data>
+  <data name="ProgramSupportFileState_Missing" xml:space="preserve">
+    <value>ROM file cannot be located.</value>
+  </data>
+  <data name="ProgramSupportFileState_PresentButModified" xml:space="preserve">
+    <value>ROM file is present, but has been modified.</value>
+  </data>
+  <data name="RomListSettingsPage_ScanAtLaunch" xml:space="preserve">
+    <value>Scan for new ROMs at application startup</value>
+  </data>
+  <data name="RomListSettingsPage_Title" xml:space="preserve">
+    <value>ROM List</value>
+  </data>
+  <data name="RomListSettingsPage_ValidateAtLaunch" xml:space="preserve">
+    <value>Validate ROMs at application startup</value>
+  </data>
+  <data name="SingleApplicationCommands_Settings" xml:space="preserve">
+    <value>Settings...</value>
+  </data>
+  <data name="SettingsDialog_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="RomListViewModel_Progress_Checking_Message_Format" xml:space="preserve">
+    <value>Checking File: {0}</value>
+  </data>
+  <data name="RomListViewModel_Progress_Identifying_Message_Format" xml:space="preserve">
+    <value>Identifying ROM: {0}</value>
+  </data>
+  <data name="RomListViewModel_Progress_Title" xml:space="preserve">
+    <value>Adding ROMs</value>
+  </data>
+  <data name="ProgressIndicator_CancelButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ProgressIndicator_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="ProgressIndicator_CancelRequested" xml:space="preserve">
+    <value>Cancel Requested...</value>
+  </data>
+  <data name="RomListViewModel_Progress_Title_Format" xml:space="preserve">
+    <value>{0} (Discovered: {1})</value>
+  </data>
+  <data name="RomListSettingsPage_RescanDirectoriesAtLaunch" xml:space="preserve">
+    <value>Scan for ROMs at application startup</value>
+  </data>
+  <data name="RomListSettingsPage_RomDirectories" xml:space="preserve">
+    <value>ROM Directories</value>
+  </data>
+  <data name="RomListViewModel_ScanningForRoms_Title" xml:space="preserve">
+    <value>Searching for new ROMs</value>
+  </data>
+  <data name="RefreshRomsCommand_Name" xml:space="preserve">
+    <value>Search for ROMs</value>
+  </data>
+  <data name="AddRomFilesCommand_ToolTipDescription" xml:space="preserve">
+    <value>Add selected files to the list of ROMs. ROMs matching the 'known ROMs database' as well as those that appear to be potentially valid will be included.</value>
+  </data>
+  <data name="AddRomFilesCommand_ToolTipTitle" xml:space="preserve">
+    <value>Add Files</value>
+  </data>
+  <data name="AddRomFoldersCommand_ToolTipDescription" xml:space="preserve">
+    <value>Search for ROMs in the selected folders, and all folders contained within them. The selected directories will be retained in the list of places to search for new ROMs, as configured in the application settings.</value>
+  </data>
+  <data name="AddRomFoldersCommand_ToolTipTitle" xml:space="preserve">
+    <value>Add Folders</value>
+  </data>
+  <data name="RemoveRomsCommand_ToolTipDescription" xml:space="preserve">
+    <value>Remove the selected ROMs from the list. The files will remain unchanged on your computer.</value>
+  </data>
+  <data name="RemoveRomsCommand_ToolTipTitle" xml:space="preserve">
+    <value>Remove ROMs</value>
+  </data>
+  <data name="RefreshRomsCommand_ToolTipDescription" xml:space="preserve">
+    <value>Search folders that have been previously added via the Add Folders command for new ROMs.</value>
+  </data>
+  <data name="RefreshRomsCommand_ToolTipTitle" xml:space="preserve">
+    <value>Search for ROMs</value>
+  </data>
+  <data name="RomListViewModel_InvalidManualMessage" xml:space="preserve">
+    <value>The selected file is either too large, or contains characters that cannot be displayed on an Intellivision console, and cannot be used as a program manual.</value>
+  </data>
+  <data name="RomListViewModel_InvalidManualMessageTitle" xml:space="preserve">
+    <value>Invalid Manual</value>
+  </data>
+  <data name="FileDialog_SelectJlpDataFilter" xml:space="preserve">
+    <value>Saved Data Files</value>
+  </data>
+  <data name="FileDialog_SelectJlpDataPromptFormat" xml:space="preserve">
+    <value>Select a Saved Data File for {0}</value>
+  </data>
+  <data name="FileDialog_SelectManualFilter" xml:space="preserve">
+    <value>Manual Files</value>
+  </data>
+  <data name="FileDialog_SelectManualPromptFormat" xml:space="preserve">
+    <value>Select a Manual for {0}</value>
+  </data>
+  <data name="RomListViewModel_InvalidSaveDataMessage" xml:space="preserve">
+    <value>The selected save data file is too large.</value>
+  </data>
+  <data name="RomListViewModel_InvalidSaveDataMessageTitle" xml:space="preserve">
+    <value>Invalid Save Data File</value>
+  </data>
+  <data name="Bee3Features_Enhanced_Tip" xml:space="preserve">
+    <value>Additional features when Bee3 technology available</value>
+  </data>
+  <data name="Bee3Features_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with Bee3</value>
+  </data>
+  <data name="Bee3Features_Ram_Tip" xml:space="preserve">
+    <value>Requires additional 16-bit RAM available on Bee3 technology</value>
+  </data>
+  <data name="Bee3Features_Required_Tip" xml:space="preserve">
+    <value>Requires Bee3 technology</value>
+  </data>
+  <data name="Bee3Features_SaveDataOptional_Tip" xml:space="preserve">
+    <value>Uses Bee3 save state technology if available</value>
+  </data>
+  <data name="Bee3Features_SaveDataRequired_Tip" xml:space="preserve">
+    <value>Requires save state features available with Bee3 technology</value>
+  </data>
+  <data name="CuttleCart3Features_Bankswitching_Tip" xml:space="preserve">
+    <value>Uses Intellicart / Cuttle Cart 3 style bankswitching</value>
+  </data>
+  <data name="CuttleCart3Features_Enhanced_Tip" xml:space="preserve">
+    <value>Additional features when Cuttle Cart 3 technology available</value>
+  </data>
+  <data name="CuttleCart3Features_Ram16_Tip" xml:space="preserve">
+    <value>Uses 16-bit RAM as specified by Cuttle Cart 3 technology</value>
+  </data>
+  <data name="CuttleCart3Features_Required_Tip" xml:space="preserve">
+    <value>Requires Cuttle Cart 3 technology</value>
+  </data>
+  <data name="CuttleCart3Features_SerialPortEnhanced_Tip" xml:space="preserve">
+    <value>Additional functionality when Cuttle Cart 3 serial link available</value>
+  </data>
+  <data name="CuttleCart3Features_SerialPortRequired_Tip" xml:space="preserve">
+    <value>Requires Cuttle Cart 3-style serial link</value>
+  </data>
+  <data name="EcsFeatures_Enhanced_Tip" xml:space="preserve">
+    <value>Additional features when run with ECS</value>
+  </data>
+  <data name="EcsFeatures_SerialPortEnhanced_Tip" xml:space="preserve">
+    <value>Additional features when used with ECS serial port</value>
+  </data>
+  <data name="EcsFeatures_SerialPortRequired_Tip" xml:space="preserve">
+    <value>Requires use of ECS serial port</value>
+  </data>
+  <data name="GeneralFeatures_OnboardRam_Tip" xml:space="preserve">
+    <value>Cartridge uses additional onboard RAM</value>
+  </data>
+  <data name="HiveFeatures_Enhanced_Tip" xml:space="preserve">
+    <value>Uses Hive hardware acceleration if available</value>
+  </data>
+  <data name="HiveFeatures_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with Hive</value>
+  </data>
+  <data name="HiveFeatures_Ram_Tip" xml:space="preserve">
+    <value>Requires additional 16-bit RAM available on Hive technology</value>
+  </data>
+  <data name="HiveFeatures_Required_Tip" xml:space="preserve">
+    <value>Requires hardware acceleration available on Hive technology</value>
+  </data>
+  <data name="HiveFeatures_SaveDataOptional_Tip" xml:space="preserve">
+    <value>Uses Hive save state technology if available</value>
+  </data>
+  <data name="HiveFeatures_SaveDataRequired_Tip" xml:space="preserve">
+    <value>Requires save state features available with Hive technology</value>
+  </data>
+  <data name="IntellicartFeatures_Enhanced_Tip" xml:space="preserve">
+    <value>Additional features when Intellicart technology available</value>
+  </data>
+  <data name="IntellicartFeatures_Required_Tip" xml:space="preserve">
+    <value>Requires Intellicart! technology</value>
+  </data>
+  <data name="IntellicartFeatures_SerialPortEnhanced_Tip" xml:space="preserve">
+    <value>Additional functionality when Intellicart-style serial link available</value>
+  </data>
+  <data name="IntellicartFeatures_SerialPortRequired_Tip" xml:space="preserve">
+    <value>Requires Intellicart-style serial link</value>
+  </data>
+  <data name="IntellivisionII_Enhanced_Tip" xml:space="preserve">
+    <value>May exhibit altered behavior on Intellivision II console</value>
+  </data>
+  <data name="IntellivisionII_Required_Tip" xml:space="preserve">
+    <value>Requires Intellivision II console</value>
+  </data>
+  <data name="IntellivoiceCompatibility_Required_Tip" xml:space="preserve">
+    <value>Requires Intellivoice</value>
+  </data>
+  <data name="JlpFeatures_Enhanced_Tip" xml:space="preserve">
+    <value>JLP RAM and hardware acceleration initially disabled; JLP Flash available</value>
+  </data>
+  <data name="JlpFeatures_SaveDataEnhanced_Tip" xml:space="preserve">
+    <value>Uses JLP save state technology if available</value>
+  </data>
+  <data name="JlpFeatures_SerialPortEnhanced_Tip" xml:space="preserve">
+    <value>Additional functionality when JLP serial link available</value>
+  </data>
+  <data name="KeyboardComponentFeatures_BasicIncompatible_Tip" xml:space="preserve">
+    <value>Incompatible with the Keyboard Component Microsoft BASIC Cartridge</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Enhanced_Tip" xml:space="preserve">
+    <value>Additional capabilities when run with Keyboard Component</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with the Keyboard Component</value>
+  </data>
+  <data name="KeyboardComponentFeatures_TapeOptional_Tip" xml:space="preserve">
+    <value>Additional capabilities when Keyboard Component cassette available</value>
+  </data>
+  <data name="LtoFlashFeatures_Enhanced_Tip" xml:space="preserve">
+    <value>Uses LTO Flash! hardware acceleration if available</value>
+  </data>
+  <data name="LtoFlashFeatures_Ram_Tip" xml:space="preserve">
+    <value>Requires additional 16-bit RAM available on LTO Flash! technology</value>
+  </data>
+  <data name="LtoFlashFeatures_SaveDataEnhanced_Tip" xml:space="preserve">
+    <value>Uses LTO Flash! save state technology if available</value>
+  </data>
+  <data name="LtoFlashFeatures_UsbPortEnhanced_Tip" xml:space="preserve">
+    <value>Additional functionality when LTO Flash! serial link available</value>
+  </data>
+  <data name="NtscCompatibility_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with NTSC consoles</value>
+  </data>
+  <data name="NtscCompatibility_Tolerates_Tip" xml:space="preserve">
+    <value>Compatible with NTSC consoles</value>
+  </data>
+  <data name="NtscCompatibility_Unknown_Tip" xml:space="preserve">
+    <value>Compatibility with NTSC consoles is unknown, but assumed</value>
+  </data>
+  <data name="PalCompatibility_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with PAL consoles</value>
+  </data>
+  <data name="PalCompatibility_Tolerates_Tip" xml:space="preserve">
+    <value>Compatible with PAL consoles</value>
+  </data>
+  <data name="PalCompatibility_Unknown_Tip" xml:space="preserve">
+    <value>Compatibility with PAL consoles is unknown, but assumed</value>
+  </data>
+  <data name="SuperVideoArcadeCompatibility_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with the Sears Super Video Arcade</value>
+  </data>
+  <data name="SuperVideoArcadeCompatibility_Required_Tip" xml:space="preserve">
+    <value>Requires Sears Super Video Arcade console</value>
+  </data>
+  <data name="TutorvisionCompatibility_Enhanced_Tip" xml:space="preserve">
+    <value>Additional features when run on World Book TutorVision console</value>
+  </data>
+  <data name="TutorvisionCompatibility_Incompatible_Tip" xml:space="preserve">
+    <value>Incompatible with World Book TutorVision console</value>
+  </data>
+  <data name="FileDialog_SelectFilePrompt" xml:space="preserve">
+    <value>Select Program ROM</value>
+  </data>
+  <data name="DoNotShowAgain" xml:space="preserve">
+    <value>Do not show this error again</value>
+  </data>
+  <data name="RomList_LoadFailed_BackupButton_Text" xml:space="preserve">
+    <value>Save Backup</value>
+  </data>
+  <data name="RomList_LoadFailed_BackupFailed" xml:space="preserve">
+    <value>Unable to save backup copy of ROM list</value>
+  </data>
+  <data name="RomList_LoadFailed_BackupFailed_Message_Format" xml:space="preserve">
+    <value>Unable to save backup copy of the ROM list. Error:
+
+{0}</value>
+  </data>
+  <data name="RomList_LoadFailed_Error_Format" xml:space="preserve">
+    <value>The backup copy of the ROM list can be found here:
+{0}
+
+Full error report:
+{1}</value>
+  </data>
+  <data name="RomList_LoadFailed_Message" xml:space="preserve">
+    <value>An error occurred when loading the ROM list file. A backup copy will be created at the location indicated below.</value>
+  </data>
+  <data name="RomList_LoadFailed_Title" xml:space="preserve">
+    <value>Failed to Load ROM List</value>
+  </data>
+  <data name="Bee3Features_Name" xml:space="preserve">
+    <value>Bee3 Features</value>
+  </data>
+  <data name="Bee3_Bankswitching" xml:space="preserve">
+    <value>Uses bankswitching</value>
+  </data>
+  <data name="Bee3_Enhances" xml:space="preserve">
+    <value>If Available</value>
+  </data>
+  <data name="Bee3_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="Bee3_Requires" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Bee3_SaveDataOptional" xml:space="preserve">
+    <value>If Available</value>
+  </data>
+  <data name="Bee3_SaveDataRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Bee3_SixteenBitRAM" xml:space="preserve">
+    <value>Uses 16-bit RAM</value>
+  </data>
+  <data name="Bee3_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="CuttleCart3IntellicartCC3Features_Bankswitching" xml:space="preserve">
+    <value>Uses Intellicart-style bankswitching</value>
+  </data>
+  <data name="CuttleCart3IntellicartCC3Features_Enhances" xml:space="preserve">
+    <value>Enhances</value>
+  </data>
+  <data name="CuttleCart3IntellicartCC3Features_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="CuttleCart3IntellicartCC3Features_Name" xml:space="preserve">
+    <value>CuttleCart 3</value>
+  </data>
+  <data name="CuttleCart3IntellicartCC3Features_Requires" xml:space="preserve">
+    <value>Requires</value>
+  </data>
+  <data name="CuttleCart3IntellicartCC3Features_SerialPortEnhanced" xml:space="preserve">
+    <value>If Available</value>
+  </data>
+  <data name="CuttleCart3IntellicartCC3Features_SerialPortRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="CuttleCart3IntellicartCC3Features_SixteenBitRAM" xml:space="preserve">
+    <value>Uses 16-bit RAM</value>
+  </data>
+  <data name="CuttleCart3IntellicartCC3Features_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="EcsFeatures_Enhances" xml:space="preserve">
+    <value>Enhances</value>
+  </data>
+  <data name="EcsFeatures_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="EcsFeatures_GroupName" xml:space="preserve">
+    <value>ECS Features</value>
+  </data>
+  <data name="EcsFeatures_Printer" xml:space="preserve">
+    <value>Uses printer</value>
+  </data>
+  <data name="EcsFeatures_Requires" xml:space="preserve">
+    <value>Requires</value>
+  </data>
+  <data name="EcsFeatures_SerialPortEnhanced" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="EcsFeatures_SerialPortRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="EcsFeatures_Synthesizer" xml:space="preserve">
+    <value>Uses music synthesizer keyboard</value>
+  </data>
+  <data name="EcsFeatures_Tape" xml:space="preserve">
+    <value>Uses external cassette</value>
+  </data>
+  <data name="EcsFeatures_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="FeatureNotUsed" xml:space="preserve">
+    <value>Not Used</value>
+  </data>
+  <data name="GeneralFeatures_Name" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="GeneralFeatures_OnboardRam" xml:space="preserve">
+    <value>Uses additional 8-bit RAM</value>
+  </data>
+  <data name="GeneralFeatures_PageFlipping" xml:space="preserve">
+    <value>Uses Mattel-style page flipping</value>
+  </data>
+  <data name="GeneralFeatures_SystemRom" xml:space="preserve">
+    <value>System ROM (not playable)</value>
+  </data>
+  <data name="GeneralFeatures_UnrecognizedRom" xml:space="preserve">
+    <value>Unknown ROM</value>
+  </data>
+  <data name="HiveFeatures_Name" xml:space="preserve">
+    <value>Hive</value>
+  </data>
+  <data name="Hive_Bankswitching" xml:space="preserve">
+    <value>Uses bankswitching</value>
+  </data>
+  <data name="Hive_Enhances" xml:space="preserve">
+    <value>If Available</value>
+  </data>
+  <data name="Hive_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="Hive_Requires" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Hive_SaveDataOptional" xml:space="preserve">
+    <value>If Available</value>
+  </data>
+  <data name="Hive_SaveDataRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Hive_SixteenBitRAM" xml:space="preserve">
+    <value>Uses 16-bit RAM</value>
+  </data>
+  <data name="Hive_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="IntellicartIntellicartCC3Features_Bankswitching" xml:space="preserve">
+    <value>Uses Intellicart-style bankswitching</value>
+  </data>
+  <data name="IntellicartIntellicartCC3Features_Enhances" xml:space="preserve">
+    <value>Enhances</value>
+  </data>
+  <data name="IntellicartIntellicartCC3Features_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="IntellicartIntellicartCC3Features_Name" xml:space="preserve">
+    <value>Intellicart!</value>
+  </data>
+  <data name="IntellicartIntellicartCC3Features_Requires" xml:space="preserve">
+    <value>Requires</value>
+  </data>
+  <data name="IntellicartIntellicartCC3Features_SerialPortEnhanced" xml:space="preserve">
+    <value>If Available</value>
+  </data>
+  <data name="IntellicartIntellicartCC3Features_SerialPortRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="IntellicartIntellicartCC3Features_SixteenBitRAM" xml:space="preserve">
+    <value>Uses 16-bit RAM</value>
+  </data>
+  <data name="IntellicartIntellicartCC3Features_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="IntellivisionIIFeatureCompatibility_Enhances" xml:space="preserve">
+    <value>Modified Behavior</value>
+  </data>
+  <data name="IntellivisionIIFeatureCompatibility_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="IntellivisionIIFeatureCompatibility_Name" xml:space="preserve">
+    <value>Intellivision II Compatibility</value>
+  </data>
+  <data name="IntellivisionIIFeatureCompatibility_Requires" xml:space="preserve">
+    <value>Requires</value>
+  </data>
+  <data name="IntellivisionIIFeatureCompatibility_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="IntellivoiceFeatureCompatibility_Enhances" xml:space="preserve">
+    <value>Enhances</value>
+  </data>
+  <data name="IntellivoiceFeatureCompatibility_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="IntellivoiceFeatureCompatibility_Name" xml:space="preserve">
+    <value>Intellivoice Compatibility</value>
+  </data>
+  <data name="IntellivoiceFeatureCompatibility_Requires" xml:space="preserve">
+    <value>Requires</value>
+  </data>
+  <data name="IntellivoiceFeatureCompatibility_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="JlpFeatures_Bankswitching" xml:space="preserve">
+    <value>Uses Intellicart-style bankswitching</value>
+  </data>
+  <data name="JlpFeatures_Enhances" xml:space="preserve">
+    <value>Initially Disabled</value>
+  </data>
+  <data name="JlpFeatures_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="JlpFeatures_Name" xml:space="preserve">
+    <value>JLP Features</value>
+  </data>
+  <data name="JlpFeatures_Requires" xml:space="preserve">
+    <value>Initially Enabled</value>
+  </data>
+  <data name="JlpFeatures_SaveDataOptional" xml:space="preserve">
+    <value>If Available</value>
+  </data>
+  <data name="JlpFeatures_SaveDataRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="JlpFeatures_SaveDataSectorCountMask" xml:space="preserve">
+    <value>Save state sectors used</value>
+  </data>
+  <data name="JlpFeatures_SerialPortEnhanced" xml:space="preserve">
+    <value>If Available</value>
+  </data>
+  <data name="JlpFeatures_SerialPortRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="JlpFeatures_SixteenBitRAM" xml:space="preserve">
+    <value>Uses 16-bit RAM</value>
+  </data>
+  <data name="JlpFeatures_Tolerates" xml:space="preserve">
+    <value>Initially Enabled; No Flash</value>
+  </data>
+  <data name="JlpFeatures_Tolerates_Tip" xml:space="preserve">
+    <value>JLP RAM and hardware acceleration initially enabled; JLP Flash not used</value>
+  </data>
+  <data name="KeyboardComponentFeatures_BasicIncompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="KeyboardComponentFeatures_BasicRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="KeyboardComponentFeatures_BasicTolerated" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Enhances" xml:space="preserve">
+    <value>Enhances</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Microphone" xml:space="preserve">
+    <value>Uses microphone</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Name" xml:space="preserve">
+    <value>Keyboard Component</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Printer" xml:space="preserve">
+    <value>Uses Printer</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Requires" xml:space="preserve">
+    <value>Requires</value>
+  </data>
+  <data name="KeyboardComponentFeatures_TapeOptional" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="KeyboardComponentFeatures_TapeRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="LtoFlashFeatures_Bankswitching" xml:space="preserve">
+    <value>Uses Intellicart-style bankswitching</value>
+  </data>
+  <data name="LtoFlashFeatures_Enhances" xml:space="preserve">
+    <value>If Available</value>
+  </data>
+  <data name="LtoFlashFeatures_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="LtoFlashFeatures_Name" xml:space="preserve">
+    <value>LTO Flash! Features</value>
+  </data>
+  <data name="LtoFlashFeatures_Requires" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="LtoFlashFeatures_SaveDataOptional" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="LtoFlashFeatures_SaveDataRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="LtoFlashFeatures_SaveDataSectorCountMask" xml:space="preserve">
+    <value>Save state sectors used</value>
+  </data>
+  <data name="LtoFlashFeatures_UsbPortEnhanced" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="LtoFlashFeatures_UsbPortRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="LtoFlashFeatures_SixteenBitRAM" xml:space="preserve">
+    <value>Uses 16-bit RAM</value>
+  </data>
+  <data name="LtoFlashFeatures_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="NtscFeatureCompatibility_Enhances" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="NtscFeatureCompatibility_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="NtscFeatureCompatibility_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="NtscFeatureCompatiblity_Name" xml:space="preserve">
+    <value>NTSC Compatibility</value>
+  </data>
+  <data name="PalFeatureCompatibility_Enhances" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="PalFeatureCompatibility_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="PalFeatureCompatibility_Name" xml:space="preserve">
+    <value>PAL Compatibility</value>
+  </data>
+  <data name="PalFeatureCompatibility_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="SuperVideoArcadeFeatureCompatibility_Enhances" xml:space="preserve">
+    <value>Modified Behavior</value>
+  </data>
+  <data name="SuperVideoArcadeFeatureCompatibility_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="SuperVideoArcadeFeatureCompatibility_Name" xml:space="preserve">
+    <value>Sears Super Video Arcade</value>
+  </data>
+  <data name="SuperVideoArcadeFeatureCompatibility_Requires" xml:space="preserve">
+    <value>Requires</value>
+  </data>
+  <data name="SuperVideoArcadeFeatureCompatibility_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="TutorvisionFeatureCompatibility_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="TutorvisionFeatureCompatibility_Enhances" xml:space="preserve">
+    <value>Enhances</value>
+  </data>
+  <data name="TutorvisionFeatureCompatibility_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="TutorvisionFeatureCompatibility_Name" xml:space="preserve">
+    <value>Tutorvision</value>
+  </data>
+  <data name="TutorvisionFeatureCompatibility_Requires" xml:space="preserve">
+    <value>Requires</value>
+  </data>
+  <data name="Compatibility" xml:space="preserve">
+    <value>Compatibility</value>
+  </data>
+  <data name="EcsFeatures_Name" xml:space="preserve">
+    <value>ECS</value>
+  </data>
+  <data name="EcsFeatures_UsesSerialPort" xml:space="preserve">
+    <value>Uses serial port</value>
+  </data>
+  <data name="GeneralFeaturesConfiguration_GroupName" xml:space="preserve">
+    <value>General Features</value>
+  </data>
+  <data name="GeneralFeaturesConfiguration_VideoStandardsGroupName" xml:space="preserve">
+    <value>Video Standards</value>
+  </data>
+  <data name="HardwareAccelerationText" xml:space="preserve">
+    <value>Enable RAM and Accelerators at Startup</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Basic" xml:space="preserve">
+    <value>Microsoft® BASIC</value>
+  </data>
+  <data name="KeyboardComponentFeatures_Cassette" xml:space="preserve">
+    <value>Uses cassette</value>
+  </data>
+  <data name="KeyboardComponentFeatures_GroupName" xml:space="preserve">
+    <value>Keyboard Component Features</value>
+  </data>
+  <data name="LtoFlash" xml:space="preserve">
+    <value>LTO Flash!</value>
+  </data>
+  <data name="LtoFlashFeatures_UsesFlashStorage" xml:space="preserve">
+    <value>Uses flash storage</value>
+  </data>
+  <data name="ProgramFeaturesEditor_Cancel" xml:space="preserve">
+    <value>Cancel Changes</value>
+  </data>
+  <data name="ProgramFeaturesEditor_Commit" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+  <data name="ProgramFeaturesEditor_Revert" xml:space="preserve">
+    <value>Revert Changes</value>
+  </data>
+  <data name="ProgramFeaturesEditor_RevertToDatabase" xml:space="preserve">
+    <value>Revert to Original</value>
+  </data>
+  <data name="SystemCompatibility_GroupName" xml:space="preserve">
+    <value>System Compatibility</value>
+  </data>
+  <data name="SystemCompatibility_Name" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="UniversallyCompatible_Name" xml:space="preserve">
+    <value>Universally Compatible</value>
+  </data>
+  <data name="CuttleCart3Features_Bankswitching" xml:space="preserve">
+    <value>Uses Intellicart-style bankswitching</value>
+  </data>
+  <data name="CuttleCart3Features_EightBitRAM" xml:space="preserve">
+    <value>Uses additional 8-bit RAM</value>
+  </data>
+  <data name="CuttleCart3Features_Enhances" xml:space="preserve">
+    <value>Enhances</value>
+  </data>
+  <data name="CuttleCart3Features_Incompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="CuttleCart3Features_MattelBankswitching" xml:space="preserve">
+    <value>Uses Mattel-style bankswitching</value>
+  </data>
+  <data name="CuttleCart3Features_Name" xml:space="preserve">
+    <value>Cuttle Cart 3</value>
+  </data>
+  <data name="CuttleCart3Features_Requires" xml:space="preserve">
+    <value>Requires</value>
+  </data>
+  <data name="CuttleCart3Features_SerialPortEnhanced" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="CuttleCart3Features_SerialPortRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="CuttleCart3Features_SixteenBitRAM" xml:space="preserve">
+    <value>Uses additional 16-bit RAM</value>
+  </data>
+  <data name="CuttleCart3Features_Tolerates" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="CuttleCart3Features_MattelBankswitching_Tip" xml:space="preserve">
+    <value>Uses Mattel style bankswitching</value>
+  </data>
+  <data name="CuttleCart3Features_Ram08_Tip" xml:space="preserve">
+    <value>Uses 8-bit RAM as specified by Cuttle Cart 3 technology</value>
+  </data>
+  <data name="LtoFlashFeatures_UsesUsbPort" xml:space="preserve">
+    <value>Uses high-speed serial link</value>
+  </data>
+  <data name="RemoveRomsCommand_MenuItemName" xml:space="preserve">
+    <value>Remove ROMs from List</value>
+  </data>
+  <data name="RemoveRomsCommand_Name" xml:space="preserve">
+    <value>Remove ROMs</value>
+  </data>
+  <data name="SelectSerialPortCommand_Name" xml:space="preserve">
+    <value>Select Serial Port...</value>
+  </data>
+  <data name="SelectSerialPortDialog_Message" xml:space="preserve">
+    <value>Select the serial port to use:</value>
+  </data>
+  <data name="SelectSerialPortDialog_Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="SelectSerialPortDialog_Title" xml:space="preserve">
+    <value>Select Serial Port</value>
+  </data>
+  <data name="CancelButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="NoButton_Text" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="OKButton_Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="YesButton_Text" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="BaudRateLabel" xml:space="preserve">
+    <value>Baud Rate</value>
+  </data>
+  <data name="PortColumnTitle" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="SerialPortSelector_Prompt" xml:space="preserve">
+    <value>Select a serial port</value>
+  </data>
+  <data name="RomListSettingsPage_ShowRomDetails" xml:space="preserve">
+    <value>Show detailed ROM information</value>
+  </data>
+  <data name="RomListSettingsPage_DisplayRomFileNameForTitle" xml:space="preserve">
+    <value>Display ROM file name for title</value>
+  </data>
+  <data name="FTDIWarning_Message" xml:space="preserve">
+    <value>There are known stability problems with the FTDI USB Serial drivers in versions of Mac OS X prior to 10.9. As a result, your computer may crash when disconnecting your LTO Flash!
+
+Be sure to click the Disconnect button (or use the Disconnect menu item) before unplugging your LTO Flash! for improved stability.</value>
+  </data>
+  <data name="FTDIWarning_Title" xml:space="preserve">
+    <value>FTDI Driver Warning</value>
+  </data>
+  <data name="InvalidSerialPortName" xml:space="preserve">
+    <value>&lt;Invalid Port&gt;</value>
+  </data>
+  <data name="OKDoNotShowAgainButton_Text" xml:space="preserve">
+    <value>OK (Do Not Prompt Again)</value>
+  </data>
+  <data name="ReportDialog_SendErrorReport" xml:space="preserve">
+    <value>Send Error Report</value>
+  </data>
+  <data name="ExitCommand_Name" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="ShowOnlineHelpCommand_Name" xml:space="preserve">
+    <value>Online Help</value>
+  </data>
+  <data name="Jlp" xml:space="preserve">
+    <value>JLP</value>
+  </data>
+  <data name="JlpFeatures_UsesLEDs" xml:space="preserve">
+    <value>Uses onboard LEDs</value>
+  </data>
+  <data name="JlpFeatures_MinimumVersion" xml:space="preserve">
+    <value>Minimum Version</value>
+  </data>
+  <data name="JlpFeatures_RequiresJlp" xml:space="preserve">
+    <value>JLP Hardware</value>
+  </data>
+  <data name="JlpFeatures_UsesFlashStorage" xml:space="preserve">
+    <value>Uses flash storage</value>
+  </data>
+  <data name="JlpFeatures_UsesSerialPort" xml:space="preserve">
+    <value>Uses serial port</value>
+  </data>
+  <data name="JlpFeatuers_FlashInfoTipTitle" xml:space="preserve">
+    <value>Minimum Number of JLP Flash Data Sectors</value>
+  </data>
+  <data name="JlpFeatures_FlashInfoTipBaseFormat" xml:space="preserve">
+    <value>Flash storage used: {0:F1} KB
+
+Min: {1}; Default: {2}; Generous: {3}
+Max (JLP): {4}; Max (LTO Flash!): {5}</value>
+  </data>
+  <data name="JLPFeatures_UsesLEDsTip" xml:space="preserve">
+    <value>Uses LEDs</value>
+  </data>
+  <data name="AddRomFilesCommand_MenuItemName" xml:space="preserve">
+    <value>Add ROMs...</value>
+  </data>
+  <data name="LuigiConversionError_Format" xml:space="preserve">
+    <value>Failed to create LUIGI file for ROM '{0}'; return code: {1}.</value>
+  </data>
+  <data name="EditProgramNameCommand_Name" xml:space="preserve">
+    <value>Edit ROM</value>
+  </data>
+  <data name="EditProgramNameCommand_ToolTipDescription" xml:space="preserve">
+    <value>Edit the selected ROM. This is available only when a single ROM is selected. You may edit the name, vendor, year, and other information about the ROM.</value>
+  </data>
+  <data name="EditProgramNameCommand_ToolTipTitle" xml:space="preserve">
+    <value>Edit ROM</value>
+  </data>
+  <data name="ShowRomInfoCommand_MenuItemName" xml:space="preserve">
+    <value>Show ROM Details</value>
+  </data>
+  <data name="ShowRomInfoCommand_Name" xml:space="preserve">
+    <value>Show ROM details</value>
+  </data>
+  <data name="ShowRomInfoCommand_ToolTipDescription" xml:space="preserve">
+    <value>When enabled, additional details about the ROMs in the list will be displayed.</value>
+  </data>
+  <data name="ShowRomInfoCommand_ToolTipTitle" xml:space="preserve">
+    <value>Show ROM Details</value>
+  </data>
+  <data name="BackupRomListCommand_Complete_Message" xml:space="preserve">
+    <value>A backup copy of your ROM list has been stored in the following location:</value>
+  </data>
+  <data name="BackupRomListCommand_Complete_Title" xml:space="preserve">
+    <value>ROM List Backup</value>
+  </data>
+  <data name="BackupRomListCommand_MenuItemName" xml:space="preserve">
+    <value>Backup ROM List...</value>
+  </data>
+  <data name="BackupRomListCommand_Name" xml:space="preserve">
+    <value>Backup ROM List</value>
+  </data>
+  <data name="BackupRomListCommand_ToolTipDescription" xml:space="preserve">
+    <value>Make a backup copy of the ROM list. Note that this only makes a backup of the list itself. No ROMs are copied.</value>
+  </data>
+  <data name="EmptyRomListCommand_MenuItemName" xml:space="preserve">
+    <value>Empty ROM List...</value>
+  </data>
+  <data name="EmptyRomListCommand_Name" xml:space="preserve">
+    <value>Empty ROM List</value>
+  </data>
+  <data name="EmptyRomListCommand_ToolTipDescription" xml:space="preserve">
+    <value>Replaces the current ROM list with an empty one.</value>
+  </data>
+  <data name="RestoreRomListCommand_MenuItemName" xml:space="preserve">
+    <value>Restore ROM List...</value>
+  </data>
+  <data name="RestoreRomListCommand_Name" xml:space="preserve">
+    <value>Restore ROM List</value>
+  </data>
+  <data name="RestoreRomListCommand_ToolTipDescription" xml:space="preserve">
+    <value>Replaces the current ROM list with one from a backup copy. Note that no ROMs will be copied. If ROMs have been moved or deleted since the backup was made, errors may arise.</value>
+  </data>
+  <data name="RomListGroupCommand_Name" xml:space="preserve">
+    <value>ROM List</value>
+  </data>
+  <data name="ReportDialog_EmailLabel" xml:space="preserve">
+    <value>email Address:</value>
+  </data>
+  <data name="ReportDialog_EmailReminder" xml:space="preserve">
+    <value>Your email address will only be used if further information is needed to investigate this issue.</value>
+  </data>
+  <data name="ReportDialog_LogErrorFailed_MessageFormat" xml:space="preserve">
+    <value>Unable to log errors:
+
+{0}</value>
+  </data>
+  <data name="ReportDialog_LogErrorFailed_Title" xml:space="preserve">
+    <value>Create Error Log Failed</value>
+  </data>
+  <data name="ReportDialog_UnableToSendReport_MessageFormat" xml:space="preserve">
+    <value>Failed to send crash report email.
+
+Exception message: '{0}'
+
+Copy the text in the error dialog and send it to:
+
+  support@intvfunhouse.com</value>
+  </data>
+  <data name="ReportDialog_UnableToSendReport_Title" xml:space="preserve">
+    <value>Unable to Send Error Report</value>
+  </data>
+  <data name="GeneralSettingsPage_Title" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="EmptyRomListCommand_ContextMenuItemName" xml:space="preserve">
+    <value>Delete All ROMs...</value>
+  </data>
+  <data name="EmptyRomListCommand_WarningMessage" xml:space="preserve">
+    <value>WARNING!
+
+This operation will remove all ROMs from your list!
+
+This will NOT delete any ROMs from your system, but may cause other problems.
+
+Are you sure you wish to proceed?</value>
+  </data>
+  <data name="EmptyRomListCommand_WarningTitle" xml:space="preserve">
+    <value>Empty ROM List</value>
+  </data>
+  <data name="RestoreCommand_Name" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="RestoreRomListCommand_MissingFileErrorMessage" xml:space="preserve">
+    <value>The following required backup file could not be found in the backup directory:</value>
+  </data>
+  <data name="RestoreRomListCommand_MissingFileErrorTitle" xml:space="preserve">
+    <value>Unable to Restore ROM List</value>
+  </data>
+  <data name="SelectBackupDialog_DateColumnTitle" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="SelectBackupDialog_NumberOfItemsColumnTitle" xml:space="preserve">
+    <value>Number of Items</value>
+  </data>
+  <data name="SelectBackupDialog_PathColumnTitle" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="SelectBackupDialog_Prompt" xml:space="preserve">
+    <value>Select a backup to restore.</value>
+  </data>
+  <data name="SelectBackupDialog_Title" xml:space="preserve">
+    <value>Select Backup</value>
+  </data>
+  <data name="EditRomFeaturesCommand_MenuItemName" xml:space="preserve">
+    <value>Edit ROM Features...</value>
+  </data>
+  <data name="EditRomFeaturesCommand_Name" xml:space="preserve">
+    <value>Edit ROM Features</value>
+  </data>
+  <data name="EditProgramNameCommand_ContextMenuItemName" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="EditProgramNameCommand_MenuItemName" xml:space="preserve">
+    <value>Edit ROM Name</value>
+  </data>
+  <data name="RemoveRomsCommand_ContextMenuItemName" xml:space="preserve">
+    <value>Remove from List</value>
+  </data>
+  <data name="RestoreRomListCommand_Message" xml:space="preserve">
+    <value>WARNING!
+
+Restoring the ROM list from a backup will replace the current list!
+
+Would you like to continue with the restore operation?</value>
+  </data>
+  <data name="RestoreRomListCommand_MessageTitle" xml:space="preserve">
+    <value>Restore ROM List</value>
+  </data>
+  <data name="RestoreRomListCommand_SelectBackupTitle" xml:space="preserve">
+    <value>Select ROM List Backup</value>
+  </data>
+  <data name="RomListGroupCommand_MenuItemName" xml:space="preserve">
+    <value>ROM List</value>
+  </data>
+  <data name="GenerateStockCfgFileFailed_MessageFormat" xml:space="preserve">
+    <value>Failed to generate default .cfg file for  {0}.</value>
+  </data>
+  <data name="GenerateStockCfgFileFailed_Title" xml:space="preserve">
+    <value>Missing Config File</value>
+  </data>
+  <data name="GeneralSettingsPage_BackupDirLabel" xml:space="preserve">
+    <value>ROM List Backups:</value>
+  </data>
+  <data name="GeneralSettingsPage_BackupDirTip" xml:space="preserve">
+    <value>Backup copies of the ROM list will be placed in this directory</value>
+  </data>
+  <data name="GeneralSettingsPage_BoxesDirLabel" xml:space="preserve">
+    <value>Boxes:</value>
+  </data>
+  <data name="GeneralSettingsPage_BoxesDirTip" xml:space="preserve">
+    <value>Box images may be placed in this directory</value>
+  </data>
+  <data name="GeneralSettingsPage_ErrorLogDirLabel" xml:space="preserve">
+    <value>Error Logs:</value>
+  </data>
+  <data name="GeneralSettingsPage_ErrorLogDirTip" xml:space="preserve">
+    <value>Error log files will be placed in this directory</value>
+  </data>
+  <data name="GeneralSettingsPage_LabelsDirLabel" xml:space="preserve">
+    <value>Labels:</value>
+  </data>
+  <data name="GeneralSettingsPage_LabelsDirTip" xml:space="preserve">
+    <value>Label images may be placed in this directory</value>
+  </data>
+  <data name="GeneralSettingsPage_LocalRomsDirLabel" xml:space="preserve">
+    <value>Copied ROMs:</value>
+  </data>
+  <data name="GeneralSettingsPage_LocalRomsDirTip" xml:space="preserve">
+    <value>ROMs located on resources such as thumb drives or network shares will have a backup copy located in this directory</value>
+  </data>
+  <data name="GeneralSettingsPage_ManualsDirLabel" xml:space="preserve">
+    <value>Manuals:</value>
+  </data>
+  <data name="GeneralSettingsPage_ManualsDirTip" xml:space="preserve">
+    <value>Manuals text files and images may be placed in this directory</value>
+  </data>
+  <data name="GeneralSettingsPage_OverlaysDirLabel" xml:space="preserve">
+    <value>Overlays:</value>
+  </data>
+  <data name="GeneralSettingsPage_OverlaysDirTip" xml:space="preserve">
+    <value>Overlay images may be placed in this directory</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowBackupDirTip" xml:space="preserve">
+    <value>Show the directory used to store backup copies of the ROM list</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowBoxesDirTip" xml:space="preserve">
+    <value>Show the directory that may be used to store box images</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowDetailedErrors" xml:space="preserve">
+    <value>Show detailed error messages</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowDetailedErrors_Tip" xml:space="preserve">
+    <value>When checked, more detailed error reports will be presented if an error occurs</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowErrorLogDirTip" xml:space="preserve">
+    <value>Show the directory used to store error log files</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowInExplorerButtonText" xml:space="preserve">
+    <value>Show in Explorer</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowLabelsDirTip" xml:space="preserve">
+    <value>Show the directory that may be used to store cartridge label images</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowLocalRomsDirTip" xml:space="preserve">
+    <value>Show the directory containing copied ROMs</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowManualsDirTip" xml:space="preserve">
+    <value>Show the directory that may be used to store manuals</value>
+  </data>
+  <data name="GeneralSettingsPage_ShowOverlaysDirTip" xml:space="preserve">
+    <value>Show the directory that may be used to store overlay images</value>
+  </data>
+  <data name="ReportDialog_SendingErrorReport" xml:space="preserve">
+    <value>Sending Error Report...</value>
+  </data>
+  <data name="ReportDialog_SendMessageFailed" xml:space="preserve">
+    <value>Send Error Report Failed</value>
+  </data>
+  <data name="ReportDialog_ShowFilesButtonText" xml:space="preserve">
+    <value>Show Files</value>
+  </data>
+  <data name="NoExecutePermissions_Format" xml:space="preserve">
+    <value>The program at the path:
+  {0}
+
+does not have execute permissions. To fix this problem, use the chmod +x command.</value>
+  </data>
+  <data name="AddRomsErrorMessage" xml:space="preserve">
+    <value>An error occurred while adding ROMs. Details are provided below.</value>
+  </data>
+  <data name="AddRomsErrorTitle" xml:space="preserve">
+    <value>Error Adding ROMs</value>
+  </data>
+  <data name="JlpFeatures_FlashInfoTipFlashNotUsed" xml:space="preserve">
+    <value>Flash storage not used</value>
+  </data>
+  <data name="JlpFeatures_FlashInfoTipHighFormat" xml:space="preserve">
+    <value>Maximum recommended JLP Flash usage is {0} sectors ({1} KB). Using a larger value requires the program ROM to be less than {2} KB to be installed on current JLP hardware designs.</value>
+  </data>
+  <data name="JlpFeatures_FlashInfoTipLtoFlashOnlyFormat" xml:space="preserve">
+    <value>Maximum practical JLP Flash usage is {0} sectors ({1} KB). Using larger sizes is currently only supported on LTO Flash! hardware.</value>
+  </data>
+  <data name="ValidateRomsCommand_Name" xml:space="preserve">
+    <value>Validate ROMs</value>
+  </data>
+  <data name="ValidateRomsCommand_ToolTip" xml:space="preserve">
+    <value>Checks the ROMs in the list, highlighting any that are missing or have changed.</value>
+  </data>
+  <data name="RestoreRomListCommand_FailedMessage" xml:space="preserve">
+    <value>An error occurred restoring the ROM list.</value>
+  </data>
+  <data name="RestoreRomListCommand_PromptToRestoreMessage" xml:space="preserve">
+    <value> Would you like to recover the previous one? (Close to keep possibly corrupt file.)</value>
+    <comment>The leading space is intentional.</comment>
+  </data>
+  <data name="RomFeaturesEditor_TitleFormat" xml:space="preserve">
+    <value>{0} Features</value>
+    <comment>{0} is ROM title</comment>
+  </data>
+  <data name="RomList_SaveFailed_Message" xml:space="preserve">
+    <value>An error occurred saving the ROM list.</value>
+  </data>
+  <data name="RomList_SaveFailed_PromptToRestoreMessage" xml:space="preserve">
+    <value> Would you like to recover the previous version? (Close to keep possibly corrupt file)</value>
+    <comment>The leading space is intentional.</comment>
+  </data>
+  <data name="RomList_SaveFailed_Title" xml:space="preserve">
+    <value>Failed to Save ROM List</value>
+  </data>
+  <data name="ShowInFileSystemCommand_Name" xml:space="preserve">
+    <value>Show in File System</value>
+  </data>
+  <data name="ShowInFileSystemCommand_ToolTipDescription" xml:space="preserve">
+    <value>Reveals the file in the file system.</value>
+  </data>
+  <data name="ShowInFileSystemCommand_ToolTipTitle" xml:space="preserve">
+    <value>Show in File System</value>
+  </data>
+  <data name="ValidateRomsCommand_ProgressDetailFormat" xml:space="preserve">
+    <value>Checking: {0} at {1}</value>
+    <comment>{0} is ROM title, {1} is ROM path</comment>
+  </data>
+  <data name="ValidateRomsCommand_ProgressTitle" xml:space="preserve">
+    <value>Validating ROMs...</value>
+  </data>
+  <data name="ProgramSupportFileState_RequiredPeripheralAvailable" xml:space="preserve">
+    <value>Runs on the connected LTO Flash!</value>
+  </data>
+  <data name="ProgramSupportFileState_RequiredPeripheralIncompatible" xml:space="preserve">
+    <value>Requires LTO Flash! with device ID '{0}'</value>
+    <comment>{0} is DRUID of the required LTO Flash!</comment>
+  </data>
+  <data name="ProgramSupportFileState_RequiredPeripheralNotAttached" xml:space="preserve">
+    <value>Requires LTO Flash!</value>
+  </data>
+  <data name="ProgramSupportFileState_RequiredPeripheralUnknown" xml:space="preserve">
+    <value>Requires LTO Flash! with device ID '{0}', which has not been connected to this computer</value>
+    <comment>{0} is DRUID of the required LTO Flash!</comment>
+  </data>
+  <data name="ReportDialog_CopyToClipboard_Failed_MessageFormat" xml:space="preserve">
+    <value>Failed to copy to clipboard. Error message:
+
+{0}
+
+Copy the text in the error dialog and send it to:
+
+  support@intvfunhouse.com</value>
+  </data>
+  <data name="ReportDialog_CopyToClipboard_Failed_Title" xml:space="preserve">
+    <value>Error Copying to Clipboard</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="StartupActionError_ActionNameMessageFormat" xml:space="preserve">
+    <value>Action: {0}</value>
+  </data>
+  <data name="StartupActionError_BaseMessage" xml:space="preserve">
+    <value>A problem occurred when starting the application. Details are listed below.</value>
+  </data>
+  <data name="StartupActionError_Details" xml:space="preserve">
+    <value>Detailed error information follows:</value>
+  </data>
+  <data name="StartupActionError_ExceptionMessageFormat" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  <data name="StartupActionError_Summary" xml:space="preserve">
+    <value>The following problems occurred:</value>
+  </data>
+  <data name="StartupActionError_Title" xml:space="preserve">
+    <value>Startup Operation Failure</value>
+  </data>
+  <data name="CheckForUpdatesCommand_DialogTitle" xml:space="preserve">
+    <value>Check for Updates</value>
+  </data>
+  <data name="CheckForUpdatesCommand_FailedFormat" xml:space="preserve">
+    <value>An error occurred when checking for updates:
+
+{0}</value>
+    <comment>{0} is the message from the error exception.</comment>
+  </data>
+  <data name="CheckForUpdatesCommand_FailedStopAskingFormat" xml:space="preserve">
+    <value>An error occurred when checking for updates:
+
+{0}
+
+You can disable checking for udpates in the General application preferences.</value>
+    <comment>{0} is the message from the error exception.</comment>
+  </data>
+  <data name="CheckForUpdatesCommand_Name" xml:space="preserve">
+    <value>Check for Updates...</value>
+  </data>
+  <data name="CheckForUpdatesCommand_NoUpdates" xml:space="preserve">
+    <value>You are running the most recent version!</value>
+  </data>
+  <data name="CheckForUpdatesCommand_NoUpdatesStopAskingPrompt" xml:space="preserve">
+    <value>You are running the most recent version!
+
+You can disable checking for updates in the General application preferences.</value>
+  </data>
+  <data name="CheckForUpdatesCommand_OpenBrowserFailedFormat" xml:space="preserve">
+    <value>Unable to open browser. Error:
+
+{0}</value>
+    <comment>{0} is the message from the error exception</comment>
+  </data>
+  <data name="CheckForUpdatesCommand_Tip" xml:space="preserve">
+    <value>Check for an updated version of the application</value>
+  </data>
+  <data name="CheckForUpdatesCommand_TipDescription" xml:space="preserve">
+    <value>Query the INTV Funhouse website to determine if a newer version of the application can be downloaded.</value>
+  </data>
+  <data name="CheckForUpdatesCommand_UpdateAvailableFormat" xml:space="preserve">
+    <value>An update is available!
+
+Current version: {0}
+
+Would you like to be directed to
+
+  {1}
+
+to download version {2}?</value>
+    <comment>{0} is current version, {1} is website URL, {2} is new version</comment>
+  </data>
+  <data name="GeneralSettingsPage_CheckForUpdates" xml:space="preserve">
+    <value>Check for application updates at startup</value>
+  </data>
+  <data name="GeneralSettingsPage_CheckForUpdates_Tip" xml:space="preserve">
+    <value>Enable this setting to have the application check for udpates when it launches</value>
+  </data>
+  <data name="SingleApplicationCommands_SettingsTip" xml:space="preserve">
+    <value>Open the application preferences dialog</value>
+  </data>
+</root>

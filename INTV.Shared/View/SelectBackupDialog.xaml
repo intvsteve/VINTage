@@ -1,0 +1,82 @@
+﻿<!--
+    <copyright file="SelectBackupDialog.xaml" company="INTV Funhouse">
+    Copyright (c) 2015 All Rights Reserved
+    <author>Steven A. Orth</author>
+
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation, either version 2 of the License, or (at your
+    option) any later version.
+
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this software. If not, see: http://www.gnu.org/licenses/.
+    or write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+
+    </copyright>
+-->
+<Window x:Class="INTV.Shared.View.SelectBackupDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        xmlns:behaviors="clr-namespace:INTV.Shared.Behavior"
+        xmlns:viewModel="clr-namespace:INTV.Shared.ViewModel"
+        behaviors:DialogCloseBehavior.DialogResult="{Binding DialogResult}" UseLayoutRounding="True" SnapsToDevicePixels="True"
+        Title="{Binding Title}" Width="480" Height="298" WindowStartupLocation="CenterOwner">
+    <Window.DataContext>
+        <viewModel:SelectBackupDialogViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Margin="12,4,12,4" Text="{Binding Prompt}"/>
+        <ListView Grid.Row="1" Margin="12,4,12,12" HorizontalContentAlignment="Stretch" SelectionMode="Single"
+                  ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackupViewModel}"
+                  behaviors:ShowHideGridViewColumnBehavior.AllowHideColumns="True">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="{x:Static viewModel:SelectBackupDialogViewModel.DateColumnTitle}" Width="162">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DateTime}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="{x:Static viewModel:SelectBackupDialogViewModel.NumberOfItemsColumnTitle}"
+                                    behaviors:ShowHideGridViewColumnBehavior.IsVisible="{Binding Path=ShowItemsCount}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding FileCount}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="{x:Static viewModel:SelectBackupDialogViewModel.PathColumnTitle}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Border Grid.Row="2" Background="{x:Static SystemColors.ControlBrush}">
+            <StackPanel Margin="4,4,8,4" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Margin="4" Padding="8,4" IsCancel="True" Content="{x:Static viewModel:SelectBackupDialogViewModel.CancelButtonText}"
+                        Command="{x:Static viewModel:SelectBackupDialogViewModel.CancelSelectBackupCommand}" CommandParameter="{Binding}"/>
+                <Button Margin="4" Padding="8,4" Content="{x:Static viewModel:SelectBackupDialogViewModel.RestoreButtonText}"
+                        Command="{x:Static viewModel:SelectBackupDialogViewModel.SelectBackupCommand}" CommandParameter="{Binding}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

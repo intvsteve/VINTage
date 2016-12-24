@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{245FD6EE-0B2E-4119-9211-4AA77511E23B}</ProjectGuid>
+    <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>INTV.Shared</RootNamespace>
+    <AssemblyName>INTV.Shared</AssemblyName>
+    <SuppressXamMacMigration>True</SuppressXamMacMigration>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Mac</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Mac\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;MONO;MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\Mac</OutputPath>
+    <IntermediateOutputPath>obj\Release\Mac\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>MONO;MAC</DefineConstants>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Mono.Posix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ComponentModel\ICommand.Mono.cs" />
+    <Compile Include="ComponentModel\PropertyChangedNotifierHelpers.cs" />
+    <Compile Include="ComponentModel\RelayCommand.cs" />
+    <Compile Include="ComponentModel\VisualRelayCommand.cs" />
+    <Compile Include="Utility\AsyncTaskData.cs" />
+    <Compile Include="Utility\AsyncTaskWithProgress.cs" />
+    <Compile Include="Utility\ColorHelpers.cs" />
+    <Compile Include="Utility\FileBrowserDialogResult.cs" />
+    <Compile Include="Utility\FileDialogHelpers.cs" />
+    <Compile Include="Utility\FixedSizeCollection`T.cs" />
+    <Compile Include="Utility\IFileBrowserDialog.cs" />
+    <Compile Include="Utility\IFixedSizeCollection.cs" />
+    <Compile Include="Utility\Logger.cs" />
+    <Compile Include="Utility\ObservableCollectionHelpers.cs" />
+    <Compile Include="Utility\PathComparer.cs" />
+    <Compile Include="Utility\PathUtils.cs" />
+    <Compile Include="Utility\PathUtils.Mac.cs" />
+    <Compile Include="Utility\ResourceHelpers.cs" />
+    <Compile Include="Utility\RunExternalProgram.cs" />
+    <Compile Include="Utility\SerialPortDetector.cs" />
+    <Compile Include="Utility\SingleInstanceApplication.cs" />
+    <Compile Include="Utility\VisualHelpers.cs" />
+    <Compile Include="Resources\Strings.Designer.cs" />
+    <Compile Include="Utility\OSDispatcher.cs" />
+    <Compile Include="Model\SearchDirectories.cs" />
+    <Compile Include="Model\Device\ConnectionMonitor.cs" />
+    <Compile Include="Model\Device\NamedPipeConnection.cs" />
+    <Compile Include="Model\Device\SerialPortConnection.cs" />
+    <Compile Include="Model\Program\ProgramCollection.cs" />
+    <Compile Include="Model\Program\ProgramFileKindHelpers.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChange.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChangeEvent.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChangeEventArgs.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceType.cs" />
+    <Compile Include="ViewModel\ControllerElementViewModel.cs" />
+    <Compile Include="ViewModel\IObservableViewModelCollection.cs" />
+    <Compile Include="ViewModel\ISettingsPage.cs" />
+    <Compile Include="ViewModel\ObservableViewModelCollection`TViewModel`TModel.cs" />
+    <Compile Include="ViewModel\ProgramDescriptionViewModel.cs" />
+    <Compile Include="ViewModel\ProgressIndicatorViewModel.cs" />
+    <Compile Include="ViewModel\RomDiscoveryData.cs" />
+    <Compile Include="ViewModel\RomDiscoveryOptions.cs" />
+    <Compile Include="ViewModel\RomListColumn.cs" />
+    <Compile Include="ViewModel\RomListSettingsPageViewModel.cs" />
+    <Compile Include="ViewModel\RomListViewModel.cs" />
+    <Compile Include="ViewModel\SerialPortConnectionViewModel.cs" />
+    <Compile Include="ViewModel\SingleInstanceApplicationCommands.cs" />
+    <Compile Include="Utility\OSDispatcherTimer.cs" />
+    <Compile Include="Behavior\SortCommandData.cs" />
+    <Compile Include="View\FileBrowserDialogBase.cs" />
+    <Compile Include="View\FileBrowserDialog.Mac.cs" />
+    <Compile Include="View\OSMessageBox.cs" />
+    <Compile Include="Utility\SingleInstanceApplication.Mac.cs" />
+    <Compile Include="View\IFakeDependencyObject.cs" />
+    <Compile Include="View\IFakeDependencyObjectHelpers.cs" />
+    <Compile Include="Utility\ErrorReporting.cs" />
+    <Compile Include="Utility\OSExportAttribute.cs" />
+    <Compile Include="ViewModel\ProgramDescriptionViewModel.Mac.cs" />
+    <Compile Include="View\RomListSettingsPage.Mac.cs" />
+    <Compile Include="View\RomListSettingsPage.Mac.designer.cs">
+      <DependentUpon>RomListSettingsPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\RomListSettingsPageController.Mac.cs" />
+    <Compile Include="View\RomListView.Mac.cs" />
+    <Compile Include="View\RomListView.Mac.designer.cs">
+      <DependentUpon>RomListView.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\RomListViewController.Mac.cs" />
+    <Compile Include="Commands\ICommandProvider.cs" />
+    <Compile Include="Commands\ICommandGroup.cs" />
+    <Compile Include="Commands\RomListCommandsProvider.cs" />
+    <Compile Include="Commands\CommandGroup.cs" />
+    <Compile Include="Commands\CommandProvider.cs" />
+    <Compile Include="Commands\CommandGroup.Mac.cs" />
+    <Compile Include="Commands\CommandProvider.Mac.cs" />
+    <Compile Include="Commands\CommandProviderHelpers.cs" />
+    <Compile Include="Commands\CommandProviderHelpers.Mac.cs" />
+    <Compile Include="ComponentModel\CompositionHelpers.cs" />
+    <Compile Include="Commands\RomListCommandGroup.Mac.cs" />
+    <Compile Include="Commands\RomListCommandGroup.cs" />
+    <Compile Include="Utility\NSObjectWrapper`T.cs" />
+    <Compile Include="View\ProgressIndicator.Mac.cs" />
+    <Compile Include="View\ProgressIndicator.Mac.designer.cs">
+      <DependentUpon>ProgressIndicator.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProgressIndicatorController.Mac.cs" />
+    <Compile Include="ViewModel\ProgressIndicatorViewModel.Mac.cs" />
+    <Compile Include="ViewModel\RomListViewModel.Mac.cs" />
+    <Compile Include="Utility\OSDragDropOperation.Mac.cs" />
+    <Compile Include="Commands\RootCommandGroup.Mac.cs" />
+    <Compile Include="Commands\RootCommandGroup.cs" />
+    <Compile Include="Commands\OSModifierKeys.Mac.cs" />
+    <Compile Include="ComponentModel\VisualRelayCommand.Mac.cs" />
+    <Compile Include="Commands\ApplicationCommandsProvider.cs" />
+    <Compile Include="Commands\ApplicationCommandGroup.cs" />
+    <Compile Include="Commands\ApplicationCommandGroup.Mac.cs" />
+    <Compile Include="Commands\StandardMenuId.cs" />
+    <Compile Include="Commands\StandardMenuCommandId.cs" />
+    <Compile Include="View\SettingsDialog.Mac.cs" />
+    <Compile Include="View\SettingsDialog.Mac.designer.cs">
+      <DependentUpon>SettingsDialog.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SettingsDialogController.Mac.cs" />
+    <Compile Include="View\SettingsDialog.cs" />
+    <Compile Include="Utility\NSUserDefaultsController.cs" />
+    <Compile Include="Utility\OSDispatcher.Mac.cs" />
+    <Compile Include="Behavior\DragDropHelpers.Mac.cs" />
+    <Compile Include="Utility\NSUserDefaultsObserver.cs" />
+    <Compile Include="Properties\Settings.Mac.cs" />
+    <Compile Include="Interop\IOKit\IOKitObject.cs" />
+    <Compile Include="Interop\IOKit\NativeMethods.cs" />
+    <Compile Include="Interop\IOKit\IOIterator.cs" />
+    <Compile Include="Interop\IOKit\IORegistryEntry.cs" />
+    <Compile Include="Interop\IOKit\IOService.cs" />
+    <Compile Include="ViewModel\ViewModelHelpers.cs" />
+    <Compile Include="Utility\OSDispatcherTimer.Mac.cs" />
+    <Compile Include="Utility\ASCIIBinaryReader.cs" />
+    <Compile Include="Utility\ASCIIBinaryWriter.cs" />
+    <Compile Include="View\SerialPortSelectorDialog.Mac.cs" />
+    <Compile Include="View\SerialPortSelectorDialog.Mac.designer.cs">
+      <DependentUpon>SerialPortSelectorDialog.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SerialPortSelectorDialogController.Mac.cs" />
+    <Compile Include="ViewModel\SerialPortSelectorDialogViewModel.cs" />
+    <Compile Include="Interop\IOKit\IOMachPort.cs" />
+    <Compile Include="ViewModel\SerialPortViewModel.cs" />
+    <Compile Include="Model\CanonicalRomComparer.cs" />
+    <Compile Include="Model\CanonicalRomComparerStrict.cs" />
+    <Compile Include="Model\IRomHelpers.cs" />
+    <Compile Include="Model\Program\Bee3FeatureSet.cs" />
+    <Compile Include="Model\Program\CuttleCart3FeatureSet.cs" />
+    <Compile Include="Model\Program\EcsFeatureSet.cs" />
+    <Compile Include="Model\Program\GeneralFeatureSet.cs" />
+    <Compile Include="Model\Program\HiveFeatureSet.cs" />
+    <Compile Include="Model\Program\IntellicartFeatureSet.cs" />
+    <Compile Include="Model\Program\IntellivisionIIFeatureSet.cs" />
+    <Compile Include="Model\Program\IntellivoiceFeatureSet.cs" />
+    <Compile Include="Model\Program\IProgramFeatureSet.cs" />
+    <Compile Include="Model\Program\IProgramFeatureSet`T.cs" />
+    <Compile Include="Model\Program\JlpFeatureSet.cs" />
+    <Compile Include="Model\Program\KeyboardComponentFeatureSet.cs" />
+    <Compile Include="Model\Program\LtoFlashFeatureSet.cs" />
+    <Compile Include="Model\Program\NtscFeatureSet.cs" />
+    <Compile Include="Model\Program\PalFeatureSet.cs" />
+    <Compile Include="Model\Program\ProgramFeatureSet`T.cs" />
+    <Compile Include="Model\Program\SuperVideoArcadeFeatureSet.cs" />
+    <Compile Include="Model\Program\TutorvisionFeatureSet.cs" />
+    <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
+    <Compile Include="ComponentModel\WeightAttribute.cs" />
+    <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
+    <Compile Include="Utility\ReflectionHelpers.cs" />
+    <Compile Include="Model\IStreamConnection.cs" />
+    <Compile Include="Model\RomListConfiguration.cs" />
+    <Compile Include="ViewModel\IRomFeaturesConfigurationPage.cs" />
+    <Compile Include="ViewModel\ISettingsPageMetadata.cs" />
+    <Compile Include="ViewModel\ReportDialogViewModel.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel`T.cs" />
+    <Compile Include="ViewModel\ProgramFeatureImageViewModel.cs" />
+    <Compile Include="ComponentModel\IApplicationInfo.cs" />
+    <Compile Include="View\ReportDialogController.Mac.cs" />
+    <Compile Include="View\ReportDialog.Mac.cs" />
+    <Compile Include="View\ReportDialog.Mac.designer.cs">
+      <DependentUpon>ReportDialog.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ComponentModel\CommandManager.Mono.cs" />
+    <Compile Include="ViewModel\RomFeaturesConfigurationViewModel.cs" />
+    <Compile Include="Behavior\IInPlaceEditor.cs" />
+    <Compile Include="Behavior\InPlaceEditorClosedEventArgs.cs" />
+    <Compile Include="Model\Device\SerialPortConnection.Mac.cs" />
+    <Compile Include="ViewModel\ReportDialogViewModel.Mac.cs" />
+    <Compile Include="Converter\ProgramFeaturesToImageTransformer.cs" />
+    <Compile Include="Utility\StopBitsHelpers.cs" />
+    <Compile Include="View\SerialPortSelector.Mac.cs" />
+    <Compile Include="View\SerialPortSelector.Mac.designer.cs">
+      <DependentUpon>SerialPortSelector.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SerialPortSelectorController.Mac.cs" />
+    <Compile Include="Utility\ObservableCollectionHelpers.Mac.cs" />
+    <Compile Include="ViewModel\BaudRateViewModel.cs" />
+    <Compile Include="ViewModel\SerialPortSelectorViewModel.cs" />
+    <Compile Include="ComponentModel\IPrimaryComponent.cs" />
+    <Compile Include="Interop\IOKit\IONotificationPort.cs" />
+    <Compile Include="Interop\IOKit\IONotificationEventArgs.cs" />
+    <Compile Include="Interop\IOKit\IOKitHelpers.cs" />
+    <Compile Include="Utility\ExitEventArgs.Mac.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceManagementInterfaceKind.Mac.cs" />
+    <Compile Include="ComponentModel\RelayCommand.Mono.cs" />
+    <Compile Include="Interop\NativeMethods.Mac.cs" />
+    <Compile Include="Utility\OSDispatcherPriority.Mono.cs" />
+    <Compile Include="View\OSMessageBoxButton.Mac.cs" />
+    <Compile Include="View\OSMessageBoxIcon.Mac.cs" />
+    <Compile Include="View\OSMessageBoxResult.Mac.cs" />
+    <Compile Include="View\OSTextWrapping.Mac.cs" />
+    <Compile Include="View\OSWindowState.Mac.cs" />
+    <Compile Include="View\SerialPortSelectorDialog.cs" />
+    <Compile Include="Utility\ColorHelpers.Mac.cs" />
+    <Compile Include="Utility\VisualHelpers.Mac.cs" />
+    <Compile Include="Utility\OSExportAttribute.Mac.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel`T.Mac.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="Utility\ResourceHelpers.Mac.cs" />
+    <Compile Include="View\OSMessageBox.Mac.cs" />
+    <Compile Include="Utility\RunExternalProgram.Mac.cs" />
+    <Compile Include="Model\Program\AddRomsFromFilesEndEventArgs.cs" />
+    <Compile Include="Utility\OSVersion.cs" />
+    <Compile Include="Utility\OSVersion.Mac.cs" />
+    <Compile Include="View\TextCellInPlaceEditor.Mac.cs" />
+    <Compile Include="Model\Program\InvokeProgramEventArgs.cs" />
+    <Compile Include="Commands\DebugCommandGroup.cs" />
+    <Compile Include="Commands\DebugCommandGroup.Mac.cs" />
+    <Compile Include="View\ReportDialog.cs" />
+    <Compile Include="Utility\OneShotLaunchTask.cs" />
+    <Compile Include="Converter\ShortenedPathConverter.cs" />
+    <Compile Include="Converter\ShortenedPathConverter.Mac.cs" />
+    <Compile Include="View\GeneralFeaturesConfigurationPage.Mac.cs" />
+    <Compile Include="View\GeneralFeaturesConfigurationPage.Mac.designer.cs">
+      <DependentUpon>GeneralFeaturesConfigurationPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\GeneralFeaturesConfigurationPageController.Mac.cs" />
+    <Compile Include="View\SystemCompatibilityConfigurationPage.Mac.cs" />
+    <Compile Include="View\SystemCompatibilityConfigurationPageController.Mac.cs" />
+    <Compile Include="View\SystemCompatibilityConfigurationPage.designer.Mac.cs">
+      <DependentUpon>SystemCompatibilityConfigurationPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\EcsFeaturesConfigurationPageController.Mac.cs" />
+    <Compile Include="View\EcsFeaturesConfigurationPage.Mac.cs" />
+    <Compile Include="View\EcsFeaturesConfigurationPage.designer.Mac.cs">
+      <DependentUpon>EcsFeaturesConfigurationPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\JlpFeaturesConfigurationPageController.Mac.cs" />
+    <Compile Include="View\JlpFeaturesConfigurationPage.Mac.cs" />
+    <Compile Include="View\JlpFeaturesConfigurationPage.Mac.designer.cs">
+      <DependentUpon>JlpFeaturesConfigurationPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\KeyboardComponentFeaturesConfigurationPageController.Mac.cs" />
+    <Compile Include="View\KeyboardComponentFeaturesConfigurationPage.Mac.cs" />
+    <Compile Include="View\KeyboardComponentFeaturesConfigurationPage.Mac.designer.cs">
+      <DependentUpon>KeyboardComponentFeaturesConfigurationPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\RomFeaturesConfigurationController.Mac.cs" />
+    <Compile Include="View\RomFeaturesConfiguration.Mac.cs" />
+    <Compile Include="View\RomFeaturesConfiguration.Mac.designer.cs">
+      <DependentUpon>RomFeaturesConfiguration.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\EcsFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\GeneralFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\JlpFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\KeyboardComponentFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\SystemCompatibilityConfigurationPageViewModel.cs" />
+    <Compile Include="Utility\ProgramFeaturesHelpers.Mac.cs" />
+    <Compile Include="View\SystemCompatibilityConfigurationPageController.Mac.designer.cs">
+      <DependentUpon>SystemCompatibilityConfigurationPageController.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\EcsFeaturesConfigurationPageController.Mac.designer.cs">
+      <DependentUpon>EcsFeaturesConfigurationPageController.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\CommandLocation.cs" />
+    <Compile Include="Behavior\ValidEmailAddressBehavior.cs" />
+    <Compile Include="Converter\ValidEmailAddressFormatter.Mac.cs" />
+    <Compile Include="View\GeneralSettingsPage.Mac.cs" />
+    <Compile Include="View\GeneralSettingsPage.Mac.designer.cs">
+      <DependentUpon>GeneralSettingsPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\GeneralSettingsPageController.Mac.cs" />
+    <Compile Include="ViewModel\GeneralSettingsPageViewModel.cs" />
+    <Compile Include="ComponentModel\IconAttribute.cs" />
+    <Compile Include="ViewModel\BackupInfoViewModel.cs" />
+    <Compile Include="ViewModel\SelectBackupDialogViewModel.cs" />
+    <Compile Include="View\SelectBackupDialogController.Mac.cs" />
+    <Compile Include="View\SelectBackupDialog.Mac.cs" />
+    <Compile Include="View\SelectBackupDialog.Mac.designer.cs">
+      <DependentUpon>SelectBackupDialog.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SelectBackupDialog.cs" />
+    <Compile Include="Utility\SharedSettings.cs" />
+    <Compile Include="View\SplashScreen.Mac.cs" />
+    <Compile Include="View\SplashScreenController.Mac.cs" />
+    <Compile Include="View\SplashScreen.Mac.designer.cs">
+      <DependentUpon>SplashScreen.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Program\ProgramFeaturesChangedEventArgs.cs" />
+    <Compile Include="ViewModel\JlpFlashStorageUsageLevel.cs" />
+    <Compile Include="Model\Program\AddRomsFromFilesBeginEventArgs.cs" />
+    <Compile Include="Model\Program\ProgramCollectionSaveFailedEventArgs.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.Mac.csproj">
+      <Project>{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}</Project>
+      <Name>INTV.jzIntv.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.Core\INTV.Core.Mac.csproj">
+      <Project>{FB5C25FD-A481-48E9-A721-24DAE07DF67A}</Project>
+      <Name>INTV.Core.Mac</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ComponentModel\" />
+    <Folder Include="Utility\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Model\" />
+    <Folder Include="Interop\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="Behavior\" />
+    <Folder Include="View\" />
+    <Folder Include="ViewModel\Resources\" />
+    <Folder Include="Commands\" />
+    <Folder Include="Interop\IOKit\" />
+    <Folder Include="Resources\Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_file_32xLG.png">
+      <LogicalName>ViewModel/Resources/Images/add_file_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_files_32xLG.png">
+      <LogicalName>ViewModel/Resources/Images/add_files_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_to_database_16xMD.png">
+      <LogicalName>ViewModel/Resources/Images/add_to_database_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_to_database_32xMD.png">
+      <LogicalName>ViewModel/Resources/Images/add_to_database_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\baudrate_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/baudrate_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\blocked_16xMD_color.png">
+      <LogicalName>ViewModel/Resources/Images/blocked_16xMD_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\delete_document_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/delete_document_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\delete_folder.png">
+      <LogicalName>ViewModel/Resources/Images/delete_folder.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Strings.resx" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\Information_16x16.png">
+      <LogicalName>ViewModel/Resources/Images/Information_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\Information_32x.png">
+      <LogicalName>ViewModel/Resources/Images/Information_32x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\ecs_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/ecs_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\ecs_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/ecs_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\error_16xLG_color.png">
+      <LogicalName>ViewModel/Resources/Images/error_16xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellivoice_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intellivoice_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellivoice_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intellivoice_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intv_ii_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intv_ii_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intv_ii_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intv_ii_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intvfunhouse_info_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intvfunhouse_info_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/kc_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_basic_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/kc_basic_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/kc_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\manual_16x.png">
+      <LogicalName>ViewModel/Resources/Images/manual_16x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\microphone_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/microphone_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\ntsc_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/ntsc_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\pal_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/pal_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\port-icon_16x16.png">
+      <LogicalName>ViewModel/Resources/Images/port-icon_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\port-icon_32x32.png">
+      <LogicalName>ViewModel/Resources/Images/port-icon_32x32.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\printer_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/printer_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\ram_16_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/ram_16_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\refresh_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/refresh_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\remove_file_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/remove_file_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\remove_file_32xLG.png">
+      <LogicalName>ViewModel/Resources/Images/remove_file_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\save_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/save_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\sears_16x16.png">
+      <LogicalName>ViewModel/Resources/Images/sears_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\sears_warning_16x16.png">
+      <LogicalName>ViewModel/Resources/Images/sears_warning_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\settings_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/settings_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\settings_32xMD.png">
+      <LogicalName>ViewModel/Resources/Images/settings_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\sunburst_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/sunburst_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\synth_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/synth_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\tape_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/tape_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\timeout_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/timeout_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\tutorvision_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/tutorvision_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\universally_compatible_16xMD.png">
+      <LogicalName>ViewModel/Resources/Images/universally_compatible_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\unrecognized_rom_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/unrecognized_rom_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\warning_16xLG_color.png">
+      <LogicalName>ViewModel/Resources/Images/warning_16xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\warning_16xMD_color.png">
+      <LogicalName>ViewModel/Resources/Images/warning_16xMD_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\Play_32xLG_color.png">
+      <LogicalName>ViewModel/Resources/Images/Play_32xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\download_Selection_32xLG.png">
+      <LogicalName>ViewModel/Resources/Images/download_Selection_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_16xLG.png">
+      <LogicalName>Resources/Images/download_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_32xLG.png">
+      <LogicalName>Resources/Images/download_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\help_16xLG_color.png">
+      <LogicalName>Resources/Images/help_16xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\help_32xMD_color.png">
+      <LogicalName>Resources/Images/help_32xMD_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\rom_32xMD.png">
+      <LogicalName>Resources/Images/rom_32xMD.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="View\RomListSettingsPage.xib" />
+    <InterfaceDefinition Include="View\RomListView.xib" />
+    <InterfaceDefinition Include="View\ProgressIndicator.xib" />
+    <InterfaceDefinition Include="View\SettingsDialog.xib" />
+    <InterfaceDefinition Include="View\SerialPortSelectorDialog.xib" />
+    <InterfaceDefinition Include="View\ReportDialog.xib" />
+    <InterfaceDefinition Include="View\SerialPortSelector.xib" />
+    <InterfaceDefinition Include="View\GeneralFeaturesConfigurationPage.xib" />
+    <InterfaceDefinition Include="View\SystemCompatibilityConfigurationPage.xib" />
+    <InterfaceDefinition Include="View\EcsFeaturesConfigurationPage.xib" />
+    <InterfaceDefinition Include="View\JlpFeaturesConfigurationPage.xib" />
+    <InterfaceDefinition Include="View\KeyboardComponentFeaturesConfigurationPage.xib" />
+    <InterfaceDefinition Include="View\RomFeaturesConfiguration.xib" />
+    <InterfaceDefinition Include="View\GeneralSettingsPage.xib" />
+    <InterfaceDefinition Include="View\SelectBackupDialog.xib" />
+    <InterfaceDefinition Include="View\SplashScreen.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_file_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/add_file_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_files_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/add_files_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\bankswitch_16xMD.png">
+      <LogicalName>ViewModel/Resources/Images/bankswitch_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\bankswitch_mattel_16XLG.png">
+      <LogicalName>ViewModel/Resources/Images/bankswitch_mattel_16XLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\bee3_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/bee3_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\bee3_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/bee3_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\bee3_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/bee3_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\cancel_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/cancel_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\console_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/console_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_action_left_24x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_action_left_24x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_action_right_24x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_action_right_24x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_action_topleft_24x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_action_topleft_24x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_action_topright_24x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_action_topright_24x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_0_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_0_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_1_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_1_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_2_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_2_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_3_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_3_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_4_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_4_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_5_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_5_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_6_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_6_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_7_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_7_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_8_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_8_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_9_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_9_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_clear_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_clear_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_enter_x64.png">
+      <LogicalName>ViewModel/Resources/Images/controller_button_enter_x64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\cuttlecart3_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/cuttlecart3_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\cuttlecart3_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/cuttlecart3_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\cuttlecart3_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/cuttlecart3_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\ecs_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/ecs_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\hive_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/hive_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\hive_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/hive_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\hive_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/hive_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellicart_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intellicart_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellicart_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intellicart_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellicart_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intellicart_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellivisionproductions_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intellivisionproductions_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellivoice_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intellivoice_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\intv_ii_issues_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/intv_ii_issues_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\jlp_9xSM.png">
+      <LogicalName>ViewModel/Resources/Images/jlp_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\jlp_enhanced_9xSM.png">
+      <LogicalName>ViewModel/Resources/Images/jlp_enhanced_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\jlp_incompatible_9xSM.png">
+      <LogicalName>ViewModel/Resources/Images/jlp_incompatible_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\jlp_required_9xSM.png">
+      <LogicalName>ViewModel/Resources/Images/jlp_required_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_basic_incompatible_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/kc_basic_incompatible_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/kc_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\lto_9xSM.png">
+      <LogicalName>ViewModel/Resources/Images/lto_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\lto_enhanced_9xSM.png">
+      <LogicalName>ViewModel/Resources/Images/lto_enhanced_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\lto_incompatible_9xSM.png">
+      <LogicalName>ViewModel/Resources/Images/lto_incompatible_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\ntsc_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/ntsc_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\ntsc_unknown_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/ntsc_unknown_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\ok_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/ok_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\pal_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/pal_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\pal_unknown_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/pal_unknown_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\ram_08_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/ram_08_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\refresh_32xMD.png">
+      <LogicalName>ViewModel/Resources/Images/refresh_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\romsearch_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/romsearch_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\romsearch_32xMD.png">
+      <LogicalName>ViewModel/Resources/Images/romsearch_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\save_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/save_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\sears_incompatible_16x16.png">
+      <LogicalName>ViewModel/Resources/Images/sears_incompatible_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\serialport_16x16.png">
+      <LogicalName>ViewModel/Resources/Images/serialport_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\serialport_enhanced_16x16.png">
+      <LogicalName>ViewModel/Resources/Images/serialport_enhanced_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\tape_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/tape_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\tutorvision_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/tutorvision_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\tutorvision_incompatible16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/tutorvision_incompatible16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\undo_16x.png">
+      <LogicalName>ViewModel/Resources/Images/undo_16x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\usb_enhanced_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/usb_enhanced_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\usb_required_16xLG.png">
+      <LogicalName>ViewModel/Resources/Images/usb_required_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\help_16xLG.png">
+      <LogicalName>Resources/Images/help_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <LogicalName Include="">Resources/Images/help_16xLG.png</LogicalName>
+    <EmbeddedResource Include="Resources\Images\help_32xLG.png">
+      <LogicalName>Resources/Images/help_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\help_32xLG_color.png">
+      <LogicalName>Resources/Images/help_32xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\help_32xMD.png">
+      <LogicalName>Resources/Images/help_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\exit_16xLG_color.png">
+      <LogicalName>Resources/Images/exit_16xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\jlp03_16xLG.png">
+      <LogicalName>Resources/Images/jlp03_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\jlp04_16xLG.png">
+      <LogicalName>Resources/Images/jlp04_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\jlp05_16xLG.png">
+      <LogicalName>Resources/Images/jlp05_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\led_16xLG.png">
+      <LogicalName>Resources/Images/led_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_rom_compatible_9xSM.png">
+      <LogicalName>Resources/Images/lto_rom_compatible_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_rom_incompatible_9xSM.png">
+      <LogicalName>Resources/Images/lto_rom_incompatible_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_rom_only_9xSM.png">
+      <LogicalName>Resources/Images/lto_rom_only_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_rom_unknown_device_9xSM.png">
+      <LogicalName>Resources/Images/lto_rom_unknown_device_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\remove_file_32xLG.png">
+      <LogicalName>Resources/Images/remove_file_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\rename_16xLG.png">
+      <LogicalName>Resources/Images/rename_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\backup_16xLG.png">
+      <LogicalName>Resources/Images/backup_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\backup_32xLG.png">
+      <LogicalName>Resources/Images/backup_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\restore_16xLG.png">
+      <LogicalName>Resources/Images/restore_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\restore_32xLG.png">
+      <LogicalName>Resources/Images/restore_32xLG.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

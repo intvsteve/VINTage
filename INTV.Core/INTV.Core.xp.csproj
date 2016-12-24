@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0D1617BA-2AC7-47EE-A71E-4EDFB0140EA7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>INTV.Core</RootNamespace>
+    <AssemblyName>INTV.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\xp\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\xp\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\xp\</OutputPath>
+    <IntermediateOutputPath>obj\Release\xp\</IntermediateOutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ComponentModel\IConfiguration.cs" />
+    <Compile Include="ComponentModel\IConfigurationMetadata.cs" />
+    <Compile Include="ComponentModel\INotifyPropertyChangedHelpers.cs" />
+    <Compile Include="ComponentModel\ModelBase.cs" />
+    <Compile Include="ComponentModel\PropertyChangedNotifier.cs" />
+    <Compile Include="ComponentModel\RelayCommandBase.cs" />
+    <Compile Include="Model\AlternateRom.cs" />
+    <Compile Include="Model\BinFormatRom.cs" />
+    <Compile Include="Model\Device\CartridgePort.cs" />
+    <Compile Include="Model\Device\Connection.cs" />
+    <Compile Include="Model\Device\ConnectionType.cs" />
+    <Compile Include="Model\Device\ControllerKeys.cs" />
+    <Compile Include="Model\Device\IConnection.cs" />
+    <Compile Include="Model\Device\IPeripheral.cs" />
+    <Compile Include="Model\Device\MemoryMap.cs" />
+    <Compile Include="Model\Device\MemoryMap`T.cs" />
+    <Compile Include="Model\Device\Peripheral.cs" />
+    <Compile Include="Model\Device\PeripheralEventArgs.cs" />
+    <Compile Include="Model\Ecs.cs" />
+    <Compile Include="Model\Grom.cs" />
+    <Compile Include="Model\IRom.cs" />
+    <Compile Include="Model\IRomHelpers.cs" />
+    <Compile Include="Model\JlpHardwareVersion.cs" />
+    <Compile Include="Model\LuigiDataBlock.cs" />
+    <Compile Include="Model\LuigiDataBlockType.cs" />
+    <Compile Include="Model\LuigiDataHunkBlock.cs" />
+    <Compile Include="Model\LuigiEndOfFileBlock.cs" />
+    <Compile Include="Model\LuigiFeatureFlags.cs" />
+    <Compile Include="Model\LuigiFeatureFlags2.cs" />
+    <Compile Include="Model\LuigiFileHeader.cs" />
+    <Compile Include="Model\LuigiFormatRom.cs" />
+    <Compile Include="Model\LuigiMemoryMapAndPermissionsTableBlock.cs" />
+    <Compile Include="Model\LuigiMetadataBlock.cs" />
+    <Compile Include="Model\LuigiScrambleKeyBlock.cs" />
+    <Compile Include="Model\MessageSeverity.cs" />
+    <Compile Include="Model\Program\Bee3Features.cs" />
+    <Compile Include="Model\Program\CrcData.cs" />
+    <Compile Include="Model\Program\CuttleCart3Features.cs" />
+    <Compile Include="Model\Program\EcsFeatures.cs" />
+    <Compile Include="Model\Program\FeatureCategory.cs" />
+    <Compile Include="Model\Program\FeatureCompatibility.cs" />
+    <Compile Include="Model\Program\GeneralFeatures.cs" />
+    <Compile Include="Model\Program\HiveFeatures.cs" />
+    <Compile Include="Model\Program\IncompatibilityFlags.cs" />
+    <Compile Include="Model\Program\IntellicartCC3Features.cs" />
+    <Compile Include="Model\Program\IntvFunhouseXmlProgramInformation.cs" />
+    <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTable.cs" />
+    <Compile Include="Model\Program\IProgramDescription.cs" />
+    <Compile Include="Model\Program\IProgramInformation.cs" />
+    <Compile Include="Model\Program\IProgramInformationHelpers.cs" />
+    <Compile Include="Model\Program\IProgramInformationTable.cs" />
+    <Compile Include="Model\Program\JlpFeatures.cs" />
+    <Compile Include="Model\Program\KeyboardComponentFeatures.cs" />
+    <Compile Include="Model\Program\LtoFlashFeatures.cs" />
+    <Compile Include="Model\Program\LuigiFileMetadataProgramInformation.cs" />
+    <Compile Include="Model\Program\MergedProgramInformationTable.cs" />
+    <Compile Include="Model\Program\ProgramDescription.cs" />
+    <Compile Include="Model\Program\ProgramDescriptionHelpers.cs" />
+    <Compile Include="Model\Program\ProgramFeatures.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesHelpers.cs" />
+    <Compile Include="Model\Program\ProgramFileKind.cs" />
+    <Compile Include="Model\Program\ProgramFileKindHelpers.cs" />
+    <Compile Include="Model\Program\ProgramInformation.cs" />
+    <Compile Include="Model\Program\ProgramInformationMergeFieldsFlags.cs" />
+    <Compile Include="Model\Program\ProgramInformationOrigin.cs" />
+    <Compile Include="Model\Program\ProgramInformationTable.cs" />
+    <Compile Include="Model\Program\ProgramInformationTableDescriptor.cs" />
+    <Compile Include="Model\Program\ProgramSupportFiles.cs" />
+    <Compile Include="Model\Program\ProgramSupportFileState.cs" />
+    <Compile Include="Model\Program\UnmergedProgramInformation.cs" />
+    <Compile Include="Model\Program\UnmergedProgramInformationTable.cs" />
+    <Compile Include="Model\Program\UserSpecifiedProgramInformation.cs" />
+    <Compile Include="Model\Program\UserSpecifiedProgramInformationTable.cs" />
+    <Compile Include="Model\Rom.cs" />
+    <Compile Include="Model\RomComparer.cs" />
+    <Compile Include="Model\RomComparerStrict.cs" />
+    <Compile Include="Model\RomComparerStrictCrcOnly.cs" />
+    <Compile Include="Model\RomComparison.cs" />
+    <Compile Include="Model\RomFormat.cs" />
+    <Compile Include="Model\RomFormatRom.cs" />
+    <Compile Include="Model\RomInfoIndex.cs" />
+    <Compile Include="Model\StatusMessage.cs" />
+    <Compile Include="Model\Stic\Color.cs" />
+    <Compile Include="Model\Stic\CsForegroundColor.cs" />
+    <Compile Include="Model\Stic\FgBgBackgroundColor.cs" />
+    <Compile Include="Model\Stic\FgBgForegroundColor.cs" />
+    <Compile Include="Model\Stic\MobColor.cs" />
+    <Compile Include="Model\Stic\Mode.cs" />
+    <Compile Include="Model\XmlRom.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UnexpectedFileTypeException.cs" />
+    <Compile Include="Utility\BinaryReader.cs" />
+    <Compile Include="Utility\BinaryWriter.cs" />
+    <Compile Include="Utility\ByteSerializer.cs" />
+    <Compile Include="Utility\Crc16.cs" />
+    <Compile Include="Utility\Crc24.cs" />
+    <Compile Include="Utility\Crc32.cs" />
+    <Compile Include="Utility\Crc8.cs" />
+    <Compile Include="Utility\RandomUtilities.cs" />
+    <Compile Include="Utility\Range.cs" />
+    <Compile Include="Utility\StreamUtilities.cs" />
+    <Compile Include="Utility\StringUtilities.cs" />
+    <Compile Include="Utility\WeakKeyDictionary`TKey`TValue.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model\Resources\intvfunhouse_gameinfo.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+    <Content Include="tools\0.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\1.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\2.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\3.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\4.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\5.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\6.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\7.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\8.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\9.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

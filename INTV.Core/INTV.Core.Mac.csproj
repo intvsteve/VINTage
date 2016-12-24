@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FB5C25FD-A481-48E9-A721-24DAE07DF67A}</ProjectGuid>
+    <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>INTV.Core</RootNamespace>
+    <AssemblyName>INTV.Core</AssemblyName>
+    <SuppressXamMacMigration>True</SuppressXamMacMigration>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Mac</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Mac\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\Mac</OutputPath>
+    <IntermediateOutputPath>obj\Release\Mac\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ComponentModel\INotifyPropertyChangedHelpers.cs" />
+    <Compile Include="ComponentModel\ModelBase.cs" />
+    <Compile Include="ComponentModel\PropertyChangedNotifier.cs" />
+    <Compile Include="ComponentModel\RelayCommandBase.cs" />
+    <Compile Include="Resources\Strings.Designer.cs" />
+    <Compile Include="Model\Device\CartridgePort.cs" />
+    <Compile Include="Model\Device\Connection.cs" />
+    <Compile Include="Model\Device\ConnectionType.cs" />
+    <Compile Include="Model\Device\IConnection.cs" />
+    <Compile Include="Model\Device\IPeripheral.cs" />
+    <Compile Include="Model\Device\MemoryMap.cs" />
+    <Compile Include="Model\Device\MemoryMap`T.cs" />
+    <Compile Include="Model\Device\Peripheral.cs" />
+    <Compile Include="Model\Stic\Color.cs" />
+    <Compile Include="Model\Stic\CsForegroundColor.cs" />
+    <Compile Include="Model\Stic\FgBgBackgroundColor.cs" />
+    <Compile Include="Model\Stic\FgBgForegroundColor.cs" />
+    <Compile Include="Model\Stic\MobColor.cs" />
+    <Compile Include="Model\Stic\Mode.cs" />
+    <Compile Include="Utility\ByteSerializer.cs" />
+    <Compile Include="Utility\Crc16.cs" />
+    <Compile Include="Utility\Crc24.cs" />
+    <Compile Include="Utility\Crc32.cs" />
+    <Compile Include="Utility\RandomUtilities.cs" />
+    <Compile Include="Utility\Range.cs" />
+    <Compile Include="Utility\StreamUtilities.cs" />
+    <Compile Include="Model\Program\CrcData.cs" />
+    <Compile Include="Model\Program\EcsFeatures.cs" />
+    <Compile Include="Model\Program\IProgramDescription.cs" />
+    <Compile Include="Model\Program\IProgramInformation.cs" />
+    <Compile Include="Model\Program\IProgramInformationHelpers.cs" />
+    <Compile Include="Model\Program\IProgramInformationTable.cs" />
+    <Compile Include="Model\Program\IncompatibilityFlags.cs" />
+    <Compile Include="Model\Program\IntelliCartCC3Features.cs" />
+    <Compile Include="Model\Program\IntvFunhouseXmlProgramInformation.cs" />
+    <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTable.cs" />
+    <Compile Include="Model\Program\JlpFeatures.cs" />
+    <Compile Include="Model\Program\KeyboardComponentFeatures.cs" />
+    <Compile Include="Model\Program\LtoFlashFeatures.cs" />
+    <Compile Include="Model\Program\MergedProgramInformationTable.cs" />
+    <Compile Include="Model\Program\ProgramDescription.cs" />
+    <Compile Include="Model\Program\ProgramDescriptionHelpers.cs" />
+    <Compile Include="Model\Program\ProgramFeatures.cs" />
+    <Compile Include="Model\Program\ProgramFileKind.cs" />
+    <Compile Include="Model\Program\ProgramFileKindHelpers.cs" />
+    <Compile Include="Model\Program\ProgramInformation.cs" />
+    <Compile Include="Model\Program\ProgramInformationOrigin.cs" />
+    <Compile Include="Model\Program\ProgramInformationTable.cs" />
+    <Compile Include="Model\Program\ProgramInformationTableDescriptor.cs" />
+    <Compile Include="Model\Program\ProgramSupportFileState.cs" />
+    <Compile Include="Model\Program\ProgramSupportFiles.cs" />
+    <Compile Include="Model\Program\UnmergedProgramInformation.cs" />
+    <Compile Include="Model\Program\UnmergedProgramInformationTable.cs" />
+    <Compile Include="Model\Program\UserSpecifiedProgramInformation.cs" />
+    <Compile Include="Model\Program\UserSpecifiedProgramInformationTable.cs" />
+    <Compile Include="Model\BinFormatRom.cs" />
+    <Compile Include="Model\Ecs.cs" />
+    <Compile Include="Model\Grom.cs" />
+    <Compile Include="Model\IRom.cs" />
+    <Compile Include="Model\IRomHelpers.cs" />
+    <Compile Include="Model\JlpHardwareVersion.cs" />
+    <Compile Include="Model\MessageSeverity.cs" />
+    <Compile Include="Model\Rom.cs" />
+    <Compile Include="Model\RomComparer.cs" />
+    <Compile Include="Model\RomComparerStrict.cs" />
+    <Compile Include="Model\RomComparerStrictCrcOnly.cs" />
+    <Compile Include="Model\RomComparison.cs" />
+    <Compile Include="Model\RomFormat.cs" />
+    <Compile Include="Model\RomFormatRom.cs" />
+    <Compile Include="Model\StatusMessage.cs" />
+    <Compile Include="Model\XmlRom.cs" />
+    <Compile Include="Utility\WeakKeyDictionary`TKey`TValue.cs" />
+    <Compile Include="ComponentModel\INotifyPropertyChangedHelpers.Mac.cs" />
+    <Compile Include="Utility\NSDataWrapper.Mac.cs" />
+    <Compile Include="Utility\BinaryReader.cs" />
+    <Compile Include="Utility\BinaryWriter.cs" />
+    <Compile Include="ComponentModel\IConfiguration.cs" />
+    <Compile Include="ComponentModel\IConfigurationMetadata.cs" />
+    <Compile Include="Model\LuigiFeatureFlags.cs" />
+    <Compile Include="Model\LuigiFeatureFlags2.cs" />
+    <Compile Include="Model\LuigiFileHeader.cs" />
+    <Compile Include="Model\LuigiFormatRom.cs" />
+    <Compile Include="Utility\Crc8.cs" />
+    <Compile Include="Utility\StringUtilities.cs" />
+    <Compile Include="Model\Program\Bee3Features.cs" />
+    <Compile Include="Model\Program\CuttleCart3Features.cs" />
+    <Compile Include="Model\Program\FeatureCategory.cs" />
+    <Compile Include="Model\Program\FeatureCompatibility.cs" />
+    <Compile Include="Model\Program\GeneralFeatures.cs" />
+    <Compile Include="Model\Program\HiveFeatures.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesHelpers.cs" />
+    <Compile Include="UnexpectedFileTypeException.cs" />
+    <Compile Include="Model\Device\ControllerKeys.cs" />
+    <Compile Include="Model\AlternateRom.cs" />
+    <Compile Include="Model\RomInfoIndex.cs" />
+    <Compile Include="Model\LuigiDataBlockType.cs" />
+    <Compile Include="Model\LuigiDataBlock.cs" />
+    <Compile Include="Model\LuigiScrambleKeyBlock.cs" />
+    <Compile Include="Model\LuigiMemoryMapAndPermissionsTableBlock.cs" />
+    <Compile Include="Model\LuigiDataHunkBlock.cs" />
+    <Compile Include="Model\LuigiMetadataBlock.cs" />
+    <Compile Include="Model\LuigiEndOfFileBlock.cs" />
+    <Compile Include="Model\Program\LuigiFileMetadataProgramInformation.cs" />
+    <Compile Include="Model\Program\ProgramInformationMergeFieldsFlags.cs" />
+    <Compile Include="Model\Device\PeripheralEventArgs.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Model\" />
+    <Folder Include="ComponentModel\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Model\Device\" />
+    <Folder Include="Model\Stic\" />
+    <Folder Include="Utility\" />
+    <Folder Include="Model\Program\" />
+    <Folder Include="Model\Resources\" />
+    <Folder Include="tools\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Model\Resources\intvfunhouse_gameinfo.xml" />
+    <EmbeddedResource Include="Resources\Strings.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+    <None Include="tools\0.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\1.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\2.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\3.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\4.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\5.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\6.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\7.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\8.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\9.cfg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

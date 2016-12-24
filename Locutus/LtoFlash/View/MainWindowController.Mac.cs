@@ -1,5 +1,5 @@
 ﻿// <copyright file="MainWindowController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -81,7 +81,11 @@ namespace Locutus.View
         /// </summary>
         public new MainWindow Window { get { return (MainWindow)base.Window; } }
 
+        internal NSApplicationDelegate AppDelegate { get; set; }
+
         private RomListViewController RomListController { get; set; }
+
+        private ProgressIndicatorController ProgressIndicatorController { get; set; }
 
         /// <summary>
         /// Called to enable or disable a toolbar item.
@@ -157,15 +161,22 @@ namespace Locutus.View
             SplitView.ReplaceSubviewWith(MenuLayoutSplitView, menuLayoutView);
             MenuLayoutSplitView = menuLayoutView;
 
-            var progressViewController = new INTV.Shared.View.ProgressIndicatorController();
-            var progressIndicatorView = progressViewController.View;
-            progressViewController.InitializeDataContext(Window, OverlayLayer.Bounds);
-            OverlayLayer.AddSubview(progressIndicatorView);
             Window.LayoutIfNeeded(); // Ensure that we get a refresh of layout after tinkering with the visual tree.
 #if ENABLE_DEBUG_SPAM
             Window.DidBecomeMain += (object sender, EventArgs e) => System.Diagnostics.Debug.WriteLine("**** BECAME MAIN");
             Window.DidResignMain += (object sender, EventArgs e) => System.Diagnostics.Debug.WriteLine("**** RESIGNED MAIN");
 #endif // ENABLE_DEBUG_SPAM
+        }
+
+        [OSExport("finishInitialization:")]
+        private void FinishInitialization(NSObject data)
+        {
+            var window = data as NSWindow;
+            ProgressIndicatorController = new INTV.Shared.View.ProgressIndicatorController();
+            var progressIndicatorView = ProgressIndicatorController.View;
+            ProgressIndicatorController.InitializeDataContext(window, OverlayLayer.Bounds);
+            OverlayLayer.AddSubview(progressIndicatorView);
+            window.LayoutIfNeeded(); // Ensure that we get a refresh of layout after tinkering with the visual tree.
         }
 
         private void HandleMenuLayoutPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)

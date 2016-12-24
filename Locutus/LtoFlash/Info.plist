@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>LSEnvironment</key>
+	<dict>
+		<key>VINTAGE_PORT_NOTIFIER_KIND</key>
+		<string>0</string>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2014-2016 Steven A. Orth
+All Rights Reserved.</string>
+	<key>CFBundleExecutable</key>
+	<string></string>
+	<key>CFBundleName</key>
+	<string>LTO Flash!</string>
+	<key>CFBundleVersion</key>
+	<string>rc5 - Build 2306</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.7</string>
+	<key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>SingleInstanceApplication</string>
+	<key>CFBundleDisplayName</key>
+	<string>LTO Flash!</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.intvfunhouse.ltoflash</string>
+	<key>CFBundleIconFile</key>
+	<string>LTOFlashApplicationIcon</string>
+</dict>
+</plist>

@@ -1,0 +1,62 @@
+=============================================================================
+KNOWN ISSUES
+=============================================================================
+
+A small number of known issues have not yet been resolved. Hopefully you will
+not encounter these problems, or, if you do, it is infrequent and not too
+burdensome.
+
+ALL PLATFORMS
+-----------------------------------------------------------------------------
+
+1. Multiple Error Dialogs
+-------------------------
+During beta testing, a combination of a firmware bug (long since fixed) and
+a very jittery and flakey console produced a condition in which a dialog that
+reported the firmware error would appear multiple times. In addition to the
+confluence of the firmware bug and the glitchy hardware, it also required these
+console and computer to all be in the powered-on state, with LUI running. Over
+the course of several days, multiple instances of the dialog appeared.
+
+It may be possible that a future software update will address this issue,
+for the time being, it remains in the product.
+
+MAC
+-----------------------------------------------------------------------------
+
+1. System.InvalidCastException
+------------------------------
+In rare instances, when starting, the application reports an error of the
+following form:
+
+  System.InvalidCastException: Cannot cast from source type to destination type.
+
+In all known cases thus far, this problem does not recur the next time you
+start the application. It may be months before the problem recurs.
+
+Unfortunately, it has not been possible to find a way to reproduce this
+issue in order to debug it. It is suspected it may be a bug in the Mono
+runtime, or a subtle side effect of some lifetime management issues present
+in the MonoMac layer which may be solved by the Xamarin.Mac product.
+
+If you do encounter this problem, simply start the application again. If
+the problem continues, please contact support@intvfunhouse.com. Perhaps we
+will be able to track down the cause of this issue together.
+
+WINDOWS
+-----------------------------------------------------------------------------
+
+1. Strange visual artifacts in Windows Vista
+--------------------------------------------
+In some cases, when displaying the dialog to choose a backup ROM List,
+Menu Layout, or device backup for restoration, the selection dialog displays
+incorrectly in Windows Vista.
+
+This was only observed during beta testing, when running LUI in a VMWare
+virtual machine that ran Windows Vista 32-bit. Furthermore, the visual glitch
+only presented itself while the application window was running in the
+maximized state. Exiting the offending dialog (via the ESC key), restoring
+the window to a non-maximized state, and choosing the menu option again did
+not exhibit the behavior.
+
+The latest versions (1.0.0b11 and later) have not shown this problem.

@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EmulatorFile_Bin_Filter" xml:space="preserve">
+    <value>System ROM Files</value>
+  </data>
+  <data name="EmulatorFile_Ecs_Prompt" xml:space="preserve">
+    <value>Please locate the ECS ROM</value>
+  </data>
+  <data name="EmulatorFile_Exec_Prompt" xml:space="preserve">
+    <value>Please locate the EXEC ROM</value>
+  </data>
+  <data name="EmulatorFile_Exe_Filter" xml:space="preserve">
+    <value>Executable Files</value>
+  </data>
+  <data name="EmulatorFile_Grom_Prompt" xml:space="preserve">
+    <value>Please locate the Graphics ROM</value>
+  </data>
+  <data name="EmulatorFile_KeyboardConfig_Prompt" xml:space="preserve">
+    <value>Please locate the Keyboard Configuration File</value>
+  </data>
+  <data name="EmulatorFile_JzIntv_Prompt" xml:space="preserve">
+    <value>Please locate the jzIntv executable</value>
+  </data>
+  <data name="EmulatorFile_KeyboardConfig_Filter" xml:space="preserve">
+    <value>Keyboard Configuration Files</value>
+  </data>
+  <data name="AllFiles_Filter" xml:space="preserve">
+    <value>All Files</value>
+  </data>
+  <data name="EmulatorSettings_EcsNotEnabled" xml:space="preserve">
+    <value>This program uses the ECS, but it is not enabled.</value>
+  </data>
+  <data name="EmulatorSettings_IntellivoiceNotEnabled" xml:space="preserve">
+    <value>This program uses Intellivoice, but it is not enabled.</value>
+  </data>
+  <data name="EmulatorSettings_InvalidEcsPath" xml:space="preserve">
+    <value>Path to ECS.bin is invalid.</value>
+  </data>
+  <data name="EmulatorSettings_InvalidExecPath" xml:space="preserve">
+    <value>Path to EXEC.bin is invalid.</value>
+  </data>
+  <data name="EmulatorSettings_InvalidGromPath" xml:space="preserve">
+    <value>Path to GROM.bin is invalid.</value>
+  </data>
+  <data name="EmulatorSettings_InvalidJzIntvPath" xml:space="preserve">
+    <value>Path to jzIntv is invalid.</value>
+  </data>
+  <data name="EmulatorSettings_InvalidKeyboardHackPath" xml:space="preserve">
+    <value>Path to Keyboard Configuration file is invalid.</value>
+  </data>
+  <data name="EmulatorSettings_InvalidRomFile" xml:space="preserve">
+    <value>Attempted to set an unkown emulator ROM file.</value>
+  </data>
+  <data name="EmulatorSettings_NoProgramSelected" xml:space="preserve">
+    <value>No program is selected.</value>
+  </data>
+  <data name="StatusMessage_ErrorDescription" xml:space="preserve">
+    <value>jzIntv is unable to launch because of the following conditions:</value>
+  </data>
+  <data name="StatusMessage_ErrorFooterDescription" xml:space="preserve">
+    <value>Unable to launch jzIntv. This may be due to missing required files (such as EXEC.bin or GROM.bin), or the jzIntv executable cannot be found. Please ensure your configuration is correct.</value>
+  </data>
+  <data name="StatusMessage_ErrorFooterTitle" xml:space="preserve">
+    <value>Settings Are Incorrect</value>
+  </data>
+  <data name="StatusMessage_ErrorTitle" xml:space="preserve">
+    <value>Unable to Start jzIntv</value>
+  </data>
+  <data name="StatusMessage_NoErrorsOrWarningsDescription" xml:space="preserve">
+    <value>jzIntv is configured and ready to play {0}!</value>
+  </data>
+  <data name="StatusMessage_NoErrorsOrWarningsTitle" xml:space="preserve">
+    <value>Start jzIntv</value>
+  </data>
+  <data name="StatusMessage_WarningDescription" xml:space="preserve">
+    <value>jzIntv is able to launch, but {0} may not play correctly due to the following conditions:</value>
+  </data>
+  <data name="StatusMessage_WarningFooterDescription" xml:space="preserve">
+    <value>Although jzIntv may be launched, the settings for {0} may not be correct to fully enjoy the program. Make sure the proper hardware has been enabled, and that any support ROMs are properly configured.</value>
+  </data>
+  <data name="StatusMessage_WarningFooterTitle" xml:space="preserve">
+    <value>Settings May Be Incorrect</value>
+  </data>
+  <data name="StatusMessage_WarningTitle" xml:space="preserve">
+    <value>Start jzIntv (Program May Not Run Correctly)</value>
+  </data>
+  <data name="StatusBar_NumItemsFormat" xml:space="preserve">
+    <value>{0} Items</value>
+  </data>
+  <data name="CrashDialog_Apology" xml:space="preserve">
+    <value>An error has occured and the application must close. Please include the information below, and a description of what caused the problem.</value>
+  </data>
+  <data name="CrashDialog_CopyToClipboard" xml:space="preserve">
+    <value>Copy to Clipboard</value>
+  </data>
+  <data name="CrashDialog_Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="CrashDialog_Title" xml:space="preserve">
+    <value>Unhandled Exception</value>
+  </data>
+  <data name="ApplicationSettings" xml:space="preserve">
+    <value>Settings...</value>
+  </data>
+</root>

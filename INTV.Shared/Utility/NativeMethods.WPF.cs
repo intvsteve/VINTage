@@ -1,5 +1,5 @@
 ﻿// <copyright file="NativeMethods.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -111,7 +112,7 @@ namespace INTV.Shared.Utility
         {
             foreach (object obj in comObjs)
             {
-                if (obj != null && Marshal.IsComObject(obj))
+                if ((obj != null) && Marshal.IsComObject(obj))
                 {
                     Marshal.ReleaseComObject(obj);
                 }
@@ -132,6 +133,8 @@ namespace INTV.Shared.Utility
             "{4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4}", // SavedGames
             "{7D1D3A04-DEBB-4115-95CF-2F29DA2920DA}", // SavedSearches
             "{18989B1D-99B5-455B-841C-AB7C74E4DDFC}", // Videos
+            "{352481E8-33BE-4251-BA85-6007CAEDCF9D}", // Internet Cache
+            "{2B0F765D-C0E9-4171-908E-08A611B84FF6}", // Cookies
         };
 
         /// <summary>
@@ -251,8 +254,62 @@ namespace INTV.Shared.Utility
             /// <summary>
             /// Videos folder.
             /// </summary>
-            Videos
+            Videos,
+
+            /// <summary>
+            /// Temporary Internet Files folder.
+            /// </summary>
+            InterentCache,
         }
+
+        /// <summary>
+        /// CLSID values for some of the known folders.
+        /// </summary>
+        /// <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/bb762494%28v=vs.85%29.aspx"/>
+        private enum KnownFolderIdClsidValue
+        {
+            /// <summary>
+            /// Desktop folder.
+            /// </summary>
+            Desktop = 0x0000,
+
+            /// <summary>
+            /// My Documents folder.
+            /// </summary>
+            Documents = 0x0005,
+
+            /// <summary>
+            /// My Music folder.
+            /// </summary>
+            Music = 0x000d,
+
+            /// <summary>
+            /// Temporary internet files.
+            /// </summary>
+            InterentCache = 0x0020,
+
+            /// <summary>
+            /// Internet cookies folder.
+            /// </summary>
+            CSIDL_COOKIES = 0x0021,
+
+            /// <summary>
+            /// Internet history folder.
+            /// </summary>
+            CSIDL_HISTORY = 0x0022,
+
+            /// <summary>
+            /// My Pictures folder.
+            /// </summary>
+            Pictures = 0x0027,
+        }
+
+        private static readonly Dictionary<KnownFolder, KnownFolderIdClsidValue> _knownFoldersToKnownClsids = new Dictionary<KnownFolder, KnownFolderIdClsidValue>()
+        {
+            { KnownFolder.Desktop, KnownFolderIdClsidValue.Desktop },
+            { KnownFolder.Documents, KnownFolderIdClsidValue.Documents },
+            { KnownFolder.Music, KnownFolderIdClsidValue.Music }
+        };
 
         /// <summary>
         /// Gets the current path to the Downloads folder as currently configured. This does
@@ -263,10 +320,45 @@ namespace INTV.Shared.Utility
         {
             string downloadsPath = null;
             IntPtr outPath;
-            int result = SHGetKnownFolderPath(new Guid(_knownFolderGuids[(int)KnownFolder.Downloads]), (uint)KnownFolderFlags.DontVerify, IntPtr.Zero, out outPath);
-            if (result >= 0)
+            int result = -1;
+            try
             {
-                downloadsPath = Marshal.PtrToStringUni(outPath);
+                result = SHGetKnownFolderPath(new Guid(_knownFolderGuids[(int)KnownFolder.Downloads]), (uint)KnownFolderFlags.DontVerify, IntPtr.Zero, out outPath);
+                if (result >= 0)
+                {
+                    downloadsPath = Marshal.PtrToStringUni(outPath);
+                }
+            }
+            catch (EntryPointNotFoundException)
+            {
+                // This exception arises in Windows xp. Though SHGetFolderPath is documented as a *WRAPPER* for SHGetKnownFolderPath, it turns out
+                // that SHGetKnownFolderPath is *NOT AVAILABLE* in Windows xp. Since SHGetKnownFolderPath is the favored function, we'll catch this just
+                // in case it happens in Windows xp and try again.
+                // Actually, this probably never executes... Because there is no CLSID value for "Downloads". It was a folder dangling off MyDocuments, which
+                // used a localized name most likely. Since the API requires a special CLSID, we'll go through the formalism of looking in the map, but
+                // really, this doesn't do anything. :/
+                var clsIdValue = KnownFolderIdClsidValue.Documents;
+                if (_knownFoldersToKnownClsids.TryGetValue(KnownFolder.Downloads, out clsIdValue))
+                {
+                    try
+                    {
+                        var builder = new StringBuilder(260); // old-school max path
+                        result = SHGetFolderPath(IntPtr.Zero, (int)clsIdValue, IntPtr.Zero, 0, builder);
+                        if (result == 0)
+                        {
+                            // S_OK
+                            downloadsPath = builder.ToString();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // don't care - just return a null path, which is safe
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // don't care - just return a null path, which is safe
             }
             return downloadsPath;
         }
@@ -274,6 +366,10 @@ namespace INTV.Shared.Utility
         // See https://msdn.microsoft.com/en-us/library/windows/desktop/bb762188(v=vs.85).aspx
         [DllImport("Shell32.dll")]
         private static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)]Guid rfid, uint dwFlags, IntPtr hToken, out IntPtr ppszPath);
+
+        // See https://msdn.microsoft.com/en-us/library/windows/desktop/bb762181%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern int SHGetFolderPath(IntPtr hwndOwner, int nFolder, IntPtr hToken, uint dwFlags, [Out] StringBuilder pszPath);
 
         #endregion //  Shell Folder Functions
     }

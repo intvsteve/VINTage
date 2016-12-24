@@ -1,5 +1,5 @@
 ﻿// <copyright file="OneShotLaunchTask.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -49,12 +49,13 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Registers the task with the application. The application will run the task at an appropriate time.
         /// </summary>
-        public void Register()
+        /// <param name="priority">Priority of the one-shot task. Usually, these are >= StartupTaskPriority.LowestSyncTaskPriority</param>
+        public void Register(StartupTaskPriority priority)
         {
             // This is null in the Visual Studio designer.
             if (SingleInstanceApplication.Instance != null)
             {
-                SingleInstanceApplication.Instance.AddStartupAction(Name, Task, true);
+                SingleInstanceApplication.Instance.AddStartupAction(Name, Task, priority);
             }
         }
 

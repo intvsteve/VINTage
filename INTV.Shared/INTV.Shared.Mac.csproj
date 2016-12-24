@@ -758,7 +758,6 @@
     <EmbeddedResource Include="Resources\Images\help_16xLG.png">
       <LogicalName>Resources/Images/help_16xLG.png</LogicalName>
     </EmbeddedResource>
-    <LogicalName Include="">Resources/Images/help_16xLG.png</LogicalName>
     <EmbeddedResource Include="Resources\Images\help_32xLG.png">
       <LogicalName>Resources/Images/help_32xLG.png</LogicalName>
     </EmbeddedResource>

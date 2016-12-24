@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgressIndicatorViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -133,7 +133,12 @@ namespace INTV.Shared.ViewModel
         /// </summary>
         public static ProgressIndicatorViewModel ApplicationProgressIndicator
         {
-            get { return (SingleInstanceApplication.Current.MainWindow == null) ? null : SingleInstanceApplication.Current.MainWindow.GetValue(ProgressIndicatorViewModelDataContextProperty) as ProgressIndicatorViewModel; }
+            get
+            {
+                var ready = (SingleInstanceApplication.Current != null) && (SingleInstanceApplication.Current.MainWindow != null);
+                InitializeProgressIndicatorIfNecessary(ready);
+                return ready ? SingleInstanceApplication.Current.MainWindow.GetValue(ProgressIndicatorViewModelDataContextProperty) as ProgressIndicatorViewModel : null;
+            }
         }
 
         /// <summary>
@@ -298,6 +303,12 @@ namespace INTV.Shared.ViewModel
                 Hide();
             }
         }
+
+        /// <summary>
+        /// Platform-specific initialization for the progress bar.
+        /// </summary>
+        /// <param name="ready">If set to <c>true</c>, the application is ready to to initialize the progress indicator.</param>
+        static partial void InitializeProgressIndicatorIfNecessary(bool ready);
 
         private bool OnCanCancel(object parameter)
         {

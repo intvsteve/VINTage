@@ -1,5 +1,5 @@
 ﻿// <copyright file="AsyncTaskWithProgress.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -88,7 +88,15 @@ namespace INTV.Shared.Utility
         {
         }
 
-        private AsyncTaskWithProgress(string taskName, bool allowsCancel, bool isIndeterminate, bool showsProgress, double progressDisplayDelay)
+        /// <summary>
+        /// Creates a new instance of AsyncTaskWithProgress.
+        /// </summary>
+        /// <param name="taskName">The name of the task, which will be shown above the progress indicator.</param>
+        /// <param name="allowsCancel">If <c>true</c>, indicates that a 'Cancel' button should be available, allowing the user to cancel the operation.</param>
+        /// <param name="isIndeterminate">If <c>true</c>, indicates the task will not indicate a percentage done, but rather that the task is 'alive'.</param>
+        /// <param name="showsProgress">If <c>true</c>, indicates the task will show progress bar after appropriate time passes, otherwise no progress bar will be shown.</param>
+        /// <param name="progressDisplayDelay">How long to wait (in seconds) before showing the progress bar.</param>
+        public AsyncTaskWithProgress(string taskName, bool allowsCancel, bool isIndeterminate, bool showsProgress, double progressDisplayDelay)
         {
             _showsProgress = showsProgress;
             if (_showsProgress)

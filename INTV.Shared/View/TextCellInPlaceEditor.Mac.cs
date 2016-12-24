@@ -1,5 +1,5 @@
 ﻿// <copyright file="TextCellInPlaceEditor.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -54,7 +54,9 @@ namespace INTV.Shared.View
         private static readonly char[] AlwaysAllowedCharacters = new char[]
         {
             (char)8, // delete
+            (char)13, // return
             (char)127, // delete
+            (char)63272, // backspace
             (char)63234, // left arrow
             (char)63235, // right arrow
         };
@@ -318,9 +320,10 @@ namespace INTV.Shared.View
 
         private NSEvent LocalKeyEventHandler(NSEvent theEvent)
         {
+            var anEvent = theEvent;
             DebugOutput("*$*$*$*$ KEY MONITOR CALLED");
-            if (!NSApplication.SharedApplication.Windows.Contains(theEvent.Window) || (theEvent.Window.FirstResponder == null) ||
-                !(theEvent.Window.FirstResponder is NSView) || (((NSView)theEvent.Window.FirstResponder).GetParent<NSView>(v => v.GetType() == ElementOwner.GetType()) == null))
+            if (!NSApplication.SharedApplication.Windows.Contains(anEvent.Window) || (anEvent.Window.FirstResponder == null) ||
+                !(anEvent.Window.FirstResponder is NSView) || (((NSView)anEvent.Window.FirstResponder).GetParent<NSView>(v => v.GetType() == ElementOwner.GetType()) == null))
             {
                 CellTextEditEnded(null);
             }
@@ -330,30 +333,30 @@ namespace INTV.Shared.View
                 if (modifiers.HasFlag(NSEventModifierMask.CommandKeyMask))
                 {
                     var supportedShortcutKeys = new[] { ".", "c", "v", "x", "z" };
-                    if (!supportedShortcutKeys.Contains(theEvent.Characters))
+                    if (!supportedShortcutKeys.Contains(anEvent.Characters))
                     {
 #if ENABLE_INPLACEEDIT_TRACE
-                        INTV.Shared.Utility.ErrorReporting.ReportError(ReportMechanism.Debug, "*$*$*$*$ shortcut for " + theEvent.Characters + " DISABLED");
+                        INTV.Shared.Utility.ErrorReporting.ReportError(ReportMechanism.Debug, "*$*$*$*$ shortcut for " + anEvent.Characters + " DISABLED");
 #endif // ENABLE_INPLACEEDIT_TRACE
-                        theEvent = null;
+                        anEvent = null;
                     }
-                    if ((theEvent != null) && (modifiers == NSEventModifierMask.CommandKeyMask) && (theEvent.Characters == "."))
+                    if ((anEvent != null) && (modifiers == NSEventModifierMask.CommandKeyMask) && (anEvent.Characters == "."))
                     {
                         CancelEdit();
                     }
                 }
                 else
                 {
-                    var characters = theEvent.Characters.ToArray();
-                    bool anyBadCharacters = false;
-                    bool skipLengthCheck = false;
+                    var characters = anEvent.Characters.ToArray();
+                    var anyBadCharacters = false;
+                    var skipLengthCheck = false;
                     foreach (var c in characters)
                     {
                         if (c == 27)
                         {
                             // Escape key pressed.
                             CancelEdit();
-                            return theEvent;
+                            return anEvent;
                         }
                         skipLengthCheck |= (MaxLength <= 0) || AlwaysAllowedCharacters.Contains(c);
                         if ((IsValidCharacter != null) && !char.IsControl(c) && !skipLengthCheck)
@@ -361,7 +364,7 @@ namespace INTV.Shared.View
                             anyBadCharacters = !IsValidCharacter(c);
                             if (anyBadCharacters)
                             {
-                                theEvent = null;
+                                anEvent = null;
                                 DebugOutput("*$*$*$*$ REMOVING CHARACTERS");
                                 break;
                             }
@@ -369,16 +372,25 @@ namespace INTV.Shared.View
                     }
                     if (!anyBadCharacters && !skipLengthCheck)
                     {
-                    if ((MaxLength > 0) && (LiveValue != null) && ((LiveValue.Length + characters.Length) > MaxLength))
+                        if ((MaxLength > 0) && (LiveValue != null) && ((LiveValue.Length + characters.Length) > MaxLength))
                         {
-                            theEvent = null;
-                            DebugOutput("*$*$*$*$ TOO LONG - NO MORE CHARACTERS");
+                            // Check if responder is our text editor that has a selection that would allow editing...
+                            var textView = anEvent.Window.FirstResponder as NSTextView;
+                            if ((EditingObject != null) && (textView != null) && textView.FieldEditor && (textView.SelectedRange.Length > 0))
+                            {
+                                skipLengthCheck = characters.Length <= textView.SelectedRange.Length;
+                            }
+                            if (!skipLengthCheck)
+                            {
+                                anEvent = null;
+                                DebugOutput("*$*$*$*$ TOO LONG - NO MORE CHARACTERS");
+                            }
                         }
                     }
-                    // DebugOutput("*$*$*$*$ Handler got event: " + theEvent.Type + " with characters: " + characters);
+                    // DebugOutput("*$*$*$*$ Handler got event: " + anEvent.Type + " with characters: " + characters);
                 }
             }
-            return theEvent;
+            return anEvent;
         }
 
         private void CellTextEditStarted(NSNotification notification)

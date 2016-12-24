@@ -1,0 +1,57 @@
+﻿<!--
+    <copyright file="PromptToInstallFtdiDriverDialog.xaml" company="INTV Funhouse">
+    Copyright (c) 2014-2015 All Rights Reserved
+    <author>Steven A. Orth</author>
+
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation, either version 2 of the License, or (at your
+    option) any later version.
+
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this software. If not, see: http://www.gnu.org/licenses/.
+    or write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+
+    </copyright>
+-->
+<Window x:Class="INTV.LtoFlash.View.PromptToInstallFtdiDriverDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:behaviors="clr-namespace:INTV.Shared.Behavior;assembly=INTV.Shared"
+             xmlns:viewModel="clr-namespace:INTV.LtoFlash.ViewModel"
+             mc:Ignorable="d" Width="464" Height="324" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+             Title="{Binding Title}" UseLayoutRounding="True" SnapsToDevicePixels="True"
+             behaviors:DialogCloseBehavior.DialogResult="{Binding DialogResult}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Window.DataContext>
+        <viewModel:PromptToInstallFtdiDriverDialogViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Margin="12,4,12,4" TextWrapping="Wrap" Text="{Binding Message}"/>
+        <Border Grid.Row="1" Background="{x:Static SystemColors.ControlBrush}">
+            <StackPanel Orientation="Horizontal" Margin="4,8,5,7" HorizontalAlignment="Right">
+                <Button Margin="4" Padding="8,4" Content="{x:Static viewModel:PromptToInstallFtdiDriverDialogViewModel.InstallNo}" MinWidth="48"
+                        Command="{x:Static viewModel:PromptToInstallFtdiDriverDialogViewModel.DoNotInstallCommand}"
+                        CommandParameter="{Binding}" IsCancel="True"/>
+                <Button Margin="4" Padding="8,4" Content="{x:Static viewModel:PromptToInstallFtdiDriverDialogViewModel.InstallNoAskAgain}" MinWidth="48"
+                        Command="{x:Static viewModel:PromptToInstallFtdiDriverDialogViewModel.DoNotAskToInstallAgainCommand}"
+                        CommandParameter="{Binding}"/>
+                <Button Margin="4" Padding="8,4" Content="{x:Static viewModel:PromptToInstallFtdiDriverDialogViewModel.InstallYes}" MinWidth="48"
+                        Command="{x:Static viewModel:PromptToInstallFtdiDriverDialogViewModel.InstallCommand}"
+                        CommandParameter="{Binding}" IsDefault="True"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

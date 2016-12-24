@@ -1,0 +1,47 @@
+﻿<!--
+    <copyright file="SwitchToDeviceDialog.xaml" company="INTV Funhouse">
+    Copyright (c) 2014-2015 All Rights Reserved
+    <author>Steven A. Orth</author>
+
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation, either version 2 of the License, or (at your
+    option) any later version.
+
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this software. If not, see: http://www.gnu.org/licenses/.
+    or write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+
+    </copyright>
+-->
+<Window x:Class="INTV.LtoFlash.View.SwitchToDeviceDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:viewModel="clr-namespace:INTV.LtoFlash.ViewModel"
+             xmlns:commands="clr-namespace:INTV.LtoFlash.Commands" UseLayoutRounding="True" SnapsToDevicePixels="True"
+             Title="{Binding Title}" Width="384" Height="164" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Window.DataContext>
+        <viewModel:SwitchToDeviceDialogViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Margin="12,4,12,4" Grid.Row="0" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding Message}"/>
+        <Border Grid.Row="1" Background="{x:Static SystemColors.ControlBrush}">
+            <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Margin="4" Padding="8,4" IsDefault="True" Content="{Binding SelectButtonText}"
+                        Command="{x:Static commands:DeviceCommandGroup.SetActiveDeviceCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                <!--<Button Margin="4" Padding="8,4" IsCancel="True" Content="{x:Static viewModel:SwitchToDeviceDialogViewModel.IgnoreText}"/>-->
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

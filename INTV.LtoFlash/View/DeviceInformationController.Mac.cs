@@ -1,0 +1,991 @@
+﻿// <copyright file="DeviceInformationController.Mac.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2016 All Rights Reserved
+// <author>Steven A. Orth</author>
+//
+// This program is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation, either version 2 of the License, or (at your
+// option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+// for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this software. If not, see: http://www.gnu.org/licenses/.
+// or write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+// </copyright>
+
+////#define ENABLE_REBOOT_TO_MENU_KEY_SELECTION
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using MonoMac.AppKit;
+using MonoMac.Foundation;
+using MonoMac.ImageKit;
+using INTV.Core.ComponentModel;
+using INTV.Core.Model.Device;
+using INTV.LtoFlash.Commands;
+using INTV.LtoFlash.Model;
+using INTV.LtoFlash.ViewModel;
+using INTV.Shared.Behavior;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
+using INTV.Shared.ViewModel;
+
+namespace INTV.LtoFlash.View
+{
+    public partial class DeviceInformationController : MonoMac.AppKit.NSWindowController, System.ComponentModel.INotifyPropertyChanged
+    {
+        private const string DeviceNamePropertyName = "DeviceName";
+        private const string DeviceOwnerPropertyName = "DeviceOwner";
+        private const string DeviceIdPropertyName = "DeviceId";
+        private const string ConnectionNamePropertyName = "ConnectionName";
+        private const string FactoryFirmwareVersionPropertyName = "FactoryFirmwareVersion";
+        private const string SecondaryFirmwareVersionPropertyName = "SecondaryFirmwareVersion";
+        private const string CurrentFirmwareVersionPropertyName = "CurrentFirmwareVersion";
+        private const string PhysBlocksAvailPropertyName = "PhysBlocksAvail";
+        private const string PhysBlocksInUsePropertyName = "PhysBlocksInUse";
+        private const string PhysCleanBlocksPropertyName = "PhysCleanBlocks";
+        private const string PhysTotalBlocksPropertyName = "PhysTotalBlocks";
+        private const string VirtBlocksAvailPropertyName = "VirtBlocksAvail";
+        private const string VirtBlocksInUsePropertyName = "VirtBlocksInUse";
+        private const string VirtTotalBlocksPropertyName = "VirtTotalBlocks";
+        private const string PhysSectorErasuresPropertyName = "PhysSectorErasures";
+        private const string MetadataSectorErasuresPropertyName = "MetadataSectorErasures";
+        private const string VirtToPhysMapVerPropertyName = "VirtToPhysMapVer";
+        private const string EcsCompatibilitySelectionPropertyName = "EcsCompatibilitySelection";
+        private const string IntellivisionIICompatibilitySelectionPropertyName = "IntellivisionIICompatibilitySelection";
+
+        #region Constructors
+
+        /// <summary>
+        /// Called when created from unmanaged code.
+        /// </summary>
+        /// <param name="handle">Native pointer to NSView.</param>
+        public DeviceInformationController(IntPtr handle)
+            : base(handle)
+        {
+            Initialize();
+        }
+
+        /// <summary>
+        /// Called when created directly from a XIB file.
+        /// </summary>
+        /// <param name="coder">Used to deserialize from a XIB.</param>
+        [Export("initWithCoder:")]
+        public DeviceInformationController(NSCoder coder)
+            : base(coder)
+        {
+            Initialize();
+        }
+
+        /// <summary>
+        /// Call to load from the XIB/NIB file.
+        /// </summary>
+        public DeviceInformationController()
+            : base("DeviceInformation")
+        {
+            Initialize();
+        }
+
+
+        /// <summary>
+        /// Call to load from the XIB/NIB file.
+        /// </summary>
+        /// <param name="viewModel">The ViewModel for the dialog.</param>
+        public DeviceInformationController(LtoFlashViewModel viewModel)
+            : base("DeviceInformation")
+        {
+            ViewModel = viewModel;
+            viewModel.PropertyChanged += HandleViewModelPropertyChanged;
+            Initialize();
+        }
+
+        /// <summary>Shared initialization code.</summary>
+        private void Initialize()
+        {
+            UpdateDisplay();
+        }
+
+        #endregion // Constructors
+
+        #region INotifyPropertyChanged
+
+        /// <inheritdoc/>
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        #endregion // INotifyPropertyChanged
+
+        /// <summary>
+        /// Gets the window as a strongly typed value.
+        /// </summary>
+        public new DeviceInformation Window { get { return (DeviceInformation)base.Window; } }
+
+        /// <summary>
+        /// Gets the view model.
+        /// </summary>
+        public LtoFlashViewModel ViewModel { get; set; }
+
+        /// <summary>
+        /// Gets the tip strip for primary firmware version.
+        /// </summary>
+        [OSExport("PrimaryFirmwareVersionTip")]
+        public static string PrimaryFirmwareVersionTip { get { return Resources.Strings.FactoryFirmwareCommand_TipDescription; } }
+
+        /// <summary>
+        /// Gets the tip strip for secondary firmware version.
+        /// </summary>
+        [OSExport("SecondaryFirmwareVersionTip")]
+        public static string SecondaryFirmwareVersionTip { get { return Resources.Strings.SecondaryFirmwareCommand_TipDescription; } }
+
+        /// <summary>
+        /// Gets the tip strip for current firmware version.
+        /// </summary>
+        [OSExport("CurrentFirmwareVersionTip")]
+        public static string CurrentFirmwareVersionTip { get { return Resources.Strings.CurrentFirmwareCommand_TipDescription; } }
+
+        /// <summary>
+        /// Gets the device name.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(DeviceNamePropertyName)]
+        public NSString DeviceName
+        {
+            get { return _deviceName; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, DeviceNamePropertyName, value, ref _deviceName); }
+        }
+        private NSString _deviceName;
+
+        /// <summary>
+        /// Gets the device owner.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(DeviceOwnerPropertyName)]
+        public NSString DeviceOwner
+        {
+            get { return _deviceOwner; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, DeviceOwnerPropertyName, value, ref _deviceOwner); }
+        }
+        private NSString _deviceOwner;
+
+        /// <summary>
+        /// Gets the device ID.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(DeviceIdPropertyName)]
+        public NSString DeviceId
+        {
+            get { return _deviceId; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, DeviceIdPropertyName, value, ref _deviceId); }
+        }
+        private NSString _deviceId;
+
+        /// <summary>
+        /// Gets the connection information string for the device.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(ConnectionNamePropertyName)]
+        public NSString ConnectionName
+        {
+            get { return _connectionName; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, ConnectionNamePropertyName, value, ref _connectionName); }
+        }
+        private NSString _connectionName;
+
+        #region Firmware Info
+
+        /// <summary>
+        /// Gets the factory firmware version.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(FactoryFirmwareVersionPropertyName)]
+        public NSString FactoryFirmwareVersion
+        {
+            get { return _factoryFirmwareVersion; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, FactoryFirmwareVersionPropertyName, value, ref _factoryFirmwareVersion); }
+        }
+        private NSString _factoryFirmwareVersion;
+
+        /// <summary>
+        /// Gets the secondary firmware version.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(SecondaryFirmwareVersionPropertyName)]
+        public NSString SecondaryFirmwareVersion
+        {
+            get { return _secondaryFirmwareVersion; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, SecondaryFirmwareVersionPropertyName, value, ref _secondaryFirmwareVersion); }
+        }
+        private NSString _secondaryFirmwareVersion;
+
+        /// <summary>
+        /// Gets the current firmware version.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(CurrentFirmwareVersionPropertyName)]
+        public NSString CurrentFirmwareVersion
+        {
+            get { return _currentFirmwareVersion; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, CurrentFirmwareVersionPropertyName, value, ref _currentFirmwareVersion); }
+        }
+        private NSString _currentFirmwareVersion;
+
+        #endregion Firmware Info
+
+        #region File System Info
+
+        /// <summary>
+        /// Gets file system physical blocks available.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(PhysBlocksAvailPropertyName)]
+        public NSString PhysBlocksAvail
+        {
+            get { return _physBlocksAvail; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, PhysBlocksAvailPropertyName, value, ref _physBlocksAvail); }
+        }
+        private NSString _physBlocksAvail;
+
+        /// <summary>
+        /// Gets file system physical blocks in use.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(PhysBlocksInUsePropertyName)]
+        public NSString PhysBlocksInUse
+        {
+            get { return _physBlocksInUse; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, PhysBlocksInUsePropertyName, value, ref _physBlocksInUse); }
+        }
+        private NSString _physBlocksInUse;
+
+        /// <summary>
+        /// Gets file system physical clean blocks that are clean.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(PhysCleanBlocksPropertyName)]
+        public NSString PhysCleanBlocks
+        {
+            get { return _physCleanBlocks; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, PhysCleanBlocksPropertyName, value, ref _physCleanBlocks); }
+        }
+        private NSString _physCleanBlocks;
+
+        /// <summary>
+        /// Gets file system total physical blocks.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(PhysTotalBlocksPropertyName)]
+        public NSString PhysTotalBlocks
+        {
+            get { return _phsyTotalBlocks; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, PhysTotalBlocksPropertyName, value, ref _phsyTotalBlocks); }
+        }
+        private NSString _phsyTotalBlocks;
+
+        /// <summary>
+        /// Gets file system virtual blocks available.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(VirtBlocksAvailPropertyName)]
+        public NSString VirtBlocksAvail
+        {
+            get { return _virtBlocksAvail; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, VirtBlocksAvailPropertyName, value, ref _virtBlocksAvail); }
+        }
+        private NSString _virtBlocksAvail;
+
+        /// <summary>
+        /// Gets file system virtual blocks in use.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(VirtBlocksInUsePropertyName)]
+        public NSString VirtBlocksInUse
+        {
+            get { return _virtBlocksInUse; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, VirtBlocksInUsePropertyName, value, ref _virtBlocksInUse); }
+        }
+        private NSString _virtBlocksInUse;
+
+        /// <summary>
+        /// Gets total number of virutal blocks.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(VirtTotalBlocksPropertyName)]
+        public NSString VirtTotalBlocks
+        {
+            get { return _virtTotalBlocks; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, VirtTotalBlocksPropertyName, value, ref _virtTotalBlocks); }
+        }
+        private NSString _virtTotalBlocks;
+
+        /// <summary>
+        /// Gets number of physical sector erasures.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(PhysSectorErasuresPropertyName)]
+        public NSString PhysSectorErasures
+        {
+            get { return _physSectorErasures; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, PhysSectorErasuresPropertyName, value, ref _physSectorErasures); }
+        }
+        private NSString _physSectorErasures;
+
+        /// <summary>
+        /// Gets number of metadata sector erasures.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(MetadataSectorErasuresPropertyName)]
+        public NSString MetadataSectorErasures
+        {
+            get { return _metadataSectorErasures; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, MetadataSectorErasuresPropertyName, value, ref _metadataSectorErasures); }
+        }
+        private NSString _metadataSectorErasures;
+
+        /// <summary>
+        /// Gets virtual to physical journal map version.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(VirtToPhysMapVerPropertyName)]
+        public NSString VirtToPhysMapVer
+        {
+            get { return _virtToPhysMapVer; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, VirtToPhysMapVerPropertyName, value, ref _virtToPhysMapVer); }
+        }
+        private NSString _virtToPhysMapVer;
+
+        /// <summary>
+        /// Gets number of physical block erasures.
+        /// </summary>
+        [OSExport("PBlockErasures")]
+        public NSString PBlockErasures
+        {
+            get { return _percentPBlockErasures; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, "PBlockErasures", value, ref _percentPBlockErasures); }
+        }
+        private NSString _percentPBlockErasures;
+
+        /// <summary>
+        /// Gets wrap count of virtual to physical log.
+        /// </summary>
+        [OSExport("VtoPLogWraps")]
+        public NSString VtoPLogWraps
+        {
+            get { return _percentVtoPLogWraps; }
+            private set { this.AssignAndUpdateProperty(PropertyChanged, "VtoPLogWraps", value, ref _percentVtoPLogWraps); }
+        }
+        private NSString _percentVtoPLogWraps;
+
+        /// <summary>
+        /// Gets approximate percent lifetime remaining.
+        /// </summary>
+        [OSExport("LifeRemaining")]
+        public NSString LifeRemaining
+        {
+            get { return _percentLifeRemaining; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, "LifeRemaining", value, ref _percentLifeRemaining); }
+        }
+        private NSString _percentLifeRemaining;
+
+        #endregion File System Info
+
+        #region Device Settings
+
+        /// <summary>
+        /// Gets or sets whether background garbage collection runs when menu displayed on console.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(Device.BackgroundGCPropertyName)]
+        public bool BackgroundGC
+        {
+            get { return ViewModel.ActiveLtoFlashDevice.BackgroundGC; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, Device.BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => ViewModel.ActiveLtoFlashDevice.BackgroundGC = v); }
+        }
+        private bool _backgroundGC;
+
+        /// <summary>
+        /// Gets or sets whether the keyclick sound is enabled in the menu.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(Device.KeyclicksPropertyName)]
+        public bool Keyclicks
+        {
+            get { return ViewModel.ActiveLtoFlashDevice.Keyclicks; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, Device.KeyclicksPropertyName, value, ref _keyclicks, (p, v) => ViewModel.ActiveLtoFlashDevice.Keyclicks = v); }
+        }
+        private bool _keyclicks;
+
+        /// <summary>
+        /// Gets or sets the selected controller button to hold for reset to menu.
+        /// </summary>
+        /// <remarks>This feature has not been added to firmware.</remarks>
+        [INTV.Shared.Utility.OSExport("SelectedButton")]
+        public NSIndexSet SelectedButton
+        {
+            get
+            {
+                return _selectedButton;
+            }
+
+            set
+            {
+                if (_selectedButton != null)
+                {
+                    var prevIndex = (int)_selectedButton.FirstIndex;
+                    var prevItem = this.ControllerButtonsGrid.ItemAtIndex(prevIndex);
+                    var selectedItem = prevItem.RepresentedObject as ControllerElementViewModel;
+                    if (selectedItem != null)
+                    {
+                        selectedItem.Selected = false;
+                    }
+                }
+
+                if (value != null)
+                {
+                    var newIndex = (int)value.FirstIndex;
+                    var newItem = ControllerButtonsGrid.ItemAtIndex(newIndex);
+                    var selectedItem = newItem.RepresentedObject as ControllerElementViewModel;
+                    if ((selectedItem != null) && (selectedItem.Image != null))
+                    {
+                        selectedItem.Selected = true;
+                    }
+                }
+
+                _selectedButton = value;
+            }
+        }
+        private NSIndexSet _selectedButton;
+
+        /// <summary>
+        /// Gets or sets the controller buttons for choosing reboot to menu key combination.
+        /// </summary>
+        /// <remarks>This feature has not been implemented in firmware.</remarks>
+        [INTV.Shared.Utility.OSExport("ControllerElements")]
+        public NSMutableArray ControllerElements
+        {
+            get { return _controllerElements; }
+            set { _controllerElements = value; }
+        }
+        private NSMutableArray _controllerElements;
+
+        /// <summary>
+        /// Gets or sets when to show cartridge title screen.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport("TitleScreenSelection")]
+        public int TitleScreenSelection
+        {
+            get { return _titleScreenSelection; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, "TitleScreenSelection", value, ref _titleScreenSelection, (p, v) => ViewModel.ActiveLtoFlashDevice.ShowTitleScreen = (ShowTitleScreenFlags)ShowTitleScreenButton.SelectedTag); }
+        }
+        private int _titleScreenSelection;
+
+        /// <summary>
+        /// Gets or sets whether to save menu position.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport("SaveMenuPositionSelection")]
+        public int SaveMenuPositionSelection
+        {
+            get { return _saveMenuPositionSelection; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, "SaveMenuPositionSelection", value, ref _saveMenuPositionSelection, (p, v) => ViewModel.ActiveLtoFlashDevice.SaveMenuPosition = (SaveMenuPositionFlags)SaveMenuPositionButton.SelectedTag); }
+        }
+        private int _saveMenuPositionSelection;
+
+        /// <summary>
+        /// Gets or sets ECS compatibility.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(EcsCompatibilitySelectionPropertyName)]
+        public int EcsCompatibilitySelection
+        {
+            get { return _ecsCompatibilitySelection; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, EcsCompatibilitySelectionPropertyName, value, ref _ecsCompatibilitySelection, (p, v) => ViewModel.ActiveLtoFlashDevice.EcsCompatibility = (EcsStatusFlags)ECSCompatibilityButton.SelectedTag); }
+        }
+        private int _ecsCompatibilitySelection;
+
+        /// <summary>
+        /// Gets or sets Intellivision II compatibility.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport(IntellivisionIICompatibilitySelectionPropertyName)]
+        public int IntellivisionIICompatibilitySelection
+        {
+            get { return _intellivisionIICompatibilitySelection; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, IntellivisionIICompatibilitySelectionPropertyName, value, ref _intellivisionIICompatibilitySelection, (p, v) => ViewModel.ActiveLtoFlashDevice.IntvIICompatibility = (IntellivisionIIStatusFlags)IntellivisionIICompatibilityButton.SelectedTag); }
+        }
+        private int _intellivisionIICompatibilitySelection;
+
+        #endregion // Device Settings
+
+        /// <summary>
+        /// Gets or sets the index of the selected page in the dialog.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport("SelectedPageIndex")]
+        public int SelectedPageIndex
+        {
+            get
+            {
+                return _selectedPageIndex;
+            }
+
+            set
+            {
+                _selectedPageIndex = value;
+                _lastSelectedPageIndex = value;
+                foreach (var blockWhenBusy in _blockWhenBusy)
+                {
+                    blockWhenBusy.Key.BlockWhenAppIsBusy = ((_selectedPageIndex == 0) || (_selectedPageIndex == 1) || (_selectedPageIndex == 2)) ? false : blockWhenBusy.Value;
+                }
+                HandleRequerySuggested(this, EventArgs.Empty);
+            }
+        }
+        private int _selectedPageIndex;
+
+        private static int _lastSelectedPageIndex;
+
+        private TextCellInPlaceEditor InPlaceEditor { get; set; }
+
+        private Dictionary<RelayCommand, bool> _blockWhenBusy = new Dictionary<RelayCommand, bool>();
+
+        private DeviceViewModel _device;
+
+        /// <inheritdoc />
+        public override void AwakeFromNib()
+        {
+            INTV.Shared.Utility.SingleInstanceApplication.Instance.IsBusy = true;
+            ControllerButtonsGrid.BackgroundColors = new [] { ColorHelpers.IntellivisionGold };
+            _controllerElements = new NSMutableArray();
+            ControllerElementsArrayController.SelectsInsertedObjects = false;
+            ControllerButtonsGrid.MinItemSize = new System.Drawing.SizeF(32, 32);
+            ControllerButtonsGrid.MaxItemSize = new System.Drawing.SizeF(36, 36);
+            var buttons = new ControllerKeys[4,5]
+            {
+                { ControllerKeys.None, ControllerKeys.Keypad1, ControllerKeys.Keypad2, ControllerKeys.Keypad3, ControllerKeys.None },
+                { ControllerKeys.ActionKeyTop, ControllerKeys.Keypad4, ControllerKeys.Keypad5, ControllerKeys.Keypad6, ControllerKeys.ActionKeyTop | ControllerKeys.NoneActive },
+                { ControllerKeys.ActionKeyBottomLeft, ControllerKeys.Keypad7, ControllerKeys.Keypad8, ControllerKeys.Keypad9, ControllerKeys.ActionKeyBottomRight },
+                { ControllerKeys.None, ControllerKeys.KeypadClear, ControllerKeys.Keypad0, ControllerKeys.KeypadEnter, ControllerKeys.None }
+            };
+
+#if ENABLE_REBOOT_TO_MENU_KEY_SELECTION
+
+            string[,] buttonImageResources = new string[4, 5]
+            {
+                {
+                    null,
+                    "controller_button_1_x64.png",
+                    "controller_button_2_x64.png",
+                    "controller_button_3_x64.png",
+                    null
+                }, {
+                    "controller_action_topleft_24x64.png",
+                    "controller_button_4_x64.png",
+                    "controller_button_5_x64.png",
+                    "controller_button_6_x64.png",
+                    "controller_action_topright_24x64.png"
+                }, {
+                    "controller_action_left_24x64.png",
+                    "controller_button_7_x64.png",
+                    "controller_button_8_x64.png",
+                    "controller_button_9_x64.png",
+                    "controller_action_right_24x64.png"
+                }, {
+                    null,
+                    "controller_button_clear_x64.png",
+                    "controller_button_0_x64.png",
+                    "controller_button_enter_x64.png",
+                    null
+                },
+            };
+            var images = new NSImage[20];
+            var i = 0;
+            foreach (var imageResource in buttons)
+            {
+                {
+                    if (imageResource != null)
+                    {
+                        var resource = "ViewModel/Resources/Images/" + imageResource;
+                        var image = typeof(ControllerElementViewModel).LoadImageResource(resource);
+                        images[i] = image;
+                        var currentSize = image.Size;
+                        image.Size = new System.Drawing.SizeF(currentSize.Width/2, currentSize.Height/2);
+                        ControllerElementsArrayController.AddObject(image);
+                    }
+                    else
+                    {
+                        images[i] = new NSImage();
+                        ControllerElementsArrayController.AddObject(new NSImage());
+                    }
+                }
+                ++i;
+            }
+
+#endif // ENABLE_REBOOT_TO_MENU_KEY_SELECTION
+
+            foreach (var button in buttons)
+            {
+                var controllerElement = new ControllerElementViewModel(button);
+                var image = controllerElement.Image;
+                if (image != null)
+                {
+                    var currentSize = image.Size;
+                    image.Size = new System.Drawing.SizeF(currentSize.Width / 2, currentSize.Height / 2);
+                }
+                ControllerElementsArrayController.AddObject(controllerElement);
+            }
+
+            DeviceNameEntry.RefusesFirstResponder = true;
+            DeviceOwnerEntry.RefusesFirstResponder = true;
+
+            var x = Resources.Strings.FactoryFirmwareCommand_TipDescription;
+            DeviceNameEntry.TextShouldBeginEditing = ShouldBeginEditingDeviceName;
+            DeviceNameEntry.TextShouldEndEditing = ShouldEndEditingDeviceName;
+            DeviceOwnerEntry.TextShouldBeginEditing = ShouldBeginEditingDeviceOwner;
+            DeviceOwnerEntry.TextShouldEndEditing = ShouldEndEditingDeviceOwner;
+
+            DeviceCommandGroup.PopulateEcsCompatibilityMenu(ECSCompatibilityButton);
+            DeviceCommandGroup.PopulateIntellivisionIICompatibilityMenu(IntellivisionIICompatibilityButton);
+            DeviceCommandGroup.PopulateShowTitleMenu(ShowTitleScreenButton);
+            DeviceCommandGroup.PopulateSaveMenuPositionMenu(SaveMenuPositionButton);
+            EcsCompatibilitySelection = ECSCompatibilityButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.EcsCompatibility);
+            IntellivisionIICompatibilitySelection = IntellivisionIICompatibilityButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.IntvIICompatibility);
+            TitleScreenSelection = ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.ShowTitleScreen);
+            SaveMenuPositionSelection = ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
+            BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
+            Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
+
+            _blockWhenBusy[DeviceCommandGroup.SetDeviceNameCommand] = DeviceCommandGroup.SetDeviceNameCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetDeviceOwnerCommand] = DeviceCommandGroup.SetDeviceOwnerCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetShowTitleScreenCommand] = DeviceCommandGroup.SetShowTitleScreenCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetEcsCompatibilityCommand] = DeviceCommandGroup.SetEcsCompatibilityCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetIntellivisionIICompatibilityCommand] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetKeyclicksCommand] = DeviceCommandGroup.SetKeyclicksCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[FirmwareCommandGroup.UpdateFirmwareCommand] = FirmwareCommandGroup.UpdateFirmwareCommand.BlockWhenAppIsBusy;
+
+            CommandManager.RequerySuggested += HandleRequerySuggested;
+            HandleRequerySuggested(this, EventArgs.Empty);
+            SelectedPageIndex = _lastSelectedPageIndex;
+            this.RaiseChangeValueForKey("SelectedPageIndex");
+            Properties.Settings.Default.ShowFileSystemDetails = true;
+
+            this.BeginInvokeOnMainThread(() =>
+                {
+                    DeviceNameEntry.RefusesFirstResponder = false;
+                    DeviceOwnerEntry.RefusesFirstResponder = false;
+                });
+        }
+
+        /// <inheritdoc/>
+        protected override void Dispose(bool disposing)
+        {
+            if (_device != null)
+            {
+                _device.PropertyChanged -= HandleDevicePropertyChanged;
+            }
+            CommandManager.RequerySuggested -= HandleRequerySuggested;
+            ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
+            // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
+            // However, there are cases that result in over-release that are not easily identified.
+            // So, leak it is! :(
+            // base.Dispose(disposing);
+        }
+
+        #region DeviceOwnerEditing
+
+        private string CloseButtonKey { get; set; }
+
+        private bool ShouldBeginEditingDeviceName(NSControl control, NSText fieldEditor)
+        {
+            return ShouldBeginEditingDeviceInfo(control, fieldEditor, DeviceCommandGroup.SetDeviceNameCommand);
+        }
+
+        private bool ShouldBeginEditingDeviceOwner(NSControl control, NSText fieldEditor)
+        {
+            return ShouldBeginEditingDeviceInfo(control, fieldEditor, DeviceCommandGroup.SetDeviceOwnerCommand);
+        }
+
+        private DeviceInfoField EditingField { get; set; }
+
+        private bool ShouldBeginEditingDeviceInfo(NSControl control, NSText fieldEditor, VisualDeviceCommand deviceInfoEditCommand)
+        {
+            EditingField = DeviceInfoField.None;
+            var editDeviceName = deviceInfoEditCommand.UniqueId == DeviceCommandGroup.SetDeviceNameCommand.UniqueId;
+            var editDeviceOwner = deviceInfoEditCommand.UniqueId == DeviceCommandGroup.SetDeviceOwnerCommand.UniqueId;
+            var shouldEdit = editDeviceName || editDeviceOwner;
+            if (shouldEdit)
+            {
+                shouldEdit = deviceInfoEditCommand.CanExecute(ViewModel);
+            }
+            if (shouldEdit)
+            {
+                if (editDeviceName)
+                {
+                    EditingField = DeviceInfoField.Name;
+                }
+                else if (editDeviceOwner)
+                {
+                    EditingField = DeviceInfoField.Owner;
+                }
+
+                CloseButtonKey = CloseButtonControl.KeyEquivalent;
+                CloseButtonControl.KeyEquivalent = string.Empty;
+                if (InPlaceEditor == null)
+                {
+                    InPlaceEditor = new TextCellInPlaceEditor(editDeviceName ? DeviceNameEntry : DeviceOwnerEntry);
+                }
+                InPlaceEditor.EditingObject = ViewModel.ActiveLtoFlashDevice.Device;
+                InPlaceEditor.EditedElement = fieldEditor;
+                InPlaceEditor.InitialValue = editDeviceName ? DeviceName : DeviceOwner;
+                InPlaceEditor.MaxLength = editDeviceName ? INTV.LtoFlash.Model.FileSystemConstants.MaxShortNameLength : INTV.LtoFlash.Model.FileSystemConstants.MaxLongNameLength;
+                InPlaceEditor.IsValidCharacter = (c) => INTV.Core.Model.Grom.Characters.Contains(c); //.RestrictToGromCharacters = true;
+                InPlaceEditor.EditorClosed += InPlaceEditor_EditorClosed;
+                InPlaceEditor.BeginEdit();
+            }
+            return shouldEdit;
+        }
+
+        private bool ShouldEndEditingDeviceName(NSControl control, NSText fieldEditor)
+        {
+            return ShouldEndEditingDeviceInfo(control, fieldEditor, DeviceCommandGroup.SetDeviceNameCommand);
+        }
+
+        private bool ShouldEndEditingDeviceOwner(NSControl control, NSText fieldEditor)
+        {
+            return ShouldEndEditingDeviceInfo(control, fieldEditor, DeviceCommandGroup.SetDeviceOwnerCommand);
+        }
+
+        private bool ShouldEndEditingDeviceInfo(NSControl control, NSText fieldEditor, VisualDeviceCommand deviceInfoEditCommand)
+        {
+            if (InPlaceEditor != null)
+            {
+                InPlaceEditor.CommitEdit();
+                if (InPlaceEditor != null)
+                {
+                    InPlaceEditor.EditorClosed -= InPlaceEditor_EditorClosed;
+                }
+            }
+            // If we don't BeginInvoke here, if we're ending edit due to Escape key, the
+            // button will pick it up and close the Device Information dialog prematurely.
+            OSDispatcher.Current.BeginInvoke(() => CloseButtonControl.KeyEquivalent = CloseButtonKey);
+            return true;
+        }
+
+        private void InPlaceEditor_EditorClosed (object sender, InPlaceEditorClosedEventArgs e)
+        {
+            if (InPlaceEditor != null)
+            {
+                InPlaceEditor.EditorClosed -= InPlaceEditor_EditorClosed;
+                var textEditor = InPlaceEditor.EditedElement as NSText;
+                InPlaceEditor = null;
+
+                var editDeviceName = EditingField == DeviceInfoField.Name;
+                var editDeviceOwner = EditingField == DeviceInfoField.Owner;
+
+                if (editDeviceName)
+                {
+                    DeviceNameEntry.Cell.EndEditing(textEditor);
+                }
+                else if (editDeviceOwner)
+                {
+                    DeviceOwnerEntry.Cell.EndEditing(textEditor);
+                }
+                if (e.CommitedChanges && (editDeviceName || editDeviceOwner))
+                {
+                    if (editDeviceName)
+                    {
+                        ViewModel.ActiveLtoFlashDevice.Name = DeviceNameEntry.StringValue;
+                        DeviceCommandGroup.SetDeviceNameCommand.Execute(ViewModel);
+                    }
+                    else if (editDeviceOwner)
+                    {
+                        ViewModel.ActiveLtoFlashDevice.Owner = DeviceOwnerEntry.StringValue;
+                        DeviceCommandGroup.SetDeviceOwnerCommand.Execute(ViewModel);
+                    }
+                }
+            }
+            EditingField = DeviceInfoField.None;
+        }
+
+        #endregion // DeviceOwnerEditing
+
+        private void HandleRequerySuggested(object sender, EventArgs args)
+        {
+            var canEdit = DeviceCommandGroup.SetDeviceNameCommand.CanExecute(ViewModel);
+            if (DeviceNameEntry.Editable != canEdit)
+            {
+                DeviceNameEntry.Editable = canEdit;
+            }
+
+            canEdit = DeviceCommandGroup.SetDeviceOwnerCommand.CanExecute(ViewModel);
+            if (DeviceOwnerEntry.Editable != canEdit)
+            {
+                DeviceOwnerEntry.Editable = canEdit;
+            }
+
+            ECSCompatibilityButton.Enabled = DeviceCommandGroup.SetEcsCompatibilityCommand.CanExecute(ViewModel);
+            IntellivisionIICompatibilityButton.Enabled = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.CanExecute(ViewModel);
+            ShowTitleScreenButton.Enabled = DeviceCommandGroup.SetShowTitleScreenCommand.CanExecute(ViewModel);
+            SaveMenuPositionButton.Enabled = DeviceCommandGroup.SetSaveMenuPositionCommand.CanExecute(ViewModel);
+            KeyclicksCheckBox.Enabled = DeviceCommandGroup.SetKeyclicksCommand.CanExecute(ViewModel);
+            BackgroundGCCheckBox.Enabled = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.CanExecute(ViewModel);
+            UpdateFirmwareButton.Enabled = FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(ViewModel);
+        }
+
+        private void HandleViewModelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case LtoFlashViewModel.ActiveLtoFlashDevicePropertyName:
+                    UpdateDisplay();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void HandleDevicePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "DisplayName":
+                case Device.NamePropertyName:
+                case Device.OwnerPropertyName:
+                case Device.UniqueIdPropertyName:
+                    UpdateInfo();
+                    break;
+                case Device.FirmwareRevisionsPropertyName:
+                    UpdateFirmwareInfo();
+                    break;
+                case Device.FileSystemStatisticsPropertyName:
+                    UpdateFileSystemInfo();
+                    break;
+                case Device.EcsCompatibilityPropertyName:
+                    ECSCompatibilityButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.EcsCompatibility);
+                    break;
+                case Device.IntvIICompatibilityPropertyName:
+                    IntellivisionIICompatibilityButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.IntvIICompatibility);
+                    break;
+                case Device.ShowTitleScreenPropertyName:
+                    ShowTitleScreenButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.ShowTitleScreen);
+                    break;
+                case Device.SaveMenuPositionPropertyName:
+                    SaveMenuPositionButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
+                    break;
+                case Device.BackgroundGCPropertyName:
+                    BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
+                    break;
+                case Device.KeyclicksPropertyName:
+                    Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void UpdateDisplay()
+        {
+            if (_device != null)
+            {
+                _device.PropertyChanged -= HandleDevicePropertyChanged;
+            }
+            _device = ViewModel.ActiveLtoFlashDevice;
+            if (_device != null)
+            {
+                _device.PropertyChanged += HandleDevicePropertyChanged;
+            }
+
+            UpdateInfo();
+            UpdateFirmwareInfo();
+            UpdateFileSystemInfo();
+        }
+
+        private void UpdateInfo()
+        {
+            var connectionName = Resources.Strings.NoDevice;
+            if (ViewModel.ActiveLtoFlashDevice.IsValid)
+            {
+                var port = ViewModel.ActiveLtoFlashDevice.Device.Port;
+                connectionName = port.ToString();
+            }
+            ConnectionName = new NSString(connectionName);
+
+            DeviceOwner = new NSString(ViewModel.ActiveLtoFlashDevice.Owner.SafeString());
+            DeviceName = new NSString(ViewModel.ActiveLtoFlashDevice.Name.SafeString());
+            DeviceId = new NSString(ViewModel.ActiveLtoFlashDevice.UniqueId.SafeString());
+        }
+
+        private void UpdateFirmwareInfo()
+        {
+            FactoryFirmwareVersion = new NSString(ViewModel.FirmwareRevisions.Primary.SafeString());
+            SecondaryFirmwareVersion = new NSString(ViewModel.FirmwareRevisions.Secondary.SafeString());
+            CurrentFirmwareVersion = new NSString(ViewModel.FirmwareRevisions.Current.SafeString());
+        }
+
+        private void UpdateFileSystemInfo()
+        {
+            PhysBlocksAvail = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksAvailable);
+            PhysBlocksInUse = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksInUse);
+            PhysCleanBlocks = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksClean);
+            PhysTotalBlocks = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksTotal);
+            VirtBlocksAvail = new NSString(ViewModel.FileSystemStatistics.VirtualBlocksAvailable);
+            VirtBlocksInUse = new NSString(ViewModel.FileSystemStatistics.VirtualBlocksInUse);
+            VirtTotalBlocks = new NSString(ViewModel.FileSystemStatistics.VirtualBlocksTotal);
+            PhysSectorErasures = new NSString(ViewModel.FileSystemStatistics.PhysicalSectorErasures);
+            MetadataSectorErasures = new NSString(ViewModel.FileSystemStatistics.MetadataSectorErasures);
+            VirtToPhysMapVer = new NSString(ViewModel.FileSystemStatistics.VirtualToPhysicalMapVersion);
+            PBlockErasures = new NSString(ViewModel.FileSystemStatistics.PercentFlashLifetimeUsedByPhysicalBlockErasures);
+            VtoPLogWraps = new NSString(ViewModel.FileSystemStatistics.PercentageFlashLifetimeUsedByVirtualToPhysicalMap);
+            LifeRemaining = new NSString(ViewModel.FileSystemStatistics.PercentageLifetimeRemaining);
+        }
+
+        partial void OnUpdateFirmware(MonoMac.Foundation.NSObject sender)
+        {
+            FirmwareCommandGroup.UpdateFirmwareCommand.Execute(ViewModel);
+        }
+
+        partial void OnClose(MonoMac.Foundation.NSObject sender)
+        {
+            if (InPlaceEditor != null)
+            {
+                InPlaceEditor.CommitEdit();
+            }
+            Window.EndDialog(NSRunResponse.Aborted);
+            Properties.Settings.Default.ShowFileSystemDetails = false;
+            INTV.Shared.Utility.SingleInstanceApplication.Instance.IsBusy = false;
+            CommandManager.RequerySuggested -= HandleRequerySuggested;
+        }
+
+        private enum DeviceInfoField
+        {
+            None,
+            Name,
+            Owner
+        }
+
+        private class ControllerButtonsData : IKImageBrowserDataSource
+        {
+            #region IKImageBrowserDataSource
+
+            public override int ItemCount(IKImageBrowserView aBrowser)
+            {
+                throw new NotImplementedException();
+            }
+            public override IKImageBrowserItem GetItem(IKImageBrowserView aBrowser, int index)
+            {
+                throw new NotImplementedException();
+            }
+
+            #endregion // IKImageBrowserDataSource
+        }
+
+        private class ControllerButtonItem : IKImageBrowserItem
+        {
+            #region IKImageBrowserItem
+
+            public override string ImageUID
+            {
+                get {
+                    throw new NotImplementedException();
+                }
+            }
+            public override NSString ImageRepresentationType
+            {
+                get {
+                    throw new NotImplementedException();
+                }
+            }
+            public override NSObject ImageRepresentation
+            {
+                get {
+                    throw new NotImplementedException();
+                }
+            }
+
+            #endregion // IKImageBrowserItem
+        }
+    }
+}

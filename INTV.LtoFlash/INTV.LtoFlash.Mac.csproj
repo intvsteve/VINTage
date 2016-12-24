@@ -1,0 +1,994 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C22BB800-6112-49A6-A81B-882F6355ABE7}</ProjectGuid>
+    <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>INTV.LtoFlash</RootNamespace>
+    <AssemblyName>INTV.LtoFlash</AssemblyName>
+    <SuppressXamMacMigration>True</SuppressXamMacMigration>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Mac</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Mac\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;MONO;MAC;ENABLE_PORT_LOG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\Mac</OutputPath>
+    <IntermediateOutputPath>obj\Release\Mac\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>MONO;MAC;ENABLE_PORT_LOG</DefineConstants>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Model\Configuration.cs" />
+    <Compile Include="Model\Device.cs" />
+    <Compile Include="Model\Directory.cs" />
+    <Compile Include="Model\FileNode.cs" />
+    <Compile Include="Model\FileSystem.cs" />
+    <Compile Include="Model\FileSystemConstants.cs" />
+    <Compile Include="Model\FileSystemOrigin.cs" />
+    <Compile Include="Model\FileType.cs" />
+    <Compile Include="Model\Folder.cs" />
+    <Compile Include="Model\Fork.cs" />
+    <Compile Include="Model\ForkKind.cs" />
+    <Compile Include="Model\GlobalDirectoryTable.cs" />
+    <Compile Include="Model\GlobalFileTable.cs">
+    </Compile>
+    <Compile Include="Model\GlobalForkTable.cs" />
+    <Compile Include="Model\IDirectory.cs" />
+    <Compile Include="Model\IFile.cs" />
+    <Compile Include="Model\IFileContainer.cs" />
+    <Compile Include="Model\ILfsFileInfo.cs" />
+    <Compile Include="Model\ILfsFileInfoHelpers.cs" />
+    <Compile Include="Model\IRomHelpers.cs" />
+    <Compile Include="Model\LfsFileInfo.cs" />
+    <Compile Include="Model\MenuLayout.cs" />
+    <Compile Include="Model\PresentationOrder.cs" />
+    <Compile Include="Model\Program.cs" />
+    <Compile Include="Resources\Strings.Designer.cs" />
+    <Compile Include="ViewModel\AddRomsToMenuData.cs" />
+    <Compile Include="ViewModel\FileNodeColorViewModel.cs" />
+    <Compile Include="ViewModel\FileNodeViewModel.cs" />
+    <Compile Include="ViewModel\FolderViewModel.cs" />
+    <Compile Include="ViewModel\MenuLayoutViewModel.cs" />
+    <Compile Include="ViewModel\ProgramViewModel.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel.cs" />
+    <Compile Include="ViewModel\FileNodeViewModel.Mac.cs" />
+    <Compile Include="ViewModel\FolderViewModel.Mac.cs" />
+    <Compile Include="View\MenuLayoutView.Mac.cs" />
+    <Compile Include="View\MenuLayoutView.Mac.designer.cs">
+      <DependentUpon>MenuLayoutView.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\MenuLayoutViewController.cs" />
+    <Compile Include="Commands\LtoFlashCommandsProvider.cs" />
+    <Compile Include="Commands\DownloadCommandGroup.cs" />
+    <Compile Include="Commands\MenuLayoutCommandGroup.cs" />
+    <Compile Include="Commands\MenuLayoutCommandGroup.Mac.cs" />
+    <Compile Include="Converter\FileNodeColorViewModelToOSColorConverter.Mac.cs" />
+    <Compile Include="ViewModel\ProgramViewModel.Mac.cs" />
+    <Compile Include="Converter\FileNodeSupportFilePathOrFolderInfoTransformer.cs" />
+    <Compile Include="View\SettingsPage.Mac.cs" />
+    <Compile Include="View\SettingsPage.Mac.designer.cs">
+      <DependentUpon>SettingsPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\SettingsPageController.Mac.cs" />
+    <Compile Include="Commands\FirmwareCommandGroup.cs" />
+    <Compile Include="Commands\FirmwareCommandGroup.Mac.cs" />
+    <Compile Include="Commands\DownloadCommandGroup.Mac.cs" />
+    <Compile Include="Commands\DeviceCommandGroup.Mac.cs" />
+    <Compile Include="Commands\DeviceCommandGroup.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel.Mac.cs" />
+    <Compile Include="ViewModel\DeviceViewModel.cs">
+    </Compile>
+    <Compile Include="Properties\Settings.Mac.cs" />
+    <Compile Include="Model\IGlobalFileSystemEntry.cs" />
+    <Compile Include="Model\Commands\ChecksumDataBlockInRam.cs" />
+    <Compile Include="Model\Commands\CreateForkFromRam.cs" />
+    <Compile Include="Model\Commands\DeleteFile.cs" />
+    <Compile Include="Model\Commands\DeleteFolder.cs" />
+    <Compile Include="Model\Commands\DeleteFork.cs" />
+    <Compile Include="Model\Commands\DownloadDataBlockFromRam.cs" />
+    <Compile Include="Model\Commands\DownloadFileSystemTables.cs" />
+    <Compile Include="Model\Commands\GetDirtyFlags.cs" />
+    <Compile Include="Model\Commands\GetFileSystemStatistics.cs" />
+    <Compile Include="Model\Commands\Ping.cs" />
+    <Compile Include="Model\Commands\ProtocolCommand.cs" />
+    <Compile Include="Model\Commands\ProtocolCommandHelpers.cs" />
+    <Compile Include="Model\Commands\ProtocolCommandId.cs" />
+    <Compile Include="Model\Commands\Reformat.cs" />
+    <Compile Include="Model\Commands\SetDirtyFlags.cs" />
+    <Compile Include="Model\Commands\UpdateForkUid.cs" />
+    <Compile Include="Model\Commands\UpdateGlobalDirectoryTable.cs" />
+    <Compile Include="Model\Commands\UpdateGlobalFileTable.cs" />
+    <Compile Include="Model\Commands\UploadDataBlockToRam.cs" />
+    <Compile Include="Model\LfsDirtyFlags.cs" />
+    <Compile Include="Model\ActivationMode.cs" />
+    <Compile Include="Model\CacheIndex.cs" />
+    <Compile Include="Model\CacheIndexEntry.cs" />
+    <Compile Include="Model\ConnectionState.cs" />
+    <Compile Include="Model\DeviceCommandAvailability.cs" />
+    <Compile Include="Model\DeviceCreationInfo.cs" />
+    <Compile Include="Model\DeviceHelpers.cs" />
+    <Compile Include="Model\DeviceStatusFlagsHi.cs" />
+    <Compile Include="Model\DeviceStatusFlagsLo.cs" />
+    <Compile Include="Model\EcsStatusFlags.cs" />
+    <Compile Include="Model\ErrorLog.cs" />
+    <Compile Include="Model\ErrorLogId.cs" />
+    <Compile Include="Model\ExecuteDeviceCommandAsyncTaskData.cs" />
+    <Compile Include="Model\ExecuteDeviceCommandProgressUpdateMode.cs" />
+    <Compile Include="Model\FileSystemDifferences`T.cs" />
+    <Compile Include="Model\FileSystemHelpers.cs" />
+    <Compile Include="Model\FileSystemStatistics.cs" />
+    <Compile Include="Model\FileSystemSyncErrors.cs" />
+    <Compile Include="Model\FirmwareRevisions.cs" />
+    <Compile Include="Model\LfsOperations.cs" />
+    <Compile Include="Model\LfsUpdateOperation.cs" />
+    <Compile Include="Model\OrphanedFileSystemEntries.cs" />
+    <Compile Include="Model\LfsDifferences.cs" />
+    <Compile Include="Model\LfsEntityType.cs" />
+    <Compile Include="Model\LfsOperationData.cs" />
+    <Compile Include="Model\GatherDifferencesDescriptor`T.cs" />
+    <Compile Include="Model\HardwareStatusFlags.cs" />
+    <Compile Include="Model\IntellivisionIIStatusFlags.cs" />
+    <Compile Include="Commands\VisualDeviceCommand.cs" />
+    <Compile Include="DeviceCommandExecuteFailedException.cs" />
+    <Compile Include="DeviceCommandFailedException.cs" />
+    <Compile Include="FailedOperationException.cs" />
+    <Compile Include="IncompatibleRomException.cs" />
+    <Compile Include="InconsistentFileSystemException.cs" />
+    <Compile Include="LuigiFileGenerationException.cs" />
+    <Compile Include="UnsupportedCommandException.cs" />
+    <Compile Include="UnsupportedForkKindException.cs" />
+    <Compile Include="ViewModel\CheckForDevicesTaskData.cs" />
+    <Compile Include="ViewModel\DeviceConnectionViewModel.cs" />
+    <Compile Include="ViewModel\DeviceSelectionDialogViewModel.cs" />
+    <Compile Include="ViewModel\FileSystemStatisticsViewModel.cs" />
+    <Compile Include="ViewModel\FirmwareRevisionsViewModel.cs" />
+    <Compile Include="ViewModel\LtoFlashViewModel.cs" />
+    <Compile Include="ViewModel\LtoFlashViewModel.Debug.cs" />
+    <Compile Include="ViewModel\LtoFlashViewModel.Mac.cs" />
+    <Compile Include="ViewModel\LtoFlashViewModel.Simulator.cs" />
+    <Compile Include="ViewModel\MenuLayoutColumn.cs" />
+    <Compile Include="ViewModel\MenuLayoutSynchronizationMode.cs" />
+    <Compile Include="ViewModel\SelectDeviceDialogViewModel.cs" />
+    <Compile Include="ViewModel\SwitchToDeviceDialogViewModel.cs" />
+    <Compile Include="Model\Commands\CommandAvailable.cs" />
+    <Compile Include="Model\Commands\ContiguousFileSystemEntries`T.cs" />
+    <Compile Include="Model\Commands\DebugRandomDropConnection.cs" />
+    <Compile Include="Model\Commands\DebugSetHardwareStatus.cs" />
+    <Compile Include="Model\Commands\DeviceStatusResponse.cs" />
+    <Compile Include="Model\Commands\DownloadAndLaunch.cs" />
+    <Compile Include="Model\Commands\DownloadErrorLog.cs" />
+    <Compile Include="Model\Commands\EraseSecondaryFirmware.cs" />
+    <Compile Include="Model\Commands\FileSystemFile.cs" />
+    <Compile Include="Model\Commands\FileSystemTableUploadBlock`T.cs" />
+    <Compile Include="Model\Commands\GarbageCollect.cs" />
+    <Compile Include="Model\Commands\ProgramSecondaryFirmware.cs" />
+    <Compile Include="Model\Commands\QueryFirmwareRevisions.cs" />
+    <Compile Include="Model\Commands\ReadForkToRam.cs" />
+    <Compile Include="Model\Commands\SetConfiguration.cs" />
+    <Compile Include="Model\Commands\ValidateFirmwareImageInRam.cs" />
+    <Compile Include="Commands\CommandHelpers.cs" />
+    <Compile Include="View\DeviceInformation.Mac.cs" />
+    <Compile Include="View\DeviceInformation.Mac.designer.cs">
+      <DependentUpon>DeviceInformation.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\DeviceInformationController.Mac.cs" />
+    <Compile Include="Model\DeviceMonitor.Mac.cs" />
+    <Compile Include="Model\SaveMenuPositionFlags.cs" />
+    <Compile Include="Model\ShowTitleScreenFlags.cs" />
+    <Compile Include="Model\ResetBehavior.cs" />
+    <Compile Include="View\PromptToAddMenuItemsForNewRomsController.Mac.cs" />
+    <Compile Include="View\PromptToAddMenuItemsForNewRoms.Mac.cs" />
+    <Compile Include="View\PromptToAddMenuItemsForNewRoms.Mac.designer.cs">
+      <DependentUpon>PromptToAddMenuItemsForNewRoms.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\FTDIUtilities.Mac.cs" />
+    <Compile Include="Commands\LtoFlashCommandGroup.cs" />
+    <Compile Include="Commands\LtoFlashCommandGroup.Mac.cs" />
+    <Compile Include="View\PromptToInstallFtdiDriverDialogController.cs" />
+    <Compile Include="ViewModel\PromptToInstallFtdiDriverDialogViewModel.cs" />
+    <Compile Include="View\PromptToInstallFtdiDriverDialog.Mac.cs" />
+    <Compile Include="View\PromptToInstallFtdiDriverDialog.Mac.designer.cs">
+      <DependentUpon>PromptToInstallFtdiDriverDialog.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Converter\LtoFlashFormatter.cs" />
+    <Compile Include="Model\CrashLog.cs" />
+    <Compile Include="Model\Commands\DownloadCrashLog.cs" />
+    <Compile Include="Model\Commands\EraseCrashLog.cs" />
+    <Compile Include="Model\LuigiGenerationMode.cs" />
+    <Compile Include="Model\LfsOperationFailure.cs" />
+    <Compile Include="Model\MenuSaveCompleteEventArgs.cs" />
+    <Compile Include="Model\DeviceHelpers.UpdateDeviceName.cs" />
+    <Compile Include="Model\DeviceHelpers.UpdateDeviceOwner.cs" />
+    <Compile Include="Model\DeviceHelpers.DownloadAndPlay.cs" />
+    <Compile Include="Model\DeviceHelpers.SetConfiguration.cs" />
+    <Compile Include="Model\DeviceHelpers.GetErrorLog.cs" />
+    <Compile Include="Model\DeviceHelpers.GetErrorAndCrashLogs.cs" />
+    <Compile Include="Model\DeviceHelpers.GetFileSystemStatistics.cs" />
+    <Compile Include="Model\DeviceHelpers.GetFileSystemFlags.cs" />
+    <Compile Include="Model\DeviceHelpers.SetFileSystemFlags.cs" />
+    <Compile Include="Model\DeviceHelpers.RetrieveFileSystem.cs" />
+    <Compile Include="Model\DeviceHelpers.RetrieveForkData.cs" />
+    <Compile Include="Model\DeviceHelpers.BackupFileSystem.cs" />
+    <Compile Include="Model\DeviceHelpers.RestoreFileSystem.cs" />
+    <Compile Include="Model\DeviceHelpers.ReformatFileSystem.cs" />
+    <Compile Include="Model\DeviceHelpers.QueryFirmwareRevisions.cs" />
+    <Compile Include="Model\DeviceHelpers.RemoveSecondaryFirmware.cs" />
+    <Compile Include="Model\DeviceHelpers.UpdateFirmware.cs" />
+    <Compile Include="Model\DeviceHelpers.SyncHostToDevice.cs" />
+    <Compile Include="Model\DeviceHelpers.SyncDeviceToHost.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\INTV.Shared\INTV.Shared.Mac.csproj">
+      <Project>{245FD6EE-0B2E-4119-9211-4AA77511E23B}</Project>
+      <Name>INTV.Shared.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.Mac.csproj">
+      <Project>{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}</Project>
+      <Name>INTV.jzIntv.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.Core\INTV.Core.Mac.csproj">
+      <Project>{FB5C25FD-A481-48E9-A721-24DAE07DF67A}</Project>
+      <Name>INTV.Core.Mac</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
+    <Folder Include="Resources\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="View\" />
+    <Folder Include="Converter\" />
+    <Folder Include="Commands\" />
+    <Folder Include="Model\Commands\" />
+    <Folder Include="Utility\" />
+    <Folder Include="redist\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Images\connected_16x16.png">
+      <LogicalName>Resources/Images/connected_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\delete_document_16xLG.png">
+      <LogicalName>Resources/Images/delete_document_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\delete_folder.png">
+      <LogicalName>Resources/Images/delete_folder.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\disconnected_16x16.png">
+      <LogicalName>Resources/Images/disconnected_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_16xLG.png">
+      <LogicalName>Resources/Images/document_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_Black_16xLG.png">
+      <LogicalName>Resources/Images/document_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_Blue_16xLG.png">
+      <LogicalName>Resources/Images/document_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/document_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_Green_16xLG.png">
+      <LogicalName>Resources/Images/document_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_Red_16xLG.png">
+      <LogicalName>Resources/Images/document_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_Tan_16xLG.png">
+      <LogicalName>Resources/Images/document_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_White_16xLG.png">
+      <LogicalName>Resources/Images/document_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/document_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_added_Black_16xLG.png">
+      <LogicalName>Resources/Images/document_added_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_added_Blue_16xLG.png">
+      <LogicalName>Resources/Images/document_added_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_added_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/document_added_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_added_Green_16xLG.png">
+      <LogicalName>Resources/Images/document_added_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_added_Red_16xLG.png">
+      <LogicalName>Resources/Images/document_added_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_added_Tan_16xLG.png">
+      <LogicalName>Resources/Images/document_added_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_added_White_16xLG.png">
+      <LogicalName>Resources/Images/document_added_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_added_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/document_added_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_deleted_16xLG.png">
+      <LogicalName>Resources/Images/document_deleted_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_deleted_Black_16xLG.png">
+      <LogicalName>Resources/Images/document_deleted_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_deleted_Blue_16xLG.png">
+      <LogicalName>Resources/Images/document_deleted_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_deleted_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/document_deleted_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_deleted_Green_16xLG.png">
+      <LogicalName>Resources/Images/document_deleted_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_deleted_Red_16xLG.png">
+      <LogicalName>Resources/Images/document_deleted_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_deleted_Tan_16xLG.png">
+      <LogicalName>Resources/Images/document_deleted_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_deleted_White_16xLG.png">
+      <LogicalName>Resources/Images/document_deleted_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_deleted_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/document_deleted_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_devicespecific_Black_16xLG.png">
+      <LogicalName>Resources/Images/document_devicespecific_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_devicespecific_Blue_16xLG.png">
+      <LogicalName>Resources/Images/document_devicespecific_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_devicespecific_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/document_devicespecific_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_devicespecific_Green_16xLG.png">
+      <LogicalName>Resources/Images/document_devicespecific_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_devicespecific_Red_16xLG.png">
+      <LogicalName>Resources/Images/document_devicespecific_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_devicespecific_Tan_16xLG.png">
+      <LogicalName>Resources/Images/document_devicespecific_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_devicespecific_White_16xLG.png">
+      <LogicalName>Resources/Images/document_devicespecific_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_devicespecific_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/document_devicespecific_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_incompatible_Black_16xLG.png">
+      <LogicalName>Resources/Images/document_incompatible_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_incompatible_Blue_16xLG.png">
+      <LogicalName>Resources/Images/document_incompatible_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_incompatible_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/document_incompatible_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_incompatible_Green_16xLG.png">
+      <LogicalName>Resources/Images/document_incompatible_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_incompatible_Red_16xLG.png">
+      <LogicalName>Resources/Images/document_incompatible_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_incompatible_Tan_16xLG.png">
+      <LogicalName>Resources/Images/document_incompatible_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_incompatible_White_16xLG.png">
+      <LogicalName>Resources/Images/document_incompatible_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_incompatible_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/document_incompatible_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_missing_16xLG.png">
+      <LogicalName>Resources/Images/document_missing_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_missing_Black_16xLG.png">
+      <LogicalName>Resources/Images/document_missing_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_missing_Blue_16xLG.png">
+      <LogicalName>Resources/Images/document_missing_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_missing_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/document_missing_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_missing_Green_16xLG.png">
+      <LogicalName>Resources/Images/document_missing_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_missing_Red_16xLG.png">
+      <LogicalName>Resources/Images/document_missing_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_missing_Tan_16xLG.png">
+      <LogicalName>Resources/Images/document_missing_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_missing_White_16xLG.png">
+      <LogicalName>Resources/Images/document_missing_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_missing_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/document_missing_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_modified_16xLG.png">
+      <LogicalName>Resources/Images/document_modified_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_modified_Black_16xLG.png">
+      <LogicalName>Resources/Images/document_modified_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_modified_Blue_16xLG.png">
+      <LogicalName>Resources/Images/document_modified_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_modified_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/document_modified_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_modified_Green_16xLG.png">
+      <LogicalName>Resources/Images/document_modified_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_modified_Red_16xLG.png">
+      <LogicalName>Resources/Images/document_modified_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_modified_Tan_16xLG.png">
+      <LogicalName>Resources/Images/document_modified_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_modified_White_16xLG.png">
+      <LogicalName>Resources/Images/document_modified_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_modified_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/document_modified_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_unknown_Black_16xLG.png">
+      <LogicalName>Resources/Images/document_unknown_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_unknown_Blue_16xLG.png">
+      <LogicalName>Resources/Images/document_unknown_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_unknown_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/document_unknown_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_unknown_Green_16xLG.png">
+      <LogicalName>Resources/Images/document_unknown_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_unknown_Red_16xLG.png">
+      <LogicalName>Resources/Images/document_unknown_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_unknown_Tan_16xLG.png">
+      <LogicalName>Resources/Images/document_unknown_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_unknown_White_16xLG.png">
+      <LogicalName>Resources/Images/document_unknown_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\document_unknown_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/document_unknown_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Closed_16xLG.png">
+      <LogicalName>Resources/Images/folder_Closed_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Closed_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_Closed_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Closed_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_Closed_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Closed_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_Closed_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Closed_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_Closed_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Closed_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_Closed_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Closed_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_Closed_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Closed_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_Closed_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Closed_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_Closed_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Open_16xLG.png">
+      <LogicalName>Resources/Images/folder_Open_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Open_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_Open_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Open_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_Open_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Open_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_Open_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Open_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_Open_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Open_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_Open_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Open_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_Open_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Open_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_Open_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_Open_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_Open_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Closed_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Closed_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Closed_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Closed_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Closed_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Closed_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Closed_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Closed_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Closed_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Closed_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Closed_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Closed_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Closed_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Closed_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Closed_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Closed_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Closed_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Closed_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Open_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Open_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Open_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Open_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Open_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Open_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Open_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Open_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Open_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Open_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Open_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Open_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Open_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Open_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Open_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Open_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_deleted_Open_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_deleted_Open_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Closed_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Closed_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Closed_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Closed_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Closed_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Closed_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Closed_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Closed_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Closed_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Closed_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Closed_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Closed_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Closed_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Closed_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Closed_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Closed_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Closed_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Closed_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Open_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Open_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Open_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Open_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Open_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Open_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Open_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Open_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Open_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Open_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Open_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Open_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Open_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Open_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Open_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Open_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_missing_Open_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_missing_Open_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Closed_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Closed_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Closed_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Closed_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Closed_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Closed_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Closed_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Closed_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Closed_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Closed_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Closed_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Closed_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Closed_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Closed_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Closed_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Closed_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Closed_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Closed_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Open_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Open_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Open_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Open_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Open_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Open_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Open_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Open_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Open_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Open_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Open_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Open_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Open_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Open_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Open_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Open_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_modified_Open_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_modified_Open_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\new_folder.png">
+      <LogicalName>Resources/Images/new_folder.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\restore-firmware_32xLG.png">
+      <LogicalName>Resources/Images/restore-firmware_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\update-firmware_32xLG.png">
+      <LogicalName>Resources/Images/update-firmware_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\addtomenu_32x.png">
+      <LogicalName>Resources/Images/addtomenu_32x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\addtomenu_16x.png">
+      <LogicalName>Resources/Images/addtomenu_16x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\restore_16xLG.png">
+      <LogicalName>Resources/Images/restore_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\restore_32xLG.png">
+      <LogicalName>Resources/Images/restore_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto-16xLG.png">
+      <LogicalName>Resources/Images/lto-16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto-32xLG.png">
+      <LogicalName>Resources/Images/lto-32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\firmware_16xLG.png">
+      <LogicalName>Resources/Images/firmware_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\firmware_32xLG.png">
+      <LogicalName>Resources/Images/firmware_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\device_info_32xMD.png">
+      <LogicalName>Resources/Images/device_info_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\remove_32xLG.png">
+      <LogicalName>Resources/Images/remove_32xLG.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="View\MenuLayoutView.xib" />
+    <InterfaceDefinition Include="View\SettingsPage.xib" />
+    <InterfaceDefinition Include="View\DeviceInformation.xib" />
+    <InterfaceDefinition Include="View\PromptToAddMenuItemsForNewRoms.xib" />
+    <InterfaceDefinition Include="View\PromptToInstallFtdiDriverDialog.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Images\backup_16xLG.png">
+      <LogicalName>Resources/Images/backup_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\backup_32xLG.png">
+      <LogicalName>Resources/Images/backup_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_16xLG_color.png">
+      <LogicalName>Resources/Images/download_play_16xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_32xLG_color.png">
+      <LogicalName>Resources/Images/download_play_32xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_prompt_16xLG.png">
+      <LogicalName>Resources/Images/download_play_prompt_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_prompt_32xLG.png">
+      <LogicalName>Resources/Images/download_play_prompt_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Closed_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Closed_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Closed_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Closed_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Closed_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Closed_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Closed_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Closed_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Closed_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Closed_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Closed_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Closed_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Closed_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Closed_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Closed_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Closed_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Open_Blue_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Open_Blue_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Open_Black_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Open_Black_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Open_DarkGreen_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Open_DarkGreen_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Open_Green_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Open_Green_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Open_Red_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Open_Red_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Open_Tan_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Open_Tan_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Open_White_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Open_White_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_added_Open_Yellow_16xLG.png">
+      <LogicalName>Resources/Images/folder_added_Open_Yellow_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_flash_16xLG.png">
+      <LogicalName>Resources/Images/lto_flash_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_flash_32xLG.png">
+      <LogicalName>Resources/Images/lto_flash_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_flash_disconnect_16xLG.png">
+      <LogicalName>Resources/Images/lto_flash_disconnect_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_flash_disconnect_32xLG.png">
+      <LogicalName>Resources/Images/lto_flash_disconnect_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_flash_search_16xLG.png">
+      <LogicalName>Resources/Images/lto_flash_search_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_flash_search_32xLG.png">
+      <LogicalName>Resources/Images/lto_flash_search_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\reformat_16x.png">
+      <LogicalName>Resources/Images/reformat_16x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\reformat_32x.png">
+      <LogicalName>Resources/Images/reformat_32x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\refresh_16xLG.png">
+      <LogicalName>Resources/Images/refresh_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\restore-firmware_16xLG.png">
+      <LogicalName>Resources/Images/restore-firmware_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\sync_from_device_16xLG.png">
+      <LogicalName>Resources/Images/sync_from_device_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\sync_from_device_32xLG.png">
+      <LogicalName>Resources/Images/sync_from_device_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\sync_from_device_preview_16xLG.png">
+      <LogicalName>Resources/Images/sync_from_device_preview_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\sync_from_device_preview_32xLG.png">
+      <LogicalName>Resources/Images/sync_from_device_preview_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\sync_to_device_16xLG.png">
+      <LogicalName>Resources/Images/sync_to_device_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\sync_to_device_32xLG.png">
+      <LogicalName>Resources/Images/sync_to_device_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\sync_to_device_preview_16xLG.png">
+      <LogicalName>Resources/Images/sync_to_device_preview_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\sync_to_device_preview_32xLG.png">
+      <LogicalName>Resources/Images/sync_to_device_preview_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\update-firmware_16xLG.png">
+      <LogicalName>Resources/Images/update-firmware_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_32xMD_color.png">
+      <LogicalName>Resources/Images/download_play_32xMD_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_prompt_32xMD.png">
+      <LogicalName>Resources/Images/updatedownload_play_prompt_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\ftdi_16xLG.png">
+      <LogicalName>Resources/Images/ftdi_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\ftdi_32xLG.png">
+      <LogicalName>Resources/Images/ftdi_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\filesystem_32xLG.png">
+      <LogicalName>Resources/Images/filesystem_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\settings_16xLG.png">
+      <LogicalName>Resources/Images/settings_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\settings_32xMD.png">
+      <LogicalName>Resources/Images/settings_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\background_gc_16xMD.png">
+      <LogicalName>Resources/Images/background_gc_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_flash_title_16xLG.png">
+      <LogicalName>Resources/Images/lto_flash_title_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\keyclicks_16xLG.png">
+      <LogicalName>Resources/Images/keyclicks_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\save_menu_position_16xLG.png">
+      <LogicalName>Resources/Images/save_menu_position_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\menu_layout_16xMD.png">
+      <LogicalName>Resources/Images/menu_layout_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\menu_layout_32xMD.png">
+      <LogicalName>Resources/Images/menu_layout_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_closed_16xMD.png">
+      <LogicalName>Resources/Images/folder_closed_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\folder_closed_32xMD.png">
+      <LogicalName>Resources/Images/folder_closed_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\rename_16xLG.png">
+      <LogicalName>Resources/Images/rename_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\color_palette_16xLG.png">
+      <LogicalName>Resources/Images/color_palette_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\color_picker_16xLG.png">
+      <LogicalName>Resources/Images/color_picker_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\remove_16xLG.png">
+      <LogicalName>Resources/Images/remove_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\new_folder_32xMD.png">
+      <LogicalName>Resources/Images/new_folder_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\lto_flash_contents_not_in_sync_16xLG.png">
+      <LogicalName>Resources/Images/lto_flash_contents_not_in_sync_16xLG.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="redist\FTDIUSBSerialDriver.pkg" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\distribution.dist" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Resources\en.lproj\background" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Resources\en.lproj\ReadMe" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver.pkg\Contents\Archive.bom" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver.pkg\Contents\Archive.pax.gz" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver.pkg\Contents\Info.plist" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver.pkg\Contents\PkgInfo" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver.pkg\Contents\Resources\package_version" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver.pkg\Contents\Resources\en.lproj\Description.plist" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver-1.pkg\Contents\Archive.bom" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver-1.pkg\Contents\Archive.pax.gz" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver-1.pkg\Contents\Info.plist" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver-1.pkg\Contents\PkgInfo" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver-1.pkg\Contents\Resources\package_version" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriver-1.pkg\Contents\Resources\en.lproj\Description.plist" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPostflight.pkg\Contents\Archive.bom" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPostflight.pkg\Contents\Archive.pax.gz" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPostflight.pkg\Contents\Info.plist" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPostflight.pkg\Contents\PkgInfo" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPostflight.pkg\Contents\Resources\package_version" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPostflight.pkg\Contents\Resources\postflight" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPostflight.pkg\Contents\Resources\en.lproj\Description.plist" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPreflight.pkg\Contents\Archive.bom" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPreflight.pkg\Contents\Archive.pax.gz" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPreflight.pkg\Contents\Info.plist" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPreflight.pkg\Contents\PkgInfo" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPreflight.pkg\Contents\Resources\package_version" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPreflight.pkg\Contents\Resources\preflight" />
+    <Content Include="redist\FTDIUSBSerialDriver10_8.mpkg\Contents\Packages\ftdiusbserialdriverinstallerPreflight.pkg\Contents\Resources\en.lproj\Description.plist" />
+  </ItemGroup>
+</Project>

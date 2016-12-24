@@ -1,0 +1,2371 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ProtocolCommandId_LfsChecksumDataBlockInRam_Title" xml:space="preserve">
+    <value>Verifying Data in Device RAM...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsCopyForkToRam_Title" xml:space="preserve">
+    <value>Loading File Fork Data into Device RAM...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsCreateForkFromRam_Title" xml:space="preserve">
+    <value>Creating File Fork from Data in RAM...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDeleteFile_Title" xml:space="preserve">
+    <value>Deleting File...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDeleteDirectory_Title" xml:space="preserve">
+    <value>Deleting Directory...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDeleteFork_Title" xml:space="preserve">
+    <value>Deleting Fork...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsUploadDataBlockToRam_Title" xml:space="preserve">
+    <value>Uploading Data to Device RAM...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDownloadGlobalTables_Title" xml:space="preserve">
+    <value>Retrieving File System Layout...</value>
+  </data>
+  <data name="ProtocolCommandId_GarbageCollect_Title" xml:space="preserve">
+    <value>Maintaining File System...</value>
+  </data>
+  <data name="ProtocolCommandId_Ping_Title" xml:space="preserve">
+    <value>Pinging Device...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsReformatFileSystem_Title" xml:space="preserve">
+    <value>Reformatting File System...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsUpdateForkUid_Title" xml:space="preserve">
+    <value>Updating File Fork Identifier...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsUpdateGdtFromRam_Title" xml:space="preserve">
+    <value>Updating Directories...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsUpdateGftFromRam_Title" xml:space="preserve">
+    <value>Updating Files...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDownloadDataBlockFromRam_Title" xml:space="preserve">
+    <value>Downloading Data from Device RAM...</value>
+  </data>
+  <data name="Device_DefaultCustomName" xml:space="preserve">
+    <value>LTO Flash!</value>
+  </data>
+  <data name="DeviceCommand_DownloadAndPlay_TitleFormat" xml:space="preserve">
+    <value>Loading and Launching {0}...</value>
+  </data>
+  <data name="DeviceCommand_DownloadAndPlay_FailedFormat" xml:space="preserve">
+    <value>Failed to load {0}.</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFiles_Title" xml:space="preserve">
+    <value>Updating Files...</value>
+  </data>
+  <data name="DeviceMultistageCommand_Validating_Title" xml:space="preserve">
+    <value>Validating...</value>
+  </data>
+  <data name="FileSystemFlags_PendingDirectoryDelete" xml:space="preserve">
+    <value>Directory deletion is incomplete.</value>
+  </data>
+  <data name="FileSystemFlags_PendingDirectoryUpdate" xml:space="preserve">
+    <value>Directory update is incomplete.</value>
+  </data>
+  <data name="FileSystemFlags_PendingFileDelete" xml:space="preserve">
+    <value>File deletion is incomplete.</value>
+  </data>
+  <data name="FileSystemFlags_PendingFileUpdate" xml:space="preserve">
+    <value>File update is incomplete.</value>
+  </data>
+  <data name="FileSystemFlags_PendingForkCreate" xml:space="preserve">
+    <value>File content creation is incomplete.</value>
+  </data>
+  <data name="FileSystemFlags_PendingForkDelete" xml:space="preserve">
+    <value>File content deletion is incomplete.</value>
+  </data>
+  <data name="FileSystemFlags_PendingForkUpload" xml:space="preserve">
+    <value>File data transfer to device was interrupted.</value>
+  </data>
+  <data name="FileSystemFlags_PendingForkValidate" xml:space="preserve">
+    <value>File content validation is incomplete.</value>
+  </data>
+  <data name="FileSystemFlags_PendingReformat" xml:space="preserve">
+    <value>File system reformat was interrupted while progress.</value>
+  </data>
+  <data name="FileSystemStatisticsView_BlocksAvailable" xml:space="preserve">
+    <value>Blocks Available:</value>
+  </data>
+  <data name="FileSystemStatisticsView_BlocksClean" xml:space="preserve">
+    <value>Clean Blocks:</value>
+  </data>
+  <data name="FileSystemStatisticsView_BlocksTotal" xml:space="preserve">
+    <value>Total Blocks:</value>
+  </data>
+  <data name="FileSystemStatisticsView_BlocksInUse" xml:space="preserve">
+    <value>Blocks In Use:</value>
+  </data>
+  <data name="FileSystemStatisticsView_MetadataSectorErasures" xml:space="preserve">
+    <value>Sector Erasures (Metadata):</value>
+  </data>
+  <data name="FileSystemStatisticsView_VirtualToPhysicalMapVersion" xml:space="preserve">
+    <value>File System Journal Wrap Count:</value>
+  </data>
+  <data name="FileSystemStatisticsView_PhysicalFileSystem" xml:space="preserve">
+    <value>Physical File System</value>
+  </data>
+  <data name="FileSystemStatisticsView_PhysicalSectorErasures" xml:space="preserve">
+    <value>Sector Erasures (Physical):</value>
+  </data>
+  <data name="FileSystemStatisticsView_Unavailable" xml:space="preserve">
+    <value>&lt;Unavailable&gt;</value>
+  </data>
+  <data name="FileSystemStatisticsView_UsageFormat" xml:space="preserve">
+    <value>{0}/{1}</value>
+  </data>
+  <data name="FileSystemStatisticsView_VirtualFileSystem" xml:space="preserve">
+    <value>Virtual File System</value>
+  </data>
+  <data name="FileSystem_Inconsistent" xml:space="preserve">
+    <value>The file system on the LTO Flash! device may be in an inconsistent state.</value>
+  </data>
+  <data name="FileSystem_InconsistentEnd" xml:space="preserve">
+    <value>File system operations that have been interrupted may have left the device in an unstable or unusable state.
+
+To resolve this problem, simply update the files again. This will remove unreachable file system entries and apply any other changes. If the problem persists, back up the contents of your LTO Flash!, reformat it, and try again.</value>
+  </data>
+  <data name="FileSystem_InconsistentState" xml:space="preserve">
+    <value>Unable to complete update! The file system may be in an inconsistent state.</value>
+  </data>
+  <data name="FileSystem_Inconsistent_Title" xml:space="preserve">
+    <value>File System Inconsistency!</value>
+  </data>
+  <data name="FileSystem_UpdateInProgressFormat" xml:space="preserve">
+    <value>({0} item remained in the operation)</value>
+  </data>
+  <data name="FileSystem_UpdateInProgressFormatPlural" xml:space="preserve">
+    <value>({0} items remained in the operation)</value>
+  </data>
+  <data name="MenuLayout_ColorPickerTip" xml:space="preserve">
+    <value>Choose a color for the selected item</value>
+  </data>
+  <data name="MenuLayout_DefaultDirectoryNameFormat" xml:space="preserve">
+    <value>Directory {0}</value>
+    <comment>Format string to use when creating a default name to use when creating a new folder</comment>
+  </data>
+  <data name="MenuLayout_DeleteTipFormat" xml:space="preserve">
+    <value>Remove {0}</value>
+    <comment>Format string to use when deleting a file or folder</comment>
+  </data>
+  <data name="MenuLayout_FolderStatusMessageFormat" xml:space="preserve">
+    <value>{0}/{1} Items</value>
+  </data>
+  <data name="MenuLayout_LongNameColumnHeader" xml:space="preserve">
+    <value>Long Name</value>
+  </data>
+  <data name="MenuLayout_LongNameTip" xml:space="preserve">
+    <value>Full Name (up to 64 characters)</value>
+  </data>
+  <data name="MenuLayout_ManualColumnHeader" xml:space="preserve">
+    <value>Manual / Directory Info</value>
+  </data>
+  <data name="MenuLayout_ManualTip" xml:space="preserve">
+    <value>Drag or browse for a manual for this program</value>
+  </data>
+  <data name="MenuLayout_MissingRomTip" xml:space="preserve">
+    <value>This ROM cannot be found at its original location; if possible, a backup copy will be used</value>
+  </data>
+  <data name="MenuLayout_ModifiedRomTip" xml:space="preserve">
+    <value>The ROM on the device is different than the ROM in the ROM list</value>
+  </data>
+  <data name="MenuLayout_NewDirectoryTip" xml:space="preserve">
+    <value>New Directory</value>
+    <comment>Text for New Directory button</comment>
+  </data>
+  <data name="MenuLayout_NoItems" xml:space="preserve">
+    <value>No Items in Menu</value>
+    <comment>Teaser text shown for an empty menu hierarchy</comment>
+  </data>
+  <data name="MenuLayout_RemainingFilesFormat" xml:space="preserve">
+    <value>Files Used: {0}/{1}</value>
+  </data>
+  <data name="MenuLayout_RemainingFoldersFormat" xml:space="preserve">
+    <value>Directories Used: {0}/{1}</value>
+  </data>
+  <data name="MenuLayout_RemainingForksFormat" xml:space="preserve">
+    <value>Forks Used: {0}/{1}</value>
+  </data>
+  <data name="MenuLayout_RemoveManualTip" xml:space="preserve">
+    <value>Remove Manual (file remains on disk)</value>
+  </data>
+  <data name="RemoveSaveDataCommand_Tip" xml:space="preserve">
+    <value>Remove Save Data (file remains on disk)</value>
+  </data>
+  <data name="MenuLayout_SaveDataColumnHeader" xml:space="preserve">
+    <value>Save Data</value>
+  </data>
+  <data name="MenuLayout_SaveDataTip" xml:space="preserve">
+    <value>Drag or browse for a save data file for this program</value>
+  </data>
+  <data name="MenuLayout_SetManualTip" xml:space="preserve">
+    <value>Browse for Manual</value>
+  </data>
+  <data name="SetSaveDataCommand_Tip" xml:space="preserve">
+    <value>Browse for Save Data</value>
+  </data>
+  <data name="MenuLayout_ShortNameColumnHeader" xml:space="preserve">
+    <value>Short Name</value>
+  </data>
+  <data name="MenuLayout_ShortNameTip" xml:space="preserve">
+    <value>Short Name (up to 18 characters)</value>
+  </data>
+  <data name="MenuLayout_Title" xml:space="preserve">
+    <value>Menu Layout</value>
+    <comment>Title text for the menu tree layout</comment>
+  </data>
+  <data name="ProgramFork_Present" xml:space="preserve">
+    <value>present</value>
+  </data>
+  <data name="Reformat_Message" xml:space="preserve">
+    <value>WARNING! Reformatting the LTO Flash! file system removes all content from the device! All ROMs, manuals, saved game state, and other content will be lost!
+
+Are you certain you wish to proceed with this action?</value>
+  </data>
+  <data name="Reformat_Title" xml:space="preserve">
+    <value>Reformat File System</value>
+  </data>
+  <data name="FirmwareRestore_Message" xml:space="preserve">
+    <value>WARNING! Restoring the firmware to its factory default removes the most recent firmware from the device! This may result in different behavior or loss of features.
+
+Are you certain you wish to proceed with this action?</value>
+  </data>
+  <data name="FirmwareRestore_Title" xml:space="preserve">
+    <value>Restore Firmware to Factory Default</value>
+  </data>
+  <data name="RomToLuigiFailed_ConversionToolNotFound_Error_Format" xml:space="preserve">
+    <value>Unable to prepare ROM for LTO Flash! The necessary utility could not be found at location: {0}</value>
+  </data>
+  <data name="RomToLuigiFailed_InvalidOperation_Error_Message_Format" xml:space="preserve">
+    <value>Preparing ROM for LTO Flash! failed with error code: {0}.</value>
+  </data>
+  <data name="RomToLuigiFailed_OutputFileNotFound_Error_Format" xml:space="preserve">
+    <value>Preparing ROM for LTO Flash! failed for file: {0}. Expected output file not found: {1}</value>
+  </data>
+  <data name="SettingsPage_ReconcileDeviceMenuWithLocalMenu" xml:space="preserve">
+    <value>Reconcile device menu layout with local menu on connect</value>
+  </data>
+  <data name="SettingsPage_SearchForDevicesAtStartup" xml:space="preserve">
+    <value>Search for connected devices at startup</value>
+  </data>
+  <data name="SettingsPage_ShowAdvancedFeatures" xml:space="preserve">
+    <value>Show advanced features and feedback</value>
+  </data>
+  <data name="SettingsPage_Title" xml:space="preserve">
+    <value>LTO Flash!</value>
+  </data>
+  <data name="SettingsPage_ValidateMenuAtLaunch" xml:space="preserve">
+    <value>Validate local menu layout at startup</value>
+  </data>
+  <data name="StatusBar_NoDevice" xml:space="preserve">
+    <value>No Device Detected</value>
+  </data>
+  <data name="DeviceUniqueIdCommand_Name" xml:space="preserve">
+    <value>Unique ID</value>
+  </data>
+  <data name="SetDeviceNameCommand_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SetDeviceOwnerCommand_Name" xml:space="preserve">
+    <value>Owner</value>
+  </data>
+  <data name="Toolbar_LtoFlash_Device_Header" xml:space="preserve">
+    <value>Device</value>
+  </data>
+  <data name="Firmware_GroupHeader" xml:space="preserve">
+    <value>Firmware</value>
+    <comment>Header for the LTO Flash! Firmware ribbon tab group</comment>
+  </data>
+  <data name="ReformatCommand_Name" xml:space="preserve">
+    <value>Reformat</value>
+  </data>
+  <data name="ReformatCommand_Tip" xml:space="preserve">
+    <value>Reformats the file system on the LTO Flash! ALL DATA WILL BE LOST!</value>
+  </data>
+  <data name="Firmware_RestoreFirmwareCommand_RibbonItemName" xml:space="preserve">
+    <value>Restore</value>
+    <comment>Label for the reset firmware to default button</comment>
+  </data>
+  <data name="RestoreFirmwareCommand_TipDescription" xml:space="preserve">
+    <value>Restore the LTO Flash! firmware to its factory default</value>
+  </data>
+  <data name="UpdateFirmwareCommand_TipDescription" xml:space="preserve">
+    <value>Update to a different version of LTO Flash! firmware.</value>
+  </data>
+  <data name="FirmwareUpdate_Downgrade_MessageFormat" xml:space="preserve">
+    <value>Continuing with this operation will downgrade the firmware from version {0} to version {1}. This may result in loss of functionality or an unusable device.
+
+Are you certain you wish to proceed with this action?</value>
+  </data>
+  <data name="FirmwareUpdate_Downgrade_Title" xml:space="preserve">
+    <value>Downgrade Firmware</value>
+  </data>
+  <data name="FirmwareUpdate_FileType" xml:space="preserve">
+    <value>LTO Flash! Firmware</value>
+  </data>
+  <data name="FirmwareUpdate_MessageFormat" xml:space="preserve">
+    <value>Continuing with this operation will upgrade the firmware from version {0} to version {1}.
+
+Are you certain you wish to proceed with this action?</value>
+  </data>
+  <data name="FirmwareUpdate_ShowReadmePrompt" xml:space="preserve">
+    <value>Would you like to open the release notes?</value>
+  </data>
+  <data name="FirmwareUpdate_Prompt" xml:space="preserve">
+    <value>Select a LTO Flash! Firmware Update</value>
+  </data>
+  <data name="FirmwareUpdate_Reapply_Message" xml:space="preserve">
+    <value>Continuing this operation will reapply version {0} of the firmware to the device.
+
+Are you certain you wish to proceed with this action?</value>
+  </data>
+  <data name="FirmwareUpdate_Reapply_Title" xml:space="preserve">
+    <value>Reapply Current Firmware</value>
+  </data>
+  <data name="FirmwareUpdate_SelectAllFilesFilter" xml:space="preserve">
+    <value>All Files</value>
+  </data>
+  <data name="FirmwareUpdate_Title" xml:space="preserve">
+    <value>Apply Firmware Update</value>
+  </data>
+  <data name="Fork_NoFile" xml:space="preserve">
+    <value>&lt;None&gt;</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFiles_CreatingItemProgressFormat" xml:space="preserve">
+    <value>Creating '{0}' ({1} of {2})...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFiles_CreatingItemsProgressFormat" xml:space="preserve">
+    <value>Creating {0} : {1}-{2} of {3}...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFiles_DeletingItemProgressFormat" xml:space="preserve">
+    <value>Deleting {0} : ({1} of {2})...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFiles_TransferToRamProgressFormat" xml:space="preserve">
+    <value>Transferring '{0}' to RAM ({1} of {2}) ...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFiles_UpdatingItemProgressFormat" xml:space="preserve">
+    <value>Updating '{0}' ({1} of {2}) ...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFiles_UpdatingItemsProgressFormat" xml:space="preserve">
+    <value>Updating {0} : {1}-{2} of {3} ... </value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="Files" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="Directory" xml:space="preserve">
+    <value>Directory</value>
+  </data>
+  <data name="Directories" xml:space="preserve">
+    <value>Directories</value>
+  </data>
+  <data name="Fork" xml:space="preserve">
+    <value>Fork</value>
+  </data>
+  <data name="Forks" xml:space="preserve">
+    <value>Forks</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFiles_ProgressTitleFormat" xml:space="preserve">
+    <value>Updating Files - Part {3} : {0} ({1} of {2}) ...</value>
+  </data>
+  <data name="FileSystem_Unknown" xml:space="preserve">
+    <value>&lt;No Device&gt;</value>
+  </data>
+  <data name="LfsOperation_Add" xml:space="preserve">
+    <value>Adding</value>
+  </data>
+  <data name="LfsOperation_Remove" xml:space="preserve">
+    <value>Deleting</value>
+  </data>
+  <data name="LfsOperation_Update" xml:space="preserve">
+    <value>Updating</value>
+  </data>
+  <data name="EcsCompatibilityMode_Disabled" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="EcsCompatibilityMode_Disabled_ToolTipDescription" xml:space="preserve">
+    <value>LTO Flash! will disable the ECS ROMs unless running a program that requires the ECS in order to function. Games that are only enhanced by the ECS (i.e. for which the ECS is optional) will not have ECS features enabled.</value>
+  </data>
+  <data name="EcsCompatibilityMode_Enabled" xml:space="preserve">
+    <value>Always</value>
+  </data>
+  <data name="EcsCompatibilityMode_Enabled_ToolTipDescription" xml:space="preserve">
+    <value>LTO Flash! will not attempt to disable the ECS ROMs in order to remedy any program incompatibilities. Some programs may not function correctly when the ECS is attached to the Master Component.</value>
+  </data>
+  <data name="EcsCompatibilityMode_Limited" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="EcsCompatibilityMode_Limited_ToolTipDescription" xml:space="preserve">
+    <value>LTO Flash! will only disable the ECS ROMs for programs that are known to be incompatible with the ECS. Games are presumed to be compatible with the ECS unless otherwise specified.</value>
+  </data>
+  <data name="EcsCompatibilityMode_Strict" xml:space="preserve">
+    <value>ECS Games</value>
+  </data>
+  <data name="EcsCompatibilityMode_Strict_ToolTipDescription" xml:space="preserve">
+    <value>LTO Flash! will enable the ECS ROMs only for programs known to require the ECS, or to offer enhanced features if the ECS is attached. (Factory Default)</value>
+  </data>
+  <data name="EcsCompatibilityMode_ToolTipTitleFormat" xml:space="preserve">
+    <value>ECS ROM Enabled: {0}</value>
+  </data>
+  <data name="IntellivisionIICompatibilityMode_Disabled" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="IntellivisionIICompatibilityMode_Disabled_ToolTipDescription" xml:space="preserve">
+    <value>LTO Flash! will not attempt to disable the lockout feature that is part of the Intellivision II Master Component's EXEC ROM. Certain programs will not work when run on an Intellivision II Master Component.</value>
+  </data>
+  <data name="IntellivisionIICompatibilityMode_Full" xml:space="preserve">
+    <value>Always</value>
+  </data>
+  <data name="IntellivisionIICompatibilityMode_Full_ToolTipDescription" xml:space="preserve">
+    <value>LTO Flash! will always attempt to disable the Intellivision II lockout feature. (Factory Default)</value>
+  </data>
+  <data name="IntellivisionIICompatibilityMode_Limited" xml:space="preserve">
+    <value>Per Game</value>
+  </data>
+  <data name="IntellivisionIICompatibilityMode_Limited_ToolTipDescription" xml:space="preserve">
+    <value>LTO Flash! will attempt to disable the lockout feature only for programs known to be incompatible with the Intellivision II, which should allow them to run.</value>
+  </data>
+  <data name="IntellivisionIICompatibilityMode_ToolTipTitleFormat" xml:space="preserve">
+    <value>Intellivision II Compatibility Fix: {0}</value>
+  </data>
+  <data name="BackupCommand_Name" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="BackupCommand_TipDescription" xml:space="preserve">
+    <value>Back up the contents of the LTO Flash!</value>
+  </data>
+  <data name="FileSystemCommandGroup_Name" xml:space="preserve">
+    <value>File System</value>
+  </data>
+  <data name="DeviceMultistageCommand_BackupFileSystem_Failed" xml:space="preserve">
+    <value>Failed to back up the file system.</value>
+  </data>
+  <data name="DeviceMultistageCommand_BackupFileSystem_Title" xml:space="preserve">
+    <value>Backing Up File System...</value>
+  </data>
+  <data name="FileSystemStatisticsView_FirmwareVersionCurrent" xml:space="preserve">
+    <value>Firmware Version (Current):</value>
+  </data>
+  <data name="FileSystemStatisticsView_FirmwareVersionPrimary" xml:space="preserve">
+    <value>Firmware Version (Primary):</value>
+  </data>
+  <data name="FileSystemStatisticsView_FirmwareVersionSecondary" xml:space="preserve">
+    <value>Firmware Version (Secondary):</value>
+  </data>
+  <data name="CurrentFirmwareCommand_Name" xml:space="preserve">
+    <value>Current Version</value>
+  </data>
+  <data name="CurrentFirmwareCommand_TipDescription" xml:space="preserve">
+    <value>Currently active version of firmware running on the device.</value>
+  </data>
+  <data name="FactoryFirmwareCommand_Name" xml:space="preserve">
+    <value>Factory Version</value>
+  </data>
+  <data name="FactoryFirmwareCommand_TipDescription" xml:space="preserve">
+    <value>Version of firmware on the device as shipped. This will be the version of the firmware restored if you choose the Restore Firmware command.</value>
+  </data>
+  <data name="SecondaryFirmwareCommand_Name" xml:space="preserve">
+    <value>Update Version</value>
+  </data>
+  <data name="SecondaryFirmwareCommand_TipDescription" xml:space="preserve">
+    <value>Version of firmware on the device installed as an update. If an update is installed, the current version should be the same as this one.</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdateFirmware_Title" xml:space="preserve">
+    <value>Updating Firmware...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdateFirmware_Failed" xml:space="preserve">
+    <value>Failed to update device firmware.</value>
+  </data>
+  <data name="Device_ErrorLog_Header" xml:space="preserve">
+    <value>Error Log</value>
+  </data>
+  <data name="FirmwareUpdate_SameAsFactoryRestore_Message" xml:space="preserve">
+    <value>Version {0} is the same as the factory installed version. Would you like to revert to the factory-installed firmware?</value>
+  </data>
+  <data name="FirmwareUpdate_SameAsFactory_Message" xml:space="preserve">
+    <value>Version {0} is the same as the factory installed version. No update will be applied.</value>
+  </data>
+  <data name="FirmwareUpdate_SameAsFactory_Title" xml:space="preserve">
+    <value>Firmware Already Up-To-Date</value>
+  </data>
+  <data name="ProtocolCommandId_DebugSetHardwareStatus_Title" xml:space="preserve">
+    <value>Instructing Simulator to Set Hardware Status...</value>
+  </data>
+  <data name="ProtocolCommandId_DebugSetRandomDropConnection_Title" xml:space="preserve">
+    <value>Instructing Simulator to Drop Connection...</value>
+  </data>
+  <data name="ProtocolCommandId_DownloadAndPlay_Title" xml:space="preserve">
+    <value>Loading Program to Launch...</value>
+  </data>
+  <data name="ProtocolCommandId_DownloadErrorLog_Title" xml:space="preserve">
+    <value>Retrieving error log from device...</value>
+  </data>
+  <data name="ProtocolCommandId_FirmwareEraseSecondary_Title" xml:space="preserve">
+    <value>Restoring Factory Firmware...</value>
+  </data>
+  <data name="ProtocolCommandId_FirmwareGetRevisions_Title" xml:space="preserve">
+    <value>Querying Firmware Versions...</value>
+  </data>
+  <data name="ProtocolCommandId_FirmwareProgramSecondary_Title" xml:space="preserve">
+    <value>Programming new firmware...</value>
+  </data>
+  <data name="ProtocolCommandId_FirmwareValidateImageInRam_Title" xml:space="preserve">
+    <value>Validating Firmware Upload...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsGetFileSystemStatusFlags_Title" xml:space="preserve">
+    <value>Retrieving File System Status...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsGetStatistics_Title" xml:space="preserve">
+    <value>Retrieving File System Usage Information...</value>
+  </data>
+  <data name="ProtocolCommandId_LfsSetFileSystemStatusFlags_Title" xml:space="preserve">
+    <value>Updating File System Status...</value>
+  </data>
+  <data name="ProtocolCommandId_MultistagePseudoCommand_Title" xml:space="preserve">
+    <value>Executing Batched Commands...</value>
+  </data>
+  <data name="ProtocolCommandId_SetConfiguration_Title" xml:space="preserve">
+    <value>Updating Device Cconfiguration...</value>
+  </data>
+  <data name="ProtocolCommandId_UnknownCommand_Title" xml:space="preserve">
+    <value>Executing Unknown Command...</value>
+  </data>
+  <data name="ProtocolCommandId_WaitForBeaconPseudoCommand_Title" xml:space="preserve">
+    <value>Waiting for Device Response...</value>
+  </data>
+  <data name="DeviceMultistageCommand_BackupFileSystem_CreatingMenuLayout" xml:space="preserve">
+    <value>Reconstructing menu layout...</value>
+  </data>
+  <data name="DeviceMultistageCommand_BackupFileSystem_RetrievingFiles_Format" xml:space="preserve">
+    <value>Retrieving file system data fork ({0} of {1})...</value>
+  </data>
+  <data name="DeviceMultistageCommand_BackupFileSystem_SavingFiles_Format" xml:space="preserve">
+    <value>Saving file system data fork ({0} of {1})...</value>
+  </data>
+  <data name="DeviceMultistageCommand_BackupFileSystem_Syncing" xml:space="preserve">
+    <value>Inspecting device file system...</value>
+  </data>
+  <data name="ProtocolCommandId_DebugSetHardwareStatus_Failed" xml:space="preserve">
+    <value>Failed to update hardware status flags.</value>
+  </data>
+  <data name="ProtocolCommandId_DebugSetRandomDropConnection_Failed" xml:space="preserve">
+    <value>Failed to set random drop connection command.</value>
+  </data>
+  <data name="ProtocolCommandId_DownloadAndPlay_Failed" xml:space="preserve">
+    <value>Failed to load and start program.</value>
+  </data>
+  <data name="ProtocolCommandId_DownloadErrorLog_Failed" xml:space="preserve">
+    <value>Failed to retrieve error log.</value>
+  </data>
+  <data name="ProtocolCommandId_FirmwareEraseSecondary_Failed" xml:space="preserve">
+    <value>Failed to restore factory firmware.</value>
+  </data>
+  <data name="ProtocolCommandId_FirmwareGetRevisions_Failed" xml:space="preserve">
+    <value>Failed to retrieve firmware versions.</value>
+  </data>
+  <data name="ProtocolCommandId_FirmwareProgramSecondary_Failed" xml:space="preserve">
+    <value>Failed to program firmware update.</value>
+  </data>
+  <data name="ProtocolCommandId_FirmwareValidateImageInRam_Failed" xml:space="preserve">
+    <value>Firmware image validation failed. {0}</value>
+  </data>
+  <data name="ProtocolCommandId_GarbageCollect_Failed" xml:space="preserve">
+    <value>Failed to issue garbage collection command.</value>
+  </data>
+  <data name="DeviceCommand_Generic_FailedFormat" xml:space="preserve">
+    <value>Failed to execute device command: {0}.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsChecksumDataBlockInRam_Failed" xml:space="preserve">
+    <value>Checksum of data block in device RAM failed.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsCopyForkToRam_Failed" xml:space="preserve">
+    <value>Failed to copy fork into device RAM.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsCreateForkFromRam_Failed" xml:space="preserve">
+    <value>Failed to create fork from device RAM.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDeleteDirectory_Failed" xml:space="preserve">
+    <value>Failed to delete directory.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDeleteFile_Failed" xml:space="preserve">
+    <value>Failed to delete file.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDeleteFork_Failed" xml:space="preserve">
+    <value>Failed to delete fork.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDownloadDataBlockFromRam_Failed" xml:space="preserve">
+    <value>Failed to download data block from device RAM.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsDownloadGlobalTables_Failed" xml:space="preserve">
+    <value>Failed to retrieve file system.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsGetFileSystemStatusFlags_Failed" xml:space="preserve">
+    <value>Failed to retrieve file system status flags.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsGetStatistics_Failed" xml:space="preserve">
+    <value>Failed to retrieve file system usage information.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsReformatFileSystem_Failed" xml:space="preserve">
+    <value>Failed to reformat the file system.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsSetFileSystemStatusFlags_Failed" xml:space="preserve">
+    <value>Failed to update file systems status flags.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsUpdateForkUid_Failed" xml:space="preserve">
+    <value>Failed to update fork's unique ID.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsUpdateGdtFromRam_Failed" xml:space="preserve">
+    <value>Failed to update global directory table from device RAM.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsUpdateGftFromRam_Failed" xml:space="preserve">
+    <value>Failed to update global file table from device RAM.</value>
+  </data>
+  <data name="ProtocolCommandId_LfsUploadDataBlockToRam_Failed" xml:space="preserve">
+    <value>Failed to upload data block to device RAM.</value>
+  </data>
+  <data name="ProtocolCommandId_Ping_Failed" xml:space="preserve">
+    <value>Failed to ping device.</value>
+  </data>
+  <data name="ProtocolCommandId_SetConfiguration_Failed" xml:space="preserve">
+    <value>Failed to update device configuration.</value>
+  </data>
+  <data name="ProtocolCommandId_WaitForBeaconPseudoCommand_Failed" xml:space="preserve">
+    <value>Failed to receive device beacon.</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdateFirmware_DownloadFailed" xml:space="preserve">
+    <value>Failed to update firmware on the device.</value>
+  </data>
+  <data name="DeviceSearch_Task_Progress_Format" xml:space="preserve">
+    <value>Checking device at {0}...</value>
+  </data>
+  <data name="DeviceSearch_Task_Title" xml:space="preserve">
+    <value>Searching for Devices...</value>
+  </data>
+  <data name="SettingsPage_RunGCWhenConnected" xml:space="preserve">
+    <value>Perform file system maintenance in background</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdateDeviceName_Title" xml:space="preserve">
+    <value>Setting Device Name...</value>
+  </data>
+  <data name="MenuLayout_LoadFailed_Title" xml:space="preserve">
+    <value>Failed to Load Menu Layout</value>
+  </data>
+  <data name="FileSystem_InconsistencyError_Format" xml:space="preserve">
+    <value>Unable to locate file system entry of type '{0}' with file system identity '{1}'.</value>
+  </data>
+  <data name="FileSystem_InconsistencyError_Message" xml:space="preserve">
+    <value>The file system on the device may be in an inconsistent state. If the problem persists, back up your device and the local copy of the menu layout, reformat the device, and then update the files again.</value>
+  </data>
+  <data name="DeviceMultistageCommand_RemovingFileContents" xml:space="preserve">
+    <value>file contents</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFileSystemTables_ProgressTitleFormat" xml:space="preserve">
+    <value>Updating File - Part {3} : File System {0} Entries ({1} - {2}) ...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingGlobalDirectoriesTable" xml:space="preserve">
+    <value>Updating directories table...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingGlobalFilesTable" xml:space="preserve">
+    <value>Updating files table...</value>
+  </data>
+  <data name="LfsOperation_Synchronize" xml:space="preserve">
+    <value>Synchronizing</value>
+  </data>
+  <data name="ProtocolCommand_UnexpectedCommandError_Format" xml:space="preserve">
+    <value>The command {0} is either unrecognized or unavailable.</value>
+  </data>
+  <data name="LtoFlashCommandGroup_Name" xml:space="preserve">
+    <value>LTO Flash!</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFileSystemTablesOneEntry_ProgressTitleFormat" xml:space="preserve">
+    <value>Updating File - Part {2} : File System {0} Entry ({1}) ...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingFiles_ComputingChangesProgress" xml:space="preserve">
+    <value>Reconciling local and device file system ...</value>
+  </data>
+  <data name="DirectoriesInSentence" xml:space="preserve">
+    <value>directories</value>
+  </data>
+  <data name="DirectoryInSentence" xml:space="preserve">
+    <value>directory</value>
+  </data>
+  <data name="FileInSentence" xml:space="preserve">
+    <value>file</value>
+  </data>
+  <data name="FilesInSentence" xml:space="preserve">
+    <value>files</value>
+  </data>
+  <data name="FileSystem_InconsistencyError_Creating_Format" xml:space="preserve">
+    <value>Unable to create {0} {1}.</value>
+  </data>
+  <data name="FileSystem_InconsistencyError_Deleting_Format" xml:space="preserve">
+    <value>Unable to delete {0} {1}.</value>
+  </data>
+  <data name="FileSystem_InconsistencyError_MissingEntry_Format" xml:space="preserve">
+    <value>Unable to locate file system entry of type '{0}'.</value>
+  </data>
+  <data name="FileSystem_InconsistencyError_Updating_Format" xml:space="preserve">
+    <value>Unable to update {0} {1}.</value>
+  </data>
+  <data name="FileSystem_OrphanElements_Format" xml:space="preserve">
+    <value>A total of {0} {1} cannot be reached.</value>
+  </data>
+  <data name="FileSystem_OrphanElements_Message" xml:space="preserve">
+    <value>The following problems were detected:</value>
+  </data>
+  <data name="FileSystem_OrphanElement_Format" xml:space="preserve">
+    <value>One {0} cannot be reached.</value>
+  </data>
+  <data name="ForkInSentence" xml:space="preserve">
+    <value>fork</value>
+  </data>
+  <data name="ForksInSentence" xml:space="preserve">
+    <value>forks</value>
+  </data>
+  <data name="ManualInSentence" xml:space="preserve">
+    <value>manual</value>
+  </data>
+  <data name="ManualsInSentence" xml:space="preserve">
+    <value>manuals</value>
+  </data>
+  <data name="ProgramInSentence" xml:space="preserve">
+    <value>program</value>
+  </data>
+  <data name="ProgramsInSentence" xml:space="preserve">
+    <value>programs</value>
+  </data>
+  <data name="SaveDataFileInSentence" xml:space="preserve">
+    <value>save data file</value>
+  </data>
+  <data name="SaveDataFilesInSentence" xml:space="preserve">
+    <value>save data files</value>
+  </data>
+  <data name="BackupCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when creating a backup of the file system. The error was:
+
+{0}
+
+This may occur if LTO Flash! is connected to your computer and a powered-on Intellivision simultaneously, or the device is unplugged from the system during the backup.
+
+To avoid this problem, ensure the remains off for the duration of the backup operation. Also, do not unplug your LTO Flash! during the backup.
+
+The backup may be incomplete. Would you like to keep it? If you choose 'No', it will be deleted.</value>
+  </data>
+  <data name="BackupCommand_Failed_Title" xml:space="preserve">
+    <value>Backup Failed</value>
+  </data>
+  <data name="DeviceCommand_InvalidFileSystemEntryCount_Format" xml:space="preserve">
+    <value>Invalid response reading file system table. Data stream reported {0} entries but maximum possible is {1}.</value>
+  </data>
+  <data name="DownloadAndPlayCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when loading {0}. The error was:
+
+{1}
+
+Ensure that the ROM file exists. Also, check that the LTO Flash! cartridge is properly inserted into your console and that all the connections are secure. If the problem persists, turn off your console, and disconnect your LTO Flash! from your computer. Then, reconnect to your computer and turn on your Intellivision.</value>
+  </data>
+  <data name="DownloadAndPlayCommand_Failed_Title_Format" xml:space="preserve">
+    <value>Unable to Load {0}</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem has occurred during the file system update. The file system on your LTO Flash! device may have been left in an inconsistent state. The error was:
+
+{0}</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_Failed_Title" xml:space="preserve">
+    <value>File System Update Failed</value>
+  </data>
+  <data name="GetErrorLogCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when downloading the error log. The error was:
+
+{0}</value>
+  </data>
+  <data name="GetErrorLogCommand_Failed_Title" xml:space="preserve">
+    <value>Failed to Retrieve Error Log</value>
+  </data>
+  <data name="GetFileSystemFlagsCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when retrieving the file system status. The error was:
+
+{0}</value>
+  </data>
+  <data name="GetFileSystemFlagsCommand_Failed_Title" xml:space="preserve">
+    <value>Failed to Get File System Status</value>
+  </data>
+  <data name="GetFileSystemStatisticsCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when retrieving the file system statistics. The error was:
+
+{0}</value>
+  </data>
+  <data name="GetFileSystemStatisticsCommand_Failed_Title" xml:space="preserve">
+    <value>Failed to Retrieve File System Statistics</value>
+  </data>
+  <data name="GetFirmwareRevisionsCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when retrieving device firmware information. The error was:
+
+{0}</value>
+  </data>
+  <data name="GetFirmwareRevisionsCommand_Failed_Title" xml:space="preserve">
+    <value>Failed to Retrieve Firmware Version</value>
+  </data>
+  <data name="ReformatCommand_Failed_Message_Format" xml:space="preserve">
+    <value>Failed to reformat the device. The error was:
+
+{0}</value>
+  </data>
+  <data name="ReformatCommand_Failed_Title" xml:space="preserve">
+    <value>Reformat Failed!</value>
+  </data>
+  <data name="RestoreFirmwareCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when reverting to the factory-installed firmware. The error was:
+
+{0}</value>
+  </data>
+  <data name="RestoreFirmwareCommand_Failed_Title" xml:space="preserve">
+    <value>Failed to Restore Firmware</value>
+  </data>
+  <data name="RetrieveFileSystemCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem has occurred when downloading the file system tables. The error was:
+
+{0}
+
+This may occur if LTO Flash! is connected to your computer and a powered-on Intellivision simultaneously.
+
+To avoid this problem, turn off your console. If the problem persists, also disconnect your LTO Flash! from your computer and reconnect it.</value>
+  </data>
+  <data name="RetrieveFileSystemCommand_Failed_Title" xml:space="preserve">
+    <value>Unable to Download File System Tables</value>
+  </data>
+  <data name="SetConfigurationCommand_Ecs_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when setting compatibility mode for the ECS. The error was:
+
+{0}</value>
+  </data>
+  <data name="SetConfigurationCommand_Ecs_Failed_Title" xml:space="preserve">
+    <value>Failed to Set ECS Compatibility Mode</value>
+  </data>
+  <data name="SetConfigurationCommand_IntellivisionII_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when setting compatibility mode for the Intellivision II. The error was:
+
+{0}</value>
+  </data>
+  <data name="SetConfigurationCommand_IntellivisionII_Failed_Title" xml:space="preserve">
+    <value>Failed to Set Intellivision II Compatibility Mode</value>
+  </data>
+  <data name="SetFileSystemFlagsCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when updating the file system status. The error was:
+
+{0}</value>
+  </data>
+  <data name="SetFileSystemFlagsCommand_Failed_Title" xml:space="preserve">
+    <value>Failed to Set File System Status</value>
+  </data>
+  <data name="Firmware_UpdateFirmwareCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when updating device firmware. The error was:
+
+{0}
+
+Ensure that the device is securely connected to your computer.</value>
+  </data>
+  <data name="Firmware_UpdateFirmwareCommand_Failed_Title" xml:space="preserve">
+    <value>Failed to Update Firmware</value>
+  </data>
+  <data name="BackupCommand_Failed_Delete_Message_Format" xml:space="preserve">
+    <value>Are you sure you want to remove the backup located at:
+
+{0}</value>
+  </data>
+  <data name="BackupCommand_Failed_Delete_Title" xml:space="preserve">
+    <value>Remove Backup</value>
+  </data>
+  <data name="BackupCommand_MenuItemName" xml:space="preserve">
+    <value>Backup File System...</value>
+  </data>
+  <data name="DownloadAndPlayCommand_Name" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="DownloadAndPlayCommand_TipDescription" xml:space="preserve">
+    <value>Play the program selected in the ROM list on the connected LTO Flash! Your LTO Flash! must be plugged into an Intellivision console with the power turned on, and not already running a program.</value>
+  </data>
+  <data name="Firmware_RestoreFirmwareCommand_MenuItemName" xml:space="preserve">
+    <value>Restore to Factory Default...</value>
+  </data>
+  <data name="Firmware_UpdateFirmwareCommand_MenuItemName" xml:space="preserve">
+    <value>Update Firmware...</value>
+  </data>
+  <data name="ReformatCommand_MenuItemName" xml:space="preserve">
+    <value>Reformat File System...</value>
+  </data>
+  <data name="SyncDeviceToHostCommand_Name" xml:space="preserve">
+    <value>Get from LTO Flash!</value>
+  </data>
+  <data name="SyncDeviceToHostCommand_Tip" xml:space="preserve">
+    <value>Replace the computer's menu layout with the menu layout on the active LTO Flash! device.</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_Name" xml:space="preserve">
+    <value>Send to LTO Flash!</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_TipDescription" xml:space="preserve">
+    <value>Send the menu layout to the connected LTO Flash! device, so it will match computer's menu layout.</value>
+  </data>
+  <data name="DownloadAndPlayPromptCommand_Failed_MessageFormat" xml:space="preserve">
+    <value>The file:
+
+{0}
+
+does not appear to be a valid ROM file.</value>
+  </data>
+  <data name="DownloadAndPlayPromptCommand_Failed_Title" xml:space="preserve">
+    <value>Unable to Load and Start</value>
+  </data>
+  <data name="DownloadAndPlayPromptCommand_Name" xml:space="preserve">
+    <value>Browse &amp; Play...</value>
+  </data>
+  <data name="DownloadAndPlayPromptCommand_TipDescription" xml:space="preserve">
+    <value>Browse to select a ROM, then run it. Your LTO Flash! must be plugged into an Intellivision console with the power turned on, and not already running a program.</value>
+  </data>
+  <data name="ConsolePowerState_Format" xml:space="preserve">
+    <value>Power: {0}</value>
+  </data>
+  <data name="ConsolePowerState_Off" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="ConsolePowerState_On" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="ConsolePowerState_Tip" xml:space="preserve">
+    <value>Indicates power state of the console.</value>
+  </data>
+  <data name="ConsolePowerState_Unknown" xml:space="preserve">
+    <value>&lt;No Device&gt;</value>
+  </data>
+  <data name="ActiveDevice_Header" xml:space="preserve">
+    <value>Active Device</value>
+  </data>
+  <data name="SearchForDevicesCommand_Name" xml:space="preserve">
+    <value>Find Devices</value>
+  </data>
+  <data name="SearchForDevicesCommand_TipDescription" xml:space="preserve">
+    <value>Identify LTO Flash! devices connected to the system.</value>
+  </data>
+  <data name="DisconnectDeviceCommand_Name" xml:space="preserve">
+    <value>Disconnect</value>
+  </data>
+  <data name="DisconnectDeviceCommand_TipDescription" xml:space="preserve">
+    <value>Disconnects from the current device.</value>
+  </data>
+  <data name="SelectDeviceDialog_Message" xml:space="preserve">
+    <value>Select one of the following LTO Flash! devices to connect to.</value>
+  </data>
+  <data name="SelectDeviceDialog_SelectButtonText" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="SelectDeviceDialog_Title" xml:space="preserve">
+    <value>Select LTO Flash! Device</value>
+  </data>
+  <data name="SelectDevicesCommand_Name" xml:space="preserve">
+    <value>Select Device</value>
+  </data>
+  <data name="SetActiveDeviceCommand_Name" xml:space="preserve">
+    <value>Set Active Device</value>
+  </data>
+  <data name="SettingsPage_AutomaticallyConnectToDevices" xml:space="preserve">
+    <value>Automatically connect to devices when detected</value>
+  </data>
+  <data name="AddItemsOperation_Failed" xml:space="preserve">
+    <value>Unable to add items to the destination due to an unexpected error. See details below.</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="LuigiFileError_Message_Format" xml:space="preserve">
+    <value>An error has occurred when preparing the ROM file '{0} for deployment.</value>
+  </data>
+  <data name="LuigiFileError_Title" xml:space="preserve">
+    <value>Error Preparing File for LTO Flash!</value>
+  </data>
+  <data name="RomToLuigiFailed_ConversionToolNotFound_Error_Description" xml:space="preserve">
+    <value>The required ROM conversion utility could not be found.</value>
+  </data>
+  <data name="RomToLuigiFailed_Error_Description_Format" xml:space="preserve">
+    <value>An error occurred invoking the conversion program: '{0}'</value>
+  </data>
+  <data name="RomToLuigiFailed_InvalidOperation_Error_Description" xml:space="preserve">
+    <value>An invalid operation occurred.</value>
+  </data>
+  <data name="RomToLuigiFailed_IOException_Description" xml:space="preserve">
+    <value>An error occurred trying to read or write a file.</value>
+  </data>
+  <data name="RomToLuigiFailed_OutputFileNotFound_Error_Description_Format" xml:space="preserve">
+    <value>The output of the conversion cannot be found.</value>
+  </data>
+  <data name="RomToLuigiFailed_PathTooLong_Description" xml:space="preserve">
+    <value>The file path was too long.</value>
+  </data>
+  <data name="RomToLuigiFailed_TooLarge_Description" xml:space="preserve">
+    <value>The ROM was successfully prepared for deployment, but it is too large.</value>
+  </data>
+  <data name="RomToLuigiFailed_TooLarge_Error_Message_Format" xml:space="preserve">
+    <value>The output of the ROM conversion tool is too large to deploy to LTO Flash! You can find the output file at:
+
+{0}</value>
+  </data>
+  <data name="RomToLuigiFailed_UnauthorizedAccess_Error_Description" xml:space="preserve">
+    <value>The file system denied access to necessary files.</value>
+  </data>
+  <data name="RomToLuigiFailed_Unexpected_Error_Description" xml:space="preserve">
+    <value>An unexpected error occurred when preparing the ROM for deployment.</value>
+  </data>
+  <data name="DeviceValidation_Failed_Message_Format" xml:space="preserve">
+    <value>The device on port '{0}' may not be functioning correctly. It is not responding properly to LTO Flash! commands. See the complete error report below.</value>
+  </data>
+  <data name="DeviceValidation_Failed_Title" xml:space="preserve">
+    <value>Device Validation Failed</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="ConnectToDevice_Message_Format" xml:space="preserve">
+    <value>Would you like to connect to the LTO Flash! device on port {0}? Doing so will disconnect the currently active device.</value>
+  </data>
+  <data name="ConnectToDevice_Title" xml:space="preserve">
+    <value>Connect to Device</value>
+  </data>
+  <data name="Ignore" xml:space="preserve">
+    <value>Ignore</value>
+  </data>
+  <data name="DeviceConnection_NoneAvailable" xml:space="preserve">
+    <value>&lt;None Available&gt;</value>
+  </data>
+  <data name="AdvancedGroupCommand_Header" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="BackupCommandComplete_Cancelled_Message" xml:space="preserve">
+    <value>The backup operation was cancelled while in progress. Any contents that were retrieved may be found in the following location:</value>
+  </data>
+  <data name="BackupCommandComplete_Message" xml:space="preserve">
+    <value>A complete backup of the contents of your LTO Flash! can be found in the following location:</value>
+  </data>
+  <data name="BackupCommandComplete_Title" xml:space="preserve">
+    <value>Backup Complete</value>
+  </data>
+  <data name="MenuLayout_WillAddDirectory_Tip" xml:space="preserve">
+    <value>This directory will be added</value>
+  </data>
+  <data name="MenuLayout_WillAddFile_Tip" xml:space="preserve">
+    <value>This file will be added</value>
+  </data>
+  <data name="MenuLayout_WillDeleteDirectory_Tip" xml:space="preserve">
+    <value>This directory will be removed</value>
+  </data>
+  <data name="MenuLayout_WillDeleteFile_Tip" xml:space="preserve">
+    <value>This file will be removed</value>
+  </data>
+  <data name="MenuLayout_WillUpdateDirectory_Tip" xml:space="preserve">
+    <value>This directory will be updated</value>
+  </data>
+  <data name="MenuLayout_WillUpdateFile_Tip" xml:space="preserve">
+    <value>This file will be updated</value>
+  </data>
+  <data name="SyncDeviceToHostPreviewCommand_Name" xml:space="preserve">
+    <value>Preview Changes to Apply to Menu Layout from LTO Flash!</value>
+  </data>
+  <data name="SyncDeviceToHostPreviewCommand_Tip" xml:space="preserve">
+    <value>Highlights changes to the menu layout that will be made to the menu layout on your computer when getting the menu layout from from LTO Flash!</value>
+  </data>
+  <data name="SyncHostToDevicePreviewCommand_Name" xml:space="preserve">
+    <value>Preview Changes to Apply to LTO Flash!</value>
+  </data>
+  <data name="SyncHostToDevicePreviewCommand_Tip" xml:space="preserve">
+    <value>Highlights changes that will be made to LTO Flash! when updating the menu layout.</value>
+  </data>
+  <data name="MenuLayout_LoadFailed_BackupButton_Text" xml:space="preserve">
+    <value>Save Backup</value>
+  </data>
+  <data name="MenuLayout_LoadFailed_BackupFailed" xml:space="preserve">
+    <value>Unable to save backup copy of menu layout.</value>
+  </data>
+  <data name="MenuLayout_LoadFailed_BackupFailed_Message_Format" xml:space="preserve">
+    <value>Unable to save backup copy of the menu layout. Error:
+
+{0}</value>
+  </data>
+  <data name="MenuLayout_LoadFailed_Error_Format" xml:space="preserve">
+    <value>The backup copy of the menu layout can be found here:
+{0}
+
+Full error report:
+{1}</value>
+  </data>
+  <data name="MenuLayout_LoadFailed_Message" xml:space="preserve">
+    <value>An error occurred when loading the menu layout file. A backup copy will be created at the location indicated below.</value>
+  </data>
+  <data name="SyncClearPreviewChangesCommand_Name" xml:space="preserve">
+    <value>Clear Preview Changes</value>
+  </data>
+  <data name="SyncClearPreviewChangesCommand_Tip" xml:space="preserve">
+    <value>Clears the preview of changes that will be applied.</value>
+  </data>
+  <data name="SyncHostToDevicePreviewCommand_Title" xml:space="preserve">
+    <value>Comparing Host Menu Layout to LTO Flash! Menu Layout...</value>
+  </data>
+  <data name="BackupCommandCancelled_Title" xml:space="preserve">
+    <value>Backup Cancelled</value>
+  </data>
+  <data name="SyncHostToDeviceCommandCancelledNoChanges_Message" xml:space="preserve">
+    <value>The file system update to send the menu layout to your LTO Flash! was cancelled before any changes were made.</value>
+  </data>
+  <data name="SyncHostToDeviceCommandCancelled_Message" xml:space="preserve">
+    <value>The file system update to your LTO Flash! was cancelled. This may have resulted in files that are present, but not reachable in the menu from your Intellivision console.
+
+To resume the update process, simply start again. The update will resume from the point at which it was interrupted. If you make further changes before resuming, those will also be included in the next udpate.
+
+Would you also see which changes remain to be applied?</value>
+  </data>
+  <data name="SyncHostToDeviceCommandCancelled_Title" xml:space="preserve">
+    <value>File System Update Cancelled</value>
+  </data>
+  <data name="SyncHostToDeviceCommandComplete_Message" xml:space="preserve">
+    <value>The contents of your LTO Flash! have been successfully updated.</value>
+  </data>
+  <data name="SyncHostToDeviceCommandComplete_Title" xml:space="preserve">
+    <value>Send Menu Layout to LTO FLash! Complete</value>
+  </data>
+  <data name="FileSystem_InconsistencyError_NoFileSystem_Message" xml:space="preserve">
+    <value>The file system appears to be in an inconsistent state. However, further analysis is not possible at this time.</value>
+  </data>
+  <data name="DeviceCommand_InvalidFileSystemHeader_Format" xml:space="preserve">
+    <value>File system table is invalid. Expected header of '{0}' but received a header of '{1}'.</value>
+  </data>
+  <data name="NewDirectoryCommand_Name" xml:space="preserve">
+    <value>New Directory</value>
+  </data>
+  <data name="RemoveFromMenuCommand_Name" xml:space="preserve">
+    <value>Remove from menu</value>
+  </data>
+  <data name="RemoveSaveDataCommand_Name" xml:space="preserve">
+    <value>Remove Save Data</value>
+  </data>
+  <data name="SetSaveDataCommand_Name" xml:space="preserve">
+    <value>Set Save Data</value>
+  </data>
+  <data name="SyncPreviewCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem has occurred while generating the changes preview. The error was:
+
+{0}</value>
+  </data>
+  <data name="SyncPreviewCommand_Failed_Title" xml:space="preserve">
+    <value>Unable to Preview Changes</value>
+  </data>
+  <data name="DeviceMultistageCommand_SyncingToFiles_Title" xml:space="preserve">
+    <value>Getting Menu Layout from LTO Flash!...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingMenuLayout_ComputingChangesProgress" xml:space="preserve">
+    <value>Reconciling device file system and local menu layout...</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingMenuLayout_InconsistentState" xml:space="preserve">
+    <value>The file system on the device is in an inconsistent state.</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdatingMenuLayout_InconsistentStateErrorMessage" xml:space="preserve">
+    <value>The file system on the connected device is not in a consistent state. It appears that an update to it was interrupted while in progress. The resulting menu may be incomplete or inaccurate.
+
+The recommended course of action in this case is to send a valid menu layout to your device, rather than force your menu layout to match that of your LTO Flash!
+
+Remember that you can also perform a backup of your LTO Flash! if you so desire, which will preserve its contents, even if it is in an inconsistent state.
+
+If you proceed with using the LTO Flash! to define the menu layout, unreachable items will be ignored.
+
+Do you wish to proceed with this update, even though the contents are in an inconsistent state?</value>
+  </data>
+  <data name="FileSystem_InvalidFileType" xml:space="preserve">
+    <value>Unexpected file type encountered in file system.</value>
+  </data>
+  <data name="FileSystem_OutOfForksError" xml:space="preserve">
+    <value>The file system cannot accommodate all of the ROMs, manuals, and save data files. To preserve save game information, you will need to reduce the number of ROMs and / or manuals you have specified in your menu layout.</value>
+  </data>
+  <data name="SyncDeviceToHostCommandCancelled_Message" xml:space="preserve">
+    <value>The menu layout update from your LTO Flash! was cancelled. This should not have modified the contents of your menu layout.</value>
+  </data>
+  <data name="SyncDeviceToHostCommandCancelled_Title" xml:space="preserve">
+    <value>Get Menu Layout from LTO Flash! Cancelled</value>
+  </data>
+  <data name="SyncDeviceToHostCommandComplete_Message" xml:space="preserve">
+    <value>The contents of your menu layout have been updated to match the contents of your LTO Flash!</value>
+  </data>
+  <data name="SyncDeviceToHostCommandComplete_Title" xml:space="preserve">
+    <value>Get Menu Layout from LTO Flash! Complete</value>
+  </data>
+  <data name="SyncDeviceToHostCommand_Failed_Message_Format" xml:space="preserve">
+    <value>A problem has occurred during the menu layout update. The error was:
+
+{0}
+
+This may occur for several reasons:
+  - You disconnected LTO Flash! from the computer during the update
+  - LTO Flash! was also inserted into an Intellivision console, the console's power was turned on during the update
+
+To help ensure a consistent update:
+  - Turn off your Intellivision console, if applicable
+  - Disconnect and reconnect your LTO Flash! within this application</value>
+  </data>
+  <data name="SyncDeviceToHostCommand_Failed_Title" xml:space="preserve">
+    <value>Get Menu Layout from LTO Flash! Failed</value>
+  </data>
+  <data name="SyncDeviceToHostPreviewCommand_Title" xml:space="preserve">
+    <value>Comparing LTO Flash! Layout to Host Menu Menu Layout...</value>
+  </data>
+  <data name="DeviceMultistageCommand_ValidationFailed" xml:space="preserve">
+    <value>Device did not broadcast valid identification data.</value>
+  </data>
+  <data name="SyncDeviceToHostCommand_OverlayText" xml:space="preserve">
+    <value>Getting Menu Layout from LTO Flash! ...</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_OverlayText" xml:space="preserve">
+    <value>Updating Menu Layout...</value>
+  </data>
+  <data name="RemoveManualCommand_Name" xml:space="preserve">
+    <value>Remove Manual</value>
+  </data>
+  <data name="SetManualCommand_Name" xml:space="preserve">
+    <value>Set Manual</value>
+  </data>
+  <data name="SearchForDevicesCommand_MenuItemName" xml:space="preserve">
+    <value>Find LTO Flash! Devices</value>
+  </data>
+  <data name="SetEcsCompatibilityCommand_Name" xml:space="preserve">
+    <value>ECS ROM Enabled</value>
+  </data>
+  <data name="SetIntellivisionIICompatibilityCommand_Name" xml:space="preserve">
+    <value>Intellivision II Compatibility Fix</value>
+  </data>
+  <data name="SetManualCommand_MenuItemName" xml:space="preserve">
+    <value>Set Manual...</value>
+  </data>
+  <data name="SetSaveDataCommand_MenuItemName" xml:space="preserve">
+    <value>Set Save Data...</value>
+  </data>
+  <data name="SyncDeviceToHostCommand_MenuItemName" xml:space="preserve">
+    <value>Get Menu Layout from LTO Flash!</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_MenuItemName" xml:space="preserve">
+    <value>Send Menu Layout to LTO Flash!</value>
+  </data>
+  <data name="ConnectToDevice_GroupName" xml:space="preserve">
+    <value>Connect to Device on Port</value>
+  </data>
+  <data name="DeviceInformationCommand_Name" xml:space="preserve">
+    <value>Device Information...</value>
+  </data>
+  <data name="DisconnectDeviceCommand_MenuItemName" xml:space="preserve">
+    <value>Disconnect from LTO Flash!</value>
+  </data>
+  <data name="FirmwareVersion_CurrentFormat" xml:space="preserve">
+    <value>Current: {0}</value>
+  </data>
+  <data name="FirmwareVersion_FactoryFormat" xml:space="preserve">
+    <value>Factory: {0}</value>
+  </data>
+  <data name="SetColorCommand_Name" xml:space="preserve">
+    <value>Set Item Color</value>
+  </data>
+  <data name="NoDevice" xml:space="preserve">
+    <value>&lt;No Device&gt;</value>
+  </data>
+  <data name="ConnectToDevice_Message" xml:space="preserve">
+    <value>Would you like to connect to the LTO Flash! device discovered on the following port?</value>
+  </data>
+  <data name="Reformat_SucceededMessage" xml:space="preserve">
+    <value>LTO Flash! file system reformat has completed successfully.</value>
+  </data>
+  <data name="AddRomsToMenuCommand_Name" xml:space="preserve">
+    <value>Add to Menu</value>
+  </data>
+  <data name="ReadmeCommand_Name" xml:space="preserve">
+    <value>LTO Flash! Release Notes</value>
+  </data>
+  <data name="AddItemsOperation_FailedToAddMessage" xml:space="preserve">
+    <value>One or more ROMs could not be added to the menu layout.</value>
+  </data>
+  <data name="AddItemsOperation_FailedToAddReportHeader" xml:space="preserve">
+    <value>Failed to add the following items:</value>
+  </data>
+  <data name="PromptToAddMenuItems_DoNotAskAgain" xml:space="preserve">
+    <value>Do not ask again</value>
+  </data>
+  <data name="PromptToAddMenuItems_Message" xml:space="preserve">
+    <value>Would you like to have new menu items in your LTO Flash! menu layout created for all ROMs added to the list?
+
+Items will be added to the top-level folder in the menu layout. Folders containing ROMs will be reflected as folders in the menu layout as well.</value>
+  </data>
+  <data name="PromptToAddMenuItems_Title" xml:space="preserve">
+    <value>Create Menu Items for New ROMs</value>
+  </data>
+  <data name="SettingsPage_AddRomsToMenu" xml:space="preserve">
+    <value>Add new ROMs to menu layout</value>
+  </data>
+  <data name="SettingsPage_PromptToAddRoms" xml:space="preserve">
+    <value>Prompt to add new ROMs to menu layout</value>
+  </data>
+  <data name="BackupCommand_ExceptionMessage" xml:space="preserve">
+    <value>An exception occurred when creating the file system backup.</value>
+  </data>
+  <data name="ClearCacheCommand_CompleteMessage" xml:space="preserve">
+    <value>Contents of the ROMs cache directory have been deleted.</value>
+  </data>
+  <data name="ClearCacheCommand_DirectoryNotFoundMessage" xml:space="preserve">
+    <value>The ROMs cache directory was not found.</value>
+  </data>
+  <data name="ClearCacheCommand_Name" xml:space="preserve">
+    <value>Clear ROMs Cache</value>
+  </data>
+  <data name="ClearCacheCommand_ProgressFormat" xml:space="preserve">
+    <value>Deleting: {0}...</value>
+  </data>
+  <data name="ClearCacheCommand_Tip" xml:space="preserve">
+    <value>Clears the cached copies of ROMs stored in the ROMsCache directory.</value>
+  </data>
+  <data name="ClearCacheCommand_Title" xml:space="preserve">
+    <value>Clearing ROMs Cache</value>
+  </data>
+  <data name="ReadmeCommand_ErrorMessageFormat" xml:space="preserve">
+    <value>The readme file "{0}" could not be found!</value>
+  </data>
+  <data name="ReadmeCommand_ErrorMessageTitleFormat" xml:space="preserve">
+    <value>Missing {0}</value>
+  </data>
+  <data name="SetSaveMenuPositionCommand_Name" xml:space="preserve">
+    <value>Save Menu Position</value>
+  </data>
+  <data name="SetShowTitleScreenCommand_Name" xml:space="preserve">
+    <value>Show Title Screen</value>
+  </data>
+  <data name="EditLongNameCommand_Name" xml:space="preserve">
+    <value>Edit Long Name</value>
+  </data>
+  <data name="AddRomsToMenuCommand_Tip" xml:space="preserve">
+    <value>Add selected ROMs in the ROM List to the Menu Layout</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DeviceMultistageCommand_RestoreFileSystem_Title" xml:space="preserve">
+    <value>Restoring File System...</value>
+  </data>
+  <data name="RestoreCommand_BackupNotFound_ErrorFormat" xml:space="preserve">
+    <value>The selected directory:
+
+  {0}
+
+could not be found.</value>
+  </data>
+  <data name="RestoreCommand_BackupNotFound_ErrorTitle" xml:space="preserve">
+    <value>Invalid Restore Point</value>
+  </data>
+  <data name="RestoreCommand_CancelledMessage" xml:space="preserve">
+    <value>Restore operation was cancelled! Note that the contents of your LTO Flash! may be in an inconsistent state. You should either resume the backup, or copy your current files back to your device.</value>
+  </data>
+  <data name="RestoreCommand_CancelledTitle" xml:space="preserve">
+    <value>Restore Cancelled</value>
+  </data>
+  <data name="RestoreCommand_CompleteMessage" xml:space="preserve">
+    <value>Restore operation succeeded.</value>
+  </data>
+  <data name="RestoreCommand_CompleteTitle" xml:space="preserve">
+    <value>Restore Complete</value>
+  </data>
+  <data name="RestoreCommand_Dialog_Title" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="RestoreCommand_FailedTitle" xml:space="preserve">
+    <value>Restore Failed</value>
+  </data>
+  <data name="RestoreCommand_MenuItemName" xml:space="preserve">
+    <value>Restore File System...</value>
+  </data>
+  <data name="RestoreCommand_Name" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="RestoreCommand_Tip" xml:space="preserve">
+    <value>Restore contents of your LTO Flash! from a previous backup</value>
+  </data>
+  <data name="RestoreCommand_WarningMessage" xml:space="preserve">
+    <value>WARNING! Restore from Backup will replace the contents of your LTO Flash!
+
+Would you like to proceed?</value>
+  </data>
+  <data name="SelectBackupDialog_DateColumnTitle" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="SelectBackupDialog_NumberOfItemsColumnTitle" xml:space="preserve">
+    <value>Number of Items</value>
+  </data>
+  <data name="SelectBackupDialog_PathColumnTitle" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="SelectBackupDialog_Prompt" xml:space="preserve">
+    <value>Select a backup to restore.</value>
+  </data>
+  <data name="SelectBackupDialog_Title" xml:space="preserve">
+    <value>Select Menu Layout Backup</value>
+  </data>
+  <data name="SetBackgroundGarbageCollectCommand_Name" xml:space="preserve">
+    <value>Background file system cleanup</value>
+  </data>
+  <data name="SetBackgroundGarbageCollectCommand_TipDescription" xml:space="preserve">
+    <value>When enabled, your LTO Flash! will perform file system maintenance and cleanup in the background while you navigate the menus. (Factory Default: ON)</value>
+  </data>
+  <data name="SetBackgroundGarbageCollectCommand_TipTitle" xml:space="preserve">
+    <value>Perform Background File System Maintenance</value>
+  </data>
+  <data name="SetKeyclicksCommand_TipDescription" xml:space="preserve">
+    <value>When enabled, the 'key click' sound effect is active when navigating menus on the console. (Factory Default: OFF)</value>
+  </data>
+  <data name="SetKeyclicksCommand_TipTitle" xml:space="preserve">
+    <value>Enable Keyclicks</value>
+  </data>
+  <data name="SetSaveMenuPositionCommand_TipDescription" xml:space="preserve">
+    <value>When enabled, your LTO Flash! will resume at the last selected menu selection.</value>
+  </data>
+  <data name="SetSaveMenuPositionCommand_TipTitle" xml:space="preserve">
+    <value>Remember Menu Position</value>
+  </data>
+  <data name="SettingsPage_ShowFileSystemDetails" xml:space="preserve">
+    <value>Show file system details</value>
+  </data>
+  <data name="ShowTitleScreen_Always" xml:space="preserve">
+    <value>Always</value>
+  </data>
+  <data name="ShowTitleScreen_Always_ToolTipDescription" xml:space="preserve">
+    <value>Always show the title screen whenever the system is powered on or reset to the menu. (Factory Default)</value>
+  </data>
+  <data name="ShowTitleScreen_Never" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="ShowTitleScreen_Never_ToolTipDescription" xml:space="preserve">
+    <value>Never show the title screen - immediately show the menu.</value>
+  </data>
+  <data name="ShowTitleScreen_OnPowerUp" xml:space="preserve">
+    <value>Power On</value>
+  </data>
+  <data name="ShowTitleScreen_OnPowerUp_ToolTipDescription" xml:space="preserve">
+    <value>Only show the title screen the system is initially powered up.</value>
+  </data>
+  <data name="ShowTitleScreen_ToolTipTitleFormat" xml:space="preserve">
+    <value>Show LTO Flash! Title Screen: {0}</value>
+  </data>
+  <data name="FirmwareRevision_ToStringFormat" xml:space="preserve">
+    <value>{0}{1}{2}</value>
+    <comment>{0} is numeric version, {1} is suffix (e.g. secondary) (may be empty), {2} is unreleased may be empty</comment>
+  </data>
+  <data name="FirmwareRevision_ToStringSecondarySuffix" xml:space="preserve">
+    <value> (secondary)</value>
+  </data>
+  <data name="FirmwareRevision_ToStringUnreleasedSuffix" xml:space="preserve">
+    <value>+</value>
+  </data>
+  <data name="Firmware_RestoreFirmwareCommand_CancelledMesssage" xml:space="preserve">
+    <value>The firmware restore process was cancelled. No changes were made.</value>
+  </data>
+  <data name="Firmware_RestoreFirmwareCommand_Cancelled_Title" xml:space="preserve">
+    <value>Restore Firmware Cancelled</value>
+  </data>
+  <data name="Firmware_RestoreFirmwareCommand_CompleteMessageFormat" xml:space="preserve">
+    <value>The firmware was successfullly restored to version {0}.</value>
+  </data>
+  <data name="Firmware_RestoreFirmwareCommand_Complete_Title" xml:space="preserve">
+    <value>Restore Firmware Complete</value>
+  </data>
+  <data name="Firmware_UpdateFirmwareCommand_CancelledMessage" xml:space="preserve">
+    <value>The firmware update process was cancelled. No changes were made.</value>
+  </data>
+  <data name="Firmware_UpdateFirmwareCommand_Cancelled_Title" xml:space="preserve">
+    <value>Update Firmware Cancelled</value>
+  </data>
+  <data name="Firmware_UpdateFirmwareCommand_CompleteMessageFormat" xml:space="preserve">
+    <value>The firmware has been updated to version {0}.</value>
+  </data>
+  <data name="Firmware_UpdateFirmwareCommand_Complete_Title" xml:space="preserve">
+    <value>Firmware Update Complete</value>
+  </data>
+  <data name="UpdateFileSystemError_InvalidSizeErrorFormat" xml:space="preserve">
+    <value>The data file '{0}' has an invalid size of {1} bytes.</value>
+  </data>
+  <data name="UpdateFileSystemError_MissingFileErrorFormat" xml:space="preserve">
+    <value>The data file '{0}' cannot be found.</value>
+  </data>
+  <data name="UpdateFileSystemError_UnexpectedErrorFormat" xml:space="preserve">
+    <value>Unable to compute update operation for data file '{0}'.</value>
+  </data>
+  <data name="RestoreCacheIndex_ErrorMessage" xml:space="preserve">
+    <value>The following items were not restored in the cache index:</value>
+  </data>
+  <data name="RestoreCacheIndex_ErrorTitle" xml:space="preserve">
+    <value>Error Restoring Cache Index</value>
+  </data>
+  <data name="RestoreCacheIndex_FailedToReconstructFormat" xml:space="preserve">
+    <value>Failed to reconstruct: {0}</value>
+  </data>
+  <data name="GoToFTDIDriverPageCommand_Name" xml:space="preserve">
+    <value>Visit FTDI Driver Download Page</value>
+  </data>
+  <data name="FtdiDriverVersionUnknown" xml:space="preserve">
+    <value>&lt;Unknown&gt;</value>
+  </data>
+  <data name="BackupCommand_TipTitle" xml:space="preserve">
+    <value>Backup Device Contents</value>
+  </data>
+  <data name="CurrentFirmwareCommand_TipTitle" xml:space="preserve">
+    <value>Currently Running Firmware Version</value>
+  </data>
+  <data name="DeviceSettingsRibbonGroupCommand_Name" xml:space="preserve">
+    <value>Device Settings</value>
+  </data>
+  <data name="DeviceUniqueIdCommand_TipDescription" xml:space="preserve">
+    <value>This is the unique identifier (serial number) of the currently connected LTO Flash! device.</value>
+  </data>
+  <data name="FactoryFirmwareCommand_TipTitle" xml:space="preserve">
+    <value>Original Firmware Version</value>
+  </data>
+  <data name="SecondaryFirmwareCommand_TipTitle" xml:space="preserve">
+    <value>Updated Firmware Version</value>
+  </data>
+  <data name="SetDeviceNameCommand_TipDescription" xml:space="preserve">
+    <value>Give your LTO Flash! a name. This value is limited to a length of 18 characters.</value>
+  </data>
+  <data name="SetDeviceNameCommand_TipTitle" xml:space="preserve">
+    <value>Device Name</value>
+  </data>
+  <data name="SetDeviceOwnerCommand_TipDescription" xml:space="preserve">
+    <value>If you so desire, you may provide an owner name or other text. This value is limited to a length of 60 characters.</value>
+  </data>
+  <data name="SetDeviceOwnerCommand_TipTitle" xml:space="preserve">
+    <value>Device Owner</value>
+  </data>
+  <data name="SetKeyclicksCommand_Name" xml:space="preserve">
+    <value>Enable keyclicks</value>
+  </data>
+  <data name="SyncDeviceToHostCommand_TipTitle" xml:space="preserve">
+    <value>Get Menu Layout from LTO Flash!</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_TipTitle" xml:space="preserve">
+    <value>Send Menu to LTO Flash!</value>
+  </data>
+  <data name="FtdiGroupCommand_Name" xml:space="preserve">
+    <value>FTDI</value>
+  </data>
+  <data name="FtdiGroupCommand_MenuItemName" xml:space="preserve">
+    <value>FTDI Virtual COM Port Driver</value>
+  </data>
+  <data name="GoToFTDIDriverPageCommand_TipDescription" xml:space="preserve">
+    <value>Visit the driver download page for FTDI Virtual COM Port (VCP) drivers.</value>
+  </data>
+  <data name="FtdiDriverVersionCommand_Format" xml:space="preserve">
+    <value>Driver Version: {0}</value>
+  </data>
+  <data name="FtdiDriverVersionCommand_Name" xml:space="preserve">
+    <value>Driver Version</value>
+  </data>
+  <data name="FtdiDriverVersionCommand_TipDescription" xml:space="preserve">
+    <value>Displays the version of the FTDI Virtual COM Port driver last used to communicate with LTO Flash!</value>
+  </data>
+  <data name="FtdiDriverVersionCommand_TipTitle" xml:space="preserve">
+    <value>FTDI Driver Version</value>
+  </data>
+  <data name="RemoveFromMenuCommand_TipDescription" xml:space="preserve">
+    <value>Remove selected item</value>
+  </data>
+  <data name="LaunchFtdiDriverInstallerCommand_Name" xml:space="preserve">
+    <value>Launch FTDI Driver Installer</value>
+  </data>
+  <data name="LaunchFtdiDriverInstallerCommand_NoDriverPromptMessageFormat" xml:space="preserve">
+    <value>The LTO Flash! User Interface is unable to locate the FTDI Virtual COM Port driver on your system. This driver is necessary to communicate with your LTO Flash!
+
+A copy of the driver installer has been included with the LTO Flash! User Interface, though it may not be the most recent release. To get the most recent driver, you can visit the FTDI  driver download page by choosing the following menu option:
+
+  {0}
+
+Would you like to launch the FTDI Virtual COM Port driver installer included with LTO Flash! User Interface?</value>
+  </data>
+  <data name="LaunchFtdiDriverInstallerCommand_PromptMessage" xml:space="preserve">
+    <value>If you choose to proceed, the installer for the FTDI Virtual COM Port driver will be launched with elevated permissions. This driver is necessary to communicate with your LTO Flash!
+
+On most systems, this driver will automatically be installed the first time you connect your LTO Flash! to the computer. On Mac OS X and in some Windows 10 installations, this may not occur. If the LTO Flash! User Interface cannot detect your device, it's possible that direct installation of the driver is necessary.
+
+Would you like to launch the FTDI Virtual COM Port driver installer?</value>
+  </data>
+  <data name="LaunchFtdiDriverInstallerCommand_PromptTitle" xml:space="preserve">
+    <value>Install FTDI VCP Driver</value>
+  </data>
+  <data name="LaunchFtdiDriverInstallerCommand_TipDescription" xml:space="preserve">
+    <value>Launch the FTDI driver installer included with LTO Flash!. Note that this may not be the most recent version. Visit the FTDI website for the most current driver version.</value>
+  </data>
+  <data name="FtdiDriverIdentification_ErrorMessage" xml:space="preserve">
+    <value>An exception execucting driver information query.</value>
+  </data>
+  <data name="FtdiDriverIdentification_Error_Title" xml:space="preserve">
+    <value>Failed to Enumerate FTDI Driver Information</value>
+  </data>
+  <data name="SaveMenuPosition_Always" xml:space="preserve">
+    <value>Always</value>
+  </data>
+  <data name="SaveMenuPosition_Always_ToolTipDescription" xml:space="preserve">
+    <value>The last selected menu location is always saved. After a reset or power up, LTO Flash! will resume at the location in the menu you were last visiting.</value>
+  </data>
+  <data name="SaveMenuPosition_Never" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="SaveMenuPosition_Never_ToolTipDescription" xml:space="preserve">
+    <value>The last selected menu location is never saved. After reset or power up, LTO Flash! will always start at the root menu.</value>
+  </data>
+  <data name="SaveMenuPosition_SessionOnly" xml:space="preserve">
+    <value>Only During Session</value>
+  </data>
+  <data name="SaveMenuPosition_SessionOnly_ToolTipDescription" xml:space="preserve">
+    <value>The last selected menu location will be saved when you reset your Intellivision. When you turn off the power to your console, the next time you use your LTO Flash! will start at the root menu. (Factory Default)</value>
+  </data>
+  <data name="SaveMenuPosition_ToolTipTitleFormat" xml:space="preserve">
+    <value>Save LTO Flash! Menu Position: {0}</value>
+  </data>
+  <data name="SetConfigurationCommand_BackgroundGC_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when setting background garbage collection mode. The error was:
+
+{0}</value>
+  </data>
+  <data name="SetConfigurationCommand_BackgroundGC_Failed_Title" xml:space="preserve">
+    <value>Failed to Set Background Garbage Collection Cleanup Mode</value>
+  </data>
+  <data name="SetConfigurationCommand_Keyclicks_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when setting keyclicks mode. The error was:
+
+{0}</value>
+  </data>
+  <data name="SetConfigurationCommand_Keyclicks_Failed_Title" xml:space="preserve">
+    <value>Failed to Set Keyclicks Mode</value>
+  </data>
+  <data name="SetConfigurationCommand_SaveMenuPosition_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when setting save menu position mode. The error was:
+
+{0}</value>
+  </data>
+  <data name="SetConfigurationCommand_SaveMenuPosition_Failed_Title" xml:space="preserve">
+    <value>Failed to Set Save Menu Position Mode</value>
+  </data>
+  <data name="SetConfigurationCommand_ShowTitleScreen_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when setting title screen display mode. The error was:
+
+{0}</value>
+  </data>
+  <data name="SetConfigurationCommand_ShowTitleScreen_Failed_Title" xml:space="preserve">
+    <value>Failed to Set Show Title Screen Mode</value>
+  </data>
+  <data name="PromptToInstallFtdiDriver_DoNotAskAgain" xml:space="preserve">
+    <value>No (Do not ask again)</value>
+  </data>
+  <data name="PromptToInstallFtdiDriver_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="PromptToInstallFtdiDriver_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="DeviceCommandExecuteFailed_ExceptionMessageFormat" xml:space="preserve">
+    <value>The command '{0}' with arguments: 0x{1:X8}, 0x{2:X8}, 0x{3:X8}, 0x{4:X8} failed, returning result: 0x{5:X2}.</value>
+  </data>
+  <data name="SetDeviceNameCommand_ErrorMessage" xml:space="preserve">
+    <value>Failed to set device name. This may have occurred if the device was disconnected during the update, or the console power was turned on while updating the name.</value>
+  </data>
+  <data name="SetDeviceNameCommand_FailedTitle" xml:space="preserve">
+    <value>Set Device Name Failed</value>
+  </data>
+  <data name="UpdateFirmwareCommand_FileNotFoundErrorMessageFormat" xml:space="preserve">
+    <value>The firmware update file:
+
+  {0}
+
+could not be found.</value>
+  </data>
+  <data name="UpdateFirmwareCommand_FileNotFoundErrorTitle" xml:space="preserve">
+    <value>Firmware File Not Found</value>
+  </data>
+  <data name="UpdateFirmwareCommand_FileTooLargeErrorMessageFormat" xml:space="preserve">
+    <value>The firmware update file:
+
+  {0}
+
+is too large ({1} bytes).</value>
+  </data>
+  <data name="UpdateFirmwareCommand_FileTooLargeErrorTitle" xml:space="preserve">
+    <value>Firmware File Too Large</value>
+  </data>
+  <data name="UpdateFirmwareCommand_InvalidFileMessageFormat" xml:space="preserve">
+    <value>The firmware update file:
+
+  {0}
+
+does not appear to be a valid firmware update.</value>
+  </data>
+  <data name="UpdateFirmwareCommand_InvalidFileTitle" xml:space="preserve">
+    <value>Invalid Firmware File</value>
+  </data>
+  <data name="ErrorBufferReport_Empty" xml:space="preserve">
+    <value>&lt;empty error report&gt;</value>
+  </data>
+  <data name="ErrorBufferReport_FailedToRetrieve" xml:space="preserve">
+    <value>Failed to retrieve error report.</value>
+  </data>
+  <data name="ErrorBufferReport_Format" xml:space="preserve">
+    <value>The on-device error report is:
+{0}</value>
+  </data>
+  <data name="ErrorBufferReport_ThrewException" xml:space="preserve">
+    <value>Retrieving the error report threw an exception.</value>
+  </data>
+  <data name="BackupCommandErrorHandler_ArgumentErrorMessageFormat" xml:space="preserve">
+    <value>Invalid file system path for backup file:
+
+{0}</value>
+  </data>
+  <data name="BackupCommandErrorHandler_DirectoryNotFoundErrorMessageFormat" xml:space="preserve">
+    <value>Unable to locate directory path for backup file:
+
+{0}</value>
+  </data>
+  <data name="BackupCommandErrorHandler_IOExceptionErrorMessageFormat" xml:space="preserve">
+    <value>Unable to execute file system operation for file:
+
+{0}</value>
+  </data>
+  <data name="BackupCommandErrorHandler_PathTooLongErrorMessageFormat" xml:space="preserve">
+    <value>The file path is too long:
+
+{0}</value>
+  </data>
+  <data name="BackupCommand_UnauthorizedAccessErrorMessageFormat" xml:space="preserve">
+    <value>Permission denied attempting to create backup for file:
+
+{0}</value>
+  </data>
+  <data name="BackupMenuLayoutCommand_MenuItemName" xml:space="preserve">
+    <value>Backup Menu Layout...</value>
+  </data>
+  <data name="BackupMenuLayoutCommand_Message" xml:space="preserve">
+    <value>Backup copies of your Menu Layout and ROM list have been stored in the following location:</value>
+  </data>
+  <data name="BackupMenuLayoutCommand_Name" xml:space="preserve">
+    <value>Backup Menu Layout</value>
+  </data>
+  <data name="BackupMenuLayoutCommand_TipDescription" xml:space="preserve">
+    <value>Make a backup copy of the current menu layout.</value>
+  </data>
+  <data name="BackupMenuLayoutCommand_Title" xml:space="preserve">
+    <value>Menu Layout Backup</value>
+  </data>
+  <data name="EmptyMenuLayoutCommand_MenuItemName" xml:space="preserve">
+    <value>Empty Menu Layout...</value>
+  </data>
+  <data name="EmptyMenuLayoutCommand_Name" xml:space="preserve">
+    <value>Empty Menu Layout</value>
+  </data>
+  <data name="EmptyMenuLayoutCommand_TipDescription" xml:space="preserve">
+    <value>Removes all entries from the Menu Layout.</value>
+  </data>
+  <data name="EmptyMenuLayoutCommand_WarningMessage" xml:space="preserve">
+    <value>WARNING!
+
+Choosing to empty your Menu Layout will remove all entries from your menu!
+
+This will NOT affect the menu on your LTO Flash!.
+
+Are you sure you wish to proceed?</value>
+  </data>
+  <data name="EmptyMenuLayoutCommand_WarningTitle" xml:space="preserve">
+    <value>Empty Menu Layout</value>
+  </data>
+  <data name="FileSystemStatisticsView_PhysicalBlocksInUse" xml:space="preserve">
+    <value>Blocks In Use/Dirty:</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_MenuItemName" xml:space="preserve">
+    <value>Restore Menu Layout...</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_MissingFilesErrorMessage" xml:space="preserve">
+    <value>The following required backup files could not be found in the backup directory:</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_MissingFilesErrorTitle" xml:space="preserve">
+    <value>Unable to Restore Menu Layout</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_Name" xml:space="preserve">
+    <value>Restore Menu Layout</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_TipDescription" xml:space="preserve">
+    <value>Replaces the current Menu Layout and ROM list with versions from a backup copy.</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_WarningMessage" xml:space="preserve">
+    <value>WARNING!
+
+Restoring a Menu Layout from a backup will replace your current Menu Layout and ROM list! If you have moved or deleted ROMs since creating the backup, you may encounter errors.
+
+This will NOT affect the menu on your LTO Flash!.
+
+Would you like to continue with the restore operation?</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_WarningTitle" xml:space="preserve">
+    <value>Restore Menu Layout</value>
+  </data>
+  <data name="UpdateFirmwareCommand_ValidationFailedFormat" xml:space="preserve">
+    <value>The firmware update file:
+
+  {0}
+
+could not be validated.</value>
+  </data>
+  <data name="OpenDeviceBackupsDirectoryCommand_Name" xml:space="preserve">
+    <value>Open Device Backups Folder</value>
+  </data>
+  <data name="OpenDeviceBackupsDirectoryCommand_TipDescription" xml:space="preserve">
+    <value>Opens the folder containing backups made for the currently connected LTO Flash! device.</value>
+  </data>
+  <data name="OpenMenuLayoutBackupsDirectoryCommand_Name" xml:space="preserve">
+    <value>Open Menu Layout Backups Folder</value>
+  </data>
+  <data name="OpenMenuLayoutBackupsDirectoryCommand_TipDescription" xml:space="preserve">
+    <value>Opens the folder containing Menu Layout and ROM list backups.</value>
+  </data>
+  <data name="OpenErrorLogsDirectoryCommand_Name" xml:space="preserve">
+    <value>Open Error Logs Folder</value>
+  </data>
+  <data name="OpenErrorLogsDirectoryCommand_TipDescription" xml:space="preserve">
+    <value>Opens the file system folder containing error logs.</value>
+  </data>
+  <data name="SyncErrors_DirtyFileSystemMessage" xml:space="preserve">
+    <value>File system was already in an inconsistent state</value>
+  </data>
+  <data name="BackupCommandComplete_ErrorsOccurredTitle" xml:space="preserve">
+    <value>Inconsistent File System Backup</value>
+  </data>
+  <data name="BackupCommandComplete_DireWarning" xml:space="preserve">
+    <value>As much data has been retrieved as possible, but some files may not be accessible. A complete list of these items has been recorded in an error report in the backup directory.
+
+You should not use this backup as a restore point.
+
+Would you like to keep this backup?</value>
+  </data>
+  <data name="BackupCommandComplete_EncounteredErrors" xml:space="preserve">
+    <value>The following problems were discovered during backup:</value>
+  </data>
+  <data name="SyncErrors_OrphanedForksFormat" xml:space="preserve">
+    <value>A total of {0} unreachable data forks were discovered</value>
+  </data>
+  <data name="SyncErrors_UnsupportedForksFormat" xml:space="preserve">
+    <value>A total of {0} unsupported data forks were discovered</value>
+  </data>
+  <data name="SyncErrors_UnsupportedForksInfo" xml:space="preserve">
+    <value>You may wish to check for an updated version the LTO Flash! User Interface software if you continue to encounter this error.</value>
+  </data>
+  <data name="UnsupportedForkKindException_MessageFormat" xml:space="preserve">
+    <value>An unsupported fork of type '{0}' has been encountered.</value>
+  </data>
+  <data name="SyncDeviceToHostCommandComplete_DireWarning" xml:space="preserve">
+    <value>As much data has been retrieved as possible, but not all items on the device will be reachable. A complete list of these items has been recorded in an error report in the ErrorLogs directory.</value>
+  </data>
+  <data name="SyncDeviceToHostCommandComplete_WarningsMessage" xml:space="preserve">
+    <value>The contents of your menu layout have been updated. However, during the process, some inconsistencies were encountered:</value>
+  </data>
+  <data name="SyncDeviceToHostCommandComplete_WarningTitle" xml:space="preserve">
+    <value>Anomolies During Get Menu Layout</value>
+  </data>
+  <data name="SyncErrors_MissingEntriesFormat" xml:space="preserve">
+    <value>Unable to create entries for {0} items</value>
+  </data>
+  <data name="SyncErrors_UnableToRetrieveForksFormat" xml:space="preserve">
+    <value>Unable to retrieve {0} forks from device</value>
+  </data>
+  <data name="MenuLayout_MissingItem_Tip" xml:space="preserve">
+    <value>This item is missing; cached data may be used if available</value>
+  </data>
+  <data name="RomToLuigiFailed_InvalidOutputFileFormat" xml:space="preserve">
+    <value>Unable to prepare ROM for deployment. The path '{0}' either does not exist, or is otherwise invalid.</value>
+  </data>
+  <data name="ValidateDataBlock_BadAddressAlignmentFormat" xml:space="preserve">
+    <value>The memory address: 0x{0:X8} is not properly word aligned.</value>
+  </data>
+  <data name="ValidateDataBlock_BadAddressFormat" xml:space="preserve">
+    <value>The memory address: 0x{0:X8} for the data block in LTO Flash! RAM is invalid.</value>
+  </data>
+  <data name="ValidateDataBlock_BadSizeOrAddressFormat" xml:space="preserve">
+    <value>Data block of size {0} cannot be placed into LTO Flash! RAM at address: 0x{1:X8}.</value>
+  </data>
+  <data name="ValidateDataBlock_BlockTooLargeFormat" xml:space="preserve">
+    <value>Data block size of {0} is too large to fit into LTO Flash! RAM.</value>
+  </data>
+  <data name="ValidateDataBlock_ZeroBlockSize" xml:space="preserve">
+    <value>Data block size cannot be zero!</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_Failed_Resolution" xml:space="preserve">
+    <value>This problem may occur for several reasons:
+  - You disconnected LTO Flash! from your computer during the update
+  - LTO Flash! was also inserted into an Intellivision console, the console's power was turned on during the update
+  - Files necessary for the update could not be found
+  - An error occurred when preparing the file for deployment
+
+To ensure a consistent update:
+  - Turn off your console, if applicable
+  - Disconnect and reconnect your LTO Flash! within this application
+  - Ensure that all ROMs both in the ROM list and the Menu Layout are available
+  - Remove and re-add ROMs that report a problem</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_GatherUpdatesFailedMessage" xml:space="preserve">
+    <value>Failed to gather data needed to update file system.</value>
+  </data>
+  <data name="SyncHostToDevice_FetchUpdateOperationFailedMessage" xml:space="preserve">
+    <value>Failed to retrieve update operation data.</value>
+  </data>
+  <data name="SyncPreviewCommand_Failed_Resolution" xml:space="preserve">
+    <value>This may occur if you disconnected LTO Flash! from your computer during the process or, if your LTO Flash! was also inserted into an Intellivision console, the console's power was turned on during the operation.
+
+To prevent this error, turn off your console, if applicable, and try again. If the problem persists, also disconnect your LTO Flash! from your computer and reconnect it.</value>
+  </data>
+  <data name="EditNameCommand_Name" xml:space="preserve">
+    <value>Edit Name</value>
+  </data>
+  <data name="EditNameCommand_ToolTipDescription" xml:space="preserve">
+    <value>Edit the long or short name of the selected menu item.</value>
+  </data>
+  <data name="EditNameCommand_ToolTipTitle" xml:space="preserve">
+    <value>Edit Menu Item Name</value>
+  </data>
+  <data name="FileSystemStatisticsView_FlashLifetimeHeader" xml:space="preserve">
+    <value>Flash Lifetime</value>
+  </data>
+  <data name="FileSystemStatisticsView_PercentRemaining" xml:space="preserve">
+    <value>Overall Flash Lifetime Remaining:</value>
+  </data>
+  <data name="FileSystemStatisticsView_PercentUsedByErasures" xml:space="preserve">
+    <value>Usage due to Physical Sector Erasures:</value>
+  </data>
+  <data name="FileSystemStatisticsView_PercentUsedByJournal" xml:space="preserve">
+    <value>Usage due to File System Journal:</value>
+  </data>
+  <data name="FileSystemStatisticsView_UnknownPercentage" xml:space="preserve">
+    <value>--.--%</value>
+  </data>
+  <data name="NewDirectoryCommand_ToolTipDescription" xml:space="preserve">
+    <value>Creates a new directory, which can contain more subdirectories or files (ROMs, manuals, etc.)</value>
+  </data>
+  <data name="NewDirectoryCommand_ToolTipTitle" xml:space="preserve">
+    <value>Create New Directory</value>
+  </data>
+  <data name="RemoveFromMenuCommand_MenuItemName" xml:space="preserve">
+    <value>Remove from Menu</value>
+  </data>
+  <data name="RemoveFromMenuCommand_TipTitle" xml:space="preserve">
+    <value>Remove from Menu</value>
+  </data>
+  <data name="RemoveFromMenuCommand_ToolTipDescription" xml:space="preserve">
+    <value>Remove selected item from the menu layout.</value>
+  </data>
+  <data name="SetColorCommand_ToolTipDescription" xml:space="preserve">
+    <value>Sets the color of the selected menu item's icon.</value>
+  </data>
+  <data name="DownloadAndPlayCommand_MenuItemName" xml:space="preserve">
+    <value>Play on LTO Flash!</value>
+  </data>
+  <data name="ShowFileSystemDetailsCommand_MenuItemName" xml:space="preserve">
+    <value>Show File System Details</value>
+  </data>
+  <data name="ShowFileSystemDetailsCommand_Name" xml:space="preserve">
+    <value>Show file system details</value>
+  </data>
+  <data name="ShowFileSystemDetailsCommand_TipDescription" xml:space="preserve">
+    <value>When this option is checked, additional information about the file system of the selected LTO Flash! device is displayed.</value>
+  </data>
+  <data name="ShowFileSystemDetailsCommand_TipTitle" xml:space="preserve">
+    <value>Show File System Details</value>
+  </data>
+  <data name="DeviceMultistageCommand_GetErrorAndCrashLogs_GetCrashLog" xml:space="preserve">
+    <value>Retrieving firmware crash log...</value>
+  </data>
+  <data name="DeviceMultistageCommand_GetErrorAndCrashLogs_GetErrorLog" xml:space="preserve">
+    <value>Retrieving command error log...</value>
+  </data>
+  <data name="DeviceMultistageCommand_GetErrorAndCrashLogs_LocatingInformation" xml:space="preserve">
+    <value>Identifying available error information...</value>
+  </data>
+  <data name="DeviceMultistageCommand_GetErrorAndCrashLogs_Title" xml:space="preserve">
+    <value>Retrieving Device Error Information...</value>
+  </data>
+  <data name="ProtocolCommandId_DecodeLuigiFromFork_Failed" xml:space="preserve">
+    <value>Failed to decode LUIGI data from file system fork.</value>
+  </data>
+  <data name="ProtocolCommandId_DecodeLuigiFromFork_Title" xml:space="preserve">
+    <value>Decoding LUIGI from fork...</value>
+  </data>
+  <data name="ProtocolCommandId_DownloadCrashLog_Failed" xml:space="preserve">
+    <value>Failed to download the crash log.</value>
+  </data>
+  <data name="ProtocolCommandId_DownloadCrashLog_Title" xml:space="preserve">
+    <value>Downloading crash log...</value>
+  </data>
+  <data name="ProtocolCommandId_EraseCrashLog_Failed" xml:space="preserve">
+    <value>Failed to erase crash log.</value>
+  </data>
+  <data name="ProtocolCommandId_EraseCrashLog_Title" xml:space="preserve">
+    <value>Erasing crash log...</value>
+  </data>
+  <data name="ProtocolCommandId_MultistagePseudoCommand_Failed" xml:space="preserve">
+    <value>Batch command execution failed.</value>
+  </data>
+  <data name="ProtocolCommandId_UnknownCommand_Failed" xml:space="preserve">
+    <value>Failed to execute an unknown or unrecognized command.</value>
+  </data>
+  <data name="GetErrorAndCrashLogs_Failed_Message_Format" xml:space="preserve">
+    <value>An error occurred when downloading error information. The error was:
+
+{0}</value>
+  </data>
+  <data name="GetErrorAndCrashLogs_Failed_Title" xml:space="preserve">
+    <value>Failed to Download Error Information</value>
+  </data>
+  <data name="EditShortNameCommand_Name" xml:space="preserve">
+    <value>Edit Short Name</value>
+  </data>
+  <data name="SyncDeviceToHostCommand_SubmenuName" xml:space="preserve">
+    <value>Get Menu from LTO Flash!</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_SubmenuName" xml:space="preserve">
+    <value>Send Menu to LTO Flash!</value>
+  </data>
+  <data name="CrashReporter_DetailHeader" xml:space="preserve">
+    <value>The following issues have been discovered on your LTO Flash!</value>
+  </data>
+  <data name="CrashReporter_Detail_CrashLogUnavailable" xml:space="preserve">
+    <value>&lt;Crash log unavailable&gt;</value>
+  </data>
+  <data name="CrashReporter_Detail_DeviceId" xml:space="preserve">
+    <value>Device ID:</value>
+  </data>
+  <data name="CrashReporter_Detail_ErrorLogFormat" xml:space="preserve">
+    <value>DEVICE ERROR LOG:
+The device error log contains the following information:
+
+{0}
+
+You can also find this in an error log file:
+
+{1}</value>
+  </data>
+  <data name="CrashReporter_Detail_ErrorLogUnavailable" xml:space="preserve">
+    <value>&lt;Error log unavailable&gt;</value>
+  </data>
+  <data name="CrashReporter_Detail_FirmwareCrashFormat" xml:space="preserve">
+    <value>FIRMWARE CRASH:
+The firmware on your LTO Flash! has crashed. A raw crash log will be attached to this error report. You can also find this binary file at the following location:
+
+{0}</value>
+  </data>
+  <data name="CrashReporter_Detail_Timestamp" xml:space="preserve">
+    <value>Timestamp (UTC):</value>
+  </data>
+  <data name="CrashReporter_Message" xml:space="preserve">
+    <value>A previously unreported problem has been discovered on your LTO Flash!</value>
+  </data>
+  <data name="CrashReporter_Title" xml:space="preserve">
+    <value>LTO Flash! Error</value>
+  </data>
+  <data name="MenuLayout_EstimatedUsageMBFormat" xml:space="preserve">
+    <value>Flash Storage Used: {0:0.00}/{1} MB</value>
+  </data>
+  <data name="MenuLayout_StorageUsed" xml:space="preserve">
+    <value>Storage Used:</value>
+  </data>
+  <data name="AddRomsToMenuCommand_ContextMenuItemName" xml:space="preserve">
+    <value>Add Selected ROMs from ROM List</value>
+  </data>
+  <data name="MenuLayout_Device_NotInSync" xml:space="preserve">
+    <value>Contents of connected LTO Flash! and the Menu Layout do not match</value>
+  </data>
+  <data name="SaveMenuError_Message" xml:space="preserve">
+    <value>An error occurred when saving the menu layout. The menu may not load correctly in the future. Would you like to restore the menu to its previous state? (Close to decline.)</value>
+  </data>
+  <data name="SaveMenuError_Title" xml:space="preserve">
+    <value>Error Saving Menu Layout</value>
+  </data>
+  <data name="AddItemsOperation_FailedToPrepareMessage" xml:space="preserve">
+    <value>An error occurred preparing one or more files for use on LTO Flash!.</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_SelectBackupTitle" xml:space="preserve">
+    <value>Select LTO Flash! File System Backup</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_WarningDetailHeader" xml:space="preserve">
+    <value>Detailed Information:</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_WarningMessageDetailFormat" xml:space="preserve">
+    <value>File: {0}\nMessage: {1}</value>
+    <comment>{0} is file, {1} is message detail</comment>
+  </data>
+  <data name="RestoreMenuLayoutCommand_WarningsHeader" xml:space="preserve">
+    <value>Although the restore operation succeeded, issues were found. The available information is presented below.</value>
+  </data>
+  <data name="UpdateRomFeatures_ErrorDetailExceptionHeader" xml:space="preserve">
+    <value>Details:</value>
+  </data>
+  <data name="UpdateRomFeatures_ErrorDetailHeader" xml:space="preserve">
+    <value>The following errors were found:</value>
+  </data>
+  <data name="UpdateRomFeatures_ErrorDetailMessageFormat" xml:space="preserve">
+    <value>Error message: {0}</value>
+  </data>
+  <data name="UpdateRomFeatures_ErrorDetailRomPathFormat" xml:space="preserve">
+    <value>ROM file Location: {0}</value>
+  </data>
+  <data name="UpdateRomFeatures_ErrorDetailRomTypeFormat" xml:space="preserve">
+    <value>ROM file format: {0}</value>
+  </data>
+  <data name="UpdateRomFeatures_ErrorMessage" xml:space="preserve">
+    <value>An error occurred while updating the program features for LTO Flash!. This may occur if a ROM is missing or corrupt. Verify the ROM exists and is valid.</value>
+  </data>
+  <data name="UpdateRomFeatures_ErrorTitle" xml:space="preserve">
+    <value>Error Updating ROM Features</value>
+  </data>
+  <data name="AddItemRejected_FailedToCreateLUIGIFile" xml:space="preserve">
+    <value>Failed to create LUIGI-format ROM.</value>
+  </data>
+  <data name="AddItemRejected_FileNotFound" xml:space="preserve">
+    <value>The file could not be found.</value>
+  </data>
+  <data name="AddItemRejected_FileTooLargeFormat" xml:space="preserve">
+    <value>ROM is too large ({0} bytes). The largest supported ROM size is {1} bytes.</value>
+    <comment>{0} is ROM file size in bytes; {1} is maximum allowed size</comment>
+  </data>
+  <data name="AddItemRejected_NoFileName" xml:space="preserve">
+    <value>File name was empty.</value>
+  </data>
+  <data name="AddItemRejected_NotPlayable" xml:space="preserve">
+    <value>System ROMs such as EXEC and GROM are not playable.</value>
+  </data>
+  <data name="AddItemRejected_TooManyItems" xml:space="preserve">
+    <value>Destination folder cannot accept more items.</value>
+  </data>
+  <data name="AddItems_ProgressTitle" xml:space="preserve">
+    <value>Adding Menu Items</value>
+  </data>
+  <data name="OpenManualCommand_Name" xml:space="preserve">
+    <value>View Manual</value>
+  </data>
+  <data name="OpenManualCommand_ToolTip" xml:space="preserve">
+    <value>Opens the manual for viewing.</value>
+  </data>
+  <data name="RestoreMenuLayoutCommand_ErrorMessage" xml:space="preserve">
+    <value>An error occurred restoring the menu layout.</value>
+  </data>
+  <data name="PrepareForDeployment_ErrorCreatingCacheEntryFormat" xml:space="preserve">
+    <value>An error occurred creating the cached ROM for {0}.</value>
+  </data>
+  <data name="DownloadAndPlayCommand_IncompatibleRom_Message_Format" xml:space="preserve">
+    <value>The selected ROM ({0}) is not compatible with this LTO Flash! device, and will not run correctly. Do you still wish to run it?</value>
+  </data>
+  <data name="DownloadAndPlayCommand_IncompatibleRom_Title" xml:space="preserve">
+    <value>Incompatible ROM</value>
+  </data>
+  <data name="IncompatibleRomException_MessageFormat" xml:space="preserve">
+    <value>The ROM at path '{0}' can only execute on the LTO Flash! device with ID '{1}'. The target device has ID '{2}'.</value>
+    <comment>{0} is ROM path, {1} is required device ID for ROM, {2} is target device ID.</comment>
+  </data>
+  <data name="MenuLayout_IncompatibleDeviceNotCopied_Tip_Format" xml:space="preserve">
+    <value>This ROM will not be copied because it requires LTO Flash! with device ID '{0}'</value>
+  </data>
+  <data name="MenuLayout_IncompatibleDevice_Tip_Format" xml:space="preserve">
+    <value>Requires LTO Flash! with device ID '{0}'</value>
+  </data>
+  <data name="MenuLayout_RequiredPeripheralAttached_Tip" xml:space="preserve">
+    <value>Runs on the connected LTO Flash!</value>
+  </data>
+  <data name="MenuLayout_RequiredPeripheralNotAttached_Tip" xml:space="preserve">
+    <value>Only runs on LTO Flash!</value>
+  </data>
+  <data name="MenuLayout_UnknownDevice_Tip_Format" xml:space="preserve">
+    <value>Requires LTO Flash! with device ID '{0}', which has not been connected to this computer</value>
+  </data>
+  <data name="DownloadAndPlayCommand_Missing_Message_Format" xml:space="preserve">
+    <value>The ROM for {0} cannot be found at the path:
+
+{1}</value>
+  </data>
+  <data name="PromptToAddStarterRoms_MessageFormat" xml:space="preserve">
+    <value>LTO Flash! includes a few ROMs to get you started!
+
+If you choose not to import them at this time, you can add them from the following location later:
+
+  {0}
+
+Would you like to add these ROMs now?</value>
+  </data>
+  <data name="PromptToAddStarterRoms_Title" xml:space="preserve">
+    <value>Add Starter Roms</value>
+  </data>
+  <data name="DeviceMultistageCommand_UpdateDeviceOwner_Title" xml:space="preserve">
+    <value>Setting Device Owner...</value>
+  </data>
+  <data name="SetDeviceOwnerCommand_ErrorMessage" xml:space="preserve">
+    <value>Failed to set device owner. This may have occurred if the device was disconnected during the update, or the console power was turned on while updating the owner.</value>
+  </data>
+  <data name="SetDeviceOwnerCommand_FailedTitle" xml:space="preserve">
+    <value>Set Device Owner Failed</value>
+  </data>
+  <data name="ErrorLog_DecodeLuigiErrorMessage" xml:space="preserve">
+    <value>LTO Flash! was unable to decode the ROM. It may be corrupt.</value>
+  </data>
+  <data name="FirmwareUpdateAvailable_MessagePrefix" xml:space="preserve">
+    <value>A newer version of firmware for your LTO Flash! has been found!</value>
+  </data>
+  <data name="FirmwareUpdateAvailable_MessageSuffix" xml:space="preserve">
+    <value>You can disable the firmware upgrade check in LTO Flash! preferences.</value>
+  </data>
+  <data name="SettingsPage_EnablePortLogging" xml:space="preserve">
+    <value>Enable serial port logging</value>
+  </data>
+  <data name="SettingsPage_PromptForFirmwareUpdate" xml:space="preserve">
+    <value>Prompt for firmware upgrade when device connects</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_Unavailable_Generic" xml:space="preserve">
+    <value>: LTO Flash! Not Available for Update Operations</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_Unavailable_NoDevice" xml:space="preserve">
+    <value>: LTO Flash! Not Connected</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_Unavailable_PowerOn" xml:space="preserve">
+    <value>: Update Unavailable when Console Power is On</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_WarningDetailHeader" xml:space="preserve">
+    <value>Detailed Information:</value>
+  </data>
+  <data name="SyncHostToDeviceCommand_WarningFormat" xml:space="preserve">
+    <value>File: {0}\nMessage: {1}</value>
+    <comment>{0} is source of warning, {1} is message for the source</comment>
+  </data>
+  <data name="SyncHostToDeviceCommand_WarningMessage" xml:space="preserve">
+    <value>Although the update succeeded, issues were found. It is possible that backup copies of some ROMs were used if the originals could not be located for verification. The available information is presented below.</value>
+  </data>
+</root>

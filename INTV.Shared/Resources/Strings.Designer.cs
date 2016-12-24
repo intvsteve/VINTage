@@ -349,6 +349,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred when checking for updates..
+        /// </summary>
+        internal static string CheckForUpdatesCommand_Failed {
+            get {
+                return ResourceManager.GetString("CheckForUpdatesCommand_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred when checking for updates:
         ///
         ///{0}.
@@ -360,15 +369,11 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred when checking for updates:
-        ///
-        ///{0}
-        ///
-        ///You can disable checking for udpates in the General application preferences..
+        ///   Looks up a localized string similar to An error occurred when checking for updates. You can disable checking for updates in General application preferences..
         /// </summary>
-        internal static string CheckForUpdatesCommand_FailedStopAskingFormat {
+        internal static string CheckForUpdatesCommand_FailedStopAsking {
             get {
-                return ResourceManager.GetString("CheckForUpdatesCommand_FailedStopAskingFormat", resourceCulture);
+                return ResourceManager.GetString("CheckForUpdatesCommand_FailedStopAsking", resourceCulture);
             }
         }
         
@@ -431,7 +436,9 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An update is available!\n\nCurrent version: {0}
+        ///   Looks up a localized string similar to An update is available!
+        ///
+        ///Current version: {0}
         ///
         ///Would you like to be directed to
         ///

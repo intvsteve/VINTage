@@ -121,14 +121,23 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="rom">The ROM from which to retrieve information.</param>
         /// <returns>The program information.</returns>
-        /// <remarks>If program information cannot be located via the ROM's CRC, then information extracted
-        /// using the intvname utility will be used.</remarks>
+        /// <remarks>Program information will be honored according to the following order or precedence rules:
+        /// 1. Program databases
+        /// 2. ROM-specific metadata
+        ///   a. LUIGI metadata check
+        ///   b. ROM ID tag metadata check
+        /// 3. intvname utility check (which has its own internal order-of-precedence, and should cover .bin+cfg)
+        /// If multiple sources are available, an attempt is made to merge the results.</remarks>
         public static IProgramInformation GetProgramInformation(this IRom rom)
         {
             // NOTE: ROM database is still CRC-based, and does not use a RomComparer!
             var programInfo = ProgramInformationTable.Default.FindProgram(rom.Crc);
             rom.EnsureCfgFileProvided(programInfo);
-            var metadataProgramInfo = rom.GetLuigiFileMetadata();
+            IProgramInformation metadataProgramInfo = rom.GetLuigiFileMetadata();
+            if (metadataProgramInfo == null)
+            {
+                metadataProgramInfo = rom.GetRomFileMetadata();
+            }
             IProgramInformation intvNameInfo = null;
             if (programInfo == null)
             {
@@ -179,6 +188,30 @@ namespace INTV.Core.Model
         }
 
         #endregion // IProgramInformation-related Helpers
+
+        #region ROM-related Helpers
+
+        /// <summary>
+        /// Gets IProgramInformation from a .ROM-format file's metadata, if it is available.
+        /// </summary>
+        /// <param name="rom">The ROM from which metadata-based information is retrieved.</param>
+        /// <returns>IProgramInformation retrieved from the .ROM-format ROM.</returns>
+        public static RomFileMetadataProgramInformation GetRomFileMetadata(this IRom rom)
+        {
+            RomFileMetadataProgramInformation programInfo = null;
+            var romRom = Rom.AsSpecificRomType<RomFormatRom>(rom);
+            if (romRom != null)
+            {
+                programInfo = new RomFileMetadataProgramInformation(rom);
+                if (!programInfo.Metadata.Any())
+                {
+                    programInfo = null;
+                }
+            }
+            return programInfo;
+        }
+
+        #endregion // ROM-related Helpers
 
         #region LUIGI-related Helpers
 

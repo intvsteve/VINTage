@@ -1,5 +1,5 @@
 ﻿// <copyright file="JlpFeatures.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -27,22 +27,22 @@ namespace INTV.Core.Model.Program
     public enum JlpFeatures : uint
     {
         /// <summary>
-        /// Program is incompatible with JLP technology.
+        /// Program does not use JLP technology.
         /// </summary>
         Incompatible = FeatureCompatibility.Incompatible,
 
         /// <summary>
-        /// Program uses no JLP-specific features, whether present or not.
+        /// JLP accelerators are initially enabled; JLP flash is disabled.
         /// </summary>
         Tolerates = FeatureCompatibility.Tolerates,
 
         /// <summary>
-        /// Program uses JLP-specific acceleration features if present.
+        /// JLP accelerators are initially disabled, JLP flash enabled if sector count is nonzero.
         /// </summary>
         Enhances = FeatureCompatibility.Enhances,
 
         /// <summary>
-        /// Program requires JLP-specific acceleration features.
+        /// JLP accelerators are initially enabled, JLP flash enabled if sector count is nonzero.
         /// </summary>
         Requires = FeatureCompatibility.Requires,
 

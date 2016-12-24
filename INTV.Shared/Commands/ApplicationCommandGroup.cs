@@ -124,7 +124,6 @@ namespace INTV.Shared.Commands
 
         private static void OnCheckForUpdates(object parameter)
         {
-            var appInfo = CompositionHelpers.Container.GetExport<IApplicationInfo>();
             if (CanCheckForUpdates(parameter))
             {
                 var checkingAtStartup = false;
@@ -132,84 +131,10 @@ namespace INTV.Shared.Commands
                 {
                     checkingAtStartup = (bool)parameter;
                 }
-                ProgressIndicatorViewModel progressIndicator = null;
-                if (checkingAtStartup)
-                {
-                    progressIndicator = ProgressIndicatorViewModel.ApplicationProgressIndicator;
-                    progressIndicator.Title = CheckForUpdatesCommand.Name;
-                    progressIndicator.AllowsCancel = false;
-                    progressIndicator.IsIndeterminate = true;
-                    progressIndicator.Show(null);
-                }
-                var updateAvailable = false;
-                var message = string.Empty;
-                var versionCheckUrl = appInfo.Value.VersionCheckUrl;
-                try
-                {
-                    var currentDownloadableVersionString = string.Empty;
-                    var webRequest = System.Net.WebRequest.Create(versionCheckUrl);
-                    webRequest.Proxy = new System.Net.WebProxy(versionCheckUrl);
-                    var response = webRequest.GetResponse().GetResponseStream();
-                    using (var reader = new System.IO.StreamReader(response))
-                    {
-                        currentDownloadableVersionString = reader.ReadToEnd();
-                    }
-                    var downloadableVersion = new System.Version(currentDownloadableVersionString);
-                    var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-                    var appVersionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).FileVersion;
-                    var appVersion = new System.Version(appVersionString);
-                    updateAvailable = downloadableVersion > appVersion;
-                    if (updateAvailable)
-                    {
-                        message = string.Format(Resources.Strings.CheckForUpdatesCommand_UpdateAvailableFormat, appVersionString, appInfo.Value.ProductUrl, currentDownloadableVersionString);
-                    }
-                    else
-                    {
-                        if (checkingAtStartup)
-                        {
-                            message = null;
-                        }
-                        else
-                        {
-                            message = Resources.Strings.CheckForUpdatesCommand_NoUpdates;
-                        }
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    if (checkingAtStartup)
-                    {
-                        message = string.Format(Resources.Strings.CheckForUpdatesCommand_FailedStopAskingFormat, e.Message);
-                    }
-                    else
-                    {
-                        message = string.Format(Resources.Strings.CheckForUpdatesCommand_FailedFormat, e.Message);
-                    }
-                }
-                finally
-                {
-                    if (progressIndicator != null)
-                    {
-                        progressIndicator.Hide();
-                        progressIndicator = null;
-                    }
-                }
-                if (!string.IsNullOrEmpty(message))
-                {
-                    var result = OSMessageBox.Show(message, Resources.Strings.CheckForUpdatesCommand_DialogTitle, updateAvailable ? OSMessageBoxButton.YesNo : OSMessageBoxButton.OK);
-                    if (updateAvailable && (result == OSMessageBoxResult.Yes))
-                    {
-                        try
-                        {
-                            RunExternalProgram.OpenInDefaultProgram(appInfo.Value.ProductUrl);
-                        }
-                        catch (System.Exception e)
-                        {
-                            message = string.Format(Resources.Strings.CheckForUpdatesCommand_OpenBrowserFailedFormat, e.Message);
-                            OSMessageBox.Show(message, Resources.Strings.CheckForUpdatesCommand_DialogTitle);
-                        }
-                    }
-                }
+                var checkForUpdatesTask = new AsyncTaskWithProgress("CheckForUpdates", false, true, !checkingAtStartup, 2);
+                checkForUpdatesTask.UpdateTaskTitle(CheckForUpdatesCommand.Name);
+                var checkForUpdatesTaskData = new CheckForUpdatesTaskData(checkForUpdatesTask, checkingAtStartup);
+                checkForUpdatesTask.RunTask(checkForUpdatesTaskData, CheckForUpdates, CheckForUpdatesComplete);
             }
         }
 
@@ -228,6 +153,139 @@ namespace INTV.Shared.Commands
                 }
             }
             return canExecute;
+        }
+
+        private static void CheckForUpdates(AsyncTaskData taskData)
+        {
+            var data = (CheckForUpdatesTaskData)taskData;
+            if (data.CheckingAtStartup)
+            {
+                // Wait a little while before checking. This gives a chance for other parallel startup tasks to finish.
+                System.Threading.Thread.Sleep(12000);
+            }
+            var appInfo = CompositionHelpers.Container.GetExport<IApplicationInfo>();
+            var versionCheckUrl = appInfo.Value.VersionCheckUrl;
+            var webRequest = System.Net.WebRequest.Create(versionCheckUrl);
+            webRequest.Proxy = null;
+            webRequest.Timeout = 30000;
+            var response = webRequest.GetResponse().GetResponseStream();
+            var versionStringBuffer = new char[48];
+            using (var reader = new System.IO.StreamReader(response))
+            {
+                if (reader.BaseStream.CanTimeout)
+                {
+                    reader.BaseStream.ReadTimeout = 20000;
+                }
+                reader.ReadBlock(versionStringBuffer, 0, versionStringBuffer.Length);
+                data.UpdateVersionString = new string(versionStringBuffer);
+            }
+            var downloadableVersion = new System.Version(data.UpdateVersionString);
+            data.UpdateAvailable = downloadableVersion > data.Version;
+        }
+
+        private static void CheckForUpdatesComplete(AsyncTaskData taskData)
+        {
+            var data = (CheckForUpdatesTaskData)taskData;
+            var appInfo = CompositionHelpers.Container.GetExport<IApplicationInfo>();
+            if (taskData.Error != null)
+            {
+                var reportError = INTV.Shared.Properties.Settings.Default.ShowDetailedErrors;
+                var message = string.Empty;
+                if (data.CheckingAtStartup)
+                {
+                    message = Resources.Strings.CheckForUpdatesCommand_FailedStopAsking;
+                }
+                else
+                {
+                    if (reportError)
+                    {
+                        message = Resources.Strings.CheckForUpdatesCommand_Failed;
+                    }
+                    else
+                    {
+                        message = string.Format(Resources.Strings.CheckForUpdatesCommand_FailedFormat, data.Error.Message);
+                    }
+                }
+                if (reportError || !data.CheckingAtStartup)
+                {
+                    OSMessageBox.Show(message, Resources.Strings.CheckForUpdatesCommand_DialogTitle, reportError ? data.Error : null, OSMessageBoxButton.OK);
+                }
+            }
+            else
+            {
+                var message = string.Empty;
+                if (data.UpdateAvailable)
+                {
+                    message = string.Format(Resources.Strings.CheckForUpdatesCommand_UpdateAvailableFormat, data.VersionString, appInfo.Value.ProductUrl, data.UpdateVersionString);
+                }
+                else if (!data.CheckingAtStartup)
+                {
+                    message = Resources.Strings.CheckForUpdatesCommand_NoUpdates;
+                }
+                if (!string.IsNullOrEmpty(message))
+                {
+                    var result = OSMessageBox.Show(message, Resources.Strings.CheckForUpdatesCommand_DialogTitle, data.UpdateAvailable ? OSMessageBoxButton.YesNo : OSMessageBoxButton.OK);
+                    if (data.UpdateAvailable && (result == OSMessageBoxResult.Yes))
+                    {
+                        try
+                        {
+                            RunExternalProgram.OpenInDefaultProgram(appInfo.Value.ProductUrl);
+                        }
+                        catch (System.Exception e)
+                        {
+                            message = string.Format(Resources.Strings.CheckForUpdatesCommand_OpenBrowserFailedFormat, e.Message);
+                            OSMessageBox.Show(message, Resources.Strings.CheckForUpdatesCommand_DialogTitle);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Async task data used for checking for updates.
+        /// </summary>
+        private class CheckForUpdatesTaskData : AsyncTaskData
+        {
+            /// <summary>
+            /// Initializes a new instance of the
+            /// <see cref="INTV.Shared.Commands.ApplicationCommandGroup+CheckForUpdatesTaskData"/> class.
+            /// </summary>
+            /// <param name="task">The task that executes.</param>
+            /// <param name="checkingAtStartup">Set to <c>true</c> if we're checking for updates at application startup.</param>
+            internal CheckForUpdatesTaskData(AsyncTaskWithProgress task, bool checkingAtStartup)
+                : base(task)
+            {
+                CheckingAtStartup = checkingAtStartup;
+
+                var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+                VersionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).FileVersion;
+                Version = new System.Version(VersionString);
+            }
+
+            /// <summary>
+            /// Gets a value indicating whether the check for updates is happening as a result of application startup.
+            /// </summary>
+            internal bool CheckingAtStartup { get; private set; }
+
+            /// <summary>
+            /// Gets the current application file version number.
+            /// </summary>
+            internal System.Version Version { get; private set; }
+
+            /// <summary>
+            /// Gets the current application file version number as a string.
+            /// </summary>
+            internal string VersionString { get; private set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether an update is available.
+            /// </summary>
+            internal bool UpdateAvailable { get; set; }
+
+            /// <summary>
+            /// Gets or sets the update version string.
+            /// </summary>
+            internal string UpdateVersionString { get; set; }
         }
 
         #endregion // CheckForUpdatesCommand

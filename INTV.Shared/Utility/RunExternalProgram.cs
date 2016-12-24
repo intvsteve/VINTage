@@ -20,6 +20,7 @@
 
 ////#define SMTP_SUPPORT
 ////#define SMTP_SEND_SYNCHRONOUSLY
+////#define ENABLE_DEBUG_SPAM
 
 using System;
 using System.Collections.Generic;
@@ -110,8 +111,10 @@ namespace INTV.Shared.Utility
             processStartInfo.RedirectStandardError = true;
             var process = Process.Start(processStartInfo);
             var output = process.StandardOutput.ReadToEnd();
+#if ENABLE_DEBUG_SPAM
             var errorOutput = process.StandardError.ReadToEnd();
             System.Diagnostics.Debug.WriteLine("stderr for " + System.IO.Path.GetFileName(programPath) + ": " + errorOutput);
+#endif
             process.WaitForExit();
             return output;
         }

@@ -113,6 +113,7 @@
     <Compile Include="Model\Program\ProgramInformationMergeFieldsFlags.cs" />
     <Compile Include="Model\Program\ProgramInformationOrigin.cs" />
     <Compile Include="Model\Program\ProgramSupportFileState.cs" />
+    <Compile Include="Model\Program\RomFileMetadataProgramInformation.cs" />
     <Compile Include="Model\Program\UserSpecifiedProgramInformationTable.cs" />
     <Compile Include="Model\RomComparer.cs" />
     <Compile Include="Model\RomComparerStrict.cs" />
@@ -120,6 +121,12 @@
     <Compile Include="Model\RomComparison.cs" />
     <Compile Include="Model\RomFormat.cs" />
     <Compile Include="Model\RomInfoIndex.cs" />
+    <Compile Include="Model\RomMetadataBlock.cs" />
+    <Compile Include="Model\RomMetadataFeatures.cs" />
+    <Compile Include="Model\RomMetadataIdTag.cs" />
+    <Compile Include="Model\RomMetadataPublicationDate.cs" />
+    <Compile Include="Model\RomMetadataPublisher.cs" />
+    <Compile Include="Model\RomMetadataString.cs" />
     <Compile Include="Model\Stic\Color.cs" />
     <Compile Include="Model\Stic\CsForegroundColor.cs" />
     <Compile Include="Model\Stic\FgBgBackgroundColor.cs" />

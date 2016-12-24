@@ -1533,13 +1533,8 @@ Copy the text in the error dialog and send it to:
 {0}</value>
     <comment>{0} is the message from the error exception.</comment>
   </data>
-  <data name="CheckForUpdatesCommand_FailedStopAskingFormat" xml:space="preserve">
-    <value>An error occurred when checking for updates:
-
-{0}
-
-You can disable checking for udpates in the General application preferences.</value>
-    <comment>{0} is the message from the error exception.</comment>
+  <data name="CheckForUpdatesCommand_FailedStopAsking" xml:space="preserve">
+    <value>An error occurred when checking for updates. You can disable checking for updates in General application preferences.</value>
   </data>
   <data name="CheckForUpdatesCommand_Name" xml:space="preserve">
     <value>Check for Updates...</value>
@@ -1584,5 +1579,8 @@ to download version {2}?</value>
   </data>
   <data name="SingleApplicationCommands_SettingsTip" xml:space="preserve">
     <value>Open the application preferences dialog</value>
+  </data>
+  <data name="CheckForUpdatesCommand_Failed" xml:space="preserve">
+    <value>An error occurred when checking for updates.</value>
   </data>
 </root>

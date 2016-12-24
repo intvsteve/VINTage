@@ -64,7 +64,7 @@ namespace INTV.LtoFlash.ViewModel
             ItemsToAdd = new List<ProgramDescription>(itemsToAdd);
             InsertLocation = insertLocation;
             DestinationDirectories = destinationDirectories;
-            FailedToAdd = new List<System.Tuple<string, string>>();
+            FailedToAdd = new Dictionary<string, IDictionary<string, IList<System.Tuple<string, string>>>>();
             AddedItems = new List<FileNode>();
             UIDispatcher = OSDispatcher.Current;
         }
@@ -97,9 +97,11 @@ namespace INTV.LtoFlash.ViewModel
         public IEnumerable<string> DestinationDirectories { get; private set; }
 
         /// <summary>
-        /// Gets a list of ROMs that could not be added to the menu layout, with an explanation as to why they could not be added.
+        /// Gets information about ROMs that could not be added to the menu layout, with an explanation as to why they could not be added.
         /// </summary>
-        public IList<System.Tuple<string, string>> FailedToAdd { get; private set; }
+        /// <remarks>The key is the "path" the item was going to be added to. Each destination contains a dictionary
+        /// of error descriptions (keys) whose values are the ROMs that failed to be added for that reason.</remarks>
+        public IDictionary<string, IDictionary<string, IList<System.Tuple<string, string>>>> FailedToAdd { get; private set; }
 
         /// <summary>
         /// Gets a list of the items that were added.

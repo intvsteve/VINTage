@@ -97,6 +97,33 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tried to add an invalid file to a folder..
+        /// </summary>
+        internal static string AddItemRejected_InvalidFile {
+            get {
+                return ResourceManager.GetString("AddItemRejected_InvalidFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tried to add a file to an invalid folder..
+        /// </summary>
+        internal static string AddItemRejected_InvalidFolder {
+            get {
+                return ResourceManager.GetString("AddItemRejected_InvalidFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tried to add an invalid file to an invalid folder..
+        /// </summary>
+        internal static string AddItemRejected_InvalidFolderAndFile {
+            get {
+                return ResourceManager.GetString("AddItemRejected_InvalidFolderAndFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File name was empty..
         /// </summary>
         internal static string AddItemRejected_NoFileName {
@@ -115,11 +142,56 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Folder can contain at most {0} items..
+        /// </summary>
+        internal static string AddItemRejected_TooManyFiles_Format {
+            get {
+                return ResourceManager.GetString("AddItemRejected_TooManyFiles_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File system can contain at most {0} files and folders..
+        /// </summary>
+        internal static string AddItemRejected_TooManyFileSystemFiles_Format {
+            get {
+                return ResourceManager.GetString("AddItemRejected_TooManyFileSystemFiles_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File system can contain at most {0} folders..
+        /// </summary>
+        internal static string AddItemRejected_TooManyFolders_Format {
+            get {
+                return ResourceManager.GetString("AddItemRejected_TooManyFolders_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File system can contain at most {0} forks..
+        /// </summary>
+        internal static string AddItemRejected_TooManyForks_Format {
+            get {
+                return ResourceManager.GetString("AddItemRejected_TooManyForks_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Destination folder cannot accept more items..
         /// </summary>
         internal static string AddItemRejected_TooManyItems {
             get {
                 return ResourceManager.GetString("AddItemRejected_TooManyItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempted to add an unsupported file system entity of type: {0}.
+        /// </summary>
+        internal static string AddItemRejected_UnknownFileSystemEntityType_Format {
+            get {
+                return ResourceManager.GetString("AddItemRejected_UnknownFileSystemEntityType_Format", resourceCulture);
             }
         }
         
@@ -165,6 +237,24 @@ namespace INTV.LtoFlash.Resources {
         internal static string AddItemsOperation_FailedToPrepareMessage {
             get {
                 return ResourceManager.GetString("AddItemsOperation_FailedToPrepareMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One or more problems occurred when adding ROMs. The errors are described in detail below..
+        /// </summary>
+        internal static string AddItemsRejected_ErrorAddingROMsMessage {
+            get {
+                return ResourceManager.GetString("AddItemsRejected_ErrorAddingROMsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Adding ROMs.
+        /// </summary>
+        internal static string AddItemsRejected_ErrorAddingROMsTitle {
+            get {
+                return ResourceManager.GetString("AddItemsRejected_ErrorAddingROMsTitle", resourceCulture);
             }
         }
         

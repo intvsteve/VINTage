@@ -637,11 +637,12 @@ namespace INTV.LtoFlash.ViewModel
         /// <summary>
         /// Determines whether it's possible to create a new directory.
         /// </summary>
+        /// <param name="reasonForFailure">Receives a text description of the error if a problem occurs creating the directory.</param>
         /// <returns><c>true</c> if it is safe to create a new directory; otherwise, <c>false</c>.</returns>
-        internal bool CanCreateNewDirectory()
+        internal bool CanCreateNewDirectory(out string reasonForFailure)
         {
             IFileContainer destination = GetTargetForFolderOperation(CurrentSelection, false);
-            bool canCreateFolder = FileSystemCanAcceptMoreItems(destination, LfsEntityType.Directory, 1, true);
+            bool canCreateFolder = FileSystemCanAcceptMoreItems(destination, LfsEntityType.Directory, 1, true, out reasonForFailure);
             return canCreateFolder;
         }
 

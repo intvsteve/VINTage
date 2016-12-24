@@ -463,7 +463,7 @@
 											</object>
 										</object>
 										<double key="NSRowHeight">17</double>
-										<int key="NSTvFlags">1514143744</int>
+										<int key="NSTvFlags">1379926016</int>
 										<reference key="NSDelegate"/>
 										<reference key="NSDataSource"/>
 										<string key="NSAutosaveName">menuEditorLayout</string>

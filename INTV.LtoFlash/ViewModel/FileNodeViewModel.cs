@@ -349,7 +349,8 @@ namespace INTV.LtoFlash.ViewModel
         /// <returns><c>true</c> if the target can accept the items and each item is acceptable.</returns>
         internal static bool CanAcceptFiles(IFileContainer destination, IEnumerable<INTV.Core.Model.Program.ProgramDescription> programs, IList<System.Tuple<string, string>> rejectedRoms)
         {
-            var accept = (programs != null) && programs.Any() && FileSystemCanAcceptMoreItems(destination, LfsEntityType.File, programs.Count(), true);
+            string reasonForFailure;
+            var accept = (programs != null) && programs.Any() && FileSystemCanAcceptMoreItems(destination, LfsEntityType.File, programs.Count(), true, out reasonForFailure);
             if (!accept)
             {
                 if (rejectedRoms != null)
@@ -428,9 +429,11 @@ namespace INTV.LtoFlash.ViewModel
         /// <param name="entityType">The type if the file system entry (fork, file, directory).</param>
         /// <param name="count">The number of new entries of the given type.</param>
         /// <param name="addingNewItems">If <c>true</c>, indicates new entries are being added; if <c>false</c>, items are moving from one location to another.</param>
+        /// <param name="reasonForFailure">Receives error description.</param>
         /// <returns><c>true</c> if <paramref name="destination"/> is able to accept at least <paramref name="count"/> new items.</returns>
-        internal static bool FileSystemCanAcceptMoreItems(IFile destination, LfsEntityType entityType, int count, bool addingNewItems)
+        internal static bool FileSystemCanAcceptMoreItems(IFile destination, LfsEntityType entityType, int count, bool addingNewItems, out string reasonForFailure)
         {
+            reasonForFailure = string.Empty;
             var directory = destination as Folder;
             var file = destination as FileNode;
             var canAccept = (directory != null) || (file != null);
@@ -444,22 +447,52 @@ namespace INTV.LtoFlash.ViewModel
                     case LfsEntityType.Directory:
                         // If we're operating on directories, they must go inside another directory.
                         canAccept = (count + directory.Size) <= FileSystemConstants.MaxItemCount;
+                        if (!canAccept)
+                        {
+                            reasonForFailure = string.Format(Resources.Strings.AddItemRejected_TooManyFiles_Format, FileSystemConstants.MaxItemCount);
+                        }
                         if (addingNewItems && canAccept)
                         {
                             // New directory requires space in GDT and GFT.
                             canAccept &= (count + fileSystem.Directories.ItemsInUse) <= GlobalDirectoryTable.TableSize;
-                            canAccept &= (count + fileSystem.Files.ItemsInUse) <= GlobalFileTable.TableSize;
+                            if (!canAccept)
+                            {
+                                reasonForFailure = string.Format(Resources.Strings.AddItemRejected_TooManyFolders_Format, GlobalDirectoryTable.TableSize);
+                            }
+                            if (canAccept)
+                            {
+                                canAccept &= (count + fileSystem.Files.ItemsInUse) <= GlobalFileTable.TableSize;
+                                if (!canAccept)
+                                {
+                                    reasonForFailure = string.Format(Resources.Strings.AddItemRejected_TooManyFileSystemFiles_Format, GlobalFileTable.TableSize);
+                                }
+                            }
                         }
                         break;
                     case LfsEntityType.File:
                         // If we're operating on files, they must go inside a directory.
                         canAccept = (count + directory.Size) <= FileSystemConstants.MaxItemCount;
+                        if (!canAccept)
+                        {
+                            reasonForFailure = string.Format(Resources.Strings.AddItemRejected_TooManyFiles_Format, FileSystemConstants.MaxItemCount);
+                        }
                         if (addingNewItems && canAccept)
                         {
                             // New files require space in the GFT and GKT -- useful files typically use *at least* one fork for our purposes,
                             // though, strictly speaking, not all files require a fork. (E.g. the file for the root directory.)
                             canAccept &= (count + fileSystem.Files.ItemsInUse) <= GlobalFileTable.TableSize;
-                            canAccept &= (count + fileSystem.Forks.ItemsInUse) <= GlobalForkTable.TableSize;
+                            if (!canAccept)
+                            {
+                                reasonForFailure = string.Format(Resources.Strings.AddItemRejected_TooManyFileSystemFiles_Format, GlobalFileTable.TableSize);
+                            }
+                            if (canAccept)
+                            {
+                                canAccept &= (count + fileSystem.Forks.ItemsInUse) <= GlobalForkTable.TableSize;
+                                if (!canAccept)
+                                {
+                                    reasonForFailure = string.Format(Resources.Strings.AddItemRejected_TooManyForks_Format, GlobalForkTable.TableSize);
+                                }
+                            }
                         }
                         break;
                     case LfsEntityType.Fork:
@@ -467,11 +500,31 @@ namespace INTV.LtoFlash.ViewModel
                         if (addingNewItems)
                         {
                             canAccept = (count + fileSystem.Forks.ItemsInUse) <= GlobalForkTable.TableSize;
+                            if (!canAccept)
+                            {
+                                reasonForFailure = string.Format(Resources.Strings.AddItemRejected_TooManyForks_Format, GlobalForkTable.TableSize);
+                            }
                         }
                         break;
                     default:
                         canAccept = false;
+                        reasonForFailure = string.Format(Resources.Strings.AddItemRejected_UnknownFileSystemEntityType_Format, entityType);
                         break;
+                }
+            }
+            else
+            {
+                if ((directory == null) && (file == null))
+                {
+                    reasonForFailure = Resources.Strings.AddItemRejected_InvalidFolderAndFile;
+                }
+                else if (directory == null)
+                {
+                    reasonForFailure = Resources.Strings.AddItemRejected_InvalidFolder;
+                }
+                else if (file == null)
+                {
+                    reasonForFailure = Resources.Strings.AddItemRejected_InvalidFile;
                 }
             }
             return canAccept;
@@ -619,11 +672,16 @@ namespace INTV.LtoFlash.ViewModel
                         var existingFolder = (Folder)((Folder)destination).Files.FirstOrDefault(f => (f is Folder) && (f.Name == folder));
                         if (existingFolder == null)
                         {
-                            if (FileSystemCanAcceptMoreItems(destination, LfsEntityType.Directory, 1, true))
+                            string reasonForFailure;
+                            if (FileSystemCanAcceptMoreItems(destination, LfsEntityType.Directory, 1, true, out reasonForFailure))
                             {
                                 var newParentFolder = args.MenuLayout.MenuLayout.CreateFolder(folder);
                                 args.UIDispatcher.Invoke(new System.Action(() => destination.AddChild(newParentFolder, true)), OSDispatcherPriority.Background);
                                 destination = newParentFolder;
+                            }
+                            else
+                            {
+                                AddFailedEntry(args.FailedToAdd, destination, folder, reasonForFailure, item.Rom.RomPath);
                             }
                         }
                         else
@@ -644,14 +702,15 @@ namespace INTV.LtoFlash.ViewModel
                 var accepted = IsAcceptableRom(item, out reasonForRejection);
                 if (!accepted)
                 {
-                    args.FailedToAdd.Add(new System.Tuple<string, string>(item.Rom.RomPath, reasonForRejection));
+                    AddFailedEntry(args.FailedToAdd, destination, item.Name, reasonForRejection, item.Rom.RomPath);
                 }
                 else
                 {
-                    accepted = FileSystemCanAcceptMoreItems(destination, LfsEntityType.File, 1, true);
+                    string reasonForFailure;
+                    accepted = FileSystemCanAcceptMoreItems(destination, LfsEntityType.File, 1, true, out reasonForFailure);
                     if (!accepted)
                     {
-                        args.FailedToAdd.Add(new System.Tuple<string, string>(destination.LongName, Resources.Strings.AddItemRejected_TooManyItems));
+                        AddFailedEntry(args.FailedToAdd, destination, item.Name, reasonForFailure, item.Rom.RomPath);
                     }
                 }
                 if (accepted)
@@ -671,7 +730,7 @@ namespace INTV.LtoFlash.ViewModel
                     }
                     catch (LuigiFileGenerationException exception)
                     {
-                        args.FailedToAdd.Add(new System.Tuple<string, string>(item.Name, Resources.Strings.AddItemRejected_FailedToCreateLUIGIFile));
+                        AddFailedEntry(args.FailedToAdd, destination, item.Name, Resources.Strings.AddItemRejected_FailedToCreateLUIGIFile, item.Rom.RomPath);
                         if (args.FirstFilePreparationError == null)
                         {
                             args.FirstFilePreparationError = exception;
@@ -679,6 +738,25 @@ namespace INTV.LtoFlash.ViewModel
                     }
                 }
             }
+        }
+
+        private static void AddFailedEntry(IDictionary<string, IDictionary<string, IList<System.Tuple<string, string>>>> failedToAdd, IFileContainer destination, string itemName, string reason, string filePath)
+        {
+            var fileNode = destination as FileNode;
+            var locationInMenu = fileNode.GetMenuPath();
+            IDictionary<string, IList<System.Tuple<string, string>>> existingErrors;
+            if (!failedToAdd.TryGetValue(locationInMenu, out existingErrors))
+            {
+                existingErrors = new Dictionary<string, IList<System.Tuple<string, string>>>();
+                failedToAdd[locationInMenu] = existingErrors;
+            }
+            IList<System.Tuple<string, string>> existingFilesForError;
+            if (!existingErrors.TryGetValue(reason, out existingFilesForError))
+            {
+                existingFilesForError = new List<System.Tuple<string, string>>();
+                existingErrors[reason] = existingFilesForError;
+            }
+            existingFilesForError.Add(new System.Tuple<string, string>(itemName, filePath));
         }
 
         private static void AddItemsComplete(AsyncTaskData taskData)

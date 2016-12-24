@@ -969,7 +969,7 @@ namespace INTV.LtoFlash.View
 
             private bool ShouldAcceptProposedIndex(IEnumerable<FileNodeViewModel> draggedItems, FileNodeViewModel proposedParent, int proposedIndex)
             {
-                bool shouldAcceptProposedIndex = draggedItems.Any();
+                bool shouldAcceptProposedIndex = (draggedItems != null) && draggedItems.Any();
                 if (shouldAcceptProposedIndex)
                 {
                     var firstDraggedItem = draggedItems.First();

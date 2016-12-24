@@ -2368,4 +2368,39 @@ Would you like to add these ROMs now?</value>
   <data name="SyncHostToDeviceCommand_WarningMessage" xml:space="preserve">
     <value>Although the update succeeded, issues were found. It is possible that backup copies of some ROMs were used if the originals could not be located for verification. The available information is presented below.</value>
   </data>
+  <data name="AddItemRejected_InvalidFile" xml:space="preserve">
+    <value>Tried to add an invalid file to a folder.</value>
+  </data>
+  <data name="AddItemRejected_InvalidFolder" xml:space="preserve">
+    <value>Tried to add a file to an invalid folder.</value>
+  </data>
+  <data name="AddItemRejected_InvalidFolderAndFile" xml:space="preserve">
+    <value>Tried to add an invalid file to an invalid folder.</value>
+  </data>
+  <data name="AddItemRejected_TooManyFileSystemFiles_Format" xml:space="preserve">
+    <value>File system can contain at most {0} files and folders.</value>
+    <comment>{0} is the maximum number of files in the file system.</comment>
+  </data>
+  <data name="AddItemRejected_TooManyFiles_Format" xml:space="preserve">
+    <value>Folder can contain at most {0} items.</value>
+    <comment>{0} is the maximum number if items in a folder.</comment>
+  </data>
+  <data name="AddItemRejected_TooManyFolders_Format" xml:space="preserve">
+    <value>File system can contain at most {0} folders.</value>
+    <comment>{0} is the maximum number of directories in the file system.</comment>
+  </data>
+  <data name="AddItemRejected_TooManyForks_Format" xml:space="preserve">
+    <value>File system can contain at most {0} forks.</value>
+    <comment>{0} is the maximum number of forks in the file system.</comment>
+  </data>
+  <data name="AddItemRejected_UnknownFileSystemEntityType_Format" xml:space="preserve">
+    <value>Attempted to add an unsupported file system entity of type: {0}</value>
+    <comment>{0} is the kind of file system entity that was unrecognized.</comment>
+  </data>
+  <data name="AddItemsRejected_ErrorAddingROMsMessage" xml:space="preserve">
+    <value>One or more problems occurred when adding ROMs. The errors are described in detail below.</value>
+  </data>
+  <data name="AddItemsRejected_ErrorAddingROMsTitle" xml:space="preserve">
+    <value>Error Adding ROMs</value>
+  </data>
 </root>

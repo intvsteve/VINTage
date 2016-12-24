@@ -80,5 +80,10 @@ namespace INTV.Core.Model.Program
         /// Data was collected from a metadata block in a LUIGI-format ROM.
         /// </summary>
         LuigiMetadataBlock,
+
+        /// <summary>
+        /// Data was collected from a metadata block in a .ROM-format ROM.
+        /// </summary>
+        RomMetadataBlock,
     }
 }

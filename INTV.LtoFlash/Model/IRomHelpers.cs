@@ -299,17 +299,25 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         /// <param name="exception">The error.</param>
         /// <param name="failedToAdd">Enumeration of the ROM files that were not added to the menu if that option was chosen.</param>
-        public static void ReportAddItemsError(System.Exception exception, IEnumerable<Tuple<string, string>> failedToAdd)
+        public static void ReportAddItemsError(System.Exception exception, IDictionary<string, IDictionary<string, IList<System.Tuple<string, string>>>> failedToAdd)
         {
             var message = string.Empty;
+            var title = string.Empty;
             var luigiException = exception as LuigiFileGenerationException;
             if (luigiException != null)
             {
                 message = Resources.Strings.AddItemsOperation_FailedToPrepareMessage;
+                title = Resources.Strings.LuigiFileError_Title;
             }
             else if ((exception != null) && !ExceptionErrorLookupTable.TryGetValue(exception.GetType(), out message))
             {
                 message = Resources.Strings.AddItemsOperation_Failed;
+                title = Resources.Strings.AddItemsRejected_ErrorAddingROMsTitle;
+            }
+            else if (failedToAdd.Any())
+            {
+                message = Resources.Strings.AddItemsRejected_ErrorAddingROMsMessage;
+                title = Resources.Strings.AddItemsRejected_ErrorAddingROMsTitle;
             }
 
             string failedToAddText = null;
@@ -323,19 +331,31 @@ namespace INTV.LtoFlash.Model
                 errorDetailBuilder.AppendLine(Resources.Strings.AddItemsOperation_FailedToAddMessage);
                 errorDetailBuilder.AppendLine(Resources.Strings.AddItemsOperation_FailedToAddReportHeader).AppendLine();
 
+                // Files not added are arranged by target directory, then within that, by failure type.
                 foreach (var fileNotAdded in failedToAdd)
                 {
-                    errorDetailBuilder.AppendLine("  " + fileNotAdded.Item1 + ": " + fileNotAdded.Item2);
+                    errorDetailBuilder.AppendLine(fileNotAdded.Key); // destination folder
+                    var errorReasonsAndFiles = fileNotAdded.Value;
+                    foreach (var errorReasonAndFiles in errorReasonsAndFiles)
+                    {
+                        errorDetailBuilder.AppendLine("  " + errorReasonAndFiles.Key);
+                        var fileNamesAndPaths = errorReasonAndFiles.Value;
+                        foreach (var fileNameAndPath in fileNamesAndPaths)
+                        {
+                            errorDetailBuilder.AppendLine("    " + fileNameAndPath.Item1 + ": " + fileNameAndPath.Item2);
+                        }
+                    }
+                    errorDetailBuilder.AppendLine();
                 }
                 failedToAddText = errorDetailBuilder.AppendLine().ToString();
             }
-            var errorDialog = INTV.Shared.View.ReportDialog.Create(Resources.Strings.LuigiFileError_Title, message);
+            var errorDialog = INTV.Shared.View.ReportDialog.Create(title, message);
             errorDialog.ReportText = failedToAddText;
             if (SingleInstanceApplication.SharedSettings.ShowDetailedErrors)
             {
                 errorDialog.Exception = exception;
             }
-            errorDialog.ShowSendEmailButton = !(exception is LuigiFileGenerationException) && !(exception is System.IO.IOException);
+            errorDialog.ShowSendEmailButton = (exception != null) && !(exception is LuigiFileGenerationException) && !(exception is System.IO.IOException);
             errorDialog.ShowDialog(Resources.Strings.OK);
         }
     }

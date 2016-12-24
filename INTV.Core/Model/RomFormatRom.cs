@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define IGNORE_METADATA_FOR_CRC
+
 using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.Utility;
@@ -29,8 +31,25 @@ namespace INTV.Core.Model
     /// </summary>
     internal class RomFormatRom : Rom
     {
-        private const int HeaderSize = 53;
-        private const int BlockSize = 514;
+        private const int AutobaudByteSize = 1;
+        private const int RomSegmentCountSize = 1;
+        private const int RomSegmentCheckByteSize = 1;
+
+        private const int RomSegmentStartAddressHiByteSize = 1;
+        private const int RomSegmentStopAddressLoByteSize = 1;
+
+        private const int AccessTableSize = 16;
+        private const int FineAddressRestrictionTableSize = 32;
+        private const int EnableTablesSize = AccessTableSize + FineAddressRestrictionTableSize;
+
+        private const int Crc16Size = 2;
+
+        private const int HeaderSize = AutobaudByteSize + RomSegmentCountSize + RomSegmentCheckByteSize + EnableTablesSize + Crc16Size;
+        
+        private const int MinimumSegmentWordCount = 0x100;
+
+        private const int RomSegmentCountOffset = 1;
+        private const int InitialRomSegmentOffset = 3;
 
         private static readonly Dictionary<RomFormat, byte> AutoBaudBytes = new Dictionary<RomFormat, byte>()
         {
@@ -47,7 +66,9 @@ namespace INTV.Core.Model
 
         #endregion // Constructors
 
-        #region IRom
+        #region Properties
+
+        #region IRom Properties
 
         /// <inheritdoc />
         public override RomFormat Format
@@ -77,6 +98,51 @@ namespace INTV.Core.Model
             get { return 0; }
         }
 
+        #endregion // IRom Properties
+
+        /// <summary>
+        /// Gets the metadata from ID tags that may be appended to the end of the .ROM.
+        /// </summary>
+        public IEnumerable<RomMetadataBlock> Metadata
+        {
+            get
+            {
+                var metadata = new List<RomMetadataBlock>();
+                try
+                {
+                    if (IsValid && RomPath.FileExists())
+                    {
+                        using (var file = RomPath.OpenFileStream())
+                        {
+                            var offsetIntoFile = GetMetadataOffset(file);
+                            while ((offsetIntoFile < file.Length) && (file.Position < file.Length))
+                            {
+                                var metadataBlock = RomMetadataBlock.Inflate(file);
+                                if (metadataBlock == null)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    metadata.Add(metadataBlock);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    // Don't bring down the app if parsing for metadata fails.
+                    System.Diagnostics.Debug.WriteLine("Getting ROM metadata failed: " + e);
+                }
+                return metadata;
+            }
+        }
+
+        #endregion // Properties
+
+        #region IRom
+
         /// <inheritdoc />
         public override bool Validate()
         {
@@ -91,7 +157,15 @@ namespace INTV.Core.Model
             if (IsValid && RomPath.FileExists())
             {
                 byte replacementByte = AutoBaudBytes[Format];
+
+#if IGNORE_METADATA_FOR_CRC
+                var metadataRange = new List<Range<int>>();
+                var metadataOffset = GetMetadataOffset();
+                metadataRange.Add(new Range<int>(metadataOffset, int.MaxValue));
+                _crc = Crc32.OfFile(RomPath, Format != RomFormat.Intellicart, replacementByte, metadataRange);
+#else
                 _crc = Crc32.OfFile(RomPath, Format != RomFormat.Intellicart, replacementByte);
+#endif
                 if (0 == crc)
                 {
                     crc = _crc; // lazy initialization means on first read, we should never get a change
@@ -138,6 +212,37 @@ namespace INTV.Core.Model
                 }
             }
             return rom;
+        }
+
+        private int GetMetadataOffset(System.IO.Stream file)
+        {
+            var metadataOffset = 0;
+            if ((file != null) && (file.Length > 0))
+            {
+                file.Seek(RomSegmentCountOffset, System.IO.SeekOrigin.Begin);
+                var romSegmentsCount = file.ReadByte();
+
+                // Seek past the ROM segments.
+                file.Seek(InitialRomSegmentOffset, System.IO.SeekOrigin.Begin); // Seek to beginning of first segment
+                for (var i = 0; i < romSegmentsCount; ++i)
+                {
+                    int segmentLow = (int)file.ReadByte() << 8; // Cast up to int for validity checking; each segment is on a 256 word boundary (in reality, a 2K word boundary)
+                    int segmentHigh = ((int)file.ReadByte() << 8) + MinimumSegmentWordCount; // Each segment must be at least 256 words
+                    if (segmentHigh < segmentLow)
+                    {
+                        throw new System.InvalidOperationException("Invalid ROM file.");
+                    }
+                    var segmentDataSize = (2 * (segmentHigh - segmentLow)) + Crc16Size; // segment size is in words, not bytes
+                    file.Seek(segmentDataSize, System.IO.SeekOrigin.Current); // skip past data and the CRC
+                }
+
+                // Seek past the enable tables and the 16-bit CRC.
+                file.Seek(AccessTableSize + FineAddressRestrictionTableSize + Crc16Size, System.IO.SeekOrigin.Current);
+                metadataOffset = (int)file.Position;
+
+                // Anything after this will be metadata...
+            }
+            return metadataOffset;
         }
     }
 }

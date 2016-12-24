@@ -1,4 +1,4 @@
-﻿// <copyright file="MenuLayoutCommandGroup.cs" company="INTV Funhouse">
+// <copyright file="MenuLayoutCommandGroup.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -391,7 +391,8 @@ namespace INTV.LtoFlash.Commands
             var canCreateFolder = viewModel != null;
             if (canCreateFolder)
             {
-                canCreateFolder = viewModel.CanCreateNewDirectory();
+                string reasonForFailure;
+                canCreateFolder = viewModel.CanCreateNewDirectory(out reasonForFailure);
             }
             return canCreateFolder;
         }

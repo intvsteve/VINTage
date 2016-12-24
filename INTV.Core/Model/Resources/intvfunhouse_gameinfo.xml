@@ -2656,7 +2656,7 @@
 			<bee3>0</bee3>
 			<hive>0</hive>
 			<crc>0xD7C78754,0xA9ED9496,0x182C1496,0xB4005991</crc>
-			<crc_notes>,,,IntelligentVision</crc_notes>
+			<crc_notes>,,,Intelligentvision</crc_notes>
 			<crc_incompatibilities/>
 			<bin_cfg>0</bin_cfg>
 			<externalinfo/>
@@ -3420,7 +3420,7 @@
 		<gameinfo>
 			<code>stnx</code>
 			<title>Stonix</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor/>
 			<year>2004</year>
 			<ntsc>1</ntsc>
@@ -3448,7 +3448,7 @@
 		<gameinfo>
 			<code>mine</code>
 			<title>Minehunter</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor/>
 			<year>2004</year>
 			<ntsc>1</ntsc>
@@ -3504,7 +3504,7 @@
 		<gameinfo>
 			<code>dka</code>
 			<title>Donkey Kong Arcade</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor/>
 			<year>2011</year>
 			<ntsc>1</ntsc>
@@ -3588,7 +3588,7 @@
 		<gameinfo>
 			<code>sgnr</code>
 			<title>Same Game &amp;amp; Robots</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor/>
 			<year>2004, 2012</year>
 			<ntsc>1</ntsc>
@@ -3616,7 +3616,7 @@
 		<gameinfo>
 			<code>rock</code>
 			<title>Rocky &amp;amp; Bullwinkle</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1983 (2011)</year>
 			<ntsc>1</ntsc>
@@ -3644,7 +3644,7 @@
 		<gameinfo>
 			<code>yogi</code>
 			<title>Yogi's Frustration</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1983 (2011)</year>
 			<ntsc>1</ntsc>
@@ -3672,7 +3672,7 @@
 		<gameinfo>
 			<code>tron</code>
 			<title>Adventures of TRON</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1983 (2011)</year>
 			<ntsc>1</ntsc>
@@ -3692,7 +3692,7 @@
 			<bee3>0</bee3>
 			<hive>0</hive>
 			<crc>0xCEF0393D,0x13972B5E,0x5A144835</crc>
-			<crc_notes>Prototype,Prototype,IntelligentVision</crc_notes>
+			<crc_notes>Prototype,Prototype,Intelligentvision</crc_notes>
 			<crc_incompatibilities/>
 			<bin_cfg>0</bin_cfg>
 			<externalinfo/>
@@ -3700,7 +3700,7 @@
 		<gameinfo>
 			<code>spna</code>
 			<title>Spina the Bee</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1983 (2012)</year>
 			<ntsc>1</ntsc>
@@ -3720,7 +3720,7 @@
 			<bee3>0</bee3>
 			<hive>0</hive>
 			<crc>0x20007D0C,0xA19CE6E0,0x01EFA214,0xEB39DB25</crc>
-			<crc_notes>Unreleased,Unreleased,STING-IntelligentVision Original,SPINA-IntelligentVision Update</crc_notes>
+			<crc_notes>Unreleased,Unreleased,STING-Intelligentvision Original,SPINA-Intelligentvision Update</crc_notes>
 			<crc_incompatibilities/>
 			<bin_cfg>0</bin_cfg>
 			<externalinfo/>
@@ -3728,7 +3728,7 @@
 		<gameinfo>
 			<code>illu</code>
 			<title>Illusions</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1983 (2012)</year>
 			<ntsc>1</ntsc>
@@ -3756,7 +3756,7 @@
 		<gameinfo>
 			<code>king</code>
 			<title>King of the Mountain</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1982 (2012)</year>
 			<ntsc>1</ntsc>
@@ -3784,7 +3784,7 @@
 		<gameinfo>
 			<code>fkbf</code>
 			<title>The Flintstones' Keyboard Fun</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1983 (2012)</year>
 			<ntsc>1</ntsc>
@@ -3812,7 +3812,7 @@
 		<gameinfo>
 			<code>snfl</code>
 			<title>Super NFL Football</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1983 (2012)</year>
 			<ntsc>1</ntsc>
@@ -3832,7 +3832,7 @@
 			<bee3>0</bee3>
 			<hive>0</hive>
 			<crc>0xC77328E9,0x3207B408,0xBE4D7996</crc>
-			<crc_notes>Unreleased,Unreleased,IntelligentVision Version,IntelligentVision Version</crc_notes>
+			<crc_notes>Unreleased,Unreleased,Intelligentvision Version,Intelligentvision Version</crc_notes>
 			<crc_incompatibilities/>
 			<bin_cfg>0</bin_cfg>
 			<externalinfo/>
@@ -3840,7 +3840,7 @@
 		<gameinfo>
 			<code>scar</code>
 			<title>Scarfinger</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1983 (2012)</year>
 			<ntsc>1</ntsc>
@@ -3860,7 +3860,7 @@
 			<bee3>0</bee3>
 			<hive>0</hive>
 			<crc>0xE399BA08,0xF44478E2,0x23DC808D</crc>
-			<crc_notes>,,IntelligentVision</crc_notes>
+			<crc_notes>,,Intelligentvision</crc_notes>
 			<crc_incompatibilities/>
 			<bin_cfg>2</bin_cfg>
 			<externalinfo/>
@@ -3868,7 +3868,7 @@
 		<gameinfo>
 			<code>chop</code>
 			<title>Choplifter</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>INTV Corporation</orig_vendor>
 			<year>1988 (2012)</year>
 			<ntsc>1</ntsc>
@@ -3888,7 +3888,7 @@
 			<bee3>0</bee3>
 			<hive>0</hive>
 			<crc>0xAECC3CE8,0xB4923A76,0x3EA0CB91</crc>
-			<crc_notes>Unreleased,Unreleased,IntelligentVision</crc_notes>
+			<crc_notes>Unreleased,Unreleased,Intelligentvision</crc_notes>
 			<crc_incompatibilities/>
 			<bin_cfg>1,1,5</bin_cfg>
 			<externalinfo/>
@@ -3896,7 +3896,7 @@
 		<gameinfo>
 			<code>scbt</code>
 			<title>Super Chef BT</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor/>
 			<year>2013</year>
 			<ntsc>1</ntsc>
@@ -3924,7 +3924,7 @@
 		<gameinfo>
 			<code>spt</code>
 			<title>Super Pro Tenns</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor/>
 			<year>2013</year>
 			<ntsc>1</ntsc>
@@ -4316,7 +4316,7 @@
 		<gameinfo>
 			<code>mns</code>
 			<title>Ms. Night Stalker</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor/>
 			<year>2014</year>
 			<ntsc>1</ntsc>
@@ -4400,7 +4400,7 @@
 		<gameinfo>
 			<code>mcar</code>
 			<title>Magic Carousel</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1982 (2014)</year>
 			<ntsc>1</ntsc>
@@ -4428,7 +4428,7 @@
 		<gameinfo>
 			<code>mpac</code>
 			<title>Ms. Pac-Man</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor/>
 			<year>2014</year>
 			<ntsc>1</ntsc>
@@ -4540,7 +4540,7 @@
 		<gameinfo>
 			<code>scnt</code>
 			<title>Space C&amp;#42;nt</title>
-			<vendor>IntelligentVision</vendor>
+			<vendor>Intelligentvision</vendor>
 			<orig_vendor>Mattel Electronics</orig_vendor>
 			<year>1983 (2014)</year>
 			<ntsc>1</ntsc>

@@ -2222,7 +2222,8 @@ The firmware on your LTO Flash! has crashed. A raw crash log will be attached to
     <value>Detailed Information:</value>
   </data>
   <data name="RestoreMenuLayoutCommand_WarningMessageDetailFormat" xml:space="preserve">
-    <value>File: {0}\nMessage: {1}</value>
+    <value>File: {0}
+Message: {1}</value>
     <comment>{0} is file, {1} is message detail</comment>
   </data>
   <data name="RestoreMenuLayoutCommand_WarningsHeader" xml:space="preserve">
@@ -2362,7 +2363,8 @@ Would you like to add these ROMs now?</value>
     <value>Detailed Information:</value>
   </data>
   <data name="SyncHostToDeviceCommand_WarningFormat" xml:space="preserve">
-    <value>File: {0}\nMessage: {1}</value>
+    <value>File: {0}
+Message: {1}</value>
     <comment>{0} is source of warning, {1} is message for the source</comment>
   </data>
   <data name="SyncHostToDeviceCommand_WarningMessage" xml:space="preserve">

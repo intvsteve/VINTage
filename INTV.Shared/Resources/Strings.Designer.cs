@@ -3839,6 +3839,28 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred when attempting to open the file:
+        ///
+        ///  {0}
+        ///
+        ///Message: {1}.
+        /// </summary>
+        internal static string RunExternalProgram_ErrorFormat {
+            get {
+                return ResourceManager.GetString("RunExternalProgram_ErrorFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Opening File.
+        /// </summary>
+        internal static string RunExternalProgram_ErrorTitle {
+            get {
+                return ResourceManager.GetString("RunExternalProgram_ErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
         internal static string SelectBackupDialog_DateColumnTitle {

@@ -289,22 +289,38 @@ namespace INTV.Shared.Utility
             // Next, launch the remaining (asynchronous) actions.
             foreach (var startupAction in actions.Where(a => a.Value.Item2 <= StartupTaskPriority.HighestAsyncTaskPriority).OrderByDescending(a => a.Value.Item2))
             {
-                MainThreadDispatcher.BeginInvoke(startupAction.Value.Item1);
+                MainThreadDispatcher.BeginInvoke(() => StartupActionWrapper(startupAction.Value.Item1));
+            }
+        }
+
+        private void StartupActionWrapper(Action startupAction)
+        {
+            try
+            {
+                startupAction();
+            }
+            catch (Exception)
+            {
+                // Let this silently fail in release builds.
+#if DEBUG
+                System.Diagnostics.Debug.Assert(false, "Failure in async startup action! Let's see what's going on here, shall we?");
+#endif // DEBUG
             }
         }
 
         private void ReportStartupActionErrors(List<Tuple<string, Exception>> errors)
         {
-            if (errors.Any())
+            var errorsToReport = errors.Where(e => ShouldReportError(e.Item2));
+            if (errorsToReport.Any())
             {
                 var errorMessage = new System.Text.StringBuilder(Strings.StartupActionError_Summary).AppendLine();
-                foreach (var error in errors)
+                foreach (var error in errorsToReport)
                 {
                     errorMessage.AppendLine().AppendFormat(Strings.StartupActionError_ActionNameMessageFormat, error.Item1).AppendLine();
                     errorMessage.AppendFormat(Strings.StartupActionError_ExceptionMessageFormat, error.Item2.Message).AppendLine();
                 }
                 errorMessage.AppendLine().AppendFormat(Strings.StartupActionError_Details).AppendLine();
-                foreach (var error in errors)
+                foreach (var error in errorsToReport)
                 {
                     errorMessage.AppendLine().AppendFormat(Strings.StartupActionError_ActionNameMessageFormat, error.Item1).AppendLine();
                     errorMessage.AppendLine(error.Item2.ToString());
@@ -313,6 +329,17 @@ namespace INTV.Shared.Utility
                 errorDialog.ReportText = errorMessage.ToString();
                 errorDialog.ShowDialog(Strings.Close);
             }
+        }
+
+        private bool ShouldReportError(Exception exception)
+        {
+            var reportError = true;
+#if !DEBUG
+            // On Mac, there is a rare error that that arises when launching and trying to set a user preference. (WTF?)
+            // It may somehow be related to NSUserDefaults?
+            reportError = !(exception is InvalidCastException);
+#endif // !DEBUG
+            return reportError;
         }
 
         /// <summary>

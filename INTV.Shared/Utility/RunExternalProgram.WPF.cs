@@ -27,7 +27,15 @@ namespace INTV.Shared.Utility
     {
         private static void OSOpenFileInDefaultProgram(string filePath, string uriScheme)
         {
-            System.Diagnostics.Process.Start(filePath);
+            try
+            {
+                System.Diagnostics.Process.Start(filePath);
+            }
+            catch (System.ComponentModel.Win32Exception e)
+            {
+                var message = string.Format(Resources.Strings.RunExternalProgram_ErrorFormat, filePath, e.Message);
+                INTV.Shared.View.OSMessageBox.Show(message, Resources.Strings.RunExternalProgram_ErrorTitle);
+            }
         }
 
         private static void OSSendEmail(string emailString)

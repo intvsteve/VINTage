@@ -1865,7 +1865,7 @@ namespace INTV.LtoFlash.Resources {
         /// <summary>
         ///   Looks up a localized string similar to File system operations that have been interrupted may have left the device in an unstable or unusable state.
         ///
-        ///To resolve this problem, simply update the files again. This will remove unreachable file system entries and apply any other changes. If the problem persists, back up the contents of your LTO Flash!, reformat it, and try again..
+        ///To resolve this problem, click Send to LTO Flash to complete the update. If the problem persists, back up the contents of your LTO Flash!, reformat it, and try again..
         /// </summary>
         internal static string FileSystem_InconsistentEnd {
             get {
@@ -6123,7 +6123,7 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Although the update succeeded, issues were found. It is possible that backup copies of some ROMs were used if the originals could not be located for verification. The available information is presented below..
+        ///   Looks up a localized string similar to Although the update succeeded, issues were found. It is possible that backup copies of some files were used if the originals could not be located for verification. The available information is presented below..
         /// </summary>
         internal static string SyncHostToDeviceCommand_WarningMessage {
             get {
@@ -6324,6 +6324,28 @@ namespace INTV.LtoFlash.Resources {
         internal static string UpdateFirmwareCommand_FileTooLargeErrorTitle {
             get {
                 return ResourceManager.GetString("UpdateFirmwareCommand_FileTooLargeErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The firmware update file:
+        ///
+        ///  {0}
+        ///
+        ///is too small ({1} bytes).
+        /// </summary>
+        internal static string UpdateFirmwareCommand_FileTooSmallErrorMessageFormat {
+            get {
+                return ResourceManager.GetString("UpdateFirmwareCommand_FileTooSmallErrorMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firmware File Too Small.
+        /// </summary>
+        internal static string UpdateFirmwareCommand_FileTooSmallErrorTitle {
+            get {
+                return ResourceManager.GetString("UpdateFirmwareCommand_FileTooSmallErrorTitle", resourceCulture);
             }
         }
         

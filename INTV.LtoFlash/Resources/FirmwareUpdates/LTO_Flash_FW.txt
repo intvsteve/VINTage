@@ -1,4 +1,12 @@
 ==============================================================================
+    Firmware 2386
+------------------------------------------------------------------------------
+
+ -- Fix a cosmetic number display issue in 'Flash info...' screen.
+ -- Further harden journal writes against power glitches when the
+    Intellivision is powered up during a filesystem download.
+
+==============================================================================
     Firmware 2360
 ------------------------------------------------------------------------------
 

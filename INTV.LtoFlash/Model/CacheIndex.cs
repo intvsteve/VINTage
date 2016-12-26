@@ -234,7 +234,7 @@ namespace INTV.LtoFlash.Model
                         var conversionResult = 0;
                         foreach (var conversionApp in conversionApps)
                         {
-                            var argument = luigiHeader.OriginalRomFormat.GetCommandLineArgForBin2Rom() + " \"" + sourcePath + "\"";
+                            var argument = luigiHeader.OriginalRomFormat.GetCommandLineArgForBin2Rom() + sourcePath;
                             conversionResult = INTV.Shared.Utility.RunExternalProgram.Call(conversionApp.Item1, argument, workingDir);
                             if (conversionResult != 0)
                             {

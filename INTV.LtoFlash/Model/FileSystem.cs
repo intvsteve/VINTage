@@ -227,11 +227,21 @@ namespace INTV.LtoFlash.Model
         /// <summary>
         /// Determines if the file system is in a consistent state.
         /// </summary>
+        /// <param name="corruptFileSystemException">If a problem occurs during validation, it is captured in this output.</param>
         /// <returns><c>true</c> if the file system is consistent, with no orphaned objects.</returns>
-        public bool Validate()
+        public bool Validate(out System.Exception corruptFileSystemException)
         {
-            var orphanedEntries = GetOrphanedFileSystemEntries();
-            var isValid = !orphanedEntries.OrphanedForks.Any() && !orphanedEntries.OrphanedFiles.Any() && !orphanedEntries.OrphanedDirectories.Any();
+            corruptFileSystemException = null;
+            var isValid = false;
+            try
+            {
+                var orphanedEntries = GetOrphanedFileSystemEntries();
+                isValid = !orphanedEntries.OrphanedForks.Any() && !orphanedEntries.OrphanedFiles.Any() && !orphanedEntries.OrphanedDirectories.Any();
+            }
+            catch (System.Exception e)
+            {
+                corruptFileSystemException = e;
+            }
             return isValid;
         }
 

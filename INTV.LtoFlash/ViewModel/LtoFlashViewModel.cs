@@ -680,7 +680,16 @@ namespace INTV.LtoFlash.ViewModel
                 }
                 if (newDevice.IsValid && (newDevice.Device.FileSystem != null))
                 {
-                    Model = new MenuLayout(newDevice.Device.FileSystem, newDevice.UniqueId);
+                    var model = new MenuLayout(new FileSystem(), newDevice.UniqueId);
+                    try
+                    {
+                        model = new MenuLayout(newDevice.Device.FileSystem, newDevice.UniqueId);
+                    }
+                    catch (System.Exception e)
+                    {
+                        SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() => DeviceViewModel.ReportFileSystemInconsistencies(newDevice.Device.FileSystem, e));
+                    }
+                    Model = model;
                 }
                 _activeLtoFlashDevices.Add(newDevice);
             }
@@ -751,18 +760,27 @@ namespace INTV.LtoFlash.ViewModel
                         var addedSaveDataForks = HostPCMenuLayout.MenuLayout.FileSystem.PopulateSaveDataForksFromDevice(fileSystem);
                         System.Diagnostics.Debug.WriteLineIf(addedSaveDataForks, "Added SaveData forks from LTO Flash!.");
                         var reportedProblems = false;
-                        if (!fileSystem.Validate())
+                        System.Exception corruptFileSystem = null;
+                        if (!fileSystem.Validate(out corruptFileSystem))
                         {
-                            reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem);
+                            reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem, corruptFileSystem);
                         }
-                        if (Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu)
+                        if ((corruptFileSystem == null) && Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu)
                         {
                             HostPCMenuLayout.HighlightDifferencesFromDeviceFileSystem(fileSystem, SyncMode);
                         }
                         try
                         {
-                            var model = new MenuLayout(fileSystem, ActiveLtoFlashDevice.Device.UniqueId);
-                            if (fileSystem.Status != LfsDirtyFlags.None)
+                            var model = new MenuLayout();
+                            try
+                            {
+                                model = new MenuLayout(fileSystem, ActiveLtoFlashDevice.Device.UniqueId);
+                            }
+                            catch (System.Exception exception)
+                            {
+                                corruptFileSystem = exception;
+                            }
+                            if ((fileSystem.Status != LfsDirtyFlags.None) || (corruptFileSystem != null))
                             {
                                 if (reportedProblems)
                                 {
@@ -771,7 +789,7 @@ namespace INTV.LtoFlash.ViewModel
                                 }
                                 else
                                 {
-                                    reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem);
+                                    reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem, corruptFileSystem);
                                 }
                             }
                             Model = model;
@@ -780,7 +798,7 @@ namespace INTV.LtoFlash.ViewModel
                         {
                             if (!reportedProblems)
                             {
-                                reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem);
+                                reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem, null);
                             }
                         }
                         RaisePropertyChanged(FileNode.LongNamePropertyName);
@@ -830,7 +848,7 @@ namespace INTV.LtoFlash.ViewModel
                 if (differences.GetAllFailures(null).Any())
                 {
                     hostFileSystem = hostFileSystem.Clone();
-                    hostFileSystem.RemoveInvalidEntries(differences, FileSystemHelpers.ShouldRemoveInvalidEntry, null);
+                    hostFileSystem.CleanUpInvalidEntries(deviceFileSystem, differences, FileSystemHelpers.ShouldRemoveInvalidEntry, null);
                     differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device);
                 }
                 showFileSystemsDifferIcon = differences.Any();

@@ -22,27 +22,28 @@ namespace INTV.Core.Model.Program
 {
     /// <summary>
     /// Speculative set of feature flags for Marc Ball's yet-to-be-released multi-cart / flash platform.
+    /// There may be some redundant flags here. Will revisit as more info becomes available.
     /// </summary>
     [System.Flags]
     public enum HiveFeatures : uint
     {
         /// <summary>
-        /// Program is incompatible with Hive technology.
+        /// Program does not use Hive technology.
         /// </summary>
         Incompatible = FeatureCompatibility.Incompatible,
 
         /// <summary>
-        /// Program uses no Hive-specific features, whether present or not.
+        /// Placeholder... Intended use: Program uses Hive-specific accelerators.
         /// </summary>
         Tolerates = FeatureCompatibility.Tolerates,
 
         /// <summary>
-        /// Program uses Hive-specific acceleration features if present.
+        /// Placeholder... Intended use: Program uses Hive-specific storage.
         /// </summary>
         Enhances = FeatureCompatibility.Enhances,
 
         /// <summary>
-        /// Program requires Hive-specific acceleration features.
+        /// Placeholder... Intended use: Program uses Hive-specific acceleration and storage.
         /// </summary>
         Requires = FeatureCompatibility.Requires,
 

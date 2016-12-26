@@ -1,4 +1,4 @@
-﻿// <copyright file=".cs" company="INTV Funhouse">
+﻿// <copyright file="RomMetadataControllerBindings.cs" company="INTV Funhouse">
 // Copyright (c) 2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -24,8 +24,15 @@ using INTV.Core.Model.Device;
 
 namespace INTV.Core.Model
 {
+    /// <summary>
+    /// Class for extracting controller binding information 
+    /// </summary>
     public class RomMetadataControllerBindings : RomMetadataBlock
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INTV.Core.Model.RomMetadataControllerBindings"/> class.
+        /// </summary>
+        /// <param name="length">Length of the payload, in bytes.</param>
         public RomMetadataControllerBindings(uint length)
             : base(length, RomMetadataIdTag.ControllerBindings)
         {
@@ -150,7 +157,7 @@ namespace INTV.Core.Model
             /// </summary>
             None = 0x00,
 
-            // NOTE: Values 0x08 - 0x1F are reserved.
+            //// NOTE: Values 0x08 - 0x1F are reserved.
 
             #region Constituent Parts
 

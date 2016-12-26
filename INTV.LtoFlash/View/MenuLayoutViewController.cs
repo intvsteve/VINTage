@@ -1,5 +1,5 @@
 ﻿// <copyright file="MenuLayoutViewController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,6 +21,7 @@
 ////#define ENABLE_DELEGATE_TRACE
 ////#define DEBUG_DRAGDROP
 ////#define ENABLE_DRAGDROP_TRACE
+#define ENABLE_MULTIPLE_SELECTION
 
 using System;
 using System.Collections.Generic;
@@ -478,6 +479,9 @@ namespace INTV.LtoFlash.View
             /// <summary>Shared initialization code.</summary>
             private void Initialize()
             {
+#if ENABLE_MULTIPLE_SELECTION
+                AllowsMultipleSelection = true;
+#endif // ENABLE_MULTIPLE_SELECTION
             }
 
             #endregion // Constructors
@@ -680,12 +684,23 @@ namespace INTV.LtoFlash.View
                 var outlineView = notification.Object as NSOutlineView;
                 var selectedObjects = TreeData.SelectedObjects;
                 var selectedItem = selectedObjects.FirstOrDefault() as FileNodeViewModel;
+                var selectedItems = selectedObjects.OfType<FileNodeViewModel>().Where(i => !(i is MenuLayoutViewModel));
                 var viewModel = outlineView.GetInheritedValue<MenuLayoutViewModel>(IFakeDependencyObjectHelpers.DataContextPropertyName);
                 if (selectedItem == viewModel.Root || ((selectedItem != null) && (selectedItem.Parent == null)))
                 {
                     selectedItem = null;
                 }
                 viewModel.CurrentSelection = selectedItem;
+                var itemsToRemove = viewModel.SelectedItems.Except(selectedItems).ToArray();
+                foreach (var itemToRemove in itemsToRemove)
+                {
+                    viewModel.SelectedItems.Remove(itemToRemove);
+                }
+                var itemsToAdd = selectedItems.Except(viewModel.SelectedItems);
+                foreach (var itemToAdd in itemsToAdd)
+                {
+                    viewModel.SelectedItems.Add(itemToAdd);
+                }
                 CommandManager.InvalidateRequerySuggested(); // ensure command availability is updated
             }
 

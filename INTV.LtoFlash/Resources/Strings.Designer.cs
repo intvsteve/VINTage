@@ -4683,7 +4683,8 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File: {0}\nMessage: {1}.
+        ///   Looks up a localized string similar to File: {0}
+        ///Message: {1}.
         /// </summary>
         internal static string RestoreMenuLayoutCommand_WarningMessageDetailFormat {
             get {
@@ -6112,7 +6113,8 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File: {0}\nMessage: {1}.
+        ///   Looks up a localized string similar to File: {0}
+        ///Message: {1}.
         /// </summary>
         internal static string SyncHostToDeviceCommand_WarningFormat {
             get {

@@ -47,7 +47,6 @@ namespace INTV.LtoFlash.Model
         private const string MenuLayoutFileBaseName = "MenuLayout";
         private const string DeviceSubdirectoryBaseName = "LTOFlash";
         private const string PendingChangesFileBaseName = "PendingChanges";
-        private const string FirmwareDirectory = "FirmwareUpdates";
         private const string XmlExtension = ".xml";
         private const string ForkBaseName = "Data";
         private const string IndexBaseName = "index";

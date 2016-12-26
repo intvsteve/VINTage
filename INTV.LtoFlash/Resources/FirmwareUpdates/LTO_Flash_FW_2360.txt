@@ -1,0 +1,16 @@
+==============================================================================
+    Firmware 2360
+------------------------------------------------------------------------------
+
+ -- Correctly handle dangling 'ARG' entry in filesystem journal.
+ -- Make reformat command reset the journal by forcing an early log-wrap.
+ -- Add additional sanity checks to filesystem journal.
+ -- Pump wire protocol while displaying "Error loading manual" screen.
+ -- Reduce rate at which file-info screen pumps wire protocol to match
+    rest of firmware.
+
+==============================================================================
+    Firmware 2130
+------------------------------------------------------------------------------
+
+Initial production release.

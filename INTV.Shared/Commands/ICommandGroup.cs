@@ -1,5 +1,5 @@
 ﻿// <copyright file="ICommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,9 +26,15 @@ using OSCommandVisual = System.Windows.UIElement;
 using OSImage = System.Windows.Media.Imaging.BitmapImage;
 using OSMenuItem = System.Windows.Controls.Control;
 #elif MAC
+#if __UNIFIED__
+using OSCommandVisual = Foundation.NSObject;
+using OSImage = AppKit.NSImage;
+using OSMenuItem = AppKit.NSMenuItem;
+#else
 using OSCommandVisual = MonoMac.Foundation.NSObject;
 using OSImage = MonoMac.AppKit.NSImage;
 using OSMenuItem = MonoMac.AppKit.NSMenuItem;
+#endif
 #endif
 
 namespace INTV.Shared.Commands

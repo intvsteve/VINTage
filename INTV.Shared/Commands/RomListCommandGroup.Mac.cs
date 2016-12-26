@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListCommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,11 +18,14 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using MonoMac.Foundation;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
@@ -169,7 +172,7 @@ namespace INTV.Shared.Commands
         }
 
         /// <inheritdoc/>
-        protected override void HandleCommandActivated(object sender, EventArgs e)
+        protected override void HandleCommandActivated(object sender, System.EventArgs e)
         {
             var command = GetCommand(sender);
             var relayCommand = command as VisualRelayCommand;

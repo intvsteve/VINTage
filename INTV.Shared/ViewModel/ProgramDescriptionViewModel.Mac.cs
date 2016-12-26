@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescriptionViewModel.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,14 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif
 using INTV.Shared.Utility;
 
 namespace INTV.Shared.ViewModel
@@ -27,7 +33,7 @@ namespace INTV.Shared.ViewModel
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    public partial class ProgramDescriptionViewModel : MonoMac.Foundation.NSObject
+    public partial class ProgramDescriptionViewModel : NSObject
     {
         /// <summary>
         /// Gets the tool tip for the features image.
@@ -46,7 +52,7 @@ namespace INTV.Shared.ViewModel
         /// Gets the composd image to represent a ROM's features.
         /// </summary>
         [OSExportAttribute("Features")]
-        public MonoMac.AppKit.NSImage FeaturesImage
+        public NSImage FeaturesImage
         {
             get { return INTV.Shared.Converter.ProgramFeaturesToImageTransformer.TransformToImage(this); }
         }

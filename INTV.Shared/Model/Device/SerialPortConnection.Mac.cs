@@ -20,9 +20,13 @@
 
 ////#define ENABLE_DEBUG_OUTPUT
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif
 using INTV.Shared.Interop.IOKit;
 using INTV.Shared.Interop.DeviceManagement;
 
@@ -42,7 +46,7 @@ namespace INTV.Shared.Model.Device
                     // Need to set up an Autorelease pool here since we may be doing
                     // this on a worker thread, and it makes some IOKit calls. Specifically,
                     // some NSObject instances may be created, and thus the need for the pool.
-                    using (var pool = new MonoMac.Foundation.NSAutoreleasePool())
+                    using (var pool = new NSAutoreleasePool())
                     {
                         using (var masterPort = new IOMachPort())
                         {
@@ -74,7 +78,7 @@ namespace INTV.Shared.Model.Device
             {
                 Port.Open();
             }
-            catch (ArgumentOutOfRangeException)
+            catch (System.ArgumentOutOfRangeException)
             {
                 var desiredBaudRate = Port.BaudRate;
                 Port.BaudRate = 9600;

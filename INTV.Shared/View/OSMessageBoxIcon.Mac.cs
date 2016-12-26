@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSMessageBoxIcon.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+#if __UNIFIED__
+using AppKit;
+#else
+using MonoMac.AppKit;
+#endif
+
 namespace INTV.Shared.View
 {
     /// <summary>
@@ -29,27 +35,27 @@ namespace INTV.Shared.View
         /// No icon displayed.
         /// </summary>
         /// <remarks>OK, well, actually, you cannot have 'none' so show info.</remarks>
-        None = MonoMac.AppKit.NSAlertStyle.Informational,
+        None = NSAlertStyle.Informational,
 
         /// <summary>
         /// Question icon displayed.
         /// </summary>
         /// <remarks>Well... On Mac, it's a warning icon.</remarks>
-        Question = MonoMac.AppKit.NSAlertStyle.Warning,
+        Question = NSAlertStyle.Warning,
 
         /// <summary>
         /// Information icon displayed.
         /// </summary>
-        Information = MonoMac.AppKit.NSAlertStyle.Informational,
+        Information = NSAlertStyle.Informational,
 
         /// <summary>
         /// Exclamation icon displayed.
         /// </summary>
-        Exclamation = MonoMac.AppKit.NSAlertStyle.Warning,
+        Exclamation = NSAlertStyle.Warning,
 
         /// <summary>
         /// Error icon displayed.
         /// </summary>
-        Error = MonoMac.AppKit.NSAlertStyle.Critical,
+        Error = NSAlertStyle.Critical,
     }
 }

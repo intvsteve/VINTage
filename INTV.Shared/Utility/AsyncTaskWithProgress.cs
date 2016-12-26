@@ -252,7 +252,7 @@ namespace INTV.Shared.Utility
             // Based on this post: http://forums.xamarin.com/discussion/6404/memory-leaks-and-nsautoreleasepool
             // it is unclear whether it's necessary. The thread's about iOS, but is likely
             // applicable to Mac OS X as well.
-            // using (var pool = new MonoMac.Foundation.NSAutoreleasePool())
+            // using (var pool = new NSAutoreleasePool())
             _taskData.DoWorkArgs = e;
             _doWork(_taskData);
         }

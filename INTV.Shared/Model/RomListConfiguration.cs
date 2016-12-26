@@ -150,7 +150,7 @@ namespace INTV.Shared.Model
         /// <inheritdoc />
         public void OnImportsSatisfied()
         {
-            var initializedCoreStreamUtils = INTV.Core.Utility.StreamUtilities.Initialize(OpenFileStream, File.Exists);
+            var initializedCoreStreamUtils = INTV.Core.Utility.StreamUtilities.Initialize(FileUtilities.OpenFileStream, File.Exists);
             System.Diagnostics.Debug.Assert(initializedCoreStreamUtils, "Failed to initialize stream utilities!");
             Core.Model.IRomHelpers.InitializeCallbacks(GetIntvNameData);
             _applicationDocumentsPath = Path.Combine(PathUtils.GetDocumentsDirectory(), AppInfo.DocumentFolderName);
@@ -167,7 +167,7 @@ namespace INTV.Shared.Model
             LabelsDirectory = Path.Combine(_applicationDocumentsPath, LabelsDir);
 
             var directories = new[] { _applicationDocumentsPath, RomsDirectory, ManualsDirectory, BoxesDirectory, OverlaysDirectory, LabelsDirectory, BackupDataDirectory, ErrorLogDirectory };
-            EnsureDirectoriesExist(directories);
+            FileUtilities.EnsureDirectoriesExist(directories);
 
             RomFilesPath = Path.Combine(_applicationDocumentsPath, RomsFile);
 
@@ -188,27 +188,6 @@ namespace INTV.Shared.Model
         {
             var romListBackupDirectory = System.IO.Path.Combine(BackupDataDirectory, INTV.Shared.Utility.PathUtils.GetTimeString());
             return romListBackupDirectory;
-        }
-
-        private static Stream OpenFileStream(string filePath)
-        {
-            Stream fileStream = null;
-            if (File.Exists(filePath))
-            {
-                fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            }
-            return fileStream;
-        }
-
-        private static void EnsureDirectoriesExist(IEnumerable<string> directories)
-        {
-            foreach (var directory in directories)
-            {
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-            }
         }
 
         /// <summary>

@@ -1,5 +1,5 @@
 ﻿// <copyright file="IOIterator.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,11 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Interop.IOKit
 {
@@ -38,7 +41,7 @@ namespace INTV.Shared.Interop.IOKit
         {
         }
 
-        internal IOIterator(IntPtr iterator)
+        internal IOIterator(System.IntPtr iterator)
             : base(iterator)
         {
         }
@@ -56,7 +59,7 @@ namespace INTV.Shared.Interop.IOKit
         {
             T ioKitObject = null;
             var ioKitObjectHandle = NativeMethods.IOIteratorNext(Handle);
-            if (ioKitObjectHandle != IntPtr.Zero)
+            if (ioKitObjectHandle != System.IntPtr.Zero)
             {
                 ioKitObject = IOKitObject.CreateIOKitObject<T>(ioKitObjectHandle);
             }
@@ -71,13 +74,13 @@ namespace INTV.Shared.Interop.IOKit
             NativeMethods.IOIteratorReset(Handle);
         }
 
-        private static IntPtr Initialize(IOMachPort masterPort, NSMutableDictionary serialServices)
+        private static System.IntPtr Initialize(IOMachPort masterPort, NSMutableDictionary serialServices)
         {
-            IntPtr iterator;
+            System.IntPtr iterator;
             var result = NativeMethods.IOServicesMatchingDictionary(masterPort.Handle, serialServices, out iterator);
             if (result != NativeMethods.Success)
             {
-                throw new InvalidOperationException();
+                throw new System.InvalidOperationException();
             }
             return iterator;
         }

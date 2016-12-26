@@ -41,5 +41,11 @@ namespace INTV.Shared.Model.Program
         /// Gets the <see cref="ProgramDescription"/> identifying a ROM to be invoked.
         /// </summary>
         public ProgramDescription Program { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the event has been handled.
+        /// </summary>
+        /// <remarks>The first to mark the event handled will prevent subsequent processing fo the event.</remarks>
+        public bool Handled { get; set; }
     }
 }

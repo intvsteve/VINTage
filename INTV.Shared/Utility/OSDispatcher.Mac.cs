@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSDispatcher.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,8 +20,11 @@
 
 ////#define ENABLE_DEBUG_OUTPUT
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Utility
 {
@@ -79,7 +82,7 @@ namespace INTV.Shared.Utility
         /// <param name="priority">The priority at which to execute <paramref name="action"/> on the main thread.</param>
         public void InvokeOnMainThread(System.Action action, OSDispatcherPriority priority)
         {
-            throw new NotImplementedException("InvokeOnMainThread(System.Action action, OSDispatcherPriority priority)");
+            throw new System.NotImplementedException("InvokeOnMainThread(System.Action action, OSDispatcherPriority priority)");
         }
 
         /// <summary>
@@ -89,9 +92,9 @@ namespace INTV.Shared.Utility
         /// <param name="function">A function to execute.</param>
         /// <param name="priority">The priority at which to execute <paramref name="function"/> on the main thread.</param>
         /// <returns>The return value of the function.</returns>
-        public T InvokeOnMainThread<T>(Func<T> function, OSDispatcherPriority priority)
+        public T InvokeOnMainThread<T>(System.Func<T> function, OSDispatcherPriority priority)
         {
-            throw new NotImplementedException("InvokeOnMainThread<T>(Func<T> function, OSDispatcherPriority priority)");
+            throw new System.NotImplementedException("InvokeOnMainThread<T>(Func<T> function, OSDispatcherPriority priority)");
         }
 
         private static readonly ActionSelector _dispatcherObject = new ActionSelector();
@@ -100,7 +103,7 @@ namespace INTV.Shared.Utility
 
         private class ActionSelector : NSObject
         {
-            public void Invoke(OSDispatcher dispatcher, Action action, bool waitUntilDone)
+            public void Invoke(OSDispatcher dispatcher, System.Action action, bool waitUntilDone)
             {
                 DebugOutput("^^^^^^^^^^^^^^^ PERFORM from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle + ", DISPATCHER: " + dispatcher.NativeDispatcher.Handle);
                 var currentThread = NSThread.Current;
@@ -114,7 +117,7 @@ namespace INTV.Shared.Utility
                 }
             }
 
-            [MonoMac.Foundation.Action(OSDispatcher.ActionSelectorName)]
+            [Action(OSDispatcher.ActionSelectorName)]
             public void Action(NSObject arg)
             {
                 try
@@ -122,7 +125,7 @@ namespace INTV.Shared.Utility
                     DebugOutput("++++++++++++++++++ EXECUTING ACTION from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
                     ((SelectorArgument)arg).Action();
                 }
-                catch(Exception e)
+                catch(System.Exception e)
                 {
                     ErrorReporting.ReportError(ReportMechanism.Console, e.Message);
                 }

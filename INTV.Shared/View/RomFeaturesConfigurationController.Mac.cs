@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonoMac.Foundation;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Shared.Behavior;
 using INTV.Shared.Commands;
@@ -34,7 +38,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// NSViewController for <see cref="RomFeaturesConfiguration"/>.
     /// </summary>
-    public partial class RomFeaturesConfigurationController : MonoMac.AppKit.NSWindowController, IFakeDependencyObject, IInPlaceEditor
+    public partial class RomFeaturesConfigurationController : NSWindowController, IFakeDependencyObject, IInPlaceEditor
     {
         #region Constructors
 
@@ -42,7 +46,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public RomFeaturesConfigurationController(IntPtr handle)
+        public RomFeaturesConfigurationController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -152,7 +156,7 @@ namespace INTV.Shared.View
         #region IInPlaceEditor
 
         /// <inheritdoc />
-        public event EventHandler<InPlaceEditorClosedEventArgs> EditorClosed;
+        public event System.EventHandler<InPlaceEditorClosedEventArgs> EditorClosed;
 
         /// <inheritdoc />
         public NSView EditedElement { get { return null; } }

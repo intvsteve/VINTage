@@ -34,6 +34,64 @@ namespace INTV.Shared.Utility
     /// </summary>
     public static partial class RunExternalProgram
     {
+        #region Basic Process Creation Methods
+
+        /// <summary>
+        /// Creates a process without starting it, so further configuration can be performed by the caller.
+        /// </summary>
+        /// <param name="programPath">Fully qualified path to the program to launch.</param>
+        /// <returns>The process, already configured with the given parameters.</returns>
+        public static Process CreateProcess(string programPath)
+        {
+            return CreateProcess(programPath, null, null, false, false);
+        }
+
+        /// <summary>
+        /// Creates a process without starting it, so further configuration can be performed by the caller.
+        /// </summary>
+        /// <param name="programPath">Fully qualified path to the program to launch.</param>
+        /// <param name="commandLineArguments">Command line argument string to send to the program.</param>
+        /// <param name="workingDirectory">The working directory for the program.</param>
+        /// <param name="showWindow">If <c>true</c>, show the window for the program.</param>
+        /// <returns>The process, already configured with the given parameters.</returns>
+        public static Process CreateProcess(string programPath, string commandLineArguments, string workingDirectory, bool showWindow)
+        {
+            return CreateProcess(programPath, commandLineArguments, workingDirectory, showWindow, false);
+        }
+
+        /// <summary>
+        /// Creates a process without starting it, so further configuration can be performed by the caller.
+        /// </summary>
+        /// <param name="programPath">Fully qualified path to the program to launch.</param>
+        /// <param name="commandLineArguments">Command line argument string to send to the program.</param>
+        /// <param name="workingDirectory">The working directory for the program.</param>
+        /// <param name="showWindow">If <c>true</c>, show the window for the program.</param>
+        /// <param name="useShellExecute">If <c>true</c>, run the program in a command shell instance.</param>
+        /// <returns>The process, already configured with the given parameters.</returns>
+        public static Process CreateProcess(string programPath, string commandLineArguments, string workingDirectory, bool showWindow, bool useShellExecute)
+        {
+            return CreateProcess(programPath, commandLineArguments, workingDirectory, showWindow, useShellExecute, false);
+        }
+
+        /// <summary>
+        /// Creates a process without starting it, so further configuration can be performed by the caller.
+        /// </summary>
+        /// <param name="programPath">Fully qualified path to the program to launch.</param>
+        /// <param name="commandLineArguments">Command line argument string to send to the program.</param>
+        /// <param name="workingDirectory">The working directory for the program.</param>
+        /// <param name="showWindow">If <c>true</c>, show the window for the program.</param>
+        /// <param name="useShellExecute">If <c>true</c>, run the program in a command shell instance.</param>
+        /// <param name="requiresElevation">If <c>true</c>, attempt to run the program with elevation.</param>
+        /// <returns>The process, already configured with the given parameters.</returns>
+        public static Process CreateProcess(string programPath, string commandLineArguments, string workingDirectory, bool showWindow, bool useShellExecute, bool requiresElevation)
+        {
+            var processStartupInfo = CreateStartInfo(programPath, commandLineArguments, workingDirectory, showWindow, useShellExecute, requiresElevation, false);
+            var process = new Process() { StartInfo = processStartupInfo };
+            return process;
+        }
+
+        #endregion // Basic Process Creation Methods
+
         #region Launch (Fork) Methods
 
         /// <summary>
@@ -62,19 +120,26 @@ namespace INTV.Shared.Utility
         /// <returns>The process that was launched.</returns>
         public static Process Launch(string programPath, string commandLineArguments, string workingDirectory, bool showWindow, bool useShellExecute, bool requiresElevation)
         {
+            var process = Process.Start(CreateStartInfo(programPath, commandLineArguments, workingDirectory, showWindow, useShellExecute, requiresElevation, false));
+            return process;
+        }
+
+        private static ProcessStartInfo CreateStartInfo(string programPath, string commandLineArguments, string workingDirectory, bool showWindow, bool useShellExecute, bool requiresElevation, bool redirectstdOutAndErr)
+        {
             VerifyIsExecutable(programPath);
             var processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = programPath;
             processStartInfo.Arguments = commandLineArguments;
             processStartInfo.WorkingDirectory = workingDirectory;
             processStartInfo.CreateNoWindow = !showWindow;
+            processStartInfo.RedirectStandardError = redirectstdOutAndErr;
+            processStartInfo.RedirectStandardOutput = redirectstdOutAndErr;
             processStartInfo.UseShellExecute = useShellExecute || requiresElevation; // Elevation requires shell
             if (requiresElevation)
             {
                 processStartInfo.Verb = "runas";
             }
-            var process = Process.Start(processStartInfo);
-            return process;
+            return processStartInfo;
         }
 
         /// <summary>
@@ -101,14 +166,7 @@ namespace INTV.Shared.Utility
         public static string CallAndReturnStdOut(string programPath, string commandLineArguments, string workingDirectory)
         {
             VerifyIsExecutable(programPath);
-            var processStartInfo = new ProcessStartInfo();
-            processStartInfo.FileName = programPath;
-            processStartInfo.Arguments = commandLineArguments;
-            processStartInfo.WorkingDirectory = workingDirectory;
-            processStartInfo.CreateNoWindow = true;
-            processStartInfo.UseShellExecute = false;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardError = true;
+            var processStartInfo = CreateStartInfo(programPath, commandLineArguments, workingDirectory, false, false, false, true);
             var process = Process.Start(processStartInfo);
             var output = process.StandardOutput.ReadToEnd();
 #if ENABLE_DEBUG_SPAM
@@ -129,12 +187,7 @@ namespace INTV.Shared.Utility
         public static int Call(string programPath, string commandLineArguments, string workingDirectory)
         {
             VerifyIsExecutable(programPath);
-            var processStartInfo = new ProcessStartInfo();
-            processStartInfo.FileName = programPath;
-            processStartInfo.Arguments = commandLineArguments;
-            processStartInfo.WorkingDirectory = workingDirectory;
-            processStartInfo.CreateNoWindow = true;
-            processStartInfo.UseShellExecute = false;
+            var processStartInfo = CreateStartInfo(programPath, commandLineArguments, workingDirectory, false, false, false, false); // new ProcessStartInfo();
             var process = Process.Start(processStartInfo);
             process.WaitForExit();
             var result = process.ExitCode;

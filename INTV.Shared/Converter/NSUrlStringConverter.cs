@@ -1,5 +1,5 @@
-﻿// <copyright file="ShortenedPathConverter.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+﻿// <copyright file="NSUrlStringConverter.cs" company="INTV Funhouse">
+// Copyright (c) 2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,68 +23,88 @@ using Foundation;
 #else
 using MonoMac.Foundation;
 #endif
+using INTV.Shared.Utility;
 
 namespace INTV.Shared.Converter
 {
     /// <summary>
-    /// Mac-specific implementation.
+    /// Converter for displaying paths in a path control when the backing value is a string.
+    /// Accounts for the string being either in URI or plain old path format.
     /// </summary>
-    [Register("ShortenedPathConverter")]
-    public partial class ShortenedPathConverter : NSValueTransformer
+    [Register("NSUrlStringConverter")]
+    public class NSUrlStringConverter : NSValueTransformer
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.Converter.ShortenedPathConverter"/> class.
+        /// Initializes a new instance of the <see cref="INTV.Shared.Converter.NSUrlStringConverter"/> class.
         /// </summary>
-        public ShortenedPathConverter()
+        public NSUrlStringConverter()
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.Converter.ShortenedPathConverter"/> class.
+        /// Initializes a new instance of the <see cref="INTV.Shared.Converter.NSUrlStringConverter"/> class.
         /// </summary>
         /// <param name="f">Flags used by MonoMac.</param>
         /// <remarks>Constructor to call on derived classes when the derived class has an [Export] constructor.</remarks>
-        public ShortenedPathConverter(NSObjectFlag f)
+        public NSUrlStringConverter(NSObjectFlag f)
             : base(f)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.Converter.ShortenedPathConverter"/> class.
+        /// Initializes a new instance of the <see cref="INTV.Shared.Converter.NSUrlStringConverter"/> class.
         /// </summary>
         /// <param name="handle">Native object pointer.</param>
         /// <remarks>Called when created from unmanaged code.</remarks>
-        public ShortenedPathConverter (System.IntPtr handle)
+        public NSUrlStringConverter (System.IntPtr handle)
             : base(handle)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.Converter.ShortenedPathConverter"/> class.
+        /// Initializes a new instance of the <see cref="INTV.Shared.Converter.NSUrlStringConverter"/> class.
         /// </summary>
         /// <param name="coder">The unarchiver.</param>
         /// <remarks>Called when created directly from a XIB file.</remarks>
         [Export ("initWithCoder:")]
-        public ShortenedPathConverter(NSCoder coder)
+        public NSUrlStringConverter(NSCoder coder)
             : base(coder)
         {
             Initialize();
         }
 
         /// <inheritdoc />
-        public override NSObject TransformedValue (NSObject value)
+        public override NSObject TransformedValue(NSObject value)
         {
+            NSUrl pathUrl = null;
             var path = value as NSString;
-            return new NSString(GetShortenedPath(path));
+            if (path != null)
+            {
+                if (((string)path).IsFileUrlAsString())
+                {
+                    pathUrl = NSUrl.FromString(path);
+                }
+                else
+                {
+                    pathUrl = NSUrl.FromFilename(path);
+                }
+            }
+            return pathUrl;
         }
 
         /// <inheritdoc />
-        public override NSObject ReverseTransformedValue (NSObject value)
+        public override NSObject ReverseTransformedValue(NSObject value)
         {
-            return null;
+            NSString path = null;
+            var pathUrl = value as NSUrl;
+            if (pathUrl != null)
+            {
+                path = new NSString(pathUrl.AbsoluteString);
+            }
+            return path;
         }
 
         private void Initialize()

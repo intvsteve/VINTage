@@ -1,5 +1,5 @@
 ﻿// <copyright file="CommandProviderHelpers.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,11 +20,15 @@
 
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 

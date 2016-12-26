@@ -20,9 +20,15 @@
 
 ////#define ENABLE_DEBUG_OUTPUT
 
-using System;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+using ObjCRuntime;
+#else
 using MonoMac.AppKit;
+using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
+#endif
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 
@@ -35,7 +41,7 @@ namespace INTV.Shared.ViewModel
     {
         private static readonly string ProgressIndicatorViewModelDataContextProperty = ProgressIndicatorViewModelDataContextPropertyName;
 
-        private MonoMac.AppKit.NSObjectPredicate _previousShouldClosePredicate;
+        private NSObjectPredicate _previousShouldClosePredicate;
 
         private void PlatformOnShow(SingleInstanceApplication application)
         {
@@ -45,7 +51,7 @@ namespace INTV.Shared.ViewModel
                 application.MainWindow.WindowShouldClose = MainWindowShouldClose;
             }
 #if ENABLE_DEBUG_OUTPUT
-            System.Diagnostics.Debug.WriteLine("****** SHOWING PROGRESS from thread: " + MonoMac.Foundation.NSThread.Current.Handle + ", MAIN: " + MonoMac.Foundation.NSThread.MainThread.Handle);
+            System.Diagnostics.Debug.WriteLine("****** SHOWING PROGRESS from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
 #endif // ENABLE_DEBUG_OUTPUT
         }
 
@@ -63,7 +69,7 @@ namespace INTV.Shared.ViewModel
             ErrorReporting.ReportNotImplementedError("ProgressIndicatorViewModel.MainWindowClosing");
         }
 
-        private bool MainWindowShouldClose(MonoMac.Foundation.NSObject sender)
+        private bool MainWindowShouldClose(NSObject sender)
         {
             return !IsVisible && (_timer == null);
         }

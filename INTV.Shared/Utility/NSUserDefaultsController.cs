@@ -1,5 +1,5 @@
 ﻿// <copyright file="NSUserDefaultsController.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,10 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+using ObjCRuntime;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
+#endif
 
 namespace INTV.Shared.Utility
 {
@@ -31,7 +36,7 @@ namespace INTV.Shared.Utility
     [Register ("NSUserDefaultsController")]
     public class NSUserDefaultsController : NSController
     {
-        private static IntPtr class_ptr;
+        private static System.IntPtr class_ptr;
         private static Selector selSharedUserDefaultsController;
         private static Selector selInitWithDefaults;
         private static Selector selDefaults;
@@ -77,14 +82,14 @@ namespace INTV.Shared.Utility
         public NSUserDefaultsController(NSUserDefaults defaults, NSDictionary initialValues)
             : base(NSObjectFlag.Empty)
         {
-            IntPtr defaultsHandle = IntPtr.Zero;
+            System.IntPtr defaultsHandle = System.IntPtr.Zero;
             if (defaults != null)
             {
                 defaultsHandle = defaults.Handle;
             }
             if (initialValues == null)
             {
-                throw new ArgumentNullException ("initialValues");
+                throw new System.ArgumentNullException ("initialValues");
             }
             if (this.IsDirectBinding)
             {
@@ -100,7 +105,7 @@ namespace INTV.Shared.Utility
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public NSUserDefaultsController(IntPtr handle)
+        public NSUserDefaultsController(System.IntPtr handle)
             : base(handle)
         {
         }
@@ -122,7 +127,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets the class handle.
         /// </summary>
-        public override IntPtr ClassHandle
+        public override System.IntPtr ClassHandle
         {
             get
             {
@@ -272,7 +277,7 @@ namespace INTV.Shared.Utility
         {
             if (sender == null)
             {
-                throw new ArgumentNullException ("sender");
+                throw new System.ArgumentNullException ("sender");
             }
             if (this.IsDirectBinding)
             {
@@ -293,7 +298,7 @@ namespace INTV.Shared.Utility
         {
             if (sender == null)
             {
-                throw new ArgumentNullException ("sender");
+                throw new System.ArgumentNullException ("sender");
             }
             if (this.IsDirectBinding)
             {
@@ -314,7 +319,7 @@ namespace INTV.Shared.Utility
         {
             if (sender == null)
             {
-                throw new ArgumentNullException ("sender");
+                throw new System.ArgumentNullException ("sender");
             }
             if (this.IsDirectBinding)
             {

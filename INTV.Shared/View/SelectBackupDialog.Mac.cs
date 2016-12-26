@@ -18,18 +18,22 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonoMac.Foundation;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.View
 {
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    public partial class SelectBackupDialog : MonoMac.AppKit.NSPanel, IFakeDependencyObject
+    public partial class SelectBackupDialog : NSPanel, IFakeDependencyObject
     {
         #region Constructors
 
@@ -37,7 +41,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public SelectBackupDialog(IntPtr handle)
+        public SelectBackupDialog(System.IntPtr handle)
             : base(handle)
         {
             Initialize();

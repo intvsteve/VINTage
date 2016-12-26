@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSVersion.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif
+
 namespace INTV.Shared.Utility
 {
     /// <summary>
@@ -29,7 +35,7 @@ namespace INTV.Shared.Utility
         {
             // Don't have support for NSOperatingSystemVersion yet. It's only available in
             // OS X 10.10 and later. *sigh*
-            var versionString = MonoMac.Foundation.NSProcessInfo.ProcessInfo.OperatingSystemVersionString;
+            var versionString = NSProcessInfo.ProcessInfo.OperatingSystemVersionString;
             int foundPartNumber = 0;
             const int numVersionParts = 3;
             int major = 0;

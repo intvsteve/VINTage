@@ -29,7 +29,11 @@ using INTV.Shared.ComponentModel;
 #if WIN
 using OSVisual = System.Windows.FrameworkElement;
 #elif MAC
+#if __UNIFIED__
+using OSVisual = AppKit.NSViewController;
+#else
 using OSVisual = MonoMac.AppKit.NSViewController;
+#endif
 #endif
 
 namespace INTV.Shared.ViewModel

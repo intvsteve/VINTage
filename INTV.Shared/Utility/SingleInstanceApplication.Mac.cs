@@ -317,8 +317,11 @@ namespace INTV.Shared.Utility
                             _splashScreen = null;
                         });
                     }
+                    // Consider putting in a delay here? I.e. instead of BeginInvokeOnMainThread(), use
+                    // PerformSelector() with a delay? Is there a race condition that even BeginInvoke() isn't
+                    // getting around w.r.t. the Objective-C initialization and the work the startup actions
+                    // may need to do? (E.g. the case of NSUserDefaults.SetBool() crashing somewhere in its guts.)
                     BeginInvokeOnMainThread(() => {
-                        // Resets the deferred HandleDid
                         ExecuteStartupActions();
                         CommandManager.InvalidateRequerySuggested();
                     });

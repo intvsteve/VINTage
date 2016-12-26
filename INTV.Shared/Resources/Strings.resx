@@ -1583,4 +1583,15 @@ to download version {2}?</value>
   <data name="CheckForUpdatesCommand_Failed" xml:space="preserve">
     <value>An error occurred when checking for updates.</value>
   </data>
+  <data name="RunExternalProgram_ErrorFormat" xml:space="preserve">
+    <value>An error occurred when attempting to open the file:
+
+  {0}
+
+Message: {1}</value>
+    <comment>{0} is file path, {1} is the error message.</comment>
+  </data>
+  <data name="RunExternalProgram_ErrorTitle" xml:space="preserve">
+    <value>Error Opening File</value>
+  </data>
 </root>

@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileNodeSupportFilePathOrFolderInfoTransformer.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.LtoFlash.ViewModel;
 
 namespace INTV.LtoFlash
@@ -49,7 +54,7 @@ namespace INTV.LtoFlash
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public FileNodeSupportFilePathOrFolderInfoTransformer(IntPtr handle)
+        public FileNodeSupportFilePathOrFolderInfoTransformer(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -77,7 +82,7 @@ namespace INTV.LtoFlash
         /// <inheritdoc />
         public override NSObject ReverseTransformedValue (NSObject value)
         {
-            var osColor = value as MonoMac.AppKit.NSColor;
+            var osColor = value as NSColor;
             FileNodeColorViewModel colorViewModel = null;
             // var intvColor = INTV.Core.Model.Stic.Color.NotAColor;
             foreach (var color in INTV.LtoFlash.ViewModel.MenuLayoutViewModel.Colors)
@@ -93,7 +98,7 @@ namespace INTV.LtoFlash
                     float r0, g0, b0, a0, r1, g1, b1, a1;
                     viewModelColor.Fill.GetRgba(out r0, out g0, out b0, out a0);
                     osColor.GetRgba(out r1, out g1, out b1, out a1);
-                    if ((Math.Abs(r1 - r0) < float.Epsilon * 2) && (Math.Abs(g1 - g0) < float.Epsilon * 2) && (Math.Abs(b1 - b0) < float.Epsilon * 2))
+                    if ((System.Math.Abs(r1 - r0) < float.Epsilon * 2) && (System.Math.Abs(g1 - g0) < float.Epsilon * 2) && (System.Math.Abs(b1 - b0) < float.Epsilon * 2))
                     {
                         colorViewModel = viewModelColor;
                         break;

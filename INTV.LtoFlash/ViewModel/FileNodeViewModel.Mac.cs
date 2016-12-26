@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileNodeViewModel.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,9 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif
 using INTV.Core.Model.Program;
 using INTV.LtoFlash.Model;
 using INTV.Shared.ComponentModel;
@@ -30,8 +34,8 @@ namespace INTV.LtoFlash.ViewModel
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    [MonoMac.Foundation.Register("FileNodeViewModel")]
-    public abstract partial class FileNodeViewModel : MonoMac.Foundation.NSObject
+    [Register("FileNodeViewModel")]
+    public abstract partial class FileNodeViewModel : NSObject
     {
         #region Property Names
 
@@ -51,7 +55,7 @@ namespace INTV.LtoFlash.ViewModel
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public FileNodeViewModel(IntPtr handle)
+        public FileNodeViewModel(System.IntPtr handle)
             : base(handle)
         {
         }
@@ -61,18 +65,18 @@ namespace INTV.LtoFlash.ViewModel
         /// </summary>
         /// <remarks>Acts as "model" for Cocoa UI for <see cref="NSOutlineView"/>.</remarks>
         [INTV.Shared.Utility.OSExport("Items")]
-        public virtual MonoMac.Foundation.NSMutableArray Children
+        public virtual NSMutableArray Children
         {
             get
             {
                 if (_children == null)
                 {
-                    _children = new MonoMac.Foundation.NSMutableArray();
+                    _children = new NSMutableArray();
                 }
                 return _children;
             }
         }
-        private MonoMac.Foundation.NSMutableArray _children;
+        private NSMutableArray _children;
 
         /// <summary>
         /// Gets or sets the number of child objects.

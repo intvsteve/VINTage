@@ -18,18 +18,22 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.LtoFlash.View
 {
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    public partial class PromptToAddMenuItemsForNewRoms : MonoMac.AppKit.NSPanel
+    public partial class PromptToAddMenuItemsForNewRoms : NSPanel
     {
         #region Constructors
 
@@ -37,7 +41,7 @@ namespace INTV.LtoFlash.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public PromptToAddMenuItemsForNewRoms(IntPtr handle)
+        public PromptToAddMenuItemsForNewRoms(System.IntPtr handle)
             : base(handle)
         {
             Initialize();

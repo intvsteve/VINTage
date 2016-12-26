@@ -23,11 +23,15 @@
 ////#define ENABLE_DRAGDROP_TRACE
 #define ENABLE_MULTIPLE_SELECTION
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
@@ -64,7 +68,7 @@ namespace INTV.LtoFlash.View
         ShortName,
     }
 
-    public partial class MenuLayoutViewController : MonoMac.AppKit.NSViewController
+    public partial class MenuLayoutViewController : NSViewController
     {
         private const string EnableMultiSelectEnvironmentVariableName = "LUI_ENABLE_MENU_LAYOUT_MULTISELECT";
 
@@ -74,7 +78,7 @@ namespace INTV.LtoFlash.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public MenuLayoutViewController(IntPtr handle)
+        public MenuLayoutViewController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -215,7 +219,7 @@ namespace INTV.LtoFlash.View
         /// <param name="toolbarItem">The toolbar item to validate.</param>
         /// <returns><c>true</c> if the item is valid, and should be enabled.</returns>
         /// <remarks>TODO: Unsure why this is here... is it needed, or leftover from some experiment?</remarks>
-        [MonoMac.Foundation.Export ("validateToolbarItem:")]
+        [Export ("validateToolbarItem:")]
         public bool ValidateToolbarItem(NSToolbarItem toolbarItem)
         {
             return false;
@@ -399,7 +403,7 @@ namespace INTV.LtoFlash.View
             }
         }
 
-        partial void OnDoubleClick (MonoMac.Foundation.NSObject sender)
+        partial void OnDoubleClick(NSObject sender)
         {
             var selectedItemPaths = sender as NSArray;
             if (selectedItemPaths != null)
@@ -461,7 +465,7 @@ namespace INTV.LtoFlash.View
             /// Called when created from unmanaged code.
             /// </summary>
             /// <param name="handle">Native pointer to NSView.</param>
-            public MenuOutlineView(IntPtr handle)
+            public MenuOutlineView(System.IntPtr handle)
                 : base(handle)
             {
                 Initialize();
@@ -485,22 +489,21 @@ namespace INTV.LtoFlash.View
                 var allowsMultipleSelection = true;
                 try
                 {
-                    var info = NSBundle.MainBundle.InfoDictionary;
-                    NSObject environmentData;
-                    if (info.TryGetValue(new NSString("LSEnvironment"), out environmentData))
+                    var allowsMultipleSelectionString = NSBundle.MainBundle.GetEnvironmentValue<string>(EnableMultiSelectEnvironmentVariableName);
+                    if (!string.IsNullOrEmpty(allowsMultipleSelectionString))
                     {
-                        var environment = environmentData as NSDictionary;
-                        if ((environment != null) && environment.TryGetValue((NSString)EnableMultiSelectEnvironmentVariableName, out environmentData))
+                        bool environmentValue;
+                        if (!bool.TryParse(allowsMultipleSelectionString, out environmentValue))
                         {
-                            var allowsMultipleSelectionValue = environmentData as NSNumber;
-                            if (allowsMultipleSelectionValue != null)
-                            {
-                                allowsMultipleSelection = allowsMultipleSelectionValue.BoolValue;
-                            }
+                            allowsMultipleSelection = string.Compare(allowsMultipleSelectionString, "yes", true) == 0;
+                        }
+                        else
+                        {
+                            allowsMultipleSelection = environmentValue;
                         }
                     }
                 }
-                catch (Exception)
+                catch (System.Exception)
                 {
                     // If anything fails, just leave things to behave as default.
                 }
@@ -1034,7 +1037,7 @@ namespace INTV.LtoFlash.View
     /// <remarks>TODO: Put into INTV.Shared to be generally available.</remarks>
     internal static class NSTableViewHelpers
     {
-        static IntPtr selEditColumnRowWithEventSelect_Handle = MonoMac.ObjCRuntime.Selector.GetHandle("editColumn:row:withEvent:select:");
+        static System.IntPtr selEditColumnRowWithEventSelect_Handle = MonoMac.ObjCRuntime.Selector.GetHandle("editColumn:row:withEvent:select:");
 
         /// <summary>
         /// Edits the cell at the specified column and row using the specified event and selection behavior.
@@ -1047,7 +1050,7 @@ namespace INTV.LtoFlash.View
         internal static void EditColumn(this NSTableView table, int column, int row)
         {
             NSApplication.EnsureUIThread();
-            MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_int_int_IntPtr_bool (table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, IntPtr.Zero, true);
+            MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_int_int_IntPtr_bool (table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
         }
     }
 
@@ -1057,7 +1060,7 @@ namespace INTV.LtoFlash.View
     /// <remarks>TODO: Put into INTV.Shared to be generally available.</remarks>
     internal static class NSTreeNodeHelpers
     {
-        static IntPtr selRepresentedObjectHandle = MonoMac.ObjCRuntime.Selector.GetHandle("representedObject");
+        static System.IntPtr selRepresentedObjectHandle = MonoMac.ObjCRuntime.Selector.GetHandle("representedObject");
 
         /// <summary>
         /// Gets the represented object in the <see cref="NSTreeNode"/>.
@@ -1071,7 +1074,7 @@ namespace INTV.LtoFlash.View
             return representedObject;
         }
 
-        static IntPtr selSetContentObjectHandle = MonoMac.ObjCRuntime.Selector.GetHandle("setContent:");
+        static System.IntPtr selSetContentObjectHandle = MonoMac.ObjCRuntime.Selector.GetHandle("setContent:");
 
         /// <summary>
         /// Sets the content of the tree controller.

@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,9 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
-using INTV.Core.ComponentModel;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
+using INTV.Core.ComponentModel;
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.Utility;
@@ -100,7 +103,7 @@ namespace INTV.LtoFlash.Properties
         public bool ValidateMenuAtStartup
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.ValidateMenuAtStartupSettingName); }
-            set { throw new InvalidOperationException("set ValidateMenuAtStartup not supported"); }
+            set { throw new System.InvalidOperationException("set ValidateMenuAtStartup not supported"); }
         }
 
         /// <summary>
@@ -109,7 +112,7 @@ namespace INTV.LtoFlash.Properties
         public bool SearchForDevicesAtStartup
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.SearchForDevicesAtStartupSettingName); }
-            set { throw new InvalidOperationException("set SearchForDevicesAtStartup not supported"); }
+            set { throw new System.InvalidOperationException("set SearchForDevicesAtStartup not supported"); }
         }
 
         /// <summary>
@@ -118,7 +121,7 @@ namespace INTV.LtoFlash.Properties
         public bool ReconcileDeviceMenuWithLocalMenu
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.ReconcileDeviceMenuWithLocalMenuSettingName); }
-            set { throw new InvalidOperationException("set ReconcileDeviceMenuWithLocalMenu not supported"); }
+            set { throw new System.InvalidOperationException("set ReconcileDeviceMenuWithLocalMenu not supported"); }
         }
 
         /// <summary>
@@ -127,7 +130,7 @@ namespace INTV.LtoFlash.Properties
         public bool ShowAdvancedFeatures
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.ShowAdvancedFeaturesSettingName); }
-            set { throw new InvalidOperationException("set ShowAdvancedFeatures not supported"); }
+            set { throw new System.InvalidOperationException("set ShowAdvancedFeatures not supported"); }
         }
 
         /// <summary>
@@ -145,7 +148,7 @@ namespace INTV.LtoFlash.Properties
         public bool RunGCWhenConnected
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.RunGCWhenConnectedSettingName) || true; }
-            set { throw new InvalidOperationException("set RunGCWhenConnected not supported"); }
+            set { throw new System.InvalidOperationException("set RunGCWhenConnected not supported"); }
         }
 
         /// <summary>
@@ -154,7 +157,7 @@ namespace INTV.LtoFlash.Properties
         public bool AutomaticallyConnectToDevices
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.AutomaticallyConnectToDevicesSettingName); }
-            set { throw new InvalidOperationException("set AutomaticallyConnectToDevices not supported"); }
+            set { throw new System.InvalidOperationException("set AutomaticallyConnectToDevices not supported"); }
         }
 
         /// <summary>
@@ -163,7 +166,7 @@ namespace INTV.LtoFlash.Properties
         public bool AddRomsToMenu
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.AddRomsToMenuPropertyName); }
-            set { throw new InvalidOperationException("set AddRomsToMenu not supported"); }
+            set { throw new System.InvalidOperationException("set AddRomsToMenu not supported"); }
         }
 
         /// <summary>
@@ -172,7 +175,7 @@ namespace INTV.LtoFlash.Properties
         public bool PromptToAddRomsToMenu
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.PromptToAddRomsToMenuPropertyName); }
-            set { throw new InvalidOperationException("set PromptToAddRomsToMenu not supported"); }
+            set { throw new System.InvalidOperationException("set PromptToAddRomsToMenu not supported"); }
         }
 
         /// <summary>
@@ -181,7 +184,7 @@ namespace INTV.LtoFlash.Properties
         public bool EnablePortLogging
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.EnablePortLoggingPropertyName); }
-            set { throw new InvalidOperationException("set EnablePortLogging not supported"); }
+            set { throw new System.InvalidOperationException("set EnablePortLogging not supported"); }
         }
 
         /// <summary>

@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceCommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,10 +18,14 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.ComponentModel;
@@ -371,7 +375,7 @@ namespace INTV.LtoFlash.Commands
                 }
             }
 
-            private void HandleSetActiveDeviceCommandActivated(object sender, EventArgs e)
+            private void HandleSetActiveDeviceCommandActivated(object sender, System.EventArgs e)
             {
                 DeviceConnectionViewModel deviceConnection = null;
                 if (_deviceConnectionViewModels.TryGetValue(sender.GetHashCode(), out deviceConnection))
@@ -380,7 +384,7 @@ namespace INTV.LtoFlash.Commands
                 }
             }
 
-            private void HandleRequerySuggested (object sender, EventArgs e)
+            private void HandleRequerySuggested(object sender, System.EventArgs e)
             {
                 var connectionsMenuItem = ConnectToDeviceSubmenuCommand.MenuItem;
                 if ((connectionsMenuItem != null) && connectionsMenuItem.HasSubmenu && (connectionsMenuItem.Submenu != null))

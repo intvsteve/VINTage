@@ -122,7 +122,7 @@ namespace INTV.LtoFlash.ViewModel
                 SingleInstanceApplication.Instance.Roms.AddRomsFromFilesBegin += HandleAddRomsFromFilesBegin;
                 SingleInstanceApplication.Instance.Roms.AddRomsFromFilesEnd += HandleAddRomsFromFilesEnd;
             }
-            INTV.Shared.Model.Program.ProgramCollection.Roms.InvokeProgram += HandleInvokeProgram;
+            INTV.Shared.Model.Program.ProgramCollection.Roms.AddInvokeProgramHandler(HandleInvokeProgram, 0.1);
             INTV.Shared.Model.Program.ProgramCollection.Roms.ProgramFeaturesChanged += HandleProgramFeaturesChanged;
             INTV.Shared.Model.Program.ProgramCollection.Roms.ProgramStatusChanged += HandleProgramStatusChanged;
 
@@ -474,7 +474,7 @@ namespace INTV.LtoFlash.ViewModel
             {
                 if (!string.IsNullOrEmpty(e.BackupPath) && System.IO.File.Exists(e.BackupPath))
                 {
-                    System.IO.File.Delete(e.BackupPath);
+                    FileUtilities.DeleteFile(e.BackupPath, false, 10);
                 }
                 if (ActiveLtoFlashDevice.IsValid)
                 {
@@ -506,6 +506,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             if ((e.Program != null) && DownloadCommandGroup.DownloadAndPlayCommand.CanExecute(this))
             {
+                e.Handled = true;
                 DownloadCommandGroup.DownloadAndPlay(ActiveLtoFlashDevice.Device, e.Program);
             }
         }
@@ -876,11 +877,11 @@ namespace INTV.LtoFlash.ViewModel
 
         private void PromptForFirmwareUpgrade(DeviceViewModel newDevice)
         {
+            var firmwareUpdatePrefix = "INTV.LtoFlash.Resources.FirmwareUpdates.";
+            var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(firmwareUpdatePrefix);
+            typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, firmwareUpdatePrefix, Configuration.Instance.FirmwareUpdatesDirectory);
             if (newDevice.IsValid && Properties.Settings.Default.PromptForFirmwareUpgrade && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(this))
             {
-                var firmwareUpdatePrefix = "INTV.LtoFlash.Resources.FirmwareUpdates.";
-                var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(firmwareUpdatePrefix);
-                typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, firmwareUpdatePrefix, Configuration.Instance.FirmwareUpdatesDirectory);
                 if (System.IO.Directory.Exists(Configuration.Instance.FirmwareUpdatesDirectory))
                 {
                     string newestFirmwareFile = null;

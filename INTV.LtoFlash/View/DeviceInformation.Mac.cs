@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.View
@@ -30,7 +34,7 @@ namespace INTV.LtoFlash.View
     /// <summary>
     /// Mac-specific implementation of device information.
     /// </summary>
-    public partial class DeviceInformation : MonoMac.AppKit.NSWindow
+    public partial class DeviceInformation : NSWindow
     {
         #region Constructors
 
@@ -38,7 +42,7 @@ namespace INTV.LtoFlash.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public DeviceInformation(IntPtr handle)
+        public DeviceInformation(System.IntPtr handle)
             : base(handle)
         {
             Initialize();

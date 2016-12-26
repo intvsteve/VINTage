@@ -1011,16 +1011,20 @@ namespace INTV.LtoFlash.Model
                 // Haven't forced, just being cautious.
                 DebugOutput("**** ValidateDevice2 **** InvalidOperationException");
             }
-            ////catch (ArgumentOutOfRangeException)
-            ////{
-            ////    // One or more of the properties for this instance are invalid. For example, the Parity, DataBits,
-            ////    // or Handshake properties are not valid values; the BaudRate is less than or equal to zero; the
-            ////    // ReadTimeout or WriteTimeout property is less than zero and is not InfiniteTimeout.
-            ////}
-            ////catch (ArgumentException)
-            ////{
-            ////    // The port name is not valid, or the file type of the port is not supported.
-            ////}
+            catch (ArgumentOutOfRangeException)
+            {
+                // One or more of the properties for this instance are invalid. For example, the Parity, DataBits,
+                // or Handshake properties are not valid values; the BaudRate is less than or equal to zero; the
+                // ReadTimeout or WriteTimeout property is less than zero and is not InfiniteTimeout.
+
+                // Since the app is specifying this explicitly, it should not happen.
+            }
+            catch (ArgumentException)
+            {
+                // The port name is not valid, or the file type of the port is not supported.
+
+                // One user who was having troubles w/ the system recognizing LTO Flash! encountered this.
+            }
         }
 
         private static void ValidateDeviceComplete(Device device, bool isValid, DeviceValidationResponse deviceStatusResponse)
@@ -1413,16 +1417,24 @@ namespace INTV.LtoFlash.Model
                             DebugOutput("**** ValidateDevice **** InvalidOperationException");
                             failed = true;
                         }
-                        ////catch (ArgumentOutOfRangeException)
-                        ////{
-                        ////    // One or more of the properties for this instance are invalid. For example, the Parity, DataBits,
-                        ////    // or Handshake properties are not valid values; the BaudRate is less than or equal to zero; the
-                        ////    // ReadTimeout or WriteTimeout property is less than zero and is not InfiniteTimeout.
-                        ////}
-                        ////catch (ArgumentException)
-                        ////{
-                        ////    // The port name is not valid, or the file type of the port is not supported.
-                        ////}
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            // One or more of the properties for this instance are invalid. For example, the Parity, DataBits,
+                            // or Handshake properties are not valid values; the BaudRate is less than or equal to zero; the
+                            // ReadTimeout or WriteTimeout property is less than zero and is not InfiniteTimeout.
+
+                            // Since the app is specifying this explicitly, it should not happen.
+                            DebugOutput("**** ValidateDevice **** ArgumentOutOfRangeException");
+                            failed = true;
+                        }
+                        catch (ArgumentException)
+                        {
+                            // The port name is not valid, or the file type of the port is not supported.
+
+                            // One user who was having troubles w/ the system recognizing LTO Flash! encountered this.
+                            DebugOutput("**** ValidateDevice **** ArgumentException");
+                            failed = true;
+                        }
                         if (failed)
                         {
                             DebugOutput("**** ValidateDevice **** failed... retry...");

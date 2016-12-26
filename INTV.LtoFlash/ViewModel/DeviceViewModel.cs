@@ -742,6 +742,16 @@ namespace INTV.LtoFlash.ViewModel
             if (hasErrorLog || hasCrashLog)
             {
                 var reportText = (new System.Text.StringBuilder(Resources.Strings.CrashReporter_DetailHeader)).AppendLine();
+                if (Device != null)
+                {
+                    reportText.AppendLine("Device Primary Firmware Version: " + FirmwareRevisions.FirmwareVersionToString(Device.FirmwareRevisions.Primary, false));
+                    reportText.AppendLine("Device Secondary Firmware Version: " + FirmwareRevisions.FirmwareVersionToString(Device.FirmwareRevisions.Secondary, false));
+                    reportText.AppendLine("Device Current Firmware Version: " + FirmwareRevisions.FirmwareVersionToString(Device.FirmwareRevisions.Current, false));
+                }
+                else
+                {
+                    reportText.AppendLine("Device firmware versions unavailable");
+                }
                 reportText.AppendLine(Resources.Strings.CrashReporter_Detail_DeviceId + " " + Device.UniqueId);
                 var timestamp = PathUtils.GetTimeString(true);
                 reportText.AppendLine(Resources.Strings.CrashReporter_Detail_Timestamp + " " + timestamp);
@@ -764,6 +774,7 @@ namespace INTV.LtoFlash.ViewModel
                     }
                     catch (System.Exception)
                     {
+                        // We got an error trying to write the error log...
                     }
                     finally
                     {
@@ -789,7 +800,7 @@ namespace INTV.LtoFlash.ViewModel
                         {
                             using (var writer = new ASCIIBinaryWriter(errorLogFile))
                             {
-                                errorLog.SerializeToTextFile(writer);
+                                errorLog.SerializeToTextFile(Device.FirmwareRevisions.Current, writer);
                             }
                         }
                         errorReportFiles.Add(errorLogFileName);
@@ -805,7 +816,8 @@ namespace INTV.LtoFlash.ViewModel
                             errorLogFileName = Resources.Strings.CrashReporter_Detail_ErrorLogUnavailable;
                         }
                     }
-                    reportText.AppendLine().AppendFormat(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.CrashReporter_Detail_ErrorLogFormat, errorLog.Text, errorLogFileName);
+                    var errorLogText = errorLog.GetDetailedErrorReport(Device.FirmwareRevisions.Current);
+                    reportText.AppendLine().AppendFormat(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.CrashReporter_Detail_ErrorLogFormat, errorLogText, errorLogFileName);
                 }
                 var title = Resources.Strings.CrashReporter_Title;
                 var message = Resources.Strings.CrashReporter_Message;

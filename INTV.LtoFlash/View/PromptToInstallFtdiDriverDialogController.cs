@@ -1,5 +1,5 @@
 ﻿// <copyright file="PromptToInstallFtdiDriverDialogController.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.Utility;
 
@@ -31,7 +35,7 @@ namespace INTV.LtoFlash.View
     /// <summary>
     /// Controller for the dialog to prompt for install the FTDI driver.
     /// </summary>
-    public partial class PromptToInstallFtdiDriverDialogController : MonoMac.AppKit.NSWindowController
+    public partial class PromptToInstallFtdiDriverDialogController : NSWindowController
     {
         #region Constructors
 
@@ -39,7 +43,7 @@ namespace INTV.LtoFlash.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public PromptToInstallFtdiDriverDialogController(IntPtr handle)
+        public PromptToInstallFtdiDriverDialogController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -92,19 +96,19 @@ namespace INTV.LtoFlash.View
 
         private PromptToInstallFtdiDriverDialogViewModel DialogDataContext { get; set; }
 
-        partial void DoNotAskAgain (MonoMac.Foundation.NSObject sender)
+        partial void DoNotAskAgain(NSObject sender)
         {
             Properties.Settings.Default.PromptToInstallFTDIDriver = false;
             Properties.Settings.Default.Save();
             Window.EndDialog(NSRunResponse.Aborted);
         }
 
-        partial void DoNotInstall (MonoMac.Foundation.NSObject sender)
+        partial void DoNotInstall(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Aborted);
         }
 
-        partial void LaunchInstaller (MonoMac.Foundation.NSObject sender)
+        partial void LaunchInstaller(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Stopped);
         }

@@ -2417,4 +2417,10 @@ is too small ({1} bytes)</value>
   <data name="UpdateFirmwareCommand_FileTooSmallErrorTitle" xml:space="preserve">
     <value>Firmware File Too Small</value>
   </data>
+  <data name="SortItemDescendingCommand_Name" xml:space="preserve">
+    <value>Sort by Name (Descending)</value>
+  </data>
+  <data name="SortItemsAscendingCommand_Name" xml:space="preserve">
+    <value>Sort by Name (Ascending)</value>
+  </data>
 </root>

@@ -19,6 +19,8 @@
 // </copyright>
 
 #define IGNORE_EMPTY_FORK_PATHS
+////#define DEBUG_ENTRY_REMOVAL
+////#define ENABLE_ACTIVITY_LOGGER
 
 using System;
 using System.Collections.Generic;
@@ -203,8 +205,8 @@ namespace INTV.LtoFlash.Model
             var allFilesForForks = new Dictionary<Fork, IEnumerable<ILfsFileInfo>>();
             foreach (var fork in forks)
             {
-                var files = (fork == null) ? null : fileSystem.Files.Where(f => (f != null) && f.ForkNumbers.Contains(fork.GlobalForkNumber));
-                if (files.Any())
+                var files = (fork == null) ? null : fileSystem.Files.Where(f => (f != null) && (f.ForkNumbers != null) && f.ForkNumbers.Contains(fork.GlobalForkNumber));
+                if ((files != null) && files.Any())
                 {
                     allFilesForForks[fork] = files;
                 }
@@ -301,6 +303,7 @@ namespace INTV.LtoFlash.Model
             if ((menuPositionFork != null) && (menuPositionFork.Uid == Fork.MenuPositionForkUid))
             {
                 rootFile.Manual = null;
+                fileSystem.Forks.LogActivity("Removing menu position fork : " + menuPositionFork);
                 fileSystem.Forks.Remove(menuPositionFork);
             }
             return menuPositionFork;
@@ -422,6 +425,7 @@ namespace INTV.LtoFlash.Model
                 {
                     file.JlpFlash = null;
                 }
+                hostFileSystem.Forks.LogActivity("Removing fork from file system in PopulateSaveDataForks: " + ((fork == null) ? "<null>" : fork.ToString()));
                 hostFileSystem.Forks.Remove(fork); // NOTE: Triggers OnCollectionChanged. :/
             }
 
@@ -535,6 +539,7 @@ namespace INTV.LtoFlash.Model
                 var entry = referenceFileSystem.Directories[(int)failedDirectoryComparison.Value.GlobalFileSystemNumber] as Folder;
                 if (entry != null)
                 {
+                    referenceFileSystem.Directories.LogActivity("Failed directory comparison!? " + failedDirectoryComparison.ToString());
                     var parent = entry.Parent;
                     parent.RemoveChild(entry, true);
                 }
@@ -545,6 +550,7 @@ namespace INTV.LtoFlash.Model
                 var entry = referenceFileSystem.Files[(int)failedFileComparison.Value.GlobalFileSystemNumber] as FileNode;
                 if (entry != null)
                 {
+                    referenceFileSystem.Files.LogActivity("Failed file comparison: " + failedFileComparison.ToString() + ", failed compare message: " + failedFileComparison.Value.Message);
                     var parent = entry.Parent;
                     parent.RemoveChild(entry, true);
                 }
@@ -585,6 +591,7 @@ namespace INTV.LtoFlash.Model
                         var entry = referenceFileSystem.Files[fileToRemove.GlobalFileNumber] as FileNode;
                         if (entry != null)
                         {
+                            referenceFileSystem.Forks.LogActivity("Missing Fork Error; file to remove: " + fileToRemove.ToString());
                             var parent = entry.Parent;
                             parent.RemoveChild(entry, true);
                         }
@@ -595,6 +602,11 @@ namespace INTV.LtoFlash.Model
                     // that would appear as an UPDATE to an existing file should be ignored as well.
                     var missingFork = referenceFileSystem.Forks[(int)failedForkComparison.Value.GlobalFileSystemNumber];
                     var missingForkKind = referenceFileSystem.GetForkKind(missingFork);
+                    if (missingFork == null)
+                    {
+                        referenceFileSystem.Forks.LogActivity("Missing fork is null - GKN: " + failedForkComparison.Value.GlobalFileSystemNumber);
+                    }
+
                     var filesReferringToMissingFork = referenceFileSystem.GetAllFilesUsingForks(new[] { missingFork });
                     foreach (var fileReferringToMissingFork in filesReferringToMissingFork)
                     {
@@ -656,8 +668,11 @@ namespace INTV.LtoFlash.Model
                                 var targetFileSystemFork = targetFileSystem.Forks[targetGkn];
                                 if (targetFileSystemFork != null)
                                 {
-                                    missingFork.Crc24 = targetFileSystemFork.Crc24;
-                                    missingFork.Size = targetFileSystemFork.Size;
+                                    if (missingFork != null)
+                                    {
+                                        missingFork.Crc24 = targetFileSystemFork.Crc24;
+                                        missingFork.Size = targetFileSystemFork.Size;
+                                    }
                                 }
                                 else
                                 {
@@ -1288,6 +1303,10 @@ namespace INTV.LtoFlash.Model
                     {
                         valid = false;
                         failedValidationEntryName = program.GetMenuPath();
+                        if (!valid)
+                        {
+                            file.FileSystem.Files.LogActivity("File validation failed for " + program.ToString() + ", rDRUID: " + rom.GetTargetDeviceUniqueId() + ", tDRUID: " + targetDevice.UniqueId);
+                        }
                         error = new IncompatibleRomException(rom, rom.GetTargetDeviceUniqueId(), targetDevice.UniqueId, LfsEntityType.File, file.GlobalFileNumber);
                     }
                 }

@@ -156,7 +156,7 @@ namespace INTV.LtoFlash.Model.Commands
             {
                 try
                 {
-                    System.IO.File.Delete(FileInfo.FullName);
+                    INTV.Shared.Utility.FileUtilities.DeleteFile(FileInfo.FullName, false, 2);
                 }
                 catch
                 {

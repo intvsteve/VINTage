@@ -1,5 +1,5 @@
 ﻿// <copyright file="NSDataWrapper.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,17 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
+
+#if __UNIFIED__
+using nuint = System.nuint;
+#else
+using nuint = System.UInt32;
+#endif
 
 namespace INTV.Core.Utility
 {
@@ -53,13 +62,13 @@ namespace INTV.Core.Utility
         }
 
         /// <inheritdoc/>
-        public override IntPtr Bytes
+        public override System.IntPtr Bytes
         {
-            get { return IntPtr.Zero; }
+            get { return System.IntPtr.Zero; }
         }
 
         /// <inheritdoc/>
-        public override uint Length
+        public override nuint Length
         {
             get { return 0; }
             set { }

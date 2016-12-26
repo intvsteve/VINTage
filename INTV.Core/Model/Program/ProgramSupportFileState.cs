@@ -20,40 +20,29 @@
 
 namespace INTV.Core.Model.Program
 {
-    /// <summary>
-    /// These values describe the state of a program's support file.
-    /// </summary>
+    /// <summary>These values describe the state of a program's support file.</summary>
     public enum ProgramSupportFileState
     {
-        /// <summary>
-        /// File state is unknown.
-        /// </summary>
+        /// <summary>File state is unknown. </summary>
         None = 0,
 
-        /// <summary>
-        /// File is present and unchanged compared to reference file.
-        /// </summary>
+        /// <summary>File is present and unchanged compared to reference file.</summary>
         PresentAndUnchanged,
 
-        /// <summary>
-        /// File is present, but differs from the reference file.
-        /// </summary>
+        /// <summary> File is present, but differs from the reference file.</summary>
         PresentButModified,
 
-        /// <summary>
-        /// File cannot be located.
-        /// </summary>
+        /// <summary>File cannot be located.</summary>
         Missing,
 
-        /// <summary>
-        /// File is new.
-        /// </summary>
+        /// <summary>File is new.</summary>
         New,
 
-        /// <summary>
-        /// File is to be deleted.
-        /// </summary>
+        /// <summary>File is to be deleted.</summary>
         Deleted,
+
+        /// <summary>File cannot be located, but is available at an alternate location.</summary>
+        MissingWithAlternateFound,
 
         /// <summary>
         /// The file may only be used when a certain peripheral is attached, but

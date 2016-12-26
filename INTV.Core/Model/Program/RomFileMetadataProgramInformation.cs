@@ -57,9 +57,9 @@ namespace INTV.Core.Model.Program
                     ShortName = stringMetaData.StringValue;
                 }
                 var date = Metadata.OfType<RomMetadataPublicationDate>().FirstOrDefault();
-                if (date != null)
+                if ((date != null) && (date.Date != System.DateTime.MinValue))
                 {
-                    _year = date.Year.ToString();
+                    _year = date.Date.Year.ToString();
                 }
                 var vendor = Metadata.OfType<RomMetadataPublisher>().FirstOrDefault();
                 if (vendor != null)

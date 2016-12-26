@@ -30,88 +30,81 @@ namespace INTV.Core.Model
     [System.Flags]
     public enum LuigiFeatureFlags : ulong
     {
-        /// <summary>
-        /// No features reported.
-        /// </summary>
+        /// <summary>No features reported.</summary>
         None = 0,
 
         #region Intellivoice Flags
 
-        /// <summary>
-        /// Intellivoice compatibility mask.
-        /// </summary>
+        /// <summary>Intellivoice compatibility mask.</summary>
         IntellivoiceMask = ((ulong)FeatureCompatibilityHelpers.CompatibilityMask) << LuigiFeatureFlagsHelpers.IntellivoiceOffset,
 
         #endregion // Intellivoice Flags
 
         #region ECS Flags
 
-        /// <summary>
-        /// ECS compatibility mask.
-        /// </summary>
+        /// <summary>ECS compatibility mask.</summary>
         EcsMask = ((ulong)FeatureCompatibilityHelpers.CompatibilityMask) << LuigiFeatureFlagsHelpers.EcsOffset,
 
         #endregion // ECS Flags
 
         #region Intellivision II Flags
 
-        /// <summary>
-        /// Intellivision II compatibility mask.
-        /// </summary>
+        /// <summary>Intellivision II compatibility mask.</summary>
         IntellivisionIIMask = ((ulong)FeatureCompatibilityHelpers.CompatibilityMask) << LuigiFeatureFlagsHelpers.IntellivisionIIOffset,
 
         #endregion // Intellivision II Flags
 
+        #region Keyboard Component Flags
+
+        /// <summary>Keyboard Component compatibility mask.</summary>
+        KeyboardComponentMask = ((ulong)FeatureCompatibilityHelpers.CompatibilityMask) << LuigiFeatureFlagsHelpers.KeyboardComponentOffset,
+
+        #endregion // Keyboard Component Flags
+
         #region Reserved Peripheral Flags
 
-        /// <summary>
-        /// Reserved peripheral flags mask.
-        /// </summary>
-        ReservedMask = 0x3FFul << LuigiFeatureFlagsHelpers.ReservedPeripheralOffset,
+        /// <summary>Reserved peripheral flags mask.</summary>
+        ReservedMask = 0xFFul << LuigiFeatureFlagsHelpers.ReservedPeripheralOffset,
 
         #endregion // Reserved Peripheral Flags
 
         #region JLP Acceleration Flags
 
-        /// <summary>
-        /// JLP acceleration features mask.
-        /// </summary>
+        /// <summary>JLP acceleration features mask.</summary>
         JlpAccelerationMask = ((ulong)FeatureCompatibilityHelpers.CompatibilityMask) << LuigiFeatureFlagsHelpers.JlpAccelerationOffset,
 
         #endregion // JLP Acceleration Flags
 
         #region JLP Reserved Flags
 
-        /// <summary>
-        /// JLP reserved feature bits mask.
-        /// </summary>
+        /// <summary>JLP reserved feature bits mask.</summary>
         JlpReservedMask = 0xF << LuigiFeatureFlagsHelpers.JlpReservedOffset,
 
         #endregion // JLP Reserved Flags
 
         #region JLP Flash Minimum Sector Count Bits
 
-        /// <summary>
-        /// JLP flash save data features mask.
-        /// </summary>
+        /// <summary>JLP flash save data features mask.</summary>
         JlpFlashMinimumSaveDataSectorCountMask = ((ulong)JlpFeaturesHelpers.JlpFlashBaseSaveDataSectorsCountMask) << LuigiFeatureFlagsHelpers.JlpFlashMinimumSaveDataSectorsCountOffset,
 
         #endregion // JLP Flash Minimum Sector Count Bits
 
-        /// <summary>
-        /// If set, indicates that LTO Flash's memory mapper has been enabled at $1000 - $14FF.
-        /// </summary>
+        #region LTO Flash! Flags
+
+        /// <summary>If set, indicates that LTO Flash's memory mapper has been enabled at $1000 - $14FF.</summary>
         LtoFlashMemoryMapperEnabled = 1 << 32,
 
-        /// <summary>
-        /// If set, indicates that the LUIGI flags have been explicitly defined via cfg_vars in a .cfg file, for example, rather than via defaults.
-        /// </summary>
+        #endregion // LTO Flash! Flags
+
+        #region Utility Flags
+
+        /// <summary>If set, indicates that the LUIGI flags have been explicitly defined via cfg_vars in a .cfg file, for example, rather than via defaults.</summary>
         FeatureFlagsExplicitlySet = 1ul << 63,
 
-        /// <summary>
-        /// Mask for unused feature bits.
-        /// </summary>
-        UnusedMask = ~(IntellivoiceMask | EcsMask | IntellivisionIIMask | JlpAccelerationMask | JlpReservedMask | JlpFlashMinimumSaveDataSectorCountMask | LtoFlashMemoryMapperEnabled | FeatureFlagsExplicitlySet)
+        /// <summary>Mask for unused feature bits.</summary>
+        UnusedMask = ~(IntellivoiceMask | EcsMask | IntellivisionIIMask | KeyboardComponentMask | JlpAccelerationMask | JlpReservedMask | JlpFlashMinimumSaveDataSectorCountMask | LtoFlashMemoryMapperEnabled | FeatureFlagsExplicitlySet)
+
+        #endregion // Utility Flags
     }
 
     /// <summary>
@@ -121,9 +114,7 @@ namespace INTV.Core.Model
     {
         #region Intellivoice Bits
 
-        /// <summary>
-        /// Bit shift amount for Intellivoice features.
-        /// </summary>
+        /// <summary>Bit shift amount for Intellivoice features.</summary>
         internal const int IntellivoiceOffset = 0;
 
         private const int IntellivoiceBitCount = 2;
@@ -132,9 +123,7 @@ namespace INTV.Core.Model
 
         #region ECS Bits
 
-        /// <summary>
-        /// Bit shift amount for ECS features.
-        /// </summary>
+        /// <summary>Bit shift amount for ECS features.</summary>
         internal const int EcsOffset = IntellivoiceOffset + IntellivoiceBitCount; // (2)
 
         private const int EcsBitCount = 2;
@@ -143,31 +132,34 @@ namespace INTV.Core.Model
 
         #region Intellivision II Bits
 
-        /// <summary>
-        /// Bit shift amount for Intellivision II features.
-        /// </summary>
+        /// <summary>Bit shift amount for Intellivision II features.</summary>
         internal const int IntellivisionIIOffset = EcsOffset + EcsBitCount; // (4)
 
         private const int IntellivisionIIBitCount = 2;
 
         #endregion // Intellivision II Bits
 
+        #region Keyboard Component Bits
+
+        /// <summary>Bit shift amount for Keyboard Component features.</summary>
+        internal const int KeyboardComponentOffset = IntellivisionIIOffset + IntellivisionIIBitCount; // (6)
+
+        private const int KeyboardComponentBitCount = 2;
+
+        #endregion // Keyboard Component Bits
+
         #region Reserved Peripheral Bits
 
-        /// <summary>
-        /// Bit shift amount for reserved peripheral flags.
-        /// </summary>
-        internal const int ReservedPeripheralOffset = IntellivisionIIOffset + IntellivoiceBitCount; // (6)
+        /// <summary>Bit shift amount for reserved peripheral flags.</summary>
+        internal const int ReservedPeripheralOffset = KeyboardComponentOffset + KeyboardComponentBitCount; // (8)
 
-        private const int ReservedPeripheralBitCount = 10;
+        private const int ReservedPeripheralBitCount = 8;
 
         #endregion // Reserved Peripheral Bits
 
         #region JLP Acceleration Bits
 
-        /// <summary>
-        /// Bit shift amount for JLP acceleration features.
-        /// </summary>
+        /// <summary>Bit shift amount for JLP acceleration features.</summary>
         internal const int JlpAccelerationOffset = ReservedPeripheralOffset + ReservedPeripheralBitCount; // (16)
 
         private const int JlpAccelerationBitCount = 2;
@@ -176,9 +168,7 @@ namespace INTV.Core.Model
 
         #region JLP Reserved Bits
 
-        /// <summary>
-        /// Bit shift amount for JLP reserved features.
-        /// </summary>
+        /// <summary>Bit shift amount for JLP reserved features.</summary>
         internal const int JlpReservedOffset = JlpAccelerationOffset + JlpAccelerationBitCount; // (18)
 
         private const int JlpReservedBitCount = 4;
@@ -187,14 +177,22 @@ namespace INTV.Core.Model
 
         #region JLP Flash Minimum Sector Count Size
 
-        /// <summary>
-        /// Bit shift amount for JLP flash minimum save data sector count.
-        /// </summary>
+        /// <summary>Bit shift amount for JLP flash minimum save data sector count.</summary>
         internal const int JlpFlashMinimumSaveDataSectorsCountOffset = JlpReservedOffset + JlpReservedBitCount; // (22)
 
         private const int JlpFlashMinimumSaveDataSectorCountBitCount = 10;
 
         #endregion // JLP Flash Minimum Sector Count Size
+
+        #region LTO Flash! Bits
+
+        /// <summary>Bit shift amount for LTO Flash! memory map enabled.</summary>
+        internal const int LtoFlashMemoryMapperEnabledOffset = 32;
+
+        /// <summary>Bit shift amount for whether feature flags were explicitly set from input source for LUIGI file (e.g. a .cfg file).</summary>
+        internal const int LtoFlashFeatureFlagsExplicitlySetOffset = 63;
+
+        #endregion // LTO Flash! Bits
 
         /// <summary>
         /// Convert LuigiFeatureFlags into a ProgramFeatures object.
@@ -214,6 +212,9 @@ namespace INTV.Core.Model
             var intellivisionIICompatibility = (uint)(featureFlags & LuigiFeatureFlags.IntellivisionIIMask);
             programFeatures.IntellivisionII = (FeatureCompatibility)(intellivisionIICompatibility >> IntellivisionIIOffset);
 
+            var keyboardComponentCompatibility = (uint)(featureFlags & LuigiFeatureFlags.KeyboardComponentMask);
+            programFeatures.KeyboardComponent = (KeyboardComponentFeatures)(keyboardComponentCompatibility >> KeyboardComponentOffset);
+
             var jlpAccelerationCompatibility = (uint)(featureFlags & LuigiFeatureFlags.JlpAccelerationMask);
             programFeatures.Jlp = (JlpFeatures)(jlpAccelerationCompatibility >> JlpAccelerationOffset);
 
@@ -230,6 +231,12 @@ namespace INTV.Core.Model
                 {
                     programFeatures.JlpHardwareVersion = JlpHardwareVersion.Jlp03;
                 }
+            }
+
+            var ltoFlashMemoryMapper = (uint)(featureFlags & LuigiFeatureFlags.LtoFlashMemoryMapperEnabled);
+            if (ltoFlashMemoryMapper != 0)
+            {
+                programFeatures.LtoFlash |= LtoFlashFeatures.LtoFlashMemoryMapped;
             }
 
             return programFeatures;

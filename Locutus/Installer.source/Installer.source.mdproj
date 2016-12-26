@@ -9,7 +9,7 @@
     <ProjectGuid>{4214AB47-501D-4ACD-B231-51ADA253F303}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Default|AnyCPU' ">
-    <OutputPath>.\</OutputPath>
+    <OutputPath>.</OutputPath>
     <CustomCommands>
       <CustomCommands>
         <Command type="BeforeBuild" command="make -f installer.source.mak clean" workingdir="${ProjectDir}" />
@@ -18,4 +18,7 @@
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="installer.source.mak" />
+  </ItemGroup>
 </Project>

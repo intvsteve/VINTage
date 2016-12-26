@@ -18,4 +18,7 @@
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="installer.mak" />
+  </ItemGroup>
 </Project>

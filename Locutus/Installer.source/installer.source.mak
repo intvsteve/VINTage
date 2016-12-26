@@ -8,30 +8,37 @@
 ################################################################################
 
 NAME ?= LTOFlash
-VERSION ?= 1.0.0.2350
+VERSION ?= 1.0.0.2400
 
-SOURCE_DIR ?= ../..
+ifneq (,$(SVN))
+  SOURCE_DIR ?= $(SVN)
+else
+  SOURCE_DIR ?= ../..
+endif
 
-SOURCE_SUBDIRS ?= \
-  Locutus
+ifeq (,$(SVN))
+  SOURCE_SUBDIRS ?= \
+    Locutus
 
-SOURCE_DIRS ?= \
-  INTV.Core \
-  INTV.Intellicart \
-  INTV.jzIntv \
-  INTV.LtoFlash \
-  INTV.Ribbon \
-  INTV.Shared \
-  Locutus/LtoFlash
+  SOURCE_DIRS ?= \
+    INTV.Core \
+    INTV.Intellicart \
+    INTV.jzIntv \
+    INTV.LtoFlash \
+    INTV.Ribbon \
+    INTV.Shared \
+    Locutus/LtoFlash
 
-SOURCE_FILES ?= \
-  Locutus/license.txt \
-  Locutus/Locutus.svn.sln \
-  Locutus/Locutus.installer.svn.sln \
-  Locutus/Locutus.Mac.svn.sln \
-  Locutus/Locutus.xp.svn.sln \
-  Locutus/Locutus.xp.installer.svn.sln \
-  Locutus/README.txt
+  SOURCE_FILES ?= \
+    Locutus/license.txt \
+    Locutus/Locutus.svn.sln \
+    Locutus/Locutus.installer.svn.sln \
+    Locutus/Locutus.Mac.svn.sln \
+    Locutus/Locutus.xp.svn.sln \
+    Locutus/Locutus.xp.installer.svn.sln \
+    Locutus/README.txt
+
+endif
 
 TARGET_DIR = src
 
@@ -43,6 +50,19 @@ TARGET_ZIP = $(NAME).source-$(VERSION).zip
 
 .PHONY: all
 all: $(TARGET_ZIP)
+
+ifneq (,$(SVN))
+$(TARGET_DIR):
+	svn export $(SOURCE_DIR) $(TARGET_DIR)
+
+$(TARGET_ZIP): $(TARGET_DIR)
+	@echo
+	@echo -------------------- Creating Source Distribution --------------------
+	@echo Zipping contents....
+	@zip -rq $@ "$(TARGET_DIR)"
+	@echo
+
+else
 
 $(TARGET_DIR):
 	@mkdir -p $@
@@ -89,6 +109,8 @@ $(TARGET_ZIP): $(addprefix $(TARGET_DIR)/,$(SOURCE_SUBDIRS)) $(addprefix $(TARGE
 	@echo Zipping contents....
 	@zip -rq $@ "$(TARGET_DIR)"
 	@echo
+
+endif
 
 .PHONY: clean
 clean:

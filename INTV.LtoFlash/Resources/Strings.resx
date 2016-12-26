@@ -243,7 +243,7 @@
   <data name="FileSystem_InconsistentEnd" xml:space="preserve">
     <value>File system operations that have been interrupted may have left the device in an unstable or unusable state.
 
-To resolve this problem, simply update the files again. This will remove unreachable file system entries and apply any other changes. If the problem persists, back up the contents of your LTO Flash!, reformat it, and try again.</value>
+To resolve this problem, click Send to LTO Flash to complete the update. If the problem persists, back up the contents of your LTO Flash!, reformat it, and try again.</value>
   </data>
   <data name="FileSystem_InconsistentState" xml:space="preserve">
     <value>Unable to complete update! The file system may be in an inconsistent state.</value>
@@ -1816,6 +1816,7 @@ could not be found.</value>
   {0}
 
 is too large ({1} bytes).</value>
+    <comment>{0} is file path, {1} is size in bytes</comment>
   </data>
   <data name="UpdateFirmwareCommand_FileTooLargeErrorTitle" xml:space="preserve">
     <value>Firmware File Too Large</value>
@@ -2368,7 +2369,7 @@ Message: {1}</value>
     <comment>{0} is source of warning, {1} is message for the source</comment>
   </data>
   <data name="SyncHostToDeviceCommand_WarningMessage" xml:space="preserve">
-    <value>Although the update succeeded, issues were found. It is possible that backup copies of some ROMs were used if the originals could not be located for verification. The available information is presented below.</value>
+    <value>Although the update succeeded, issues were found. It is possible that backup copies of some files were used if the originals could not be located for verification. The available information is presented below.</value>
   </data>
   <data name="AddItemRejected_InvalidFile" xml:space="preserve">
     <value>Tried to add an invalid file to a folder.</value>
@@ -2404,5 +2405,16 @@ Message: {1}</value>
   </data>
   <data name="AddItemsRejected_ErrorAddingROMsTitle" xml:space="preserve">
     <value>Error Adding ROMs</value>
+  </data>
+  <data name="UpdateFirmwareCommand_FileTooSmallErrorMessageFormat" xml:space="preserve">
+    <value>The firmware update file:
+
+  {0}
+
+is too small ({1} bytes)</value>
+    <comment>{0} is file path, {1} is size in bytes</comment>
+  </data>
+  <data name="UpdateFirmwareCommand_FileTooSmallErrorTitle" xml:space="preserve">
+    <value>Firmware File Too Small</value>
   </data>
 </root>

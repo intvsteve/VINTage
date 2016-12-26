@@ -49,9 +49,9 @@ namespace INTV.Core.Model.Program
             {
                 _title = metadata.LongNames.FirstOrDefault();
                 _vendor = metadata.Publishers.FirstOrDefault();
-                if (metadata.Years.Any())
+                if (metadata.Dates.Any())
                 {
-                    _year = metadata.Years.First().ToString();
+                    _year = metadata.Dates.First().Year.ToString();
                 }
                 ShortName = metadata.ShortNames.FirstOrDefault();
             }

@@ -3275,9 +3275,10 @@
 		<row><td>runexternalprogram.cs</td><td>ISX_DEFAULTCOMPONENT82</td><td>RUNEXT~1.CS|RunExternalProgram.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\Utility\RunExternalProgram.cs</td><td>1</td><td/></row>
 		<row><td>runexternalprogram.mac.cs</td><td>ISX_DEFAULTCOMPONENT82</td><td>RUNEXT~1.CS|RunExternalProgram.Mac.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\Utility\RunExternalProgram.Mac.cs</td><td>1</td><td/></row>
 		<row><td>runexternalprogram.wpf.cs</td><td>ISX_DEFAULTCOMPONENT82</td><td>RUNEXT~1.CS|RunExternalProgram.WPF.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\Utility\RunExternalProgram.WPF.cs</td><td>1</td><td/></row>
-		<row><td>startuptaskpriority.cs</td><td>ISX_DEFAULTCOMPONENT82</td><td>STARTU~1.CS|StartupTaskPriority.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\Utility\StartupTaskPriority.cs</td><td>1</td><td/></row>
 		<row><td>save_16xlg.png</td><td>ISX_DEFAULTCOMPONENT68</td><td>SAVE_1~1.PNG|save_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\ViewModel\Resources\Images\save_16xLG.png</td><td>1</td><td/></row>
 		<row><td>save_enhanced_16xlg.png</td><td>ISX_DEFAULTCOMPONENT68</td><td>SAVE_E~1.PNG|save_enhanced_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\ViewModel\Resources\Images\save_enhanced_16xLG.png</td><td>1</td><td/></row>
+		<row><td>lto_flash_fw_2360.txt</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~1.PNG|LTO_Flash_FW.txt</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\FirmwareUpdates\LTO_Flash_FW_2360.txt</td><td>1</td><td/></row>
+		<row><td>lto_flash_fw_2360.upg</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~2.PNG|LTO_Flash_FW.upg</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\FirmwareUpdates\LTO_Flash_FW_2360.upg</td><td>1</td><td/></row>
 		<row><td>save_menu_position_16xlg.png</td><td>ISX_DEFAULTCOMPONENT61</td><td>SAVE_M~1.PNG|save_menu_position_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\save_menu_position_16xLG.png</td><td>1</td><td/></row>
 		<row><td>savemenupositionflags.cs</td><td>ISX_DEFAULTCOMPONENT35</td><td>SAVEME~1.CS|SaveMenuPositionFlags.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Model\SaveMenuPositionFlags.cs</td><td>1</td><td/></row>
 		<row><td>savemenupositiontostringconv</td><td>ISX_DEFAULTCOMPONENT34</td><td>SAVEME~1.CS|SaveMenuPositionToStringConverter.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Converter\SaveMenuPositionToStringConverter.cs</td><td>1</td><td/></row>
@@ -3382,6 +3383,7 @@
 		<row><td>standardmenuid.cs</td><td>ISX_DEFAULTCOMPONENT70</td><td>STANDA~1.CS|StandardMenuId.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\Commands\StandardMenuId.cs</td><td>1</td><td/></row>
 		<row><td>startdragfilenodecommand.cs</td><td>ISX_DEFAULTCOMPONENT32</td><td>STARTD~1.CS|StartDragFileNodeCommand.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\ViewModel\StartDragFileNodeCommand.cs</td><td>1</td><td/></row>
 		<row><td>startdragprogramscommand.cs</td><td>ISX_DEFAULTCOMPONENT66</td><td>STARTD~1.CS|StartDragProgramsCommand.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\ViewModel\StartDragProgramsCommand.cs</td><td>1</td><td/></row>
+		<row><td>startuptaskpriority.cs</td><td>ISX_DEFAULTCOMPONENT82</td><td>STARTU~1.CS|StartupTaskPriority.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\Utility\StartupTaskPriority.cs</td><td>1</td><td/></row>
 		<row><td>statusmessage.cs</td><td>ISX_DEFAULTCOMPONENT11</td><td>STATUS~1.CS|StatusMessage.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Core\Model\StatusMessage.cs</td><td>1</td><td/></row>
 		<row><td>stopbitshelpers.cs</td><td>ISX_DEFAULTCOMPONENT82</td><td>STOPBI~1.CS|StopBitsHelpers.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\Utility\StopBitsHelpers.cs</td><td>1</td><td/></row>
 		<row><td>streamutilities.cs</td><td>ISX_DEFAULTCOMPONENT19</td><td>STREAM~1.CS|StreamUtilities.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Core\Utility\StreamUtilities.cs</td><td>1</td><td/></row>
@@ -6068,9 +6070,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]LtoFlash.desktop.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{35D0A525-9A1D-49E2-8E79-791B4D1E644D}</td><td/></row>
+		<row><td>ProductCode</td><td>{7D753673-4C65-4089-9924-5BE948DB7AA6}</td><td/></row>
 		<row><td>ProductName</td><td>LTO Flash! User Interface Source Code</td><td/></row>
-		<row><td>ProductVersion</td><td>1.00.1005</td><td/></row>
+		<row><td>ProductVersion</td><td>1.00.1006</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>

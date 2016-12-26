@@ -258,8 +258,7 @@ namespace INTV.Core.Model.Program
                             luigiFeatures |= Jlp.ToLuigiFeatureFlags();
                             break;
                         case FeatureCategory.LtoFlash:
-                            // No LTO Flash!-specific flags defined at this time.
-                            // luigiFeatures |= LtoFlash.ToLuigiFeatureFlags();
+                            luigiFeatures |= LtoFlash.ToLuigiFeatureFlags();
                             break;
                     }
                 }

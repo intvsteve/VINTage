@@ -120,7 +120,7 @@ namespace INTV.LtoFlash.Model
                 hostFileSystemWorkingCopy.Files[GlobalFileTable.RootDirectoryFileNumber].LongName = deviceFileSystem.Files[GlobalFileTable.RootDirectoryFileNumber].LongName;
             }
 
-            var partialErrors = hostFileSystemWorkingCopy.RemoveInvalidEntries(allDifferencesWithErrors, FileSystemHelpers.ShouldRemoveInvalidEntry, ShouldIncludeError);
+            var partialErrors = hostFileSystemWorkingCopy.CleanUpInvalidEntries(deviceFileSystem, allDifferencesWithErrors, FileSystemHelpers.ShouldRemoveInvalidEntry, ShouldIncludeError);
             var allDifferences = hostFileSystemWorkingCopy.CompareTo(deviceFileSystem, device);
 #else
             // This will try to copy all ROMs, even incompatible ones, and should eventually be removed.

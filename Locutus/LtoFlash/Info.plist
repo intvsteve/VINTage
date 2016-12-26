@@ -6,6 +6,8 @@
 	<dict>
 		<key>VINTAGE_PORT_NOTIFIER_KIND</key>
 		<string>0</string>
+		<key>LUI_ENABLE_MENU_LAYOUT_MULTISELECT</key>
+		<true/>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2014-2016 Steven A. Orth
@@ -15,7 +17,7 @@ All Rights Reserved.</string>
 	<key>CFBundleName</key>
 	<string>LTO Flash!</string>
 	<key>CFBundleVersion</key>
-	<string>Build 2350</string>
+	<string>Build 2400</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.7</string>
 	<key>NSMainNibFile</key>

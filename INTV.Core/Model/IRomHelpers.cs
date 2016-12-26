@@ -302,10 +302,22 @@ namespace INTV.Core.Model
             var luigiRom = Rom.AsSpecificRomType<LuigiFormatRom>(rom);
             if (luigiRom != null)
             {
-                var metadata = luigiRom.LocateDataBlock<LuigiMetadataBlock>();
-                if (metadata != null)
+                try
                 {
-                    programInfo = new LuigiFileMetadataProgramInformation(luigiRom.Header, metadata);
+                    var metadata = luigiRom.LocateDataBlock<LuigiMetadataBlock>();
+                    if (metadata != null)
+                    {
+                        programInfo = new LuigiFileMetadataProgramInformation(luigiRom.Header, metadata);
+                    }
+                }
+                catch (Exception e)
+                {
+                    // We don't really want to raise a lot of trouble if this is somehow wrong... Perhaps we should report this more aggressively
+                    // if it happens in the field, but for now, quietly fail.
+                    System.Diagnostics.Debug.WriteLine("Failed to get LUIGI metadata. Error: " + e.Message);
+#if DEBUG
+                    throw;
+#endif
                 }
             }
             return programInfo;

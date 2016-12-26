@@ -362,10 +362,13 @@ namespace INTV.LtoFlash.Commands
                     {
                         warningsBuilder.AppendFormat(Resources.Strings.SyncHostToDeviceCommand_WarningFormat, warning.Key, warning.Value.Message).AppendLine().AppendLine();
                     }
-                    warningsBuilder.AppendLine(Resources.Strings.SyncHostToDeviceCommand_WarningDetailHeader).AppendLine("------------------------------------------------");
-                    foreach (var exception in warnings.Values)
+                    if (SingleInstanceApplication.SharedSettings.ShowDetailedErrors)
                     {
-                        warningsBuilder.AppendLine(exception.ToString()).AppendLine();
+                        warningsBuilder.AppendLine(Resources.Strings.SyncHostToDeviceCommand_WarningDetailHeader).AppendLine("------------------------------------------------");
+                        foreach (var exception in warnings.Values)
+                        {
+                            warningsBuilder.AppendLine(exception.ToString()).AppendLine();
+                        }
                     }
                     reportDialog.ReportText = warningsBuilder.ToString();
                     reportDialog.TextWrapping = OSTextWrapping.Wrap;

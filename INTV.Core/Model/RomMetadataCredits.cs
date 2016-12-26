@@ -347,7 +347,7 @@ namespace INTV.Core.Model
                 case CreditFlags.Documentation:
                     _documentation.Add(name);
                     break;
-                case CreditFlags.GameConceptDesign:
+                case CreditFlags.ConceptDesign:
                     _gameConceptDesign.Add(name);
                     break;
                 case CreditFlags.BoxOrOtherArtwork:
@@ -358,52 +358,35 @@ namespace INTV.Core.Model
             }
         }
 
+        /// <summary>Flags to indicate specific contributions to a ROM.</summary>
         [Flags]
         private enum CreditFlags : byte
         {
-            /// <summary>
-            /// No credits.
-            /// </summary>
+            /// <summary>No credits.</summary>
             None = 0x00,
 
-            /// <summary>
-            /// The programming.
-            /// </summary>
+            /// <summary>Indicates programming contributions.</summary>
             Programming = 1 << 0,
 
-            /// <summary>
-            /// The art / graphics.
-            /// </summary>
+            /// <summary>Indicates contributions to program art / graphics.</summary>
             Graphics = 1 << 1,
 
-            /// <summary>
-            /// The music.
-            /// </summary>
+            /// <summary>Indicates contributions to music.</summary>
             Music = 1 << 2,
 
-            /// <summary>
-            /// The sound effects.
-            /// </summary>
+            /// <summary>Indicates contributions to sound effects.</summary>
             SoundEffects = 1 << 3,
 
-            /// <summary>
-            /// The voice acting.
-            /// </summary>
+            /// <summary>Indicates contributions to voice acting.</summary>
             VoiceActing = 1 << 4,
 
-            /// <summary>
-            /// The documentation.
-            /// </summary>
+            /// <summary>Indicates documentation authorship.</summary>
             Documentation = 1 << 5,
 
-            /// <summary>
-            /// The game concept or design.
-            /// </summary>
-            GameConceptDesign = 1 << 6,
+            /// <summary>The program concept or design.</summary>
+            ConceptDesign = 1 << 6,
 
-            /// <summary>
-            /// The box or other artwork.
-            /// </summary>
+            /// <summary>Indicates contributions to box, overlay, manual or other artwork.</summary>
             BoxOrOtherArtwork = 1 << 7
         }
     }

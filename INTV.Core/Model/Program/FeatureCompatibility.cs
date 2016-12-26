@@ -98,7 +98,8 @@ namespace INTV.Core.Model.Program
                     offset = LuigiFeatureFlagsHelpers.JlpAccelerationOffset;
                     break;
                 case FeatureCategory.LtoFlash:
-                    throw new System.InvalidOperationException("No LTO Flash!-specific features enabled at this time.");
+                    // NOTE: This isn't strictly correct. There isn't really "compatibility" for LTO Flash! -- just features, which are handled separately.
+                    break;
                 default:
                     throw new System.InvalidOperationException("Attempted to create LUIGI feature flags for unsupported FeatureCategory: " + category);
             }

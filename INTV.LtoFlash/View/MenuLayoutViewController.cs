@@ -66,6 +66,8 @@ namespace INTV.LtoFlash.View
 
     public partial class MenuLayoutViewController : MonoMac.AppKit.NSViewController
     {
+        private const string EnableMultiSelectEnvironmentVariableName = "LUI_ENABLE_MENU_LAYOUT_MULTISELECT";
+
         #region Constructors
 
         /// <summary>
@@ -480,7 +482,29 @@ namespace INTV.LtoFlash.View
             private void Initialize()
             {
 #if ENABLE_MULTIPLE_SELECTION
-                AllowsMultipleSelection = true;
+                var allowsMultipleSelection = true;
+                try
+                {
+                    var info = NSBundle.MainBundle.InfoDictionary;
+                    NSObject environmentData;
+                    if (info.TryGetValue(new NSString("LSEnvironment"), out environmentData))
+                    {
+                        var environment = environmentData as NSDictionary;
+                        if ((environment != null) && environment.TryGetValue((NSString)EnableMultiSelectEnvironmentVariableName, out environmentData))
+                        {
+                            var allowsMultipleSelectionValue = environmentData as NSNumber;
+                            if (allowsMultipleSelectionValue != null)
+                            {
+                                allowsMultipleSelection = allowsMultipleSelectionValue.BoolValue;
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    // If anything fails, just leave things to behave as default.
+                }
+                AllowsMultipleSelection = allowsMultipleSelection;
 #endif // ENABLE_MULTIPLE_SELECTION
             }
 

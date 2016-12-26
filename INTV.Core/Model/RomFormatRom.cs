@@ -134,6 +134,9 @@ namespace INTV.Core.Model
                 {
                     // Don't bring down the app if parsing for metadata fails.
                     System.Diagnostics.Debug.WriteLine("Getting ROM metadata failed: " + e);
+#if DEBUG
+                    throw;
+#endif
                 }
                 return metadata;
             }

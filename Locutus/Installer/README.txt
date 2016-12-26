@@ -2,7 +2,9 @@
 Installer Support Files
 =============================================================================
 
-This directory contains assets used to create the installers.
+This directory contains assets used to create the installers. as well as
+a Visual Studio makefile project to place setup.exe installers into a
+.zip file for distribution.
 
 REQUIREMENTS
 =============================================================================
@@ -17,10 +19,18 @@ Paint Shop Pro 7.04 in Windows.
 The artwork used was created by Klay, and is a modified version of the
 work used for the box and manual design.
 
+To build the Visual Studio makefile project, the current Installer.vcxproj
+assumes you have configured MinGW / MSYS on your system, along with
+ensuring that the zip utility is installed. Details of that configuration
+are in the install_zip.bat and install_zip.mak files.
+
 BASIC_OVERVIEW
 =============================================================================
 The various installer_*.jpg files are used by the InstallShield LE 2013
 scripts.
+
+The batch and makefiles are used to place setup.exe into an appropriately
+named .zip file for simpler distribution.
 
 NOTE:
 -----

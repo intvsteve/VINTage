@@ -18,9 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 using Locutus.ViewModel;
@@ -30,7 +34,7 @@ namespace Locutus.View
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    public partial class MainWindow : MonoMac.AppKit.NSWindow, System.ComponentModel.INotifyPropertyChanged, IFakeDependencyObject
+    public partial class MainWindow : NSWindow, System.ComponentModel.INotifyPropertyChanged, IFakeDependencyObject
     {
         #region Constructors
 
@@ -38,7 +42,7 @@ namespace Locutus.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public MainWindow(IntPtr handle)
+        public MainWindow(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -91,7 +95,7 @@ namespace Locutus.View
         /// </summary>
         /// <param name="toolbarItem">The toolbar item to enable or disable. Not used.</param>
         /// <returns><c>false</c> -- the command system is responsible for this.</returns>
-        [MonoMac.Foundation.Export ("validateToolbarItem:")]
+        [Export ("validateToolbarItem:")]
         public bool ValidateToolbarItem(NSToolbarItem toolbarItem)
         {
             return false;

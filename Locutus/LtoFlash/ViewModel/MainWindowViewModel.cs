@@ -47,10 +47,6 @@ namespace Locutus.ViewModel
 
         #region Properties
 
-        #region Main Window Properties
-
-        #endregion // Main Window Properties
-
         /// <summary>
         /// Gets the URI for the full credits file to open from the main Credits display.
         /// </summary>
@@ -68,6 +64,21 @@ namespace Locutus.ViewModel
                 return uri;
             }
         }
+
+        #region Main Window Properties
+
+        /// <summary>
+        /// Gets or sets the title of the application window.
+        /// </summary>
+        public string Title
+        {
+            get { return _title; }
+            set { AssignAndUpdateProperty("Title", value, ref _title); }
+        }
+
+        private string _title;
+
+        #endregion // Main Window Properties
 
         /// <summary>
         /// Gets the ROM list ViewModel.
@@ -122,6 +133,7 @@ namespace Locutus.ViewModel
 
         private void Initialize()
         {
+            _title = Resources.Strings.MainWindowTitle;
             _romList = new RomListViewModel();
             _romList.PropertyChanged += HandleRomListViewModelPropertyChanged;
             _ltoFlashViewModel = new INTV.LtoFlash.ViewModel.LtoFlashViewModel();

@@ -19,7 +19,7 @@
 ################################################################################
 
 NAME ?= LTOFlash
-VERSION ?= 1.0.0.2400
+VERSION ?= 1.0.0.2587
 
 SOURCE_DIR ?= ../LtoFlash/bin/Release/Mac
 SOURCE_FILES ?= LtoFlash.app README.Mac.txt

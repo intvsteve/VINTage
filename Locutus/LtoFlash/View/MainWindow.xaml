@@ -39,7 +39,7 @@
         xmlns:ltoFlashViewModel="clr-namespace:INTV.LtoFlash.ViewModel;assembly=INTV.LtoFlash"
         xmlns:ltoFlashConverter="clr-namespace:INTV.LtoFlash.Converter;assembly=INTV.LtoFlash"
         xmlns:intellicartCommands="clr-namespace:INTV.Intellicart.Commands;assembly=INTV.Intellicart"
-        Title="LTO Flash!" UseLayoutRounding="True" SnapsToDevicePixels="True"
+        Title="{Binding Path=Title}" UseLayoutRounding="True" SnapsToDevicePixels="True"
         Icon="pack://application:,,,/Resources/LTOFlashApplicationIcon.ico"
         Width="{Binding Path=WindowSize.Width, Source={x:Static intvSettings:SingleInstanceApplication.SharedAppSettings}, Mode=OneTime}"
         Height="{Binding Path=WindowSize.Height, Source={x:Static intvSettings:SingleInstanceApplication.SharedAppSettings}, Mode=OneTime}"

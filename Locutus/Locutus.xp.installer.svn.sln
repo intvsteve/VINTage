@@ -67,9 +67,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.txt = README.txt
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Installer.zip", "Installer\Installer.vcxproj", "{DAC23716-56DA-47F4-9045-A89460771098}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5E8ACCD2-723C-461B-AA61-6DE39C89F3A5} = {5E8ACCD2-723C-461B-AA61-6DE39C89F3A5}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
+		SccNumberOfProjects = 12
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://astrosmash:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -103,6 +108,9 @@ Global
 		SccProjectUniqueName10 = Installer.source\\Installer.source.isproj
 		SccProjectName10 = Installer.source
 		SccLocalPath10 = Installer.source
+		SccProjectUniqueName11 = Installer\\Installer.vcxproj
+		SccProjectName11 = Installer
+		SccLocalPath11 = Installer
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
@@ -611,6 +619,54 @@ Global
 		{BAF1165E-11EB-494D-B151-E0C088E54158}.SingleImage|x64.Build.0 = SingleImage
 		{BAF1165E-11EB-494D-B151-E0C088E54158}.SingleImage|x86.ActiveCfg = SingleImage
 		{BAF1165E-11EB-494D-B151-E0C088E54158}.SingleImage|x86.Build.0 = SingleImage
+		{DAC23716-56DA-47F4-9045-A89460771098}.CD_ROM|Any CPU.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CD_ROM|Mixed Platforms.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CD_ROM|Mixed Platforms.Build.0 = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CD_ROM|Win32.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CD_ROM|Win32.Build.0 = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CD_ROM|x64.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CD_ROM|x86.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CD_ROM|x86.Build.0 = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CodeAnalysisDebug|Mixed Platforms.Build.0 = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CodeAnalysisDebug|Win32.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CodeAnalysisDebug|Win32.Build.0 = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CodeAnalysisDebug|x64.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CodeAnalysisDebug|x86.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.CodeAnalysisDebug|x86.Build.0 = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Debug|Win32.Build.0 = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Debug|x64.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Debug|x86.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Debug|x86.Build.0 = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.DVD-5|Any CPU.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.DVD-5|Mixed Platforms.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.DVD-5|Mixed Platforms.Build.0 = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.DVD-5|Win32.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.DVD-5|Win32.Build.0 = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.DVD-5|x64.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.DVD-5|x86.ActiveCfg = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.DVD-5|x86.Build.0 = Debug|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Release|Any CPU.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Release|Win32.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Release|Win32.Build.0 = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Release|x64.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Release|x86.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.Release|x86.Build.0 = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.SingleImage|Any CPU.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.SingleImage|Mixed Platforms.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.SingleImage|Mixed Platforms.Build.0 = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.SingleImage|Win32.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.SingleImage|Win32.Build.0 = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.SingleImage|x64.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.SingleImage|x86.ActiveCfg = Release|Win32
+		{DAC23716-56DA-47F4-9045-A89460771098}.SingleImage|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

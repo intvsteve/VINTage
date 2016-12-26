@@ -33,7 +33,7 @@ namespace INTV.Shared.Utility
     /// Mac-specific implementation.
     /// </summary>
     [MonoMac.Foundation.Register("SingleInstanceApplication")]
-    public partial class SingleInstanceApplication : MonoMac.AppKit.NSApplication, IFakeDependencyObject, IPartImportsSatisfiedNotification
+    public partial class SingleInstanceApplication : NSApplication, IFakeDependencyObject, IPartImportsSatisfiedNotification
     {
         private const string MainWindowValueName = "mainWindow";
         private const string FirstResponderValueName = "firstResponder";
@@ -164,11 +164,56 @@ namespace INTV.Shared.Utility
         /// <param name="args">Command line arguments.</param>
         /// <param name="splashScreenImage">Splash screen image.</param>
         /// <typeparam name="T">The type for the main window class.</typeparam>
-        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : MonoMac.AppKit.NSWindow
+        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : NSWindow
         {
             _splashScreenResource = splashScreenImage;
-            MonoMac.AppKit.NSApplication.Init();
-            MonoMac.AppKit.NSApplication.Main(args);
+            NSApplication.Init();
+
+            // Prevent two copies from running. In order to access NSWorkspace, we have to at least call NSApplication.Init().
+            NSUrl previousInstance = null;
+            try
+            {
+                var launchedApps = NSWorkspace.SharedWorkspace.LaunchedApplications;
+                if (launchedApps != null)
+                {
+                    var instanceAlreadyRunning = false;
+                    foreach (var launchedApp in launchedApps)
+                    {
+                        NSObject launchedAppValue;
+                        if (launchedApp.TryGetValue((NSString)"NSApplicationBundleIdentifier", out launchedAppValue))
+                        {
+                            // If bundle identifiers match, then check to see if it's running from another location.
+                            var mainBundle = NSBundle.MainBundle;
+                            if ((mainBundle.BundleIdentifier == (NSString)launchedAppValue) && launchedApp.TryGetValue((NSString)"NSApplicationPath", out launchedAppValue))
+                            {
+                                // Found an instance -- check to see if it's an instance from another location.
+                                // If so, just activate that one and let this one fizzle out.
+                                instanceAlreadyRunning = mainBundle.BundlePath != (NSString)launchedAppValue;
+                            }
+                        }
+                        if (instanceAlreadyRunning)
+                        {
+                            previousInstance = new NSUrl((NSString)launchedAppValue);
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // If this messes up, just try to launch normally.
+                previousInstance= null;
+            }
+
+            if (previousInstance != null)
+            {
+                // App is already running -- but from another location. So, just bring that one to front.
+                NSWorkspace.SharedWorkspace.LaunchApplication(previousInstance.AbsoluteString);
+            }
+            else
+            {
+                NSApplication.Main(args);
+            }
         }
 
         #region NSApplication Overrides
@@ -263,9 +308,9 @@ namespace INTV.Shared.Utility
             // Since it seems harmless, going to keep this mechanism that disables the attempt to
             // generate a compiled assembly on-the-fly put away for now.
             // Environment.SetEnvironmentVariable("MONO_XMLSERIALIZER_THS", "no");
-            _splashScreen = SplashScreen.Show(_splashScreenResource);
             TheDelegate = this.Delegate;
             var mainBundle = MonoMac.Foundation.NSBundle.MainBundle;
+            _splashScreen = SplashScreen.Show(_splashScreenResource);
             _programDirectory = System.IO.Path.GetDirectoryName(mainBundle.BundlePath);
             WillTerminate += HandleWillTerminate;
             this.ApplicationShouldTerminateAfterLastWindowClosed = ApplicationShouldTerminateAfterLastWindowClosedPredicate;

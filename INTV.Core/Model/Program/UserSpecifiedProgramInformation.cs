@@ -244,7 +244,7 @@ namespace INTV.Core.Model.Program
         /// <inheritdoc />
         public override bool AddCrc(uint newCrc, string crcDescription, IncompatibilityFlags incompatibilities)
         {
-            if (0 == newCrc)
+            if (newCrc == 0)
             {
                 throw new ArgumentOutOfRangeException(Resources.Strings.UserSpecifiedProgramInformation_AddInvalidCRCMessage);
             }

@@ -34,7 +34,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\pcl\</OutputPath>
     <IntermediateOutputPath>obj\Release\pcl\</IntermediateOutputPath>
-    <DefineConstants>TRACE;PCL</DefineConstants>
+    <DefineConstants>CODE_ANALYSIS;TRACE;PCL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>

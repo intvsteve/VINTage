@@ -1,5 +1,5 @@
 ﻿// <copyright file="GeneralSettingsPage.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,16 +18,20 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.View
 {
     /// <summary>
     /// General settings page for Mac.
     /// </summary>
-    public partial class GeneralSettingsPage : MonoMac.AppKit.NSView
+    public partial class GeneralSettingsPage : NSView
     {
         #region Constructors
 
@@ -35,7 +39,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public GeneralSettingsPage(IntPtr handle)
+        public GeneralSettingsPage(System.IntPtr handle)
             : base(handle)
         {
             Initialize();

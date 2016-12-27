@@ -82,6 +82,16 @@ namespace INTV.Shared.Utility
             return typedChild;
         }
 
+        private static System.Tuple<int, int, int> OSGetPrimaryDisplayInfo()
+        {
+            // Ugh... Forms... Why do you have to go to Win32 P/Invokes if you don't want to use Forms?
+            var mainScreen = System.Windows.Forms.Screen.PrimaryScreen;
+            var width = System.Convert.ToInt32(mainScreen.Bounds.Width);
+            var height = System.Convert.ToInt32(mainScreen.Bounds.Height);
+            var depth = mainScreen.BitsPerPixel;
+            return new System.Tuple<int, int, int>(width, height, depth);
+        }
+
         /// <summary>
         /// Gets an owner window to use if the input is <c>null</c>.
         /// </summary>

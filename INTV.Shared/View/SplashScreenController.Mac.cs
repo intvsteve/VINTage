@@ -1,5 +1,5 @@
 ﻿// <copyright file="SplashScreenController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,9 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
-using MonoMac.Foundation;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif
 using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
@@ -28,7 +32,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// Splash screen controller.
     /// </summary>
-    public partial class SplashScreenController : MonoMac.AppKit.NSWindowController
+    public partial class SplashScreenController : NSWindowController
     {
         #region Constructors
 
@@ -36,7 +40,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public SplashScreenController(IntPtr handle)
+        public SplashScreenController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -86,9 +90,7 @@ namespace INTV.Shared.View
         /// </summary>
         public new SplashScreen Window
         {
-            get {
-                return (SplashScreen)base.Window;
-            }
+            get { return (SplashScreen)base.Window; }
         }
 
         private NSImage SplashScreenImage { get; set; }
@@ -98,11 +100,22 @@ namespace INTV.Shared.View
         /// <inheritdoc/>
         public override void AwakeFromNib()
         {
-            //Window.FloatingPanel = true;
             Window.Level = NSWindowLevel.ModalPanel;
             SplashScreenImageView.Image = SplashScreenImage;
             var size = SplashScreenImageView.FittingSize;
             Window.SetContentSize(size);
+        }
+
+        /// <summary>
+        /// Update the image displayed in the splash screen.
+        /// </summary>
+        /// <param name="image">The new image to display.</param>
+        internal void UpdateImage(NSImage image)
+        {
+            SplashScreenImage = image;
+            SplashScreenImageView.Image = image;
+            SplashScreenImageView.NeedsDisplay = true;
+            SplashScreenImageView.Display();
         }
     }
 }

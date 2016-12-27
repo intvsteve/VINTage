@@ -885,6 +885,33 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A problem occurred when deleting a file or directory. See details below..
+        /// </summary>
+        internal static string DeleteFileError_Message {
+            get {
+                return ResourceManager.GetString("DeleteFileError_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file listed below could not be deleted after several attempts. It may be open in another program. You may wish to delete the file manually later..
+        /// </summary>
+        internal static string DeleteFileError_ReportText {
+            get {
+                return ResourceManager.GetString("DeleteFileError_ReportText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Deleting File.
+        /// </summary>
+        internal static string DeleteFileError_Title {
+            get {
+                return ResourceManager.GetString("DeleteFileError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do not show this error again.
         /// </summary>
         internal static string DoNotShowAgain {
@@ -3835,6 +3862,28 @@ namespace INTV.Shared.Resources {
         internal static string RomListViewModel_ScanningForRoms_Title {
             get {
                 return ResourceManager.GetString("RomListViewModel_ScanningForRoms_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred when attempting to open the file:
+        ///
+        ///  {0}
+        ///
+        ///Message: {1}.
+        /// </summary>
+        internal static string RunExternalProgram_ErrorFormat {
+            get {
+                return ResourceManager.GetString("RunExternalProgram_ErrorFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Opening File.
+        /// </summary>
+        internal static string RunExternalProgram_ErrorTitle {
+            get {
+                return ResourceManager.GetString("RunExternalProgram_ErrorTitle", resourceCulture);
             }
         }
         

@@ -1,5 +1,5 @@
 // <copyright file="FileBrowserDialog.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,9 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Linq;
 using System.Collections.Generic;
+#if __UNIFIED__
+using AppKit;
+#else
+using MonoMac.AppKit;
+#endif
 using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
@@ -30,7 +34,7 @@ namespace INTV.Shared.View
     /// </summary>
     public class FileBrowserDialog : FileBrowserDialogBase
     {
-        private MonoMac.AppKit.NSOpenPanel _fileDialog = new MonoMac.AppKit.NSOpenPanel();
+        private NSOpenPanel _fileDialog = new NSOpenPanel();
         private List<string> _files;
 
         /// <summary>
@@ -58,7 +62,7 @@ namespace INTV.Shared.View
             var macFormatExtensions = fileExtensions.Select(e => e.Substring(1));
             foreach(var fileExtension in macFormatExtensions)
             {
-                if (!allowedTypes.Contains(fileExtension, StringComparer.InvariantCultureIgnoreCase))
+                if (!allowedTypes.Contains(fileExtension, System.StringComparer.InvariantCultureIgnoreCase))
                 {
                     allowedTypes.Add(fileExtension);
                 }
@@ -74,13 +78,13 @@ namespace INTV.Shared.View
             _fileDialog.CanChooseFiles = !IsFolderBrowser;
             _fileDialog.AllowsMultipleSelection = Multiselect;
             var dialogResult = FileBrowserDialogResult.None;
-            var result = (MonoMac.AppKit.NSPanelButtonType)_fileDialog.RunModal();
-            if (result == MonoMac.AppKit.NSPanelButtonType.Cancel)
+            var result = (NSPanelButtonType)_fileDialog.RunModal();
+            if (result == NSPanelButtonType.Cancel)
             {
                 dialogResult = FileBrowserDialogResult.Cancel;
                 _files = new List<string>();
             }
-            else if (result == MonoMac.AppKit.NSPanelButtonType.Ok)
+            else if (result == NSPanelButtonType.Ok)
             {
                 dialogResult = FileBrowserDialogResult.Ok;
                 _files = _fileDialog.Urls.Select(f => f.Path).ToList();

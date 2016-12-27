@@ -81,8 +81,8 @@ namespace INTV.Shared.Commands
 
         private static void OnShowOnlineHelp(object parameter)
         {
-            var appInfo = CompositionHelpers.Container.GetExport<IApplicationInfo>();
-            System.Diagnostics.Process.Start(appInfo.Value.OnlineHelpUrl);
+            var appInfo = SingleInstanceApplication.Instance.AppInfo;
+            System.Diagnostics.Process.Start(appInfo.OnlineHelpUrl);
         }
 
         private static bool CanShowOnlineHelp(object parameter)
@@ -92,8 +92,8 @@ namespace INTV.Shared.Commands
             {
                 try
                 {
-                    var appInfo = CompositionHelpers.Container.GetExport<IApplicationInfo>();
-                    canExecute = (appInfo != null) && !string.IsNullOrWhiteSpace(appInfo.Value.OnlineHelpUrl);
+                    var appInfo = SingleInstanceApplication.Instance.AppInfo;
+                    canExecute = (appInfo != null) && !string.IsNullOrWhiteSpace(appInfo.OnlineHelpUrl);
                 }
                 catch (System.ComponentModel.Composition.ImportCardinalityMismatchException)
                 {
@@ -145,8 +145,8 @@ namespace INTV.Shared.Commands
             {
                 try
                 {
-                    var appInfo = CompositionHelpers.Container.GetExport<IApplicationInfo>();
-                    canExecute = (appInfo != null) && !string.IsNullOrWhiteSpace(appInfo.Value.VersionCheckUrl);
+                    var appInfo = SingleInstanceApplication.Instance.AppInfo;
+                    canExecute = (appInfo != null) && !string.IsNullOrWhiteSpace(appInfo.VersionCheckUrl);
                 }
                 catch (System.ComponentModel.Composition.ImportCardinalityMismatchException)
                 {
@@ -163,8 +163,8 @@ namespace INTV.Shared.Commands
                 // Wait a little while before checking. This gives a chance for other parallel startup tasks to finish.
                 System.Threading.Thread.Sleep(12000);
             }
-            var appInfo = CompositionHelpers.Container.GetExport<IApplicationInfo>();
-            var versionCheckUrl = appInfo.Value.VersionCheckUrl;
+            var appInfo = SingleInstanceApplication.Instance.AppInfo;
+            var versionCheckUrl = appInfo.VersionCheckUrl;
             var webRequest = System.Net.WebRequest.Create(versionCheckUrl);
             webRequest.Proxy = null;
             webRequest.Timeout = 30000;
@@ -186,7 +186,7 @@ namespace INTV.Shared.Commands
         private static void CheckForUpdatesComplete(AsyncTaskData taskData)
         {
             var data = (CheckForUpdatesTaskData)taskData;
-            var appInfo = CompositionHelpers.Container.GetExport<IApplicationInfo>();
+            var appInfo = SingleInstanceApplication.Instance.AppInfo;
             if (taskData.Error != null)
             {
                 var reportError = INTV.Shared.Properties.Settings.Default.ShowDetailedErrors;
@@ -216,7 +216,7 @@ namespace INTV.Shared.Commands
                 var message = string.Empty;
                 if (data.UpdateAvailable)
                 {
-                    message = string.Format(Resources.Strings.CheckForUpdatesCommand_UpdateAvailableFormat, data.VersionString, appInfo.Value.ProductUrl, data.UpdateVersionString);
+                    message = string.Format(Resources.Strings.CheckForUpdatesCommand_UpdateAvailableFormat, data.VersionString, appInfo.ProductUrl, data.UpdateVersionString);
                 }
                 else if (!data.CheckingAtStartup)
                 {
@@ -229,7 +229,7 @@ namespace INTV.Shared.Commands
                     {
                         try
                         {
-                            RunExternalProgram.OpenInDefaultProgram(appInfo.Value.ProductUrl);
+                            RunExternalProgram.OpenInDefaultProgram(appInfo.ProductUrl);
                         }
                         catch (System.Exception e)
                         {

@@ -375,6 +375,10 @@ namespace INTV.Core.Model.Program
                         if (!RomImagePath.FileExists())
                         {
                             validationState = ProgramSupportFileState.Missing;
+                            if ((AlternateRomImagePaths != null) && AlternateRomImagePaths.Any(p => p.FileExists()))
+                            {
+                                validationState = ProgramSupportFileState.MissingWithAlternateFound;
+                            }
                         }
                         else if (reportIfModified)
                         {

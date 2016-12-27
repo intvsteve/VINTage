@@ -153,10 +153,17 @@ namespace INTV.LtoFlash.Commands
                 return;
             }
             var fileInfo = new System.IO.FileInfo(firmwareFile);
-            if (fileInfo.Length > Device.TotalRAMSize)
+            if ((fileInfo.Length > Device.TotalRAMSize) || (fileInfo.Length < MinimumFirmwareUpdateFileSize))
             {
-                message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.UpdateFirmwareCommand_FileTooLargeErrorMessageFormat, firmwareFile, fileInfo.Length);
-                OSMessageBox.Show(message, Resources.Strings.UpdateFirmwareCommand_FileTooLargeErrorTitle);
+                var badFileSizetitle = Resources.Strings.UpdateFirmwareCommand_FileTooLargeErrorTitle;
+                var messageFormat = Resources.Strings.UpdateFirmwareCommand_FileTooLargeErrorMessageFormat;
+                if (fileInfo.Length < MinimumFirmwareUpdateFileSize)
+                {
+                    badFileSizetitle = Resources.Strings.UpdateFirmwareCommand_FileTooSmallErrorTitle;
+                    messageFormat = Resources.Strings.UpdateFirmwareCommand_FileTooSmallErrorMessageFormat;
+                }
+                message = string.Format(System.Globalization.CultureInfo.CurrentCulture, messageFormat, firmwareFile, fileInfo.Length);
+                OSMessageBox.Show(message, badFileSizetitle);
                 return;
             }
 
@@ -251,7 +258,16 @@ namespace INTV.LtoFlash.Commands
                 message += System.Environment.NewLine + System.Environment.NewLine + additionalMessageSuffix;
             }
 
-            var warningDialogResult = OSMessageBox.Show(message, title, dialogButtons, icon, OSMessageBoxResult.No);
+            var warningDialogResult = OSMessageBoxResult.No;
+            try
+            {
+                SingleInstanceApplication.Instance.IsBusy = true;
+                warningDialogResult = OSMessageBox.Show(message, title, dialogButtons, icon, OSMessageBoxResult.No);
+            }
+            finally
+            {
+                SingleInstanceApplication.Instance.IsBusy = false;
+            }
             if (warningDialogResult == OSMessageBoxResult.Yes)
             {
                 // Actually apply the firmware update!
@@ -343,6 +359,7 @@ namespace INTV.LtoFlash.Commands
         private const int FirmwareVersionSizeInBytes = 3;
         private const int FirmwareVersionUnreleasedFlag = 1 << 0;
         private const int FirmwareRevisionNeedsDoublingAfter = 0x08A2;
+        private const int MinimumFirmwareUpdateFileSize = 0x1E004;
 
         /// <summary>
         /// Extracts the firmware update version.
@@ -353,18 +370,27 @@ namespace INTV.LtoFlash.Commands
         internal static int ExtractFirmwareUpdateVersion(string filePath, out bool isValidFirmwareFile)
         {
             var updateVersion = FirmwareRevisions.UnavailableFirmwareVersion;
-            using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+            try
             {
-                fileStream.Seek(FirmwareUpdateVersionOffset, System.IO.SeekOrigin.Begin);
-                var versionBuffer = new byte[4];
-                fileStream.Read(versionBuffer, 0, FirmwareVersionSizeInBytes);
-                updateVersion = System.BitConverter.ToInt32(versionBuffer, 0);
-                if (updateVersion > FirmwareRevisionNeedsDoublingAfter)
+                using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
                 {
-                    updateVersion *= 2;
+                    fileStream.Seek(FirmwareUpdateVersionOffset, System.IO.SeekOrigin.Begin);
+                    var versionBuffer = new byte[4];
+                    fileStream.Read(versionBuffer, 0, FirmwareVersionSizeInBytes);
+                    updateVersion = System.BitConverter.ToInt32(versionBuffer, 0);
+                    if (updateVersion > FirmwareRevisionNeedsDoublingAfter)
+                    {
+                        updateVersion *= 2;
+                    }
                 }
+                isValidFirmwareFile = true;
             }
-            isValidFirmwareFile = true;
+            catch (System.Exception)
+            {
+                // Something went wrong, so treat as invalid.
+                isValidFirmwareFile = false;
+                updateVersion = FirmwareRevisions.UnavailableFirmwareVersion;
+            }
             return updateVersion;
         }
 

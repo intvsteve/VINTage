@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSWindowState.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -17,6 +17,12 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
+
+#if __UNIFIED__
+using AppKit;
+#else
+using MonoMac.AppKit;
+#endif
 
 namespace INTV.Shared.View
 {
@@ -51,7 +57,7 @@ namespace INTV.Shared.View
         /// </summary>
         /// <param name="window">The window whose state is desired.</param>
         /// <returns>The window state.</returns>
-        public static OSWindowState WindowState(this MonoMac.AppKit.NSWindow window)
+        public static OSWindowState WindowState(this NSWindow window)
         {
             var state = OSWindowState.Normal;
             if (window.IsZoomed)
@@ -70,7 +76,7 @@ namespace INTV.Shared.View
         /// </summary>
         /// <param name="view">The view whose owning window's state is desired.</param>
         /// <returns>The owning window's state.</returns>
-        public static OSWindowState WindowState(this MonoMac.AppKit.NSView view)
+        public static OSWindowState WindowState(this NSView view)
         {
             return view.Window.WindowState();
         }

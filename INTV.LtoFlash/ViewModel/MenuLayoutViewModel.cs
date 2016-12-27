@@ -651,34 +651,70 @@ namespace INTV.LtoFlash.ViewModel
         /// </summary>
         internal void DeleteItems()
         {
-            var itemToDelete = CurrentSelection as FileNodeViewModel;
-            if (itemToDelete != null)
+            StartItemsUpdate();
+            try
             {
-                var modelElementToDelete = itemToDelete.Model;
-                var deletedItemParentModel = modelElementToDelete.Parent;
-                var indexOfElementToHighlight = deletedItemParentModel.IndexOfChild(modelElementToDelete);
-                if (indexOfElementToHighlight == (deletedItemParentModel.Items.Count() - 1))
+                if ((SelectedItems != null) && SelectedItems.Any())
                 {
-                    --indexOfElementToHighlight;
-                }
-                if (modelElementToDelete.Parent.RemoveChild(modelElementToDelete, true))
-                {
-                    if (deletedItemParentModel.Items.Any())
+                    var modelElementsToDelete = SelectedItems.Select(i => i.Model);
+                    var foldersToDelete = modelElementsToDelete.OfType<Folder>().ToList();
+                    var remainingItemsToDelete = modelElementsToDelete.Except(foldersToDelete).ToList();
+
+                    // Delete folders first...
+                    foreach (var folder in foldersToDelete)
                     {
-                        var parentViewModel = FindViewModelForModel(deletedItemParentModel);
-                        var itemToHighlight = parentViewModel.Items[indexOfElementToHighlight];
-                        itemToHighlight.IsSelected = true;
-#if MAC
-                        CurrentSelection = itemToHighlight;
-#endif
+                        var parent = folder.Parent;
+                        parent.RemoveChild(folder, true);
                     }
+
+                    // Then, files. (Is there some improvement we could have... such as skipping things whose parents
+                    // have been deleted?
+                    foreach (var item in remainingItemsToDelete)
+                    {
+                        var parent = item.Parent;
+                        parent.RemoveChild(item, true);
+                    }
+
                     ++RetainFocus;
-                    if (!deletedItemParentModel.Items.Any())
-                    {
-                        _currentSelection = null;
-                    }
+                    _currentSelection = null;
                     CommandManager.InvalidateRequerySuggested();
                 }
+                else
+                {
+                    var itemToDelete = CurrentSelection as FileNodeViewModel;
+                    if (itemToDelete != null)
+                    {
+                        var modelElementToDelete = itemToDelete.Model;
+                        var deletedItemParentModel = modelElementToDelete.Parent;
+                        var indexOfElementToHighlight = deletedItemParentModel.IndexOfChild(modelElementToDelete);
+                        if (indexOfElementToHighlight == (deletedItemParentModel.Items.Count() - 1))
+                        {
+                            --indexOfElementToHighlight;
+                        }
+                        if (modelElementToDelete.Parent.RemoveChild(modelElementToDelete, true))
+                        {
+                            if (deletedItemParentModel.Items.Any())
+                            {
+                                var parentViewModel = FindViewModelForModel(deletedItemParentModel);
+                                var itemToHighlight = parentViewModel.Items[indexOfElementToHighlight];
+                                itemToHighlight.IsSelected = true;
+#if MAC
+                                CurrentSelection = itemToHighlight;
+#endif
+                            }
+                            ++RetainFocus;
+                            if (!deletedItemParentModel.Items.Any())
+                            {
+                                _currentSelection = null;
+                            }
+                            CommandManager.InvalidateRequerySuggested();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                FinishItemsUpdate(true);
             }
         }
 

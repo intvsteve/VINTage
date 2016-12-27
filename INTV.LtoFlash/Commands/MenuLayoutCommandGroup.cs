@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using INTV.Core.Model.Program;
 using INTV.Core.Model.Stic;
 using INTV.LtoFlash.Model;
@@ -472,6 +473,96 @@ namespace INTV.LtoFlash.Commands
 
         #endregion // DeleteItemsCommand
 
+        #region SortItemsAscendingCommand
+
+        /// <summary>
+        /// Command to sort items by long name in a menu directory in ascending order.
+        /// </summary>
+        public static readonly VisualRelayCommand SortItemsAscendingCommand = new VisualRelayCommand(p => OnSortItems(p, true), CanSortItems)
+        {
+            UniqueId = UniqueNameBase + ".SortItemsAscendingCommand",
+            Name = Resources.Strings.SortItemsAscendingCommand_Name,
+            Weight = 0.27,
+        };
+
+        private static bool CanSortItems(object parameter)
+        {
+            var menuLayoutViewModel = parameter as MenuLayoutViewModel;
+            var canSort = (menuLayoutViewModel != null) && (menuLayoutViewModel.CurrentSelection != null);
+            if (canSort && (menuLayoutViewModel.SelectedItems != null) && menuLayoutViewModel.SelectedItems.Any())
+            {
+                canSort = menuLayoutViewModel.SelectedItems.Count == 1;
+            }
+            if (canSort)
+            {
+                var folder = menuLayoutViewModel.CurrentSelection as FolderViewModel;
+                if (folder == null)
+                {
+                    var program = menuLayoutViewModel.CurrentSelection as ProgramViewModel;
+                    if (program != null)
+                    {
+                        folder = program.Parent as FolderViewModel;
+                        if (folder == null)
+                        {
+                            // Item is at root, so just use root.
+                            folder = menuLayoutViewModel.Root as FolderViewModel;
+                        }
+                    }
+                }
+                canSort = (folder != null) && (folder.Items.Count > 1);
+            }
+            else if ((menuLayoutViewModel != null) && (menuLayoutViewModel.CurrentSelection == null))
+            {
+                canSort = true; // sort the "root" menu
+            }
+            return canSort;
+        }
+
+        private static void OnSortItems(object parameter, bool ascending)
+        {
+            var menuLayoutViewModel = parameter as MenuLayoutViewModel;
+            var folder = (menuLayoutViewModel == null) ? null : menuLayoutViewModel.CurrentSelection as FolderViewModel;
+            if (folder == null)
+            {
+                var program = menuLayoutViewModel.CurrentSelection as ProgramViewModel;
+                if (program != null)
+                {
+                    folder = program.Parent as FolderViewModel;
+                    if (folder == null)
+                    {
+                        // Item is at root, so just use root.
+                        folder = menuLayoutViewModel.Root as FolderViewModel;
+                    }
+                }
+            }
+            if ((folder == null) && (menuLayoutViewModel != null) && (menuLayoutViewModel.CurrentSelection == null))
+            {
+                folder = menuLayoutViewModel.Root as FolderViewModel;
+            }
+            if (folder != null)
+            {
+                menuLayoutViewModel.StartItemsUpdate();
+                folder.SortByName(ascending);
+                menuLayoutViewModel.FinishItemsUpdate(true);
+            }
+        }
+
+        #endregion // SortItemsAscendingCommand
+
+        #region SortItemDescendingCommand
+
+        /// <summary>
+        /// Command to sort items by long name in a menu directory in descending order.
+        /// </summary>
+        public static readonly VisualRelayCommand SortItemDescendingCommand = new VisualRelayCommand(p => OnSortItems(p, false), CanSortItems)
+        {
+            UniqueId = UniqueNameBase + ".SortItemDescendingCommand",
+            Name = Resources.Strings.SortItemDescendingCommand_Name,
+            Weight = 0.271
+        };
+
+        #endregion // SortItemDescendingCommand
+
         #region EditLongNameCommand
 
         /// <summary>
@@ -490,6 +581,10 @@ namespace INTV.LtoFlash.Commands
         {
             var menuLayoutViewModel = parameter as MenuLayoutViewModel;
             bool canEdit = (menuLayoutViewModel != null) && (menuLayoutViewModel.CurrentSelection != null);
+            if (canEdit && (menuLayoutViewModel.SelectedItems != null) && menuLayoutViewModel.SelectedItems.Any())
+            {
+                canEdit = menuLayoutViewModel.SelectedItems.Count == 1;
+            }
             if (canEdit && menuLayoutViewModel.LtoFlashViewModel.ActiveLtoFlashDevice.IsValid)
             {
                 canEdit = !menuLayoutViewModel.LtoFlashViewModel.ActiveLtoFlashDevice.Device.IsConnectedToIntellivision;
@@ -543,15 +638,45 @@ namespace INTV.LtoFlash.Commands
 
         private static bool CanSetColor(object parameter)
         {
-            return CanEditLongName(parameter);
+            var menuLayoutViewModel = parameter as MenuLayoutViewModel;
+            bool canEdit = (menuLayoutViewModel != null) && (menuLayoutViewModel.CurrentSelection != null);
+            if (canEdit && (menuLayoutViewModel.SelectedItems != null) && menuLayoutViewModel.SelectedItems.Any())
+            {
+                canEdit = true;
+            }
+            if (canEdit && menuLayoutViewModel.LtoFlashViewModel.ActiveLtoFlashDevice.IsValid)
+            {
+                canEdit = !menuLayoutViewModel.LtoFlashViewModel.ActiveLtoFlashDevice.Device.IsConnectedToIntellivision;
+            }
+            return canEdit;
         }
 
         private static void SetFileColor(object parameter)
         {
             var data = parameter as Tuple<MenuLayoutViewModel, FileNodeViewModel, Color>;
-            var fileNode = data.Item2;
-            var color = data.Item3;
-            fileNode.Color = FileNodeColorViewModel.GetColor(color);
+            var menuLayout = data.Item1;
+            var color = FileNodeColorViewModel.GetColor(data.Item3);
+            var items = menuLayout.SelectedItems;
+            if (items.Any())
+            {
+                menuLayout.StartItemsUpdate();
+                try
+                {
+                    foreach (var item in items)
+                    {
+                        item.Color = color;
+                    }
+                }
+                finally
+                {
+                    menuLayout.FinishItemsUpdate(true);
+                }
+            }
+            else
+            {
+                var fileNode = data.Item2;
+                fileNode.Color = color;
+            }
         }
 
         private static bool CanSetFileColor(object parameter)
@@ -603,6 +728,10 @@ namespace INTV.LtoFlash.Commands
             {
                 var currentSelection = menuLayoutViewModel.CurrentSelection;
                 canSetManual = INTV.LtoFlash.ViewModel.ProgramViewModel.CanSetManual(currentSelection);
+                if (canSetManual && (menuLayoutViewModel.SelectedItems != null) && menuLayoutViewModel.SelectedItems.Any())
+                {
+                    canSetManual = menuLayoutViewModel.SelectedItems.Count == 1;
+                }
             }
             return canSetManual;
         }
@@ -628,10 +757,25 @@ namespace INTV.LtoFlash.Commands
             var menuLayoutViewModel = parameter as MenuLayoutViewModel;
             if (CanOpenManual(parameter))
             {
-                var program = menuLayoutViewModel.CurrentSelection as ProgramViewModel;
                 try
                 {
-                    RunExternalProgram.OpenInDefaultProgram(program.Manual);
+                    var manualsToOpen = Enumerable.Empty<string>();
+                    if ((menuLayoutViewModel.SelectedItems != null) && menuLayoutViewModel.SelectedItems.OfType<ProgramViewModel>().Any(p => !string.IsNullOrWhiteSpace(p.Manual) && System.IO.File.Exists(p.Manual)))
+                    {
+                        manualsToOpen = menuLayoutViewModel.SelectedItems.OfType<ProgramViewModel>().Select(p => p.Manual).Where(m => !string.IsNullOrWhiteSpace(m) && System.IO.File.Exists(m));
+                    }
+                    if (manualsToOpen.Any())
+                    {
+                        foreach (var manualToOpen in manualsToOpen)
+                        {
+                            RunExternalProgram.OpenInDefaultProgram(manualToOpen);
+                        }
+                    }
+                    else
+                    {
+                        var program = menuLayoutViewModel.CurrentSelection as ProgramViewModel;
+                        RunExternalProgram.OpenInDefaultProgram(program.Manual);
+                    }
                 }
                 catch (InvalidOperationException)
                 {
@@ -648,6 +792,10 @@ namespace INTV.LtoFlash.Commands
             {
                 var program = menuLayoutViewModel.CurrentSelection as ProgramViewModel;
                 canOpenManual = (program != null) && !string.IsNullOrWhiteSpace(program.Manual) && System.IO.File.Exists(program.Manual);
+                if (!canOpenManual && (menuLayoutViewModel.SelectedItems != null) && menuLayoutViewModel.SelectedItems.OfType<ProgramViewModel>().Any())
+                {
+                    canOpenManual = menuLayoutViewModel.SelectedItems.OfType<ProgramViewModel>().Any(p => !string.IsNullOrWhiteSpace(p.Manual) && System.IO.File.Exists(p.Manual));
+                }
             }
             return canOpenManual;
         }
@@ -673,8 +821,31 @@ namespace INTV.LtoFlash.Commands
             var menuLayoutViewModel = parameter as MenuLayoutViewModel;
             if (menuLayoutViewModel != null)
             {
-                var currentSelection = menuLayoutViewModel.CurrentSelection;
-                INTV.LtoFlash.ViewModel.ProgramViewModel.RemoveManual(currentSelection);
+                menuLayoutViewModel.StartItemsUpdate();
+                try
+                {
+                    if ((menuLayoutViewModel.SelectedItems != null) && menuLayoutViewModel.SelectedItems.Any())
+                    {
+                        var programs = menuLayoutViewModel.SelectedItems.OfType<ProgramViewModel>();
+                        foreach (var program in programs)
+                        {
+                            program.Manual = null;
+                        }
+                    }
+                    else
+                    {
+                        var program = menuLayoutViewModel.CurrentSelection as ProgramViewModel;
+                        if (program != null)
+                        {
+                            program.Manual = null;
+                        }
+                    }
+                }
+                finally
+                {
+                    menuLayoutViewModel.FinishItemsUpdate(true);
+                    CommandManager.InvalidateRequerySuggested();
+                }
             }
         }
 
@@ -684,8 +855,12 @@ namespace INTV.LtoFlash.Commands
             var menuLayoutViewModel = parameter as MenuLayoutViewModel;
             if (menuLayoutViewModel != null)
             {
-                var currentSelection = menuLayoutViewModel.CurrentSelection;
-                canRemoveManual = INTV.LtoFlash.ViewModel.ProgramViewModel.CanRemoveManual(currentSelection);
+                var program = menuLayoutViewModel.CurrentSelection as ProgramViewModel;
+                canRemoveManual = (program != null) && !string.IsNullOrWhiteSpace(program.Manual);
+                if (!canRemoveManual && (menuLayoutViewModel.SelectedItems != null))
+                {
+                    canRemoveManual = menuLayoutViewModel.SelectedItems.OfType<ProgramViewModel>().Any(p => !string.IsNullOrWhiteSpace(p.Manual));
+                }
             }
             return canRemoveManual;
         }
@@ -837,6 +1012,9 @@ namespace INTV.LtoFlash.Commands
                 ////yield return CreateContextMenuCommand(target, AddRomsToMenuCommand, context, Resources.Strings.AddRomsToMenuCommand_ContextMenuItemName);
                 yield return CreateContextMenuCommand(target, DeleteItemsCommand, context);
                 yield return CreateContextMenuCommand(target, EmptyMenuLayoutCommand, context);
+                yield return CreateContextMenuCommand(null, SortItemsAscendingCommand.CreateSeparator(CommandLocation.Before), null);
+                yield return CreateContextMenuCommand(target, SortItemsAscendingCommand, context);
+                yield return CreateContextMenuCommand(target, SortItemDescendingCommand, context);
             }
         }
 

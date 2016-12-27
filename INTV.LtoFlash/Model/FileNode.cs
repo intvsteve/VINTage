@@ -19,6 +19,7 @@
 // </copyright>
 
 ////#define REPORT_PERFORMANCE
+////#define DEBUG_ENTRY_REMOVAL
 
 using System;
 using System.Collections.Generic;
@@ -471,6 +472,20 @@ namespace INTV.LtoFlash.Model
                     _forks[(int)kind] = fork;
                     if (previousFork != null)
                     {
+#if DEBUG_ENTRY_REMOVAL
+                        var activityBuilder = new System.Text.StringBuilder();
+                        var oldForkString = (previousFork == null) ? "<null>" : previousFork.ToString();
+                        var newForkString = (fork == null) ? "<null>" : fork.ToString();
+                        activityBuilder.AppendLine("Removing fork from file system in SetForks:");
+                        activityBuilder.AppendFormat("  old: {0}", oldForkString).AppendLine();
+                        activityBuilder.AppendFormat("  new: {0}", newForkString).AppendLine();
+                        if (fork == null)
+                        {
+                            activityBuilder.AppendLine("  Stack Trace when setting to null:");
+                            activityBuilder.Append(System.Environment.StackTrace);
+                        }
+                        FileSystem.Forks.LogActivity(activityBuilder.ToString());
+#endif // DEBUG_ENTRY_REMOVAL
                         FileSystem.Forks.Remove(previousFork);
                     }
                     break;

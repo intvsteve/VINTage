@@ -1,5 +1,5 @@
 ﻿// <copyright file="LtoFlashFormatter.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,11 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.LtoFlash.Converter
 {
@@ -70,7 +73,7 @@ namespace INTV.LtoFlash.Converter
         /// </summary>
         /// <param name="handle">Native object pointer.</param>
         /// <remarks>Called when created from unmanaged code.</remarks>
-        public LtoFlashFormatter(IntPtr handle)
+        public LtoFlashFormatter(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -121,18 +124,18 @@ namespace INTV.LtoFlash.Converter
         /// <param name="errorDescription">Receives a descriptive error string.</param>
         /// <remarks>From a proposed (rejected) pull: https://github.com/mono/maccore/pull/25/files</remarks>
         [Export ("getObjectValue:forString:errorDescription:")]
-        private bool ObjectFor(IntPtr objectFor, string forString, IntPtr errorDescription)
+        private bool ObjectFor(System.IntPtr objectFor, string forString, System.IntPtr errorDescription)
         {
             string errorDescriptionString = null;
             NSObject outObjectFor = null;
 
-            bool ret = ObjectFor(ref outObjectFor, forString, errorDescription != IntPtr.Zero, ref errorDescriptionString);
+            bool ret = ObjectFor(ref outObjectFor, forString, errorDescription != System.IntPtr.Zero, ref errorDescriptionString);
 
             if (outObjectFor != null)
             {
                 System.Runtime.InteropServices.Marshal.WriteIntPtr(objectFor, outObjectFor.Handle);
             }
-            if (errorDescription != IntPtr.Zero && string.IsNullOrEmpty (errorDescriptionString) == false)
+            if (errorDescription != System.IntPtr.Zero && string.IsNullOrEmpty (errorDescriptionString) == false)
             {
                 NSString errorDescriptionObj = new NSString (errorDescriptionString);
                 System.Runtime.InteropServices.Marshal.WriteIntPtr (errorDescription, errorDescriptionObj.Handle);

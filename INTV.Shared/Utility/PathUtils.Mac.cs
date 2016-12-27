@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathUtils.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,8 +20,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Utility
 {
@@ -30,6 +35,16 @@ namespace INTV.Shared.Utility
     /// </summary>
     public static partial class PathUtils
     {
+        /// <summary>
+        /// Determines if is file path is a URL presented as a string.
+        /// </summary>
+        /// <param name="path">An absolute path to test to see if it's a file URL-style path.</param>
+        /// <returns><c>true</c> if is path is a file URL as a string; otherwise, <c>false</c>.</returns>
+        public static bool IsFileUrlAsString(this string path)
+        {
+            return path.StartsWith(System.Uri.UriSchemeFile + System.Uri.SchemeDelimiter);
+        }
+
         /// <summary>
         /// Gets the Documents directory.
         /// </summary>

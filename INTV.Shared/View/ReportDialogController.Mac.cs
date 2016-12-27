@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonoMac.Foundation;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
@@ -32,7 +36,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// View controller for <see cref="ReportDialog"/> visual.
     /// </summary>
-    public partial class ReportDialogController : MonoMac.AppKit.NSWindowController
+    public partial class ReportDialogController : NSWindowController
     {
         #region Constructors
 
@@ -40,7 +44,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public ReportDialogController(IntPtr handle)
+        public ReportDialogController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -260,12 +264,12 @@ namespace INTV.Shared.View
             return DialogDataContext.CloseDialogButtonEnabled;
         }
 
-        partial void OnShowAttachments (MonoMac.Foundation.NSObject sender)
+        partial void OnShowAttachments(NSObject sender)
         {
             ReportDialogViewModel.ShowAttachmentsInFileSystemCommand.Execute(DialogDataContext);
         }
 
-        partial void OnSendErrorReport (MonoMac.Foundation.NSObject sender)
+        partial void OnSendErrorReport(NSObject sender)
         {
             if (DialogDataContext.ShowEmailSender)
             {
@@ -287,12 +291,12 @@ namespace INTV.Shared.View
             ReportDialogViewModel.SendErrorReportEmailCommand.Execute(DialogDataContext);
         }
 
-        partial void OnCopyToClipboard (MonoMac.Foundation.NSObject sender)
+        partial void OnCopyToClipboard(NSObject sender)
         {
             ReportDialogViewModel.CopyToClipboardCommand.Execute(DialogDataContext);
         }
 
-        partial void OnExit (MonoMac.Foundation.NSObject sender)
+        partial void OnExit(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Stopped);
         }
@@ -316,7 +320,7 @@ namespace INTV.Shared.View
             /// Called when created from unmanaged code.
             /// </summary>
             /// <param name="handle">Native pointer to NSView.</param>
-            public MySplitView(IntPtr handle)
+            public MySplitView(System.IntPtr handle)
                 : base (handle)
             {
                 Initialize();

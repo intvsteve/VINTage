@@ -19,6 +19,8 @@
 // </copyright>
 
 #define IGNORE_EMPTY_FORK_PATHS
+////#define DEBUG_ENTRY_REMOVAL
+////#define ENABLE_ACTIVITY_LOGGER
 
 using System;
 using System.Collections.Generic;
@@ -203,8 +205,8 @@ namespace INTV.LtoFlash.Model
             var allFilesForForks = new Dictionary<Fork, IEnumerable<ILfsFileInfo>>();
             foreach (var fork in forks)
             {
-                var files = (fork == null) ? null : fileSystem.Files.Where(f => (f != null) && f.ForkNumbers.Contains(fork.GlobalForkNumber));
-                if (files.Any())
+                var files = (fork == null) ? null : fileSystem.Files.Where(f => (f != null) && (f.ForkNumbers != null) && f.ForkNumbers.Contains(fork.GlobalForkNumber));
+                if ((files != null) && files.Any())
                 {
                     allFilesForForks[fork] = files;
                 }
@@ -301,6 +303,7 @@ namespace INTV.LtoFlash.Model
             if ((menuPositionFork != null) && (menuPositionFork.Uid == Fork.MenuPositionForkUid))
             {
                 rootFile.Manual = null;
+                fileSystem.Forks.LogActivity("Removing menu position fork : " + menuPositionFork);
                 fileSystem.Forks.Remove(menuPositionFork);
             }
             return menuPositionFork;
@@ -422,6 +425,7 @@ namespace INTV.LtoFlash.Model
                 {
                     file.JlpFlash = null;
                 }
+                hostFileSystem.Forks.LogActivity("Removing fork from file system in PopulateSaveDataForks: " + ((fork == null) ? "<null>" : fork.ToString()));
                 hostFileSystem.Forks.Remove(fork); // NOTE: Triggers OnCollectionChanged. :/
             }
 
@@ -456,7 +460,7 @@ namespace INTV.LtoFlash.Model
                 var fork = forkAndFile.Key;
                 var fileOnDevice = forkAndFile.Value;
                 var fileOnHost = hostFileSystem.Files[fileOnDevice.GlobalFileNumber];
-                if ((fileOnHost != null) && (fileOnHost.FileType == fileOnDevice.FileType) && ((fileOnDevice.FileType == FileType.Folder) || (fileOnHost.Rom.Crc24 == fileOnDevice.Rom.Crc24)))
+                if ((fileOnHost != null) && (fileOnHost.FileType == fileOnDevice.FileType) && ((fileOnDevice.FileType == FileType.Folder) || (((fileOnHost.Rom != null) && (fileOnDevice.Rom != null)) && (fileOnHost.Rom.Crc24 == fileOnDevice.Rom.Crc24))))
                 {
                     var newDataFork = new Fork()
                         {
@@ -509,26 +513,33 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Removes entries from <paramref name="fileSystem"/> that are identified as causing errors in the provided <paramref name="differences"/>. Removal is
-        /// subject to the predicate supplied via <paramref name="shouldRemoveInvalidEntry"/>.
+        /// Removes entries from / repairs entries in <paramref name="referenceFileSystem"/> that are identified as causing errors in the
+        /// provided <paramref name="differences"/>. Removal is subject to the predicate supplied via <paramref name="shouldRemoveInvalidEntry"/>.
+        /// A repair is used to resolve problems in cases of a missing 'secondary' fork, such as a manual, in which case the current
+        /// data on the target file system is retained. Missing "modified" forks may also be "repaired". The idea here is that the modifications
+        /// are a precursor to re-comparing the two file systems.
         /// </summary>
-        /// <param name="fileSystem">The file system whose error-prone entries are to be removed. This should be the reference file system used in a call to <see cref="CompareTo"/>.</param>
+        /// <param name="referenceFileSystem">The file system whose error-prone entries are to be removed or repaired. This should be the reference file system used in a call to <see cref="CompareTo"/>.</param>
+        /// <param name="targetFileSystem">The target file system from the comparison that produced the differences. Used to repair unwanted changes.</param>
         /// <param name="differences">A difference computed between two <see cref="FileSystem"/> instances.</param>
         /// <param name="shouldRemoveInvalidEntry">If <c>null</c>, all entries reporting an error in <paramref name="differences"/> are removed; otherwise only errors that pass the provided predicate are removed from <paramref name="fileSystem"/>.</param>
         /// <param name="errorFilter">If <c>null</c>, all errors reported in <paramref name="differences"/> are included; otherwise only errors that pass the provided filter are included in the return value.</param>
         /// <returns>A dictionary containing all errors satisfy the provided <paramref name="errorFilter"/>.</returns>
         /// <remarks>Note that <paramref name="errorFilter"/> has no effect on which error-inducing entries are purged from <paramref name="fileSystem"/>! It only
         /// filters the results included in the return value. Similarly, the predicate <paramref name="shouldRemoveInvalidEntry"/> only determines which entries should
-        /// be removed from <paramref name="fileSystem"/>.</remarks>
-        public static IDictionary<string, FailedOperationException> RemoveInvalidEntries(this FileSystem fileSystem, LfsDifferences differences, Predicate<FailedOperationException> shouldRemoveInvalidEntry, Predicate<Exception> errorFilter)
+        /// be removed from <paramref name="referenceFileSystem"/>.
+        /// It is also assumed that modifications to <paramref name="referenceFileSystem"/> are safe to do. BE CAUTIOUS in this regard -- you
+        /// likely do not want to pass in a file system that is being edited by the user here!</remarks>
+        public static IDictionary<string, FailedOperationException> CleanUpInvalidEntries(this FileSystem referenceFileSystem, FileSystem targetFileSystem, LfsDifferences differences, Predicate<FailedOperationException> shouldRemoveInvalidEntry, Predicate<Exception> errorFilter)
         {
             // We should never have a failed directory comparison, really...
             foreach (var failedDirectoryComparison in differences.DirectoryDifferences.FailedOperations.Where(f => (shouldRemoveInvalidEntry == null) || shouldRemoveInvalidEntry(f.Value)))
             {
                 // Use RemoveChild() instead of RemoveAt() based on index. RemoveChild() ensures file system consistency across the GDT, GFT, and GKT. RemoveAt() does not.
-                var entry = fileSystem.Directories[(int)failedDirectoryComparison.Value.GlobalFileSystemNumber] as Folder;
+                var entry = referenceFileSystem.Directories[(int)failedDirectoryComparison.Value.GlobalFileSystemNumber] as Folder;
                 if (entry != null)
                 {
+                    referenceFileSystem.Directories.LogActivity("Failed directory comparison!? " + failedDirectoryComparison.ToString());
                     var parent = entry.Parent;
                     parent.RemoveChild(entry, true);
                 }
@@ -536,14 +547,15 @@ namespace INTV.LtoFlash.Model
             foreach (var failedFileComparison in differences.FileDifferences.FailedOperations.Where(f => (shouldRemoveInvalidEntry == null) || shouldRemoveInvalidEntry(f.Value)))
             {
                 // Use RemoveChild() instead of RemoveAt() based on index. RemoveChild() ensures file system consistency across the GDT, GFT, and GKT. RemoveAt() does not.
-                var entry = fileSystem.Files[(int)failedFileComparison.Value.GlobalFileSystemNumber] as FileNode;
+                var entry = referenceFileSystem.Files[(int)failedFileComparison.Value.GlobalFileSystemNumber] as FileNode;
                 if (entry != null)
                 {
+                    referenceFileSystem.Files.LogActivity("Failed file comparison: " + failedFileComparison.ToString() + ", failed compare message: " + failedFileComparison.Value.Message);
                     var parent = entry.Parent;
                     parent.RemoveChild(entry, true);
                 }
             }
-            foreach (var failedForkComparison in differences.ForkDifferences.FailedOperations.Where(f => ShouldRemoveBadFork(f.Value, differences, shouldRemoveInvalidEntry)))
+            foreach (var failedForkComparison in differences.ForkDifferences.FailedOperations.Where(f => ShouldCleanUpBadFork(referenceFileSystem, f.Value, differences, shouldRemoveInvalidEntry)))
             {
                 // There is no analog for RemoveChild() here, because a Fork does not have a "parent".
                 // BUG is possible here because of this. Specifically, if there is a bug in the differences generator, such that we'd leave
@@ -571,14 +583,104 @@ namespace INTV.LtoFlash.Model
                 // the fork is missing. HOWEVER, actual DELETE operations do not filter for the missing fork error - so it SHOULD be OK.
                 if (IsMissingForkError(failedForkComparison.Value))
                 {
+                    // For missing ROM forks, just remove any files that are in the 'to add' list by removing the entire
+                    // file from the reference file system.
                     var filesToRemove = differences.FileDifferences.ToAdd.Where(f => (f.Rom != null) && (f.Rom.GlobalForkNumber == failedForkComparison.Value.GlobalFileSystemNumber));
                     foreach (var fileToRemove in filesToRemove)
                     {
-                        var entry = fileSystem.Files[fileToRemove.GlobalFileNumber] as FileNode;
+                        var entry = referenceFileSystem.Files[fileToRemove.GlobalFileNumber] as FileNode;
                         if (entry != null)
                         {
+                            referenceFileSystem.Forks.LogActivity("Missing Fork Error; file to remove: " + fileToRemove.ToString());
                             var parent = entry.Parent;
                             parent.RemoveChild(entry, true);
+                        }
+                    }
+
+                    // UPDATE 2: There *ARE* more cases. A file *add* for example, in which the ROM is fine, but another fork, such as
+                    // a manual, is not OK. For these ancillary forks, we want to be sure to leave the data UNCHANGED. Also, any fork
+                    // that would appear as an UPDATE to an existing file should be ignored as well.
+                    var missingFork = referenceFileSystem.Forks[(int)failedForkComparison.Value.GlobalFileSystemNumber];
+                    var missingForkKind = referenceFileSystem.GetForkKind(missingFork);
+                    if (missingFork == null)
+                    {
+                        referenceFileSystem.Forks.LogActivity("Missing fork is null - GKN: " + failedForkComparison.Value.GlobalFileSystemNumber);
+                    }
+
+                    var filesReferringToMissingFork = referenceFileSystem.GetAllFilesUsingForks(new[] { missingFork });
+                    foreach (var fileReferringToMissingFork in filesReferringToMissingFork)
+                    {
+                        System.Console.WriteLine(fileReferringToMissingFork);
+                        foreach (var file in fileReferringToMissingFork.Value)
+                        {
+                            var targetFileSystemFile = targetFileSystem.Files[file.GlobalFileNumber];
+
+                            // Ensure the file's fork numbers match up. If the fork is "to add" and the
+                            // existing file on target doesn't already point to it, then tweak the source
+                            // file system to also not refer to the fork. We're counting on not hitting the
+                            // bizarre and self-contradictory case of a fork that's "missing" also being in the
+                            // "ToDelete" list. That would just be too weird. If it does happen, then there's
+                            // another bug to be fixed.
+                            var localGkn = file.ForkNumbers[(int)missingForkKind];
+                            var targetGkn = (targetFileSystemFile == null) ? GlobalForkTable.InvalidForkNumber : targetFileSystemFile.ForkNumbers[(int)missingForkKind];
+                            if (localGkn != targetGkn)
+                            {
+                                // Put the target GKN into the local file. This should suppress the difference
+                                // between the *files* when the diff with "cleaned up" file systems runs.
+                                file.ForkNumbers[(int)missingForkKind] = targetGkn;
+                                if (targetGkn == GlobalForkTable.InvalidForkNumber)
+                                {
+                                    missingFork = null;
+                                }
+                                switch (missingForkKind)
+                                {
+                                    case ForkKind.Program:
+                                        file.Rom = missingFork;
+                                        break;
+                                    case ForkKind.JlpFlash:
+                                        // file.JlpFlash = missingFork; // Should we ever do this???
+                                        break;
+                                    case ForkKind.Manual:
+                                        file.Manual = missingFork;
+                                        break;
+                                    case ForkKind.Vignette:
+                                        file.Vignette = missingFork;
+                                        break;
+                                    case ForkKind.Reserved4:
+                                        file.ReservedFork4 = missingFork;
+                                        break;
+                                    case ForkKind.Reserved5:
+                                        file.ReservedFork5 = missingFork;
+                                        break;
+                                    case ForkKind.Reserved6:
+                                        file.ReservedFork6 = missingFork;
+                                        break;
+                                    default:
+                                        // Should we throw an error here?
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                // The local and target GKNs are the same -- so it's likely we have the problem of
+                                // trying to update a fork that should not be getting updated. This is a little trickier,
+                                // because forks are *really* picky about ensuring the source file is present.
+                                var targetFileSystemFork = targetFileSystem.Forks[targetGkn];
+                                if (targetFileSystemFork != null)
+                                {
+                                    if (missingFork != null)
+                                    {
+                                        missingFork.Crc24 = targetFileSystemFork.Crc24;
+                                        missingFork.Size = targetFileSystemFork.Size;
+                                    }
+                                }
+                                else
+                                {
+                                    // Target file system is already kinda messed up... so, null out the local file system's
+                                    // fork entry at the same location.
+                                    referenceFileSystem.Forks[localGkn] = null;
+                                }
+                            }
                         }
                     }
                 }
@@ -590,20 +692,20 @@ namespace INTV.LtoFlash.Model
                         var filesToRemove = differences.FileDifferences.ToAdd.Where(f => (f.Rom != null) && (f.Rom.GlobalForkNumber == failedForkComparison.Value.GlobalFileSystemNumber));
                         foreach (var fileToRemove in filesToRemove)
                         {
-                            var entry = fileSystem.Files[fileToRemove.GlobalFileNumber] as FileNode;
+                            var entry = referenceFileSystem.Files[fileToRemove.GlobalFileNumber] as FileNode;
                             if (entry != null)
                             {
                                 var parent = entry.Parent;
                                 parent.RemoveChild(entry, true);
                             }
                         }
-                        fileSystem.Forks.RemoveAt((int)failedForkComparison.Value.GlobalFileSystemNumber);
+                        referenceFileSystem.Forks.RemoveAt((int)failedForkComparison.Value.GlobalFileSystemNumber);
                     }
                     else
                     {
                         // TODO What? Complain somehow, I suppose...
 #if DEBUG
-                        System.Diagnostics.Debug.Assert(fileSystem.Forks[(int)failedForkComparison.Value.GlobalFileSystemNumber] == null, "File system inconsistency! Why are we deleting this fork if files still refer to it?");
+                        System.Diagnostics.Debug.Assert(referenceFileSystem.Forks[(int)failedForkComparison.Value.GlobalFileSystemNumber] == null, "File system inconsistency! Why are we deleting this fork if files still refer to it?");
 #endif
                     }
                 }
@@ -635,18 +737,25 @@ namespace INTV.LtoFlash.Model
             return isMissingFork;
         }
 
-        private static bool ShouldRemoveBadFork(FailedOperationException error, LfsDifferences differences, Predicate<FailedOperationException> customBadForkFilter)
+        private static bool ShouldCleanUpBadFork(FileSystem fileSystem, FailedOperationException error, LfsDifferences differences, Predicate<FailedOperationException> customBadForkFilter)
         {
-            var shouldRemove = (customBadForkFilter == null) || customBadForkFilter(error);
-            if (!shouldRemove)
+            var shouldCleanUp = (customBadForkFilter == null) || customBadForkFilter(error);
+            if (!shouldCleanUp)
             {
                 if (IsMissingForkError(error))
                 {
                     // We want to prevent adding files that refer to a fork that cannot be found.
-                    shouldRemove = differences.FileDifferences.ToAdd.Any(f => f.ForkNumbers.Contains((ushort)error.GlobalFileSystemNumber));
+                    shouldCleanUp = differences.FileDifferences.ToAdd.Any(f => f.ForkNumbers.Contains((ushort)error.GlobalFileSystemNumber));
+                    if (!shouldCleanUp)
+                    {
+                        // If any other files remain that refer to the now-missing fork, we should clean it up if we can.
+                        var missingFork = fileSystem.Forks[(int)error.GlobalFileSystemNumber];
+                        var filesUsingMissingFork = fileSystem.GetAllFilesUsingForks(new[] { missingFork });
+                        shouldCleanUp = filesUsingMissingFork.Any();
+                    }
                 }
             }
-            return shouldRemove;
+            return shouldCleanUp;
         }
 
         /// <summary>
@@ -1194,6 +1303,10 @@ namespace INTV.LtoFlash.Model
                     {
                         valid = false;
                         failedValidationEntryName = program.GetMenuPath();
+                        if (!valid)
+                        {
+                            file.FileSystem.Files.LogActivity("File validation failed for " + program.ToString() + ", rDRUID: " + rom.GetTargetDeviceUniqueId() + ", tDRUID: " + targetDevice.UniqueId);
+                        }
                         error = new IncompatibleRomException(rom, rom.GetTargetDeviceUniqueId(), targetDevice.UniqueId, LfsEntityType.File, file.GlobalFileNumber);
                     }
                 }

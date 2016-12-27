@@ -103,7 +103,7 @@ namespace INTV.Core.Model
                 // The third byte contains emulator-specific guidance.
                 // .    7    6    5    4    3    2    1    0
                 // +----+----+----+----+----+----+----+----+
-                // |rsvd|rsvd|rsvd|rsvd|EGGS|MULT| NPLAYER |    byte 2
+                // |rsvd|rsvd|rsvd|rsvd|rsvd|rsvd|rsvd|rsvd|    byte 2
                 // +----+----+----+----+----+----+----+----+
 
                 // We're going to ignore this byte.
@@ -115,12 +115,16 @@ namespace INTV.Core.Model
                 // These two bytes contain JLP compatibility.
                 // .    7    6    5    4    3    2    1    0
                 // +----+----+----+----+----+----+----+----+
-                // |JLP Accel|     Reserved      |JLPf 9..8|    byte 3
+                // |JLP Accel|LTOM|   Reserved   |JLPf 9..8|    byte 3
                 // +----+----+----+----+----+----+----+----+
                 var featureBits = reader.ReadByte();
                 --remainingPayload;
                 var compatibility = RawFeatureToFeatureCompatibility((featureBits >> 6) & FeatureMask);
                 Features.Jlp = (JlpFeatures)compatibility;
+                if (((1 << 5) & featureBits) != 0)
+                {
+                    Features.LtoFlash |= LtoFlashFeatures.LtoFlashMemoryMapped;
+                }
                 var flashSectors = (ushort)((featureBits & FeatureMask) << 8);
 
                 // .    7    6    5    4    3    2    1    0

@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSMessageBox.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
+#if __UNIFIED__
+using AppKit;
+#else
+using MonoMac.AppKit;
+#endif
 
 namespace INTV.Shared.View
 {
@@ -28,22 +32,22 @@ namespace INTV.Shared.View
     /// </summary>
     public static partial class OSMessageBox
     {
-        private static OSMessageBoxResult PlatformShowCore(string message, string title, Exception exception, OSMessageBoxButton buttons, Dictionary<OSMessageBoxButton, string> customButtonLabels, OSMessageBoxIcon icon, OSMessageBoxResult defaultResult, Action<OSMessageBoxResult> onComplete)
+        private static OSMessageBoxResult PlatformShowCore(string message, string title, System.Exception exception, OSMessageBoxButton buttons, Dictionary<OSMessageBoxButton, string> customButtonLabels, OSMessageBoxIcon icon, OSMessageBoxResult defaultResult, System.Action<OSMessageBoxResult> onComplete)
         {
             var result = OSMessageBoxResult.None;
             if (onComplete == null)
             {
                 INTV.Shared.Utility.OSDispatcher.Current.InvokeOnMainDispatcher(() =>
                     {
-                        using (var messageBox = new MonoMac.AppKit.NSAlert())
+                        using (var messageBox = new NSAlert())
                         {
                             messageBox.MessageText = title;
                             messageBox.InformativeText = message;
-                            messageBox.AlertStyle = (MonoMac.AppKit.NSAlertStyle)icon;
+                            messageBox.AlertStyle = (NSAlertStyle)icon;
                             messageBox.AddButton(GetCustomTextForButton(OSMessageBoxButton.OK, customButtonLabels, buttons));
                             var defaultButton = messageBox.Buttons[0];
-                            MonoMac.AppKit.NSButton buttonTwo = null;
-                            MonoMac.AppKit.NSButton buttonThree = null;
+                            NSButton buttonTwo = null;
+                            NSButton buttonThree = null;
                             switch (buttons)
                             {
                                 case OSMessageBoxButton.OK:

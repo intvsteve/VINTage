@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgressIndicatorViewModel.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,8 +20,17 @@
 
 ////#define ENABLE_DEBUG_OUTPUT
 
-using System;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+using ObjCRuntime;
+#else
+using MonoMac.AppKit;
+using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
+#endif
 using INTV.Shared.Utility;
+using INTV.Shared.View;
 
 namespace INTV.Shared.ViewModel
 {
@@ -32,7 +41,7 @@ namespace INTV.Shared.ViewModel
     {
         private static readonly string ProgressIndicatorViewModelDataContextProperty = ProgressIndicatorViewModelDataContextPropertyName;
 
-        private MonoMac.AppKit.NSObjectPredicate _previousShouldClosePredicate;
+        private NSObjectPredicate _previousShouldClosePredicate;
 
         private void PlatformOnShow(SingleInstanceApplication application)
         {
@@ -42,7 +51,7 @@ namespace INTV.Shared.ViewModel
                 application.MainWindow.WindowShouldClose = MainWindowShouldClose;
             }
 #if ENABLE_DEBUG_OUTPUT
-            System.Diagnostics.Debug.WriteLine("****** SHOWING PROGRESS from thread: " + MonoMac.Foundation.NSThread.Current.Handle + ", MAIN: " + MonoMac.Foundation.NSThread.MainThread.Handle);
+            System.Diagnostics.Debug.WriteLine("****** SHOWING PROGRESS from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
 #endif // ENABLE_DEBUG_OUTPUT
         }
 
@@ -60,9 +69,19 @@ namespace INTV.Shared.ViewModel
             ErrorReporting.ReportNotImplementedError("ProgressIndicatorViewModel.MainWindowClosing");
         }
 
-        private bool MainWindowShouldClose(MonoMac.Foundation.NSObject sender)
+        private bool MainWindowShouldClose(NSObject sender)
         {
             return !IsVisible && (_timer == null);
+        }
+
+        static partial void InitializeProgressIndicatorIfNecessary(bool ready)
+        {
+            if (ready && (SingleInstanceApplication.Current.MainWindow.GetValue(ProgressIndicatorViewModelDataContextProperty) == null))
+            {
+                // Lazy-initialize the progress indicator.
+                var controller = SingleInstanceApplication.Current.MainWindow.WindowController as NSWindowController;
+                controller.TryToPerformwith(new Selector("finishInitialization:"), SingleInstanceApplication.Current.MainWindow);
+            }
         }
     }
 }

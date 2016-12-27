@@ -102,6 +102,8 @@ namespace INTV.Shared.Utility
         {
             if (IsFirstInstance(uniqueInstance))
             {
+                _mainWindowType = typeof(T);
+                _splashScreenResource = splashScreenImage;
                 var splashScreen = new System.Windows.SplashScreen(splashScreenImage);
                 splashScreen.Show(true, false);
                 var app = new SingleInstanceApplication(settings);
@@ -154,6 +156,14 @@ namespace INTV.Shared.Utility
         /// <inheritdoc />
         public void OnImportsSatisfied()
         {
+            try
+            {
+                InitializePlugins();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Error initializing plugins: " + e.Message);
+            }
             foreach (var configuration in Configurations)
             {
                 var settings = configuration.Value.Settings as System.Configuration.ApplicationSettingsBase;
@@ -186,6 +196,32 @@ namespace INTV.Shared.Utility
             {
                 settings.Save();
             }
+        }
+
+        private static string GetPluginsDirectory()
+        {
+            string pluginsDirectory = null;
+            try
+            {
+                var pluginsBasePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+                var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location);
+                if (!string.IsNullOrEmpty(versionInfo.CompanyName))
+                {
+                    pluginsBasePath = System.IO.Path.Combine(pluginsBasePath, versionInfo.CompanyName);
+                }
+                pluginsBasePath = System.IO.Path.Combine(pluginsBasePath, System.IO.Path.GetFileName(entryAssembly.Location));
+                pluginsDirectory = System.IO.Path.Combine(pluginsBasePath, "Plugins");
+                if (!System.IO.Directory.Exists(pluginsDirectory))
+                {
+                    System.IO.Directory.CreateDirectory(pluginsDirectory);
+                }
+            }
+            catch (Exception)
+            {
+                System.Diagnostics.Debug.WriteLine("Failed to identify plugins directory.");
+            }
+            return pluginsDirectory;
         }
 
         /// <summary>

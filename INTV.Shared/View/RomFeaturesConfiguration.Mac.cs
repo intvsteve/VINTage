@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonoMac.Foundation;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif
 using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
@@ -30,7 +34,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    public partial class RomFeaturesConfiguration : MonoMac.AppKit.NSPanel
+    public partial class RomFeaturesConfiguration : NSPanel
     {
         #region Constructors
 
@@ -38,7 +42,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public RomFeaturesConfiguration(IntPtr handle)
+        public RomFeaturesConfiguration(System.IntPtr handle)
             : base(handle)
         {
             Initialize();

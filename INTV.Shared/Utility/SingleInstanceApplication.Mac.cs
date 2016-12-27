@@ -18,12 +18,14 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.ComponentModel;
 using INTV.Shared.View;
 
@@ -32,15 +34,17 @@ namespace INTV.Shared.Utility
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    [MonoMac.Foundation.Register("SingleInstanceApplication")]
-    public partial class SingleInstanceApplication : MonoMac.AppKit.NSApplication, IFakeDependencyObject, IPartImportsSatisfiedNotification
+    [Register("SingleInstanceApplication")]
+    public partial class SingleInstanceApplication : NSApplication, IFakeDependencyObject, System.ComponentModel.Composition.IPartImportsSatisfiedNotification
     {
+        private const string ShowSplashScreenName = "LUI_SHOW_SPLASH_SCREEN";
         private const string MainWindowValueName = "mainWindow";
         private const string FirstResponderValueName = "firstResponder";
         private static bool AlreadyDisplayedExceptionDialog { get; set; }
         private static System.Configuration.ApplicationSettingsBase _launchSettings;
-        private static string _splashScreenResource;
         private SplashScreen _splashScreen;
+        private bool _registeredObserver;
+        private bool _handledDidFinishLaunching;
 
         #region Constructors
 
@@ -49,7 +53,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="handle">Handle.</param>
         /// <remarks>Called when created from unmanaged code.</remarks>
-        public SingleInstanceApplication(IntPtr handle)
+        public SingleInstanceApplication(System.IntPtr handle)
             : base(handle)
         {
             Initialize(_launchSettings);
@@ -61,8 +65,8 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="coder">Coder.</param>
         /// <remarks>Called when created directly from a XIB file.</remarks>
-        [MonoMac.Foundation.Export("initWithCoder:")]
-        public SingleInstanceApplication(MonoMac.Foundation.NSCoder coder)
+        [Export("initWithCoder:")]
+        public SingleInstanceApplication(NSCoder coder)
             : base(coder)
         {
             Initialize(_launchSettings);
@@ -125,7 +129,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// This event is raised when the application will exit.
         /// </summary>
-        public event EventHandler<ExitEventArgs> Exit;
+        public event System.EventHandler<ExitEventArgs> Exit;
 
         #endregion // Events
 
@@ -150,6 +154,14 @@ namespace INTV.Shared.Utility
         /// <inheritdoc />
         public void OnImportsSatisfied()
         {
+            try
+            {
+                InitializePlugins();
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Error initializing plugins: " + e.Message);
+            }
         }
 
         #endregion // IPartImportsSatisfiedNotification
@@ -162,11 +174,57 @@ namespace INTV.Shared.Utility
         /// <param name="args">Command line arguments.</param>
         /// <param name="splashScreenImage">Splash screen image.</param>
         /// <typeparam name="T">The type for the main window class.</typeparam>
-        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : MonoMac.AppKit.NSWindow
+        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : NSWindow
         {
+            _mainWindowType = typeof(T);
             _splashScreenResource = splashScreenImage;
-            MonoMac.AppKit.NSApplication.Init();
-            MonoMac.AppKit.NSApplication.Main(args);
+            NSApplication.Init();
+
+            // Prevent two copies from running. In order to access NSWorkspace, we have to at least call NSApplication.Init().
+            NSUrl previousInstance = null;
+            try
+            {
+                var launchedApps = NSWorkspace.SharedWorkspace.LaunchedApplications;
+                if (launchedApps != null)
+                {
+                    var instanceAlreadyRunning = false;
+                    foreach (var launchedApp in launchedApps)
+                    {
+                        NSObject launchedAppValue;
+                        if (launchedApp.TryGetValue((NSString)"NSApplicationBundleIdentifier", out launchedAppValue))
+                        {
+                            // If bundle identifiers match, then check to see if it's running from another location.
+                            var mainBundle = NSBundle.MainBundle;
+                            if ((mainBundle.BundleIdentifier == (NSString)launchedAppValue) && launchedApp.TryGetValue((NSString)"NSApplicationPath", out launchedAppValue))
+                            {
+                                // Found an instance -- check to see if it's an instance from another location.
+                                // If so, just activate that one and let this one fizzle out.
+                                instanceAlreadyRunning = mainBundle.BundlePath != (NSString)launchedAppValue;
+                            }
+                        }
+                        if (instanceAlreadyRunning)
+                        {
+                            previousInstance = new NSUrl((NSString)launchedAppValue);
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                // If this messes up, just try to launch normally.
+                previousInstance= null;
+            }
+
+            if (previousInstance != null)
+            {
+                // App is already running -- but from another location. So, just bring that one to front.
+                NSWorkspace.SharedWorkspace.LaunchApplication(previousInstance.AbsoluteString);
+            }
+            else
+            {
+                NSApplication.Main(args);
+            }
         }
 
         #region NSApplication Overrides
@@ -191,20 +249,20 @@ namespace INTV.Shared.Utility
         /// <inheritdoc />
         public override void SendEvent(NSEvent theEvent)
         {
-            if (theEvent.Handle == IntPtr.Zero)
-            {
-                return;
-            }
-            if (theEvent.Type == NSEventType.KeyDown)
-            {
-                LastKeyPressed = theEvent.KeyCode;
-                LastKeyPressedTimestamp = theEvent.Timestamp;
-            }
             try
             {
+                if (theEvent.Handle == System.IntPtr.Zero)
+                {
+                    return;
+                }
+                if (theEvent.Type == NSEventType.KeyDown)
+                {
+                    LastKeyPressed = theEvent.KeyCode;
+                    LastKeyPressedTimestamp = theEvent.Timestamp;
+                }
                 base.SendEvent(theEvent);
             }
-            catch (InvalidCastException e)
+            catch (System.InvalidCastException e)
             {
                 System.Diagnostics.Debug.WriteLine("Cast failed?! Er, what?: " + e.Message);
             }
@@ -214,7 +272,7 @@ namespace INTV.Shared.Utility
         /// <remarks>We're interested in a few specific things happening in the application. We need to do
         /// some extra work when main window is actually assigned, and we also need to know when the
         /// FirstResponder changes so we can appropriately update command availability states.</remarks>
-        public override void ObserveValue(MonoMac.Foundation.NSString keyPath, MonoMac.Foundation.NSObject ofObject, MonoMac.Foundation.NSDictionary change, IntPtr context)
+        public override void ObserveValue(NSString keyPath, NSObject ofObject, NSDictionary change, System.IntPtr context)
         {
             if (context == this.Handle)
             {
@@ -237,10 +295,11 @@ namespace INTV.Shared.Utility
                     {
                         case MainWindowValueName:
                             var myMainWindow = newValue as NSWindow;
-                            if (myMainWindow != null)
+                            if ((myMainWindow != null) && !_registeredObserver)
                             {
+                                _registeredObserver = true;
                                 myMainWindow.AddObserver(this, (NSString)FirstResponderValueName, NSKeyValueObservingOptions.New, this.Handle);
-                                BeginInvokeOnMainThread(() => HandleDidFinishLaunching(this, EventArgs.Empty));
+                                BeginInvokeOnMainThread(() => HandleDidFinishLaunching(this, System.EventArgs.Empty));
                             }
                             break;
                         case FirstResponderValueName:
@@ -260,13 +319,32 @@ namespace INTV.Shared.Utility
             // Since it seems harmless, going to keep this mechanism that disables the attempt to
             // generate a compiled assembly on-the-fly put away for now.
             // Environment.SetEnvironmentVariable("MONO_XMLSERIALIZER_THS", "no");
-            _splashScreen = SplashScreen.Show(_splashScreenResource);
             TheDelegate = this.Delegate;
-            var mainBundle = MonoMac.Foundation.NSBundle.MainBundle;
+            var mainBundle = NSBundle.MainBundle;
+            PluginsLocation = GetPluginsDirectory();
+            var shouldShowSplashScreen = true;
+            var shouldShowSplashScreenString = mainBundle.GetEnvironmentValue<string>(ShowSplashScreenName);
+            if (!string.IsNullOrEmpty(shouldShowSplashScreenString))
+            {
+                bool environmentValue;
+                if (!bool.TryParse(shouldShowSplashScreenString, out environmentValue))
+                {
+                    shouldShowSplashScreen = string.Compare(shouldShowSplashScreenString, "yes", true) == 0;
+                }
+                else
+                {
+                    shouldShowSplashScreen = environmentValue;
+                }
+            }
+
+            if (shouldShowSplashScreen)
+            {
+                _splashScreen = SplashScreen.Show(_splashScreenResource);
+            }
             _programDirectory = System.IO.Path.GetDirectoryName(mainBundle.BundlePath);
             WillTerminate += HandleWillTerminate;
             this.ApplicationShouldTerminateAfterLastWindowClosed = ApplicationShouldTerminateAfterLastWindowClosedPredicate;
-            AddObserver(this, (MonoMac.Foundation.NSString)MainWindowValueName, MonoMac.Foundation.NSKeyValueObservingOptions.New | MonoMac.Foundation.NSKeyValueObservingOptions.Initial, this.Handle);
+            AddObserver(this, (NSString)MainWindowValueName, NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, this.Handle);
             WillPresentError = OnWillPresentError;
         }
 
@@ -275,20 +353,30 @@ namespace INTV.Shared.Utility
             return error;
         }
 
-        private static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private static void OnDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
         {
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 System.Diagnostics.Debugger.Break();
             }
-
-            var crashDialog = INTV.Shared.View.ReportDialog.Create(null, null);
-            (crashDialog.DataContext as INTV.Shared.ViewModel.ReportDialogViewModel).Exception = e.ExceptionObject as Exception;
-
-            if (!AlreadyDisplayedExceptionDialog)
+            if (NSThread.IsMain)
             {
+                ReportDomainUnhandledException(e.ExceptionObject as System.Exception);
+            }
+            else
+            {
+                Current.BeginInvokeOnMainThread (() => ReportDomainUnhandledException(e.ExceptionObject as System.Exception));
+            }
+        }
+
+        private static void ReportDomainUnhandledException(System.Exception exception)
+        {
+            var crashDialog = INTV.Shared.View.ReportDialog.Create (null, null);
+            (crashDialog.DataContext as INTV.Shared.ViewModel.ReportDialogViewModel).Exception = exception;
+
+            if (!AlreadyDisplayedExceptionDialog) {
                 AlreadyDisplayedExceptionDialog = true;
-                crashDialog.ShowDialog(Resources.Strings.ReportDialog_Exit);
+                crashDialog.ShowDialog (Resources.Strings.ReportDialog_Exit);
             }
         }
 
@@ -297,40 +385,74 @@ namespace INTV.Shared.Utility
             return true;
         }
 
-        private void HandleDidFinishLaunching(object sender, EventArgs e)
+        private void HandleDidFinishLaunching(object sender, System.EventArgs e)
         {
             if ((MainWindow != null) && MainWindow.IsVisible && !(MainWindow is NSPanel))
             {
-                if (_splashScreen != null)
+                if (!_handledDidFinishLaunching)
                 {
-                    BeginInvokeOnMainThread(() =>
-                        {
+                    _handledDidFinishLaunching = true;
+                    if (_splashScreen != null)
+                    {
+                        BeginInvokeOnMainThread(() => {
                             if (_splashScreen != null)
                             {
+                                System.Threading.Thread.Sleep(333);
                                 _splashScreen.Hide();
                             }
                             _splashScreen = null;
                         });
-                }
-                BeginInvokeOnMainThread(() =>
-                    {
+                    }
+
+                    // Consider putting in a delay here? I.e. instead of BeginInvokeOnMainThread(), use
+                    // PerformSelector() with a delay? Is there a race condition that even BeginInvoke() isn't
+                    // getting around w.r.t. the Objective-C initialization and the work the startup actions
+                    // may need to do? (E.g. the case of NSUserDefaults.SetBool() crashing somewhere in its guts.)
+                    BeginInvokeOnMainThread(() => {
                         ExecuteStartupActions();
                         CommandManager.InvalidateRequerySuggested();
                     });
+                }
             }
             else
             {
-                BeginInvokeOnMainThread(() => HandleDidFinishLaunching(this, EventArgs.Empty));
+                BeginInvokeOnMainThread(() => HandleDidFinishLaunching(this, System.EventArgs.Empty));
             }
         }
 
-        private void HandleWillTerminate (object sender, EventArgs e)
+        private void HandleWillTerminate (object sender, System.EventArgs e)
         {
             var exit = Exit;
             if (exit != null)
             {
                 exit(this, new ExitEventArgs());
             }
+        }
+
+        private static string GetPluginsDirectory()
+        {
+            string appPluginsDir = null;
+            try
+            {
+                NSError error;
+                var appSupportDir = NSFileManager.DefaultManager.GetUrl(NSSearchPathDirectory.ApplicationSupportDirectory, NSSearchPathDomain.User, null, true, out error);
+                if ((appSupportDir != null) && (error == null))
+                {
+                    var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+                    var appPluginsDirName = System.IO.Path.GetFileNameWithoutExtension(entryAssembly.Location);
+                    appSupportDir = appSupportDir.Append(appPluginsDirName, true);
+                    appSupportDir = appSupportDir.Append("Plugins", true);
+                    if (NSFileManager.DefaultManager.CreateDirectory(appSupportDir, true, null, out error))
+                    {
+                        appPluginsDir = appSupportDir.Path;
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                System.Diagnostics.Debug.WriteLine("Failed to initialize plugins directory.");
+            }
+            return appPluginsDir;
         }
     }
 }

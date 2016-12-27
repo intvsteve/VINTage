@@ -26,51 +26,33 @@ namespace INTV.Core.Model
     /// </summary>
     public enum RomMetadataIdTag : byte
     {
-        /// <summary>
-        /// Not a valid ID tag.
-        /// </summary>
+        /// <summary>Not a valid ID tag.</summary>
         None = 0x00,
 
-        /// <summary>
-        /// Pseudonym for None.
-        /// </summary>
+        /// <summary>Pseudonym for None.</summary>
         Ignore = None,
 
         #region General Game Information (0x01 - 0x1F)
 
-        /// <summary>
-        /// Game title (a.k.a. Long Name).
-        /// </summary>
+        /// <summary>Game title (a.k.a. Long Name).</summary>
         Title = 0x01,
 
-        /// <summary>
-        /// Publisher of the ROM.
-        /// </summary>
+        /// <summary>Publisher of the ROM.</summary>
         Publisher = 0x02,
 
-        /// <summary>
-        /// Development credits.
-        /// </summary>
+        /// <summary>Development credits.</summary>
         Credits = 0x03,
 
-        /// <summary>
-        /// Site URL or other contact information. 
-        /// </summary>
+        /// <summary>Site URL or other contact information.</summary>
         UrlContactInfo = 0x04,
 
-        /// <summary>
-        /// The release date.
-        /// </summary>
+        /// <summary>The release date.</summary>
         ReleaseDate = 0x05,
 
-        /// <summary>
-        /// Feature and compatibility flags.
-        /// </summary>
+        /// <summary>Feature and compatibility flags.</summary>
         Features = 0x06,
 
-        /// <summary>
-        /// The controller binding information useful for emulators.
-        /// </summary>
+        /// <summary>The controller binding information useful for emulators.</summary>
         ControllerBindings = 0x07,
 
         /// <summary>
@@ -80,9 +62,7 @@ namespace INTV.Core.Model
         /// <remarks>This is an extension to the original format from 2001.</remarks>
         ShortTitle = 0x08,
 
-        /// <summary>
-        /// The release license for the ROM.
-        /// </summary>
+        /// <summary>The release license for the ROM.</summary>
         License = 0x09,
 
         //// IDs 0x10 - 0x1F are reserved for future use.
@@ -91,19 +71,13 @@ namespace INTV.Core.Model
 
         #region Debugging / Development Related Information (0x20 - 0x3F)
 
-        /// <summary>
-        /// Symbol table for the ROM image.
-        /// </summary>
+        /// <summary>Symbol table for the ROM image.</summary>
         SymbolTable = 0x20,
 
-        /// <summary>
-        /// The fine-grain memory attribute table.
-        /// </summary>
+        /// <summary>The fine-grain memory attribute table.</summary>
         FineGrainMemoryAttributeTable = 0x21,
 
-        /// <summary>
-        /// The line number mapping table.
-        /// </summary>
+        /// <summary>The line number mapping table.</summary>
         LineNumberMappingTable = 0x22,
 
         //// IDs 0x23 - 0x3F are reserved for future use.

@@ -467,6 +467,35 @@ namespace INTV.LtoFlash.Model
             Crc32 = INTV.Core.Utility.RandomUtilities.Next32();
         }
 
+        /// <summary>
+        /// Sorts the items in the folder by long name.
+        /// </summary>
+        /// <param name="ascending">If set to <c>true</c> sorts in ascending order, non-case-sensitive; otherwise in descending order.</param>
+        public void SortByName(bool ascending)
+        {
+            // Disconnect this while sorting so we cut down on noise -- this gives a HUGE performance boost.
+            _items.CollectionChanged -= FilesCollectionChanged;
+            var sortedItems = new ObservableCollection<FileNode>(ascending ? _items.OrderBy(f => f.LongName, StringComparer.OrdinalIgnoreCase).ToList() : _items.OrderByDescending(f => f.LongName, StringComparer.OrdinalIgnoreCase).ToList());
+            foreach (var item in sortedItems)
+            {
+#if REPORT_PERFORMANCE
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+#endif // REPORT_PERFORMANCE
+                var oldIndex = _items.IndexOf(item);
+                var newIndex = sortedItems.IndexOf(item);
+                if (oldIndex != newIndex)
+                {
+                    _items.Move(oldIndex, newIndex);
+                }
+#if REPORT_PERFORMANCE
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine("Folder.SortByName() moved " + oldIndex + "->" + newIndex + " which took: " + stopwatch.Elapsed);
+#endif // REPORT_PERFORMANCE
+            }
+            _items.CollectionChanged += FilesCollectionChanged;
+            OnItemsChanged(); // This ensures ViewModel sees the update.
+        }
+
         #region object overrides
 
         /// <inheritdoc />

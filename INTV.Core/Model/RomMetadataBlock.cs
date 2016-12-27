@@ -122,8 +122,13 @@ namespace INTV.Core.Model
                     case RomMetadataIdTag.Publisher:
                         metadataBlock = new RomMetadataPublisher(payloadLength);
                         break;
-                    case RomMetadataIdTag.UrlContactInfo:
                     case RomMetadataIdTag.Credits:
+                        metadataBlock = new RomMetadataCredits(payloadLength);
+                        break;
+                    case RomMetadataIdTag.ControllerBindings:
+                        metadataBlock = new RomMetadataControllerBindings(payloadLength);
+                        break;
+                    case RomMetadataIdTag.UrlContactInfo:
                     default:
                         metadataBlock = new RomMetadataBlock(payloadLength, metadataBlockType);
                         break;

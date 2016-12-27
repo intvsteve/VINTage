@@ -22,27 +22,28 @@ namespace INTV.Core.Model.Program
 {
     /// <summary>
     /// Speculative set of feature flags for Marc Ball's yet-to-be-released cartridge platform.
+    /// There may be some redundant flags here. Will revisit as more info becomes available.
     /// </summary>
     [System.Flags]
     public enum Bee3Features : uint
     {
         /// <summary>
-        /// Program is incompatible with Bee3 technology.
+        /// Program does not use Bee3 technology.
         /// </summary>
         Incompatible = FeatureCompatibility.Incompatible,
 
         /// <summary>
-        /// Program uses no Bee3-specific features, whether present or not.
+        /// Placeholder... Intended use is: May use Bee3-specific accelerators only.
         /// </summary>
         Tolerates = FeatureCompatibility.Tolerates,
 
         /// <summary>
-        /// Program uses Bee3-specific features if present.
+        /// Placeholder.... Intended use is: May use Bee3-specific storage.
         /// </summary>
         Enhances = FeatureCompatibility.Enhances,
 
         /// <summary>
-        /// Program requires Bee3-specific features.
+        /// Placeholder. Intended use is: May use Bee3-specific accelerators AND storage.
         /// </summary>
         Requires = FeatureCompatibility.Requires,
 
@@ -52,7 +53,7 @@ namespace INTV.Core.Model.Program
         SaveDataOptional = 1 << 2,
 
         /// <summary>
-        /// Program uses device's save-data feature.
+        /// Program requires device's save-data feature.
         /// </summary>
         SaveDataRequired = 1 << 3,
 

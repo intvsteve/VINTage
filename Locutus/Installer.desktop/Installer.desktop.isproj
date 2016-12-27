@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Project ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<!-- Select a Product Configuration -->
+		<InstallShieldProductConfiguration>Express</InstallShieldProductConfiguration>
+		<!-- Select a Visual Studio Configuration / InstallShield Release -->
+		<Configuration>Debug</Configuration>
+		<InstallShieldRelease>$(Configuration)</InstallShieldRelease>
+	</PropertyGroup>
+	<ItemGroup>
+		<!-- The InstallShieldProject item selects the project to build -->
+		<InstallShieldProject Include="$(MSBuildProjectDirectory)\$(MSBuildProjectName).isl"/>
+		<!-- The InstallShieldReleaseFlags sets Release Flags -->
+		<!--<InstallShieldReleaseFlags Include=""/>-->
+		<!-- The InstallShieldMergeModulePath specifies what directories are
+		searched for Merge Modules -->
+		<!--<InstallShieldMergeModulePath Include=""/>-->
+	</ItemGroup>
+	<ItemGroup>
+		<!-- The ProjectReference items refer to any Visual Studio solutions you want to automatically probe for Project Output Groups.  -->
+	</ItemGroup>
+	<ItemGroup>
+		<!-- The TaggedOutputs items allow you to explicitly add extra files to output groups. Each item must include both Name and OutputGroup, as well as TargetPath metadata values. -->
+		<!--<TaggedOutputs Include="C:\My Test Exe.exe">
+			<Name>My Test Project</Name>
+			<OutputGroup>Primary output</OutputGroup>
+			<TargetPath>My Test Exe.exe</TargetPath>
+		</TaggedOutputs> -->
+	</ItemGroup>
+	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2013Limited\InstallShield.targets"/>
+	<ItemGroup/>
+	<ItemGroup>
+		<ProjectReference Include="..\..\INTV.Core\INTV.Core.pcl.csproj">
+			<Name>INTV.Core.pcl</Name>
+			<Project>{B90D8E04-5F83-45D7-BD39-0198A7C7C325}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\INTV.Intellicart\INTV.Intellicart.desktop.csproj">
+			<Name>INTV.Intellicart.desktop</Name>
+			<Project>{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\INTV.LtoFlash\INTV.LtoFlash.desktop.csproj">
+			<Name>INTV.LtoFlash.desktop</Name>
+			<Project>{A1376EF6-C8CE-4A9C-A6E1-1BAF764E5E89}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\INTV.Ribbon\INTV.Ribbon.csproj">
+			<Name>INTV.Ribbon</Name>
+			<Project>{36F9511F-4B39-4320-A1AC-C11AB6297C06}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\INTV.Shared\INTV.Shared.desktop.csproj">
+			<Name>INTV.Shared.desktop</Name>
+			<Project>{C852CAA1-ABE8-45D7-8BC5-94B61B71617A}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\INTV.jzIntv\INTV.jzIntv.desktop.csproj">
+			<Name>INTV.jzIntv.desktop</Name>
+			<Project>{96090CE5-6A2C-4709-9B6F-4A50484B6B86}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\LtoFlash\LtoFlash.desktop.csproj">
+			<Name>LtoFlash.desktop</Name>
+			<Project>{D2575F7D-CF38-4F1F-98A1-0A7C33A14AD1}</Project>
+		</ProjectReference>
+	</ItemGroup>
+</Project>

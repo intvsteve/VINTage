@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListView.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,11 +20,14 @@
 
 ////#define ENABLE_DRAGDROP_TRACE
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
@@ -34,7 +37,7 @@ namespace INTV.Shared.View
     /// </summary>
     [System.ComponentModel.Composition.Export(typeof(IFakeDependencyObject))]
     [System.ComponentModel.Composition.ExportMetadata("Type", typeof(RomListView))]
-    public partial class RomListView : MonoMac.AppKit.NSView, System.ComponentModel.INotifyPropertyChanged, IFakeDependencyObject
+    public partial class RomListView : NSView, System.ComponentModel.INotifyPropertyChanged, IFakeDependencyObject
     {
         #region Constructors
 
@@ -42,7 +45,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public RomListView(IntPtr handle)
+        public RomListView(System.IntPtr handle)
             : base(handle)
         {
             Initialize();

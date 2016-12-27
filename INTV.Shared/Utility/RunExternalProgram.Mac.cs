@@ -19,7 +19,13 @@
 // </copyright>
 
 using System.Collections.Generic;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Utility
 {
@@ -43,12 +49,12 @@ namespace INTV.Shared.Utility
             var success = false;
             if (uriScheme == System.Uri.UriSchemeFile)
             {
-                success = MonoMac.AppKit.NSWorkspace.SharedWorkspace.OpenFile(filePath);
+                success = NSWorkspace.SharedWorkspace.OpenFile(filePath);
             }
             else
             {
                 var url = NSUrl.FromString(filePath);
-                success = MonoMac.AppKit.NSWorkspace.SharedWorkspace.OpenUrl(url);
+                success = NSWorkspace.SharedWorkspace.OpenUrl(url);
             }
             if (!success)
             {
@@ -60,7 +66,7 @@ namespace INTV.Shared.Utility
         private static void OSSendEmail(string emailString)
         {
             var url = NSUrl.FromString(emailString);
-            var success = MonoMac.AppKit.NSWorkspace.SharedWorkspace.OpenUrl(url);
+            var success = NSWorkspace.SharedWorkspace.OpenUrl(url);
             if (!success)
             {
                 var message = string.Format("Failed to send mail: {0}", emailString);

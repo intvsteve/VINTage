@@ -1,5 +1,5 @@
 ﻿// <copyright file="MenuLayoutView.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 
@@ -30,7 +34,7 @@ namespace INTV.LtoFlash.View
 {
     [System.ComponentModel.Composition.Export(typeof(IFakeDependencyObject))]
     [System.ComponentModel.Composition.ExportMetadata("Type", typeof(MenuLayoutView))]
-    public partial class MenuLayoutView : MonoMac.AppKit.NSView, System.ComponentModel.INotifyPropertyChanged, IFakeDependencyObject
+    public partial class MenuLayoutView : NSView, System.ComponentModel.INotifyPropertyChanged, IFakeDependencyObject
     {
         /// <summary>
         /// Name of the file used to store the colors available in the color picker.
@@ -45,7 +49,7 @@ namespace INTV.LtoFlash.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public MenuLayoutView(IntPtr handle)
+        public MenuLayoutView(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -152,5 +156,26 @@ namespace INTV.LtoFlash.View
         }
 
         #endregion // IFakeDependencyObject
+
+        public override void UpdateConstraintsForSubtreeIfNeeded()
+        {
+            // There may be a bug in native code, or somewhere in bindings... or who knows, some
+            // strange interaction in Interface Builder or who-knows-what. In any case, the observed
+            // probem is hangs / crashes when the base implementation of this method. Here's the last part
+            // of the crashing call stack...
+            // 8   libmono-2.0.dylib               0x0040c020 mono_sigill_signal_handler + 48
+            // 9   com.apple.AppKit                0x959cd558 -[NSView(NSConstraintBasedLayout) _setAutoresizingConstraints:] + 218
+            // 10  com.apple.AppKit                0x95afd26e -[NSView(NSConstraintBasedLayout) _updateAutoresizingConstraints] + 79
+            // 11  com.apple.AppKit                0x95afc555 -[NSView updateConstraints] + 65
+            // 12  com.apple.AppKit                0x95afc4a1 -[NSView updateConstraintsForSubtreeIfNeeded] + 123
+            // 13  com.apple.CoreFoundation        0x992e3ef0 CFArrayApplyFunction + 192
+            // This happens when dragging something over the *last* folder in the NSOutlineView child of this visual,
+            // AND its epxansion causes the NSScrollViewer to show scrollbars
+            // AND you dilly dally to the point where the folder wishes to collapse again.
+            // By *NOT* calling the base implementation of this method, we don't crash,
+            // AND no ill effects have been observed. Yet.
+            // In other words, this is a HACK.
+            // base.UpdateConstraintsForSubtreeIfNeeded();
+        }
     }
 }

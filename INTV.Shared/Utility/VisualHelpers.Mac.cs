@@ -1,5 +1,5 @@
 ﻿// <copyright file="VisualHelpers.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 
@@ -121,6 +126,15 @@ namespace INTV.Shared.Utility
             dialog.WillClose -= HandleWillClose;
             INTV.Shared.Utility.SingleInstanceApplication.Instance.StopModalWithCode((int)NSRunResponse.Aborted);
             dialog.Dispose();
+        }
+
+        private static System.Tuple<int, int, int> OSGetPrimaryDisplayInfo()
+        {
+            var mainScreen = NSScreen.MainScreen;
+            var width = System.Convert.ToInt32(mainScreen.Frame.Width);
+            var height = System.Convert.ToInt32(mainScreen.Frame.Height);
+            var depth = NSGraphics.BitsPerPixelFromDepth(mainScreen.Depth);
+            return new System.Tuple<int, int, int>(width, height, depth);
         }
 
         static partial void AttachCanExecuteHandler(CommandGroup commandGroup, RelayCommand command)

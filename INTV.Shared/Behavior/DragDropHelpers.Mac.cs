@@ -1,5 +1,5 @@
 ﻿// <copyright file="DragDropHelpers.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,7 +19,11 @@
 // </copyright>
 
 using System.Collections.Generic;
+#if __UNIFIED__
+using AppKit;
+#else
 using MonoMac.AppKit;
+#endif
 using INTV.Core.Utility;
 
 namespace INTV.Shared.Behavior

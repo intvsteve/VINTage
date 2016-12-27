@@ -1583,4 +1583,24 @@ to download version {2}?</value>
   <data name="CheckForUpdatesCommand_Failed" xml:space="preserve">
     <value>An error occurred when checking for updates.</value>
   </data>
+  <data name="RunExternalProgram_ErrorFormat" xml:space="preserve">
+    <value>An error occurred when attempting to open the file:
+
+  {0}
+
+Message: {1}</value>
+    <comment>{0} is file path, {1} is the error message.</comment>
+  </data>
+  <data name="RunExternalProgram_ErrorTitle" xml:space="preserve">
+    <value>Error Opening File</value>
+  </data>
+  <data name="DeleteFileError_Message" xml:space="preserve">
+    <value>A problem occurred when deleting a file or directory. See details below.</value>
+  </data>
+  <data name="DeleteFileError_ReportText" xml:space="preserve">
+    <value>The file listed below could not be deleted after several attempts. It may be open in another program. You may wish to delete the file manually later.</value>
+  </data>
+  <data name="DeleteFileError_Title" xml:space="preserve">
+    <value>Error Deleting File</value>
+  </data>
 </root>

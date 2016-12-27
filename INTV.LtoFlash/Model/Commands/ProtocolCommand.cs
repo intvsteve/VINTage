@@ -20,6 +20,7 @@
 
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 ////#define REPORT_COMMAND_PERFORMANCE
+#define LOG_COMMAND_DATA
 
 using System;
 using System.IO;
@@ -314,6 +315,15 @@ namespace INTV.LtoFlash.Model.Commands
                     tempBinaryWriter.Seek(0, SeekOrigin.Begin);
                     Crc = INTV.Core.Utility.Crc32.OfStream(tempBinaryWriter.BaseStream);
                     writer.Write(protocolCommandBuffer, 0, protocolCommandBuffer.Length);
+#if LOG_COMMAND_DATA
+                    var dataSent = new System.Text.StringBuilder();
+                    foreach (var value in protocolCommandBuffer)
+                    {
+                        dataSent.AppendFormat("{0} ", value.ToString("X2"));
+                    }
+                    dataSent.AppendFormat("CRC: {0}", Crc.ToString("X8"));
+                    _dataSent = dataSent.ToString();
+#endif // LOG_COMMAND_DATA
                 }
             }
             finally
@@ -615,6 +625,8 @@ namespace INTV.LtoFlash.Model.Commands
             System.Diagnostics.Debug.WriteLineIf(condition, message);
         }
 
+        private string _dataSent;
+
         private T ExecuteCore<T>(IStreamConnection target, ExecuteDeviceCommandAsyncTaskData taskData, System.IO.Stream sourceDataStream, Func<System.IO.Stream, T> inflate, Action onSuccess, out bool succeeded)
         {
             succeeded = false;
@@ -644,8 +656,9 @@ namespace INTV.LtoFlash.Model.Commands
                     {
                         using (var writer = new INTV.Shared.Utility.ASCIIBinaryWriter(target.WriteStream))
                         {
+                            _dataSent = string.Empty;
                             var commandBytesWritten = Serialize(writer);
-                            target.LogPortMessage("EXECUTE: wrote " + commandBytesWritten + " bytes for command: " + Command);
+                            target.LogPortMessage("EXECUTE: wrote " + commandBytesWritten + " bytes for command: " + Command + ", data sent: " + _dataSent);
                         }
 
                         if (target.ReadStream.CanTimeout)

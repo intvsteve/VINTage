@@ -1,5 +1,5 @@
 ﻿// <copyright file="VisualRelayCommand.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -29,9 +29,15 @@ using OSImage = System.Windows.Media.ImageSource;
 using OSMenuItem = System.Windows.Controls.Control;
 using OSVisual = System.Windows.UIElement;
 #elif MAC
+#if __UNIFIED__
+using OSImage = AppKit.NSImage;
+using OSMenuItem = AppKit.NSMenuItem;
+using OSVisual = Foundation.NSObject;
+#else
 using OSImage = MonoMac.AppKit.NSImage;
 using OSMenuItem = MonoMac.AppKit.NSMenuItem;
 using OSVisual = MonoMac.Foundation.NSObject;
+#endif
 #endif
 
 namespace INTV.Shared.ComponentModel

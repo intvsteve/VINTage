@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,11 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Intellicart.Model;
 using INTV.Intellicart.ViewModel;
@@ -102,8 +105,8 @@ namespace INTV.Intellicart.Properties
 
         private int UpdateTimeout(int newValue)
         {
-            var timeout = Math.Max(newValue, IntellicartModel.MinWriteTimeout);
-            timeout = Math.Min(timeout, IntellicartModel.MaxWriteTimeout);
+            var timeout = System.Math.Max(newValue, IntellicartModel.MinWriteTimeout);
+            timeout = System.Math.Min(timeout, IntellicartModel.MaxWriteTimeout);
             return timeout;
         }
 

@@ -18,9 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
@@ -104,7 +107,7 @@ namespace INTV.Shared.Commands
 
         #endregion // ICommandGroup
 
-        private void HandleActivated (object sender, EventArgs e)
+        private void HandleActivated (object sender, System.EventArgs e)
         {
             OnShowSettingsDialog(null);
         }

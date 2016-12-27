@@ -699,7 +699,7 @@ namespace INTV.LtoFlash.ViewModel
                     RaisePropertyChanged(e.PropertyName);
                     break;
                 case Device.FileSystemStatusPropertyName:
-                    ReportFileSystemInconsistencies(Device.FileSystem);
+                    ReportFileSystemInconsistencies(Device.FileSystem, null);
                     break;
                 case Device.OwnerPropertyName:
                     _owner = Device.Owner;
@@ -742,6 +742,16 @@ namespace INTV.LtoFlash.ViewModel
             if (hasErrorLog || hasCrashLog)
             {
                 var reportText = (new System.Text.StringBuilder(Resources.Strings.CrashReporter_DetailHeader)).AppendLine();
+                if (Device != null)
+                {
+                    reportText.AppendLine("Device Primary Firmware Version: " + FirmwareRevisions.FirmwareVersionToString(Device.FirmwareRevisions.Primary, false));
+                    reportText.AppendLine("Device Secondary Firmware Version: " + FirmwareRevisions.FirmwareVersionToString(Device.FirmwareRevisions.Secondary, false));
+                    reportText.AppendLine("Device Current Firmware Version: " + FirmwareRevisions.FirmwareVersionToString(Device.FirmwareRevisions.Current, false));
+                }
+                else
+                {
+                    reportText.AppendLine("Device firmware versions unavailable");
+                }
                 reportText.AppendLine(Resources.Strings.CrashReporter_Detail_DeviceId + " " + Device.UniqueId);
                 var timestamp = PathUtils.GetTimeString(true);
                 reportText.AppendLine(Resources.Strings.CrashReporter_Detail_Timestamp + " " + timestamp);
@@ -764,6 +774,7 @@ namespace INTV.LtoFlash.ViewModel
                     }
                     catch (System.Exception)
                     {
+                        // We got an error trying to write the error log...
                     }
                     finally
                     {
@@ -789,7 +800,7 @@ namespace INTV.LtoFlash.ViewModel
                         {
                             using (var writer = new ASCIIBinaryWriter(errorLogFile))
                             {
-                                errorLog.SerializeToTextFile(writer);
+                                errorLog.SerializeToTextFile(Device.FirmwareRevisions.Current, writer);
                             }
                         }
                         errorReportFiles.Add(errorLogFileName);
@@ -805,7 +816,8 @@ namespace INTV.LtoFlash.ViewModel
                             errorLogFileName = Resources.Strings.CrashReporter_Detail_ErrorLogUnavailable;
                         }
                     }
-                    reportText.AppendLine().AppendFormat(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.CrashReporter_Detail_ErrorLogFormat, errorLog.Text, errorLogFileName);
+                    var errorLogText = errorLog.GetDetailedErrorReport(Device.FirmwareRevisions.Current);
+                    reportText.AppendLine().AppendFormat(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.CrashReporter_Detail_ErrorLogFormat, errorLogText, errorLogFileName);
                 }
                 var title = Resources.Strings.CrashReporter_Title;
                 var message = Resources.Strings.CrashReporter_Message;
@@ -827,10 +839,15 @@ namespace INTV.LtoFlash.ViewModel
         /// Determines whether there is a need to report file system inconsistencies.
         /// </summary>
         /// <param name="fileSystem">File system to check.</param>
+        /// <param name="corruptFileSystemException">If non-<c>null</c>, <paramref name="fileSystem"/> is corrupt and cannot be used.</param>
         /// <returns><c>true</c>, if file system inconsistencies are found, <c>false</c> otherwise.</returns>
-        internal static bool ReportFileSystemInconsistencies(FileSystem fileSystem)
+        internal static bool ReportFileSystemInconsistencies(FileSystem fileSystem, System.Exception corruptFileSystemException)
         {
-            var reportProblems = (fileSystem == null) || (fileSystem.Status != LfsDirtyFlags.None);
+            var reportProblems = (fileSystem == null) || (fileSystem.Status != LfsDirtyFlags.None) || (corruptFileSystemException != null);
+            if (corruptFileSystemException is InconsistentFileSystemException)
+            {
+                corruptFileSystemException = null;
+            }
             if (reportProblems)
             {
                 // TODO Should the message content be localizable?
@@ -839,58 +856,75 @@ namespace INTV.LtoFlash.ViewModel
                 if (fileSystem != null)
                 {
                     fileSystem.Status = LfsDirtyFlags.None;
-                    var orphanedEntries = fileSystem.GetOrphanedFileSystemEntries();
-                    var culture = System.Globalization.CultureInfo.CurrentCulture;
+                    if (corruptFileSystemException != null)
+                    {
+                        messageStringBuilder.AppendLine("The file system appears to be corrupt. If you are unable to send your menu layout, reformat your LTO Flash! and try again.").AppendLine();
+                        messageStringBuilder.AppendFormat("Error message:\n\n{0}", corruptFileSystemException.Message).AppendLine();
+                    }
+                    else
+                    {
+                        var orphanedEntries = fileSystem.GetOrphanedFileSystemEntries();
+                        var culture = System.Globalization.CultureInfo.CurrentCulture;
 
-                    messageStringBuilder.AppendLine(Resources.Strings.FileSystem_Inconsistent).AppendLine();
+                        messageStringBuilder.AppendLine(Resources.Strings.FileSystem_Inconsistent).AppendLine();
 
-                    hadAny = orphanedEntries.OrphanedForks.Any() || orphanedEntries.OrphanedFiles.Any() || orphanedEntries.OrphanedDirectories.Any();
-                    if (hadAny)
-                    {
-                        messageStringBuilder.AppendLine(Resources.Strings.FileSystem_OrphanElements_Message).AppendLine();
-                    }
+                        hadAny = orphanedEntries.OrphanedForks.Any() || orphanedEntries.OrphanedFiles.Any() || orphanedEntries.OrphanedDirectories.Any();
+                        if (hadAny)
+                        {
+                            messageStringBuilder.AppendLine(Resources.Strings.FileSystem_OrphanElements_Message).AppendLine();
+                        }
 
-                    var numOrphans = orphanedEntries.OrphanedDirectories.Count();
-                    if (numOrphans == 1)
-                    {
-                        messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElement_Format, Resources.Strings.DirectoryInSentence).AppendLine();
-                    }
-                    else if (numOrphans > 1)
-                    {
-                        messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElements_Format, numOrphans, Resources.Strings.DirectoriesInSentence).AppendLine();
-                    }
+                        var numOrphans = orphanedEntries.OrphanedDirectories.Count();
+                        if (numOrphans == 1)
+                        {
+                            messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElement_Format, Resources.Strings.DirectoryInSentence).AppendLine();
+                        }
+                        else if (numOrphans > 1)
+                        {
+                            messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElements_Format, numOrphans, Resources.Strings.DirectoriesInSentence).AppendLine();
+                        }
 
-                    numOrphans = orphanedEntries.OrphanedFiles.Count();
-                    if (numOrphans == 1)
-                    {
-                        messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElement_Format, Resources.Strings.FileInSentence).AppendLine();
-                    }
-                    else if (numOrphans > 1)
-                    {
-                        messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElements_Format, numOrphans, Resources.Strings.FilesInSentence).AppendLine();
-                    }
+                        numOrphans = orphanedEntries.OrphanedFiles.Count();
+                        if (numOrphans == 1)
+                        {
+                            messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElement_Format, Resources.Strings.FileInSentence).AppendLine();
+                        }
+                        else if (numOrphans > 1)
+                        {
+                            messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElements_Format, numOrphans, Resources.Strings.FilesInSentence).AppendLine();
+                        }
 
-                    numOrphans = orphanedEntries.OrphanedForks.Count();
-                    if (numOrphans == 1)
-                    {
-                        messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElement_Format, Resources.Strings.ForkInSentence).AppendLine();
-                    }
-                    else if (numOrphans > 1)
-                    {
-                        messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElements_Format, numOrphans, Resources.Strings.ForksInSentence).AppendLine();
-                    }
+                        numOrphans = orphanedEntries.OrphanedForks.Count();
+                        if (numOrphans == 1)
+                        {
+                            messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElement_Format, Resources.Strings.ForkInSentence).AppendLine();
+                        }
+                        else if (numOrphans > 1)
+                        {
+                            messageStringBuilder.Append("\t\t").AppendFormat(culture, Resources.Strings.FileSystem_OrphanElements_Format, numOrphans, Resources.Strings.ForksInSentence).AppendLine();
+                        }
 
-                    if (hadAny)
-                    {
-                        messageStringBuilder.AppendLine();
+                        if (hadAny)
+                        {
+                            messageStringBuilder.AppendLine();
+                        }
+                        messageStringBuilder.AppendLine(Resources.Strings.FileSystem_InconsistentEnd);
                     }
-                    messageStringBuilder.AppendLine(Resources.Strings.FileSystem_InconsistentEnd);
                 }
                 else
                 {
                     messageStringBuilder.Append(Resources.Strings.FileSystem_InconsistencyError_NoFileSystem_Message);
                 }
-                INTV.Shared.View.OSMessageBox.Show(messageStringBuilder.ToString(), Resources.Strings.FileSystem_Inconsistent_Title, (r) => { });
+                string reportText = null;
+                if ((corruptFileSystemException != null) && !SingleInstanceApplication.SharedSettings.ShowDetailedErrors)
+                {
+                    corruptFileSystemException = null;
+                }
+                else if ((corruptFileSystemException != null) && !SingleInstanceApplication.SharedSettings.ShowDetailedErrors)
+                {
+                    reportText = corruptFileSystemException.Message;
+                }
+                INTV.Shared.View.OSMessageBox.Show(messageStringBuilder.ToString(), Resources.Strings.FileSystem_Inconsistent_Title, corruptFileSystemException, reportText, (r) => { });
             }
             return reportProblems;
         }

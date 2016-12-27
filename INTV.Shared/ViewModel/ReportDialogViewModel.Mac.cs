@@ -18,7 +18,11 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using AppKit;
+#else
+using MonoMac.AppKit;
+#endif
 
 namespace INTV.Shared.ViewModel
 {
@@ -31,12 +35,12 @@ namespace INTV.Shared.ViewModel
         {
             try
             {
-                var pasteboard = MonoMac.AppKit.NSPasteboard.GeneralPasteboard;
+                var pasteboard = NSPasteboard.GeneralPasteboard;
                 pasteboard.ClearContents();
-                pasteboard.DeclareTypes(new[] { (string)MonoMac.AppKit.NSPasteboard.NSStringType }, null);
-                pasteboard.SetStringForType(((ReportDialogViewModel)parameter).ReportText, MonoMac.AppKit.NSPasteboard.NSStringType);
+                pasteboard.DeclareTypes(new[] { (string)NSPasteboard.NSStringType }, null);
+                pasteboard.SetStringForType(((ReportDialogViewModel)parameter).ReportText, NSPasteboard.NSStringType);
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 var message = string.Format(Resources.Strings.ReportDialog_CopyToClipboard_Failed_MessageFormat, e.Message);
                 PlatformPanic(message, Resources.Strings.ReportDialog_CopyToClipboard_Failed_Title);
@@ -45,10 +49,10 @@ namespace INTV.Shared.ViewModel
 
         private static void PlatformPanic(string message, string title)
         {
-            var messageBox = new MonoMac.AppKit.NSAlert();
+            var messageBox = new NSAlert();
             messageBox.MessageText = title;
             messageBox.InformativeText = message;
-            messageBox.AlertStyle = MonoMac.AppKit.NSAlertStyle.Critical;
+            messageBox.AlertStyle = NSAlertStyle.Critical;
             messageBox.RunModal();
         }
 

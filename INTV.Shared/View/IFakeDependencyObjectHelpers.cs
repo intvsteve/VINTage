@@ -1,5 +1,5 @@
 ﻿// <copyright file="IFakeDependencyObjectHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -24,9 +24,15 @@ using System.ComponentModel;
 using INTV.Core.Utility;
 
 #if MAC
+#if __UNIFIED
+using OSVisual = AppKit.NSView;
+using OSVisualBase = AppKit.NSResponder;
+using OSWindow = AppKit.NSWindow;
+#else
 using OSVisual = MonoMac.AppKit.NSView;
 using OSVisualBase = MonoMac.AppKit.NSResponder;
 using OSWindow = MonoMac.AppKit.NSWindow;
+#endif
 #endif
 
 namespace INTV.Shared.View

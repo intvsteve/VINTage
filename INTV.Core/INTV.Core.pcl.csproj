@@ -122,6 +122,8 @@
     <Compile Include="Model\RomFormat.cs" />
     <Compile Include="Model\RomInfoIndex.cs" />
     <Compile Include="Model\RomMetadataBlock.cs" />
+    <Compile Include="Model\RomMetadataControllerBindings.cs" />
+    <Compile Include="Model\RomMetadataCredits.cs" />
     <Compile Include="Model\RomMetadataFeatures.cs" />
     <Compile Include="Model\RomMetadataIdTag.cs" />
     <Compile Include="Model\RomMetadataPublicationDate.cs" />

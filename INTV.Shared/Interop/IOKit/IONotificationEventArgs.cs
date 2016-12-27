@@ -1,5 +1,5 @@
 ﻿// <copyright file="IONotificationEventArgs.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,15 +18,18 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Interop.IOKit
 {
     /// <summary>
     /// This class is used to notify interested parties about notifications received from the IOKit.
     /// </summary>
-    public class IONotificationEventArgs : EventArgs
+    public class IONotificationEventArgs : System.EventArgs
     {
         /// <summary>
         /// Initialize a new instance of IONotificationEventArgs.

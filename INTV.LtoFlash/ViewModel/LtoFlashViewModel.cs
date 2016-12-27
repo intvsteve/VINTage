@@ -122,7 +122,7 @@ namespace INTV.LtoFlash.ViewModel
                 SingleInstanceApplication.Instance.Roms.AddRomsFromFilesBegin += HandleAddRomsFromFilesBegin;
                 SingleInstanceApplication.Instance.Roms.AddRomsFromFilesEnd += HandleAddRomsFromFilesEnd;
             }
-            INTV.Shared.Model.Program.ProgramCollection.Roms.InvokeProgram += HandleInvokeProgram;
+            INTV.Shared.Model.Program.ProgramCollection.Roms.AddInvokeProgramHandler(HandleInvokeProgram, 0.1);
             INTV.Shared.Model.Program.ProgramCollection.Roms.ProgramFeaturesChanged += HandleProgramFeaturesChanged;
             INTV.Shared.Model.Program.ProgramCollection.Roms.ProgramStatusChanged += HandleProgramStatusChanged;
 
@@ -133,7 +133,7 @@ namespace INTV.LtoFlash.ViewModel
             if (Properties.Settings.Default.PromptToInstallFTDIDriver && (ftdiDriverVersion.Major == 0) && LtoFlashCommandGroup.LaunchFtdiDriverInstallerCommand.CanExecute(null))
             {
                 var startupAction = new System.Action(() => LtoFlashCommandGroup.LaunchFtdiDriverInstallerCommand.Execute(Resources.Strings.LaunchFtdiDriverInstallerCommand_NoDriverPromptMessageFormat));
-                SingleInstanceApplication.Instance.AddStartupAction("CheckFTDIDriver", startupAction, false);
+                SingleInstanceApplication.Instance.AddStartupAction("CheckFTDIDriver", startupAction, StartupTaskPriority.HighestAsyncTaskPriority - 20);
             }
 #endif // ENABLE_DRIVER_NAG
 
@@ -143,10 +143,10 @@ namespace INTV.LtoFlash.ViewModel
             {
                 var checkForDevices = new CheckForDevicesTaskData(INTV.LtoFlash.Properties.Settings.Default.LastActiveDevicePort, this);
                 var startupAction = new System.Action(() => checkForDevices.Start());
-                SingleInstanceApplication.Instance.AddStartupAction("SearchForDevices", startupAction, false);
+                SingleInstanceApplication.Instance.AddStartupAction("SearchForDevices", startupAction, StartupTaskPriority.HighestAsyncTaskPriority - 4);
                 if (Properties.Settings.Default.PromptToImportStarterRoms)
                 {
-                    SingleInstanceApplication.Instance.AddStartupAction("ImportStarterRoms", ImportStarterRoms, true);
+                    SingleInstanceApplication.Instance.AddStartupAction("ImportStarterRoms", ImportStarterRoms, StartupTaskPriority.LowestSyncTaskPriority);
                 }
             }
             SyncMode = MenuLayoutSynchronizationMode.RomList;
@@ -474,7 +474,7 @@ namespace INTV.LtoFlash.ViewModel
             {
                 if (!string.IsNullOrEmpty(e.BackupPath) && System.IO.File.Exists(e.BackupPath))
                 {
-                    System.IO.File.Delete(e.BackupPath);
+                    FileUtilities.DeleteFile(e.BackupPath, false, 10);
                 }
                 if (ActiveLtoFlashDevice.IsValid)
                 {
@@ -506,6 +506,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             if ((e.Program != null) && DownloadCommandGroup.DownloadAndPlayCommand.CanExecute(this))
             {
+                e.Handled = true;
                 DownloadCommandGroup.DownloadAndPlay(ActiveLtoFlashDevice.Device, e.Program);
             }
         }
@@ -680,7 +681,16 @@ namespace INTV.LtoFlash.ViewModel
                 }
                 if (newDevice.IsValid && (newDevice.Device.FileSystem != null))
                 {
-                    Model = new MenuLayout(newDevice.Device.FileSystem, newDevice.UniqueId);
+                    var model = new MenuLayout(new FileSystem(), newDevice.UniqueId);
+                    try
+                    {
+                        model = new MenuLayout(newDevice.Device.FileSystem, newDevice.UniqueId);
+                    }
+                    catch (System.Exception e)
+                    {
+                        SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() => DeviceViewModel.ReportFileSystemInconsistencies(newDevice.Device.FileSystem, e));
+                    }
+                    Model = model;
                 }
                 _activeLtoFlashDevices.Add(newDevice);
             }
@@ -751,18 +761,27 @@ namespace INTV.LtoFlash.ViewModel
                         var addedSaveDataForks = HostPCMenuLayout.MenuLayout.FileSystem.PopulateSaveDataForksFromDevice(fileSystem);
                         System.Diagnostics.Debug.WriteLineIf(addedSaveDataForks, "Added SaveData forks from LTO Flash!.");
                         var reportedProblems = false;
-                        if (!fileSystem.Validate())
+                        System.Exception corruptFileSystem = null;
+                        if (!fileSystem.Validate(out corruptFileSystem))
                         {
-                            reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem);
+                            reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem, corruptFileSystem);
                         }
-                        if (Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu)
+                        if ((corruptFileSystem == null) && Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu)
                         {
                             HostPCMenuLayout.HighlightDifferencesFromDeviceFileSystem(fileSystem, SyncMode);
                         }
                         try
                         {
-                            var model = new MenuLayout(fileSystem, ActiveLtoFlashDevice.Device.UniqueId);
-                            if (fileSystem.Status != LfsDirtyFlags.None)
+                            var model = new MenuLayout();
+                            try
+                            {
+                                model = new MenuLayout(fileSystem, ActiveLtoFlashDevice.Device.UniqueId);
+                            }
+                            catch (System.Exception exception)
+                            {
+                                corruptFileSystem = exception;
+                            }
+                            if ((fileSystem.Status != LfsDirtyFlags.None) || (corruptFileSystem != null))
                             {
                                 if (reportedProblems)
                                 {
@@ -771,7 +790,7 @@ namespace INTV.LtoFlash.ViewModel
                                 }
                                 else
                                 {
-                                    reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem);
+                                    reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem, corruptFileSystem);
                                 }
                             }
                             Model = model;
@@ -780,7 +799,7 @@ namespace INTV.LtoFlash.ViewModel
                         {
                             if (!reportedProblems)
                             {
-                                reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem);
+                                reportedProblems = DeviceViewModel.ReportFileSystemInconsistencies(fileSystem, null);
                             }
                         }
                         RaisePropertyChanged(FileNode.LongNamePropertyName);
@@ -830,7 +849,7 @@ namespace INTV.LtoFlash.ViewModel
                 if (differences.GetAllFailures(null).Any())
                 {
                     hostFileSystem = hostFileSystem.Clone();
-                    hostFileSystem.RemoveInvalidEntries(differences, FileSystemHelpers.ShouldRemoveInvalidEntry, null);
+                    hostFileSystem.CleanUpInvalidEntries(deviceFileSystem, differences, FileSystemHelpers.ShouldRemoveInvalidEntry, null);
                     differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device);
                 }
                 showFileSystemsDifferIcon = differences.Any();
@@ -858,11 +877,11 @@ namespace INTV.LtoFlash.ViewModel
 
         private void PromptForFirmwareUpgrade(DeviceViewModel newDevice)
         {
-            if (newDevice.IsValid && Properties.Settings.Default.PromptForFirmwareUpgrade)
+            var firmwareUpdatePrefix = "INTV.LtoFlash.Resources.FirmwareUpdates.";
+            var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(firmwareUpdatePrefix);
+            typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, firmwareUpdatePrefix, Configuration.Instance.FirmwareUpdatesDirectory);
+            if (newDevice.IsValid && Properties.Settings.Default.PromptForFirmwareUpgrade && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(this))
             {
-                var firmwareUpdatePrefix = "INTV.LtoFlash.Resources.FirmwareUpdates.";
-                var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(firmwareUpdatePrefix);
-                typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, firmwareUpdatePrefix, Configuration.Instance.FirmwareUpdatesDirectory);
                 if (System.IO.Directory.Exists(Configuration.Instance.FirmwareUpdatesDirectory))
                 {
                     string newestFirmwareFile = null;
@@ -880,11 +899,17 @@ namespace INTV.LtoFlash.ViewModel
 
                     // Strip off the secondary FW version bit -- we don't really care about that.
                     var currentVersion = newDevice.Device.FirmwareRevisions.Current & ~INTV.LtoFlash.Model.FirmwareRevisions.SecondaryMask;
-                    if (newestVersion > currentVersion)
+                    if ((newestVersion > currentVersion) && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(this))
                     {
                         var newerFirmwareFound = Resources.Strings.FirmwareUpdateAvailable_MessagePrefix;
                         var disablePrompt = Resources.Strings.FirmwareUpdateAvailable_MessageSuffix;
-                        SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() => FirmwareCommandGroup.UpdateFirmware(newDevice.Device, newestFirmwareFile, newerFirmwareFound, disablePrompt));
+                        SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() =>
+                            {
+                                if (FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(this))
+                                {
+                                    FirmwareCommandGroup.UpdateFirmware(newDevice.Device, newestFirmwareFile, newerFirmwareFound, disablePrompt);
+                                }
+                            });
                     }
                 }
             }

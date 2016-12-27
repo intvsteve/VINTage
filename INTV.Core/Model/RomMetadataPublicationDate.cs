@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
+
 namespace INTV.Core.Model
 {
     /// <summary>
@@ -32,27 +34,17 @@ namespace INTV.Core.Model
         public RomMetadataPublicationDate(uint length)
             : base(length, RomMetadataIdTag.ReleaseDate)
         {
+            Date = DateTime.MinValue;
         }
 
         #region Properties
 
         /// <summary>
-        /// Gets the publication year.
+        /// Gets the publication date.
         /// </summary>
-        /// <remarks>If this value is zero, year was not defined.</remarks>
-        public ushort Year { get; private set; }
-
-        /// <summary>
-        /// Gets the publication month.
-        /// </summary>
-        /// <remarks>If this value is zero, month was not defined.</remarks>
-        public byte Month { get; private set; }
-
-        /// <summary>
-        /// Gets the publication day.
-        /// </summary>
-        /// <remarks>If this value is zero, day was not defined.</remarks>
-        public byte Day { get; private set; }
+        /// <remarks>If month and date were not defined, June 15 is the magical date. If we somehow encountered this metadata
+        /// and were unable to retrieve anything useful, then the value will be System.DateTime.MinValue.</remarks>
+        public DateTime Date { get; private set; }
 
         #endregion // Properties
 
@@ -61,29 +53,44 @@ namespace INTV.Core.Model
         /// <inheritdoc/>
         protected override uint DeserializePayload(INTV.Core.Utility.BinaryReader reader)
         {
+            var year = 0;
             var remainingPayload = Length;
             if (remainingPayload > 0)
             {
-                Year = (ushort)(1900 + reader.ReadByte());
+                year = (ushort)(1900 + reader.ReadByte());
                 --remainingPayload;
             }
+
+            var month = 6;
             if (remainingPayload > 0)
             {
-                Month = reader.ReadByte();
+                month = reader.ReadByte();
                 --remainingPayload;
+                if ((month < 1) || (month > 12))
+                {
+                    month = 6;
+                }
             }
+
+            var day = 15;
             if (remainingPayload > 0)
             {
-                Day = reader.ReadByte();
+                day = reader.ReadByte();
                 --remainingPayload;
+                if ((day < 1) || (day > DateTime.DaysInMonth(year, month)))
+                {
+                    day = 15;
+                }
             }
             if (remainingPayload > 0)
             {
                 System.Diagnostics.Debug.WriteLine("Too many bytes left! Draining...");
-            }
-            if (remainingPayload > 0)
-            {
                 reader.BaseStream.Seek(remainingPayload, System.IO.SeekOrigin.Current);
+            }
+
+            if (year > 0)
+            {
+                Date = new DateTime(year, month, day);
             }
             return Length;
         }

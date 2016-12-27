@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define REPORT_PERFORMANCE
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +35,11 @@ using IntvColor = INTV.Core.Model.Stic.Color;
 #if WIN
 using OSImage = System.Windows.Media.ImageSource;
 #elif MAC
+#if __UNIFIED__
+using OSImage = AppKit.NSImage;
+#else
 using OSImage = MonoMac.AppKit.NSImage;
+#endif
 #endif
 
 namespace INTV.LtoFlash.ViewModel
@@ -403,6 +409,31 @@ namespace INTV.LtoFlash.ViewModel
                 }
             }
             return fileNodeViewModel;
+        }
+
+        /// <summary>
+        /// Sorts the items in the folder by long name.
+        /// </summary>
+        /// <param name="ascending">If set to <c>true</c> sorts in ascending order, otherwise in descending order.</param>
+        internal void SortByName(bool ascending)
+        {
+#if REPORT_PERFORMANCE
+            System.Diagnostics.Debug.WriteLine("SORT: " + LongName + " START");
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+#endif
+            var folder = Model as Folder;
+            if (folder != null)
+            {
+                folder.SortByName(ascending);
+            }
+            else
+            {
+                // throw?
+            }
+#if REPORT_PERFORMANCE
+            stopwatch.Stop();
+            System.Diagnostics.Debug.WriteLine("SORT: " + LongName + " FINISH: Duration: " + stopwatch.Elapsed);
+#endif
         }
 
         /// <summary>

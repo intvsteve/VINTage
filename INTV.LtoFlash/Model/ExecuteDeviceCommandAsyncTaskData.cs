@@ -304,7 +304,7 @@ namespace INTV.LtoFlash.Model
                                     }
                                     else
                                     {
-                                        var errorLogContents = errorLog.Text;
+                                        var errorLogContents = errorLog.GetDetailedErrorReport(data.Device.FirmwareRevisions.Current);
                                         if (string.IsNullOrWhiteSpace(errorLogContents))
                                         {
                                             errorLogContents = Resources.Strings.ErrorBufferReport_Empty;

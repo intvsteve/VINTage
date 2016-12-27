@@ -1,0 +1,24 @@
+==============================================================================
+    Firmware 2386
+------------------------------------------------------------------------------
+
+ -- Fix a cosmetic number display issue in 'Flash info...' screen.
+ -- Further harden journal writes against power glitches when the
+    Intellivision is powered up during a filesystem download.
+
+==============================================================================
+    Firmware 2360
+------------------------------------------------------------------------------
+
+ -- Correctly handle dangling 'ARG' entry in filesystem journal.
+ -- Make reformat command reset the journal by forcing an early log-wrap.
+ -- Add additional sanity checks to filesystem journal.
+ -- Pump wire protocol while displaying "Error loading manual" screen.
+ -- Reduce rate at which file-info screen pumps wire protocol to match
+    rest of firmware.
+
+==============================================================================
+    Firmware 2130
+------------------------------------------------------------------------------
+
+Initial production release.

@@ -1,5 +1,5 @@
 ﻿// <copyright file="NativeMethods.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,14 +18,18 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+#if __UNIFIED__
+using CoreFoundation;
+using Foundation;
+#else
 using MonoMac.CoreFoundation;
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Interop
 {
@@ -41,18 +45,18 @@ namespace INTV.Shared.Interop
         /// <param name="loop">The CFRunLoop to which the source is to be added.</param>
         /// <param name="source">The CFRunLoopSource to add.</param>
         /// <param name="mode">The mode for the run loop.</param>
-        public static void CFRunLoopAddSource(CFRunLoop loop, IntPtr source, NSString mode)
+        public static void CFRunLoopAddSource(CFRunLoop loop, System.IntPtr source, NSString mode)
         {
             if (mode == null)
             {
-                throw new ArgumentNullException("mode");
+                throw new System.ArgumentNullException("mode");
             }
 
             CFRunLoopAddSource(loop.Handle, source, mode.Handle);
         }
 
         [DllImport("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")]
-        private extern static void CFRunLoopAddSource (IntPtr loop, IntPtr source, IntPtr mode);
+        private extern static void CFRunLoopAddSource (System.IntPtr loop, System.IntPtr source, System.IntPtr mode);
 
         /// <summary>
         /// Removes a CFRunLoopSource. Necessary because we can't directly construct CFRunLoopSource from native IntPtr values in MonoMac.
@@ -61,15 +65,15 @@ namespace INTV.Shared.Interop
         /// <param name="source">The CFRunLoopSource to remove.</param>
         /// <param name="mode">The mode for the run loop.</param>
         /// <returns><c>true</c> if the CFRunLoopSource was removed.</returns>
-        public static bool CFRunLoopRemoveSource(CFRunLoop loop, IntPtr source, NSString mode)
+        public static bool CFRunLoopRemoveSource(CFRunLoop loop, System.IntPtr source, NSString mode)
         {
             if (mode == null)
-                throw new ArgumentNullException ("mode");
+                throw new System.ArgumentNullException ("mode");
 
             return CFRunLoopRemoveSource(loop.Handle, source, mode.Handle);
         }
 
         [DllImport("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")]
-        private extern static bool CFRunLoopRemoveSource(IntPtr loop, IntPtr source, IntPtr mode);
+        private extern static bool CFRunLoopRemoveSource(System.IntPtr loop, System.IntPtr source, System.IntPtr mode);
    }
 }

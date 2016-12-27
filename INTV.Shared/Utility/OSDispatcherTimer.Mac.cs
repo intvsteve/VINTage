@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSDispatcherTimer.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,7 +20,11 @@
 
 ////#define ENABLE_DEBUG_OUTPUT
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Utility
 {
@@ -29,17 +33,17 @@ namespace INTV.Shared.Utility
     /// </summary>
     public partial class OSDispatcherTimer
     {
-        private MonoMac.Foundation.NSTimer _timer;
+        private NSTimer _timer;
 
         /// <summary>
         /// Raised when the timer 'ticks'.
         /// </summary>
-        public EventHandler Tick;
+        public System.EventHandler Tick;
 
         /// <summary>
         /// Gets or sets the timer interval.
         /// </summary>
-        public TimeSpan Interval
+        public System.TimeSpan Interval
         {
             get;
             set;
@@ -50,10 +54,10 @@ namespace INTV.Shared.Utility
         /// </summary>
         public void Start()
         {
-            DebugOutput("+++++ STARTING TIMER from thread: " + MonoMac.Foundation.NSThread.Current.Handle + ", MAIN: " + MonoMac.Foundation.NSThread.MainThread.Handle);
-            var runLoop = MonoMac.Foundation.NSRunLoop.Current;
-            _timer = MonoMac.Foundation.NSTimer.CreateRepeatingTimer(Interval, TimerTick);
-            runLoop.AddTimer(_timer, MonoMac.Foundation.NSRunLoop.NSRunLoopCommonModes);
+            DebugOutput("+++++ STARTING TIMER from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
+            var runLoop = NSRunLoop.Current;
+            _timer = NSTimer.CreateRepeatingTimer(Interval, TimerTick);
+            runLoop.AddTimer(_timer, NSRunLoop.NSRunLoopCommonModes);
         }
 
         /// <summary>
@@ -61,7 +65,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         public void Stop()
         {
-            DebugOutput("!!!!! STOPPING TIMER from thread: " + MonoMac.Foundation.NSThread.Current.Handle + ", MAIN: " + MonoMac.Foundation.NSThread.MainThread.Handle);
+            DebugOutput("!!!!! STOPPING TIMER from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
             _timer.Invalidate();
             _timer.Dispose();
             _timer = null;
@@ -73,22 +77,22 @@ namespace INTV.Shared.Utility
         /// <remarks>NOTE: This will be called from the thread the timer was targeted to when it was created.</remarks>
         private void TimerTick()
         {
-            OnTimerFire(this, EventArgs.Empty);
+            OnTimerFire(this, System.EventArgs.Empty);
         }
 
-        private void OnTimerFire(object sender, EventArgs e)
+        private void OnTimerFire(object sender, System.EventArgs e)
         {
             try
             {
                 var tick = Tick;
                 if (tick != null)
                 {
-                    DebugOutput("@@@@@@@@@@@@@@@@@@TIMER TICK from thread: " + MonoMac.Foundation.NSThread.Current.Handle + ", MAIN: " + MonoMac.Foundation.NSThread.MainThread.Handle);
+                    DebugOutput("@@@@@@@@@@@@@@@@@@TIMER TICK from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
                     tick(this, e);
-                    DebugOutput("@@@@@@@@@@@@@@@@@@TIMER TICK FINISHED from thread: " + MonoMac.Foundation.NSThread.Current.Handle + ", MAIN: " + MonoMac.Foundation.NSThread.MainThread.Handle);
+                    DebugOutput("@@@@@@@@@@@@@@@@@@TIMER TICK FINISHED from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
                 }
             }
-            catch(Exception exception)
+            catch(System.Exception exception)
             {
                 INTV.Shared.Utility.ErrorReporting.ReportError(ReportMechanism.Console, exception.Message);
             }

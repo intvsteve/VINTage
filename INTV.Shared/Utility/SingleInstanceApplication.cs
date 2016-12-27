@@ -38,13 +38,18 @@ namespace INTV.Shared.Utility
     /// </summary>
     public partial class SingleInstanceApplication
     {
+        private const string CheckForUpdatesStartupActionName = "CheckForUpdates";
+
         private static OSDispatcher _mainDispatcher;
+        private static Type _mainWindowType;
+        private static string _splashScreenResource;
+        private static string _versionString;
 
         // These actions are executed when main application launch is done. The Tuple describes an Action to execute, and
-        // whether it must run synchronously, or can be run asynchronously. Typically, synchronous startup actions involve
+        // the priority of the task's execution. Typically, synchronous startup actions involve
         // actions that must not run in parallel, such as updating file formats, et. al. The "asynchronous" actions are
         // usually activities such as ROM or device discovery, which are relatively low impact.
-        private static ConcurrentDictionary<string, Tuple<Action, bool>> _postStartupActions = new ConcurrentDictionary<string, Tuple<Action, bool>>();
+        private static ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>> _postStartupActions = new ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>>();
         private List<System.Configuration.ApplicationSettingsBase> _settings;
 
         #region Properties
@@ -64,11 +69,12 @@ namespace INTV.Shared.Utility
         {
             get
             {
-                var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-                ////var name = entryAssembly.GetName();
-                ////var version = name.Version;
-                ////return version.ToString(3) + " (" + version.Build + ')';
-                var versionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).ProductVersion;
+                var versionString = _versionString;
+                if (string.IsNullOrEmpty(_versionString))
+                {
+                    var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+                    versionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).ProductVersion;
+                }
                 return versionString;
             }
         }
@@ -183,6 +189,11 @@ namespace INTV.Shared.Utility
         [System.ComponentModel.Composition.ImportMany]
         public IEnumerable<Lazy<ICommandProvider>> CommandProviders { get; set; }
 
+        /// <summary>
+        /// Gets the plugins location.
+        /// </summary>
+        internal string PluginsLocation { get; private set; }
+
         #endregion // Properties
 
         /// <summary>
@@ -202,10 +213,10 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="actionId">A unique identifier for the action.</param>
         /// <param name="action">The action to execute.</param>
-        /// <param name="runsSynchronously">If <c>true</c>, the action must run synchronously.</param>
-        public void AddStartupAction(string actionId, Action action, bool runsSynchronously)
+        /// <param name="priority">The priority of the startup task.</param>
+        public void AddStartupAction(string actionId, Action action, StartupTaskPriority priority)
         {
-            _postStartupActions[actionId] = new Tuple<Action, bool>(action, runsSynchronously);
+            _postStartupActions[actionId] = new Tuple<Action, StartupTaskPriority>(action, priority);
         }
 
         /// <summary>
@@ -244,6 +255,7 @@ namespace INTV.Shared.Utility
         {
             _settings = new System.Collections.Generic.List<System.Configuration.ApplicationSettingsBase>();
             AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+            PluginsLocation = GetPluginsDirectory();
             OSInitialize();
             _mainDispatcher = OSDispatcher.Current;
             this.DoImport();
@@ -251,24 +263,20 @@ namespace INTV.Shared.Utility
             {
                 _settings.Add(settings);
             }
+            if (INTV.Shared.Properties.Settings.Default.CheckForAppUpdatesAtLaunch)
+            {
+                AddStartupAction(CheckForUpdatesStartupActionName, () => ApplicationCommandGroup.CheckForUpdatesCommand.Execute(true), StartupTaskPriority.LowestAsyncTaskPriority);
+            }
         }
 
         private void ExecuteStartupActions()
         {
-            var actions = new System.Collections.Generic.Dictionary<string, Tuple<Action, bool>>(_postStartupActions);
+            var actions = new System.Collections.Generic.Dictionary<string, Tuple<Action, StartupTaskPriority>>(_postStartupActions);
             _postStartupActions.Clear();
-
-            if (INTV.Shared.Properties.Settings.Default.CheckForAppUpdatesAtLaunch)
-            {
-                // Always (?) have this run last.
-                var checkForUpdates = new Tuple<Action, bool>(() => ApplicationCommandGroup.CheckForUpdatesCommand.Execute(true), false);
-                actions.Add("CheckForUpdates", checkForUpdates);
-            }
-
             var failedActions = new List<Tuple<string, Exception>>();
 
             // First, do all the synchronous actions.
-            foreach (var startupAction in actions.Where(a => a.Value.Item2))
+            foreach (var startupAction in actions.Where(a => a.Value.Item2 >= StartupTaskPriority.LowestSyncTaskPriority).OrderByDescending(a => a.Value.Item2))
             {
                 MainThreadDispatcher.Invoke(
                     () =>
@@ -289,24 +297,40 @@ namespace INTV.Shared.Utility
             ReportStartupActionErrors(failedActions);
 
             // Next, launch the remaining (asynchronous) actions.
-            foreach (var startupAction in actions.Where(a => !a.Value.Item2))
+            foreach (var startupAction in actions.Where(a => a.Value.Item2 <= StartupTaskPriority.HighestAsyncTaskPriority).OrderByDescending(a => a.Value.Item2))
             {
-                MainThreadDispatcher.BeginInvoke(startupAction.Value.Item1);
+                MainThreadDispatcher.BeginInvoke(() => StartupActionWrapper(startupAction.Value.Item1));
+            }
+        }
+
+        private void StartupActionWrapper(Action startupAction)
+        {
+            try
+            {
+                startupAction();
+            }
+            catch (Exception)
+            {
+                // Let this silently fail in release builds.
+#if DEBUG
+                System.Diagnostics.Debug.Assert(false, "Failure in async startup action! Let's see what's going on here, shall we?");
+#endif // DEBUG
             }
         }
 
         private void ReportStartupActionErrors(List<Tuple<string, Exception>> errors)
         {
-            if (errors.Any())
+            var errorsToReport = errors.Where(e => ShouldReportError(e.Item2));
+            if (errorsToReport.Any())
             {
                 var errorMessage = new System.Text.StringBuilder(Strings.StartupActionError_Summary).AppendLine();
-                foreach (var error in errors)
+                foreach (var error in errorsToReport)
                 {
                     errorMessage.AppendLine().AppendFormat(Strings.StartupActionError_ActionNameMessageFormat, error.Item1).AppendLine();
                     errorMessage.AppendFormat(Strings.StartupActionError_ExceptionMessageFormat, error.Item2.Message).AppendLine();
                 }
                 errorMessage.AppendLine().AppendFormat(Strings.StartupActionError_Details).AppendLine();
-                foreach (var error in errors)
+                foreach (var error in errorsToReport)
                 {
                     errorMessage.AppendLine().AppendFormat(Strings.StartupActionError_ActionNameMessageFormat, error.Item1).AppendLine();
                     errorMessage.AppendLine(error.Item2.ToString());
@@ -317,9 +341,25 @@ namespace INTV.Shared.Utility
             }
         }
 
+        private bool ShouldReportError(Exception exception)
+        {
+            var reportError = true;
+#if !DEBUG
+            // On Mac, there is a rare error that that arises when launching and trying to set a user preference. (WTF?)
+            // It may somehow be related to NSUserDefaults?
+            reportError = !(exception is InvalidCastException);
+#endif // !DEBUG
+            return reportError;
+        }
+
         /// <summary>
         /// Operating system-specific initialization.
         /// </summary>
         partial void OSInitialize();
+
+        /// <summary>
+        /// Custom plugin initialization during OnImportsSatisfied().
+        /// </summary>
+        partial void InitializePlugins();
     }
 }

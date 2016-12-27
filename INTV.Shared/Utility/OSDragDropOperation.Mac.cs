@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSDragDropOperation.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,46 +18,49 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using AppKit;
+#else
+using MonoMac.AppKit;
+#endif
 
 namespace INTV.Shared.Utility
 {
     /// <summary>
     /// Abstraction for Cocoa drag-drop effects.
     /// </summary>
-    [Flags]
+    [System.Flags]
     public enum OSDragDropOperations
     {
         /// <summary>
         /// A drag-drop target will not accept the data being dragged.
         /// </summary>
-        None = (int)MonoMac.AppKit.NSDragOperation.None,
+        None = (int)NSDragOperation.None,
 
         /// <summary>
         /// Dragged data will be copied to drop target.
         /// </summary>
-        Copy = (int)MonoMac.AppKit.NSDragOperation.Copy,
+        Copy = (int)NSDragOperation.Copy,
 
         /// <summary>
         /// Dragged data is linked to by the drop target.
         /// </summary>
-        Link = (int)MonoMac.AppKit.NSDragOperation.Link,
+        Link = (int)NSDragOperation.Link,
 
-        ////Generic = (int)MonoMac.AppKit.NSDragOperation.Generic,
+        ////Generic = (int)NSDragOperation.Generic,
 
-        ////Private = (int)MonoMac.AppKit.NSDragOperation.Private,
+        ////Private = (int)NSDragOperation.Private,
 
         /// <summary>
         /// Dragged data is moved to the drop target.
         /// </summary>
-        Move = (int)MonoMac.AppKit.NSDragOperation.Move,
+        Move = (int)NSDragOperation.Move,
 
-        ////Delete = (int)MonoMac.AppKit.NSDragOperation.Delete,
+        ////Delete = (int)NSDragOperation.Delete,
 
         /// <summary>
         /// All operations apply.
         /// </summary>
-        All = -1 // MonoMac.AppKit.NSDragOperation.All
-
+        All = -1 // NSDragOperation.All
     }
 }

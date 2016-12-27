@@ -542,10 +542,10 @@ namespace INTV.Core.Utility
         }
 
         /// <summary>
-        /// Converts the specified values boxed type to its correpsonding unsigned type.
+        /// Converts the specified values boxed type to its corresponding unsigned type.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <returns>A boxed numeric object whos type is unsigned.</returns>
+        /// <returns>A boxed numeric object whose type is unsigned.</returns>
         private static object ToUnsigned(object value)
         {
             switch (Type.GetTypeCode(value.GetType()))

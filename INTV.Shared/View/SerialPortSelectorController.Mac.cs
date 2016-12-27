@@ -1,5 +1,5 @@
 ﻿// <copyright file="SerialPortSelectorController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.ViewModel;
 using INTV.Shared.Utility;
 
@@ -31,7 +35,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// Controller for the <see cref=">SerialPortSelector"/> visual.
     /// </summary>
-    public partial class SerialPortSelectorController : MonoMac.AppKit.NSViewController
+    public partial class SerialPortSelectorController : NSViewController
     {
         #region Constructors
 
@@ -39,7 +43,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public SerialPortSelectorController(IntPtr handle)
+        public SerialPortSelectorController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -90,7 +94,7 @@ namespace INTV.Shared.View
         /// <summary>
         /// Raised when a port is double-clicked.
         /// </summary>
-        public event EventHandler SelectionDoubleClicked;
+        public event System.EventHandler SelectionDoubleClicked;
 
         #endregion // Events
 
@@ -256,7 +260,7 @@ namespace INTV.Shared.View
                     var doubleClick = SelectionDoubleClicked;
                     if (doubleClick != null)
                     {
-                        doubleClick(this, EventArgs.Empty);
+                        doubleClick(this, System.EventArgs.Empty);
                     }
                 }
             }

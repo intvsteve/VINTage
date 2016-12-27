@@ -18,10 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Specialized;
 using System.Linq;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
@@ -99,7 +102,7 @@ namespace INTV.Shared.Properties
         public bool RomListValidateAtStartup
         {
             get { return UserDefaults.BoolForKey(RomListSettingsPageViewModel.ValidateAtLaunchPropertyName); }
-            set { throw new InvalidOperationException("set ValidateAtLaunch not supported"); }
+            set { throw new System.InvalidOperationException("set ValidateAtLaunch not supported"); }
         }
 
         /// <summary>
@@ -109,7 +112,7 @@ namespace INTV.Shared.Properties
         public bool RomListSearchForRomsAtStartup
         {
             get { return UserDefaults.BoolForKey(RomListSettingsPageViewModel.SearchForRomsAtLaunchPropertyName); }
-            set { throw new InvalidOperationException("set SearchForRomsAtLaunch not supported"); }
+            set { throw new System.InvalidOperationException("set SearchForRomsAtLaunch not supported"); }
         }
 
         /// <summary>
@@ -128,7 +131,7 @@ namespace INTV.Shared.Properties
                 }
                 return _romListSearchDirectories;
             }
-            set { throw new InvalidOperationException("set RomListSearchDirectories not supported"); }
+            set { throw new System.InvalidOperationException("set RomListSearchDirectories not supported"); }
         }
         private INTV.Shared.Model.SearchDirectories _romListSearchDirectories;
 
@@ -139,7 +142,7 @@ namespace INTV.Shared.Properties
         public bool ShowRomDetails
         {
             get { return UserDefaults.BoolForKey(RomListSettingsPageViewModel.ShowRomDetailsPropertyName); }
-            set { throw new InvalidOperationException("set ShowRomDetails not supported"); }
+            set { throw new System.InvalidOperationException("set ShowRomDetails not supported"); }
         }
 
         /// <summary>
@@ -148,7 +151,7 @@ namespace INTV.Shared.Properties
         public bool DisplayRomFileNameForTitle
         {
             get { return UserDefaults.BoolForKey(RomListSettingsPageViewModel.DisplayRomFileNameForTitlePropertyName); }
-            set { throw new InvalidOperationException("set DisplayRomFileNameForTitle not supported"); }
+            set { throw new System.InvalidOperationException("set DisplayRomFileNameForTitle not supported"); }
         }
 
         /// <summary>
@@ -157,7 +160,7 @@ namespace INTV.Shared.Properties
         public bool CheckForAppUpdatesAtLaunch
         {
             get { return UserDefaults.BoolForKey(GeneralSettingsPageViewModel.CheckForAppUpdatesAtLaunchPropertyName); }
-            set { throw new InvalidOperationException("set CheckForAppUpdatesAtLaunch NotSupportedException supported"); }
+            set { throw new System.InvalidOperationException("set CheckForAppUpdatesAtLaunch NotSupportedException supported"); }
         }
 
         /// <summary>
@@ -166,7 +169,7 @@ namespace INTV.Shared.Properties
         public bool ShowDetailedErrors
         {
             get { return UserDefaults.BoolForKey(GeneralSettingsPageViewModel.ShowDetailedErrorsPropertyName); }
-            set { throw new InvalidOperationException("set ShowDetailedErrors not supported"); }
+            set { throw new System.InvalidOperationException("set ShowDetailedErrors not supported"); }
         }
 
         /// <summary>

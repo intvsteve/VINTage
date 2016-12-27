@@ -1,5 +1,5 @@
 ﻿// <copyright file="JlpFeaturesConfigurationPageController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
@@ -32,7 +36,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// NSViewController for <see cref="JlpFeaturesConfigurationPage"/>.
     /// </summary>
-    public partial class JlpFeaturesConfigurationPageController : MonoMac.AppKit.NSViewController, IFakeDependencyObject
+    public partial class JlpFeaturesConfigurationPageController : NSViewController, IFakeDependencyObject
     {
         #region Constructors
 
@@ -40,7 +44,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public JlpFeaturesConfigurationPageController(IntPtr handle)
+        public JlpFeaturesConfigurationPageController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -278,8 +282,8 @@ namespace INTV.Shared.View
             FlashSectorsFormatter.Minimum = 0;
             FlashSectorsFormatter.Maximum = INTV.Core.Model.Program.LtoFlashFeaturesHelpers.MaxFlashSaveDataSectorsCount;
             var initializationData = new[] {
-                new Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(JlpVersionPopUpButton, ViewModel.JlpVersions, ViewModel.JlpVersion),
-                new Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(SerialPortPopUpButton, ViewModel.SerialPortOptions, ViewModel.SerialPort)
+                new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(JlpVersionPopUpButton, ViewModel.JlpVersions, ViewModel.JlpVersion),
+                new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(SerialPortPopUpButton, ViewModel.SerialPortOptions, ViewModel.SerialPort)
             };
             initializationData.InitializePopupButtons();
             ViewModel.RaisePropertyChangedForVisualInit();

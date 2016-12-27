@@ -1,5 +1,5 @@
 ﻿// <copyright file="GeneralSettingsPageController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,11 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
@@ -30,7 +32,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// Controller for the GeneralSettingsPage NSView.
     /// </summary>
-    public partial class GeneralSettingsPageController : MonoMac.AppKit.NSViewController, IFakeDependencyObject
+    public partial class GeneralSettingsPageController : NSViewController, IFakeDependencyObject
     {
         #region Constructors
 
@@ -38,7 +40,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public GeneralSettingsPageController(IntPtr handle)
+        public GeneralSettingsPageController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -141,37 +143,37 @@ namespace INTV.Shared.View
 
         #endregion // IFakeDependencyObject
 
-        partial void ShowBackupDirectory (MonoMac.Foundation.NSObject sender)
+        partial void ShowBackupDirectory(NSObject sender)
         {
             BackupDataDirectory.RevealInFileSystem();
         }
 
-        partial void ShowBoxesDirectory (MonoMac.Foundation.NSObject sender)
+        partial void ShowBoxesDirectory(NSObject sender)
         {
             BoxesDirectory.RevealInFileSystem();
         }
 
-        partial void ShowErrorLogsDirectory (MonoMac.Foundation.NSObject sender)
+        partial void ShowErrorLogsDirectory(NSObject sender)
         {
             ErrorLogDirectory.RevealInFileSystem();
         }
 
-        partial void ShowLabelsDirectory (MonoMac.Foundation.NSObject sender)
+        partial void ShowLabelsDirectory(NSObject sender)
         {
             LabelsDirectory.RevealInFileSystem();
         }
 
-        partial void ShowManualsDirectory (MonoMac.Foundation.NSObject sender)
+        partial void ShowManualsDirectory(NSObject sender)
         {
             ManualsDirectory.RevealInFileSystem();
         }
 
-        partial void ShowOverlaysDirectory (MonoMac.Foundation.NSObject sender)
+        partial void ShowOverlaysDirectory(NSObject sender)
         {
             OverlaysDirectory.RevealInFileSystem();
         }
 
-        partial void ShowRomsDirectory (MonoMac.Foundation.NSObject sender)
+        partial void ShowRomsDirectory(NSObject sender)
         {
             RomsDirectory.RevealInFileSystem();
         }

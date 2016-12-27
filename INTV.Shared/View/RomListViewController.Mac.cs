@@ -21,12 +21,16 @@
 ////#define ENABLE_ITEMCHANGE_TRACE
 ////#define ENABLE_DRAGDROP_TRACE
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
@@ -42,7 +46,7 @@ namespace INTV.Shared.View
     /// Controller implementation for the RomListView. Does the real work of hooking up
     /// DataContext and other event / data management.
     /// </summary>
-    public partial class RomListViewController : MonoMac.AppKit.NSViewController
+    public partial class RomListViewController : NSViewController
     {
         #region Constructors
 
@@ -50,7 +54,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public RomListViewController(IntPtr handle)
+        public RomListViewController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -221,7 +225,7 @@ namespace INTV.Shared.View
             }
         }
 
-        private void HandleRomListCommand(object sender, EventArgs e)
+        private void HandleRomListCommand(object sender, System.EventArgs e)
         {
             var dataContext = View.DataContext;
             ICommand command = null;
@@ -247,7 +251,7 @@ namespace INTV.Shared.View
             }
         }
 
-        private void HandleCanEditProgramNameChanged(object sender, EventArgs e)
+        private void HandleCanEditProgramNameChanged(object sender, System.EventArgs e)
         {
             var canExecute = RomListCommandGroup.EditProgramNameCommand.CanExecute(View.ViewModel);
             if (!canExecute)
@@ -370,7 +374,7 @@ namespace INTV.Shared.View
         /// Called when an element in the ROM list is double-clicked.
         /// </summary>
         /// <param name="sender">Sender.</param>
-        partial void OnDoubleClick(MonoMac.Foundation.NSObject sender)
+        partial void OnDoubleClick(NSObject sender)
         {
             var arrangedObjectsArray = sender as NSArray;
             if (arrangedObjectsArray != null)
@@ -549,7 +553,7 @@ namespace INTV.Shared.View
                     string initialValue = null;
                     var column = (RomListColumn)tableView.TableColumns().ToList().IndexOf(tableColumn);
                     int maxLength = -1;
-                    Predicate<char> isValidCharacter = null;
+                    System.Predicate<char> isValidCharacter = null;
                     switch (column)
                     {
                         case RomListColumn.Title:
@@ -698,7 +702,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public ROMsTableView(IntPtr handle)
+        public ROMsTableView(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -809,7 +813,7 @@ namespace INTV.Shared.View
     /// </summary>
     internal static class NSTableViewHelpers
     {
-        private static IntPtr selEditColumnRowWithEventSelect_Handle = MonoMac.ObjCRuntime.Selector.GetHandle("editColumn:row:withEvent:select:");
+        private static System.IntPtr selEditColumnRowWithEventSelect_Handle = MonoMac.ObjCRuntime.Selector.GetHandle("editColumn:row:withEvent:select:");
 
         /// <summary>
         /// Start editing a cell in a given row and column. Yeah, the name is a little off.
@@ -820,7 +824,7 @@ namespace INTV.Shared.View
         internal static void EditColumn(this NSTableView table, int column, int row)
         {
             NSApplication.EnsureUIThread();
-            MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_int_int_IntPtr_bool (table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, IntPtr.Zero, true);
+            MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_int_int_IntPtr_bool (table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
         }
     }
 }

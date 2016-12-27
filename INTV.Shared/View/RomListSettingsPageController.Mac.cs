@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListSettingsPageController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,18 +18,22 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.View
 {
     /// <summary>
     /// ROM list settings page controller.
     /// </summary>
-    public partial class RomListSettingsPageController : MonoMac.AppKit.NSViewController, IFakeDependencyObject
+    public partial class RomListSettingsPageController : NSViewController, IFakeDependencyObject
     {
         #region Constructors
 
@@ -37,7 +41,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public RomListSettingsPageController(IntPtr handle)
+        public RomListSettingsPageController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -104,7 +108,7 @@ namespace INTV.Shared.View
             View.Controller = this;
         }
 
-        partial void RemoveSearchDirectory (MonoMac.Foundation.NSObject sender)
+        partial void RemoveSearchDirectory(NSObject sender)
         {
             var table = sender as NSTableView;
             if (table != null)

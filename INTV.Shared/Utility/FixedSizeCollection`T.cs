@@ -1,5 +1,5 @@
 ﻿// <copyright file="FixedSizeCollection`T.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define DEBUG_ENTRY_REMOVAL
+////#define ENABLE_ACTIVITY_LOGGER
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -33,6 +36,9 @@ namespace INTV.Shared.Utility
     /// reclaimed to store non-null elements.</remarks>
     public class FixedSizeCollection<T> : IList<T>, IFixedSizeCollection, INotifyCollectionChanged where T : class
     {
+        private static int _instanceId;
+        private static Logger _logger;
+
         private List<T> _elements;
 
         #region Constructors
@@ -43,11 +49,13 @@ namespace INTV.Shared.Utility
         /// <param name="size">The number of elements in the fixed-sized collection.</param>
         public FixedSizeCollection(int size)
         {
+            InstanceId = ++_instanceId;
             _elements = new List<T>(Enumerable.Repeat<T>(null, size));
         }
 
         private FixedSizeCollection()
         {
+            InstanceId = ++_instanceId;
         }
 
         #endregion // Constructors
@@ -60,6 +68,29 @@ namespace INTV.Shared.Utility
         #endregion // INotifyCollectionChanged Events
 
         #region Properties
+
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        public static Logger Logger
+        {
+            get
+            {
+                var logger = _logger;
+                if (logger == null)
+                {
+                    try
+                    {
+                        var logDir = INTV.Shared.Model.RomListConfiguration.Instance.ErrorLogDirectory;
+                        _logger = new Logger(System.IO.Path.Combine(logDir, "FileSystemDeletionLog.txt"));
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+                return logger;
+            }
+        }
 
         #region ICollection<T> Properties
 
@@ -118,6 +149,11 @@ namespace INTV.Shared.Utility
 
         #endregion // IFixedSizeCollection Properties
 
+        /// <summary>
+        /// Gets a value that uniquely identifies the instance. Really only useful for debugging purposes.
+        /// </summary>
+        public int InstanceId { get; private set; }
+
         #endregion // Properties
 
         #region IList<T> Methods
@@ -144,6 +180,7 @@ namespace INTV.Shared.Utility
         {
             var oldItem = _elements[index];
             _elements[index] = null;
+            LogObjectRemoval(oldItem);
             OnCollectionChanged(null, oldItem, index);
         }
 
@@ -218,6 +255,20 @@ namespace INTV.Shared.Utility
         #endregion // IEnumerable Methods
 
         /// <summary>
+        /// Logs the given string using the shared logger instance.
+        /// </summary>
+        /// <param name="message">The message to log. The instance ID will be included with the message.</param>
+        [System.Diagnostics.Conditional("ENABLE_ACTIVITY_LOGGER")]
+        public void LogActivity(string message)
+        {
+            var logger = Logger;
+            if (logger != null)
+            {
+                logger.Log(string.Format("Instance: {0} - {1}", InstanceId, message));
+            }
+        }
+
+        /// <summary>
         /// Adds an element to the collection using the first available index.
         /// </summary>
         /// <param name="item">The item to add to the collection.</param>
@@ -255,6 +306,19 @@ namespace INTV.Shared.Utility
             if (collectionChanged != null)
             {
                 collectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index));
+            }
+        }
+
+        [System.Diagnostics.Conditional("DEBUG_ENTRY_REMOVAL")]
+        private void LogObjectRemoval(T entry)
+        {
+            if ((entry != null) && typeof(T).FullName.EndsWith("Fork"))
+            {
+                var logger = Logger;
+                if (logger != null)
+                {
+                    logger.Log(string.Format("GKT Instance {0}: deleted: {1}\nStack Trace:\n{2}", InstanceId, entry, System.Environment.StackTrace));
+                }
             }
         }
     }

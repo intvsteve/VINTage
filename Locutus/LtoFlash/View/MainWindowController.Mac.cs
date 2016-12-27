@@ -20,10 +20,14 @@
 
 ////#define ENABLE_DEBUG_SPAM
 
-using System;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.View;
 using INTV.Shared.Commands;
@@ -35,7 +39,7 @@ namespace Locutus.View
     /// <summary>
     /// Main window controller.
     /// </summary>
-    public partial class MainWindowController : MonoMac.AppKit.NSWindowController
+    public partial class MainWindowController : NSWindowController
     {
         #region Constructors
 
@@ -43,7 +47,7 @@ namespace Locutus.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public MainWindowController(IntPtr handle)
+        public MainWindowController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -53,7 +57,7 @@ namespace Locutus.View
         /// Called when created directly from a XIB file.
         /// </summary>
         /// <param name="coder">Used to deserialize from a XIB.</param>
-        [MonoMac.Foundation.Export("initWithCoder:")]
+        [Export("initWithCoder:")]
         public MainWindowController(NSCoder coder)
             : base(coder)
         {
@@ -92,7 +96,7 @@ namespace Locutus.View
         /// </summary>
         /// <param name="toolbarItem">The toolbar item whose status is desired.</param>
         /// <returns>Whether to enable the item or not.</returns>
-        [MonoMac.Foundation.Export ("validateToolbarItem:")]
+        [Export ("validateToolbarItem:")]
         public bool ValidateToolbarItem(NSToolbarItem toolbarItem)
         {
             return false;

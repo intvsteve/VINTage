@@ -41,6 +41,9 @@ namespace INTV.Shared.Utility
         private const string CheckForUpdatesStartupActionName = "CheckForUpdates";
 
         private static OSDispatcher _mainDispatcher;
+        private static Type _mainWindowType;
+        private static string _splashScreenResource;
+        private static string _versionString;
 
         // These actions are executed when main application launch is done. The Tuple describes an Action to execute, and
         // the priority of the task's execution. Typically, synchronous startup actions involve
@@ -66,11 +69,12 @@ namespace INTV.Shared.Utility
         {
             get
             {
-                var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-                ////var name = entryAssembly.GetName();
-                ////var version = name.Version;
-                ////return version.ToString(3) + " (" + version.Build + ')';
-                var versionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).ProductVersion;
+                var versionString = _versionString;
+                if (string.IsNullOrEmpty(_versionString))
+                {
+                    var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+                    versionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).ProductVersion;
+                }
                 return versionString;
             }
         }
@@ -185,6 +189,11 @@ namespace INTV.Shared.Utility
         [System.ComponentModel.Composition.ImportMany]
         public IEnumerable<Lazy<ICommandProvider>> CommandProviders { get; set; }
 
+        /// <summary>
+        /// Gets the plugins location.
+        /// </summary>
+        internal string PluginsLocation { get; private set; }
+
         #endregion // Properties
 
         /// <summary>
@@ -246,6 +255,7 @@ namespace INTV.Shared.Utility
         {
             _settings = new System.Collections.Generic.List<System.Configuration.ApplicationSettingsBase>();
             AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+            PluginsLocation = GetPluginsDirectory();
             OSInitialize();
             _mainDispatcher = OSDispatcher.Current;
             this.DoImport();
@@ -346,5 +356,10 @@ namespace INTV.Shared.Utility
         /// Operating system-specific initialization.
         /// </summary>
         partial void OSInitialize();
+
+        /// <summary>
+        /// Custom plugin initialization during OnImportsSatisfied().
+        /// </summary>
+        partial void InitializePlugins();
     }
 }

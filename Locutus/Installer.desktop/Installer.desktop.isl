@@ -4447,9 +4447,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]LtoFlash.desktop.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{6820EA1D-D0F5-4ECB-B1C0-87AC84DD70B2}</td><td/></row>
+		<row><td>ProductCode</td><td>{2DFFD251-7B22-4956-8131-5648B2D52009}</td><td/></row>
 		<row><td>ProductName</td><td>LTO Flash! User Interface for Windows</td><td/></row>
-		<row><td>ProductVersion</td><td>1.00.1006</td><td/></row>
+		<row><td>ProductVersion</td><td>1.00.1009</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>

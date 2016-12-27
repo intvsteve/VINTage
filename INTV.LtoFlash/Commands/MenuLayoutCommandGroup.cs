@@ -473,6 +473,96 @@ namespace INTV.LtoFlash.Commands
 
         #endregion // DeleteItemsCommand
 
+        #region SortItemsAscendingCommand
+
+        /// <summary>
+        /// Command to sort items by long name in a menu directory in ascending order.
+        /// </summary>
+        public static readonly VisualRelayCommand SortItemsAscendingCommand = new VisualRelayCommand(p => OnSortItems(p, true), CanSortItems)
+        {
+            UniqueId = UniqueNameBase + ".SortItemsAscendingCommand",
+            Name = Resources.Strings.SortItemsAscendingCommand_Name,
+            Weight = 0.27,
+        };
+
+        private static bool CanSortItems(object parameter)
+        {
+            var menuLayoutViewModel = parameter as MenuLayoutViewModel;
+            var canSort = (menuLayoutViewModel != null) && (menuLayoutViewModel.CurrentSelection != null);
+            if (canSort && (menuLayoutViewModel.SelectedItems != null) && menuLayoutViewModel.SelectedItems.Any())
+            {
+                canSort = menuLayoutViewModel.SelectedItems.Count == 1;
+            }
+            if (canSort)
+            {
+                var folder = menuLayoutViewModel.CurrentSelection as FolderViewModel;
+                if (folder == null)
+                {
+                    var program = menuLayoutViewModel.CurrentSelection as ProgramViewModel;
+                    if (program != null)
+                    {
+                        folder = program.Parent as FolderViewModel;
+                        if (folder == null)
+                        {
+                            // Item is at root, so just use root.
+                            folder = menuLayoutViewModel.Root as FolderViewModel;
+                        }
+                    }
+                }
+                canSort = (folder != null) && (folder.Items.Count > 1);
+            }
+            else if ((menuLayoutViewModel != null) && (menuLayoutViewModel.CurrentSelection == null))
+            {
+                canSort = true; // sort the "root" menu
+            }
+            return canSort;
+        }
+
+        private static void OnSortItems(object parameter, bool ascending)
+        {
+            var menuLayoutViewModel = parameter as MenuLayoutViewModel;
+            var folder = (menuLayoutViewModel == null) ? null : menuLayoutViewModel.CurrentSelection as FolderViewModel;
+            if (folder == null)
+            {
+                var program = menuLayoutViewModel.CurrentSelection as ProgramViewModel;
+                if (program != null)
+                {
+                    folder = program.Parent as FolderViewModel;
+                    if (folder == null)
+                    {
+                        // Item is at root, so just use root.
+                        folder = menuLayoutViewModel.Root as FolderViewModel;
+                    }
+                }
+            }
+            if ((folder == null) && (menuLayoutViewModel != null) && (menuLayoutViewModel.CurrentSelection == null))
+            {
+                folder = menuLayoutViewModel.Root as FolderViewModel;
+            }
+            if (folder != null)
+            {
+                menuLayoutViewModel.StartItemsUpdate();
+                folder.SortByName(ascending);
+                menuLayoutViewModel.FinishItemsUpdate(true);
+            }
+        }
+
+        #endregion // SortItemsAscendingCommand
+
+        #region SortItemDescendingCommand
+
+        /// <summary>
+        /// Command to sort items by long name in a menu directory in descending order.
+        /// </summary>
+        public static readonly VisualRelayCommand SortItemDescendingCommand = new VisualRelayCommand(p => OnSortItems(p, false), CanSortItems)
+        {
+            UniqueId = UniqueNameBase + ".SortItemDescendingCommand",
+            Name = Resources.Strings.SortItemDescendingCommand_Name,
+            Weight = 0.271
+        };
+
+        #endregion // SortItemDescendingCommand
+
         #region EditLongNameCommand
 
         /// <summary>
@@ -922,6 +1012,9 @@ namespace INTV.LtoFlash.Commands
                 ////yield return CreateContextMenuCommand(target, AddRomsToMenuCommand, context, Resources.Strings.AddRomsToMenuCommand_ContextMenuItemName);
                 yield return CreateContextMenuCommand(target, DeleteItemsCommand, context);
                 yield return CreateContextMenuCommand(target, EmptyMenuLayoutCommand, context);
+                yield return CreateContextMenuCommand(null, SortItemsAscendingCommand.CreateSeparator(CommandLocation.Before), null);
+                yield return CreateContextMenuCommand(target, SortItemsAscendingCommand, context);
+                yield return CreateContextMenuCommand(target, SortItemDescendingCommand, context);
             }
         }
 

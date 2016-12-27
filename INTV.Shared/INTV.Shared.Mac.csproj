@@ -69,6 +69,7 @@
     <Compile Include="Utility\ColorHelpers.cs" />
     <Compile Include="Utility\FileBrowserDialogResult.cs" />
     <Compile Include="Utility\FileDialogHelpers.cs" />
+    <Compile Include="Utility\FileUtilities.cs" />
     <Compile Include="Utility\FixedSizeCollection`T.cs" />
     <Compile Include="Utility\IFileBrowserDialog.cs" />
     <Compile Include="Utility\IFixedSizeCollection.cs" />
@@ -346,6 +347,7 @@
     <Compile Include="Model\Program\AddRomsFromFilesBeginEventArgs.cs" />
     <Compile Include="Model\Program\ProgramCollectionSaveFailedEventArgs.cs" />
     <Compile Include="Utility\StartupTaskPriority.cs" />
+    <Compile Include="Converter\NSUrlStringConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />

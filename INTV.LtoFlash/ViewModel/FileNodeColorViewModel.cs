@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileNodeColorViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -27,8 +27,13 @@ using IntvColor = INTV.Core.Model.Stic.Color;
 using NodeColorBase = INTV.Shared.ViewModel.ViewModelBase;
 using OSBrush = System.Windows.Media.SolidColorBrush;
 #elif MAC
+#if __UNIFIED__
+using NodeColorBase = Foundation.NSObject;
+using OSBrush = AppKit.NSColor;
+#else
 using NodeColorBase = MonoMac.Foundation.NSObject;
 using OSBrush = MonoMac.AppKit.NSColor;
+#endif
 #endif
 
 namespace INTV.LtoFlash.ViewModel

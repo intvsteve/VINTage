@@ -289,7 +289,7 @@ namespace INTV.LtoFlash.ViewModel
             }
             else
             {
-                message += errorLog.Text;
+                message += errorLog.GetDetailedErrorReport(INTV.LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion);
             }
             INTV.Shared.View.OSMessageBox.Show(message, "Error Log Retrieved");
         }

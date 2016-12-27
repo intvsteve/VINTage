@@ -28,7 +28,11 @@ using INTV.Shared.Utility;
 #if WIN
 using OSImage = System.Windows.Media.ImageSource;
 #elif MAC
+#if __UNIFIED__
+using OSImage = AppKit.NSImage;
+#else
 using OSImage = MonoMac.AppKit.NSImage;
+#endif
 #endif
 
 namespace INTV.Shared.ViewModel
@@ -57,6 +61,7 @@ namespace INTV.Shared.ViewModel
                 { ProgramSupportFileState.Missing, typeof(ProgramDescriptionViewModel).LoadImageResource("ViewModel/Resources/Images/error_16xLG_color.png") },
                 { ProgramSupportFileState.PresentButModified, typeof(ProgramDescriptionViewModel).LoadImageResource("ViewModel/Resources/Images/warning_16xLG_color.png") },
                 { ProgramSupportFileState.PresentAndUnchanged, null },
+                { ProgramSupportFileState.MissingWithAlternateFound, typeof(ProgramDescriptionViewModel).LoadImageResource("Resources/Images/help_16xLG_color.png") },
                 { ProgramSupportFileState.None, null },
                 { ProgramSupportFileState.RequiredPeripheralNotAttached, typeof(ProgramDescriptionViewModel).LoadImageResource("Resources/Images/lto_rom_only_9xSM.png") },
                 { ProgramSupportFileState.RequiredPeripheralAvailable, typeof(ProgramDescriptionViewModel).LoadImageResource("Resources/Images/lto_rom_compatible_9xSM.png") },
@@ -69,6 +74,7 @@ namespace INTV.Shared.ViewModel
                 { ProgramSupportFileState.Missing, Resources.Strings.ProgramSupportFileState_Missing },
                 { ProgramSupportFileState.PresentButModified, Resources.Strings.ProgramSupportFileState_PresentButModified },
                 { ProgramSupportFileState.PresentAndUnchanged, null },
+                { ProgramSupportFileState.MissingWithAlternateFound, "ROM file cannot be found at original location; a backup copy will be used" },
                 { ProgramSupportFileState.None, null },
                 { ProgramSupportFileState.RequiredPeripheralNotAttached, Resources.Strings.ProgramSupportFileState_RequiredPeripheralNotAttached },
                 { ProgramSupportFileState.RequiredPeripheralAvailable, Resources.Strings.ProgramSupportFileState_RequiredPeripheralAvailable },

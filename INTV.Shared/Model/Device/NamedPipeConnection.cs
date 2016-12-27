@@ -307,7 +307,7 @@ namespace INTV.Shared.Model.Device
                 }
 
                 // Now, take the slowest speed of the *network* interfaces and divide that down. We will assume that a
-                // named pipe can acheive at least MinimumAssumedSpeed. Really, this is totally overkill, isn't it?
+                // named pipe can achieve at least MinimumAssumedSpeed. Really, this is totally overkill, isn't it?
                 _cachedBestGuessDataTransferSpeed = System.Math.Max(_cachedBestGuessDataTransferSpeed / 4, MinimumAssumedSpeed);
             }
             if (_cachedBestGuessDataTransferSpeed > 0)

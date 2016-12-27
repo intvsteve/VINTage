@@ -1,5 +1,5 @@
 ﻿// <copyright file="CommandManager.MONO.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,7 +18,14 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if MAC
+#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif
+#endif
+
 using INTV.Shared.Utility;
 
 namespace INTV.Shared.ComponentModel
@@ -33,7 +40,7 @@ namespace INTV.Shared.ComponentModel
         /// <summary>
         /// This event is raised when the InvalidateRequerySuggested method is called.
         /// </summary>
-        public static event EventHandler RequerySuggested;
+        public static event System.EventHandler RequerySuggested;
 
         /// <summary>
         /// Raises the RequerySuggested event. Interested parties should re-evaluate whether
@@ -43,7 +50,7 @@ namespace INTV.Shared.ComponentModel
         {
             if (SingleInstanceApplication.MainThreadDispatcher.NativeDispatcher != OSDispatcher.Current.NativeDispatcher)
             {
-                using (var pool = new MonoMac.Foundation.NSAutoreleasePool())
+                using (var pool = new NSAutoreleasePool())
                 {
                     SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() => InvalidateRequerySuggested());
                 }
@@ -55,7 +62,7 @@ namespace INTV.Shared.ComponentModel
                 ++_commandRequery;
                 try
                 {
-                    requerySuggested(null, EventArgs.Empty);
+                    requerySuggested(null, System.EventArgs.Empty);
                 }
                 finally
                 {

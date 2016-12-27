@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
@@ -32,7 +36,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// Mac-specific implementation for the settings dialog.
     /// </summary>
-    public partial class SettingsDialog : MonoMac.AppKit.NSPanel
+    public partial class SettingsDialog : NSPanel
     {
         #region Constructors
 
@@ -40,7 +44,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public SettingsDialog(IntPtr handle)
+        public SettingsDialog(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -105,7 +109,7 @@ namespace INTV.Shared.View
             // base.Dispose(disposing);
         }
 
-        private void SettingsPageSelected(object sender, EventArgs e)
+        private void SettingsPageSelected(object sender, System.EventArgs e)
         {
             var item = sender as NSToolbarItem;
             LastSelectedPreferencesPage = item.Identifier;
@@ -162,9 +166,9 @@ namespace INTV.Shared.View
             {
                 var items = Toolbar.Items;
                 var item = Toolbar.Items.First(i => i.Identifier == Toolbar.SelectedItemIdentifier);
-                SettingsPageSelected(item, EventArgs.Empty);
+                SettingsPageSelected(item, System.EventArgs.Empty);
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 // Should we throw a fit here? Probably...
                 System.Diagnostics.Debug.WriteLine(e);

@@ -1,5 +1,5 @@
 // <copyright file="SettingsPageController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.View;
 
 namespace INTV.LtoFlash.View
@@ -30,7 +34,7 @@ namespace INTV.LtoFlash.View
     /// <summary>
     /// Controller for the LTO Flash! settings page.
     /// </summary>
-    public partial class SettingsPageController : MonoMac.AppKit.NSViewController, IFakeDependencyObject
+    public partial class SettingsPageController : NSViewController, IFakeDependencyObject
     {
         #region Constructors
 
@@ -38,7 +42,7 @@ namespace INTV.LtoFlash.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public SettingsPageController(IntPtr handle)
+        public SettingsPageController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();

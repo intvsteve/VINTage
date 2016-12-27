@@ -167,6 +167,7 @@ namespace INTV.Shared.ViewModel
                 var message = new System.Text.StringBuilder(subject);
                 message.AppendLine().AppendLine("-----------------------------------------------");
                 message.AppendFormat("{0} (64-bit: {1})", Environment.OSVersion, Environment.Is64BitOperatingSystem).AppendLine();
+                message.AppendFormat("CLR Version: {0}", Environment.Version).AppendLine();
                 var attachments = new List<string>(viewModel.Attachments.Distinct(PathComparer.Instance).Where(a => System.IO.File.Exists(a)));
 
                 var errorLogPath = viewModel.GetErrorLog(false);

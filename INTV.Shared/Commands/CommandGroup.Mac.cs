@@ -1,5 +1,5 @@
 ﻿// <copyright file="CommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,18 +18,27 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 using INTV.Shared.ViewModel;
 
+#if __UNIFIED__
+using OSMenuItem = AppKit.NSMenuItem;
+using OSCommandVisual = Foundation.NSObject;
+#else
 using OSMenuItem = MonoMac.AppKit.NSMenuItem;
 using OSCommandVisual = MonoMac.Foundation.NSObject;
+#endif
 
 namespace INTV.Shared.Commands
 {
@@ -110,7 +119,7 @@ namespace INTV.Shared.Commands
         /// <param name="command">The command whose visual states should be updated.</param>
         internal void UpdateCanExecute(ICommand command)
         {
-            HandleCanExecuteChanged(command, EventArgs.Empty);
+            HandleCanExecuteChanged(command, System.EventArgs.Empty);
         }
 
         /// <summary>
@@ -207,7 +216,7 @@ namespace INTV.Shared.Commands
         /// <param name="sender">The command whose associated visuals must be updated to reflect command availability.</param>
         /// <param name="e">Unused argument.</param>
         /// <remarks>Updates the enabled state of NSControl, NSToolbarItem and NSMenuItem visuals.</remarks>
-        protected virtual void HandleCanExecuteChanged(object sender, EventArgs e)
+        protected virtual void HandleCanExecuteChanged(object sender, System.EventArgs e)
         {
             var command = sender as VisualRelayCommand;
             if (command != null)
@@ -257,7 +266,7 @@ namespace INTV.Shared.Commands
         /// </summary>
         /// <param name="sender">A visual object associated with an <c>VisualRelayCommand</c>.</param>
         /// <param name="e">Unused argument.</param>
-        protected virtual void HandleCommandActivated(object sender, EventArgs e)
+        protected virtual void HandleCommandActivated(object sender, System.EventArgs e)
         {
             var command = GetCommand(sender);
             command.Execute(GetContextForCommand(command.GetValue("DataContext"), command, Context));

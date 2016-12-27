@@ -1,5 +1,5 @@
 ﻿// <copyright file="ObservableCollectionHelpers.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,11 +20,16 @@
 
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 
-using System;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Utility
 {
@@ -39,7 +44,7 @@ namespace INTV.Shared.Utility
         /// <typeparam name="T">Type of element in the collection.</typeparam>
         /// <param name="controller">The controller to synchronize with.</param>
         /// <param name="collectionChangedArgs">Description of what has changed.</param>
-        public static void SynchronizeCollection<T>(this MonoMac.AppKit.NSObjectController controller, NotifyCollectionChangedEventArgs collectionChangedArgs) where T : class
+        public static void SynchronizeCollection<T>(this NSObjectController controller, NotifyCollectionChangedEventArgs collectionChangedArgs) where T : class
         {
             switch (collectionChangedArgs.Action)
             {
@@ -113,10 +118,10 @@ namespace INTV.Shared.Utility
         /// <typeparam name="T">Type of element in the collection.</typeparam>
         /// <param name="controller">The controller to synchronize with.</param>
         /// <param name="collection">The collection to copy into the controller.</param>
-        public static void SynchronizeCollection<T>(this MonoMac.AppKit.NSObjectController controller, ObservableCollection<T> collection)
+        public static void SynchronizeCollection<T>(this NSObjectController controller, ObservableCollection<T> collection)
         {
             var selectAddedObjects = false;
-            var arrayController = controller as MonoMac.AppKit.NSArrayController;
+            var arrayController = controller as NSArrayController;
             if (arrayController != null)
             {
                 selectAddedObjects = arrayController.SelectsInsertedObjects;

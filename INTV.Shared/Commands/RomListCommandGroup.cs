@@ -248,7 +248,7 @@ namespace INTV.Shared.Commands
                 RestoreRomListComplete(data.RomListViewModel);
                 if (!string.IsNullOrEmpty(data.BackupPath) && System.IO.File.Exists(data.BackupPath))
                 {
-                    System.IO.File.Delete(data.BackupPath);
+                    FileUtilities.DeleteFile(data.BackupPath, false, 10);
                 }
             }
             else

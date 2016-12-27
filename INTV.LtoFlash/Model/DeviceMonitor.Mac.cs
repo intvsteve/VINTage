@@ -21,9 +21,15 @@
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 
 using System.Collections.Generic;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+using ObjCRuntime;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
+#endif
 using INTV.Shared.Interop.DeviceManagement;
 using INTV.Shared.Interop.IOKit;
 using INTV.Shared.Utility;

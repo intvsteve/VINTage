@@ -23,10 +23,14 @@
 ////#define IMPLEMENTS_IDISPOSABLE
 ////#define ENABLE_INPLACEEDIT_TRACE
 
-using System;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.Behavior;
 using INTV.Shared.Utility;
 
@@ -148,7 +152,7 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets or sets a function to call to verify if a character is allowed.
         /// </summary>
-        public Predicate<char> IsValidCharacter { get; set; }
+        public System.Predicate<char> IsValidCharacter { get; set; }
 
         /// <summary>
         /// Gets or sets the object being edited.
@@ -207,7 +211,7 @@ namespace INTV.Shared.View
         #region IInPlaceEditor
 
         /// <inheritdoc/>
-        public event EventHandler<InPlaceEditorClosedEventArgs> EditorClosed;
+        public event System.EventHandler<InPlaceEditorClosedEventArgs> EditorClosed;
 
         /// <inheritdoc/>
         public void BeginEdit()
@@ -505,7 +509,7 @@ namespace INTV.Shared.View
             /// </summary>
             /// <param name="handle">Unmanaged object handle.</param>
             /// <remarks>This should never really be called. If it is, we've got a zombie object.</remarks>
-            public LimitedTextEditing(IntPtr handle)
+            public LimitedTextEditing(System.IntPtr handle)
                 : base(handle)
             {
                 DebugOutput("######## TextStorage edit: Zombies!");

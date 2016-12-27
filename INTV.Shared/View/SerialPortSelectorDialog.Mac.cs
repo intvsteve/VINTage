@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonoMac.Foundation;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 using INTV.Shared.ViewModel;
@@ -32,7 +36,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    public partial class SerialPortSelectorDialog : MonoMac.AppKit.NSPanel, System.ComponentModel.INotifyPropertyChanged, IFakeDependencyObject
+    public partial class SerialPortSelectorDialog : NSPanel, System.ComponentModel.INotifyPropertyChanged, IFakeDependencyObject
     {
         #region Constructors
 
@@ -40,7 +44,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public SerialPortSelectorDialog(IntPtr handle)
+        public SerialPortSelectorDialog(System.IntPtr handle)
             : base(handle)
         {
             Initialize();

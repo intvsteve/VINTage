@@ -32,6 +32,7 @@
     <DefineConstants>TRACE;WIN;WIN_XP;ENABLE_PORT_LOG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup>
     <RootNamespace>INTV.LtoFlash</RootNamespace>

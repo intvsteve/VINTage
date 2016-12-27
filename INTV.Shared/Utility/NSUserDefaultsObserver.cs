@@ -1,5 +1,5 @@
 ﻿// <copyright file="NSUserDefaultsObserver.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,11 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 using System.Collections.Generic;
 
 namespace INTV.Shared.Utility
@@ -31,7 +34,7 @@ namespace INTV.Shared.Utility
     {
         private static readonly NSUserDefaultsObserver Instance = new NSUserDefaultsObserver();
 
-        private Dictionary<string, Action> _notifiers = new Dictionary<string, Action>();
+        private Dictionary<string, System.Action> _notifiers = new Dictionary<string, System.Action>();
 
         private NSUserDefaultsObserver()
         {
@@ -42,7 +45,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="preference">The preference to observe.</param>
         /// <param name="notifier">The notification function to call when the preference changes.</param>
-        public static void AddPreferenceChangedNotification(string preference, Action<string> notifier)
+        public static void AddPreferenceChangedNotification(string preference, System.Action<string> notifier)
         {
             AddPreferenceChangedNotification(preference, () => notifier(preference));
         }
@@ -52,19 +55,19 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="preference">The preference to observe.</param>
         /// <param name="notifier">The notification function to call when the preference changes.</param>
-        public static void AddPreferenceChangedNotification(string preference, Action notifier)
+        public static void AddPreferenceChangedNotification(string preference, System.Action notifier)
         {
-            var settings = MonoMac.Foundation.NSUserDefaults.StandardUserDefaults;
+            var settings = NSUserDefaults.StandardUserDefaults;
             Instance._notifiers[preference] = notifier;
             settings.AddObserver(Instance, (NSString)preference, NSKeyValueObservingOptions.Initial | NSKeyValueObservingOptions.New, Instance.Handle);
         }
 
         /// <inheritdoc />
-        public override void ObserveValue(NSString keyPath, NSObject ofObject, NSDictionary change, IntPtr context)
+        public override void ObserveValue(NSString keyPath, NSObject ofObject, NSDictionary change, System.IntPtr context)
         {
             if (context == Handle)
             {
-                Action notifier = null;
+                System.Action notifier = null;
                 if (_notifiers.TryGetValue(keyPath, out notifier))
                 {
                     if (notifier != null)

@@ -683,7 +683,7 @@ namespace INTV.LtoFlash.Commands
                 {
                     try
                     {
-                        System.IO.Directory.Delete(backupDirectory, true);
+                        FileUtilities.DeleteDirectory(backupDirectory, true, 4);
                     }
                     catch (System.IO.DirectoryNotFoundException)
                     {
@@ -925,11 +925,11 @@ namespace INTV.LtoFlash.Commands
                     }
                     if (System.IO.Directory.Exists(entry))
                     {
-                        System.IO.Directory.Delete(entry, true);
+                        FileUtilities.DeleteDirectory(entry, false, 2);
                     }
                     else
                     {
-                        System.IO.File.Delete(entry);
+                        FileUtilities.DeleteFile(entry, false, 2);
                     }
                 }
             }

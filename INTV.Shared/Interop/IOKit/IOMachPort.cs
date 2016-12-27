@@ -1,5 +1,5 @@
 ﻿// <copyright file="IOMachPort.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,8 +20,11 @@
 
 ////#define ENABLE_DEBUG_OUTPUT
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Interop.IOKit
 {
@@ -33,7 +36,7 @@ namespace INTV.Shared.Interop.IOKit
         /// <summary>
         /// The default bootstrap port.
         /// </summary>
-        public static readonly IntPtr DefaultBootstrapPort = IntPtr.Zero;
+        public static readonly System.IntPtr DefaultBootstrapPort = System.IntPtr.Zero;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.Interop.IOKit.IOMachPort"/> class.
@@ -82,14 +85,14 @@ namespace INTV.Shared.Interop.IOKit
             return servicesDictionary;
         }
 
-        private static IntPtr Initialize()
+        private static System.IntPtr Initialize()
         {
-            IntPtr masterPort = IntPtr.Zero;
+            System.IntPtr masterPort = System.IntPtr.Zero;
 #if !USE_NULL_MASTER_PORT
             var result = NativeMethods.IOMasterPort(DefaultBootstrapPort, out masterPort);
             if (result != NativeMethods.Success)
             {
-                throw new InvalidOperationException("Failed to open master port");
+                throw new System.InvalidOperationException("Failed to open master port");
             }
 #endif
             return masterPort;

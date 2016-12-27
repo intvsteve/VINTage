@@ -1,5 +1,5 @@
 ﻿// <copyright file="VisualHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -28,8 +28,13 @@ using INTV.Shared.ComponentModel;
 using OSVisual = System.Windows.DependencyObject;
 using OSWindow = System.Windows.Window;
 #elif MAC
+#if __UNIFIED__
+using OSVisual = AppKit.NSView;
+using OSWindow = AppKit.NSWindow;
+#else
 using OSVisual = MonoMac.AppKit.NSView;
 using OSWindow = MonoMac.AppKit.NSWindow;
+#endif
 #endif
 
 namespace INTV.Shared.Utility
@@ -150,6 +155,15 @@ namespace INTV.Shared.Utility
             // Collect all the command groups and sort them by weight.
             var commandGroups = new List<ICommandGroup>(commandProviders.SelectMany(c => c.CommandGroups).OrderBy(g => g.Weight));
             window.AddCommandGroups(commandGroups);
+        }
+
+        /// <summary>
+        /// Gets the primary display information, which is a Tuple of width, height, and color depth in bits per pixel.
+        /// </summary>
+        /// <returns>The primary display info.</returns>
+        public static Tuple<int, int, int> GetPrimaryDisplayInfo()
+        {
+            return OSGetPrimaryDisplayInfo();
         }
 
         private static void AddCommandGroups(this OSWindow window, IEnumerable<ICommandGroup> commandGroups)

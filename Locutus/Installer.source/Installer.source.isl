@@ -2569,6 +2569,7 @@
 		<row><td>filesystemsyncerrors.cs</td><td>ISX_DEFAULTCOMPONENT35</td><td>FILESY~1.CS|FileSystemSyncErrors.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Model\FileSystemSyncErrors.cs</td><td>1</td><td/></row>
 		<row><td>filesystemtableuploadblock_t</td><td>ISX_DEFAULTCOMPONENT36</td><td>FILESY~1.CS|FileSystemTableUploadBlock`T.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Model\Commands\FileSystemTableUploadBlock`T.cs</td><td>1</td><td/></row>
 		<row><td>filetype.cs</td><td>ISX_DEFAULTCOMPONENT35</td><td>FileType.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Model\FileType.cs</td><td>1</td><td/></row>
+		<row><td>fileutilities.cs</td><td>ISX_DEFAULTCOMPONENT82</td><td>FILEUT~1.CS|FileUtilities.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\Utility\FileUtilities.cs</td><td>1</td><td/></row>
 		<row><td>firmware_16xlg.png</td><td>ISX_DEFAULTCOMPONENT61</td><td>FIRMWA~1.PNG|firmware_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\firmware_16xLG.png</td><td>1</td><td/></row>
 		<row><td>firmware_32xlg.png</td><td>ISX_DEFAULTCOMPONENT61</td><td>FIRMWA~1.PNG|firmware_32xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\firmware_32xLG.png</td><td>1</td><td/></row>
 		<row><td>firmwarecommandgroup.cs</td><td>ISX_DEFAULTCOMPONENT33</td><td>FIRMWA~1.CS|FirmwareCommandGroup.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Commands\FirmwareCommandGroup.cs</td><td>1</td><td/></row>
@@ -2895,6 +2896,8 @@
 		<row><td>lto_flash_contents_not_in_sy</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~1.PNG|lto_flash_contents_not_in_sync_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\lto_flash_contents_not_in_sync_16xLG.png</td><td>1</td><td/></row>
 		<row><td>lto_flash_disconnect_16xlg.p</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~1.PNG|lto_flash_disconnect_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\lto_flash_disconnect_16xLG.png</td><td>1</td><td/></row>
 		<row><td>lto_flash_disconnect_32xlg.p</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~1.PNG|lto_flash_disconnect_32xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\lto_flash_disconnect_32xLG.png</td><td>1</td><td/></row>
+		<row><td>lto_flash_fw_2360.txt</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~1.PNG|LTO_Flash_FW.txt</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\FirmwareUpdates\LTO_Flash_FW.txt</td><td>1</td><td/></row>
+		<row><td>lto_flash_fw_2360.upg</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~2.PNG|LTO_Flash_FW.upg</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\FirmwareUpdates\LTO_Flash_FW.upg</td><td>1</td><td/></row>
 		<row><td>lto_flash_search_16xlg.png</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~1.PNG|lto_flash_search_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\lto_flash_search_16xLG.png</td><td>1</td><td/></row>
 		<row><td>lto_flash_search_32xlg.png</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~1.PNG|lto_flash_search_32xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\lto_flash_search_32xLG.png</td><td>1</td><td/></row>
 		<row><td>lto_flash_title_16xlg.png</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~1.PNG|lto_flash_title_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\lto_flash_title_16xLG.png</td><td>1</td><td/></row>
@@ -3277,8 +3280,6 @@
 		<row><td>runexternalprogram.wpf.cs</td><td>ISX_DEFAULTCOMPONENT82</td><td>RUNEXT~1.CS|RunExternalProgram.WPF.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\Utility\RunExternalProgram.WPF.cs</td><td>1</td><td/></row>
 		<row><td>save_16xlg.png</td><td>ISX_DEFAULTCOMPONENT68</td><td>SAVE_1~1.PNG|save_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\ViewModel\Resources\Images\save_16xLG.png</td><td>1</td><td/></row>
 		<row><td>save_enhanced_16xlg.png</td><td>ISX_DEFAULTCOMPONENT68</td><td>SAVE_E~1.PNG|save_enhanced_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.Shared\ViewModel\Resources\Images\save_enhanced_16xLG.png</td><td>1</td><td/></row>
-		<row><td>lto_flash_fw_2360.txt</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~1.PNG|LTO_Flash_FW.txt</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\FirmwareUpdates\LTO_Flash_FW_2360.txt</td><td>1</td><td/></row>
-		<row><td>lto_flash_fw_2360.upg</td><td>ISX_DEFAULTCOMPONENT61</td><td>LTO_FL~2.PNG|LTO_Flash_FW.upg</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\FirmwareUpdates\LTO_Flash_FW_2360.upg</td><td>1</td><td/></row>
 		<row><td>save_menu_position_16xlg.png</td><td>ISX_DEFAULTCOMPONENT61</td><td>SAVE_M~1.PNG|save_menu_position_16xLG.png</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Resources\Images\save_menu_position_16xLG.png</td><td>1</td><td/></row>
 		<row><td>savemenupositionflags.cs</td><td>ISX_DEFAULTCOMPONENT35</td><td>SAVEME~1.CS|SaveMenuPositionFlags.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Model\SaveMenuPositionFlags.cs</td><td>1</td><td/></row>
 		<row><td>savemenupositiontostringconv</td><td>ISX_DEFAULTCOMPONENT34</td><td>SAVEME~1.CS|SaveMenuPositionToStringConverter.cs</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;VSSolutionFolder&gt;\..\INTV.LtoFlash\Converter\SaveMenuPositionToStringConverter.cs</td><td>1</td><td/></row>
@@ -6070,9 +6071,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]LtoFlash.desktop.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{7D753673-4C65-4089-9924-5BE948DB7AA6}</td><td/></row>
+		<row><td>ProductCode</td><td>{5D07BB4E-E376-483D-8D9A-D6DCF6E2D6F5}</td><td/></row>
 		<row><td>ProductName</td><td>LTO Flash! User Interface Source Code</td><td/></row>
-		<row><td>ProductVersion</td><td>1.00.1006</td><td/></row>
+		<row><td>ProductVersion</td><td>1.00.1009</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>

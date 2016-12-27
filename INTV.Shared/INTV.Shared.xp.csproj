@@ -34,6 +34,7 @@
     <DefineConstants>TRACE;WIN;WIN_XP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -41,6 +42,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -58,6 +60,7 @@
     <Compile Include="Behavior\DragDropBehavior.cs" />
     <Compile Include="Behavior\DragDropFeedback.cs" />
     <Compile Include="Behavior\DragDropRearrangeBehavior.cs" />
+    <Compile Include="Behavior\DragScrollBehavior.cs" />
     <Compile Include="Behavior\DropOnItemLocation.cs" />
     <Compile Include="Behavior\DynamicContextMenuBehavior.cs" />
     <Compile Include="Behavior\IDragDropFeedback.cs" />
@@ -170,6 +173,7 @@
     <Compile Include="Utility\ErrorReporting.cs" />
     <Compile Include="Utility\FileBrowserDialogResult.cs" />
     <Compile Include="Utility\FileDialogHelpers.cs" />
+    <Compile Include="Utility\FileUtilities.cs" />
     <Compile Include="Utility\FixedSizeCollection`T.cs" />
     <Compile Include="Utility\IFileBrowserDialog.cs" />
     <Compile Include="Utility\IFixedSizeCollection.cs" />

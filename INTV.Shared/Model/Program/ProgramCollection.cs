@@ -57,6 +57,7 @@ namespace INTV.Shared.Model.Program
         {
             _canEditElements = true;
             SelectionIndexes = new ObservableCollection<int>();
+            InvokeProgramHandlers = new List<Tuple<EventHandler<InvokeProgramEventArgs>, double>>();
         }
 
         #endregion // Constructors
@@ -95,6 +96,8 @@ namespace INTV.Shared.Model.Program
 
         public ObservableCollection<int> SelectionIndexes { get; private set; }
 
+        private List<Tuple<EventHandler<InvokeProgramEventArgs>, double>> InvokeProgramHandlers { get; set; }
+
         #endregion // Properties
 
         #region Events
@@ -108,11 +111,6 @@ namespace INTV.Shared.Model.Program
         /// Raised At the end of adding ROMs to the program collection.
         /// </summary>
         public event EventHandler<AddRomsFromFilesEndEventArgs> AddRomsFromFilesEnd;
-
-        /// <summary>
-        /// Raised to notify interested parties that a program should be invoked.
-        /// </summary>
-        public event EventHandler<InvokeProgramEventArgs> InvokeProgram;
 
         /// <summary>
         /// Raised to notify interested parties that program features have been modified.
@@ -346,7 +344,7 @@ namespace INTV.Shared.Model.Program
                     }
                     if (!string.IsNullOrEmpty(backupPath) && System.IO.File.Exists(backupPath))
                     {
-                        System.IO.File.Delete(backupPath);
+                        FileUtilities.DeleteFile(backupPath, false, 10);
                     }
                 }
             }
@@ -417,22 +415,40 @@ namespace INTV.Shared.Model.Program
         }
 
         /// <summary>
+        /// Registers an event handler to be called when the user expresses the desire to invoke a program ROM.
+        /// </summary>
+        /// <param name="invokeProgramHandler">The handler to register.</param>
+        /// <param name="priority">The priority of the handler relative to other handlers. A lower value
+        /// indicates a higher priority. For example, a handler with priorty 0.5 is called before one with a priority of 100.</param>
+        public void AddInvokeProgramHandler(EventHandler<InvokeProgramEventArgs> invokeProgramHandler, double priority)
+        {
+            RemoveInvokeProgramHandler(invokeProgramHandler);
+            InvokeProgramHandlers.Add(new Tuple<EventHandler<InvokeProgramEventArgs>, double>(invokeProgramHandler, priority));
+        }
+
+        /// <summary>
+        /// Removes an event handler that had been registered for execution when a program in the list was to be invoked.
+        /// </summary>
+        /// <param name="invokeProgramHandler">The handler to remove.</param>
+        public void RemoveInvokeProgramHandler(EventHandler<InvokeProgramEventArgs> invokeProgramHandler)
+        {
+            var toRemove = InvokeProgramHandlers.Where(h => h.Item1 == invokeProgramHandler).ToList();
+            toRemove.ForEach(h => InvokeProgramHandlers.Remove(h));
+        }
+
+        /// <summary>
         /// Called to raise the InvokeProgram event.
         /// </summary>
         /// <param name="program">The program to invoke.</param>
         internal void InvokeProgramFromDescription(ProgramDescription program)
         {
-            var invokeProgram = InvokeProgram;
-            if (invokeProgram != null)
+            var invokeEventArgs = new InvokeProgramEventArgs(program);
+            foreach (var invokeProgramHandler in InvokeProgramHandlers.OrderBy(h => h.Item2))
             {
-                var invocationList = invokeProgram.GetInvocationList();
-                if (invocationList.Length > 1)
+                invokeProgramHandler.Item1(this, invokeEventArgs);
+                if (invokeEventArgs.Handled)
                 {
-                    ErrorReporting.ReportNotImplementedError("Multiple InvokeProgram methods registered!");
-                }
-                else
-                {
-                    invokeProgram(this, new InvokeProgramEventArgs(program));
+                    break;
                 }
             }
         }

@@ -44,7 +44,8 @@ namespace INTV.LtoFlash.Model.Commands
         public override object Execute(INTV.Shared.Model.IStreamConnection target, ExecuteDeviceCommandAsyncTaskData taskData, out bool succeeded)
         {
             var errorLog = ExecuteWithResponse<ErrorLog>(target, taskData, ErrorLog.Inflate, out succeeded);
-            target.LogPortMessage("ERROR LOG: '" + (errorLog == null ? "<null>" : errorLog.Text) + "'");
+            var errorLogText = errorLog == null ? "<null>" : errorLog.ToString();
+            target.LogPortMessage("ERROR LOG: '" + (errorLog == null ? "<null>" : errorLogText) + "'");
             return errorLog;
         }
 

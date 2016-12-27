@@ -261,12 +261,12 @@ namespace INTV.Shared.Model
                 if (!string.IsNullOrEmpty(tempRom.RomPath) && File.Exists(tempRom.RomPath))
                 {
                     tempRom.RomPath.ClearReadOnlyAttribute();
-                    File.Delete(tempRom.RomPath);
+                    FileUtilities.DeleteFile(tempRom.RomPath, false, 4);
                 }
                 if (!string.IsNullOrEmpty(tempRom.ConfigPath) && File.Exists(tempRom.ConfigPath))
                 {
                     tempRom.ConfigPath.ClearReadOnlyAttribute();
-                    File.Delete(tempRom.ConfigPath);
+                    FileUtilities.DeleteFile(tempRom.ConfigPath, false, 4);
                 }
             }
             TemporaryRoms.Clear();
@@ -276,12 +276,12 @@ namespace INTV.Shared.Model
                 if (!string.IsNullOrEmpty(tempRom.RomPath) && File.Exists(tempRom.RomPath))
                 {
                     tempRom.RomPath.ClearReadOnlyAttribute();
-                    File.Delete(tempRom.RomPath);
+                    FileUtilities.DeleteFile(tempRom.RomPath, false, 4);
                 }
                 if (!string.IsNullOrEmpty(tempRom.ConfigPath) && File.Exists(tempRom.ConfigPath))
                 {
                     tempRom.ConfigPath.ClearReadOnlyAttribute();
-                    File.Delete(tempRom.ConfigPath);
+                    FileUtilities.DeleteFile(tempRom.ConfigPath, false, 4);
                 }
             }
             TemporaryCanonicalRoms.Clear();

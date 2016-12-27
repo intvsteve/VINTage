@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSTextWrapping.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+#if __UNIFIED__
+using AppKit;
+#else
+using MonoMac.AppKit;
+#endif
+
 namespace INTV.Shared.View
 {
     /// <summary>
@@ -28,16 +34,16 @@ namespace INTV.Shared.View
         /// <summary>
         /// No line-wrapping is performed.
         /// </summary>
-        NoWrap = MonoMac.AppKit.NSLineBreakMode.Clipping,
+        NoWrap = NSLineBreakMode.Clipping,
 
         /// <summary>
         /// Wrap at words, but break words across lines if needed.
         /// </summary>
-        Wrap = MonoMac.AppKit.NSLineBreakMode.CharWrapping,
+        Wrap = NSLineBreakMode.CharWrapping,
 
         /// <summary>
         /// Wrap at words, but if a natural break doesn't allow a line to fit, the line may overflow.
         /// </summary>
-        WrapWithOverflow = MonoMac.AppKit.NSLineBreakMode.ByWordWrapping
+        WrapWithOverflow = NSLineBreakMode.ByWordWrapping
     }
 }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="EcsFeaturesConfigurationPageController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,12 +18,16 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
@@ -33,7 +37,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// NSViewController for <see cref="EcsFeaturesConfigurationPage"/>.
     /// </summary>
-    public partial class EcsFeaturesConfigurationPageController : MonoMac.AppKit.NSViewController, IFakeDependencyObject
+    public partial class EcsFeaturesConfigurationPageController : NSViewController, IFakeDependencyObject
     {
         #region Constructors
 
@@ -41,7 +45,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public EcsFeaturesConfigurationPageController(IntPtr handle)
+        public EcsFeaturesConfigurationPageController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -228,8 +232,8 @@ namespace INTV.Shared.View
         public override void AwakeFromNib()
         {
             var initializationData = new[] {
-                new Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(EcsCompatibilityPopUpButton, ViewModel.EcsOptions, ViewModel.Ecs),
-                new Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(SerialPortUsagePopUpButton, ViewModel.SerialPortOptions, ViewModel.SerialPort)
+                new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(EcsCompatibilityPopUpButton, ViewModel.EcsOptions, ViewModel.Ecs),
+                new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(SerialPortUsagePopUpButton, ViewModel.SerialPortOptions, ViewModel.SerialPort)
             };
             initializationData.InitializePopupButtons();
             ViewModel.RaisePropertyChangedForVisualInit();

@@ -18,12 +18,16 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 using INTV.Shared.ViewModel;
@@ -33,7 +37,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// Controller for the SerialPortSelectorDialog.
     /// </summary>
-    public partial class SerialPortSelectorDialogController : MonoMac.AppKit.NSWindowController
+    public partial class SerialPortSelectorDialogController : NSWindowController
     {
         #region Constructors
 
@@ -41,7 +45,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public SerialPortSelectorDialogController(IntPtr handle)
+        public SerialPortSelectorDialogController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -142,12 +146,12 @@ namespace INTV.Shared.View
             }
         }
 
-        private void HandleDoubleClick(object sender, EventArgs e)
+        private void HandleDoubleClick(object sender, System.EventArgs e)
         {
             OnSelect(this);
         }
 
-        private void HandleCloseClicked(object sender, EventArgs e)
+        private void HandleCloseClicked(object sender, System.EventArgs e)
         {
             var closeButton = Window.StandardWindowButton(NSWindowButton.CloseButton);
             if (closeButton != null)
@@ -156,12 +160,12 @@ namespace INTV.Shared.View
             }
         }
 
-        partial void OnSelect(MonoMac.Foundation.NSObject sender)
+        partial void OnSelect(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Stopped);
         }
 
-        partial void OnCancel(MonoMac.Foundation.NSObject sender)
+        partial void OnCancel(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Aborted);
         }

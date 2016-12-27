@@ -1594,4 +1594,13 @@ Message: {1}</value>
   <data name="RunExternalProgram_ErrorTitle" xml:space="preserve">
     <value>Error Opening File</value>
   </data>
+  <data name="DeleteFileError_Message" xml:space="preserve">
+    <value>A problem occurred when deleting a file or directory. See details below.</value>
+  </data>
+  <data name="DeleteFileError_ReportText" xml:space="preserve">
+    <value>The file listed below could not be deleted after several attempts. It may be open in another program. You may wish to delete the file manually later.</value>
+  </data>
+  <data name="DeleteFileError_Title" xml:space="preserve">
+    <value>Error Deleting File</value>
+  </data>
 </root>

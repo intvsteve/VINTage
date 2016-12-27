@@ -25,7 +25,11 @@ using System.Linq;
 #if WIN
 using OSImage = System.Windows.Media.ImageSource;
 #elif MAC
+#if __UNIFIED__
+using OSImage = AppKit.NSImage;
+#else
 using OSImage = MonoMac.AppKit.NSImage;
+#endif
 #endif
 
 namespace INTV.Shared.Utility

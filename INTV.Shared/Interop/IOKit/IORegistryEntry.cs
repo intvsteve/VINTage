@@ -1,5 +1,5 @@
 ﻿// <copyright file="IORegistryEntry.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,11 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Interop.IOKit
 {
@@ -32,7 +35,7 @@ namespace INTV.Shared.Interop.IOKit
         /// Initializes a new instance of the <see cref="INTV.Shared.Interop.IOKit.IORegistryEntry"/> class.
         /// </summary>
         public IORegistryEntry()
-            : base(IntPtr.Zero)
+            : base(System.IntPtr.Zero)
         {
         }
 
@@ -43,9 +46,9 @@ namespace INTV.Shared.Interop.IOKit
         /// <returns>The property.</returns>
         public NSObject GetProperty(string key)
         {
-            var cfProperty = NativeMethods.IORegistryEntryCreateCFProperty(Handle, ((NSString)key).Handle, IntPtr.Zero, 0);
+            var cfProperty = NativeMethods.IORegistryEntryCreateCFProperty(Handle, ((NSString)key).Handle, System.IntPtr.Zero, 0);
             NSObject property = null;
-            if (cfProperty != IntPtr.Zero)
+            if (cfProperty != System.IntPtr.Zero)
             {
                 property = MonoMac.ObjCRuntime.Runtime.GetNSObject(cfProperty);
             }

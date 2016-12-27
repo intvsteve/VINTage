@@ -1,5 +1,5 @@
 ﻿// <copyright file="IOKitHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,8 +20,12 @@
 
 ////#define ENABLE_DEBUG_OUTPUT
 
-using System;
 using System.Collections.Generic;
+#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif
 
 namespace INTV.Shared.Interop.IOKit
 {
@@ -36,7 +40,7 @@ namespace INTV.Shared.Interop.IOKit
         /// <param name="iterator">An IOKit enumerator object.</param>
         /// <param name="exclusionFilter">A function that will filter the entries in the returned enumerable.</param>
         /// <returns>An enumerable of the serial ports in the system that are not excluded by <paramref name="exclusionFilter"/>.</returns>
-        public static IEnumerable<string> EnumerateSerialPorts(this IOIterator iterator, Predicate<string> exclusionFilter)
+        public static IEnumerable<string> EnumerateSerialPorts(this IOIterator iterator, System.Predicate<string> exclusionFilter)
         {
             var ports = new List<string>();
 
@@ -50,7 +54,7 @@ namespace INTV.Shared.Interop.IOKit
                         validEntry = serialPortRegistryEntry != null;
                         if (validEntry)
                         {
-                            var portName = CreateSerialPortName(serialPortRegistryEntry.GetProperty<MonoMac.Foundation.NSString>(NativeMethods.kIOTTYDeviceKey));
+                            var portName = CreateSerialPortName(serialPortRegistryEntry.GetProperty<NSString>(NativeMethods.kIOTTYDeviceKey));
                             DebugOutput("Discovered serial port: " + portName);
                             if ((exclusionFilter == null) || !exclusionFilter(portName))
                             {

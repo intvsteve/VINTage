@@ -20,12 +20,17 @@
 
 ////#define ENABLE_REBOOT_TO_MENU_KEY_SELECTION
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+using ImageKit;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using MonoMac.ImageKit;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Device;
 using INTV.LtoFlash.Commands;
@@ -39,7 +44,7 @@ using INTV.Shared.ViewModel;
 
 namespace INTV.LtoFlash.View
 {
-    public partial class DeviceInformationController : MonoMac.AppKit.NSWindowController, System.ComponentModel.INotifyPropertyChanged
+    public partial class DeviceInformationController : NSWindowController, System.ComponentModel.INotifyPropertyChanged
     {
         private const string DeviceNamePropertyName = "DeviceName";
         private const string DeviceOwnerPropertyName = "DeviceOwner";
@@ -67,7 +72,7 @@ namespace INTV.LtoFlash.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public DeviceInformationController(IntPtr handle)
+        public DeviceInformationController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -519,7 +524,7 @@ namespace INTV.LtoFlash.View
                 {
                     blockWhenBusy.Key.BlockWhenAppIsBusy = ((_selectedPageIndex == 0) || (_selectedPageIndex == 1) || (_selectedPageIndex == 2)) ? false : blockWhenBusy.Value;
                 }
-                HandleRequerySuggested(this, EventArgs.Empty);
+                HandleRequerySuggested(this, System.EventArgs.Empty);
             }
         }
         private int _selectedPageIndex;
@@ -647,7 +652,7 @@ namespace INTV.LtoFlash.View
             _blockWhenBusy[FirmwareCommandGroup.UpdateFirmwareCommand] = FirmwareCommandGroup.UpdateFirmwareCommand.BlockWhenAppIsBusy;
 
             CommandManager.RequerySuggested += HandleRequerySuggested;
-            HandleRequerySuggested(this, EventArgs.Empty);
+            HandleRequerySuggested(this, System.EventArgs.Empty);
             SelectedPageIndex = _lastSelectedPageIndex;
             this.RaiseChangeValueForKey("SelectedPageIndex");
             Properties.Settings.Default.ShowFileSystemDetails = true;
@@ -792,7 +797,7 @@ namespace INTV.LtoFlash.View
 
         #endregion // DeviceOwnerEditing
 
-        private void HandleRequerySuggested(object sender, EventArgs args)
+        private void HandleRequerySuggested(object sender, System.EventArgs args)
         {
             var canEdit = DeviceCommandGroup.SetDeviceNameCommand.CanExecute(ViewModel);
             if (DeviceNameEntry.Editable != canEdit)
@@ -922,12 +927,12 @@ namespace INTV.LtoFlash.View
             LifeRemaining = new NSString(ViewModel.FileSystemStatistics.PercentageLifetimeRemaining);
         }
 
-        partial void OnUpdateFirmware(MonoMac.Foundation.NSObject sender)
+        partial void OnUpdateFirmware(NSObject sender)
         {
             FirmwareCommandGroup.UpdateFirmwareCommand.Execute(ViewModel);
         }
 
-        partial void OnClose(MonoMac.Foundation.NSObject sender)
+        partial void OnClose(NSObject sender)
         {
             if (InPlaceEditor != null)
             {
@@ -952,11 +957,11 @@ namespace INTV.LtoFlash.View
 
             public override int ItemCount(IKImageBrowserView aBrowser)
             {
-                throw new NotImplementedException();
+                throw new System.NotImplementedException();
             }
             public override IKImageBrowserItem GetItem(IKImageBrowserView aBrowser, int index)
             {
-                throw new NotImplementedException();
+                throw new System.NotImplementedException();
             }
 
             #endregion // IKImageBrowserDataSource
@@ -969,19 +974,19 @@ namespace INTV.LtoFlash.View
             public override string ImageUID
             {
                 get {
-                    throw new NotImplementedException();
+                    throw new System.NotImplementedException();
                 }
             }
             public override NSString ImageRepresentationType
             {
                 get {
-                    throw new NotImplementedException();
+                    throw new System.NotImplementedException();
                 }
             }
             public override NSObject ImageRepresentation
             {
                 get {
-                    throw new NotImplementedException();
+                    throw new System.NotImplementedException();
                 }
             }
 

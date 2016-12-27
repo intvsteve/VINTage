@@ -1,5 +1,5 @@
 ﻿// <copyright file="VisualRelayCommand.Mono.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -17,9 +17,6 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
-
-using System;
-using MonoMac.AppKit;
 
 namespace INTV.Shared.ComponentModel
 {
@@ -51,7 +48,7 @@ namespace INTV.Shared.ComponentModel
             }
         }
 
-        private void HandleRequerySuggested(object sender, EventArgs e)
+        private void HandleRequerySuggested(object sender, System.EventArgs e)
         {
             RaiseCanExecuteChanged();
 #if false

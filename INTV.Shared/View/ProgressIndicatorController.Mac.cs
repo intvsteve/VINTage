@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Shared.Commands;
 using INTV.Shared.ViewModel;
@@ -32,7 +36,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// Controller for <see cref="ProgressIndicator"/> visual.
     /// </summary>
-    public partial class ProgressIndicatorController : MonoMac.AppKit.NSViewController
+    public partial class ProgressIndicatorController : NSViewController
     {
         private bool _loadedFromNib; // FIXME This is wrong
 
@@ -42,7 +46,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public ProgressIndicatorController(IntPtr handle)
+        public ProgressIndicatorController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -177,7 +181,7 @@ namespace INTV.Shared.View
             }
         }
 
-        private void HandleActivated(object sender, EventArgs e)
+        private void HandleActivated(object sender, System.EventArgs e)
         {
             RomListCommandGroup.CancelRomsImportCommand.Execute(View.DataContext);
         }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="SettingsDialog.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.ComponentModel;
 using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
@@ -42,13 +43,30 @@ namespace INTV.Shared.View
         public void OnImportsSatisfied()
         {
             var tabsToAdd = new List<Tuple<string, double, string, object>>();
+            CompositionHelpers.SuppressImportErrorDialog = true;
             foreach (var page in Pages)
             {
-                tabsToAdd.Add(new Tuple<string, double, string, object>(page.Metadata.Name, page.Metadata.Weight, page.Metadata.Icon, page.Value.CreateVisual()));
+                try
+                {
+                    tabsToAdd.Add(new Tuple<string, double, string, object>(page.Metadata.Name, page.Metadata.Weight, page.Metadata.Icon, page.Value.CreateVisual()));
+                }
+                catch (Exception e)
+                {
+                    // Failed to load the preference page... so ignore it.
+                    System.Diagnostics.Debug.WriteLine("Failed to import preferences page: " + e);
+                }
             }
+            CompositionHelpers.SuppressImportErrorDialog = false;
             foreach (var tabToAdd in tabsToAdd.OrderBy(t => t.Item2))
             {
-                AddTab(tabToAdd.Item1, tabToAdd.Item3, tabToAdd.Item4);
+                try
+                {
+                    AddTab(tabToAdd.Item1, tabToAdd.Item3, tabToAdd.Item4);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e);
+                }
             }
             AllTabsAdded();
         }

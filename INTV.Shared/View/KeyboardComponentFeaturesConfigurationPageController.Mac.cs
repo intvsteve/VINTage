@@ -1,5 +1,5 @@
 ﻿// <copyright file="KeyboardComponentFeaturesConfigurationPageController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,11 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonoMac.Foundation;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif
 using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
@@ -32,7 +36,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// NSViewController for <see cref="KeyboardComponentFeaturesConfigurationPage"/>.
     /// </summary>
-    public partial class KeyboardComponentFeaturesConfigurationPageController : MonoMac.AppKit.NSViewController, IFakeDependencyObject
+    public partial class KeyboardComponentFeaturesConfigurationPageController : NSViewController, IFakeDependencyObject
     {
         #region Constructors
 
@@ -40,7 +44,7 @@ namespace INTV.Shared.View
         /// Called when created from unmanaged code.
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
-        public KeyboardComponentFeaturesConfigurationPageController(IntPtr handle)
+        public KeyboardComponentFeaturesConfigurationPageController(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -235,9 +239,9 @@ namespace INTV.Shared.View
         public override void AwakeFromNib()
         {
             var initializationData = new[] {
-                new Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(KeyboardComponentCompatibilityPopUpButton, ViewModel.KeyboardComponentOptions, ViewModel.KeyboardComponent),
-                new Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(CassetteRequirementPopUpButton, ViewModel.CassetteOptions, ViewModel.Cassette),
-                new Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(MicrosoftBasicCartridgeRequirementPopUpButton, ViewModel.BasicOptions, ViewModel.Basic)
+                new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(KeyboardComponentCompatibilityPopUpButton, ViewModel.KeyboardComponentOptions, ViewModel.KeyboardComponent),
+                new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(CassetteRequirementPopUpButton, ViewModel.CassetteOptions, ViewModel.Cassette),
+                new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(MicrosoftBasicCartridgeRequirementPopUpButton, ViewModel.BasicOptions, ViewModel.Basic)
             };
             initializationData.InitializePopupButtons();
             ViewModel.RaisePropertyChangedForVisualInit();

@@ -123,12 +123,14 @@
     <Compile Include="ComponentModel\VisualRelayCommand.cs" />
     <Compile Include="ComponentModel\VisualRelayCommand.WPF.cs" />
     <Compile Include="ComponentModel\WeightAttribute.cs" />
+    <Compile Include="Converter\EnumConverter.cs" />
     <Compile Include="Converter\InvertedBooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\ItemCountToVisibilityConverter.cs" />
     <Compile Include="Converter\JlpFlashStorageUsageLevelToBrushConverter.WPF.cs" />
     <Compile Include="Converter\LevelToIndentConverter.cs" />
     <Compile Include="Converter\NullToBooleanConverter.cs" />
     <Compile Include="Converter\OSTextWrappingConverter.cs" />
+    <Compile Include="Converter\PlaceholderTextVisibilityConverter.cs" />
     <Compile Include="Converter\RelativePathConverter.cs" />
     <Compile Include="Converter\RomListColumnToGridViewColumnHeaderConverter.cs" />
     <Compile Include="Converter\ShortenedPathConverter.cs" />
@@ -270,7 +272,6 @@
     <Compile Include="ViewModel\SerialPortViewModel.cs" />
     <Compile Include="ViewModel\SettingsPageViewModel`T.cs" />
     <Compile Include="ViewModel\SettingsPageViewModel`T.WPF.cs" />
-    <Compile Include="ViewModel\SingleInstanceApplicationCommands.cs" />
     <Compile Include="ViewModel\StartDragProgramsCommand.cs" />
     <Compile Include="ViewModel\SystemCompatibilityConfigurationPageViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />

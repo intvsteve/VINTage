@@ -182,10 +182,10 @@
             <Ribbon:Ribbon.ApplicationMenu>
                 <!--<Ribbon:RibbonApplicationMenu SmallImageSource="pack://application:,,,/Resources/Images/inty_icon_white.png">-->
                 <Ribbon:RibbonApplicationMenu SmallImageSource="pack://application:,,,/Resources/Images/console_16xLG.png">
-                    <!--<Ribbon:RibbonApplicationMenuItem Header="{Binding Path=Name, Source={x:Static intvViewModel:SingleInstanceApplicationCommands.SettingsDialogCommand}, Mode=OneTime}"
-                                                      Command="intvViewModel:SingleInstanceApplicationCommands.SettingsDialogCommand"
-                                                      QuickAccessToolBarImageSource="{Binding Path=SmallIcon, Source={x:Static intvViewModel:SingleInstanceApplicationCommands.SettingsDialogCommand}, Mode=OneTime}"
-                                                      ImageSource="{Binding Path=LargeIcon, Source={x:Static intvViewModel:SingleInstanceApplicationCommands.SettingsDialogCommand}, Mode=OneTime}"/>-->
+                    <!--<Ribbon:RibbonApplicationMenuItem Header="{Binding Path=Name, Source={x:Static intvCommands:ApplicationCommandGroup.SettingsDialogCommand}, Mode=OneTime}"
+                                                      Command="intvCommands:ApplicationCommandGroup.SettingsDialogCommand"
+                                                      QuickAccessToolBarImageSource="{Binding Path=SmallIcon, Source={x:Static intvCommands:ApplicationCommandGroup.SettingsDialogCommand}, Mode=OneTime}"
+                                                      ImageSource="{Binding Path=LargeIcon, Source={x:Static intvCommands:ApplicationCommandGroup.SettingsDialogCommand}, Mode=OneTime}"/>-->
                     <Ribbon:RibbonApplicationMenuItem Header="{Binding Path=MenuItemName, Source={x:Static ltoFlashCommands:DownloadCommandGroup.DownloadAndPlayCommand}, Mode=OneTime}"
                                                       Command="{x:Static ltoFlashCommands:DownloadCommandGroup.DownloadAndPlayCommand}" CommandParameter="{Binding Path=SelectedItem, ElementName=_romList}"
                                                       QuickAccessToolBarImageSource="{Binding Path=SmallIcon, Source={x:Static ltoFlashCommands:DownloadCommandGroup.DownloadAndPlayCommand}, Mode=OneTime}"
@@ -412,11 +412,11 @@
                     </Ribbon:RibbonApplicationMenu.AuxiliaryPaneContent>
                         <Ribbon:RibbonApplicationMenu.FooterPaneContent>
                         <DockPanel LastChildFill="False">
-                            <Ribbon:RibbonButton Label="{Binding Path=Name, Source={x:Static intvViewModel:SingleInstanceApplicationCommands.SettingsDialogCommand}, Mode=OneTime}"
-                                                 Command="intvViewModel:SingleInstanceApplicationCommands.SettingsDialogCommand"
-                                                 SmallImageSource="{Binding Path=SmallIcon, Source={x:Static intvViewModel:SingleInstanceApplicationCommands.SettingsDialogCommand}, Mode=OneTime}"/>
+                            <Ribbon:RibbonButton Label="{Binding Path=Name, Source={x:Static intvCommands:ApplicationCommandGroup.SettingsDialogCommand}, Mode=OneTime}"
+                                                 Command="{x:Static intvCommands:ApplicationCommandGroup.SettingsDialogCommand}"
+                                                 SmallImageSource="{Binding Path=SmallIcon, Source={x:Static intvCommands:ApplicationCommandGroup.SettingsDialogCommand}, Mode=OneTime}"/>
                             <Ribbon:RibbonButton Label="{Binding Path=Name, Source={x:Static intvCommands:ApplicationCommandGroup.CheckForUpdatesCommand}, Mode=OneTime}"
-                                                 Command="intvCommands:ApplicationCommandGroup.CheckForUpdatesCommand"
+                                                 Command="{x:Static intvCommands:ApplicationCommandGroup.CheckForUpdatesCommand}"
                                                  SmallImageSource="{Binding Path=SmallIcon, Source={x:Static intvCommands:ApplicationCommandGroup.CheckForUpdatesCommand}, Mode=OneTime}"/>
                             <Ribbon:RibbonButton Label="{Binding Path=Name, Source={x:Static intvCommands:ApplicationCommandGroup.ShowOnlineHelpCommand}, Mode=OneTime}"
                                                  Command="{x:Static intvCommands:ApplicationCommandGroup.ShowOnlineHelpCommand}"
@@ -1027,8 +1027,7 @@
                 <ColumnDefinition Width="{Binding MenuLayout.ViewWidth, Mode=OneTime}"/>
             </Grid.ColumnDefinitions>
             <!--x:Name="_romList"  Grid.Column="0" Grid.Row="0" Margin="-1,0,1,0" DataContext="{Binding RomList}"-->
-            <intvView:RomListView x:Name="_romList"  Grid.Column="0" Grid.Row="0" Margin="-1,0,1,0" DataContext="{Binding RomList}"
-                                   behaviors:DoubleClickBehavior.DoubleClickCommand="{x:Static ltoFlashCommands:DownloadCommandGroup.DownloadAndPlayCommand}">
+            <intvView:RomListView x:Name="_romList"  Grid.Column="0" Grid.Row="0" Margin="-1,0,1,0" DataContext="{Binding RomList}">
                 <ListView.SelectedItem>
                     <!-- This enables the feature in which the selected item in MenuLayout is highlighted in the ROM list (if it can be found). -->
                     <MultiBinding Converter="{StaticResource ProgramToProgramDescription}" Mode="OneWay">

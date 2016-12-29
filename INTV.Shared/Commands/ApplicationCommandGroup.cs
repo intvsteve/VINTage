@@ -45,7 +45,7 @@ namespace INTV.Shared.Commands
 
         #region SettingsDialogCommand
 
-        private static readonly ICommand SettingsDialogCommand = new VisualRelayCommand(OnShowSettingsDialog)
+        public static readonly ICommand SettingsDialogCommand = new VisualRelayCommand(OnShowSettingsDialog)
         {
             UniqueId = UniqueNameBase + ".PreferencesCommand",
             Name = Resources.Strings.SingleApplicationCommands_Settings,

@@ -88,11 +88,16 @@ namespace INTV.Shared.View
         #endregion // Properties
 
         /// <summary>
-        /// Creates a new instance of the SettingsDialog.
+        /// Creates a new instance of the SettingsDialog which will activate a given page.
         /// </summary>
+        /// <param name="initialPage">The FullName of type used to identify the page to show.</param>
         /// <returns>A new instance of SettingsDialog.</returns>
-        public static SettingsDialog Create()
+        public static SettingsDialog Create(string initialPage)
         {
+            if (!string.IsNullOrEmpty(activePage))
+            {
+                LastSelectedPreferencesPage = activePage;
+            }
             var settingsDialogController = new INTV.Shared.View.SettingsDialogController();
             var settingsDialog = settingsDialogController.Window;
             settingsDialog.Controller = settingsDialogController;

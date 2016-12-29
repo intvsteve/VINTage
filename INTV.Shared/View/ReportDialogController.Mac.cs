@@ -31,6 +31,14 @@ using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
 
+#if __UNIFIED__
+using nfloat = System.nfloat;
+using nint = System.nint;
+#else
+using nfloat = System.Single;
+using nint = System.Int32;
+#endif
+
 namespace INTV.Shared.View
 {
     /// <summary>
@@ -346,13 +354,13 @@ namespace INTV.Shared.View
 
             /// <inheritdoc/>
             /// <remarks>We don't want a visible divider.</remarks>
-            public override float DividerThickness
+            public override nfloat DividerThickness
             {
                 get { return 0; }
             }
 
             /// <inheritdoc/>
-            public override int Tag
+            public override nint Tag
             {
                 get { return 0; }
             }
@@ -386,7 +394,7 @@ namespace INTV.Shared.View
         private class SplitDelegate : NSSplitViewDelegate
         {
             /// <inheritdoc/>
-            public override bool ShouldHideDivider(NSSplitView splitView, int dividerIndex)
+            public override bool ShouldHideDivider(NSSplitView splitView, nint dividerIndex)
             {
                 return true;
             }
@@ -398,7 +406,7 @@ namespace INTV.Shared.View
             }
 
             /// <inheritdoc/>
-            public override float ConstrainSplitPosition(NSSplitView splitView, float proposedPosition, int subviewDividerIndex)
+            public override nfloat ConstrainSplitPosition(NSSplitView splitView, nfloat proposedPosition, nint subviewDividerIndex)
             {
                 return proposedPosition;
             }

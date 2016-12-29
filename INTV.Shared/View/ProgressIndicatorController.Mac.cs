@@ -31,6 +31,12 @@ using INTV.Core.ComponentModel;
 using INTV.Shared.Commands;
 using INTV.Shared.ViewModel;
 
+#if __UNIFIED__
+using CGRect = CoreGraphics.CGRect;
+#else
+using CGRect = System.Drawing.RectangleF;
+#endif
+
 namespace INTV.Shared.View
 {
     /// <summary>
@@ -128,7 +134,7 @@ namespace INTV.Shared.View
         /// </summary>
         /// <param name="window">Window for the progress indicator.</param>
         /// <param name="frame">Size to use for the indicator.</param>
-        public void InitializeDataContext(NSWindow window, System.Drawing.RectangleF frame)
+        public void InitializeDataContext(NSWindow window, CGRect frame)
         {
             ViewModel = new INTV.Shared.ViewModel.ProgressIndicatorViewModel(window);
             View.Frame = frame;

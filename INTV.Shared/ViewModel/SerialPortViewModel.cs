@@ -24,7 +24,11 @@ using INTV.Shared.Utility;
 #if WIN
 using BaseClass = System.Object;
 #elif MAC
+#if __UNIFIED__
+using BaseClass = Foundation.NSObject;
+#else
 using BaseClass = MonoMac.Foundation.NSObject;
+#endif
 #endif
 
 namespace INTV.Shared.ViewModel

@@ -21,8 +21,13 @@
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 
 using System;
+#if __UNIFIED__
+using ObjCRuntime;
+using CoreFoundation;
+#else
 using MonoMac.ObjCRuntime;
 using MonoMac.CoreFoundation;
+#endif
 
 namespace INTV.Shared.Interop.IOKit
 {

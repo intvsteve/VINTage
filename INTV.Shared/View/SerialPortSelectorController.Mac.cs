@@ -30,6 +30,12 @@ using MonoMac.Foundation;
 using INTV.Shared.ViewModel;
 using INTV.Shared.Utility;
 
+#if __UNIFIED__
+using nint = System.nint;
+#else
+using nint = System.Int32;
+#endif
+
 namespace INTV.Shared.View
 {
     /// <summary>
@@ -339,7 +345,7 @@ namespace INTV.Shared.View
             internal SerialPortSelectorViewModel DataContext { get; private set; }
 
             ///<inheritdoc/>
-            public override NSCell GetDataCell(NSTableView tableView, NSTableColumn tableColumn, int row)
+            public override NSCell GetDataCell(NSTableView tableView, NSTableColumn tableColumn, nint row)
             {
                 NSTextFieldCell cell = null;
                 if (tableColumn != null)
@@ -361,7 +367,7 @@ namespace INTV.Shared.View
             }
 
             ///<inheritdoc/>
-            public override void WillDisplayCell(NSTableView tableView, NSObject cell, NSTableColumn tableColumn, int row)
+            public override void WillDisplayCell(NSTableView tableView, NSObject cell, NSTableColumn tableColumn, nint row)
             {
                 var textCell = cell as NSTextFieldCell;
                 if (textCell != null)

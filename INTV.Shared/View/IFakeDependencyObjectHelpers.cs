@@ -24,7 +24,7 @@ using System.ComponentModel;
 using INTV.Core.Utility;
 
 #if MAC
-#if __UNIFIED
+#if __UNIFIED__
 using OSVisual = AppKit.NSView;
 using OSVisualBase = AppKit.NSResponder;
 using OSWindow = AppKit.NSWindow;

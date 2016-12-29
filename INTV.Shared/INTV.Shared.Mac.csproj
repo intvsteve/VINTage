@@ -83,7 +83,9 @@
     <Compile Include="Utility\SerialPortDetector.cs" />
     <Compile Include="Utility\SingleInstanceApplication.cs" />
     <Compile Include="Utility\VisualHelpers.cs" />
-    <Compile Include="Resources\Strings.Designer.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utility\OSDispatcher.cs" />
     <Compile Include="Model\SearchDirectories.cs" />
     <Compile Include="Model\Device\ConnectionMonitor.cs" />
@@ -400,7 +402,11 @@
     <EmbeddedResource Include="ViewModel\Resources\Images\delete_folder.png">
       <LogicalName>ViewModel/Resources/Images/delete_folder.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Strings.resx" />
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <CustomToolNamespace>INTV.Shared.Resources</CustomToolNamespace>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="ViewModel\Resources\Images\Information_16x16.png">
       <LogicalName>ViewModel/Resources/Images/Information_16x16.png</LogicalName>
     </EmbeddedResource>

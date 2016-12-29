@@ -32,6 +32,32 @@ namespace INTV.Shared.Behavior
     /// </summary>
     public static partial class DragDropHelpers
     {
+        /// <summary>
+        /// This attached property is set in order to instruct a visual to use preview commands for drag/drop commands rather than standard events.
+        /// </summary>
+        /// <remarks>This property will be observed by the DragEnterBehavior, DragOverBehavior, DragLeaveBehavior, and DragDropBehavior classes.</remarks>
+        public static readonly DependencyProperty UsePreviewEventsProperty = DependencyProperty.RegisterAttached("UsePreviewEvents", typeof(bool), typeof(DragDropHelpers), new PropertyMetadata(false));
+
+        /// <summary>
+        /// Property setter for the UsePreviewEvents attached property.
+        /// </summary>
+        /// <param name="element">The visual that will use drag/drop commands.</param>
+        /// <param name="command">The command to execute to handle the drop.</param>
+        public static void SetUsePreviewEvents(this UIElement element, bool usePreviewEvents)
+        {
+            element.SetValue(UsePreviewEventsProperty, usePreviewEvents);
+        }
+
+        /// <summary>
+        /// Property getter for the UsePreviewEvents attached property.
+        /// </summary>
+        /// <param name="element">The visual from which to read the property.</param>
+        /// <returns>The value of the property.</returns>
+        public static bool GetUsePreviewEvents(this UIElement element)
+        {
+            return (bool)element.GetValue(UsePreviewEventsProperty);
+        }
+
         private static Point _lastMouseDown = new Point(double.NaN, double.NaN);
         private static bool _inDragOperation;
 

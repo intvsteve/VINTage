@@ -81,42 +81,54 @@ namespace INTV.Shared.Behavior
             var visual = o as FrameworkElement;
             if (visual != null)
             {
-                visual.DragOver += (sender, args) =>
+                if (visual.GetUsePreviewEvents())
                 {
-                    IDragDropFeedback dragDropFeedback = null;
-                    if (args.Data.GetDataPresent(DragDropHelpers.DragDropFeedbackDataFormat))
-                    {
-                        dragDropFeedback = args.Data.GetData(DragDropHelpers.DragDropFeedbackDataFormat) as IDragDropFeedback;
-                    }
-                    else
-                    {
-                        var itemsControl = visual as System.Windows.Controls.ItemsControl;
-                        var allowsRearrange = (itemsControl != null) && DragDropRearrangeBehavior.GetAllowsDragDropRearrange(itemsControl);
-                        if (allowsRearrange)
-                        {
-                            dragDropFeedback = new DragDropFeedback();
-                            args.Data.SetData(DragDropHelpers.DragDropFeedbackDataFormat, dragDropFeedback);
-                        }
-                    }
-                    if (dragDropFeedback != null)
-                    {
-                        var height = visual.ActualHeight;
-                        var location = args.GetPosition(visual);
-                        var dropLocation = GetDropLocation(visual, location);
-                        dragDropFeedback.DropLocation = dropLocation;
-                    }
-                    GetDragOverCommand(visual).Execute(args);
-                    if (dragDropFeedback != null)
-                    {
-                        if (args.Effects == DragDropEffects.None)
-                        {
-                            dragDropFeedback.DropLocation = DropOnItemLocation.None;
-                        }
-                        DropItemLocationAdorner.Update(visual, dragDropFeedback, false);
-                    }
-                    args.Handled = true;
-                };
+                    visual.PreviewDragOver -= HandleDragOver;
+                    visual.PreviewDragOver += HandleDragOver;
+                }
+                else
+                {
+                    visual.DragOver -= HandleDragOver;
+                    visual.DragOver += HandleDragOver;
+                }
             }
+        }
+
+        private static void HandleDragOver(object sender, DragEventArgs args)
+        {
+            var visual = sender as FrameworkElement;
+            IDragDropFeedback dragDropFeedback = null;
+            if (args.Data.GetDataPresent(DragDropHelpers.DragDropFeedbackDataFormat))
+            {
+                dragDropFeedback = args.Data.GetData(DragDropHelpers.DragDropFeedbackDataFormat) as IDragDropFeedback;
+            }
+            else
+            {
+                var itemsControl = visual as System.Windows.Controls.ItemsControl;
+                var allowsRearrange = (itemsControl != null) && DragDropRearrangeBehavior.GetAllowsDragDropRearrange(itemsControl);
+                if (allowsRearrange)
+                {
+                    dragDropFeedback = new DragDropFeedback();
+                    args.Data.SetData(DragDropHelpers.DragDropFeedbackDataFormat, dragDropFeedback);
+                }
+            }
+            if (dragDropFeedback != null)
+            {
+                var height = visual.ActualHeight;
+                var location = args.GetPosition(visual);
+                var dropLocation = GetDropLocation(visual, location);
+                dragDropFeedback.DropLocation = dropLocation;
+            }
+            GetDragOverCommand(visual).Execute(args);
+            if (dragDropFeedback != null)
+            {
+                if (args.Effects == DragDropEffects.None)
+                {
+                    dragDropFeedback.DropLocation = DropOnItemLocation.None;
+                }
+                DropItemLocationAdorner.Update(visual, dragDropFeedback, false);
+            }
+            args.Handled = true;
         }
 
         private static DropOnItemLocation GetDropLocation(FrameworkElement visual, Point positionOverItem)

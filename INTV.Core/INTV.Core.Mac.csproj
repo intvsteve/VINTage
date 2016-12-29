@@ -58,7 +58,9 @@
     <Compile Include="ComponentModel\ModelBase.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifier.cs" />
     <Compile Include="ComponentModel\RelayCommandBase.cs" />
-    <Compile Include="Resources\Strings.Designer.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="Model\Device\CartridgePort.cs" />
     <Compile Include="Model\Device\Connection.cs" />
     <Compile Include="Model\Device\ConnectionType.cs" />
@@ -183,7 +185,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Model\Resources\intvfunhouse_gameinfo.xml" />
-    <EmbeddedResource Include="Resources\Strings.resx" />
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>INTV.Core.Resources</CustomToolNamespace>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="license.txt" />

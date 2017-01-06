@@ -1,0 +1,35 @@
+<!--
+    <copyright file="SetWriteTimeoutCommand.xaml" company="INTV Funhouse">
+    Copyright (c) 2014-2016 All Rights Reserved
+    <author>Steven A. Orth</author>
+
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation, either version 2 of the License, or (at your
+    option) any later version.
+
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this software. If not, see: http://www.gnu.org/licenses/.
+    or write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+
+    </copyright>
+-->
+<Ribbon:RibbonTextBox
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Ribbon="clr-namespace:INTV.Ribbon;assembly=INTV.Ribbon"
+        xmlns:intellicartCommands="clr-namespace:INTV.Intellicart.Commands;assembly=INTV.Intellicart"
+        xmlns:behaviors="clr-namespace:INTV.Shared.Behavior;assembly=INTV.Shared"
+    Margin="2,0,0,0" TextBoxWidth="128" Text="{Binding Intellicart.Timeout}"
+    SmallImageSource="{Binding Path=SmallIcon, Source={x:Static intellicartCommands:DeviceCommandGroup.SetWriteTimeoutCommand}, Mode=OneTime}"
+    ToolTipTitle="{Binding Path=ToolTipTitle, Source={x:Static intellicartCommands:DeviceCommandGroup.SetWriteTimeoutCommand}, Mode=OneTime}"
+    ToolTipDescription="{Binding Path=ToolTipDescription, Source={x:Static intellicartCommands:DeviceCommandGroup.SetWriteTimeoutCommand}, Mode=OneTime}"
+    ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static intellicartCommands:DeviceCommandGroup.SetWriteTimeoutCommand}, Mode=OneTime}"
+    behaviors:NumericTextEditBehavior.IsNumericEditor="True">
+</Ribbon:RibbonTextBox>

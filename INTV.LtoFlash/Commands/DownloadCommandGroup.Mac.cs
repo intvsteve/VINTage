@@ -1,5 +1,5 @@
 ﻿// <copyright file="DownloadCommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -78,10 +78,11 @@ namespace INTV.LtoFlash.Commands
 
         #endregion // CommandGroup
 
-        #region ICommandGroup
+        #region CommandGroup
 
         partial void AddPlatformCommands()
         {
+            DownloadAndPlayCommand.VisualParent = INTV.Shared.Commands.RootCommandGroup.RootCommand; // put into toolbar
             DownloadAndPlayCommand.MenuParent = RootCommandGroup.FileMenuCommand;
             DownloadAndPlayCommand.Weight = 0.02;
 
@@ -90,6 +91,7 @@ namespace INTV.LtoFlash.Commands
 
             CommandList.Add(DownloadAndPlayPromptCommand.CreateSeparator(CommandLocation.After));
 
+            SyncHostToDeviceCommand.VisualParent = RootCommandGroup.RootCommand; // put into toolbar
             SyncHostToDeviceCommand.MenuParent = SyncToDeviceSubmenuCommand;
             SyncHostToDevicePreviewCommand.Weight = SyncHostToDeviceCommand.Weight;
             SyncHostToDevicePreviewCommand.MenuParent = SyncToDeviceSubmenuCommand;
@@ -103,6 +105,6 @@ namespace INTV.LtoFlash.Commands
             SyncClearChangesPreviewCommand.MenuParent = RootCommandGroup.ToolsMenuCommand;
         }
 
-        #endregion // ICommandGroup
+        #endregion // CommandGroup
     }
 }

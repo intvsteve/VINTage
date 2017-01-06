@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -332,7 +332,6 @@ namespace INTV.Shared.Commands
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             Weight = 0.09,
             LargeIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/add_file_32xLG.png"),
-            VisualParent = RootCommandGroup.RootCommand,
             KeyboardShortcutKey = "o",
             KeyboardShortcutModifiers = OSModifierKeys.Menu,
             PreferredParameterType = typeof(RomListViewModel)
@@ -365,7 +364,6 @@ namespace INTV.Shared.Commands
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             Weight = 0.1,
             LargeIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/add_files_32xLG.png"),
-            VisualParent = RootCommandGroup.RootCommand,
             KeyboardShortcutKey = "O",
             KeyboardShortcutModifiers = OSModifierKeys.Menu,
             PreferredParameterType = typeof(RomListViewModel)
@@ -815,12 +813,18 @@ namespace INTV.Shared.Commands
         /// <inheritdoc />
         protected override void AddCommands()
         {
+            CommandList.Add(RomListGroupCommand);
             CommandList.Add(AddRomFilesCommand);
             CommandList.Add(AddRomFoldersCommand);
             CommandList.Add(RemoveRomsCommand);
             CommandList.Add(ValidateRomsCommand);
             CommandList.Add(RefreshRomsCommand);
             CommandList.Add(CancelRomsImportCommand);
+            CommandList.Add(ShowRomInfoCommand);
+            CommandList.Add(EditProgramNameCommand);
+            CommandList.Add(BackupRomListCommand);
+            CommandList.Add(RestoreRomListCommand);
+            CommandList.Add(EmptyRomListCommand);
             AddPlatformCommands();
         }
 

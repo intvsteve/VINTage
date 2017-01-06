@@ -1,5 +1,5 @@
 ﻿// <copyright file="RootCommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -211,12 +211,8 @@ namespace INTV.Shared.Commands
         /// <inheritdoc />
         partial void AddPlatformCommands()
         {
-            CommandList.Add(ApplicationMenuCommand);
             CommandList.Add(FileMenuCommand);
             CommandList.Add(EditMenuCommand);
-#if DEBUG
-            CommandList.Add(DebugCommandGroup.DebugMenuCommand);
-#endif
             CommandList.Add(ViewMenuCommand);
             CommandList.Add(ToolsMenuCommand);
             CommandList.Add(WindowMenuCommand);

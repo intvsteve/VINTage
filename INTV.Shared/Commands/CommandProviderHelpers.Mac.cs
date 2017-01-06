@@ -1,5 +1,5 @@
 ﻿// <copyright file="CommandProviderHelpers.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -451,18 +451,6 @@ namespace INTV.Shared.Commands
                 }
             }
             return didIt;
-        }
-
-        [System.Diagnostics.Conditional("ENABLE_DIAGNOSTIC_OUTPUT")]
-        private static void DebugOutput(object message)
-        {
-            System.Diagnostics.Debug.WriteLine(message);
-        }
-
-        [System.Diagnostics.Conditional("ENABLE_DIAGNOSTIC_OUTPUT")]
-        private static void DebugOutputIf(bool condition, object message)
-        {
-            System.Diagnostics.Debug.WriteLineIf(condition, message);
         }
 
         /// <remarks>See https://bugzilla.xamarin.com/show_bug.cgi?id=39507 for notes about

@@ -1,5 +1,5 @@
 ﻿// <copyright file="DebugCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -50,7 +50,7 @@ namespace INTV.Shared.Commands
         /// </summary>
         public static readonly VisualRelayCommand DebugMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
         {
-            UniqueId = UniqueNameBase + ".DebugMenu",
+            UniqueId = UniqueNameBase + ".DebugMenuCommand",
             Weight = 0.22,
             Name = "Debug",
             MenuParent = RootCommandGroup.RootMenuCommand
@@ -60,9 +60,9 @@ namespace INTV.Shared.Commands
 
         #region ForceGarbageCollectCommand
 
-        private static readonly VisualRelayCommand ForceGarbageCollectCommand = new VisualRelayCommand(OnForceGarbageCollect, (p) => true)
+        public static readonly VisualRelayCommand ForceGarbageCollectCommand = new VisualRelayCommand(OnForceGarbageCollect, (p) => true)
         {
-            UniqueId = UniqueNameBase + ".ForceGarbageCollect",
+            UniqueId = UniqueNameBase + ".ForceGarbageCollectCommand",
             Name = "Force GC",
             KeyboardShortcutKey = "G",
             KeyboardShortcutModifiers = INTV.Shared.Commands.OSModifierKeys.Menu | INTV.Shared.Commands.OSModifierKeys.Ctrl | INTV.Shared.Commands.OSModifierKeys.Alt,
@@ -80,9 +80,9 @@ namespace INTV.Shared.Commands
 
         #region ForceCrashCommand
 
-        private static readonly VisualRelayCommand ForceCrashCommand = new VisualRelayCommand(OnForceCrash)
+        public static readonly VisualRelayCommand ForceCrashCommand = new VisualRelayCommand(OnForceCrash)
         {
-            UniqueId = UniqueNameBase + ".ForceCrash",
+            UniqueId = UniqueNameBase + ".ForceCrashCommand",
             Name = "Force Crash",
             KeyboardShortcutKey = "X",
             KeyboardShortcutModifiers = INTV.Shared.Commands.OSModifierKeys.Menu | INTV.Shared.Commands.OSModifierKeys.Ctrl | INTV.Shared.Commands.OSModifierKeys.Alt,
@@ -102,9 +102,9 @@ namespace INTV.Shared.Commands
         /// <summary>
         /// Command to trigger a 'live objects' report for serial ports.
         /// </summary>
-        private static readonly VisualRelayCommand TriggerSerialPortReportCommand = new VisualRelayCommand(OnTriggerSerialPortReport)
+        public static readonly VisualRelayCommand TriggerSerialPortReportCommand = new VisualRelayCommand(OnTriggerSerialPortReport)
         {
-            UniqueId = UniqueNameBase + ".TriggerSerialPortReport",
+            UniqueId = UniqueNameBase + ".TriggerSerialPortReportCommand",
             Name = "Serial Port Lifetime Report",
             KeyboardShortcutKey = "P",
             KeyboardShortcutModifiers = INTV.Shared.Commands.OSModifierKeys.Menu | INTV.Shared.Commands.OSModifierKeys.Ctrl | INTV.Shared.Commands.OSModifierKeys.Alt,

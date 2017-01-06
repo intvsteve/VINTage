@@ -1,5 +1,5 @@
 ﻿// <copyright file="VisualHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -152,9 +152,14 @@ namespace INTV.Shared.Utility
         /// <param name="commandProviders">The command providers.</param>
         public static void AddCommandsToMainWindow(this OSWindow window, IEnumerable<ICommandProvider> commandProviders)
         {
-            // Collect all the command groups and sort them by weight.
-            var commandGroups = new List<ICommandGroup>(commandProviders.SelectMany(c => c.CommandGroups).OrderBy(g => g.Weight));
-            window.AddCommandGroups(commandGroups);
+            // Visit providers by weight.
+            foreach (var commandProvider in commandProviders.OrderBy(c => c.Weight))
+            {
+                // Collect all the command groups and sort them by weight.
+                var commandGroups = commandProvider.CommandGroups.OrderBy(g => g.Weight);
+                window.AddCommandGroups(commandGroups);
+            }
+            window.AddCommandsToMainWindowComplete();
         }
 
         /// <summary>
@@ -177,8 +182,14 @@ namespace INTV.Shared.Utility
             {
                 foreach (var command in commandGroup.Commands.Select(c => (VisualRelayCommand)c).OrderBy(c => c.Weight))
                 {
-                    command.Visual = commandGroup.CreateVisualForCommand(command);
-                    command.MenuItem = commandGroup.CreateMenuItemForCommand(command);
+                    if (command.Visual == null)
+                    {
+                        command.Visual = commandGroup.CreateVisualForCommand(command);
+                    }
+                    if (command.MenuItem == null)
+                    {
+                        command.MenuItem = commandGroup.CreateMenuItemForCommand(command);
+                    }
                     AttachCanExecuteHandler(commandGroup as CommandGroup, command as RelayCommand);
                 }
             }
@@ -191,5 +202,11 @@ namespace INTV.Shared.Utility
         /// <param name="commandGroup">The command group to which <paramref name="command"/> belongs.</param>
         /// <param name="command">The command to which an can execute handler needs to be attached.</param>
         static partial void AttachCanExecuteHandler(CommandGroup commandGroup, RelayCommand command);
+
+        /// <summary>
+        /// Called after provider commands have been added in the AddCommandGroups method.
+        /// </summary>
+        /// <param name="window">Window whose commands have just been added.</param>
+        static partial void AddCommandsToMainWindowComplete(this OSWindow window);
     }
 }

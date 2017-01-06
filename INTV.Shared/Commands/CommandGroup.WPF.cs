@@ -1,5 +1,5 @@
 ﻿// <copyright file="CommandGroup.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -35,15 +35,25 @@ namespace INTV.Shared.Commands
         /// <inheritdoc />
         public virtual OSCommandVisual CreateVisualForCommand(ICommand command)
         {
-            // throw new NotImplementedException();
-            // System.Diagnostics.Debug.WriteLine("CreateVisualForCommand not implemented.");
-            return null;
+            OSCommandVisual visual = null;
+            var visualCommand = command as VisualRelayCommand;
+            if ((visualCommand != null) && (visualCommand.Visual == null))
+            {
+                visual = visualCommand.CreateVisualForCommand(visualCommand.VisualParent != null);
+            }
+            return visual;
         }
 
         /// <inheritdoc />
         public virtual OSMenuItem CreateMenuItemForCommand(ICommand command)
         {
-            return null;
+            OSMenuItem menuItem = null;
+            var visualCommand = command as VisualRelayCommand;
+            if (visualCommand != null)
+            {
+                menuItem = visualCommand.CreateMenuItemForCommand(visualCommand.MenuParent != null);
+            }
+            return menuItem;
         }
 
         #endregion // ICommandGroup

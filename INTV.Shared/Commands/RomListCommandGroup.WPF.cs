@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListCommandGroup.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -57,9 +57,28 @@ namespace INTV.Shared.Commands
             UniqueId = UniqueNameBase + ".RomsRibbonGroupCommand",
             Name = Resources.Strings.RomListCommandGroup_Name,
             LargeIcon = typeof(RomListCommandGroup).LoadImageResource("Resources/Images/rom_32xMD.png"),
+            VisualParent = RootCommandGroup.HomeRibbonTabCommand,
+            UseXamlResource = true
         };
 
         #endregion // RomsRibbonGroupCommand
+
+        #region RunProgramRibbonCommand
+
+        /// <summary>
+        /// Container ribbon split button command that has actual commands added at run-time.
+        /// </summary>
+        public static readonly VisualRelayCommand RunProgramRibbonCommand = new VisualRelayCommand(RelayCommand.NoOp)
+        {
+            UniqueId = UniqueNameBase + ".RunProgramRibbonCommand",
+            Name = Resources.Strings.RunProgramCommand_Name,
+            LargeIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/Play_32xLG_color.png"),
+            VisualParent = RomsRibbonGroupCommand,
+            Weight = 0,
+            UseXamlResource = true
+        };
+
+        #endregion // RunProgramRibbonCommand
 
         #region EditRomFeaturesCommand
 
@@ -79,14 +98,49 @@ namespace INTV.Shared.Commands
             viewModel.IsEditing = true;
         }
 
+        #region CommandGroup
+
         /// <inheritdoc />
         partial void AddPlatformCommands()
         {
-            RemoveRomsCommand.VisualParent = RootCommandGroup.RootCommand;
-            RefreshRomsCommand.VisualParent = RootCommandGroup.RootCommand;
+            RomListGroupCommand.MenuParent = RootCommandGroup.ApplicationMenuCommand;
+            RomListGroupCommand.Weight = 0.101;
 
-            CommandList.Add(RemoveRomsCommand);
-            CommandList.Add(RefreshRomsCommand);
+            AddRomFilesCommand.VisualParent = RomsRibbonGroupCommand;
+            AddRomFilesCommand.MenuParent = RootCommandGroup.ApplicationMenuCommand;
+            AddRomFilesCommand.UseXamlResource = true;
+
+            AddRomFoldersCommand.VisualParent = RomsRibbonGroupCommand;
+            AddRomFoldersCommand.MenuParent = RootCommandGroup.ApplicationMenuCommand;
+            AddRomFoldersCommand.UseXamlResource = true;
+
+            RemoveRomsCommand.VisualParent = RomsRibbonGroupCommand;
+            RemoveRomsCommand.UseXamlResource = true;
+
+            RefreshRomsCommand.MenuParent = RomListGroupCommand;
+
+            ShowRomInfoCommand.VisualParent = RomsRibbonGroupCommand;
+            ShowRomInfoCommand.UseXamlResource = true;
+            ShowRomInfoCommand.Weight = 0.13;
+
+            EditProgramNameCommand.VisualParent = RomsRibbonGroupCommand;
+            EditProgramNameCommand.UseXamlResource = true;
+            EditProgramNameCommand.Weight = 0.14;
+
+            ValidateRomsCommand.MenuParent = RomListGroupCommand;
+
+            BackupRomListCommand.Weight = 0.136;
+            RestoreRomListCommand.Weight = 0.137;
+
+            // RefreshRomsCommand.VisualParent = RootCommandGroup.HomeRibbonTabCommand;
+
+            CommandList.Add(RomListGroupCommand.CreateRibbonMenuSeparator(CommandLocation.After, true));
+            CommandList.Add(RomsRibbonGroupCommand);
+            CommandList.Add(RunProgramRibbonCommand);
+            CommandList.Add(RunProgramRibbonCommand.CreateRibbonSeparator(CommandLocation.After));
+            CommandList.Add(RefreshRomsCommand.CreateRibbonMenuSeparator(CommandLocation.After, true));
         }
+
+        #endregion // CommandGroup
     }
 }

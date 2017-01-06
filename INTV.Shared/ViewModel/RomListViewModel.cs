@@ -290,7 +290,11 @@ namespace INTV.Shared.ViewModel
         {
             var fileBrowser = FileDialogHelpers.Create();
             bool isFolderBrowser = false;
-            if (!bool.TryParse(parameter as string, out isFolderBrowser))
+            if (parameter is bool)
+            {
+                isFolderBrowser = (bool)parameter;
+            }
+            else if (!bool.TryParse(parameter as string, out isFolderBrowser))
             {
                 isFolderBrowser = false;
             }

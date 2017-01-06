@@ -1,5 +1,5 @@
 ﻿// <copyright file="ApplicationCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,7 +21,6 @@
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.Commands
 {
@@ -39,15 +38,15 @@ namespace INTV.Shared.Commands
         private const string UniqueNameBase = "INTV.Shared.Commands.ApplicationCommandGroup";
 
         private ApplicationCommandGroup()
-            : base(UniqueNameBase, string.Empty, 0.01) // Looks like a bogus weight?
+            : base(UniqueNameBase, string.Empty, 0.01)
         {
         }
 
         #region SettingsDialogCommand
 
-        private static readonly ICommand SettingsDialogCommand = new VisualRelayCommand(OnShowSettingsDialog)
+        public static readonly VisualRelayCommand SettingsDialogCommand = new VisualRelayCommand(OnShowSettingsDialog)
         {
-            UniqueId = UniqueNameBase + ".PreferencesCommand",
+            UniqueId = UniqueNameBase + ".SettingsDialogCommand",
             Name = Resources.Strings.SingleApplicationCommands_Settings,
             ToolTip = Resources.Strings.SingleApplicationCommands_SettingsTip,
             Weight = 0.1,
@@ -68,7 +67,7 @@ namespace INTV.Shared.Commands
         /// <summary>
         /// Command to show online help.
         /// </summary>
-        public static readonly ICommand ShowOnlineHelpCommand = new VisualRelayCommand(OnShowOnlineHelp, CanShowOnlineHelp)
+        public static readonly VisualRelayCommand ShowOnlineHelpCommand = new VisualRelayCommand(OnShowOnlineHelp, CanShowOnlineHelp)
         {
             UniqueId = UniqueNameBase + ".ShowOnlineHelpCommand",
             Name = Resources.Strings.ShowOnlineHelpCommand_Name,
@@ -295,7 +294,7 @@ namespace INTV.Shared.Commands
         /// <summary>
         /// Command to close the main application window, which should exit the application.
         /// </summary>
-        public static readonly ICommand ExitCommand = new VisualRelayCommand(OnExit)
+        public static readonly VisualRelayCommand ExitCommand = new VisualRelayCommand(OnExit)
         {
             UniqueId = UniqueNameBase + ".ExitCommand",
             Name = Resources.Strings.ExitCommand_Name,

@@ -1,5 +1,5 @@
 ﻿// <copyright file="RootCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -45,7 +45,7 @@ namespace INTV.Shared.Commands
         }
 
         /// <summary>
-        /// The root of the "command tree".
+        /// The root of the "command tree" for the most prominent commanding UI (e.g. Ribbon / Toolbar).
         /// </summary>
         public static readonly VisualRelayCommand RootCommand = new VisualRelayCommand(RelayCommand.NoOp)
         {
@@ -77,6 +77,10 @@ namespace INTV.Shared.Commands
         {
             CommandList.Add(RootCommand);
             CommandList.Add(RootMenuCommand);
+            CommandList.Add(ApplicationMenuCommand);
+#if DEBUG
+            CommandList.Add(DebugCommandGroup.DebugMenuCommand);
+#endif
             AddPlatformCommands();
         }
 

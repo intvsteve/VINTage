@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,10 +21,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.Model;
+using INTV.Core.Model.Program;
 using INTV.Intellicart.Model;
 using INTV.Intellicart.ViewModel;
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
+using INTV.Shared.Model;
 using INTV.Shared.Model.Device;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
@@ -66,20 +69,20 @@ namespace INTV.Intellicart.Commands
         {
         }
 
-        #region DeviceCommandGroupCommand
+        #region DeviceGroupCommand
 
         /// <summary>
         /// Command to act as grouper for various other, specific device commands.
         /// </summary>
         public static readonly VisualRelayCommand DeviceGroupCommand = new VisualRelayCommand(INTV.Shared.ComponentModel.RelayCommand.NoOp)
         {
-            UniqueId = UniqueNameBase + ".DeviceCommandGroup",
+            UniqueId = UniqueNameBase + ".DeviceGroupCommand",
             Name = Resources.Strings.DeviceGroupCommand_Name,
             LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/intellicart_32xMD.png"),
             Weight = 0
         };
 
-        #endregion // DeviceCommandGroupCommand
+        #endregion // DeviceGroupCommand
 
         #region IntellicartToolsMenuCommand
 
@@ -88,8 +91,9 @@ namespace INTV.Intellicart.Commands
         /// </summary>
         public static readonly VisualRelayCommand IntellicartToolsMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
         {
-            UniqueId = UniqueNameBase + ".IntellicartTools",
+            UniqueId = UniqueNameBase + ".IntellicartToolsMenuCommand",
             Name = Resources.Strings.Intellicart,
+            LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/intellicart_32xMD.png"),
             Weight = 0.85,
         };
 
@@ -282,6 +286,11 @@ namespace INTV.Intellicart.Commands
             var intellicart = parameter as IntellicartViewModel;
             var roms = intellicart.Roms;
             var program = roms.SelectionIndexes.Any() ? roms[roms.SelectionIndexes.First()] : null;
+            DownloadRom(intellicart, program);
+        }
+
+        private static void DownloadRom(IntellicartViewModel intellicart, IProgramDescription program)
+        {
             if (program != null)
             {
                 var isCompatible = intellicart.Model.IsRomCompatible(program);
@@ -320,6 +329,65 @@ namespace INTV.Intellicart.Commands
         }
 
         #endregion // DownloadCommand
+
+        #region BrowseAndDownloadCommand
+
+        /// <summary>
+        /// The command to browse for a ROM, then load it for immediate execution on the Intellicart.
+        /// </summary>
+        public static readonly VisualRelayCommand BrowseAndDownloadCommand = new VisualRelayCommand(BrowseAndDownload, CanBrowseAndDownload)
+        {
+            UniqueId = UniqueNameBase + ".BrowseAndDownloadCommand",
+            Name = Resources.Strings.BrowseAndDownloadCommand_Name,
+            ToolTip = Resources.Strings.BrowseAndDownloadCommand_TipDescription,
+            ToolTipTitle = Resources.Strings.BrowseAndDownloadCommand_Name,
+            ToolTipDescription = Resources.Strings.BrowseAndDownloadCommand_TipDescription,
+            ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/browse_download_play_32xLG.png"),
+            SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/browse_download_play_16xLG.png"),
+            Weight = 0.21,
+            MenuParent = IntellicartToolsMenuCommand,
+        };
+
+        private static void BrowseAndDownload(object parameter)
+        {
+            if (CanBrowseAndDownload(parameter))
+            {
+                var intellicart = parameter as IntellicartViewModel;
+                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false).FirstOrDefault();
+                if (selectedFile != null)
+                {
+                    var rom = selectedFile.GetRomFromPath();
+                    IProgramDescription programDescription = null;
+                    if (rom != null)
+                    {
+                        var fileName = System.IO.Path.GetFileName(rom.RomPath);
+                        var programInfo = rom.GetProgramInformation();
+                        programDescription = new ProgramDescription(rom.Crc, rom, programInfo);
+                    }
+                    if (programDescription != null)
+                    {
+                        DownloadRom(intellicart, programDescription);
+                    }
+                    else
+                    {
+                        var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.BrowseAndDownloadCommand_Failed_MessageFormat, selectedFile);
+                        OSMessageBox.Show(message, string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.BrowseAndDownloadCommand_Failed_Title));
+                    }
+                }
+            }
+        }
+
+        private static bool CanBrowseAndDownload(object parameter)
+        {
+            var intellicart = parameter as IntellicartViewModel;
+            var canExecute = (intellicart != null) && !string.IsNullOrWhiteSpace(intellicart.SerialPort);
+            canExecute = canExecute && !SerialPortConnection.PortsInUse.Contains(intellicart.SerialPort);
+            canExecute = canExecute && SerialPortConnection.AvailablePorts.Contains(intellicart.SerialPort);
+            return canExecute;
+        }
+
+        #endregion // BrowseAndDownloadCommand
 
         #region CommandGroup
 

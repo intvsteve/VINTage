@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -39,12 +39,10 @@ using OSWindow = INTV.Shared.View.IFakeDependencyObject;
 
 namespace INTV.LtoFlash.Commands
 {
-    // TODO Break these into partial files per command? Quite a bit of stuff in this file.
-
     /// <summary>
     /// Encapsulates device-related commands.
     /// </summary>
-    public partial class DeviceCommandGroup : INTV.Shared.Commands.CommandGroup
+    public partial class DeviceCommandGroup : CommandGroup
     {
         /// <summary>
         /// The command group.
@@ -548,6 +546,7 @@ namespace INTV.LtoFlash.Commands
             Weight = 0.11,
             LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/settings_32xMD.png"),
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/settings_16xLG.png"),
+            MenuParent = LtoFlashCommandGroup.LtoFlashGroupCommand
         };
 
         #endregion // AdvancedGroupCommand
@@ -568,6 +567,7 @@ namespace INTV.LtoFlash.Commands
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/backup_32xLG.png"),
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/backup_16xLG.png"),
+            Weight = 0.01,
             MenuParent = AdvancedGroupCommand,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.BackupFileSystemProtocolCommands
@@ -708,6 +708,7 @@ namespace INTV.LtoFlash.Commands
             ToolTip = Resources.Strings.RestoreCommand_Tip,
             LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/restore_32xLG.png"),
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/restore_16xLG.png"),
+            Weight = 0.011,
             MenuParent = AdvancedGroupCommand,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.RestoreFileSystemProtocolCommands
@@ -810,6 +811,7 @@ namespace INTV.LtoFlash.Commands
             ToolTipDescription = Resources.Strings.OpenDeviceBackupsDirectoryCommand_TipDescription,
             LargeIcon = typeof(MenuLayoutCommandGroup).LoadImageResource("Resources/Images/folder_closed_32xMD.png"),
             SmallIcon = typeof(MenuLayoutCommandGroup).LoadImageResource("Resources/Images/folder_closed_16xMD.png"),
+            Weight = 0.0111,
             MenuParent = AdvancedGroupCommand,
             PreferredParameterType = typeof(LtoFlashViewModel)
         };
@@ -857,6 +859,7 @@ namespace INTV.LtoFlash.Commands
             ToolTipDescription = Resources.Strings.OpenErrorLogsDirectoryCommand_TipDescription,
             LargeIcon = typeof(MenuLayoutCommandGroup).LoadImageResource("Resources/Images/folder_closed_32xMD.png"),
             SmallIcon = typeof(MenuLayoutCommandGroup).LoadImageResource("Resources/Images/folder_closed_16xMD.png"),
+            Weight = 0.0115,
             MenuParent = AdvancedGroupCommand,
             PreferredParameterType = typeof(LtoFlashViewModel)
         };
@@ -890,6 +893,7 @@ namespace INTV.LtoFlash.Commands
             Name = Resources.Strings.ClearCacheCommand_Name,
             MenuItemName = Resources.Strings.ClearCacheCommand_Name,
             ToolTip = Resources.Strings.ClearCacheCommand_Tip,
+            Weight = 0.012,
             MenuParent = AdvancedGroupCommand,
             PreferredParameterType = typeof(LtoFlashViewModel),
         };
@@ -976,6 +980,7 @@ namespace INTV.LtoFlash.Commands
             ToolTip = Resources.Strings.ReformatCommand_Tip,
             LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/reformat_32x.png"),
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/reformat_16x.png"),
+            Weight = 0.02,
             MenuParent = AdvancedGroupCommand,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.ReformatFileSystemProtocolCommands
@@ -1154,6 +1159,16 @@ namespace INTV.LtoFlash.Commands
         /// <inheritdoc />
         protected override void AddCommands()
         {
+            CommandList.Add(SearchForDevicesCommand);
+            CommandList.Add(DisconnectDeviceCommand);
+            CommandList.Add(SetEcsCompatibilityCommand);
+            CommandList.Add(SetIntellivisionIICompatibilityCommand);
+            CommandList.Add(BackupCommand);
+            CommandList.Add(RestoreCommand);
+            CommandList.Add(OpenDeviceBackupsDirectoryCommand);
+            CommandList.Add(OpenErrorLogsDirectoryCommand);
+            CommandList.Add(ClearCacheCommand);
+            CommandList.Add(ReformatCommand);
             AddPlatformCommands();
         }
 

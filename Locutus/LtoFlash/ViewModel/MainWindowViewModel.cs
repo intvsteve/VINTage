@@ -1,5 +1,5 @@
 ﻿// <copyright file="MainWindowViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -89,6 +89,26 @@ namespace Locutus.ViewModel
         }
         private RomListViewModel _romList;
 
+        /// <summary>
+        /// Gets or sets the default command for the 'Play' button in the UI.
+        /// </summary>
+        public ICommand DefaultSelectedRomCommand
+        {
+            get { return _defaultSelectedRomCommand; }
+            set { AssignAndUpdateProperty("DefaultSelectedRomCommand", value, ref _defaultSelectedRomCommand, (p, v) => DefaultSelectedRomCommandToolTipDescription = ((VisualRelayCommand)v).ToolTipDescription + INTV.Shared.Commands.CommandProviderHelpers.RibbonSplitButtonExtraToolTipDescription); }
+        }
+        private ICommand _defaultSelectedRomCommand;
+
+        /// <summary>
+        /// Gets or sets the tool tip descripton for the default command to execute on the selected ROM in the ROM list.
+        /// </summary>
+        public string DefaultSelectedRomCommandToolTipDescription
+        {
+            get { return _defaultSelectedRomCommandToolTipDescription; }
+            set { AssignAndUpdateProperty("DefaultSelectedRomCommandToolTipDescription", value, ref _defaultSelectedRomCommandToolTipDescription); }
+        }
+        private string _defaultSelectedRomCommandToolTipDescription;
+
         #region LTO Flash!-Specific Properties
 
         /// <summary>
@@ -140,6 +160,7 @@ namespace Locutus.ViewModel
             _ltoFlashViewModel.PropertyChanged += HandleLtoFlashViewModelPropertyChanged;
             _romList.CollectionChanged += HandleRomListChanged;
             this.DoImport();
+            DefaultSelectedRomCommand = INTV.LtoFlash.Commands.DownloadCommandGroup.DownloadAndPlayCommand;
         }
 
         private void HandleRomListViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

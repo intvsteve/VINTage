@@ -1,0 +1,58 @@
+<!--
+    <copyright file="SetShowTitleScreenCommand.xaml" company="INTV Funhouse">
+    Copyright (c) 2014-2016 All Rights Reserved
+    <author>Steven A. Orth</author>
+
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation, either version 2 of the License, or (at your
+    option) any later version.
+
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this software. If not, see: http://www.gnu.org/licenses/.
+    or write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+
+    </copyright>
+-->
+<Ribbon:RibbonComboBox
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Ribbon="clr-namespace:INTV.Ribbon;assembly=INTV.Ribbon"
+        xmlns:ltoFlashModel="clr-namespace:INTV.LtoFlash.Model;assembly=INTV.LtoFlash"
+        xmlns:ltoFlashCommands="clr-namespace:INTV.LtoFlash.Commands;assembly=INTV.LtoFlash"
+        xmlns:ltoFlashConverter="clr-namespace:INTV.LtoFlash.Converter;assembly=INTV.LtoFlash"
+    Margin="4,-1,2,0" SelectionBoxWidth="112"
+    SmallImageSource="{Binding Path=SmallIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommand}, Mode=OneTime}"
+    ToolTipTitle="{Binding Path=LtoFlash.ActiveLtoFlashDevice.ShowTitleScreenInfoTitle}"
+    ToolTipDescription="{Binding Path=LtoFlash.ActiveLtoFlashDevice.ShowTitleScreenInfo}"
+    ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommand}, Mode=OneTime}"
+    IsEnabled="{Binding Path=LtoFlash.ActiveLtoFlashDevice.IsConfigurable}" IsReadOnly="True">
+    <Ribbon:RibbonComboBox.Resources>
+        <ltoFlashConverter:ShowTitleScreenToStringConverter x:Key="ShowTitleScreenMode"/>
+    </Ribbon:RibbonComboBox.Resources>
+    <Ribbon:RibbonGallery MaxColumnCount="1" DisplayMemberPath="Content" SelectedValuePath="Content" SelectedValue="{Binding Path=LtoFlash.ActiveLtoFlashDevice.ShowTitleScreen, Mode=TwoWay, Converter={StaticResource ShowTitleScreenMode}}">
+        <Ribbon:RibbonGalleryCategory>
+            <Ribbon:RibbonGalleryItem Tag="{x:Static ltoFlashModel:ShowTitleScreenFlags.Always}"
+                                      Content="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommandChoiceAlways}, Mode=OneTime}"
+                                      ToolTipTitle="{Binding Path=ToolTipTitle, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommandChoiceAlways}, Mode=OneTime}"
+                                      ToolTipDescription="{Binding Path=ToolTip, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommandChoiceAlways}, Mode=OneTime}"
+                                      ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommand}, Mode=OneTime}"/>
+            <Ribbon:RibbonGalleryItem Tag="{x:Static ltoFlashModel:ShowTitleScreenFlags.OnPowerUp}"
+                                      Content="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommandChoiceOnPowerUp}, Mode=OneTime}"
+                                      ToolTipTitle="{Binding Path=ToolTipTitle, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommandChoiceOnPowerUp}, Mode=OneTime}"
+                                      ToolTipDescription="{Binding Path=ToolTip, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommandChoiceOnPowerUp}, Mode=OneTime}"
+                                      ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommand}, Mode=OneTime}"/>
+            <Ribbon:RibbonGalleryItem Tag="{x:Static ltoFlashModel:ShowTitleScreenFlags.Never}"
+                                      Content="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommandChoiceNever}, Mode=OneTime}"
+                                      ToolTipTitle="{Binding Path=ToolTipTitle, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommandChoiceNever}, Mode=OneTime}"
+                                      ToolTipDescription="{Binding Path=ToolTip, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommandChoiceNever}, Mode=OneTime}"
+                                      ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommand}, Mode=OneTime}"/>
+        </Ribbon:RibbonGalleryCategory>
+    </Ribbon:RibbonGallery>
+</Ribbon:RibbonComboBox>

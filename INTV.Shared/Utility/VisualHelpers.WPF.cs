@@ -116,5 +116,11 @@ namespace INTV.Shared.Utility
             newWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             newWindow.Owner = owner;
         }
+
+        /// <inheritdoc />
+        static partial void AddCommandsToMainWindowComplete(this Window window)
+        {
+            INTV.Shared.Commands.CommandProviderHelpers.PadMenuIfNecessary();
+        }
     }
 }

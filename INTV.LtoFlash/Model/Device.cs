@@ -765,7 +765,7 @@ namespace INTV.LtoFlash.Model
             var entered = false;
             try
             {
-                if ((SingleInstanceApplication.Current != null) && (device != null) && !device.InTimer && (!device.IsCommandInProgress || (device.ConnectionState == ConnectionState.WaitForBeacon)) && device.IsValid && device.Port.IsOpen)
+                if ((SingleInstanceApplication.Current != null) && (device != null) && !device.InTimer && (!device.IsCommandInProgress || (device.ConnectionState == ConnectionState.WaitForBeacon)) && device.IsValid && (device.Port != null) && device.Port.IsOpen)
                 {
                     device.InTimer = true;
                     entered = true;

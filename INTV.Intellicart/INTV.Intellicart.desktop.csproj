@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\DeviceCommandGroup.cs" />
+    <Compile Include="Commands\DeviceCommandGroup.WPF.cs" />
     <Compile Include="Commands\IntellicartCommandsProvider.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\DeviceHelpers.cs" />
@@ -108,6 +109,45 @@
     <Resource Include="Resources\Images\intellicart_32xMD.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Commands\Resources\IntellicartRibbonTabCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\DeviceRibbonGroupCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SerialRibbonGroupCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\DownloadRibbonSplitButtonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetBaudRateCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetPortCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetWriteTimeoutCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\BrowseAndDownloadRibbonButtonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\DownloadRibbonButtonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\BrowseAndDownloadCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\DownloadCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\IntellicartToolsMenuCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SelectPortCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Page Include="View\IntellicartSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -123,6 +163,11 @@
   <ItemGroup>
     <None Include="license.txt" />
     <None Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\browse_download_play_16xLG.png" />
+    <Resource Include="Resources\Images\browse_download_play_32xLG.png" />
+    <Resource Include="Resources\Images\browse_download_play_32xMD.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

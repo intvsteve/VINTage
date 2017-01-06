@@ -1603,4 +1603,15 @@ Message: {1}</value>
   <data name="DeleteFileError_Title" xml:space="preserve">
     <value>Error Deleting File</value>
   </data>
+  <data name="RunProgramCommand_Name" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="RibbonSplitButton_ExtraToolTipDescription" xml:space="preserve">
+    <value>
+
+Click the arrow for more commands.</value>
+  </data>
+  <data name="RibbonSplitButton_ToggleButtonToolTip" xml:space="preserve">
+    <value>Click for more commands</value>
+  </data>
 </root>

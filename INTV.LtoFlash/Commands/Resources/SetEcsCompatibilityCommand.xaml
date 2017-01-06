@@ -1,0 +1,63 @@
+<!--
+    <copyright file="SetEcsCompatibilityCommand.xaml" company="INTV Funhouse">
+    Copyright (c) 2014-2016 All Rights Reserved
+    <author>Steven A. Orth</author>
+
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation, either version 2 of the License, or (at your
+    option) any later version.
+
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this software. If not, see: http://www.gnu.org/licenses/.
+    or write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+
+    </copyright>
+-->
+<Ribbon:RibbonComboBox
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Ribbon="clr-namespace:INTV.Ribbon;assembly=INTV.Ribbon"
+        xmlns:ltoFlashModel="clr-namespace:INTV.LtoFlash.Model;assembly=INTV.LtoFlash"
+        xmlns:ltoFlashCommands="clr-namespace:INTV.LtoFlash.Commands;assembly=INTV.LtoFlash"
+        xmlns:ltoFlashConverter="clr-namespace:INTV.LtoFlash.Converter;assembly=INTV.LtoFlash"
+    Margin="4,0,2,0" SelectionBoxWidth="112"
+    SmallImageSource="{Binding Path=SmallIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityCommand}, Mode=OneTime}"
+    ToolTipTitle="{Binding Path=LtoFlash.ActiveLtoFlashDevice.EcsCompatibilityInfoTitle}"
+    ToolTipDescription="{Binding Path=LtoFlash.ActiveLtoFlashDevice.EcsCompatibilityInfo}"
+    ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityCommand}, Mode=OneTime}"
+    IsEnabled="{Binding Path=LtoFlash.ActiveLtoFlashDevice.IsConfigurable}">
+    <Ribbon:RibbonComboBox.Resources>
+        <ltoFlashConverter:EcsCompatibilityModeToStringConverter x:Key="EcsCompatibilityMode"/>
+    </Ribbon:RibbonComboBox.Resources>
+    <Ribbon:RibbonGallery MaxColumnCount="1" DisplayMemberPath="Content" SelectedValuePath="Content" SelectedValue="{Binding Path=LtoFlash.ActiveLtoFlashDevice.EcsCompatibility, Mode=TwoWay, Converter={StaticResource EcsCompatibilityMode}}">
+        <Ribbon:RibbonGalleryCategory>
+            <Ribbon:RibbonGalleryItem Tag="{x:Static ltoFlashModel:EcsStatusFlags.None}"
+                                      Content="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceEnabled}, Mode=OneTime}"
+                                      ToolTipTitle="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceEnabled}, Mode=OneTime}"
+                                      ToolTipDescription="{Binding Path=ToolTip, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceEnabled}, Mode=OneTime}"
+                                      ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityCommand}, Mode=OneTime}"/>
+            <Ribbon:RibbonGalleryItem Tag="{x:Static ltoFlashModel:EcsStatusFlags.EnabledForRequiredAndOptional}"
+                                      Content="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceLimited}, Mode=OneTime}"
+                                      ToolTipTitle="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceLimited}, Mode=OneTime}"
+                                      ToolTipDescription="{Binding Path=ToolTip, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceLimited}, Mode=OneTime}"
+                                      ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityCommand}, Mode=OneTime}"/>
+            <Ribbon:RibbonGalleryItem Tag="{x:Static ltoFlashModel:EcsStatusFlags.EnabledForRequired}"
+                                      Content="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceStrict}, Mode=OneTime}"
+                                      ToolTipTitle="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceStrict}, Mode=OneTime}"
+                                      ToolTipDescription="{Binding Path=ToolTip, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceStrict}, Mode=OneTime}"
+                                      ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityCommand}, Mode=OneTime}"/>
+            <Ribbon:RibbonGalleryItem Tag="{x:Static ltoFlashModel:EcsStatusFlags.Disabled}"
+                                      Content="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceDisabled}, Mode=OneTime}"
+                                      ToolTipTitle="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceDisabled}, Mode=OneTime}"
+                                      ToolTipDescription="{Binding Path=ToolTip, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityChoiceDisabled}, Mode=OneTime}"
+                                      ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetEcsCompatibilityCommand}, Mode=OneTime}"/>
+        </Ribbon:RibbonGalleryCategory>
+    </Ribbon:RibbonGallery>
+</Ribbon:RibbonComboBox>

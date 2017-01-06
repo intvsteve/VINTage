@@ -206,7 +206,7 @@
     <value>ROM</value>
   </data>
   <data name="DownloadCommand_TipTitle" xml:space="preserve">
-    <value>Play</value>
+    <value>Play on Intellicart!</value>
   </data>
   <data name="Intellicart" xml:space="preserve">
     <value>Intellicart!</value>
@@ -236,5 +236,24 @@
     <value>The ROM for {0} cannot be found at the path:
 
 {1}</value>
+  </data>
+  <data name="BrowseAndDownloadCommand_Failed_MessageFormat" xml:space="preserve">
+    <value>The file:
+
+{0}
+
+does not appear to be a valid ROM file.</value>
+  </data>
+  <data name="BrowseAndDownloadCommand_Failed_Title" xml:space="preserve">
+    <value>Unable to Load</value>
+  </data>
+  <data name="BrowseAndDownloadCommand_Name" xml:space="preserve">
+    <value>Browse &amp; Play on Intellicart!...</value>
+  </data>
+  <data name="BrowseAndDownloadCommand_TipDescription" xml:space="preserve">
+    <value>Browse to select a ROM, then send it to your Intellicart!. Your Intellicart! must be plugged into an Intellivision console with the power turned on, and not already running a program.</value>
+  </data>
+  <data name="DownloadCommand_RibbonButtonName" xml:space="preserve">
+    <value>Play on Intellicart!</value>
   </data>
 </root>

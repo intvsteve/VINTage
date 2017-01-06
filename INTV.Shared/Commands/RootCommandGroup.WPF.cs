@@ -1,5 +1,5 @@
 ﻿// <copyright file="RootCommandGroup.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Windows;
+using System.Windows.Controls;
 using INTV.Shared.ComponentModel;
 
 namespace INTV.Shared.Commands
@@ -27,7 +29,20 @@ namespace INTV.Shared.Commands
     /// </summary>
     public partial class RootCommandGroup
     {
-        #region HomeRibbonGroupCommand
+        #region ApplicationMenuCommand
+
+        /// <summary>
+        /// The ribbon application menu.
+        /// </summary>
+        public static readonly VisualRelayCommand ApplicationMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
+        {
+            UniqueId = UniqueNameBase + ".ApplicationMenuCommand",
+            Weight = 0
+        };
+
+        #endregion // ApplicationMenuCommand
+
+        #region HomeRibbonTabCommand
 
         /// <summary>
         /// The Home tab pseudo-command.
@@ -36,24 +51,92 @@ namespace INTV.Shared.Commands
         {
             UniqueId = UniqueNameBase + ".HomeRibbonTabCommand",
             Name = Resources.Strings.HomeRibbonTabCommand_Name,
-            Weight = 0
-        };
-
-        /// <summary>
-        /// Dummy command for now. This will eventually become the ribbon menu.
-        /// </summary>
-        public static readonly VisualRelayCommand ApplicationMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
-        {
-            UniqueId = UniqueNameBase + ".ApplicationMenuCommand",
-            Weight = 0
+            VisualParent = RootCommand,
+            Weight = 0,
+            UseXamlResource = true
         };
 
         #endregion // HomeRibbonTabCommand
 
+        #region RibbonSeparatorCommand
+
+        /// <summary>
+        /// The menu separator "command".
+        /// </summary>
+        public static readonly VisualRelayCommand RibbonSeparatorCommand = new VisualRelayCommand(RelayCommand.NoOp)
+        {
+            UniqueId = UniqueNameBase + ".RibbonSeparatorCommand",
+            UseXamlResource = true
+        };
+
+        /// <summary>
+        /// The menu separator "command".
+        /// </summary>
+        public static readonly VisualRelayCommand RibbonMenuSeparatorCommand = new VisualRelayCommand(RelayCommand.NoOp)
+        {
+            UniqueId = UniqueNameBase + ".RibbonMenuSeparatorCommand",
+            UseXamlResource = true
+        };
+
+        #endregion // RibbonSeparatorCommand
+
+        #region CommandGroup
+
+        /// <inheritdoc />
+        public override UIElement CreateVisualForCommand(ICommand command)
+        {
+            UIElement visual = null;
+            var visualCommand = command as VisualRelayCommand;
+            if (visualCommand != null)
+            {
+                switch (visualCommand.UniqueId)
+                {
+                    case UniqueNameBase + ".Root":
+                        visual = INTV.Shared.Utility.SingleInstanceApplication.Instance.MainWindow.FindName("_ribbon") as UIElement;
+                        break;
+                    case UniqueNameBase + ".RootMenu":
+                    case UniqueNameBase + ".ApplicationMenuCommand":
+                        visual = INTV.Shared.Utility.SingleInstanceApplication.Instance.MainWindow.FindName("_menu") as UIElement;
+                        break;
+                    case UniqueNameBase + ".HomeRibbonTabCommand":
+                        visual = INTV.Shared.Utility.SingleInstanceApplication.Instance.MainWindow.FindName("_home") as UIElement;
+                        break;
+                    default:
+                        visual = base.CreateVisualForCommand(command);
+                        break;
+                }
+            }
+            return visual;
+        }
+
+        /// <inheritdoc />
+        public override Control CreateMenuItemForCommand(ICommand command)
+        {
+            Control menuItem = null;
+            var visualCommand = command as VisualRelayCommand;
+            if (visualCommand != null)
+            {
+                switch (visualCommand.UniqueId)
+                {
+                    case UniqueNameBase + ".RootMenu":
+                    case UniqueNameBase + ".ApplicationMenuCommand":
+                        menuItem = INTV.Shared.Utility.SingleInstanceApplication.Instance.MainWindow.FindName("_menu") as Control;
+                        break;
+                    default:
+                        menuItem = base.CreateMenuItemForCommand(command);
+                        break;
+                }
+            }
+            return menuItem;
+        }
+
         /// <inheritdoc />
         partial void AddPlatformCommands()
         {
-            // CommandList.Add(HomeRibbonGroupCommand);
+            CommandList.Add(HomeRibbonTabCommand);
+            CommandList.Add(RibbonSeparatorCommand);
         }
+
+        #endregion // CommandGroup
     }
 }

@@ -320,7 +320,7 @@ namespace INTV.LtoFlash.Commands
                 menuLayout.Save(configuration.GetMenuLayoutPath(device.UniqueId));
                 ltoFlashViewModel.HostPCMenuLayout.ClearItemStates(ltoFlashViewModel.AttachedPeripherals);
             }
-            SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new System.Action(() => SyncHostToDeviceCompleteDialog(cancelled, didShowProgress, ltoFlashViewModel, result.Item2)));
+            SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new System.Action(() => SyncHostToDeviceCompleteDialog(cancelled, didShowProgress, ltoFlashViewModel, result == null ? null : result.Item2)));
         }
 
         private static void SyncHostToDeviceCompleteDialog(bool cancelled, bool didShowProgress, LtoFlashViewModel ltoFlashViewModel, IDictionary<string, FailedOperationException> warnings)
@@ -351,7 +351,7 @@ namespace INTV.LtoFlash.Commands
                     message = Resources.Strings.SyncHostToDeviceCommandComplete_Message;
                 }
                 var result = OSMessageBoxResult.Yes;
-                if (warnings.Any())
+                if ((warnings != null) && warnings.Any())
                 {
                     var reportDialog = ReportDialog.Create(title, message);
                     reportDialog.ShowSendEmailButton = false;

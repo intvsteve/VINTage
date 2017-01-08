@@ -37,6 +37,24 @@ namespace INTV.Shared.View
         [System.ComponentModel.Composition.ImportMany]
         public IEnumerable<Lazy<ISettingsPage, ISettingsPageMetadata>> Pages { get; set; }
 
+        /// <summary>
+        /// Creates a new instance of the SettingsDialog.
+        /// </summary>
+        /// <returns>A new instance of SettingsDialog.</returns>
+        public static SettingsDialog Create()
+        {
+            return Create(null);
+        }
+
+        /// <summary>
+        /// Show the settings dialog with a specific initial page.
+        /// </summary>
+        /// <param name="initialPage">The page to initially show. If <c>null</c>, use default behavior.</param>
+        public static void ShowSettingsDialog(string initialPage)
+        {
+            Create(initialPage).ShowDialog();
+        }
+
         #region IPartImportsSatisfiedNotification Members
 
         /// <inheritdoc />

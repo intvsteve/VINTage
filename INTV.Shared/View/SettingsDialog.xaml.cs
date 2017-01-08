@@ -37,16 +37,22 @@ namespace INTV.Shared.View
         {
             InitializeComponent();
             Title = INTV.Shared.Resources.Strings.SettingsDialog_Title;
+            Owner = System.Windows.Application.Current.MainWindow;
             _propertyPages.SelectionChanged += TabSelectionChanged;
             this.DoImport();
         }
 
         /// <summary>
-        /// Creates a new instance of the SettingsDialog.
+        /// Creates a new instance of the SettingsDialog which will activate a given page.
         /// </summary>
+        /// <param name="initialPage">The FullName of type used to identify the page to show.</param>
         /// <returns>A new instance of SettingsDialog.</returns>
-        public static SettingsDialog Create()
+        public static SettingsDialog Create(string initialPage)
         {
+            if (!string.IsNullOrEmpty(initialPage))
+            {
+                LastSelectedPreferencesPage = initialPage;
+            }
             var settingsDialog = new INTV.Shared.View.SettingsDialog();
             settingsDialog.Owner = System.Windows.Application.Current.MainWindow;
             return settingsDialog;

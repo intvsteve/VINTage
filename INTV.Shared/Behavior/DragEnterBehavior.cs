@@ -60,12 +60,24 @@ namespace INTV.Shared.Behavior
             var visual = o as UIElement;
             if (visual != null)
             {
-                visual.DragEnter += (sender, args) =>
+                if (visual.GetUsePreviewEvents())
                 {
-                    GetDragEnterCommand(visual).Execute(args);
-                    args.Handled = true;
-                };
+                    visual.PreviewDragEnter -= HandleDragEnter;
+                    visual.PreviewDragEnter += HandleDragEnter;
+                }
+                else
+                {
+                    visual.DragEnter -= HandleDragEnter;
+                    visual.DragEnter += HandleDragEnter;
+                }
             }
+        }
+
+        private static void HandleDragEnter(object sender, DragEventArgs args)
+        {
+            var visual = sender as UIElement;
+            GetDragEnterCommand(visual).Execute(args);
+            args.Handled = true;
         }
     }
 }

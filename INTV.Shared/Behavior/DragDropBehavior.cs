@@ -60,22 +60,34 @@ namespace INTV.Shared.Behavior
             var visual = o as UIElement;
             if (visual != null)
             {
-                visual.Drop += (sender, args) =>
-                    {
-                        GetDropCommand(visual).Execute(args);
-                        var itemsControl = visual as System.Windows.Controls.ItemsControl;
-                        if ((itemsControl != null) && DragDropRearrangeBehavior.GetAllowsDragDropRearrange(itemsControl))
-                        {
-                            var dragDropFeedback = args.Data.GetData(DragDropHelpers.DragDropFeedbackDataFormat) as IDragDropFeedback;
-                            if (dragDropFeedback != null)
-                            {
-                                dragDropFeedback.DropLocation = DropOnItemLocation.None;
-                            }
-                            INTV.Shared.View.DropItemLocationAdorner.Update(itemsControl, dragDropFeedback, true);
-                        }
-                        args.Handled = true;
-                    };
+                if (visual.GetUsePreviewEvents())
+                {
+                    visual.PreviewDrop -= HandleDrop;
+                    visual.PreviewDrop += HandleDrop;
+                }
+                else
+                {
+                    visual.Drop -= HandleDrop;
+                    visual.Drop += HandleDrop;
+                }
             }
+        }
+
+        private static void HandleDrop(object sender, DragEventArgs args)
+        {
+            var visual = sender as UIElement;
+            GetDropCommand(visual).Execute(args);
+            var itemsControl = visual as System.Windows.Controls.ItemsControl;
+            if ((itemsControl != null) && DragDropRearrangeBehavior.GetAllowsDragDropRearrange(itemsControl))
+            {
+                var dragDropFeedback = args.Data.GetData(DragDropHelpers.DragDropFeedbackDataFormat) as IDragDropFeedback;
+                if (dragDropFeedback != null)
+                {
+                    dragDropFeedback.DropLocation = DropOnItemLocation.None;
+                }
+                INTV.Shared.View.DropItemLocationAdorner.Update(itemsControl, dragDropFeedback, true);
+            }
+            args.Handled = true;
         }
     }
 }

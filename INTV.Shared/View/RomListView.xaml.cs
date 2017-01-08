@@ -19,6 +19,8 @@
 // </copyright>
 
 using System.Windows;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Model.Program;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
 
@@ -29,6 +31,21 @@ namespace INTV.Shared.View
     /// </summary>
     public partial class RomListView : System.Windows.Controls.ListView
     {
+        #region Commands
+
+        #region DoubleClickItemCommand
+
+        /// <summary>
+        /// Command invoked when a ROM in the list is double-clicked.
+        /// </summary>
+        public static readonly RelayCommand DoubleClickItemCommand = new RelayCommand(OnDoubleClick);
+
+        #endregion // DoubleClickItemCommand
+
+        #endregion // Commands
+
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the RomListView type.
         /// </summary>
@@ -36,6 +53,8 @@ namespace INTV.Shared.View
         {
             InitializeComponent();
         }
+
+        #endregion // Constructors
 
         /// <summary>
         /// Mechanism to explicitly edit a specific column in the ROMs view.
@@ -63,6 +82,17 @@ namespace INTV.Shared.View
             base.OnSelectionChanged(e);
             var defaultVisualForEdit = FindElementForColumn(RomListColumn.Title);
             INTV.Shared.Behavior.InPlaceEditBehavior.SetLastClickedElement(this, defaultVisualForEdit);
+        }
+
+        private static void OnDoubleClick(object parameter)
+        {
+            var doubleClickedProgram = parameter as ProgramDescriptionViewModel;
+            if (doubleClickedProgram != null)
+            {
+                // This is a bit icky, since the parameter doesn't have a way to crawl back up to our ROM list...
+                // So we use the global ROM list to invoke the handler.
+                ProgramCollection.Roms.InvokeProgramFromDescription(doubleClickedProgram.Model);
+            }
         }
 
         private FrameworkElement FindElementForColumn(RomListColumn column)

@@ -1,4 +1,4 @@
-﻿// <copyright file="SettingsDialog.Mac.cs" company="INTV Funhouse">
+// <copyright file="SettingsDialog.Mac.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -88,11 +88,16 @@ namespace INTV.Shared.View
         #endregion // Properties
 
         /// <summary>
-        /// Creates a new instance of the SettingsDialog.
+        /// Creates a new instance of the SettingsDialog which will activate a given page.
         /// </summary>
+        /// <param name="initialPage">The FullName of type used to identify the page to show.</param>
         /// <returns>A new instance of SettingsDialog.</returns>
-        public static SettingsDialog Create()
+        public static SettingsDialog Create(string initialPage)
         {
+            if (!string.IsNullOrEmpty(activePage))
+            {
+                LastSelectedPreferencesPage = activePage;
+            }
             var settingsDialogController = new INTV.Shared.View.SettingsDialogController();
             var settingsDialog = settingsDialogController.Window;
             settingsDialog.Controller = settingsDialogController;

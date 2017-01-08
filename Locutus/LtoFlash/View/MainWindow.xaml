@@ -295,8 +295,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="{Binding MenuLayout.ViewWidth, Mode=OneTime}"/>
             </Grid.ColumnDefinitions>
-            <intvView:RomListView x:Name="_romList"  Grid.Column="0" Grid.Row="0" Margin="-1,0,1,0" DataContext="{Binding RomList}"
-                                  behaviors:DoubleClickBehavior.DoubleClickCommand="{x:Static ltoFlashCommands:DownloadCommandGroup.DownloadAndPlayCommand}">
+            <intvView:RomListView x:Name="_romList"  Grid.Column="0" Grid.Row="0" Margin="-1,0,1,0" DataContext="{Binding RomList}">
                 <ListView.SelectedItem>
                     <!-- This enables the feature in which the selected item in MenuLayout is highlighted in the ROM list (if it can be found). -->
                     <MultiBinding Converter="{StaticResource ProgramToProgramDescription}" Mode="OneWay">

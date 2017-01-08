@@ -169,7 +169,7 @@ namespace INTV.Core.Model
 #else
                 _crc = Crc32.OfFile(RomPath, Format != RomFormat.Intellicart, replacementByte);
 #endif
-                if (0 == crc)
+                if (crc == 0)
                 {
                     crc = _crc; // lazy initialization means on first read, we should never get a change
                 }

@@ -157,11 +157,11 @@ namespace INTV.Shared.Commands
                         parentCommand.Visual = group.CreateVisualForCommand(parentCommand);
                     }
                 }
-                ErrorReporting.ReportErrorIf(requiresParentCommand&& (parentCommand.Visual == null), "Failed to create parent visual for command: " + command.Name + "(" + command.UniqueId + ")");
+                ErrorReporting.ReportErrorIf(requiresParentCommand && (parentCommand.Visual == null), "Failed to create parent visual for command: " + command.Name + "(" + command.UniqueId + ")");
                 parentVisual = parentCommand.Visual;
             }
 
-            DebugOutputIf(requiresParentCommand&& (parentCommand == null), "No parent visual for command: " + command.Name + "(" + command.UniqueId + ")");
+            DebugOutputIf(requiresParentCommand && (parentCommand == null), "No parent visual for command: " + command.Name + "(" + command.UniqueId + ")");
 
             if ((visual == null) && command.UseXamlResource)
             {
@@ -457,6 +457,7 @@ namespace INTV.Shared.Commands
         /// </summary>
         /// <param name="parentCommand">The parent command, which is used to locate other child commands for determining insert location.</param>
         /// <param name="commandToInsert">The command to insert.</param>
+        /// <param name="useMenuItem">If <c>true</c>, use the parent menu item visual; otherwise, use the standard visual.</param>
         /// <returns>The insertion index, or -1 if the command is to be placed at the end of the list.</returns>
         private static int FindInsertLocation(this VisualRelayCommand parentCommand, VisualRelayCommand commandToInsert, bool useMenuItem)
         {

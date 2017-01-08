@@ -1,4 +1,4 @@
-﻿// <copyright file="ApplicationCommandGroup.cs" company="INTV Funhouse">
+﻿// <copyright file="ApplicationCommandGroup.WPF.cs" company="INTV Funhouse">
 // Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //

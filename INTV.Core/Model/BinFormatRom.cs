@@ -96,7 +96,7 @@ namespace INTV.Core.Model
             if (IsValid && RomPath.FileExists())
             {
                 _crc = Crc32.OfFile(RomPath);
-                if (0 == crc)
+                if (crc == 0)
                 {
                     crc = _crc; // lazy initialization means on first read, we should never get a change
                 }
@@ -112,7 +112,7 @@ namespace INTV.Core.Model
             if (IsValid && !string.IsNullOrEmpty(ConfigPath) && ConfigPath.FileExists())
             {
                 _cfgCrc = Crc32.OfFile(ConfigPath);
-                if (0 == cfgCrc)
+                if (cfgCrc == 0)
                 {
                     cfgCrc = _cfgCrc; // lazy initialization means on first read, we should never get a change
                 }

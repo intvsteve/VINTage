@@ -132,8 +132,6 @@ namespace INTV.Shared.Commands
             BackupRomListCommand.Weight = 0.136;
             RestoreRomListCommand.Weight = 0.137;
 
-            // RefreshRomsCommand.VisualParent = RootCommandGroup.HomeRibbonTabCommand;
-
             CommandList.Add(RomListGroupCommand.CreateRibbonMenuSeparator(CommandLocation.After, true));
             CommandList.Add(RomsRibbonGroupCommand);
             CommandList.Add(RunProgramRibbonCommand);

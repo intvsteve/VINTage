@@ -117,7 +117,10 @@ namespace INTV.Shared.Utility
             newWindow.Owner = owner;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Called after provider commands have been added in the AddCommandGroups method.
+        /// </summary>
+        /// <param name="window">Window whose commands have just been added.</param>
         static partial void AddCommandsToMainWindowComplete(this Window window)
         {
             INTV.Shared.Commands.CommandProviderHelpers.PadMenuIfNecessary();

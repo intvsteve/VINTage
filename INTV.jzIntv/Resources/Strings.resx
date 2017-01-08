@@ -132,6 +132,18 @@
   <data name="JzIntvTabCommand_Name" xml:space="preserve">
     <value>jzIntv</value>
   </data>
+  <data name="KeyboardMap_CommandKeys" xml:space="preserve">
+    <value>Command Keys</value>
+  </data>
+  <data name="KeyboardMap_Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="KeyboardMap_EcsKeyboard" xml:space="preserve">
+    <value>ECS Keyboard</value>
+  </data>
+  <data name="KeyboardMap_LeftControllerOnly" xml:space="preserve">
+    <value>Left Controller Only</value>
+  </data>
   <data name="SetDisplayModeFullscreenCommand_Name" xml:space="preserve">
     <value>Fullscreen</value>
   </data>

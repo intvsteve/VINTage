@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace INTV.jzIntv.xp.Resources {
+namespace INTV.jzIntv.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace INTV.jzIntv.xp.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("INTV.jzIntv.xp.Resources.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("INTV.jzIntv.Resources.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -102,6 +102,42 @@ namespace INTV.jzIntv.xp.Resources {
         internal static string JzIntvTabCommand_Name {
             get {
                 return ResourceManager.GetString("JzIntvTabCommand_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command Keys.
+        /// </summary>
+        internal static string KeyboardMap_CommandKeys {
+            get {
+                return ResourceManager.GetString("KeyboardMap_CommandKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        internal static string KeyboardMap_Default {
+            get {
+                return ResourceManager.GetString("KeyboardMap_Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ECS Keyboard.
+        /// </summary>
+        internal static string KeyboardMap_EcsKeyboard {
+            get {
+                return ResourceManager.GetString("KeyboardMap_EcsKeyboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left Controller Only.
+        /// </summary>
+        internal static string KeyboardMap_LeftControllerOnly {
+            get {
+                return ResourceManager.GetString("KeyboardMap_LeftControllerOnly", resourceCulture);
             }
         }
         

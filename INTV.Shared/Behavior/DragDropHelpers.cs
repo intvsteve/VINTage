@@ -42,7 +42,7 @@ namespace INTV.Shared.Behavior
         /// Property setter for the UsePreviewEvents attached property.
         /// </summary>
         /// <param name="element">The visual that will use drag/drop commands.</param>
-        /// <param name="command">The command to execute to handle the drop.</param>
+        /// <param name="usePreviewEvents">The command to execute to handle the drop.</param>
         public static void SetUsePreviewEvents(this UIElement element, bool usePreviewEvents)
         {
             element.SetValue(UsePreviewEventsProperty, usePreviewEvents);

@@ -384,6 +384,14 @@ namespace INTV.Core.Model
             var stockCfgFileName = stockConfigFileNumber.ToString() + ProgramFileKind.CfgFile.FileExtension();
             var stockCfgUri = new Uri(ToolsDirectory + stockCfgFileName);
             stockCfgFilePath = Uri.UnescapeDataString(stockCfgUri.AbsolutePath); // Need to unescape spaces.
+#if WIN
+            stockCfgFilePath = stockCfgFilePath.Replace('/', System.IO.Path.DirectorySeparatorChar);
+#elif PCL
+            // NOTE: This will, of course, cause trouble if we build PCL for non-Windows platforms, in which case the proper
+            // solution is to register the 'FixUpUri' method and use it instead... In fact, it would be better to just have a
+            // file system interface to use for stuff like this... Maybe imported via MEF or some such...
+            stockCfgFilePath = stockCfgFilePath.Replace('/', '\\');
+#endif
             if (!stockCfgFilePath.FileExists())
             {
                 stockCfgFilePath = null;

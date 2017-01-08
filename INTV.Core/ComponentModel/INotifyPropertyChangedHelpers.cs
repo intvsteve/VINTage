@@ -157,7 +157,7 @@ namespace INTV.Core.ComponentModel
         public static void RaisePropertyChanged<T>(this INotifyPropertyChanged sender, PropertyChangedEventHandler handler, string name, Action<string, T> customAction, T newValue)
         {
             RaisePropertyChanged(sender, handler, name);
-            if (null != customAction)
+            if (customAction != null)
             {
                 customAction(name, newValue);
             }

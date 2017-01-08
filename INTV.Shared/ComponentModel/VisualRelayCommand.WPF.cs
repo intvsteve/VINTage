@@ -26,7 +26,7 @@ namespace INTV.Shared.ComponentModel
     public partial class VisualRelayCommand
     {
         /// <summary>
-        /// Gets or sets a value indicating wether the command creates its visual by loading a XAML resource file.
+        /// Gets or sets a value indicating whether the command creates its visual by loading a XAML resource file.
         /// </summary>
         public bool UseXamlResource { get; set; }
 

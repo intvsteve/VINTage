@@ -57,6 +57,14 @@
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="Model\EmulatorFile.cs" />
+    <Compile Include="Model\Emulator.cs" />
+    <Compile Include="Model\CommandLineArgument.cs" />
+    <Compile Include="Model\SampleRate.cs" />
+    <Compile Include="Model\IntellicartCacheOption.cs" />
+    <Compile Include="Model\Intv2PcPort.cs" />
+    <Compile Include="Model\KeyboardMap.cs" />
+    <Compile Include="Model\PrescaleMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Strings.resx">

@@ -51,6 +51,7 @@
              behaviors:ShowHideGridViewColumnBehavior.AllowHideColumns="True"
              behaviors:InPlaceEditBehavior.IsEditing="{Binding IsEditing, Mode=TwoWay}"
              behaviors:DynamicContextMenuBehavior.DynamicContextMenu="True"
+             behaviors:DoubleClickBehavior.DoubleClickCommand="{x:Static intvView:RomListView.DoubleClickItemCommand}"
              >
             <ListView.Resources>
               <DataTemplate x:Key="HeaderTemplateArrowUp">

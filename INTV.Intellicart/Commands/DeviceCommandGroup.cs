@@ -407,6 +407,7 @@ namespace INTV.Intellicart.Commands
             CommandList.Add(IntellicartToolsMenuCommand);
             CommandList.Add(SelectPortCommand);
             CommandList.Add(DownloadCommand);
+            CommandList.Add(BrowseAndDownloadCommand);
             AddPlatformCommands();
         }
 

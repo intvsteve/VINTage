@@ -94,9 +94,9 @@ namespace INTV.Shared.View
         /// <returns>A new instance of SettingsDialog.</returns>
         public static SettingsDialog Create(string initialPage)
         {
-            if (!string.IsNullOrEmpty(activePage))
+            if (!string.IsNullOrEmpty(initialPage))
             {
-                LastSelectedPreferencesPage = activePage;
+                LastSelectedPreferencesPage = initialPage;
             }
             var settingsDialogController = new INTV.Shared.View.SettingsDialogController();
             var settingsDialog = settingsDialogController.Window;
@@ -112,6 +112,11 @@ namespace INTV.Shared.View
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(
             // base.Dispose(disposing);
+        }
+
+        private void ShowDialog()
+        {
+            this.ShowDialog();
         }
 
         private void SettingsPageSelected(object sender, System.EventArgs e)
@@ -140,7 +145,8 @@ namespace INTV.Shared.View
             {
                 if (Toolbar.Items.Length < PropertyPages.Count)
                 {
-                    var id = page.GetType().FullName;
+                    var pageAsDependencyObject = page as IFakeDependencyObject;
+                    var id = pageAsDependencyObject.DataContext.GetType().FullName;
                     item = new NSToolbarItem(id);
                     item.Label = pageName.TrimEnd(new char[] { '.' });
                     item.Image = page.GetType().LoadImageResource(icon);

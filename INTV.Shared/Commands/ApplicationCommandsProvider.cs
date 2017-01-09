@@ -29,6 +29,7 @@ namespace INTV.Shared.Commands
         public ApplicationCommandsProvider()
             : base("INTV.Shared.Commands.ApplicationCommandsProvider")
         {
+            Groups.Add(RootCommandGroup.Group);
             Groups.Add(ApplicationCommandGroup.Group);
 #if DEBUG
             Groups.Add(DebugCommandGroup.Group);

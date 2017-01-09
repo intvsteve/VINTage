@@ -240,8 +240,8 @@
                 </Ribbon:RibbonApplicationMenu>
             </Ribbon:Ribbon.ApplicationMenu>
             <Ribbon:RibbonTab x:Name="_home" Header="{Binding Path=Name, Source={x:Static intvCommands:RootCommandGroup.HomeRibbonTabCommand}, Mode=OneTime}">
-                <Ribbon:RibbonGroup Header="TESTING">
-                </Ribbon:RibbonGroup>
+                <!--<Ribbon:RibbonGroup Header="TESTING">
+                </Ribbon:RibbonGroup>-->
             </Ribbon:RibbonTab>
             <!--<Ribbon:RibbonTab Header="{x:Static intvViewModel:MainToolbarViewModel.JzIntvHeader}">
                 <Ribbon:RibbonGroup Header="{x:Static intvViewModel:MainToolbarViewModel.JzIntvDisplayGroupHeader}">

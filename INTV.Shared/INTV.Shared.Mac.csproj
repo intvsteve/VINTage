@@ -109,7 +109,6 @@
     <Compile Include="ViewModel\RomListSettingsPageViewModel.cs" />
     <Compile Include="ViewModel\RomListViewModel.cs" />
     <Compile Include="ViewModel\SerialPortConnectionViewModel.cs" />
-    <Compile Include="ViewModel\SingleInstanceApplicationCommands.cs" />
     <Compile Include="Utility\OSDispatcherTimer.cs" />
     <Compile Include="Behavior\SortCommandData.cs" />
     <Compile Include="View\FileBrowserDialogBase.cs" />

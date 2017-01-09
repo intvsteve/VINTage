@@ -37,7 +37,6 @@ namespace INTV.Shared.Commands
         public RomListCommandsProvider()
             : base(ProviderName)
         {
-            Groups.Add(RootCommandGroup.Group);
             Groups.Add(RomListCommandGroup.Group);
         }
 

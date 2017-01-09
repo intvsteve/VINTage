@@ -31,6 +31,11 @@ namespace INTV.Shared.Commands
     public static partial class CommandProviderHelpers
     {
         /// <summary>
+        /// Additional text to append to controls such as RibbonSplitButton to indicate more commands are available.
+        /// </summary>
+        public static readonly string RibbonSplitButtonExtraToolTipDescription = Resources.Strings.RibbonSplitButton_ExtraToolTipDescription;
+
+        /// <summary>
         /// Gets the command for a given unique identifier from a specific command provider.
         /// </summary>
         /// <param name="commandProvider">The command provider to search for the unique identifier.</param>

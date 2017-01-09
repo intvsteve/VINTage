@@ -36,6 +36,11 @@ namespace INTV.Shared.Utility
     public static partial class PathUtils
     {
         /// <summary>
+        /// Default file extension for a program.
+        /// </summary>
+        public static readonly string ProgramSuffix = string.Empty;
+
+        /// <summary>
         /// Determines if is file path is a URL presented as a string.
         /// </summary>
         /// <param name="path">An absolute path to test to see if it's a file URL-style path.</param>
@@ -143,6 +148,11 @@ namespace INTV.Shared.Utility
         public static void RevealInFileSystem(this IEnumerable<string> files)
         {
             NSWorkspace.SharedWorkspace.ActivateFileViewer(files.Select(f => NSUrl.FromFilename(f)).ToArray());
+        }
+
+        private static string OSFixUpSeparators(string path)
+        {
+            return path;
         }
     }
 }

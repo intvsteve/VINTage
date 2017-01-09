@@ -147,6 +147,15 @@
     <EmbeddedResource Include="Resources\Images\port-icon_32x32.png">
       <LogicalName>Resources/Images/port-icon_32x32.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_16xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xMD.png">
+      <LogicalName>Resources/Images/browse_download_play_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_32xLG.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="View\IntellicartSettingsPage.xib" />

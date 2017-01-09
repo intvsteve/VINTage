@@ -35,11 +35,6 @@ namespace INTV.Shared.Commands
     public static partial class CommandProviderHelpers
     {
         /// <summary>
-        /// Additional text to append to controls such as RibbonSplitButton to indicate more commands are available.
-        /// </summary>
-        public static readonly string RibbonSplitButtonExtraToolTipDescription = Resources.Strings.RibbonSplitButton_ExtraToolTipDescription;
-
-        /// <summary>
         /// Generic tool tip text for the dropdown split part of a RibbonSplitButton.
         /// </summary>
         public static readonly string RibbonSplitButtonToggleButtonTip = Resources.Strings.RibbonSplitButton_ToggleButtonToolTip;

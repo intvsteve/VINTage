@@ -35,17 +35,16 @@ namespace INTV.Shared.Utility
         /// </summary>
         public static readonly string BackupSuffix = ".bak";
 
-#if WIN
         /// <summary>
-        /// Default file extension for a program.
+        /// Given a Uri form of a file path, return one suitable for use with file system APIs.
         /// </summary>
-        public static readonly string ProgramSuffix = ".exe";
-#else
-        /// <summary>
-        /// Default file extension for a program.
-        /// </summary>
-        public static readonly string ProgramSuffix = string.Empty;
-#endif
+        /// <param name="path">The file path to convert to a string.</param>
+        /// <returns>The file absolute file path, using separators suitable for file system APIs.</returns>
+        public static string FixUpUriPath(this Uri path)
+        {
+            var pathString = OSFixUpSeparators(Uri.UnescapeDataString(path.AbsolutePath));
+            return pathString;
+        }
 
         /// <summary>
         /// Computes the relative path between two paths.
@@ -72,7 +71,7 @@ namespace INTV.Shared.Utility
                 relativeTo += Path.DirectorySeparatorChar;
             }
             Uri relativeToUri = new Uri(relativeTo);
-            return Uri.UnescapeDataString(relativeToUri.MakeRelativeUri(pathUri).ToString().Replace('/', Path.DirectorySeparatorChar));
+            return OSFixUpSeparators(Uri.UnescapeDataString(relativeToUri.MakeRelativeUri(pathUri).ToString()));
         }
 
         /// <summary>

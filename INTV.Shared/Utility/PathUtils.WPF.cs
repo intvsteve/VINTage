@@ -30,6 +30,11 @@ namespace INTV.Shared.Utility
     public static partial class PathUtils
     {
         /// <summary>
+        /// Default file extension for a program.
+        /// </summary>
+        public static readonly string ProgramSuffix = ".exe";
+
+        /// <summary>
         /// Gets the Documents directory.
         /// </summary>
         /// <returns>The documents directory.</returns>
@@ -143,6 +148,11 @@ namespace INTV.Shared.Utility
                 NativeMethods.ReleaseComObject(directory);
                 NativeMethods.ReleaseComObject(filesToSelectIntPtrs);
             }
+        }
+
+        private static string OSFixUpSeparators(string path)
+        {
+            return path.Replace('/', Path.DirectorySeparatorChar);
         }
     }
 }

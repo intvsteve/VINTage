@@ -124,7 +124,7 @@ namespace INTV.LtoFlash.Model
                 else if ((string.IsNullOrEmpty(rom.ConfigPath) || !System.IO.File.Exists(rom.ConfigPath)) && System.IO.File.Exists(cachedConfigPath))
                 {
                     // The ROM's config path doesn't exist, but there's one in the cache. Remove it.
-                    System.IO.File.Delete(cachedConfigPath);
+                    FileUtilities.DeleteFile(cachedConfigPath, false, 2);
                     cachedConfigPath = null; // this is OK, because the ClearReadOnlyAttribute() extension method is null-safe
                 }
                 cachedRomPath.ClearReadOnlyAttribute();

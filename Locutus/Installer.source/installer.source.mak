@@ -10,13 +10,26 @@
 NAME ?= LTOFlash
 VERSION ?= 1.0.0.2587
 
-ifneq (,$(SVN))
-  SOURCE_DIR ?= $(SVN)
+ifneq (,$(GIT_REPO))
+  # This assumes GitHub, which supports 'svn export' to create a clean export
+  # of the remote repo. GitHub doesn't support 'git archive --remote' yet.
+  # Alternative would be to clone and then archve the local copy... or just
+  # use git archive in the local directory: git archive -o <output.zip> HEAD
+  $(info --------------------------- CREATING GITHUB EXPORT ---------------------------)
+  SVN_REPO = $(GIT_REPO)
+  SOURCE_DIR = $(SVN_REPO)
 else
-  SOURCE_DIR ?= ../..
+  ifneq (,$(SVN_REPO))
+    $(info ----------------------------- CREATING SVN EXPORT ----------------------------)
+    SOURCE_DIR = $(SVN_REPO)
+  else
+    SOURCE_DIR ?= ../..
+  endif
 endif
 
-ifeq (,$(SVN))
+# This is the legacy approach, which will include all the local junk that may
+# have polluted your local copy of the source. Beware!
+ifeq (,$(SVN_REPO))
   SOURCE_SUBDIRS ?= \
     Locutus
 
@@ -51,9 +64,15 @@ TARGET_ZIP = $(NAME).source-$(VERSION).zip
 .PHONY: all
 all: $(TARGET_ZIP)
 
-ifneq (,$(SVN))
+ifneq (,$(SVN_REPO))
+
 $(TARGET_DIR):
+	@echo
+	@echo --------------------- Exporting Source From Repo ---------------------
+	@echo ... Exporting from $(SOURCE_DIR) ...
 	svn export $(SOURCE_DIR) $(TARGET_DIR)
+	@rm -f $(TARGET_DIR)/.gitattributes
+	@rm -f $(TARGET_DIR)/.gitignore
 
 $(TARGET_ZIP): $(TARGET_DIR)
 	@echo
@@ -75,6 +94,7 @@ $(addprefix $(TARGET_DIR)/,$(1)): $(TARGET_DIR)
 
 endef
 
+# Generate rules to create target subdirectories.
 $(foreach srcsubdir,$(SOURCE_SUBDIRS),$(eval $(call CreateTargetSubDirRule,$(srcsubdir))))
 
 define CreateCopySourceDirRule
@@ -91,6 +111,7 @@ $(addprefix $(TARGET_DIR)/,$(1)): $(addprefix $(SOURCE_DIR)/,$(1))
 
 endef
 
+# Generate rules to copy source directories.
 $(foreach srcdir,$(SOURCE_DIRS),$(eval $(call CreateCopySourceDirRule,$(srcdir))))
 
 define CreateCopySourceFileRule
@@ -100,8 +121,8 @@ $(addprefix $(TARGET_DIR)/,$(1)): $(addprefix $(SOURCE_DIR)/,$(1))
 
 endef
 
+# Generate rules to copy specific source files.
 $(foreach srcfile,$(SOURCE_FILES),$(eval $(call CreateCopySourceFileRule,$(srcfile))))
-
 
 $(TARGET_ZIP): $(addprefix $(TARGET_DIR)/,$(SOURCE_SUBDIRS)) $(addprefix $(TARGET_DIR)/,$(SOURCE_DIRS)) $(addprefix $(TARGET_DIR)/,$(SOURCE_FILES))
 	@echo

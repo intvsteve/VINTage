@@ -7,7 +7,7 @@ rem #  %2 : The Visual Studio solution name, used to identify target
 rem #
 rem # This batch file provides a bridge between the Microsoft Visual Studio
 rem # project build system and the MSYS / MSYS2 environment that is used
-rem # to create a zip file containng the source code. Whether MSYS is
+rem # to create a zip file containing the source code. Whether MSYS is
 rem # required depends on the source control system in use and whether
 rem # you feel like either creating an nmake file, or rewriting this .bat
 rem # file to do everything directly.
@@ -19,19 +19,29 @@ rem #
 rem # To enable the Installer.source project to build and clean the zip
 rem # file, you must define the following variables:
 rem #   MSYS_PATH: the path for your MSYS environment
-rem #   GIT_REPO: the URL of the source in a GitHub repo
-rem #   SVN_REPO: The URL of the source in a SVN repo
+rem #     and ONE of the following:
+rem #       GIT_REPO: the source in a Git(Hub) repo
+rem #         -- OR --
+rem #       SVN_REPO: The URL of the source in a SVN repo
 rem #
 rem # Also, you probably do not want to have any spaces in your path. ;)
 rem #
 
-rem # MSYS_PATH is required for make and zip. The rest is up to you.
+rem # MSYS_PATH is required for make and zip (if needed).
+rem # The rest is up to you.
 set MSYS_PATH=D:\Users\Steve\Projects\MinGW\msys\1.0\bin
 
 if [%MSYS_PATH%] == [] goto SkipBuild
 
-rem # If you specify a GitHub repo, a svn export of the repo is created.
-set GIT_REPO=https://github.com/intvsteve/VINTage/trunk
+rem # If you specify a GitHub repo, a svn export of the repo is created
+rem # ONLY IF YOU SET REMOTE_REPO=1 !!! If REMOTE_REPO!=1, it is assumed
+rem # that the value if GIT_REPO is a RELATIVE PATH to the local repo to
+rem # archive. It's also assumed that in the makefile, $(CURDIR) is correct.
+rem set GIT_REPO=https://github.com/intvsteve/VINTage/trunk
+set GIT_REPO=../..
+
+rem # If exporting a remote GitHub repo, NOT the local one, set this to 1.
+rem set REMOTE_REPO=1
 
 rem # If GIT_REPO is empty, fall through to the SVN repo.
 if [%GIT_REPO%] == [] goto TrySVN
@@ -40,7 +50,10 @@ goto RunMake
 
 :TrySVN
 rem # If you specify an SVN repo, it will be exported to a .zip file.
-rem set SVN_REPO=svn://......
+rem # Use a URL for remote repo, or a relative path (relative to $(CURDIR)
+rem # to create an export of the local SVN repo.
+rem set SVN_REPO=svn://remote/repo/path
+rem set SVN_REPO=../..
 
 if [%SVN_REPO%] == [] goto SkipBuild
 

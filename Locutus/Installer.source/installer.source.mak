@@ -11,13 +11,21 @@ NAME ?= LTOFlash
 VERSION ?= 1.0.0.2587
 
 ifneq (,$(GIT_REPO))
-  # This assumes GitHub, which supports 'svn export' to create a clean export
-  # of the remote repo. GitHub doesn't support 'git archive --remote' yet.
-  # Alternative would be to clone and then archve the local copy... or just
-  # use git archive in the local directory: git archive -o <output.zip> HEAD
-  $(info --------------------------- CREATING GITHUB EXPORT ---------------------------)
-  SVN_REPO = $(GIT_REPO)
-  SOURCE_DIR = $(SVN_REPO)
+  $(info ---------------------------- CREATING GIT EXPORT -----------------------------)
+  
+  # This assumes that if REMOTE_REPO == 1, you're referring to a remote GitHub
+  # repo, which supports 'svn export' to create a clean export of the remote repo.
+  # GitHub doesn't support 'git archive --remote' as of this writing.
+  # Otherwise, archive the local repo.
+  ifeq ($(REMOTE_REPO),1)
+    SVN_REPO := $(GIT_REPO)
+    SOURCE_DIR := $(SVN_REPO)
+    GIT_REPO := 
+  else
+    # It's assumed $(CURDIR) is the directory containing this makefile, and that
+    # $(GIT_REPO) is a relative path to the desired local repo.
+    SOURCE_DIR ?= $(abspath $(CURDIR)/$(GIT_REPO))
+  endif
 else
   ifneq (,$(SVN_REPO))
     $(info ----------------------------- CREATING SVN EXPORT ----------------------------)
@@ -29,7 +37,8 @@ endif
 
 # This is the legacy approach, which will include all the local junk that may
 # have polluted your local copy of the source. Beware!
-ifeq (,$(SVN_REPO))
+ifeq (,$(SVN_REPO)$(GIT_REPO))
+    $(info ----------------------------- SOURCE DIRECTLY ----------------------------)
   SOURCE_SUBDIRS ?= \
     Locutus
 
@@ -64,8 +73,18 @@ TARGET_ZIP = $(NAME).source-$(VERSION).zip
 .PHONY: all
 all: $(TARGET_ZIP)
 
-ifneq (,$(SVN_REPO))
+ifneq (,$(GIT_REPO))
+# Export the local Git repo.
+$(TARGET_ZIP):
+	@echo
+	@echo -------------------- Creating Source Distribution --------------------
+	@echo ... Exporting from $(SOURCE_DIR) ...
+	cd $(SOURCE_DIR); git archive -o $(CURDIR)/$@ HEAD
+	@echo
 
+else
+  ifneq (,$(SVN_REPO))
+# Export the SVN repo, local or remote. Could also be a remote GitHub repo.
 $(TARGET_DIR):
 	@echo
 	@echo --------------------- Exporting Source From Repo ---------------------
@@ -81,8 +100,8 @@ $(TARGET_ZIP): $(TARGET_DIR)
 	@zip -rq $@ "$(TARGET_DIR)"
 	@echo
 
-else
-
+  else
+# Legacy "dump whatever's here".
 $(TARGET_DIR):
 	@mkdir -p $@
 
@@ -131,6 +150,7 @@ $(TARGET_ZIP): $(addprefix $(TARGET_DIR)/,$(SOURCE_SUBDIRS)) $(addprefix $(TARGE
 	@zip -rq $@ "$(TARGET_DIR)"
 	@echo
 
+  endif
 endif
 
 .PHONY: clean

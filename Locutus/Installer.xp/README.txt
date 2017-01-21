@@ -25,6 +25,37 @@ The installer can be run on later versions of Windows. However, it is
 strongly recommended that newer operating systems (Windows Vista and later)
 run the installer produced by the Installer.desktop project.
 
+NOTE:
+-----
+In order to have InstallShield LE 2013 produce an installer with the desired
+graphics, it was necessary to replace the setup.gif image in the installed
+location. This file (setup.gif) must be placed in the following location:
+
+  [Program Files (x86)]\InstallShield\2013LE\Support\Themes\InstallShield Blue Theme
+
+InstallShield LE 2015 exhibits the same behavior regarding the setup.gif
+image. You must replace the file in the install location.
+
+NOTE:
+-----
+In order to get the required .NET redistributables for the InstallShield
+installers, you must, after installing InstallShield LE 20xx:
+  1) Launch Visual Studio *as administrator*
+  2) Open a solution that includes the Installer projects
+  3) In the Installer.desktop or Installer.xp project:
+    a) Open Section 2: Specify Application Data
+    b) Double-click on the Redistributables item
+    c) For each item that is checked, right-click and choose:
+         'Download Selected Item...'
+           -- or --
+       choose (once?):
+         'Download All Required Items...'
+       This step ensures that the necessary redistributable files, such as
+       the required .NET installers, are available.
+
+For the Windows xp solutions, the installer requires the Microsoft .NET
+Framework 4.0 Full redistributable.
+
 DEPENDENCIES
 =============================================================================
 The integration with Visual Studio requires inclusion in a Visual Studio
@@ -36,3 +67,7 @@ configured to produce an installer as part of the build process follow the
 naming convention:
 
 Locutus.xp.installer[.*].sln
+
+NOTE:
+-----
+The installer project should only be built from Release builds!

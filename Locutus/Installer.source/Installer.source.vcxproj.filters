@@ -2,8 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Text Include="README.txt" />
-    <None Include="installer_zip.bat" />
-    <None Include="installer_zip.mak" />
     <Text Include="license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="installer.source.bat" />
+    <None Include="installer.source.mak" />
   </ItemGroup>
 </Project>

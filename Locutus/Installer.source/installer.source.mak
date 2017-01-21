@@ -10,13 +10,35 @@
 NAME ?= LTOFlash
 VERSION ?= 1.0.0.2587
 
-ifneq (,$(SVN))
-  SOURCE_DIR ?= $(SVN)
+ifneq (,$(GIT_REPO))
+  $(info ---------------------------- CREATING GIT EXPORT -----------------------------)
+  
+  # This assumes that if REMOTE_REPO == 1, you're referring to a remote GitHub
+  # repo, which supports 'svn export' to create a clean export of the remote repo.
+  # GitHub doesn't support 'git archive --remote' as of this writing.
+  # Otherwise, archive the local repo.
+  ifeq ($(REMOTE_REPO),1)
+    SVN_REPO := $(GIT_REPO)
+    SOURCE_DIR := $(SVN_REPO)
+    GIT_REPO := 
+  else
+    # It's assumed $(CURDIR) is the directory containing this makefile, and that
+    # $(GIT_REPO) is a relative path to the desired local repo.
+    SOURCE_DIR ?= $(abspath $(CURDIR)/$(GIT_REPO))
+  endif
 else
-  SOURCE_DIR ?= ../..
+  ifneq (,$(SVN_REPO))
+    $(info ----------------------------- CREATING SVN EXPORT ----------------------------)
+    SOURCE_DIR = $(SVN_REPO)
+  else
+    SOURCE_DIR ?= ../..
+  endif
 endif
 
-ifeq (,$(SVN))
+# This is the legacy approach, which will include all the local junk that may
+# have polluted your local copy of the source. Beware!
+ifeq (,$(SVN_REPO)$(GIT_REPO))
+    $(info ----------------------------- SOURCE DIRECTLY ----------------------------)
   SOURCE_SUBDIRS ?= \
     Locutus
 
@@ -51,9 +73,25 @@ TARGET_ZIP = $(NAME).source-$(VERSION).zip
 .PHONY: all
 all: $(TARGET_ZIP)
 
-ifneq (,$(SVN))
+ifneq (,$(GIT_REPO))
+# Export the local Git repo.
+$(TARGET_ZIP):
+	@echo
+	@echo -------------------- Creating Source Distribution --------------------
+	@echo ... Exporting from $(SOURCE_DIR) ...
+	cd $(SOURCE_DIR); git archive -o $(CURDIR)/$@ HEAD
+	@echo
+
+else
+  ifneq (,$(SVN_REPO))
+# Export the SVN repo, local or remote. Could also be a remote GitHub repo.
 $(TARGET_DIR):
+	@echo
+	@echo --------------------- Exporting Source From Repo ---------------------
+	@echo ... Exporting from $(SOURCE_DIR) ...
 	svn export $(SOURCE_DIR) $(TARGET_DIR)
+	@rm -f $(TARGET_DIR)/.gitattributes
+	@rm -f $(TARGET_DIR)/.gitignore
 
 $(TARGET_ZIP): $(TARGET_DIR)
 	@echo
@@ -62,8 +100,8 @@ $(TARGET_ZIP): $(TARGET_DIR)
 	@zip -rq $@ "$(TARGET_DIR)"
 	@echo
 
-else
-
+  else
+# Legacy "dump whatever's here".
 $(TARGET_DIR):
 	@mkdir -p $@
 
@@ -75,6 +113,7 @@ $(addprefix $(TARGET_DIR)/,$(1)): $(TARGET_DIR)
 
 endef
 
+# Generate rules to create target subdirectories.
 $(foreach srcsubdir,$(SOURCE_SUBDIRS),$(eval $(call CreateTargetSubDirRule,$(srcsubdir))))
 
 define CreateCopySourceDirRule
@@ -91,6 +130,7 @@ $(addprefix $(TARGET_DIR)/,$(1)): $(addprefix $(SOURCE_DIR)/,$(1))
 
 endef
 
+# Generate rules to copy source directories.
 $(foreach srcdir,$(SOURCE_DIRS),$(eval $(call CreateCopySourceDirRule,$(srcdir))))
 
 define CreateCopySourceFileRule
@@ -100,8 +140,8 @@ $(addprefix $(TARGET_DIR)/,$(1)): $(addprefix $(SOURCE_DIR)/,$(1))
 
 endef
 
+# Generate rules to copy specific source files.
 $(foreach srcfile,$(SOURCE_FILES),$(eval $(call CreateCopySourceFileRule,$(srcfile))))
-
 
 $(TARGET_ZIP): $(addprefix $(TARGET_DIR)/,$(SOURCE_SUBDIRS)) $(addprefix $(TARGET_DIR)/,$(SOURCE_DIRS)) $(addprefix $(TARGET_DIR)/,$(SOURCE_FILES))
 	@echo
@@ -110,6 +150,7 @@ $(TARGET_ZIP): $(addprefix $(TARGET_DIR)/,$(SOURCE_SUBDIRS)) $(addprefix $(TARGE
 	@zip -rq $@ "$(TARGET_DIR)"
 	@echo
 
+  endif
 endif
 
 .PHONY: clean

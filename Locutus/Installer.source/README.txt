@@ -2,28 +2,22 @@
 Installer.source
 =============================================================================
 
-This directory contains the InstallShield LE 2013 installer project for the
-source code for the LTO Flash! User Interface.
+This directory contains a GNU Makefile and a Windows batch file used to
+create an archive of the source code for the LTO Flash! User Interface.
 
 REQUIREMENTS
 =============================================================================
-The InstallShield project Installer.source was created using InstallShield
-Limited Edition 2013.
+An environment that supports the GNU 'make' utility (Mac) and a source
+control system containing the code to archive. Currently supported tools
+are SVN and GitHub.
 
-Image assets for the installer are located in the ../Installer directory
-relative to this one.
-
-To build the installer, the InstallShield Project must be included in the
-same Visual Studio solution as the projects necessary to build the entire
-LtoFlash project.
+In addition, the zip utility may be required.
 
 Target Platforms:
 --------------------
-Windows
+Mac OS X, Windows
 
-The installer produced by this project will only allow product installation
-on any version of Windows
-
+	
 DEPENDENCIES
 =============================================================================
 The integration with Visual Studio requires inclusion in a Visual Studio
@@ -35,3 +29,7 @@ configured to produce an installer as part of the build process follow the
 naming convention:
 
 Locutus.*.installer[.*].sln
+
+NOTE:
+-----
+The source archive project should only be built from Release builds!

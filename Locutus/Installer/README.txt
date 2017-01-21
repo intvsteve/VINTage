@@ -69,3 +69,8 @@ NOTE (Mac OS X Disk Image (.dmg) Installer):
 --------------------------------------------
 The LTOFlashBackground-with-instructions.png file is used to provide the
 background image for the disk image (DMG) used for Mac OS X distribution.
+
+
+NOTE:
+-----
+The installer project should only be built from Release builds!

@@ -91,3 +91,7 @@ configured to produce an installer as part of the build process follow the
 naming convention:
 
 Locutus.desktop.installer[.*].sln
+
+NOTE:
+-----
+The installer project should only be built from Release builds!

@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CommandLineMode_AutomaticWithAdditionalArguments_DisplayName" xml:space="preserve">
+    <value>Automatically generate with additional arguments</value>
+  </data>
+  <data name="CommandLineMode_Automatic_DisplayName" xml:space="preserve">
+    <value>Automatically generate command line</value>
+  </data>
+  <data name="CommandLineMode_Custom_DisplayName" xml:space="preserve">
+    <value>Use custom command line</value>
+  </data>
+  <data name="EnableFeature_Always" xml:space="preserve">
+    <value>Always</value>
+  </data>
+  <data name="EnableFeature_Never" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="EnableFeature_UseRomSetting" xml:space="preserve">
+    <value>Use ROM Setting</value>
+  </data>
+  <data name="SettingsPage_AdvancedTabName" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="SettingsPage_Advanced_AdditionalArguments_Hint" xml:space="preserve">
+    <value>Additional arguments</value>
+  </data>
+  <data name="SettingsPage_Advanced_AdditionalArguments_Tip" xml:space="preserve">
+    <value>Provide command line arguments to use in addition to the automatically generated arguments</value>
+  </data>
+  <data name="SettingsPage_Advanced_CustomCommandLine_Hint" xml:space="preserve">
+    <value>Custom command line</value>
+  </data>
+  <data name="SettingsPage_Advanced_CustomCommandLine_Tip" xml:space="preserve">
+    <value>Supply your own command line arguments; only the ROM path and, optionally, ROM-specific arguments will be generated automatically</value>
+  </data>
+  <data name="SettingsPage_Advanced_UseRomSettingsNote_Label" xml:space="preserve">
+    <value>NOTE: This will add settings based on ROM features if so configured in General settings</value>
+  </data>
+  <data name="SettingsPage_Advanced_UseRomSettingsWithCustomCommandLine_Label" xml:space="preserve">
+    <value>Use settings defined by ROM</value>
+  </data>
+  <data name="SettingsPage_AllowMultipleInstances_Label" xml:space="preserve">
+    <value>Allow multiple copies to run</value>
+  </data>
+  <data name="SettingsPage_DisplayTabName" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="SettingsPage_Display_EnableMouse_Label" xml:space="preserve">
+    <value>Enable mouse</value>
+  </data>
+  <data name="SettingsPage_Display_Mode_Label" xml:space="preserve">
+    <value>Display Mode</value>
+  </data>
+  <data name="SettingsPage_Display_Mode_Tip" xml:space="preserve">
+    <value>Select the display mode to use</value>
+  </data>
+  <data name="SettingsPage_Display_ResetResolution_Label" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="SettingsPage_Display_ResetResolution_Tip" xml:space="preserve">
+    <value>Reset to the default screen resolution</value>
+  </data>
+  <data name="SettingsPage_Display_Resolution_Label" xml:space="preserve">
+    <value>Display Resolution</value>
+  </data>
+  <data name="SettingsPage_Display_Resolution_Tip" xml:space="preserve">
+    <value>Select the screen resolution to use</value>
+  </data>
+  <data name="SettingsPage_GeneralTabName" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="SettingsPage_General_EnableECSKeyboardMap_Label" xml:space="preserve">
+    <value>Use ECS keyboard map for ECS ROMs</value>
+  </data>
+  <data name="SettingsPage_General_EnableECSKeyboardMap_Note" xml:space="preserve">
+    <value>NOTE: This may override initial keyboard map setting</value>
+  </data>
+  <data name="SettingsPage_General_EnableECS_Label" xml:space="preserve">
+    <value>Enable ECS</value>
+  </data>
+  <data name="SettingsPage_General_EnableEcs_Tip" xml:space="preserve">
+    <value>Select the policy used to enable ECS emulation</value>
+  </data>
+  <data name="SettingsPage_General_EnableIntellivoice_Label" xml:space="preserve">
+    <value>Enable Intellivoice</value>
+  </data>
+  <data name="SettingsPage_General_EnableIntellivoice_Tip" xml:space="preserve">
+    <value>Select the policy used to enable Intellivoice emulation</value>
+  </data>
+  <data name="SettingsPage_General_EnableJlp_Tip" xml:space="preserve">
+    <value>Select the policy used to enable JLP emulation</value>
+  </data>
+  <data name="SettingsPage_General_EnableLocutus_Tip" xml:space="preserve">
+    <value>Select the policy used to enable LTO Flash! emulation</value>
+  </data>
+  <data name="SettingsPage_General_JLPFeatures_Label" xml:space="preserve">
+    <value>JLP Features</value>
+  </data>
+  <data name="SettingsPage_InputTabName" xml:space="preserve">
+    <value>Input</value>
+  </data>
+  <data name="SettingsPage_Input_InitialKeyboardMap_Label" xml:space="preserve">
+    <value>Initial Keyboard Map</value>
+  </data>
+  <data name="SettingsPage_Input_InitialKeyboardMap_Tip" xml:space="preserve">
+    <value>Select initial keyboard map to use</value>
+  </data>
+  <data name="SettingsPage_Input_Joystick0Config_Hint" xml:space="preserve">
+    <value>Joystick 1 configuration</value>
+  </data>
+  <data name="SettingsPage_Input_Joystick0Config_Label" xml:space="preserve">
+    <value>Joystick 1</value>
+  </data>
+  <data name="SettingsPage_Input_Joystick1Config_Hint" xml:space="preserve">
+    <value>Joystick 2 configuration</value>
+  </data>
+  <data name="SettingsPage_Input_Joystick1Config_Label" xml:space="preserve">
+    <value>Joystick 2</value>
+  </data>
+  <data name="SettingsPage_Input_Joystick2Config_Hint" xml:space="preserve">
+    <value>Joystick 3 configuration</value>
+  </data>
+  <data name="SettingsPage_Input_Joystick2Config_Label" xml:space="preserve">
+    <value>Joystick 3</value>
+  </data>
+  <data name="SettingsPage_Input_Joystick3Config_Hint" xml:space="preserve">
+    <value>Joystick 4 configuration</value>
+  </data>
+  <data name="SettingsPage_Input_Joystick3Config_Label" xml:space="preserve">
+    <value>Joystick 4</value>
+  </data>
+  <data name="SettingsPage_Input_JoystickConfigTip" xml:space="preserve">
+    <value>Provide configuration for a joystick</value>
+  </data>
+  <data name="SettingsPage_Input_KeyboardHackfilePath_BrowseTip" xml:space="preserve">
+    <value>Select keyboard hackfile</value>
+  </data>
+  <data name="SettingsPage_Input_KeyboardHackfilePath_ClearTip" xml:space="preserve">
+    <value>Reset keyboard hackfile</value>
+  </data>
+  <data name="SettingsPage_Input_KeyboardHackfilePath_Hint" xml:space="preserve">
+    <value>Keyboard hackfile</value>
+  </data>
+  <data name="SettingsPage_Input_KeyboardHackfilePath_Label" xml:space="preserve">
+    <value>Keyboard</value>
+  </data>
+  <data name="SettingsPage_MuteSound_Label" xml:space="preserve">
+    <value>Mute sound</value>
+  </data>
+  <data name="SettingsPage_PathsTabName" xml:space="preserve">
+    <value>Paths</value>
+  </data>
+  <data name="SettingsPage_Paths_BrowseForEcs_Tip" xml:space="preserve">
+    <value>Locate the ECS ROM</value>
+  </data>
+  <data name="SettingsPage_Paths_BrowseForExec_Tip" xml:space="preserve">
+    <value>Locate the EXEC ROM</value>
+  </data>
+  <data name="SettingsPage_Paths_BrowseForGrom_Tip" xml:space="preserve">
+    <value>Locate the GROM ROM</value>
+  </data>
+  <data name="SettingsPage_Paths_BrowseForJzIntv_Tip" xml:space="preserve">
+    <value>Locate the jzIntv emulator program</value>
+  </data>
+  <data name="SettingsPage_Paths_Ecs_Label" xml:space="preserve">
+    <value>ECS</value>
+  </data>
+  <data name="SettingsPage_Paths_Exec_Label" xml:space="preserve">
+    <value>EXEC</value>
+  </data>
+  <data name="SettingsPage_Paths_Grom_Label" xml:space="preserve">
+    <value>GROM</value>
+  </data>
+  <data name="SettingsPage_Paths_JzIntv_Hint" xml:space="preserve">
+    <value>jzIntv Emulator Path</value>
+  </data>
+  <data name="SettingsPage_Paths_JzIntv_Label" xml:space="preserve">
+    <value>jzIntv</value>
+  </data>
+  <data name="SettingsPage_Paths_ResetEcsPath_Tip" xml:space="preserve">
+    <value>Clear the ECS ROM path</value>
+  </data>
+  <data name="SettingsPage_Paths_ResetExecPath_Tip" xml:space="preserve">
+    <value>Clear the EXEC ROM path</value>
+  </data>
+  <data name="SettingsPage_Paths_ResetGromPath_Tip" xml:space="preserve">
+    <value>Clear the GROM ROM path</value>
+  </data>
+  <data name="SettingsPage_Paths_ResetJzIntvPath_Tip" xml:space="preserve">
+    <value>Clear the jzIntv emulator path</value>
+  </data>
+  <data name="SettingsPage_Paths_Rom_Hint" xml:space="preserve">
+    <value>Default: jzIntv Directory</value>
+  </data>
+  <data name="SettingsPage_Title" xml:space="preserve">
+    <value>jzIntv</value>
+  </data>
+</root>

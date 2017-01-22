@@ -1040,7 +1040,7 @@ does not appear to be a valid ROM file.</value>
     <value>Unable to Load and Start</value>
   </data>
   <data name="DownloadAndPlayPromptCommand_Name" xml:space="preserve">
-    <value>Browse &amp; Play...</value>
+    <value>Browse &amp; Play on LTO Flash!...</value>
   </data>
   <data name="DownloadAndPlayPromptCommand_TipDescription" xml:space="preserve">
     <value>Browse to select a ROM, then run it. Your LTO Flash! must be plugged into an Intellivision console with the power turned on, and not already running a program.</value>

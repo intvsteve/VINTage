@@ -105,7 +105,9 @@
     <Compile Include="Model\IntellicartModel.cs" />
     <Compile Include="Properties\Settings.Mac.cs" />
     <Compile Include="ViewModel\IntellicartViewModel.cs" />
-    <Compile Include="Resources\Strings.Designer.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\SettingsPageViewModel.cs" />
     <Compile Include="View\IntellicartSettingsPage.Mac.cs" />
     <Compile Include="View\IntellicartSettingsPage.Mac.designer.cs">
@@ -122,7 +124,11 @@
     <None Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Strings.resx" />
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <CustomToolNamespace>INTV.Intellicart.Resources</CustomToolNamespace>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Images\intellicart_32xMD.png">
       <LogicalName>Resources/Images/intellicart_32xMD.png</LogicalName>
     </EmbeddedResource>
@@ -140,6 +146,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Images\port-icon_32x32.png">
       <LogicalName>Resources/Images/port-icon_32x32.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_16xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xMD.png">
+      <LogicalName>Resources/Images/browse_download_play_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_32xLG.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

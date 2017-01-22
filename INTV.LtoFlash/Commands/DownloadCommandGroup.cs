@@ -1,5 +1,5 @@
 ﻿// <copyright file="DownloadCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -78,7 +78,7 @@ namespace INTV.LtoFlash.Commands
             MenuItemName = Resources.Strings.DownloadAndPlayCommand_MenuItemName,
             ContextMenuItemName = Resources.Strings.DownloadAndPlayCommand_MenuItemName,
             ToolTip = Resources.Strings.DownloadAndPlayCommand_TipDescription,
-            ToolTipTitle = Resources.Strings.DownloadAndPlayCommand_Name,
+            ToolTipTitle = Resources.Strings.DownloadAndPlayCommand_MenuItemName,
             ToolTipDescription = Resources.Strings.DownloadAndPlayCommand_TipDescription,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/download_play_32xLG_color.png"),
@@ -86,7 +86,6 @@ namespace INTV.LtoFlash.Commands
             KeyboardShortcutKey = "p",
             KeyboardShortcutModifiers = OSModifierKeys.Menu,
             Weight = 0,
-            VisualParent = INTV.Shared.Commands.RootCommandGroup.RootCommand,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.DownloadAndPlayProtocolCommands
         };
@@ -196,7 +195,7 @@ namespace INTV.LtoFlash.Commands
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/download_play_prompt_32xLG.png"),
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/download_play_prompt_16xLG.png"),
-            Weight = 0,
+            Weight = 0.01,
             KeyboardShortcutKey = "P",
             KeyboardShortcutModifiers = OSModifierKeys.Menu,
             PreferredParameterType = typeof(LtoFlashViewModel),
@@ -263,7 +262,6 @@ namespace INTV.LtoFlash.Commands
             LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/sync_to_device_32xLG.png"),
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/sync_to_device_16xLG.png"),
             Weight = 0.03,
-            VisualParent = RootCommandGroup.RootCommand,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SyncHostToDeviceProtocolCommands
         };
@@ -322,7 +320,7 @@ namespace INTV.LtoFlash.Commands
                 menuLayout.Save(configuration.GetMenuLayoutPath(device.UniqueId));
                 ltoFlashViewModel.HostPCMenuLayout.ClearItemStates(ltoFlashViewModel.AttachedPeripherals);
             }
-            SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new System.Action(() => SyncHostToDeviceCompleteDialog(cancelled, didShowProgress, ltoFlashViewModel, result.Item2)));
+            SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new System.Action(() => SyncHostToDeviceCompleteDialog(cancelled, didShowProgress, ltoFlashViewModel, result == null ? null : result.Item2)));
         }
 
         private static void SyncHostToDeviceCompleteDialog(bool cancelled, bool didShowProgress, LtoFlashViewModel ltoFlashViewModel, IDictionary<string, FailedOperationException> warnings)
@@ -353,7 +351,7 @@ namespace INTV.LtoFlash.Commands
                     message = Resources.Strings.SyncHostToDeviceCommandComplete_Message;
                 }
                 var result = OSMessageBoxResult.Yes;
-                if (warnings.Any())
+                if ((warnings != null) && warnings.Any())
                 {
                     var reportDialog = ReportDialog.Create(title, message);
                     reportDialog.ShowSendEmailButton = false;
@@ -468,7 +466,6 @@ namespace INTV.LtoFlash.Commands
             LargeIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/sync_from_device_32xLG.png"),
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/sync_from_device_16xLG.png"),
             Weight = 0.033,
-            VisualParent = INTV.Shared.Commands.RootCommandGroup.RootCommand,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SyncFromDeviceProtocolCommands
         };

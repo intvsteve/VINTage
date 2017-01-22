@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListCommandsProvider.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -37,8 +37,14 @@ namespace INTV.Shared.Commands
         public RomListCommandsProvider()
             : base(ProviderName)
         {
-            Groups.Add(RootCommandGroup.Group);
             Groups.Add(RomListCommandGroup.Group);
+        }
+
+        /// <inheritdoc />
+        /// <remarks>This should appear very early - but after app provider.</remarks>
+        public override double Weight
+        {
+            get { return -100; }
         }
     }
 }

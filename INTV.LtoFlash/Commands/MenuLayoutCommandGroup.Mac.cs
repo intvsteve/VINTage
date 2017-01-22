@@ -1,5 +1,5 @@
 ﻿// <copyright file="MenuLayoutCommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -182,11 +182,6 @@ namespace INTV.LtoFlash.Commands
 
             MenuLayoutGroupCommand.MenuParent = RootCommandGroup.EditMenuCommand;
             CommandList.Add(MenuLayoutGroupCommand.CreateSeparator(CommandLocation.Before));
-
-            CommandList.Add(MenuLayoutGroupCommand);
-            CommandList.Add(BackupMenuLayoutCommand);
-            CommandList.Add(RestoreMenuLayoutCommand);
-            CommandList.Add(EmptyMenuLayoutCommand);
 
             NewDirectoryCommand.MenuParent = RootCommandGroup.EditMenuCommand;
             NewDirectoryCommand.VisualParent = INTV.Shared.Commands.RootCommandGroup.RootCommand;

@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+
 namespace INTV.JzIntv.Model
 {
     /// <summary>

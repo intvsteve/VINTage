@@ -33,7 +33,14 @@ namespace INTV.Shared.View
     {
         #region Commands
 
-        public static RelayCommand DoubleClickItemCommand = new RelayCommand(OnDoubleClick);
+        #region DoubleClickItemCommand
+
+        /// <summary>
+        /// Command invoked when a ROM in the list is double-clicked.
+        /// </summary>
+        public static readonly RelayCommand DoubleClickItemCommand = new RelayCommand(OnDoubleClick);
+
+        #endregion // DoubleClickItemCommand
 
         #endregion // Commands
 

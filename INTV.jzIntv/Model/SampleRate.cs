@@ -65,33 +65,4 @@ namespace INTV.JzIntv.Model
         /// </summary>
         FortyEightK = 48000
     }
-/*
-    /// <summary>
-    /// Extension methods for the SampleRate enumeration.
-    /// </summary>
-    public static class SampleRateHelpers
-    {
-        private static readonly INTVFunhouse.JzIntv.Converter.SampleRateToStringConverter Converter = new INTVFunhouse.JzIntv.Converter.SampleRateToStringConverter();
-
-        /// <summary>
-        /// Converts a SampleRate value to a display string.
-        /// </summary>
-        /// <param name="sampleRate">The SampleRate to convert to a string.</param>
-        /// <returns>The SampleRate as a display string.</returns>
-        public static string ToDisplayString(this SampleRate sampleRate)
-        {
-            return Converter.Convert(sampleRate, typeof(string), null, System.Globalization.CultureInfo.CurrentCulture) as string;
-        }
-
-        /// <summary>
-        /// Creates a SampleRate value from a string.
-        /// </summary>
-        /// <param name="sampleRateDisplayString">The string to convert to a SampleRate value.</param>
-        /// <returns>A SampleRate value from the given string.</returns>
-        public static SampleRate FromDisplayString(this string sampleRateDisplayString)
-        {
-            return (SampleRate)Converter.ConvertBack(sampleRateDisplayString, typeof(SampleRate), null, System.Globalization.CultureInfo.CurrentCulture);
-        }
-    }
-    */
 }

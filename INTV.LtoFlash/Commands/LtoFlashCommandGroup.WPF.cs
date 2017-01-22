@@ -1,5 +1,5 @@
 ﻿// <copyright file="LtoFlashCommandGroup.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.Commands;
+using INTV.Shared.Utility;
+
 namespace INTV.LtoFlash.Commands
 {
     /// <summary>
@@ -35,9 +38,29 @@ namespace INTV.LtoFlash.Commands
             UniqueId = UniqueNameBase + ".LtoFlashRibbonTabCommand",
             Name = Resources.Strings.LtoFlashCommandGroup_Name,
             Weight = 0.1,
+            VisualParent = INTV.Shared.Commands.RootCommandGroup.RootCommand,
+            UseXamlResource = true
         };
 
         #endregion // LtoFlashRibbonTabCommand
+
+        #region LtoFlashHomeRibbonGroupCommand
+
+        /// <summary>
+        /// Group command for LTO Flash!
+        /// </summary>
+        public static readonly VisualDeviceCommand LtoFlashHomeRibbonGroupCommand = new VisualDeviceCommand(INTV.Shared.ComponentModel.RelayCommand.NoOp)
+        {
+            UniqueId = UniqueNameBase + ".LtoFlashHomeRibbonGroupCommand",
+            Name = Resources.Strings.LtoFlashCommandGroup_Name,
+            LargeIcon = typeof(LtoFlashCommandsProvider).LoadImageResource("Resources/Images/lto_flash_32xLG.png"),
+            SmallIcon = typeof(LtoFlashCommandsProvider).LoadImageResource("Resources/Images/lto_flash_16xLG.png"),
+            Weight = 0.3,
+            VisualParent = RootCommandGroup.HomeRibbonTabCommand,
+            UseXamlResource = true
+        };
+
+        #endregion // LtoFlashHomeRibbonGroupCommand
 
         private static void LaunchFtdiDriverInstaller()
         {
@@ -54,5 +77,19 @@ namespace INTV.LtoFlash.Commands
             var ftdiDriverInstallerPath = System.IO.Path.Combine(ftdiDriverInstallerDir, "CDM v2.12.06 WHQL Certified.exe");
             return ftdiDriverInstallerPath;
         }
+
+        #region CommandGroup
+
+        /// <inheritdoc />
+        partial void AddPlatformCommands()
+        {
+            LtoFlashGroupCommand.MenuParent = RootCommandGroup.ApplicationMenuCommand;
+            LtoFlashGroupCommand.Weight = 0.102;
+            CommandList.Add(LtoFlashGroupCommand);
+            CommandList.Add(LtoFlashRibbonTabCommand);
+            CommandList.Add(LtoFlashHomeRibbonGroupCommand);
+        }
+
+        #endregion // CommandGroup
     }
 }

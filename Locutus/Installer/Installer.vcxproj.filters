@@ -4,5 +4,6 @@
     <Text Include="README.txt" />
     <None Include="installer_zip.bat" />
     <None Include="installer_zip.mak" />
+    <Text Include="license.txt" />
   </ItemGroup>
 </Project>

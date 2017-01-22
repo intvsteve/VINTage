@@ -89,6 +89,8 @@ namespace INTV.Shared.ComponentModel
         /// Initializes a new instance of the RelayCommand class.
         /// </summary>
         /// <param name="toClone">The command to copy.</param>
+        /// <remarks>Some members (ToolTipIcon, BlockWhenAppIsBusy, UseXamlResource) are not cloned, but unsure why. If these are oversight, we could just
+        /// use MemberwiseClone() instead.</remarks>
         protected VisualRelayCommand(VisualRelayCommand toClone)
             : base(toClone)
         {

@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListCommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -79,26 +79,6 @@ namespace INTV.Shared.Commands
         }
         private object _progressIndicatorViewModel;
 
-        /// <inheritdoc/>
-        public override NSObject CreateVisualForCommand(ICommand command)
-        {
-            var visual = base.CreateVisualForCommand(command);
-            return visual;
-        }
-
-        /// <inheritdoc/>
-        public override NSMenuItem CreateMenuItemForCommand(ICommand command)
-        {
-            var menuItem = base.CreateMenuItemForCommand(command);
-            var relayCommand = command as RelayCommand;
-            if (relayCommand.UniqueId == RomListCommandGroup.ShowRomInfoCommand.UniqueId)
-            {
-                var showDetails = Properties.Settings.Default.ShowRomDetails;
-                menuItem.State = showDetails ? NSCellStateValue.On : NSCellStateValue.Off;
-            }
-            return menuItem;
-        }
-
         #region CheckRomsCommand
 
         static partial void ValidateRomsComplete()
@@ -165,10 +145,32 @@ namespace INTV.Shared.Commands
 
         #endregion // EditRomFeaturesCommand
 
+        #region CommandGroup
+
         /// <inheritdoc />
         public override object Context
         {
             get { return RomListViewModel; }
+        }
+
+        /// <inheritdoc/>
+        public override NSObject CreateVisualForCommand(ICommand command)
+        {
+            var visual = base.CreateVisualForCommand(command);
+            return visual;
+        }
+
+        /// <inheritdoc/>
+        public override NSMenuItem CreateMenuItemForCommand(ICommand command)
+        {
+            var menuItem = base.CreateMenuItemForCommand(command);
+            var relayCommand = command as RelayCommand;
+            if (relayCommand.UniqueId == RomListCommandGroup.ShowRomInfoCommand.UniqueId)
+            {
+                var showDetails = Properties.Settings.Default.ShowRomDetails;
+                menuItem.State = showDetails ? NSCellStateValue.On : NSCellStateValue.Off;
+            }
+            return menuItem;
         }
 
         /// <inheritdoc/>
@@ -221,19 +223,17 @@ namespace INTV.Shared.Commands
         partial void AddPlatformCommands()
         {
             //CommandList.Add(RemoveAndRefreshCommandsSegmentCommand);
+            AddRomFilesCommand.VisualParent = RootCommandGroup.RootCommand; // add to toolbar
             AddRomFilesCommand.MenuParent = RootCommandGroup.FileMenuCommand;
+
+            AddRomFoldersCommand.VisualParent = RootCommandGroup.RootCommand; // add to toolbar
             AddRomFoldersCommand.MenuParent = RootCommandGroup.FileMenuCommand;
             //RemoveRomsCommand.VisualParent = RemoveAndRefreshCommandsSegmentCommand;
 
             EditRomFeaturesCommand.MenuParent = RootCommandGroup.EditMenuCommand;
             EditProgramNameCommand.MenuParent = RootCommandGroup.EditMenuCommand;
-            CommandList.Add(EditProgramNameCommand);
 
             RomListGroupCommand.MenuParent = RootCommandGroup.EditMenuCommand;
-            CommandList.Add(RomListGroupCommand);
-            CommandList.Add(BackupRomListCommand);
-            CommandList.Add(RestoreRomListCommand);
-            CommandList.Add(EmptyRomListCommand);
 
             RemoveRomsCommand.MenuParent = RootCommandGroup.EditMenuCommand;
             RemoveRomsCommand.SmallIcon = NSImage.ImageNamed("NSRemoveTemplate");
@@ -248,9 +248,10 @@ namespace INTV.Shared.Commands
             CommandList.Add(RefreshRomsCommand.CreateSeparator(CommandLocation.After));
 
             ShowRomInfoCommand.MenuParent = RootCommandGroup.ViewMenuCommand;
-            CommandList.Add(ShowRomInfoCommand);
 
             CommandList.Add(EditRomFeaturesCommand);
         }
+
+        #endregion // CommandGroup
     }
 }

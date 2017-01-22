@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceCommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -273,7 +273,6 @@ namespace INTV.LtoFlash.Commands
 
             SearchForDevicesCommand.MenuParent = RootCommandGroup.ToolsMenuCommand;
             SearchForDevicesCommand.VisualParent = INTV.Shared.Commands.RootCommandGroup.RootCommand;
-            CommandList.Add(SearchForDevicesCommand);
 
             CommandList.Add(ConnectToDeviceSubmenuCommand);
 
@@ -282,41 +281,18 @@ namespace INTV.LtoFlash.Commands
             DisconnectDeviceCommand.KeyboardShortcutKey = "d";
             DisconnectDeviceCommand.KeyboardShortcutModifiers = OSModifierKeys.Menu;
             DisconnectDeviceCommand.VisualParent = INTV.Shared.Commands.RootCommandGroup.RootCommand;
-            CommandList.Add(DisconnectDeviceCommand);
 
             DeviceInformationCommand.MenuParent = RootCommandGroup.ToolsMenuCommand;
             CommandList.Add(DeviceInformationCommand);
 
             CommandList.Add(DeviceInformationCommand.CreateSeparator(CommandLocation.After));
 
-            BackupCommand.Weight = 0.01;
-            CommandList.Add(BackupCommand);
-
-            RestoreCommand.Weight = 0.011;
-            CommandList.Add(RestoreCommand);
-
-            OpenDeviceBackupsDirectoryCommand.Weight = 0.0111;
-            CommandList.Add(OpenDeviceBackupsDirectoryCommand);
-
-            OpenErrorLogsDirectoryCommand.Weight = 0.0115;
-            CommandList.Add(OpenErrorLogsDirectoryCommand);
-
-            ClearCacheCommand.Weight = 0.012;
-            CommandList.Add(ClearCacheCommand);
-
             CommandList.Add(OpenErrorLogsDirectoryCommand.CreateSeparator(CommandLocation.Before));
-
-            ReformatCommand.Weight = 0.02;
-            CommandList.Add(ReformatCommand);
 
             CommandList.Add(ReformatCommand.CreateSeparator(CommandLocation.Before));
 
-            AdvancedGroupCommand.MenuParent = LtoFlashCommandGroup.LtoFlashGroupCommand;
-
             SetEcsCompatibilityCommand.Weight = 0.6;
             SetIntellivisionIICompatibilityCommand.Weight = 0.61;
-            CommandList.Add(SetEcsCompatibilityCommand);
-            CommandList.Add(SetIntellivisionIICompatibilityCommand);
 
             SetActiveDeviceCommand.MenuParent = ConnectToDeviceSubmenuCommand;
         }

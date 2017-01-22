@@ -36,7 +36,7 @@ namespace INTV.Shared.Utility
         public static readonly string BackupSuffix = ".bak";
 
         /// <summary>
-        /// Given a Uri path, produce a proper string form of the path.
+        /// Given a Uri form of a file path, return one suitable for use with file system APIs.
         /// </summary>
         /// <param name="path">A file Uri to convert to a file system path.</param>
         /// <returns>An absolute file system path with approprate separators.</returns>

@@ -39,7 +39,7 @@ rem # NOTE: If / when installers are no longer built using InstallShield LE,
 rem #       but rather WIX or something else instead, the makefile will need
 rem #       to be updated for the inevitable change to the relative paths.
 rem #
-@echo Building jzIntv Tools via MSYS from this location: %MSYS_PATH%
+@echo Creating .zip of installer for: %2
 @echo.
 set PATH=%MSYS_PATH%;%PATH%
 echo /%1 | sed -e 's/\\\\/\//g' -e 's/://' > _projdir.txt

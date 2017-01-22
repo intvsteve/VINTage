@@ -32,13 +32,45 @@ scripts.
 The batch and makefiles are used to place setup.exe into an appropriately
 named .zip file for simpler distribution.
 
-NOTE:
------
+NOTE (Windows InstallShield LE Installer Projects):
+---------------------------------------------------
 In order to have InstallShield LE 2013 produce an installer with the desired
 graphics, it was necessary to replace the setup.gif image in the installed
 location. This file (setup.gif) must be placed in the following location:
 
   [Program Files (x86)]\InstallShield\2013LE\Support\Themes\InstallShield Blue Theme
 
+InstallShield LE 2015 exhibits the same behavior regarding the setup.gif
+image. You must replace the file in the install location.
+
+NOTE (Windows InstallShield LE Installer Projects):
+---------------------------------------------------
+In order to get the required .NET redistributables for the InstallShield
+installers, you must, after installing InstallShield LE 20xx:
+  1) Launch Visual Studio *as administrator*
+  2) Open a solution that includes the Installer projects
+  3) In the Installer.desktop or Installer.xp project:
+    a) Open Section 2: Specify Application Data
+    b) Double-click on the Redistributables item
+    c) For each item that is checked, right-click and choose:
+         'Download Selected Item...'
+           -- or --
+       choose (once?):
+         'Download All Required Items...'
+       This step ensures that the necessary redistributable files, such as
+       the required .NET installers, are available.
+
+For the Windows Vista and later projects (the .desktop solutions), the
+installer will require the Microsoft .NET Framework 4.5 Full
+redistributable. For the Windows xp solutions, the installer requires the
+Microsoft .NET Framework 4.0 Full redistributable.
+
+NOTE (Mac OS X Disk Image (.dmg) Installer):
+--------------------------------------------
 The LTOFlashBackground-with-instructions.png file is used to provide the
 background image for the disk image (DMG) used for Mac OS X distribution.
+
+
+NOTE:
+-----
+The installer project should only be built from Release builds!

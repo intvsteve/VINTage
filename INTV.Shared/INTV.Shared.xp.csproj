@@ -72,6 +72,7 @@
     <Compile Include="Behavior\ValidEmailAddressBehavior.cs" />
     <Compile Include="Behavior\ValidEmailAddressBehavior.WPF.cs" />
     <Compile Include="Commands\ApplicationCommandGroup.cs" />
+    <Compile Include="Commands\ApplicationCommandGroup.WPF.cs" />
     <Compile Include="Commands\ApplicationCommandsProvider.cs" />
     <Compile Include="Commands\CommandGroup.cs" />
     <Compile Include="Commands\CommandGroup.WPF.cs" />
@@ -457,6 +458,87 @@
     <Resource Include="ViewModel\Resources\Images\add_to_database_32xMD.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Commands\Resources\RibbonSeparatorCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\RomsRibbonGroupCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\HomeRibbonTabCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\RibbonMenuSeparatorCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\RunProgramRibbonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\AddRomFilesCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\AddRomFoldersCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\EditProgramNameCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\RemoveRomsCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ShowRomInfoCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\CheckForUpdatesCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\DebugMenuCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ForceCrashCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ForceGarbageCollectCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\TriggerSerialPortReportCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\AddRomFilesCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\AddRomFoldersCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\BackupRomListCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\EmptyRomListCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ExitCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\RefreshRomsCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\RestoreRomListCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\RomListGroupCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SettingsDialogCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ShowOnlineHelpCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ValidateRomsCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\EmptyRibbonMenuItem_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Page Include="View\EcsFeaturesConfigurationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

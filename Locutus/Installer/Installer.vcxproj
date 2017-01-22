@@ -51,7 +51,8 @@
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="readme.txt" />
+    <Text Include="license.txt" />
+    <Text Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="installer_zip.bat" />

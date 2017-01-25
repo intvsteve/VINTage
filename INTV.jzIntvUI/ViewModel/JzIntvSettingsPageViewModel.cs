@@ -21,17 +21,16 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using INTV.Shared.ViewModel;
-using INTV.Shared.ComponentModel;
 using INTV.JzIntv.Model;
 using INTV.JzIntvUI.Commands;
 using INTV.JzIntvUI.Model;
-using INTV.Shared.View;
+using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 
 #if WIN
-using SettingsPageVisualType = INTV.JzIntvUI.View.JzIntvSettingsPage;
 using OSColor = System.Windows.Media.Color;
+using SettingsPageVisualType = INTV.JzIntvUI.View.JzIntvSettingsPage;
 #elif MAC
 using SettingsPageVisualType = INTV.JzIntvUI.View.JzIntvSettingsPageController;
 #if __UNIFIED__
@@ -121,9 +120,9 @@ namespace INTV.JzIntvUI.ViewModel
         #region General Tab Strings
 
         public static readonly string GeneralTabName = Resources.Strings.SettingsPage_GeneralTabName;
-        public static readonly string EnableFeature_UseRomSettingName = Resources.Strings.EnableFeature_UseRomSetting;
-        public static readonly string EnableFeature_Always = Resources.Strings.EnableFeature_Always;
-        public static readonly string EnableFeature_Never = Resources.Strings.EnableFeature_Never;
+        public static readonly string EnableFeatureUseRomSettingName = Resources.Strings.EnableFeature_UseRomSetting;
+        public static readonly string EnableFeatureAlways = Resources.Strings.EnableFeature_Always;
+        public static readonly string EnableFeatureNever = Resources.Strings.EnableFeature_Never;
 
         public static readonly string EnableIntellivoiceLabel = Resources.Strings.SettingsPage_General_EnableIntellivoice_Label;
         public static readonly string EnableIntellivoiceTip = Resources.Strings.SettingsPage_General_EnableIntellivoice_Tip;
@@ -363,7 +362,6 @@ namespace INTV.JzIntvUI.ViewModel
         }
         private KeyboardMap _initialKeyboardMap;
 
-
         /// <summary>
         /// Gets or sets the selected keyboard map's ViewModel.
         /// </summary>
@@ -381,7 +379,6 @@ namespace INTV.JzIntvUI.ViewModel
         /// Gets the available display resolutions.
         /// </summary>
         public ObservableCollection<KeyboardMapViewModel> AvailableKeyboardMaps { get; private set; }
-
 
         /// <summary>
         /// Gets or sets the configuration for joystick 0 (Master Component left controller).
@@ -475,7 +472,7 @@ namespace INTV.JzIntvUI.ViewModel
         /// <summary>
         /// Gets or sets the selected jzIntv resolution.
         /// </summary>
-        //[INTV.Shared.Utility.OSExport(DisplayModeSettingName)]
+        ////[INTV.Shared.Utility.OSExport(DisplayModeSettingName)]
         public string JzIntvDisplayMode
         {
             get { return _jzIntvDisplayMode; }
@@ -507,7 +504,7 @@ namespace INTV.JzIntvUI.ViewModel
         public EnableFeature EnableIntellivoice
         {
             get { return _enableIntellivoice; }
-            set {AssignAndUpdateProperty(EnableIntellivoicePropertyName, value, ref _enableIntellivoice, (p, v) => Properties.Settings.Default.EnableIntellivoice = v.ToString()); }
+            set { AssignAndUpdateProperty(EnableIntellivoicePropertyName, value, ref _enableIntellivoice, (p, v) => Properties.Settings.Default.EnableIntellivoice = v.ToString()); }
         }
         private EnableFeature _enableIntellivoice;
 
@@ -557,7 +554,7 @@ namespace INTV.JzIntvUI.ViewModel
             Properties.Settings.Default.DisplayMode = displayMode.ToString();
         }
 
-        private void HandleEmulatorSettingsChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleEmulatorSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -604,6 +601,29 @@ namespace INTV.JzIntvUI.ViewModel
                 case DisplaySizeSettingNameAlt:
                     var resolutionFromSettings = DisplayResolutionHelpers.FromLongCommandLineArgumentString(Properties.Settings.Default.DisplaySize);
                     SelectedDisplayResolutionViewModel = AvailableDisplayResolutions.First(r => r.Resolution == resolutionFromSettings);
+                    break;
+                case DisplayModeSettingName:
+                case DisplayModeSettingNameAlt:
+                    var modeFromSettings = DisplayModeHelpers.FromSettingString(Properties.Settings.Default.DisplayMode);
+                    SelectedDisplayModeViewModel = AvailableDisplayModes.First(m => m.DisplayMode == modeFromSettings);
+                    break;
+                case EnableMouseSettingName:
+                case EnableMouseSettingNameAlt:
+                    break;
+                case MuteAudioSettingName:
+                case MuteAudioSettingNameAlt:
+                    break;
+                case EnableIntellivoiceSettingName:
+                case EnableIntellivoiceSettingNameAlt:
+                    EnableIntellivoice = EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableIntellivoice);
+                    break;
+                case EnableEcsSettingName:
+                case EnableEcsSettingNameAlt:
+                    EnableEcs = EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableEcs);
+                    break;
+                case EnableJlpSettingName:
+                case EnableJlpSettingNameAlt:
+                    EnableJlp = EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableJlp);
                     break;
                 default:
                     break;

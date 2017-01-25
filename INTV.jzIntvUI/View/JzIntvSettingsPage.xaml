@@ -1,6 +1,6 @@
 ﻿<!--
     <copyright file="JzIntvSettingsPage.xaml" company="INTV Funhouse">
-    Copyright (c) 2014-2015 All Rights Reserved
+    Copyright (c) 2014-2017 All Rights Reserved
     <author>Steven A. Orth</author>
 
     This program is free software: you can redistribute it and/or modify it
@@ -32,9 +32,9 @@
              xmlns:view="clr-namespace:INTV.JzIntvUI.View"
              xmlns:model="clr-namespace:INTV.JzIntvUI.Model"
              xmlns:viewModel="clr-namespace:INTV.JzIntvUI.ViewModel">
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <viewModel:JzIntvSettingsPageViewModel/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
     <UserControl.Resources>
         <converter:EnumConverter x:Key="EnumConverter" />
         <converter:PlaceholderTextVisibilityConverter x:Key="ShowPlaceholderConverter" />
@@ -66,25 +66,25 @@
                         <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableIntellivoiceLabel}"/>
                         <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Width="128" Margin="8,4,0,4"
                                   SelectedIndex="{Binding EnableIntellivoice, Mode=TwoWay, Converter={StaticResource EnumConverter}}" ToolTip="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableIntellivoiceTip}">
-                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeature_UseRomSettingName}" />
-                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeature_Always}"/>
-                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeature_Never}"/>
+                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureUseRomSettingName}" />
+                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureAlways}"/>
+                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureNever}"/>
                         </ComboBox>
                         <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Text="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableEcsLabel}"/>
                         <ComboBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Width="128" Margin="8,4,0,4"
                                   SelectedIndex="{Binding EnableEcs, Mode=TwoWay, Converter={StaticResource EnumConverter}}" ToolTip="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableEcsTip}">
-                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeature_UseRomSettingName}" />
-                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeature_Always}"/>
-                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeature_Never}"/>
+                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureUseRomSettingName}" />
+                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureAlways}"/>
+                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureNever}"/>
                         </ComboBox>
                         <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Margin="7,4,0,0" Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableEcsKeyboardMapLabel}" IsChecked="{Binding Path=UseEcsKeymapForEcsRoms, Source={x:Static settings:Settings.Default}}" />
                         <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="28,0,0,4" Text="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableEcsKeyboardMapNote}" FontSize="8"/>
                         <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Text="{x:Static viewModel:JzIntvSettingsPageViewModel.JlpFeatures}"/>
                         <ComboBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Width="128" Margin="8,4,0,4"
                                   SelectedIndex="{Binding EnableJlp, Mode=TwoWay, Converter={StaticResource EnumConverter}}" ToolTip="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableJlpFeaturesTip}">
-                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeature_UseRomSettingName}" />
-                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeature_Always}"/>
-                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeature_Never}"/>
+                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureUseRomSettingName}" />
+                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureAlways}"/>
+                            <ComboBoxItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureNever}"/>
                         </ComboBox>
                         <CheckBox Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Center" Content="{x:Static viewModel:JzIntvSettingsPageViewModel.MuteAudioLabel}" IsChecked="{Binding Path=MuteAudio, Source={x:Static settings:Settings.Default}}" />
                         <CheckBox Grid.Row="7" Grid.ColumnSpan="2" VerticalAlignment="Center" Content="{x:Static viewModel:JzIntvSettingsPageViewModel.AllowMultipleInstancesLabel}" IsChecked="{Binding Path=AllowMultipleInstances, Source={x:Static settings:Settings.Default}}" />
@@ -239,7 +239,7 @@
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                        <CheckBox Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Center" Margin="0,4" Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableMouseLabel}" IsChecked="{Binding Path=EnableMouse, Source={x:Static settings:Settings.Default}}" />
+                        <!--<CheckBox Grid.Row="2" Grid.ColumnSpan="3" VerticalAlignment="Center" Margin="0,4" Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableMouseLabel}" IsChecked="{Binding Path=EnableMouse, Source={x:Static settings:Settings.Default}}" />-->
                     </Grid>
                 </TabItem>
                 <TabItem Header="{x:Static viewModel:JzIntvSettingsPageViewModel.InputTabName}">

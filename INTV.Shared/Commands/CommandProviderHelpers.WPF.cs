@@ -318,7 +318,7 @@ namespace INTV.Shared.Commands
         }
 
         /// <summary>
-        /// Create a menu separator item relative to an existing command.
+        /// Create a vertical separator item relative to an existing command.
         /// </summary>
         /// <param name="command">The command needing a separator placed next to it.</param>
         /// <param name="location">Specifies the location of the separator relative to the command.</param>
@@ -365,7 +365,7 @@ namespace INTV.Shared.Commands
         }
 
         /// <summary>
-        /// The application menu for a Ribbon style menu that uses the auxilliary display area may require a minumum number
+        /// The application menu for a Ribbon style menu that uses the auxiliary display area may require a minimum number
         /// of menu items in order to avoid clipping the additional content. This method places empty menu items into the
         /// menu in order to accomplish the desired cosmetic appearance.
         /// </summary>
@@ -373,7 +373,7 @@ namespace INTV.Shared.Commands
         {
             var menu = RootCommandGroup.ApplicationMenuCommand.MenuItem;
             var items = GetItemVisuals(menu);
-            var minNumberMenuItems = 12; // looks good and ensures the auxilliary visual isn't clipped
+            var minNumberMenuItems = 12; // looks good and ensures the auxiliary visual isn't clipped
             if ((items != null) && (items.Count < minNumberMenuItems))
             {
                 var resourceName = "INTV.Shared.Commands.Resources.EmptyRibbonMenuItem_MenuItem.xaml";

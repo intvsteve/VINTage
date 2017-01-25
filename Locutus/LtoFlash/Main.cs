@@ -1,5 +1,5 @@
 ﻿// <copyright file="Main.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -33,6 +33,7 @@ namespace Locutus.View
         {
             var dummySettings = new DummySettings();
             dummySettings.JzIntvHack = INTV.JzIntv.Model.DisplayMode.Fullscreen;
+            dummySettings.JzIntvUIHack = INTV.JzIntvUI.ViewModel.JzIntvSettingsPageViewModel.EmulatorPathLabel;
             dummySettings.LtoFlashHack = INTV.LtoFlash.Model.EcsStatusFlags.AllFlags;
             dummySettings.IntellicartHack = INTV.Intellicart.ViewModel.SettingsPageViewModel.SerialPortGroupName;
             INTV.Shared.Utility.SingleInstanceApplication.RunApplication<Locutus.View.MainWindow>("Locutus-{4B53C351-EE55-46AB-8DE9-C2E4DDD1297A}", dummySettings, args, "Resources/Images/LTOFlashSplash.png");
@@ -42,6 +43,12 @@ namespace Locutus.View
         /// Stupid hacky way to suppress a warning and get MEF to "work" on Mac. There must be
         /// something not quite working, since merely adding one usage of a given assembly will
         /// get MEF working properly. Possibly some problem w/ the catalog? Works fine in Windows, though.
+        /// -- UPDATE --
+        /// The problem does not appear to be MEF... The problem seems to be with UI-related resources. I.e. the
+        /// build won't put resources into the application bundle unless there's a direct reference to the assembly
+        /// containing the InterfaceDefinition. This *may* be addressable by having a run-time injection of the
+        /// necessary visual resources into the application bundle in CompositionHelpers - which has been experimentally
+        /// verified - but just having a strong reference is OK for now.
         /// </summary>
         private class DummySettings : System.Configuration.ApplicationSettingsBase
         {
@@ -52,6 +59,15 @@ namespace Locutus.View
             {
                 get { return (INTV.JzIntv.Model.DisplayMode)this["JzIntvHack"]; }
                 set { this["JzIntvHack"] = value; }
+            }
+
+            /// <summary>
+            /// Gets or sets the jzIntvUI hack.
+            /// </summary>
+            internal string JzIntvUIHack
+            {
+                get { return (string)this["JzIntvUIHack"]; }
+                set { this["JzIntvUIHack"] = value; }
             }
 
             /// <summary>

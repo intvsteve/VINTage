@@ -128,6 +128,10 @@
       <Project>{58caf3a2-b2b8-4c59-9aea-3e63de5cbf0c}</Project>
       <Name>INTV.Intellicart.desktop</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\INTV.jzIntvUI\INTV.jzIntvUI.desktop.csproj">
+      <Project>{f5d99023-c6de-472f-9d8f-055deddb0046}</Project>
+      <Name>INTV.jzIntvUI.desktop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\INTV.jzIntv\INTV.jzIntv.desktop.csproj">
       <Project>{96090ce5-6a2c-4709-9b6f-4a50484b6b86}</Project>
       <Name>INTV.jzIntv.desktop</Name>

@@ -140,6 +140,10 @@
       <Project>{FB5C25FD-A481-48E9-A721-24DAE07DF67A}</Project>
       <Name>INTV.Core.Mac</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\INTV.jzIntvUI\INTV.jzIntvUI.Mac.csproj">
+      <Project>{A42922D4-8D80-41F0-BCAF-1416A5598D3E}</Project>
+      <Name>INTV.jzIntvUI.Mac</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\LtoFlash.icns" />

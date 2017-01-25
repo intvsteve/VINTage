@@ -117,6 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AdvancedCommandGroupCommand_Name" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="BrowseAndLaunchInJzIntvCommand_Failed_MessageFormat" xml:space="preserve">
+    <value>The file:
+
+{0}
+
+does not appear to be a valid ROM file.</value>
+  </data>
+  <data name="BrowseAndLaunchInJzIntvCommand_Failed_Title" xml:space="preserve">
+    <value>Unable to Launch</value>
+  </data>
+  <data name="BrowseAndLaunchInJzIntvCommand_Name" xml:space="preserve">
+    <value>Browse &amp; Play in jzIntv...</value>
+  </data>
+  <data name="BrowseAndLaunchInJzIntvCommand_TipDescription" xml:space="preserve">
+    <value>Browse to select a ROM, then run it in the jzIntv emulator.</value>
+  </data>
+  <data name="ClearClassicGameController0ConfigFileCommand_Name" xml:space="preserve">
+    <value>Clear Classic Game Controller 0 (Master Component) Configuration File</value>
+  </data>
+  <data name="ClearClassicGameController1ConfigFileCommand_Name" xml:space="preserve">
+    <value>Clear Classic Game Controller 1 (ECS) Configuration File</value>
+  </data>
+  <data name="ClearKeyboardConfigFileCommand_Name" xml:space="preserve">
+    <value>Clear Default Keyboard Hackfile</value>
+  </data>
   <data name="CommandLineMode_AutomaticWithAdditionalArguments_DisplayName" xml:space="preserve">
     <value>Automatically generate with additional arguments</value>
   </data>
@@ -126,6 +154,36 @@
   <data name="CommandLineMode_Custom_DisplayName" xml:space="preserve">
     <value>Use custom command line</value>
   </data>
+  <data name="ConfigurationFile_UnknownEmulatorFile_Error_Message_Format" xml:space="preserve">
+    <value>Requested to clear unrecognized emulator file: {0}</value>
+    <comment>{0} is a file name</comment>
+  </data>
+  <data name="ConfigurationFile_UnknownEmulatorFile_Error_Title" xml:space="preserve">
+    <value>Unrecognized Emulator File</value>
+  </data>
+  <data name="ConfigurationFile_UnknownSelection_Error_Message_Format" xml:space="preserve">
+    <value>Requested to select unrecognized file: {0}</value>
+    <comment>{0} is a file name</comment>
+  </data>
+  <data name="ConfigurationFile_UnknownSelection_Error_Title" xml:space="preserve">
+    <value>Unrecognized File Selection</value>
+  </data>
+  <data name="ConfigurationRibbonGroupCommand_Name" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="ConfigurationRibbonGroupCommand_Name_Format" xml:space="preserve">
+    <value>Configuration: {0}</value>
+    <comment>{0} is current configuration status</comment>
+  </data>
+  <data name="Configuration_EnableFullscreen" xml:space="preserve">
+    <value>Run in fullscreen mode</value>
+  </data>
+  <data name="Configuration_FullscreenMode_Tip" xml:space="preserve">
+    <value>If checked, run jzIntv in fullscreen mode</value>
+  </data>
+  <data name="Configuration_MuteSound_Tip" xml:space="preserve">
+    <value>If checked, sound is disabled in jzIntv</value>
+  </data>
   <data name="EnableFeature_Always" xml:space="preserve">
     <value>Always</value>
   </data>
@@ -134,6 +192,127 @@
   </data>
   <data name="EnableFeature_UseRomSetting" xml:space="preserve">
     <value>Use ROM Setting</value>
+  </data>
+  <data name="JzIntv" xml:space="preserve">
+    <value>jzIntv</value>
+  </data>
+  <data name="JzIntvAlreadyRunning" xml:space="preserve">
+    <value>Another instance of jzIntv is already running!</value>
+  </data>
+  <data name="JzIntvConfigurationStatus_Format" xml:space="preserve">
+    <value>jzIntv Configuration: {0}</value>
+    <comment>{0} is status</comment>
+  </data>
+  <data name="JzIntvConfigurationStatus_MissingFilesFormat" xml:space="preserve">
+    <value>Missing: {0}</value>
+    <comment>{0} is list of missing files</comment>
+  </data>
+  <data name="JzIntvConfigurationStatus_NotConfigured" xml:space="preserve">
+    <value>Not Configured</value>
+  </data>
+  <data name="JzIntvConfigurationStatus_Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="LaunchInJzIntvCommand_Failed_KnownError_Format" xml:space="preserve">
+    <value>jzIntv is unable to run '{0}'.
+The error message was:
+
+{1}</value>
+    <comment>{0} is ROM path, {1} is exception message.</comment>
+  </data>
+  <data name="LaunchInJzIntvCommand_Failed_Message" xml:space="preserve">
+    <value>An error occurred running jzIntv.</value>
+  </data>
+  <data name="LaunchInJzIntvCommand_Failed_Title" xml:space="preserve">
+    <value>jzInv Error</value>
+  </data>
+  <data name="LaunchInJzIntvCommand_Failed_UnknownError_Format" xml:space="preserve">
+    <value>jzIntv is unable to run '{0}'. No further information is available.</value>
+    <comment>{0} is ROM path</comment>
+  </data>
+  <data name="LaunchInJzIntvCommand_MenuItemName" xml:space="preserve">
+    <value>Play in jzIntv</value>
+  </data>
+  <data name="LaunchInJzIntvCommand_Name" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="LaunchInJzIntvCommand_TipDescription" xml:space="preserve">
+    <value>Run the selected ROM using the jzIntv emulator</value>
+  </data>
+  <data name="LaunchInJzIntvCommand_TipTitle" xml:space="preserve">
+    <value>Play in jzIntv</value>
+  </data>
+  <data name="LaunchRibbonGroupCommand_Name" xml:space="preserve">
+    <value>ROM</value>
+  </data>
+  <data name="LocateEcsCommand_Name" xml:space="preserve">
+    <value>Locate ECS ROM File</value>
+  </data>
+  <data name="LocateExecCommand_Name" xml:space="preserve">
+    <value>Locate EXEC ROM</value>
+  </data>
+  <data name="LocateGromCommand_Name" xml:space="preserve">
+    <value>Locate GROM ROM File</value>
+  </data>
+  <data name="LocateJzIntvCommand_Name" xml:space="preserve">
+    <value>Locate jzIntv</value>
+  </data>
+  <data name="Locate_ECS_Prompt" xml:space="preserve">
+    <value>Locate ECS</value>
+  </data>
+  <data name="Locate_EXEC_Prompt" xml:space="preserve">
+    <value>Locate EXEC</value>
+  </data>
+  <data name="Locate_GROM_Prompt" xml:space="preserve">
+    <value>Locate GROM</value>
+  </data>
+  <data name="Locate_jzIntv_Prompt" xml:space="preserve">
+    <value>Locate jzIntv</value>
+  </data>
+  <data name="OpenSettingsDialogCommand_Name" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="OpenSettingsDialogCommand_TipDescription" xml:space="preserve">
+    <value>Configure jzIntv settings</value>
+  </data>
+  <data name="OpenSettingsDialogCommand_TipTitle" xml:space="preserve">
+    <value>jzIntv Settings</value>
+  </data>
+  <data name="ReportErrorDialogButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ResetDisplayResolutionCommand_Name" xml:space="preserve">
+    <value>Reset Resolution</value>
+  </data>
+  <data name="ResetEcsCommand_Name" xml:space="preserve">
+    <value>Reset ECS ROM File Location</value>
+  </data>
+  <data name="ResetExecCommand_Name" xml:space="preserve">
+    <value>Reset EXEC ROM File Location</value>
+  </data>
+  <data name="ResetGromCommand_Name" xml:space="preserve">
+    <value>Reset GROM ROM File Location</value>
+  </data>
+  <data name="ResetJzIntvCommand_Name" xml:space="preserve">
+    <value>Reset jzIntv Location</value>
+  </data>
+  <data name="SelectClassicGameController0ConfigFileCommand_Name" xml:space="preserve">
+    <value>Set Classic Game Controller 0 (Master Component) Configuration File</value>
+  </data>
+  <data name="SelectClassicGameController1ConfigFileCommand_Name" xml:space="preserve">
+    <value>Set Classic Game Controller 1 (ECS) Configuration File</value>
+  </data>
+  <data name="SelectKeyboardConfigFileCommand_Name" xml:space="preserve">
+    <value>Set Default Keyboard Hackfile</value>
+  </data>
+  <data name="Select_CGC_Console_Prompt" xml:space="preserve">
+    <value>Select a "hackfile" for Classic Game Controller 1 (Master Component)</value>
+  </data>
+  <data name="Select_CGC_ECS_Prompt" xml:space="preserve">
+    <value>Select a "hackfile" for Classic Game Controller 2 (ECS)</value>
+  </data>
+  <data name="Select_Hackfile_Prompt" xml:space="preserve">
+    <value>Select a keyboard "hackfile"</value>
   </data>
   <data name="SettingsPage_AdvancedTabName" xml:space="preserve">
     <value>Advanced</value>
@@ -311,5 +490,18 @@
   </data>
   <data name="SettingsPage_Title" xml:space="preserve">
     <value>jzIntv</value>
+  </data>
+  <data name="UnableToLaunchJzIntv_Error_Message_Format" xml:space="preserve">
+    <value>Unable to launch jzIntv to run '{0}'.
+The error message was:
+
+{1}</value>
+    <comment>{0} is ROM path, {1} is exception message.</comment>
+  </data>
+  <data name="UnableToLaunchJzIntv_Error_Title" xml:space="preserve">
+    <value>Error Launching jzInv</value>
+  </data>
+  <data name="UnknownROM" xml:space="preserve">
+    <value>&lt;Unknown Program&gt;</value>
   </data>
 </root>

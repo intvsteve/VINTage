@@ -22,10 +22,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using INTV.JzIntv.Model;
 
 #if WIN
 using BaseClass = System.Object;
-using INTV.JzIntv.Model;
 #elif MAC
 #if __UNIFIED__
 using BaseClass = Foundation.NSObject;

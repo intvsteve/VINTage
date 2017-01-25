@@ -31,6 +31,9 @@ using INTV.Shared.View;
 
 namespace INTV.JzIntvUI.Commands
 {
+    /// <summary>
+    /// Configuration commands.
+    /// </summary>
     public partial class ConfigurationCommandGroup : CommandGroup
     {
         private const string UniqueNameBase = "INTV.JzIntvUI.Commands.ConfigurationCommandGroup";
@@ -53,7 +56,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand AdvancedCommandGroupCommand = new VisualRelayCommand(INTV.Shared.ComponentModel.RelayCommand.NoOp)
         {
             UniqueId = UniqueNameBase + ".AdvancedCommandGroupCommand",
-            Name = "Advanced",
+            Name = Resources.Strings.AdvancedCommandGroupCommand_Name,
             SmallIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/settings_16xLG.png"),
             LargeIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/settings_32xMD.png")
         };
@@ -68,11 +71,11 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand OpenSettingsDialogCommand = new VisualRelayCommand(p => INTV.Shared.View.SettingsDialog.ShowSettingsDialog(typeof(JzIntvSettingsPageViewModel).FullName))
         {
             UniqueId = UniqueNameBase + ".OpenSettingsDialogCommand",
-            Name = "Settings",
-            ToolTip = "Configure jzIntv settings",
-            ToolTipTitle = "jzIntv Settings",
-            //ToolTipDescription = "Configure jzIntv behaviors",
-            //Weight = 0.1,
+            Name = Resources.Strings.OpenSettingsDialogCommand_Name,
+            ToolTip = Resources.Strings.OpenSettingsDialogCommand_TipDescription,
+            ToolTipTitle = Resources.Strings.OpenSettingsDialogCommand_TipTitle,
+            ////ToolTipDescription = "Configure jzIntv behaviors",
+            ////Weight = 0.1,
             SmallIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/settings_16xLG.png"),
             LargeIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/settings_32xMD.png")
         };
@@ -87,7 +90,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand LocateJzIntvCommand = new VisualRelayCommand(p => OnSelectEmulatorFile(p, EmulatorFile.JzIntv))
         {
             UniqueId = UniqueNameBase + ".LocateJzIntvCommand",
-            Name = "Locate jzIntv",
+            Name = Resources.Strings.LocateJzIntvCommand_Name,
         };
 
         #endregion // LocateJzIntvCommand
@@ -100,7 +103,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand ResetJzIntvCommand = new VisualRelayCommand(p => OnClearEmulatorFile(p, EmulatorFile.JzIntv))
         {
             UniqueId = UniqueNameBase + ".ResetJzIntvCommand",
-            Name = "Reset jzIntv Location",
+            Name = Resources.Strings.ResetJzIntvCommand_Name,
         };
 
         #endregion // ResetJzIntvCommand
@@ -113,7 +116,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand LocateExecCommand = new VisualRelayCommand(p => OnSelectEmulatorFile(p, EmulatorFile.Exec))
         {
             UniqueId = UniqueNameBase + ".LocateExecCommand",
-            Name = "Locate EXEC ROM",
+            Name = Resources.Strings.LocateExecCommand_Name,
         };
 
         #endregion // LocateExecCommand
@@ -126,7 +129,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand ResetExecCommand = new VisualRelayCommand(p => OnClearEmulatorFile(p, EmulatorFile.Exec))
         {
             UniqueId = UniqueNameBase + ".ResetExecCommand",
-            Name = "Reset EXEC ROM File Location",
+            Name = Resources.Strings.ResetExecCommand_Name,
         };
 
         #endregion // ResetExecCommand
@@ -139,7 +142,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand LocateGromCommand = new VisualRelayCommand(p => OnSelectEmulatorFile(p, EmulatorFile.Grom))
         {
             UniqueId = UniqueNameBase + ".LocateGromCommand",
-            Name = "Locate GROM ROM File",
+            Name = Resources.Strings.LocateGromCommand_Name,
         };
 
         #endregion // LocateGromCommand
@@ -152,7 +155,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand ResetGromCommand = new VisualRelayCommand(p => OnClearEmulatorFile(p, EmulatorFile.Grom))
         {
             UniqueId = UniqueNameBase + ".ResetGromCommand",
-            Name = "Reset GROM ROM File Location",
+            Name = Resources.Strings.ResetGromCommand_Name,
         };
 
         #endregion // ResetGromCommand
@@ -165,7 +168,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand LocateEcsCommand = new VisualRelayCommand(p => OnSelectEmulatorFile(p, EmulatorFile.Ecs))
         {
             UniqueId = UniqueNameBase + ".LocateEcsCommand",
-            Name = "Locate ECS ROM File",
+            Name = Resources.Strings.LocateEcsCommand_Name,
         };
 
         #endregion // LocateEcsCommand
@@ -178,7 +181,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand ResetEcsCommand = new VisualRelayCommand(p => OnClearEmulatorFile(p, EmulatorFile.Ecs))
         {
             UniqueId = UniqueNameBase + ".ResetEcsCommand",
-            Name = "Reset ECS ROM File Location", 
+            Name = Resources.Strings.ResetEcsCommand_Name, 
         };
 
         #endregion // ResetEcsCommand
@@ -191,7 +194,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand SelectKeyboardConfigFileCommand = new VisualRelayCommand(p => OnSelectEmulatorFile(p, EmulatorFile.KeyboardConfig))
         {
             UniqueId = UniqueNameBase + ".SelectKeyboardConfigFileCommand",
-            Name = "Set Default Keyboard Hackfile",
+            Name = Resources.Strings.SelectKeyboardConfigFileCommand_Name,
         };
 
         #endregion // SelectKeyboardConfigFileCommand
@@ -204,7 +207,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand ClearKeyboardConfigFileCommand = new VisualRelayCommand(p => OnClearEmulatorFile(p, EmulatorFile.KeyboardConfig))
         {
             UniqueId = UniqueNameBase + ".ClearKeyboardConfigFileCommand",
-            Name = "Clear Default Keyboard Hackfile",
+            Name = Resources.Strings.ClearKeyboardConfigFileCommand_Name,
         };
 
         #endregion // ClearKeyboardConfigFileCommand
@@ -217,7 +220,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand SelectClassicGameController0ConfigFileCommand = new VisualRelayCommand(p => OnSelectEmulatorFile(p, EmulatorFile.Cgc0Config))
         {
             UniqueId = UniqueNameBase + ".SelectClassicGameController0ConfigFileCommand",
-            Name = "Set Classic Game Controller 0 (Master Component) Configuration File",
+            Name = Resources.Strings.SelectClassicGameController0ConfigFileCommand_Name,
         };
 
         #endregion // SelectClassicGameController0ConfigFileCommand
@@ -230,7 +233,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand ClearClassicGameController0ConfigFileCommand = new VisualRelayCommand(p => OnClearEmulatorFile(p, EmulatorFile.Cgc0Config))
         {
             UniqueId = UniqueNameBase + ".ClearClassicGameController0ConfigFileCommand",
-            Name = "Clear Classic Game Controller 0 (Master Component) Configuration File",
+            Name = Resources.Strings.ClearClassicGameController0ConfigFileCommand_Name,
         };
 
         #endregion // ClearClassicGameController0ConfigFileCommand
@@ -243,7 +246,7 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand SelectClassicGameController1ConfigFileCommand = new VisualRelayCommand(p => OnSelectEmulatorFile(p, EmulatorFile.Cgc1Config))
         {
             UniqueId = UniqueNameBase + ".SelectClassicGameController1ConfigFileCommand",
-            Name = "Set Classic Game Controller 1 (ECS) Configuration File",
+            Name = Resources.Strings.SelectClassicGameController1ConfigFileCommand_Name,
         };
 
         #endregion // SelectClassicGameController1ConfigFileCommand
@@ -256,10 +259,23 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand ClearClassicGameController1ConfigFileCommand = new VisualRelayCommand(p => OnClearEmulatorFile(p, EmulatorFile.Cgc1Config))
         {
             UniqueId = UniqueNameBase + ".ClearClassicGameController1ConfigFileCommand",
-            Name = "Clear Classic Game Controller 1 (ECS) Configuration File",
+            Name = Resources.Strings.ClearClassicGameController1ConfigFileCommand_Name,
         };
 
         #endregion // ClearClassicGameController1ConfigFileCommand
+
+        #region ResetDisplayResolutionCommand
+
+        /// <summary>
+        /// Command to reset the ECS ROM location.
+        /// </summary>
+        public static readonly VisualRelayCommand ResetDisplayResolutionCommand = new VisualRelayCommand(p => Properties.Settings.Default.DisplaySize = null)
+        {
+            UniqueId = UniqueNameBase + ".ResetDisplayResolutionCommand",
+            Name = Resources.Strings.ResetDisplayResolutionCommand_Name,
+        };
+
+        #endregion // ResetDisplayResolutionCommand
 
         /// <summary>
         /// Resolves a path setting to a file system path. A path setting could be stored as a simple file path, or as a URI.
@@ -344,7 +360,6 @@ namespace INTV.JzIntvUI.Commands
         /// <summary>
         /// Determines whether the path to the ECS ROM is valid.
         /// </summary>
-        /// <param name="path">Absolute path to the ECS ROM.</param>
         /// <returns><c>true</c>, if ECS rom path appears to be valid, <c>false</c> otherwise.</returns>
         /// <remarks>This checks only that the file exists, and appears to be a ROM. Note that for .bin format ROMs, that check is not very reliable.</remarks>
         internal static bool IsEcsRomPathValid()
@@ -400,13 +415,15 @@ namespace INTV.JzIntvUI.Commands
         /// <returns>A string describing the configuration status.</returns>
         internal static string GetConfigurationStatus(bool includeEcsCheck)
         {
-            var message = "jzIntv Configuration: ";
+            var status = GetConfigurationStatusString(includeEcsCheck);
+            var message = string.Format(Resources.Strings.JzIntvConfigurationStatus_Format, status);
+            return message;
+        }
 
-            if (!IsEmulatorPathValid())
-            {
-                message += "Not configured.";
-            }
-            else
+        private static string GetConfigurationStatusString(bool includeEcsCheck)
+        {
+            var status = Resources.Strings.JzIntvConfigurationStatus_NotConfigured;
+            if (IsEmulatorPathValid())
             {
                 var missingFiles = new List<string>();
                 if (!IsExecRomPathvalid(Properties.Settings.Default.ExecRomPath))
@@ -424,14 +441,14 @@ namespace INTV.JzIntvUI.Commands
 
                 if (missingFiles.Any())
                 {
-                    message += "Missing: " + string.Join(", ", missingFiles);
+                    status = string.Format(Resources.Strings.JzIntvConfigurationStatus_MissingFilesFormat, string.Join(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.ListSeparator + " ", missingFiles));
                 }
                 else
                 {
-                    message += "Ready";
+                    status = Resources.Strings.JzIntvConfigurationStatus_Ready;
                 }
             }
-            return message;
+            return status;
         }
 
         private static void OnSelectEmulatorFile(object parameter, EmulatorFile whichFile)
@@ -441,25 +458,25 @@ namespace INTV.JzIntvUI.Commands
             switch (whichFile)
             {
                 case EmulatorFile.JzIntv:
-                    selectionPrompt = "Locate jzIntv";
+                    selectionPrompt = Resources.Strings.Locate_jzIntv_Prompt;
                     break;
                 case EmulatorFile.Exec:
-                    selectionPrompt = "Locate EXEC";
+                    selectionPrompt = Resources.Strings.Locate_EXEC_Prompt;
                     break;
                 case EmulatorFile.Grom:
-                    selectionPrompt = "Locate GROM";
+                    selectionPrompt = Resources.Strings.Locate_GROM_Prompt;
                     break;
                 case EmulatorFile.Ecs:
-                    selectionPrompt = "Locate ECS";
+                    selectionPrompt = Resources.Strings.Locate_ECS_Prompt;
                     break;
                 case EmulatorFile.KeyboardConfig:
-                    selectionPrompt = "Select a keyboard \"hackfile\"";
+                    selectionPrompt = Resources.Strings.Select_Hackfile_Prompt;
                     break;
                 case EmulatorFile.Cgc0Config:
-                    selectionPrompt = "Select a \"hackfile\" for Classic Game Controller 1 (Master Component)";
+                    selectionPrompt = Resources.Strings.Select_CGC_Console_Prompt;
                     break;
                 case EmulatorFile.Cgc1Config:
-                    selectionPrompt = "Select a \"hackfile\" for Classic Game Controller 2 (ECS)";
+                    selectionPrompt = Resources.Strings.Select_CGC_ECS_Prompt;
                     break;
                 default:
                     break;
@@ -508,7 +525,7 @@ namespace INTV.JzIntvUI.Commands
             }
             else
             {
-                OSMessageBox.Show("Requested to select unrecognized file: " + whichFile, "Unrecognized File Selection");
+                OSMessageBox.Show(string.Format(Resources.Strings.ConfigurationFile_UnknownSelection_Error_Message_Format, whichFile), Resources.Strings.ConfigurationFile_UnknownSelection_Error_Title);
             }
         }
 
@@ -540,23 +557,10 @@ namespace INTV.JzIntvUI.Commands
                     viewModel.JzIntvCgc1ConfigPath = null;
                     break;
                 default:
-                    OSMessageBox.Show("Requested to clear unrecognized emulator file: " + whichFile, "Unrecognized Emulator File");
+                    OSMessageBox.Show(string.Format(Resources.Strings.ConfigurationFile_UnknownEmulatorFile_Error_Message_Format, whichFile), Resources.Strings.ConfigurationFile_UnknownEmulatorFile_Error_Title);
                     break;
             }
        }
-
-        #region ResetDisplayResolutionCommand
-
-        /// <summary>
-        /// Command to reset the ECS ROM location.
-        /// </summary>
-        public static readonly VisualRelayCommand ResetDisplayResolutionCommand = new VisualRelayCommand(p => Properties.Settings.Default.DisplaySize = null)
-        {
-            UniqueId = UniqueNameBase + ".ResetDisplayResolutionCommand",
-            Name = "Reset Resolution",
-        };
-
-        #endregion // ResetDisplayResolutionCommand
 
         #region CommandGroup
 
@@ -564,11 +568,6 @@ namespace INTV.JzIntvUI.Commands
         public override IEnumerable<ICommand> CreateContextMenuCommands(object target, object context)
         {
             yield break;
-            //            // A NULL target is allowed for the case of an empty list.
-            //            if (((target is INTV.Shared.ViewModel.ProgramDescriptionViewModel) || (target == null)) && (context is INTV.Shared.ViewModel.RomListViewModel))
-            //            {
-            //                yield return CreateContextMenuCommand(null, DownloadCommand, IntellicartViewModel, null, 0.022);
-            //            }
         }
 
         /// <inheritdoc />

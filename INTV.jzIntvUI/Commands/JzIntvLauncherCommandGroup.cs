@@ -21,17 +21,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.Model;
 using INTV.Core.Model.Program;
 using INTV.JzIntv.Model;
 using INTV.JzIntvUI.Model;
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
+using INTV.Shared.Model;
 using INTV.Shared.Model.Program;
 using INTV.Shared.Utility;
+using INTV.Shared.View;
 using INTV.Shared.ViewModel;
 
 namespace INTV.JzIntvUI.Commands
 {
+    /// <summary>
+    /// Commands for the jzIntv launcher.
+    /// </summary>
     public partial class JzIntvLauncherCommandGroup : CommandGroup
     {
         private const string UniqueNameBase = "INTV.JzIntvUI.Commands.JzIntvLauncherCommandGroup";
@@ -87,15 +93,15 @@ namespace INTV.JzIntvUI.Commands
         public static readonly VisualRelayCommand LaunchInJzIntvCommand = new VisualRelayCommand(OnLaunch, CanLaunch)
         {
             UniqueId = UniqueNameBase + ".LaunchInJzIntvCommand",
-            Name = "Play", // Resources.Strings.DownloadCommand_Name,
-            ContextMenuItemName = "Play in jzIntv", // Resources.Strings.DownloadCommand_ContextMenuItemName,
+            Name = Resources.Strings.LaunchInJzIntvCommand_Name,
+            ContextMenuItemName = Resources.Strings.LaunchInJzIntvCommand_MenuItemName,
             SmallIcon = typeof(JzIntvLauncherCommandGroup).LoadImageResource("Resources/Images/download_play_16xLG_color.png"),
             LargeIcon = typeof(JzIntvLauncherCommandGroup).LoadImageResource("Resources/Images/download_play_32xLG_color.png"),
-//            ToolTip = Resources.Strings.DownloadCommand_TipDescription,
-//            ToolTipTitle = Resources.Strings.DownloadCommand_TipTitle,
-//            ToolTipDescription = Resources.Strings.DownloadCommand_TipDescription,
-//            ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
-//            Weight = 0.2,
+            ToolTip = Resources.Strings.LaunchInJzIntvCommand_TipDescription,
+            ToolTipTitle = Resources.Strings.LaunchInJzIntvCommand_TipTitle,
+            ToolTipDescription = Resources.Strings.LaunchInJzIntvCommand_TipDescription,
+            ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            ////Weight = 0.2,
             MenuParent = JzIntvToolsMenuCommand,
             KeyboardShortcutKey = "J",
             KeyboardShortcutModifiers = OSModifierKeys.Menu,
@@ -108,11 +114,10 @@ namespace INTV.JzIntvUI.Commands
             {
                 if (!Properties.Settings.Default.AllowMultipleInstances && Emulator.Instances().Any())
                 {
-                    var message = "Another instance of jzIntv is already running!";
-                    INTV.Shared.View.OSMessageBox.Show(message, "jzIntv Error");
+                    INTV.Shared.View.OSMessageBox.Show(Resources.Strings.JzIntvAlreadyRunning, Resources.Strings.LaunchInJzIntvCommand_Failed_Title);
                     return;
                 }
-                var programName = "<Unknown Program>";
+                var programName = Resources.Strings.UnknownROM;
                 try
                 {
                     programName = programDescription.Name;
@@ -359,8 +364,8 @@ namespace INTV.JzIntvUI.Commands
                 }
                 catch (Exception e)
                 {
-                    var message = string.Format("Unable to launch jzIntv to run '{0}'.\nThe error message was:\n\n{1}", programName, e.Message);
-                    INTV.Shared.View.OSMessageBox.Show(message, "Error Launching jzInv");
+                    var message = string.Format(Resources.Strings.UnableToLaunchJzIntv_Error_Message_Format, programName, e.Message);
+                    INTV.Shared.View.OSMessageBox.Show(message, Resources.Strings.UnableToLaunchJzIntv_Error_Title);
                 }
             }
         }
@@ -408,21 +413,77 @@ namespace INTV.JzIntvUI.Commands
                     {
                         if (exception != null)
                         {
-                            message = string.Format("jzIntv is to run '{0}'.\nThe error message was:\n\n{1}", emulator.Rom.Rom.RomPath, exception.Message);
+                            message = string.Format(Resources.Strings.LaunchInJzIntvCommand_Failed_KnownError_Format, emulator.Rom.Rom.RomPath, exception.Message);
                         }
                         else
                         {
-                            message = string.Format("jzIntv is unable to run '{0}'. No further information is available.", emulator.Rom.Rom.RomPath);
+                            message = string.Format(Resources.Strings.LaunchInJzIntvCommand_Failed_UnknownError_Format, emulator.Rom.Rom.RomPath);
                         }
                     }
-                    var reportDialog = INTV.Shared.View.ReportDialog.Create("jzInv Error", "An error occurred running jzIntv.");
+                    var reportDialog = INTV.Shared.View.ReportDialog.Create(Resources.Strings.LaunchInJzIntvCommand_Failed_Title, Resources.Strings.LaunchInJzIntvCommand_Failed_Message);
                     reportDialog.ReportText = message;
                     reportDialog.ShowSendEmailButton = false;
-                    reportDialog.ShowDialog("OK");
+                    reportDialog.ShowDialog(Resources.Strings.ReportErrorDialogButtonText);
                 });
         }
 
         #endregion // LaunchInJzIntvCommand
+
+        #region BrowseAndLaunchInJzIntvCommand
+
+        /// <summary>
+        /// The command to browse for a ROM, then run it in jzIntv.
+        /// </summary>
+        public static readonly VisualRelayCommand BrowseAndLaunchInJzIntvCommand = new VisualRelayCommand(BrowseAndDownload, CanBrowseAndDownload)
+        {
+            UniqueId = UniqueNameBase + ".BrowseAndLaunchInJzIntvCommand",
+            Name = Resources.Strings.BrowseAndLaunchInJzIntvCommand_Name,
+            ToolTip = Resources.Strings.BrowseAndLaunchInJzIntvCommand_TipDescription,
+            ToolTipTitle = Resources.Strings.BrowseAndLaunchInJzIntvCommand_Name,
+            ToolTipDescription = Resources.Strings.BrowseAndLaunchInJzIntvCommand_TipDescription,
+            ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            LargeIcon = typeof(JzIntvLauncherCommandGroup).LoadImageResource("Resources/Images/browse_download_play_32xLG.png"),
+            SmallIcon = typeof(JzIntvLauncherCommandGroup).LoadImageResource("Resources/Images/browse_download_play_16xLG.png"),
+            ////Weight = 0.21,
+            MenuParent = JzIntvToolsMenuCommand,
+        };
+
+        private static void BrowseAndDownload(object parameter)
+        {
+            if (CanBrowseAndDownload(parameter))
+            {
+                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false).FirstOrDefault();
+                if (selectedFile != null)
+                {
+                    var rom = selectedFile.GetRomFromPath();
+                    IProgramDescription programDescription = null;
+                    if (rom != null)
+                    {
+                        var fileName = System.IO.Path.GetFileName(rom.RomPath);
+                        var programInfo = rom.GetProgramInformation();
+                        programDescription = new ProgramDescription(rom.Crc, rom, programInfo);
+                    }
+                    if (programDescription != null)
+                    {
+                        OnLaunch(programDescription);
+                    }
+                    else
+                    {
+                        var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.BrowseAndLaunchInJzIntvCommand_Failed_MessageFormat, selectedFile);
+                        OSMessageBox.Show(message, string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.BrowseAndLaunchInJzIntvCommand_Failed_Title));
+                    }
+                }
+            }
+        }
+
+        private static bool CanBrowseAndDownload(object parameter)
+        {
+            // Since user will browse, we won't know a priori if ECS ROM is needed.
+            var canExecute = ConfigurationCommandGroup.AreRequiredEmulatorPathsValid(false);
+            return canExecute;
+        }
+
+        #endregion // BrowseAndLaunchInJzIntvCommand
 
         #region CommandGroup
 
@@ -433,11 +494,6 @@ namespace INTV.JzIntvUI.Commands
             {
                 yield return CreateContextMenuCommand(target, LaunchInJzIntvCommand, context);
             }
-            //            // A NULL target is allowed for the case of an empty list.
-            //            if (((target is INTV.Shared.ViewModel.ProgramDescriptionViewModel) || (target == null)) && (context is INTV.Shared.ViewModel.RomListViewModel))
-            //            {
-            //                yield return CreateContextMenuCommand(null, DownloadCommand, IntellicartViewModel, null, 0.022);
-            //            }
         }
 
         /// <inheritdoc />

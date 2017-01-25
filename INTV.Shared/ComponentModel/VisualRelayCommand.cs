@@ -120,7 +120,13 @@ namespace INTV.Shared.ComponentModel
         /// <summary>
         /// Gets or sets the display name of the command.
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, "Name", value, ref _name); }
+        }
+
+        private string _name;
 
         /// <summary>
         /// Gets or sets the display name for use in a menu.

@@ -57,7 +57,9 @@
     <Compile Include="Commands\ConfigurationCommandGroup.cs" />
     <Compile Include="Commands\ConfigurationCommandGroup.WPF.cs" />
     <Compile Include="Commands\JzIntvLauncherCommandGroup.cs" />
+    <Compile Include="Commands\JzIntvLauncherCommandGroup.WPF.cs" />
     <Compile Include="Commands\JzIntvLauncherCommandsProvider.cs" />
+    <Compile Include="Converter\BooleanToDisplayModeConverter.cs" />
     <Compile Include="Model\CommandLineMode.cs" />
     <Compile Include="Model\EnableFeature.cs" />
     <Compile Include="Model\JzIntvLauncherConfiguration.cs" />
@@ -81,6 +83,42 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Commands\Resources\JzIntvRibbonTabCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\LaunchRibbonGroupCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\LaunchInJzIntvRibbonSplitButtonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\BrowseAndLaunchInJzIntvRibbonButtonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\LaunchInJzIntvRibbonButtonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ConfigurationRibbonGroupCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\OpenSettingsDialogCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetEnableIntellivoiceCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetEnableEcsCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetEnableJlpCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\MuteSoundCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ShowFullscreenCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Page Include="View\JzIntvSettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -115,9 +153,7 @@
       <CustomToolNamespace>INTV.JzIntvUI.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converter\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\Images\Always_16xMD.png" />
     <Resource Include="Resources\Images\Display_16xMD.png" />
@@ -134,6 +170,16 @@
   <ItemGroup>
     <None Include="license.txt" />
     <None Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\browse_download_play_16xLG.png" />
+    <Resource Include="Resources\Images\browse_download_play_32xLG.png" />
+    <Resource Include="Resources\Images\browse_download_play_32xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\ecs_16xLG.png" />
+    <Resource Include="Resources\Images\intellivoice_16xLG.png" />
+    <Resource Include="Resources\Images\jlp_9xSM.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

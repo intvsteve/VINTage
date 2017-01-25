@@ -1,0 +1,46 @@
+<!--
+    <copyright file="SetEnableEcsCommand.xaml" company="INTV Funhouse">
+    Copyright (c) 2017 All Rights Reserved
+    <author>Steven A. Orth</author>
+
+    This program is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by the
+    Free Software Foundation, either version 2 of the License, or (at your
+    option) any later version.
+
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this software. If not, see: http://www.gnu.org/licenses/.
+    or write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+
+    </copyright>
+-->
+<Ribbon:RibbonComboBox
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Ribbon="clr-namespace:INTV.Ribbon;assembly=INTV.Ribbon"
+        xmlns:converter="clr-namespace:INTV.Shared.Converter;assembly=INTV.Shared"
+        xmlns:viewModel="clr-namespace:INTV.JzIntvUI.ViewModel;assembly=INTV.jzIntvUI"
+        xmlns:properties="clr-namespace:INTV.JzIntvUI.Properties;assembly=INTV.jzIntvUI"
+        xmlns:jzIntvCommands="clr-namespace:INTV.JzIntvUI.Commands;assembly=INTV.jzIntvUI"
+    Margin="4,0,2,0" SelectionBoxWidth="112"
+    SmallImageSource="{Binding Path=SmallIcon, Source={x:Static jzIntvCommands:ConfigurationCommandGroup.SetEnableEcsCommand}, Mode=OneTime}"
+    ToolTipTitle="{Binding Path=ToolTipTitle, Source={x:Static jzIntvCommands:ConfigurationCommandGroup.SetEnableEcsCommand}, Mode=OneTime}"
+    ToolTipDescription="{Binding Path=ToolTipDescription, Source={x:Static jzIntvCommands:ConfigurationCommandGroup.SetEnableEcsCommand}, Mode=OneTime}"
+    ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static jzIntvCommands:ConfigurationCommandGroup.SetEnableEcsCommand}, Mode=OneTime}">
+    <Ribbon:RibbonComboBox.Resources>
+        <converter:EnumStringConverter x:Key="EnumStringConverter" />
+    </Ribbon:RibbonComboBox.Resources>
+    <Ribbon:RibbonGallery MaxColumnCount="1" DisplayMemberPath="Content" SelectedValuePath="Content" SelectedValue="{Binding Path=EnableEcs, Source={x:Static properties:Settings.Default}, Mode=TwoWay, Converter={StaticResource EnumStringConverter}, ConverterParameter=INTV.JzIntvUI.Model.EnableFeature-INTV.JzIntvUI}">
+        <Ribbon:RibbonGalleryCategory>
+            <Ribbon:RibbonGalleryItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureUseRomSettingName}"/>
+            <Ribbon:RibbonGalleryItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureAlways}"/>
+            <Ribbon:RibbonGalleryItem Content="{x:Static viewModel:JzIntvSettingsPageViewModel.EnableFeatureNever}"/>
+        </Ribbon:RibbonGalleryCategory>
+    </Ribbon:RibbonGallery>
+</Ribbon:RibbonComboBox>

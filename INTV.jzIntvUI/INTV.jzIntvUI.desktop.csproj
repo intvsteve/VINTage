@@ -186,8 +186,9 @@
     <Resource Include="Resources\Images\jlp_9xSM.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="jzIntv\Win\bin\.readme.txt" />
-    <Content Include="jzIntv\Win\doc\.readme.txt" />
+    <None Include="jzIntv\Win\bin\.readme.txt" />
+    <None Include="jzIntv\Win\doc\.readme.txt" />
+    <Content Include="jzIntv\Win\**" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

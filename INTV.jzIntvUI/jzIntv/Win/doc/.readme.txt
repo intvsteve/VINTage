@@ -1,0 +1,6 @@
+=============================================================================
+jzIntv/Win/doc
+=============================================================================
+
+This file is present so, should you choose to build jzIntv as part of the
+INTV.jzIntvUI project build, its output may be placed here.

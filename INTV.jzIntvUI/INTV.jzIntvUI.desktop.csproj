@@ -140,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="build_jzIntv.bat" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -153,7 +154,10 @@
       <CustomToolNamespace>INTV.JzIntvUI.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="build_jzIntv.mak" />
+    <None Include="custom.mak" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Always_16xMD.png" />
     <Resource Include="Resources\Images\Display_16xMD.png" />
@@ -181,7 +185,18 @@
     <Resource Include="Resources\Images\intellivoice_16xLG.png" />
     <Resource Include="Resources\Images\jlp_9xSM.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="jzIntv\Win\bin\.readme.txt" />
+    <Content Include="jzIntv\Win\doc\.readme.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>$(ProjectDir)build_jzIntv.bat $(ProjectDir)</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>mkdir $(ProjectDir)$(OutDir)jzIntv
+xcopy /E /Y $(ProjectDir)jzIntv\Win $(ProjectDir)$(OutDir)jzIntv</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -189,4 +204,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterClean">
+    <Exec Command="$(ProjectDir)build_jzIntv.bat $(ProjectDir) clean" ContinueOnError="true" />
+  </Target>
 </Project>

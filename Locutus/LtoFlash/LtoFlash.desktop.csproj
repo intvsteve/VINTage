@@ -112,6 +112,8 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="clean_jzIntv.bat" />
+    <None Include="copy_jzIntv.bat" />
     <None Include="license.rtf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -161,9 +163,6 @@
     <SplashScreen Include="Resources\Images\LTOFlashSplash.png" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="license.txt" />
     <None Include="README.txt" />
     <Content Include="full_credits.html">
@@ -191,8 +190,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>$(ProjectDir)copy_jzIntv.bat $(ProjectDir) $(ProjectDir)$(OutDir)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -201,4 +199,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterClean">
+    <Exec Command="$(ProjectDir)clean_jzIntv.bat $(ProjectDir)$(OutDir)" ContinueOnError="true" />
+  </Target>
 </Project>

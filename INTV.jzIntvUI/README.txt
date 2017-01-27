@@ -91,6 +91,23 @@ This assembly provides the following general categories of services:
 
  - Resources: Contains strings intended for display in the user interface.
 
+NOTE:
+-----
+This project supports locally building the jzIntv emulator to include in
+the installed version of the overall project.
+
+If you also have the sources for jzIntv, you can OPTIONALLY provide local
+configuration values to have this project locally build the emulator,
+rather than using a copy downloaded or built elsewhere. To do this, you must
+already be able to build jzIntv. Once you have ensured you can locally build
+jzIntv, it is a simple matter to integrate building it locally by modifying
+the files named:
+  custom.mak (all platforms)
+  build_jzIntv.bat (Windows)
+which can be found in the same directory as this REAMDE file. Instructions
+for the necessary changes are included in custom.mak and build_jzIntv.bat
+respectively.
+
 OTHER
 =============================================================================
 Intellivision (R) is a registered trademark of Intellivision Productions.

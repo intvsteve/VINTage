@@ -1021,8 +1021,8 @@
 										</object>
 										<object class="NSButton" id="4041272">
 											<reference key="NSNextResponder" ref="238703423"/>
-											<int key="NSvFlags">265</int>
-											<string key="NSFrame">{{332, 170}, {82, 32}}</string>
+											<int key="NSvFlags">268</int>
+											<string key="NSFrame">{{302, 170}, {82, 32}}</string>
 											<reference key="NSSuperview" ref="238703423"/>
 											<reference key="NSNextKeyView" ref="403986922"/>
 											<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -1213,14 +1213,15 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="403986922">
 											<reference key="NSNextResponder" ref="238703423"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{15, 109}, {109, 18}}</string>
+											<string key="NSFrame">{{15, 109}, {110, 18}}</string>
 											<reference key="NSSuperview" ref="238703423"/>
+											<reference key="NSNextKeyView" ref="514331716"/>
 											<string key="NSReuseIdentifierKey">_NS:9</string>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="832100729">
 												<int key="NSCellFlags">-2080374784</int>
 												<int key="NSCellFlags2">268435456</int>
-												<string key="NSContents">Enable Mouse</string>
+												<string key="NSContents">Enable mouse</string>
 												<reference key="NSSupport" ref="947574255"/>
 												<string key="NSCellIdentifier">_NS:9</string>
 												<reference key="NSControlView" ref="403986922"/>
@@ -2218,6 +2219,26 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
+						<string key="label">hidden: ShowEnableMouse</string>
+						<reference key="source" ref="403986922"/>
+						<reference key="destination" ref="1001"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="403986922"/>
+							<reference key="NSDestination" ref="1001"/>
+							<string key="NSLabel">hidden: ShowEnableMouse</string>
+							<string key="NSBinding">hidden</string>
+							<string key="NSKeyPath">ShowEnableMouse</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">415</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: Status</string>
 						<reference key="source" ref="514331716"/>
 						<reference key="destination" ref="1001"/>
@@ -2896,11 +2917,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="238703423"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="657295127"/>
-							<reference ref="4041272"/>
 							<reference ref="1001991409"/>
 							<reference ref="381721786"/>
 							<reference ref="403986922"/>
 							<reference ref="309807382"/>
+							<reference ref="4041272"/>
 						</array>
 						<reference key="parent" ref="812281060"/>
 					</object>
@@ -3871,7 +3892,7 @@ qA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">412</int>
+			<int key="maxID">415</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

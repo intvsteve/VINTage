@@ -214,6 +214,12 @@ namespace INTV.JzIntvUI.View
             get { return ViewModel.ConfigurationStatusColor; }
         }
 
+        [OSExport("ShowEnableMouse")]
+        private bool ShowEnableMouse
+        {
+            get { return false; }
+        }
+
         private static SelectedTab LastSelectedTab { get; set; }
 
         private JzIntvSettingsPageViewModel ViewModel { get { return DataContext as JzIntvSettingsPageViewModel; } } 

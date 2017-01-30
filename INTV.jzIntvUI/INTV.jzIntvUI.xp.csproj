@@ -60,6 +60,7 @@
     <Compile Include="Model\CommandLineMode.cs" />
     <Compile Include="Model\EnableFeature.cs" />
     <Compile Include="Model\JzIntvLauncherConfiguration.cs" />
+    <Compile Include="Model\JzIntvLauncherConfiguration.WPF.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -114,6 +115,12 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Commands\Resources\ShowFullscreenCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ShowGettingStartedCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ShowInstalledDocumentsCommand.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Page Include="View\JzIntvSettingsPage.xaml">
@@ -177,10 +184,15 @@
     <None Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\Information_16x16.png" />
+    <Resource Include="Resources\Images\Information_32x.png" />
     <None Include="build_jzIntv.mak" />
     <None Include="custom.mak" />
     <None Include="jzIntv\Win\bin\.readme.txt" />
     <None Include="jzIntv\Win\doc\.readme.txt" />
+    <Content Include="jzIntv\Getting_Started.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="jzIntv\Win\**" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

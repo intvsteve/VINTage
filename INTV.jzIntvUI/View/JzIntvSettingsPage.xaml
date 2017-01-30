@@ -107,12 +107,12 @@
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="{x:Static viewModel:JzIntvSettingsPageViewModel.JzIntvPathLabel}"/>
                         <Grid Grid.Row="0" Grid.Column="1">
-                            <TextBox Margin="8,4,0,4" IsReadOnly="True" TextWrapping="NoWrap" Tag="{x:Static jzIntv:EmulatorFile.JzIntv}" Text="{Binding EmulatorPath}" AllowDrop="True"
+                            <TextBox Margin="8,4,0,4" IsReadOnly="True" TextWrapping="NoWrap" Tag="{x:Static jzIntv:EmulatorFile.JzIntv}" Text="{Binding Path=EmulatorPath, Source={x:Static settings:Settings.Default}}" AllowDrop="True"
                                      behavior:DragDropHelpers.UsePreviewEvents="True"
                                      behavior:DragEnterBehavior.DragEnterCommand="{x:Static view:JzIntvSettingsPage.DragFileEnterCommand}"
                                      behavior:DragOverBehavior.DragOverCommand="{x:Static view:JzIntvSettingsPage.DragFileOverCommand}"
                                      behavior:DragDropBehavior.DropCommand="{x:Static view:JzIntvSettingsPage.DragFileDropCommand}"/>
-                            <TextBlock Margin="8,4,0,4" Padding="4,0,0,0" VerticalAlignment="Center" Opacity="0.5" Visibility="{Binding EmulatorPath, Converter={StaticResource ShowPlaceholderConverter}}"
+                            <TextBlock Margin="8,4,0,4" Padding="4,0,0,0" VerticalAlignment="Center" Opacity="0.5" Visibility="{Binding Path=EmulatorPath, Source={x:Static settings:Settings.Default}, Converter={StaticResource ShowPlaceholderConverter}}"
                                        Text="{x:Static viewModel:JzIntvSettingsPageViewModel.JzIntvPathHint}" Tag="{x:Static jzIntv:EmulatorFile.JzIntv}" AllowDrop="True"
                                        behavior:DragEnterBehavior.DragEnterCommand="{x:Static view:JzIntvSettingsPage.DragFileEnterCommand}"
                                        behavior:DragOverBehavior.DragOverCommand="{x:Static view:JzIntvSettingsPage.DragFileOverCommand}"

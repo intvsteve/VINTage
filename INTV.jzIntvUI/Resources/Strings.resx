@@ -272,6 +272,9 @@ The error message was:
   <data name="OpenSettingsDialogCommand_Name" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="OpenSettingsDialogCommand_MenuItemName" xml:space="preserve">
+    <value>Settings...</value>
+  </data>
   <data name="OpenSettingsDialogCommand_TipDescription" xml:space="preserve">
     <value>Configure jzIntv settings</value>
   </data>
@@ -503,5 +506,89 @@ The error message was:
   </data>
   <data name="UnknownROM" xml:space="preserve">
     <value>&lt;Unknown Program&gt;</value>
+  </data>
+  <data name="ShowGettingStartedCommand_Name" xml:space="preserve">
+    <value>Getting Started</value>
+  </data>
+  <data name="ShowGettingStartedCommand_MenuItemName" xml:space="preserve">
+    <value>Open Getting Started Guide</value>
+  </data>
+  <data name="ShowGettingStartedCommand_TipDescription" xml:space="preserve">
+    <value>Show a brief guide for further information about how to set up integration with jzIntv.</value>
+  </data>
+  <data name="SDLNotFound_ErrorMessage" xml:space="preserve">
+    <value>The jzIntv emulator requires the SDL library to be installed. A copy of a compatible SDL disk image has been included.
+
+WARNING: If SDL is already in your ~/Library/Frameworks folder, it will be replaced!
+NOTE: The solution will only apply for the currently logged in user.
+
+Would you like to have LUI attempt to automatically resolve the problem?</value>
+  </data>
+  <data name="ShowGettingStartedCommand_TipDescription" xml:space="preserve">
+    <value>Show a brief guide for further information about how to set up integration with jzIntv.</value>
+  </data>
+  <data name="SDLNotFound_ErrorTitle" xml:space="preserve">
+    <value>SDL Not Installed</value>
+  </data>
+  <data name="SDLInstall_Title" xml:space="preserve">
+    <value>Installing SDL to ~/Library/Frameworks ...</value>
+  </data>
+  <data name="SDLInstall_Update_Mounting" xml:space="preserve">
+    <value>Attaching SDL-1.2.15.dmg ...</value>
+  </data>
+  <data name="SDLInstall_Update_Copying" xml:space="preserve">
+    <value>Installing SDL.framwork to ~/Library/Frameworks ...</value>
+  </data>
+  <data name="SDLInstall_Update_Unmounting" xml:space="preserve">
+    <value>Detaching SDL-1.2.15.dmg ...</value>
+  </data>
+  <data name="SDLInstall_Failed_Format" xml:space="preserve">
+    <value>SDL installation failed. Reason:
+
+{0}</value>
+  </data>
+  <data name="SDLInstall_Failed_Title" xml:space="preserve">
+    <value>Detaching SDL-1.2.15.dmg ...</value>
+  </data>
+  <data name="SDLInstall_UnableToGetUserLibraryDirectory" xml:space="preserve">
+    <value>Unable to get the user-specific Library directory (~/Library).</value>
+  </data>
+  <data name="SDLInstall_UserLibraryDirectoryDoesNotExist_Format" xml:space="preserve">
+    <value>The user-specific Library directory:
+  {0}
+
+does not exist!</value>
+  </data>
+  <data name="SDLInstall_FailedToMount_Format" xml:space="preserve">
+    <value>Failed to mount the SDL disk image located at:
+  {0}
+
+The call to hdiutil returned:
+
+{1}</value>
+  </data>
+  <data name="SDLInstall_GeneralFailureMessage" xml:space="preserve">
+    <value>An error occurred while attempting to install the SDL framework.</value>
+  </data>
+  <data name="SDLInstall_Failure_Title" xml:space="preserve">
+    <value>SDL Install Failed</value>
+  </data>
+  <data name="SDLInstall_Success_Title" xml:space="preserve">
+    <value>SDL Install Succeeded</value>
+  </data>
+  <data name="SDLInstall_Success_Message" xml:space="preserve">
+    <value>The SDL framework was installed to your ~/Library/Frameworks directory. You should now be able to run jzIntv.</value>
+  </data>
+  <data name="ShowInstalledDocumentsCommand_Name" xml:space="preserve">
+    <value>Show Documentation</value>
+  </data>
+  <data name="ShowInstalledDocumentsCommand_MenuItemName" xml:space="preserve">
+    <value>Open jzIntv Documentation in File System</value>
+  </data>
+  <data name="ShowInstalledDocumentsCommand_TipTitle" xml:space="preserve">
+    <value>Open Documentation in File System</value>
+  </data>
+  <data name="ShowInstalledDocumentsCommand_Tip" xml:space="preserve">
+    <value>Show the included jzIntv documentation files in the file system.</value>
   </data>
 </root>

@@ -28,11 +28,18 @@
     <CreatePackage>false</CreatePackage>
     <EnableCodeSigning>false</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="make -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac" workingdir="${ProjectDir}" />
+        <Command type="AfterClean" command="make -f build_jzIntv.mak clean SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\Mac</OutputPath>
     <IntermediateOutputPath>obj\Release\Mac\</IntermediateOutputPath>
+    <DefineConstants>MAC</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -43,6 +50,12 @@
     <EnableCodeSigning>false</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
     <DefineConstants>MAC</DefineConstants>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="make -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac" workingdir="${ProjectDir}" />
+        <Command type="AfterClean" command="make -f build_jzIntv.mak clean SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -102,6 +115,8 @@
     <Compile Include="Commands\ConfigurationCommandGroup.Mac.cs" />
     <Compile Include="Model\EnableFeature.cs" />
     <Compile Include="Model\CommandLineMode.cs" />
+    <Compile Include="ViewModel\KeyboardMapViewModel.cs" />
+    <Compile Include="Model\JzIntvLauncherConfiguration.Mac.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Strings.resx">
@@ -109,17 +124,83 @@
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
       <CustomToolNamespace>INTV.JzIntvUI.Resources</CustomToolNamespace>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Information_16x16.png">
+      <LogicalName>Resources/Images/Information_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Information_32x.png">
+      <LogicalName>Resources/Images/Information_32x.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Images\Always_16xMD.png">
+      <LogicalName>Resources/Images/Always_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Display_16xMD.png">
+      <LogicalName>Resources/Images/Display_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Display_32xMD.png">
+      <LogicalName>Resources/Images/Display_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_16xLG_color.png">
+      <LogicalName>Resources/Images/download_play_16xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_32xLG_color.png">
+      <LogicalName>Resources/Images/download_play_32xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_32xMD_color.png">
+      <LogicalName>Resources/Images/download_play_32xMD_color.png</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Images\jzIntvUI_32xMD.png">
       <LogicalName>Resources/Images/jzIntvUI_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Never_16xMD.png">
+      <LogicalName>Resources/Images/Never_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\settings_16xLG.png">
+      <LogicalName>Resources/Images/settings_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\settings_32xMD.png">
+      <LogicalName>Resources/Images/settings_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\UseRom_16x.png">
+      <LogicalName>Resources/Images/UseRom_16x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_16xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xMD.png">
+      <LogicalName>Resources/Images/browse_download_play_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\ecs_16xLG.png">
+      <LogicalName>Resources/Images/ecs_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\intellivoice_16xLG.png">
+      <LogicalName>Resources/Images/intellivoice_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\jlp_9xSM.png">
+      <LogicalName>Resources/Images/jlp_9xSM.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="View\JzIntvSettingsPage.xib" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="jzIntv\Mac\bin\.readme.txt" />
+    <None Include="jzIntv\Mac\doc\.readme.txt" />
+    <None Include="jzIntv\Mac\bin\SDL-1.2.15.dmg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="license.txt" />
     <None Include="README.txt" />
+    <None Include="build_jzIntv.mak" />
+    <None Include="custom.mak" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="jzIntv\Getting_Started.html" />
   </ItemGroup>
 </Project>

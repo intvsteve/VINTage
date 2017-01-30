@@ -217,7 +217,7 @@ namespace INTV.JzIntvUI.ViewModel
 
         public JzIntvSettingsPageViewModel()
         {
-            _emulatorPath = Properties.Settings.Default.EmulatorPath;
+            _emulatorPath = JzIntvLauncherConfiguration.Instance.EmulatorPath;
             _execRomPath = Properties.Settings.Default.ExecRomPath;
             _gromRomPath = Properties.Settings.Default.GromRomPath;
             _ecsRomPath = Properties.Settings.Default.EcsRomPath;
@@ -311,7 +311,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string EmulatorPath
         {
             get { return _emulatorPath; }
-            set { AssignAndUpdateProperty(EmulatorPathSettingName, value, ref _emulatorPath, (n, v) => Properties.Settings.Default.EmulatorPath = v); }
+            set { AssignAndUpdateProperty(EmulatorPathSettingName, value, ref _emulatorPath, (n, v) => JzIntvLauncherConfiguration.Instance.EmulatorPath = v); }
         }
         private string _emulatorPath;
 
@@ -559,7 +559,7 @@ namespace INTV.JzIntvUI.ViewModel
             switch (e.PropertyName)
             {
                 case EmulatorPathSettingName:
-                    EmulatorPath = Properties.Settings.Default.EmulatorPath;
+                    EmulatorPath = JzIntvLauncherConfiguration.Instance.EmulatorPath;
                     break;
                 case ExecRomPathSettingName:
                     ExecRomPath = Properties.Settings.Default.ExecRomPath;

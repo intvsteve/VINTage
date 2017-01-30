@@ -174,7 +174,7 @@ namespace INTV.JzIntvUI.Properties
             set { UpdateProperty(JzIntvSettingsPageViewModel.InitialKeyboardMapSettingName, value, string.Empty, (s, v) => UpdateStringSetting(v, s)); }
         }
 
-        public bool UseEcsKeymapForECSGames
+        public bool UseEcsKeymapForEcsRoms
         {
             get { return UserDefaults.BoolForKey(JzIntvSettingsPageViewModel.UseEcsKeymapForECSGamesSettingName); }
                             set { throw new InvalidOperationException("set UseEcsKeymapForECSGames not supported"); }
@@ -183,7 +183,7 @@ namespace INTV.JzIntvUI.Properties
         /// <summary>
         /// Gets or sets the display size setting.
         /// </summary>
-        public string DisplaySizeSetting
+        public string DisplaySize
         {
             get { return UserDefaults.StringForKey(JzIntvSettingsPageViewModel.DisplaySizeSettingName); }
             set { UpdateProperty(JzIntvSettingsPageViewModel.DisplaySizeSettingName, value, string.Empty, (s, v) => UpdateStringSetting(v, s)); }
@@ -192,7 +192,7 @@ namespace INTV.JzIntvUI.Properties
         /// <summary>
         /// Gets or sets the display mode setting.
         /// </summary>
-        public string DisplayModeSetting
+        public string DisplayMode
         {
             get { return UserDefaults.StringForKey(JzIntvSettingsPageViewModel.DisplayModeSettingName); }
             set { UpdateProperty(JzIntvSettingsPageViewModel.DisplayModeSettingName, value, string.Empty, (s, v) => UpdateStringSetting(v, s)); }

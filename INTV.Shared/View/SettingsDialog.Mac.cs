@@ -116,7 +116,7 @@ namespace INTV.Shared.View
 
         private void ShowDialog()
         {
-            this.ShowDialog();
+            this.ShowDialog(false);
         }
 
         private void SettingsPageSelected(object sender, System.EventArgs e)

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.JzIntv.Model;
+using INTV.JzIntvUI.Model;
 using INTV.JzIntvUI.ViewModel;
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
@@ -37,6 +38,7 @@ namespace INTV.JzIntvUI.Commands
     public partial class ConfigurationCommandGroup : CommandGroup
     {
         private const string UniqueNameBase = "INTV.JzIntvUI.Commands.ConfigurationCommandGroup";
+        private static readonly string GettingStartedFileName = System.IO.Path.Combine("jzIntv", "Getting_Started.html");
 
         private ConfigurationCommandGroup()
             : base(UniqueNameBase, "jzIntv")
@@ -72,15 +74,77 @@ namespace INTV.JzIntvUI.Commands
         {
             UniqueId = UniqueNameBase + ".OpenSettingsDialogCommand",
             Name = Resources.Strings.OpenSettingsDialogCommand_Name,
+            MenuItemName = Resources.Strings.OpenSettingsDialogCommand_MenuItemName,
             ToolTip = Resources.Strings.OpenSettingsDialogCommand_TipDescription,
             ToolTipTitle = Resources.Strings.OpenSettingsDialogCommand_TipTitle,
-            ////ToolTipDescription = "Configure jzIntv behaviors",
             ////Weight = 0.1,
             SmallIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/settings_16xLG.png"),
             LargeIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/settings_32xMD.png")
         };
 
         #endregion // OpenSettingsDialogCommand
+
+        #region ShowGettingStartedCommand
+
+        /// <summary>
+        /// Command to open the getting started guide.
+        /// </summary>
+        public static readonly VisualRelayCommand ShowGettingStartedCommand = new VisualRelayCommand(ShowGettingStarted)
+        {
+            UniqueId = UniqueNameBase + ".ShowGettingStartedCommand",
+            Name = Resources.Strings.ShowGettingStartedCommand_Name,
+            MenuItemName = Resources.Strings.ShowGettingStartedCommand_MenuItemName,
+            ToolTip = Resources.Strings.ShowGettingStartedCommand_TipDescription,
+            ToolTipTitle = Resources.Strings.ShowGettingStartedCommand_Name,
+            ////Weight = 0.1,
+            SmallIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_16x16.png"),
+            // LargeIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_32x.png")
+        };
+
+        private static void ShowGettingStarted(object parameter)
+        {
+            try
+            {
+                RunExternalProgram.OpenInDefaultProgram(GettingStartedPath);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                // ignore failure
+            }
+        }
+
+        #endregion // ShowGettingStartedCommand
+
+        #region ShowInstalledDocumentsCommand
+
+        /// <summary>
+        /// Command to open the getting started guide.
+        /// </summary>
+        public static readonly VisualRelayCommand ShowInstalledDocumentsCommand = new VisualRelayCommand(ShowInstalledDocuments)
+        {
+            UniqueId = UniqueNameBase + ".ShowInstalledDocumentsCommand",
+            Name = Resources.Strings.ShowInstalledDocumentsCommand_Name,
+            MenuItemName = Resources.Strings.ShowInstalledDocumentsCommand_MenuItemName,
+            ToolTip = Resources.Strings.ShowInstalledDocumentsCommand_Tip,
+            ToolTipTitle = Resources.Strings.ShowInstalledDocumentsCommand_TipTitle,
+            ////Weight = 0.1,
+            SmallIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_16x16.png"),
+            // LargeIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_32x.png")
+        };
+
+        private static void ShowInstalledDocuments(object parameter)
+        {
+            try
+            {
+                RunExternalProgram.OpenInDefaultProgram(DocumentationPath);
+            }
+            catch (Exception)
+            {
+                // Ignore errors.
+            }
+        }
+
+        #endregion // ShowInstalledDocumentsCommand
 
         #region LocateJzIntvCommand
 
@@ -316,8 +380,9 @@ namespace INTV.JzIntvUI.Commands
         /// <remarks>NOTE: This method does NOT determine if the path is actually a real jzIntv executable -- only that the file exists.</remarks>
         internal static bool IsEmulatorPathValid()
         {
-            var path = ResolvePathSetting(Properties.Settings.Default.EmulatorPath);
-            var isValid = IsRomPathValid(path);
+            var emulatorPath = SingleInstanceApplication.Instance.GetConfiguration<JzIntvLauncherConfiguration>().EmulatorPath;
+            var path = ResolvePathSetting(emulatorPath);
+            var isValid = IsPathValid(path);
             return isValid;
         }
 
@@ -332,8 +397,12 @@ namespace INTV.JzIntvUI.Commands
             var execRomPath = ResolvePathSetting(path);
             if (string.IsNullOrEmpty(execRomPath) && IsEmulatorPathValid())
             {
-                var emulatorDirectory = System.IO.Path.GetDirectoryName(ResolvePathSetting(Properties.Settings.Default.EmulatorPath));
-                execRomPath = System.IO.Path.Combine(emulatorDirectory, "EXEC.bin"); 
+                var emulatorPath = SingleInstanceApplication.Instance.GetConfiguration<JzIntvLauncherConfiguration>().EmulatorPath;
+                var emulatorDirectory = System.IO.Path.GetDirectoryName(ResolvePathSetting(emulatorPath));
+                if (!string.IsNullOrEmpty(emulatorDirectory))
+                {
+                    execRomPath = System.IO.Path.Combine(emulatorDirectory, "EXEC.bin");
+                }
             }
             var isValid = IsRomPathValid(execRomPath);
             return isValid;
@@ -350,8 +419,12 @@ namespace INTV.JzIntvUI.Commands
             var gromRomPath = ResolvePathSetting(path);
             if (string.IsNullOrEmpty(gromRomPath) && IsEmulatorPathValid())
             {
-                var emulatorDirectory = System.IO.Path.GetDirectoryName(ResolvePathSetting(Properties.Settings.Default.EmulatorPath));
-                gromRomPath = System.IO.Path.Combine(emulatorDirectory, "GROM.bin"); 
+                var emulatorPath = SingleInstanceApplication.Instance.GetConfiguration<JzIntvLauncherConfiguration>().EmulatorPath;
+                var emulatorDirectory = System.IO.Path.GetDirectoryName(ResolvePathSetting(emulatorPath));
+                if (!string.IsNullOrEmpty(emulatorDirectory))
+                {
+                    gromRomPath = System.IO.Path.Combine(emulatorDirectory, "GROM.bin");
+                }
             }
             var isValid = IsRomPathValid(gromRomPath);
             return isValid;
@@ -367,8 +440,12 @@ namespace INTV.JzIntvUI.Commands
             var ecsRomPath = ResolvePathSetting(Properties.Settings.Default.EcsRomPath);
             if (string.IsNullOrEmpty(ecsRomPath) && IsEmulatorPathValid())
             {
-                var emulatorDirectory = System.IO.Path.GetDirectoryName(ResolvePathSetting(Properties.Settings.Default.EmulatorPath));
-                ecsRomPath = System.IO.Path.Combine(emulatorDirectory, "ECS.bin"); 
+                var emulatorPath = SingleInstanceApplication.Instance.GetConfiguration<JzIntvLauncherConfiguration>().EmulatorPath;
+                var emulatorDirectory = System.IO.Path.GetDirectoryName(ResolvePathSetting(emulatorPath));
+                if (!string.IsNullOrEmpty(emulatorDirectory))
+                {
+                    ecsRomPath = System.IO.Path.Combine(emulatorDirectory, "ECS.bin");
+                }
             }
             var isValid = IsPathValid(ecsRomPath);
             if (isValid)
@@ -573,6 +650,7 @@ namespace INTV.JzIntvUI.Commands
         /// <inheritdoc />
         protected override void AddCommands()
         {
+            CommandList.Add(OpenSettingsDialogCommand);
             AddPlatformCommands();
         }
 

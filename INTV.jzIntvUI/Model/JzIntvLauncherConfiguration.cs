@@ -22,12 +22,13 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Device;
+using INTV.JzIntv.Model;
 
 namespace INTV.JzIntvUI.Model
 {
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", FeatureName)]
-    public class JzIntvLauncherConfiguration : ModelBase, IConfiguration
+    public partial class JzIntvLauncherConfiguration : ModelBase, IConfiguration
     {
         /// <summary>
         /// Name of the feature, for use with MEF.
@@ -38,24 +39,6 @@ namespace INTV.JzIntvUI.Model
 
         private JzIntvLauncherConfiguration()
         {
-            /*
-            _programPaths = new Dictionary<ProgramFile, string>();
-            var toolsPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, ToolsDirectoryName);
-            ToolsDirectory = toolsPath;
-            IRomHelpers.AddConfigurationEntry(IRomHelpers.ToolsDirectoryKey, ToolsDirectory + System.IO.Path.DirectorySeparatorChar);
-            ProgramFile[] toolApps =
-            {
-                INTV.JzIntv.Model.ProgramFile.Bin2Rom,
-                INTV.JzIntv.Model.ProgramFile.Rom2Bin,
-                INTV.JzIntv.Model.ProgramFile.Bin2Luigi,
-                INTV.JzIntv.Model.ProgramFile.Rom2Luigi,
-                INTV.JzIntv.Model.ProgramFile.Luigi2Bin,
-                INTV.JzIntv.Model.ProgramFile.IntvName,
-            };
-            foreach (var toolApp in toolApps)
-            {
-                SetProgramPath(toolApp, toolsPath);
-            }*/
             _instance = this;
         }
 
@@ -90,5 +73,35 @@ namespace INTV.JzIntvUI.Model
         #endregion // IConfiguration
 
         #endregion // Properties
+
+        /// <summary>
+        /// Gets the configured emulator path, or, if not set, the path to the included emulator.
+        /// </summary>
+        public string EmulatorPath
+        {
+            get
+            {
+                return GetIncludedEmulatorPath();
+            }
+
+            set
+            {
+                if (value != GetIncludedEmulatorPath())
+                {
+                    Properties.Settings.Default.EmulatorPath = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the path to the included copy of jzIntv.
+        /// </summary>
+        private string IncludedEmulatorPath
+        {
+            get
+            {
+                return System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "jzIntv", OSEmulatorDirectory, "bin", ProgramFile.Emulator.ProgramNameWithSuffix());
+            }
+        }
     }
 }

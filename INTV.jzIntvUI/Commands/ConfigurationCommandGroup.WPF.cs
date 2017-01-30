@@ -29,6 +29,22 @@ namespace INTV.JzIntvUI.Commands
     /// </summary>
     public partial class ConfigurationCommandGroup
     {
+        private static string GettingStartedPath
+        {
+            get
+            {
+                return System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, GettingStartedFileName);
+            }
+        }
+
+        private static string DocumentationPath
+        {
+            get
+            {
+                return System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "jzIntv/doc/jzintv");
+            }
+        }
+
         #region ConfigurationRibbonGroupCommand
 
         /// <summary>
@@ -168,6 +184,14 @@ namespace INTV.JzIntvUI.Commands
             OpenSettingsDialogCommand.Weight = 0.9;
             OpenSettingsDialogCommand.UseXamlResource = true;
 
+            ShowGettingStartedCommand.VisualParent = ConfigurationRibbonGroupCommand;
+            ShowGettingStartedCommand.Weight = 0.91;
+            ShowGettingStartedCommand.UseXamlResource = true;
+
+            ShowInstalledDocumentsCommand.VisualParent = ConfigurationRibbonGroupCommand;
+            ShowInstalledDocumentsCommand.Weight = 0.92;
+            ShowInstalledDocumentsCommand.UseXamlResource = true;
+
             // Set up a handler to update group text with changes in configuration status.
             Properties.Settings.Default.PropertyChanged += JzIntvSettingsChanged;
             JzIntvSettingsChanged(null, null);
@@ -180,7 +204,8 @@ namespace INTV.JzIntvUI.Commands
             CommandList.Add(MuteSoundCommand);
             CommandList.Add(ShowFullscreenCommand);
             CommandList.Add(OpenSettingsDialogCommand.CreateRibbonSeparator(CommandLocation.Before));
-            CommandList.Add(OpenSettingsDialogCommand);
+            CommandList.Add(ShowGettingStartedCommand);
+            CommandList.Add(ShowInstalledDocumentsCommand);
         }
 
         #endregion // CommandGroup

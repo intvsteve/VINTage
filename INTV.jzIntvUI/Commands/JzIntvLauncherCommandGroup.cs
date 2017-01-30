@@ -357,7 +357,7 @@ namespace INTV.JzIntvUI.Commands
                     }
 
                     var romPath = programDescription.Rom.RomPath;
-                    var jzIntvPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.EmulatorPath);
+                    var jzIntvPath = ConfigurationCommandGroup.ResolvePathSetting(JzIntvLauncherConfiguration.Instance.EmulatorPath);
                     var jzIntv = new Emulator(jzIntvPath, LaunchInJzIntvErrorHandler);
                     var process = RunExternalProgram.CreateProcess(jzIntv.Path);
                     jzIntv.Launch(process, options, programDescription);
@@ -405,7 +405,7 @@ namespace INTV.JzIntvUI.Commands
             }
         }
 
-        private static void LaunchInJzIntvErrorHandler(Emulator emulator, string message, Exception exception)
+        private static void LaunchInJzIntvErrorHandler(Emulator emulator, string message, int exitCode, Exception exception)
         {
             SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() =>
                 {
@@ -424,8 +424,18 @@ namespace INTV.JzIntvUI.Commands
                     reportDialog.ReportText = message;
                     reportDialog.ShowSendEmailButton = false;
                     reportDialog.ShowDialog(Resources.Strings.ReportErrorDialogButtonText);
+                    OSErrorHandler(emulator, message, exitCode, exception);
                 });
         }
+
+        /// <summary>
+        /// Additional OS-specific error handler.
+        /// </summary>
+        /// <param name="emulator">The instance of Emulator that encountered the error.</param>
+        /// <param name="message">The error message.</param>
+        /// <param name="exitCode">The process exit code returned from the emulator.</param>
+        /// <param name="exception">The exception that was raised.</param>
+        static partial void OSErrorHandler(Emulator emulator, string message, int exitCode, Exception exception);
 
         #endregion // LaunchInJzIntvCommand
 

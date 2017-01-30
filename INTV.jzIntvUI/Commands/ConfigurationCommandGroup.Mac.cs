@@ -31,6 +31,22 @@ namespace INTV.JzIntvUI.Commands
     /// </summary>
     public partial class ConfigurationCommandGroup
     {
+        private static string GettingStartedPath
+        {
+            get
+            {
+                return System.IO.Path.Combine(NSBundle.MainBundle.ResourcePath, GettingStartedFileName);
+            }
+        }
+
+        private static string DocumentationPath
+        {
+            get
+            {
+                return System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "jzIntv/Mac/doc/jzintv");
+            }
+        }
+
         #region CommandGroup
 
         /// <inheritdoc />
@@ -54,6 +70,19 @@ namespace INTV.JzIntvUI.Commands
             var url = NSUrl.FromFilename(path);
             path = url.AbsoluteString;
             return path;
-       }
+        }
+
+        #region CommandGroup
+
+        partial void AddPlatformCommands()
+        {
+            OpenSettingsDialogCommand.MenuParent = JzIntvLauncherCommandGroup.JzIntvToolsMenuCommand;
+            ShowGettingStartedCommand.MenuParent = JzIntvLauncherCommandGroup.JzIntvToolsMenuCommand;
+            ShowInstalledDocumentsCommand.MenuParent = JzIntvLauncherCommandGroup.JzIntvToolsMenuCommand;
+            CommandList.Add(ShowGettingStartedCommand);
+            CommandList.Add(ShowInstalledDocumentsCommand);
+        }
+
+        #endregion // CommandGroup
     }
 }

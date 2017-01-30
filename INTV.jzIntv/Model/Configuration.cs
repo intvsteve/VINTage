@@ -43,9 +43,9 @@ namespace INTV.JzIntv.Model
 
         // UNDONE Consolidate this and the one in INTV.Shared. Perhaps put into INTV.Core?
 #if WIN || WIN_XP
-        private static readonly string ProgramSuffix = ".exe";
+        internal static readonly string ProgramSuffix = ".exe";
 #else
-        private static readonly string ProgramSuffix = string.Empty;
+        internal static readonly string ProgramSuffix = string.Empty;
 #endif
 
         private static Configuration _instance;

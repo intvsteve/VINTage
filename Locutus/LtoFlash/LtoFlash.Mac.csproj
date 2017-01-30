@@ -31,6 +31,11 @@
     <EnablePackageSigning>false</EnablePackageSigning>
     <CreatePackage>false</CreatePackage>
     <UseRefCounting>false</UseRefCounting>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -48,6 +53,11 @@
     <CreatePackage>false</CreatePackage>
     <DefineConstants>MAC</DefineConstants>
     <UseRefCounting>false</UseRefCounting>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|x86' ">
     <DebugType>none</DebugType>

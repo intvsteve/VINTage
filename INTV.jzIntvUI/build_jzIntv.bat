@@ -28,7 +28,7 @@ rem #   MSYS_PATH
 rem # Also, you probably do not want to have any spaces in your path. ;)
 rem #
 
- set MSYS_PATH=D:\Users\Steve\Projects\MinGW\msys\1.0\bin
+rem set MSYS_PATH=D:\Users\Steve\Projects\MinGW\msys\1.0\bin
 
 rem # If MSYS_PATH is empty, there is nothing to do.
 if [%MSYS_PATH%] == [] goto SkipBuild

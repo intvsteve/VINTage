@@ -80,7 +80,7 @@ endif
 ifneq (,$(CONTENT_DIR))
   CONTENT_COPY_FILES = $(addprefix $(CONTENT_DIR)/, bin/$(JZINTV_APP) $(JZINTV_SUPPORT_FILES))
 endif
-$(info !!!! $(CONTENT_DIR) !!!! $(addprefix $(TARGET_DIR)/, bin/$(JZINTV_APP) $(JZINTV_SUPPORT_FILES)) $(CONTENT_COPY_FILES))
+
 # BUILD ALL THE THINGS!
 all: $(addprefix $(TARGET_DIR)/, bin/$(JZINTV_APP) $(JZINTV_SUPPORT_FILES)) $(CONTENT_COPY_FILES)
 

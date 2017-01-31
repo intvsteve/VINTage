@@ -98,7 +98,7 @@ namespace INTV.JzIntvUI.Commands
             ToolTipTitle = Resources.Strings.ShowGettingStartedCommand_Name,
             ////Weight = 0.1,
             SmallIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_16x16.png"),
-            // LargeIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_32x.png")
+            LargeIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_32x.png")
         };
 
         private static void ShowGettingStarted(object parameter)
@@ -129,7 +129,7 @@ namespace INTV.JzIntvUI.Commands
             ToolTipTitle = Resources.Strings.ShowInstalledDocumentsCommand_TipTitle,
             ////Weight = 0.1,
             SmallIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_16x16.png"),
-            // LargeIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_32x.png")
+            LargeIcon = typeof(ConfigurationCommandGroup).LoadImageResource("Resources/Images/Information_32x.png")
         };
 
         private static void ShowInstalledDocuments(object parameter)

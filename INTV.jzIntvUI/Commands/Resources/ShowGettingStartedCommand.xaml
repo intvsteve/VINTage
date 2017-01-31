@@ -25,7 +25,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Ribbon="clr-namespace:INTV.Ribbon;assembly=INTV.Ribbon"
         xmlns:jzIntvCommands="clr-namespace:INTV.JzIntvUI.Commands;assembly=INTV.jzIntvUI"
-    LargeImageSource="{Binding Path=LargeIcon, Source={x:Static jzIntvCommands:ConfigurationCommandGroup.ShowGettingStartedCommand}, Mode=OneTime}"
     SmallImageSource="{Binding Path=SmallIcon, Source={x:Static jzIntvCommands:ConfigurationCommandGroup.ShowGettingStartedCommand}, Mode=OneTime}"
     Label="{Binding Path=Name, Source={x:Static jzIntvCommands:ConfigurationCommandGroup.ShowGettingStartedCommand}, Mode=OneTime}"
     Command="{x:Static jzIntvCommands:ConfigurationCommandGroup.ShowGettingStartedCommand}"

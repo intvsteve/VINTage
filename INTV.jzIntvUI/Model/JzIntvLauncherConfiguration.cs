@@ -26,6 +26,9 @@ using INTV.JzIntv.Model;
 
 namespace INTV.JzIntvUI.Model
 {
+    /// <summary>
+    /// Export implementation of the IConfiguration interface.
+    /// </summary>
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", FeatureName)]
     public partial class JzIntvLauncherConfiguration : ModelBase, IConfiguration
@@ -75,7 +78,7 @@ namespace INTV.JzIntvUI.Model
         #endregion // Properties
 
         /// <summary>
-        /// Gets the configured emulator path, or, if not set, the path to the included emulator.
+        /// Gets or sets the configured emulator path, or, if not set, the path to the included emulator.
         /// </summary>
         public string EmulatorPath
         {

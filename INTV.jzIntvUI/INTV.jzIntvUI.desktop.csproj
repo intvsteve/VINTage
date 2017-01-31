@@ -204,11 +204,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(ProjectDir)build_jzIntv.bat $(ProjectDir)</PreBuildEvent>
+    <PreBuildEvent>$(ProjectDir)build_jzIntv.bat $(ProjectDir) $(ProjectDir)$(OutDir)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>mkdir $(ProjectDir)$(OutDir)jzIntv
-xcopy /E /Y $(ProjectDir)jzIntv\Win $(ProjectDir)$(OutDir)jzIntv</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -218,6 +218,6 @@ xcopy /E /Y $(ProjectDir)jzIntv\Win $(ProjectDir)$(OutDir)jzIntv</PostBuildEvent
   </Target>
   -->
   <Target Name="AfterClean">
-    <Exec Command="$(ProjectDir)build_jzIntv.bat $(ProjectDir) clean" ContinueOnError="true" />
+    <Exec Command="$(ProjectDir)build_jzIntv.bat $(ProjectDir) $(ProjectDir)$(OutDir) clean" ContinueOnError="true" />
   </Target>
 </Project>

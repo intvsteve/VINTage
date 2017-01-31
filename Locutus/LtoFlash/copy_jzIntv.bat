@@ -11,6 +11,8 @@ rem # directory if the jzIntv.exe file exists.
 rem #
 
 if exist %1..\..\INTV.jzIntvUI\jzIntv\Win\bin\jzIntv.exe (
-mkdir %2jzIntv
-xcopy /E /Y %1..\..\INTV.jzIntvUI\jzIntv\Win %2jzIntv
+mkdir %2jzIntv\Win
+xcopy /E /Y %1..\..\INTV.jzIntvUI\jzIntv\Win %2jzIntv\Win
+del %2jzIntv\Win\bin\.readme.txt
+del %2jzIntv\Win\doc\.readme.txt
 )

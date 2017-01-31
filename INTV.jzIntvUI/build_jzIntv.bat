@@ -3,7 +3,8 @@ rem # Machine-Specific Configuration for Building jzIntv in Windows         #
 rem # --------------------------------------------------------------------- #
 rem # ARGUMENTS:
 rem #  %1 : Absolute path to the INTV.jzIntvUI project
-rem #  %2 : Build target - if empty, 'jzIntv' is implied; 'clean' also works
+rem #  %2 : Build output directory
+rem #  %3 : Build target - if empty, 'jzIntv' is implied; 'clean' also works
 rem #
 rem # This batch file provides a bridge between the Microsoft Visual Studio
 rem # project build system and the MSYS / MSYS2 environment used to build
@@ -27,7 +28,7 @@ rem #   MSYS_PATH
 rem # Also, you probably do not want to have any spaces in your path. ;)
 rem #
 
-rem set MSYS_PATH=D:\Users\Steve\Projects\MinGW\msys\1.0\bin
+ set MSYS_PATH=D:\Users\Steve\Projects\MinGW\msys\1.0\bin
 
 rem # If MSYS_PATH is empty, there is nothing to do.
 if [%MSYS_PATH%] == [] goto SkipBuild
@@ -48,8 +49,14 @@ set PATH=%MSYS_PATH%;%PATH%
 echo /%1 | sed -e 's/\\\\/\//g' -e 's/://' > _projdir.txt
 set /p PROJ_DIR= <_projdir.txt
 del _projdir.txt
-bash -c "make -C%PROJ_DIR% -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 %2"
+
+echo /%2jzIntv/Win | sed -e 's/\\\\/\//g' -e 's/://' > _outdir.txt
+set /p PROJ_OUT_DIR= <_outdir.txt
+del _outdir.txt
+
+bash -c "make -C%PROJ_DIR% -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=%PROJ_OUT_DIR% %3"
 set PROJ_DIR=
+set PROJ_OUT_DIR=
 exit
 
 :SkipBuild

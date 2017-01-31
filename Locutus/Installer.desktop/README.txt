@@ -80,6 +80,18 @@ These lines must be added in the <operatingsystemconditions> node of the XML.
 At issue is the omission of necessary data that the InstallShield system
 uses to determine whether it is able to install a specific version of .NET.
 
+!!!! NOTE NOTE NOTE !!!!
+------------------------
+In order to get a complete installer that includes jzIntv, you must do
+the following:
+  1. Ensure you have configured your system to build the jzIntv sources
+  2. Build the INTV.jzIntvUI component BEFORE building everything
+  3. THEN 'Rebuild Solution'
+
+There's an odd quirk with how the InstallShield projects decide what is
+'content' and what is not. The first time through, it won't pick up the
+jzIntv files. Kludge city.
+
 DEPENDENCIES
 =============================================================================
 The integration with Visual Studio requires inclusion in a Visual Studio

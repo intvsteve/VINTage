@@ -41,7 +41,7 @@ namespace INTV.JzIntvUI.Commands
         {
             get
             {
-                return System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "jzIntv/doc/jzintv");
+                return System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "jzIntv/Win/doc/jzintv");
             }
         }
 

@@ -25,7 +25,7 @@ namespace INTV.JzIntvUI.Model
     /// </summary>
     public partial class JzIntvLauncherConfiguration
     {
-        private static readonly string OSEmulatorDirectory = string.Empty; // Windows version doesn't retain the OS part of the directory.
+        private static readonly string OSEmulatorDirectory = "Win";
 
         private string GetIncludedEmulatorPath()
         {

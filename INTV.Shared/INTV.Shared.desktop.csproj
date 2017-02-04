@@ -125,6 +125,7 @@
     <Compile Include="ComponentModel\VisualRelayCommand.WPF.cs" />
     <Compile Include="ComponentModel\WeightAttribute.cs" />
     <Compile Include="Converter\EnumConverter.cs" />
+    <Compile Include="Converter\EnumStringConverter.cs" />
     <Compile Include="Converter\InvertedBooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\ItemCountToVisibilityConverter.cs" />
     <Compile Include="Converter\JlpFlashStorageUsageLevelToBrushConverter.WPF.cs" />

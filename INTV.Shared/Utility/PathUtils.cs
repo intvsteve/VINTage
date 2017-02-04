@@ -38,8 +38,10 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Given a Uri form of a file path, return one suitable for use with file system APIs.
         /// </summary>
-        /// <param name="path">The file path to convert to a string.</param>
-        /// <returns>The file absolute file path, using separators suitable for file system APIs.</returns>
+        /// <param name="path">A file Uri to convert to a file system path.</param>
+        /// <returns>An absolute file system path with approprate separators.</returns>
+        /// <remarks>In Windows, at least some file / path APIs only support the tradititional backslash separator. This method takes a Uri and
+        /// ensures that the string form of the file path returned uses appropriate path separators for the platform.</remarks>
         public static string FixUpUriPath(this Uri path)
         {
             var pathString = OSFixUpSeparators(Uri.UnescapeDataString(path.AbsolutePath));

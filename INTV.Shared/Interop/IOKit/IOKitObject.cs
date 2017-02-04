@@ -21,7 +21,11 @@
 ////#define ENABLE_DEBUG_OUTPUT
 
 using System;
+#if __UNIFIED__
+using ObjCRuntime;
+#else
 using MonoMac.ObjCRuntime;
+#endif
 using System.Runtime.InteropServices;
 
 namespace INTV.Shared.Interop.IOKit

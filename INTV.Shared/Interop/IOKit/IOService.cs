@@ -36,6 +36,12 @@ using MonoMac.ObjCRuntime;
 #endif
 using INTV.Shared.Interop.DeviceManagement;
 
+#if __UNIFIED__
+using CFRunLoopString = Foundation.NSString;
+#else
+using CFRunLoopString = System.String;
+#endif
+
 namespace INTV.Shared.Interop.IOKit
 {
     /// <summary>
@@ -260,7 +266,7 @@ namespace INTV.Shared.Interop.IOKit
 
             private class RunLoopSource : CFRunLoopSourceCustom
             {
-                protected override void OnSchedule(CFRunLoop loop, string mode)
+                protected override void OnSchedule(CFRunLoop loop, CFRunLoopString mode)
                 {
                     DebugOutput("IOService.FileSystemNotifcationPort.OnSchedule()");
                 }
@@ -270,7 +276,7 @@ namespace INTV.Shared.Interop.IOKit
                     DebugOutput("IOService.FileSystemNotifcationPort.OnPerform()");
                 }
 
-                protected override void OnCancel(CFRunLoop loop, string mode)
+                protected override void OnCancel(CFRunLoop loop, CFRunLoopString mode)
                 {
                     DebugOutput("IOService.FileSystemNotifcationPort.OnCancel()");
                 }

@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E3A74F20-E27F-42BF-9ED7-48B033B878FE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>INTV.jzIntvUI</RootNamespace>
+    <AssemblyName>INTV.jzIntvUI</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\xp\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\xp\</IntermediateOutputPath>
+    <DefineConstants>TRACE;DEBUG;WIN;WIN_XP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\xp\</OutputPath>
+    <IntermediateOutputPath>obj\Release\xp\</IntermediateOutputPath>
+    <DefineConstants>TRACE;WIN;WIN_XP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\ConfigurationCommandGroup.cs" />
+    <Compile Include="Commands\ConfigurationCommandGroup.WPF.cs" />
+    <Compile Include="Commands\JzIntvLauncherCommandGroup.cs" />
+    <Compile Include="Commands\JzIntvLauncherCommandGroup.WPF.cs" />
+    <Compile Include="Commands\JzIntvLauncherCommandsProvider.cs" />
+    <Compile Include="Converter\BooleanToDisplayModeConverter.cs" />
+    <Compile Include="Model\CommandLineMode.cs" />
+    <Compile Include="Model\EnableFeature.cs" />
+    <Compile Include="Model\JzIntvLauncherConfiguration.cs" />
+    <Compile Include="Model\JzIntvLauncherConfiguration.WPF.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\DisplayModeViewModel.cs" />
+    <Compile Include="ViewModel\DisplayResolutionViewModel.cs" />
+    <Compile Include="ViewModel\JzIntvSettingsPageViewModel.cs" />
+    <Compile Include="ViewModel\KeyboardMapViewModel.cs" />
+    <Compile Include="View\JzIntvSettingsPage.xaml.cs">
+      <DependentUpon>JzIntvSettingsPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Commands\Resources\BrowseAndLaunchInJzIntvRibbonButtonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ConfigurationRibbonGroupCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\JzIntvRibbonTabCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\LaunchInJzIntvRibbonButtonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\LaunchInJzIntvRibbonSplitButtonCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\LaunchRibbonGroupCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\MuteSoundCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\OpenSettingsDialogCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetEnableEcsCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetEnableIntellivoiceCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetEnableJlpCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ShowFullscreenCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ShowGettingStartedCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ShowInstalledDocumentsCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Page Include="View\JzIntvSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\INTV.Core\INTV.Core.xp.csproj">
+      <Project>{0d1617ba-2ac7-47ee-a71e-4edfb0140ea7}</Project>
+      <Name>INTV.Core.xp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.xp.csproj">
+      <Project>{aadd62f4-9002-4ce4-aaff-27ff12e3fa68}</Project>
+      <Name>INTV.jzIntv.xp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.Shared\INTV.Shared.xp.csproj">
+      <Project>{c852caa1-abe8-45d7-8bc5-94b61b71617a}</Project>
+      <Name>INTV.Shared.xp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="build_jzIntv.bat" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>INTV.JzIntvUI.Properties</CustomToolNamespace>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>INTV.JzIntvUI.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\browse_download_play_16xLG.png" />
+    <Resource Include="Resources\Images\browse_download_play_32xLG.png" />
+    <Resource Include="Resources\Images\browse_download_play_32xMD.png" />
+    <Resource Include="Resources\Images\ecs_16xLG.png" />
+    <Resource Include="Resources\Images\intellivoice_16xLG.png" />
+    <Resource Include="Resources\Images\jlp_9xSM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Always_16xMD.png" />
+    <Resource Include="Resources\Images\Display_16xMD.png" />
+    <Resource Include="Resources\Images\Display_32xMD.png" />
+    <Resource Include="Resources\Images\download_play_16xLG_color.png" />
+    <Resource Include="Resources\Images\download_play_32xLG_color.png" />
+    <Resource Include="Resources\Images\download_play_32xMD_color.png" />
+    <Resource Include="Resources\Images\jzIntvUI_32xMD.png" />
+    <Resource Include="Resources\Images\Never_16xMD.png" />
+    <Resource Include="Resources\Images\settings_16xLG.png" />
+    <Resource Include="Resources\Images\settings_32xMD.png" />
+    <Resource Include="Resources\Images\UseRom_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Information_16x16.png" />
+    <Resource Include="Resources\Images\Information_32x.png" />
+    <None Include="build_jzIntv.mak" />
+    <None Include="custom.mak" />
+    <None Include="jzIntv\Win\bin\.readme.txt" />
+    <None Include="jzIntv\Win\doc\.readme.txt" />
+    <Content Include="jzIntv\Getting_Started.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="jzIntv\Win\**" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>$(ProjectDir)build_jzIntv.bat $(ProjectDir) $(ProjectDir)$(OutDir)</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Target Name="AfterClean">
+    <Exec Command="$(ProjectDir)build_jzIntv.bat $(ProjectDir) $(ProjectDir)$(OutDir) clean" ContinueOnError="true" />
+  </Target>
+</Project>

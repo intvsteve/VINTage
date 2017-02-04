@@ -46,6 +46,7 @@ ifeq (,$(SVN_REPO)$(GIT_REPO))
     INTV.Core \
     INTV.Intellicart \
     INTV.jzIntv \
+    INTV.jzIntvUI \
     INTV.LtoFlash \
     INTV.Ribbon \
     INTV.Shared \

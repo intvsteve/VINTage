@@ -33,11 +33,13 @@ TEMPLATE_SIZE ?= 40m
 
 MASTER_DMG=$(NAME)-$(VERSION).dmg
 
+MASTER_ZIP=$(NAME)-Mac-$(VERSION).zip
+
 WC_DMG=wc.dmg
 WC_DIR=wc
 
 .PHONY: all
-all: $(MASTER_DMG)
+all: $(MASTER_ZIP)
 
 $(TEMPLATE_DMG): $(TEMPLATE_DMG).bz2
 	bunzip2 -k $<
@@ -72,6 +74,12 @@ $(MASTER_DMG): $(WC_DMG) $(addprefix $(SOURCE_DIR)/,$(SOURCE_FILES))
 	rm -rf $(WC_DIR)
 	@echo
 
+$(MASTER_ZIP): $(MASTER_DMG)
+	@echo ----------------- Creating ZIP of Disk Image -----------------
+	rm -f "$(MASTER_ZIP)"
+	zip "$@" "$<"
+	@echo
+
 .PHONY: clean
 clean:
-	-rm -rf $(TEMPLATE_DMG) $(MASTER_DMG) $(WC_DMG)
+	-rm -rf $(TEMPLATE_DMG) $(MASTER_DMG) $(WC_DMG) $(MASTER_ZIP)

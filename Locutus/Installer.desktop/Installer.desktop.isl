@@ -356,6 +356,8 @@
 		<row><td>INTV.Shared.desktop.Primary_output</td><td>{AA6F109F-B044-4520-BEE4-CBDAD9C563FE}</td><td>INSTALLDIR</td><td>2</td><td/><td>intv.shared.desktop.primary_</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>INTV.jzIntv.desktop.Content_Files</td><td>{6333799A-5296-4A0F-83FB-E35D9396434D}</td><td>INSTALLDIR</td><td>2</td><td/><td>intv.jzintv.desktop.content_</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>INTV.jzIntv.desktop.Primary_output</td><td>{E716997E-5E8B-41DE-977B-312BBF3510B3}</td><td>INSTALLDIR</td><td>2</td><td/><td>intv.jzintv.desktop.primary_</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>INTV.jzIntvUI.desktop.Content_Files</td><td>{BD61CA22-35E6-41F2-B7FA-F20DCE8A86CB}</td><td>INSTALLDIR</td><td>2</td><td/><td>intv.jzintvui.desktop.conten</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>INTV.jzIntvUI.desktop.Primary_output</td><td>{04AFB360-AD27-44F8-837E-E467E538A8D1}</td><td>INSTALLDIR</td><td>2</td><td/><td>intv.jzintvui.desktop.primar</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISO19770_LocalTag</td><td>{1448BA46-D904-4F2F-AB77-0D27B59AAEEA}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISO19770_SystemTag</td><td>{9092A179-7837-4432-B523-07B06D3C0D60}</td><td>CommonAppDataFolder</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{0921C666-B9CB-4654-89AD-C77E28884679}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1071,6 +1073,8 @@
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
 		<row><td>CommonAppDataFolder</td><td>ISO19770_SystemTag</td></row>
+		<row><td>INSTALLDIR</td><td>INTV.jzIntvUI.desktop.Content_Files</td></row>
+		<row><td>INSTALLDIR</td><td>INTV.jzIntvUI.desktop.Primary_output</td></row>
 		<row><td>INSTALLDIR</td><td>ISO19770_LocalTag</td></row>
 		<row><td>INSTALLDIR</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 	</table>
@@ -1895,6 +1899,8 @@
 		<row><td>AlwaysInstall</td><td>INTV.Shared.desktop.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>INTV.jzIntv.desktop.Content_Files</td></row>
 		<row><td>AlwaysInstall</td><td>INTV.jzIntv.desktop.Primary_output</td></row>
+		<row><td>AlwaysInstall</td><td>INTV.jzIntvUI.desktop.Content_Files</td></row>
+		<row><td>AlwaysInstall</td><td>INTV.jzIntvUI.desktop.Primary_output</td></row>
 		<row><td>AlwaysInstall</td><td>ISO19770_LocalTag</td></row>
 		<row><td>AlwaysInstall</td><td>ISO19770_SystemTag</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
@@ -1919,6 +1925,8 @@
 		<row><td>intv.intellicart.desktop.pri</td><td>INTV.Intellicart.desktop.Primary_output</td><td>INTV.Intellicart.desktop.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;INTV.Intellicart.desktop&gt;|Built</td><td>3</td><td/></row>
 		<row><td>intv.jzintv.desktop.content_</td><td>INTV.jzIntv.desktop.Content_Files</td><td>INTV.jzIntv.desktop.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;INTV.jzIntv.desktop&gt;|ContentFiles</td><td>3</td><td/></row>
 		<row><td>intv.jzintv.desktop.primary_</td><td>INTV.jzIntv.desktop.Primary_output</td><td>INTV.jzIntv.desktop.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;INTV.jzIntv.desktop&gt;|Built</td><td>3</td><td/></row>
+		<row><td>intv.jzintvui.desktop.conten</td><td>INTV.jzIntvUI.desktop.Content_Files</td><td>INTV.jzIntvUI.desktop.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;INTV.jzIntvUI.desktop&gt;|ContentFiles</td><td>3</td><td/></row>
+		<row><td>intv.jzintvui.desktop.primar</td><td>INTV.jzIntvUI.desktop.Primary_output</td><td>INTV.jzIntvUI.desktop.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;INTV.jzIntvUI.desktop&gt;|Built</td><td>3</td><td/></row>
 		<row><td>intv.ltoflash.desktop.conten</td><td>INTV.LtoFlash.desktop.Content_Files</td><td>INTV.LtoFlash.desktop.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;INTV.LtoFlash.desktop&gt;|ContentFiles</td><td>3</td><td/></row>
 		<row><td>intv.ltoflash.desktop.primar</td><td>INTV.LtoFlash.desktop.Primary_output</td><td>INTV.LtoFlash.desktop.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;INTV.LtoFlash.desktop&gt;|Built</td><td>3</td><td/></row>
 		<row><td>intv.ribbon.primary_output</td><td>INTV.Ribbon.Primary_output</td><td>INTV.Ribbon.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;INTV.Ribbon&gt;|Built</td><td>3</td><td/></row>
@@ -2078,6 +2086,8 @@
 		<row><td>INTV.Shared.desktop.Primary_output</td><td/><td/><td>_CD62F648_6300_4ED9_8FED_632840E6A3BB_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>INTV.jzIntv.desktop.Content_Files</td><td/><td/><td>_E39BF023_DBC6_466C_AD2D_E112C8269D0B_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>INTV.jzIntv.desktop.Primary_output</td><td/><td/><td>_A00C488D_CC27_4467_9DC0_6C456A70B42B_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>INTV.jzIntvUI.desktop.Content_Files</td><td/><td/><td>_9207540C_92B4_4A2B_870A_B71DA0086F0B_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>INTV.jzIntvUI.desktop.Primary_output</td><td/><td/><td>_050B2E77_59AC_443E_9203_223AD29579CE_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISO19770_LocalTag</td><td/><td/><td>_58476FAB_58D9_4955_A821_B07AC06B66D9_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISO19770_SystemTag</td><td/><td/><td>_B35DBFC3_3F14_424E_8DA9_2A2E87530725_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_57511D46_DF1E_4182_A05D_50D89606742F_FILTER</td><td/><td/><td/><td/></row>
@@ -2390,6 +2400,7 @@
 		<row><td>INTV.Ribbon</td><td>..\INTV.Ribbon\INTV.Ribbon.csproj</td><td/><td>2</td></row>
 		<row><td>INTV.Shared.desktop</td><td>..\INTV.Shared\INTV.Shared.desktop.csproj</td><td/><td>2</td></row>
 		<row><td>INTV.jzIntv.desktop</td><td>..\INTV.jzIntv\INTV.jzIntv.desktop.csproj</td><td/><td>2</td></row>
+		<row><td>INTV.jzIntvUI.desktop</td><td>..\INTV.jzIntvUI\INTV.jzIntvUI.desktop.csproj</td><td/><td>2</td></row>
 		<row><td>ISPROJECTDIR</td><td/><td/><td>1</td></row>
 		<row><td>ISProductFolder</td><td/><td/><td>1</td></row>
 		<row><td>ISProjectDataFolder</td><td/><td/><td>1</td></row>

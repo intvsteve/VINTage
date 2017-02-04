@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Project ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<!-- Select a Product Configuration -->
 		<InstallShieldProductConfiguration>Express</InstallShieldProductConfiguration>
@@ -52,6 +52,10 @@
 		<ProjectReference Include="..\..\INTV.jzIntv\INTV.jzIntv.xp.csproj">
 			<Name>INTV.jzIntv.xp</Name>
 			<Project>{AADD62F4-9002-4CE4-AAFF-27FF12E3FA68}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\..\INTV.jzIntvUI\INTV.jzIntvUI.xp.csproj">
+			<Name>INTV.jzIntvUI.xp</Name>
+			<Project>{E3A74F20-E27F-42BF-9ED7-48B033B878FE}</Project>
 		</ProjectReference>
 		<ProjectReference Include="..\LtoFlash\LtoFlash.xp.csproj">
 			<Name>LtoFlash.xp</Name>

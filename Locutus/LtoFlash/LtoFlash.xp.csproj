@@ -118,7 +118,9 @@
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="App.config" />
+    <None Include="app.config" />
+    <None Include="clean_jzIntv.bat" />
+    <None Include="copy_jzIntv.bat" />
     <None Include="license.rtf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -162,6 +164,10 @@
     <ProjectReference Include="..\..\INTV.Intellicart\INTV.Intellicart.xp.csproj">
       <Project>{5d607c5a-f89e-4eb3-b03e-194e65e0918b}</Project>
       <Name>INTV.Intellicart.xp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\INTV.jzIntvUI\INTV.jzIntvUI.xp.csproj">
+      <Project>{e3a74f20-e27f-42bf-9ed7-48b033b878fe}</Project>
+      <Name>INTV.jzIntvUI.xp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\INTV.jzIntv\INTV.jzIntv.xp.csproj">
       <Project>{aadd62f4-9002-4ce4-aaff-27ff12e3fa68}</Project>
@@ -211,8 +217,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>$(ProjectDir)copy_jzIntv.bat $(ProjectDir) $(ProjectDir)$(OutDir)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -221,4 +226,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterClean">
+    <Exec Command="$(ProjectDir)clean_jzIntv.bat $(ProjectDir)$(OutDir)" ContinueOnError="true" />
+  </Target>
 </Project>

@@ -112,6 +112,8 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="clean_jzIntv.bat" />
+    <None Include="copy_jzIntv.bat" />
     <None Include="license.rtf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -127,6 +129,10 @@
     <ProjectReference Include="..\..\INTV.Intellicart\INTV.Intellicart.desktop.csproj">
       <Project>{58caf3a2-b2b8-4c59-9aea-3e63de5cbf0c}</Project>
       <Name>INTV.Intellicart.desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\INTV.jzIntvUI\INTV.jzIntvUI.desktop.csproj">
+      <Project>{f5d99023-c6de-472f-9d8f-055deddb0046}</Project>
+      <Name>INTV.jzIntvUI.desktop</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\INTV.jzIntv\INTV.jzIntv.desktop.csproj">
       <Project>{96090ce5-6a2c-4709-9b6f-4a50484b6b86}</Project>
@@ -157,9 +163,6 @@
     <SplashScreen Include="Resources\Images\LTOFlashSplash.png" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="license.txt" />
     <None Include="README.txt" />
     <Content Include="full_credits.html">
@@ -187,8 +190,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>$(ProjectDir)copy_jzIntv.bat $(ProjectDir) $(ProjectDir)$(OutDir)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -197,4 +199,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterClean">
+    <Exec Command="$(ProjectDir)clean_jzIntv.bat $(ProjectDir)$(OutDir)" ContinueOnError="true" />
+  </Target>
 </Project>

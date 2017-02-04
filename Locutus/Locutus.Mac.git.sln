@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.txt = README.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.Mac", "..\INTV.jzIntvUI\INTV.jzIntvUI.Mac.csproj", "{A42922D4-8D80-41F0-BCAF-1416A5598D3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -46,6 +48,12 @@ Global
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Debug|x86.Build.0 = Debug|Any CPU
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Release|x86.ActiveCfg = Release|Any CPU
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Release|x86.Build.0 = Release|Any CPU
+		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.AppStore|x86.ActiveCfg = Release|Any CPU
+		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.AppStore|x86.Build.0 = Release|Any CPU
+		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Debug|x86.Build.0 = Debug|Any CPU
+		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Release|x86.ActiveCfg = Release|Any CPU
+		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Release|x86.Build.0 = Release|Any CPU
 		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.AppStore|x86.ActiveCfg = AppStore|x86
 		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.AppStore|x86.Build.0 = AppStore|x86
 		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.Debug|x86.ActiveCfg = Debug|x86

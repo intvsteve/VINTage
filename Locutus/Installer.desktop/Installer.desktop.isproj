@@ -54,6 +54,10 @@
 			<Name>INTV.jzIntv.desktop</Name>
 			<Project>{96090CE5-6A2C-4709-9B6F-4A50484B6B86}</Project>
 		</ProjectReference>
+		<ProjectReference Include="..\..\INTV.jzIntvUI\INTV.jzIntvUI.desktop.csproj">
+			<Name>INTV.jzIntvUI.desktop</Name>
+			<Project>{F5D99023-C6DE-472F-9D8F-055DEDDB0046}</Project>
+		</ProjectReference>
 		<ProjectReference Include="..\LtoFlash\LtoFlash.desktop.csproj">
 			<Name>LtoFlash.desktop</Name>
 			<Project>{D2575F7D-CF38-4F1F-98A1-0A7C33A14AD1}</Project>

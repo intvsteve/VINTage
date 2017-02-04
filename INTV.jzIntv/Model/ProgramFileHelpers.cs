@@ -70,6 +70,16 @@ namespace INTV.JzIntv.Model
         }
 
         /// <summary>
+        /// Gets the name of a program given a ProgramFile with the appropriate suffix.
+        /// </summary>
+        /// <param name="program">The program whose executable name is desired.</param>
+        /// <returns>The name of the executable file.</returns>
+        public static string ProgramNameWithSuffix(this ProgramFile program)
+        {
+            return program.ProgramName() + Configuration.ProgramSuffix;
+        }
+
+        /// <summary>
         /// Given a <see cref="ProgramFile"/>, return the format of the ROM produced by the program, if applicable.
         /// </summary>
         /// <param name="program">The support program for which the output ROM format is desired.</param>

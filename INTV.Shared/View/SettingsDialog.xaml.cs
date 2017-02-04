@@ -63,7 +63,10 @@ namespace INTV.Shared.View
             if (e.Source is System.Windows.Controls.TabControl)
             {
                 var tab = _propertyPages.SelectedItem as System.Windows.Controls.TabItem;
-                LastSelectedPreferencesPage = ((System.Windows.FrameworkElement)tab.Content).DataContext.GetType().FullName;
+                if (tab != null)
+                {
+                    LastSelectedPreferencesPage = ((System.Windows.FrameworkElement)tab.Content).DataContext.GetType().FullName;
+                }
             }
         }
 

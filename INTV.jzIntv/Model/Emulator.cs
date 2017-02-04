@@ -45,7 +45,7 @@ namespace INTV.JzIntv.Model
         /// </summary>
         /// <param name="path">Absolute path to the emulator.</param>
         /// <param name="errorReporter">Error reporter delegate. Note that this may be called from any thread.</param>
-        public Emulator(string path, Action<Emulator, string, Exception> errorReporter)
+        public Emulator(string path, Action<Emulator, string, int, Exception> errorReporter)
         {
             Path = path;
             ErrorReporter = errorReporter;
@@ -75,7 +75,7 @@ namespace INTV.JzIntv.Model
         /// </summary>
         public ProgramDescription Rom { get; private set; }
 
-        private Action<Emulator, string, Exception> ErrorReporter { get; set; }
+        private Action<Emulator, string, int, Exception> ErrorReporter { get; set; }
 
         private Process Process { get; set; }
 
@@ -170,7 +170,7 @@ namespace INTV.JzIntv.Model
                         errorMessage.AppendLine();
                     }
                     errorMessage.AppendFormat("Command line arguments:\n{0}", process.StartInfo.Arguments);
-                    ErrorReporter(this, errorMessage.ToString(), null);
+                    ErrorReporter(this, errorMessage.ToString(), process.ExitCode, null);
                 }
             }
             catch (Exception)

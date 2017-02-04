@@ -19,8 +19,13 @@
 // </copyright>
 
 using System.Collections.Generic;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif
 using INTV.LtoFlash.View;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.Commands;

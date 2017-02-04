@@ -48,7 +48,7 @@ namespace INTV.Core.Model
             {
                 result = (int)x.Crc - (int)y.Crc;
             }
-            if ((x.Format == RomFormat.None) && (x.Crc == 0))
+            if (((x.Format == RomFormat.None) && (x.Crc == 0)) || ((x.Crc == 0) && (y.Crc == 0)))
             {
                 // Both ROMs in the comparison are missing -- and both have the same CRC - which was zero.
                 // In such a case, try comparing the paths.

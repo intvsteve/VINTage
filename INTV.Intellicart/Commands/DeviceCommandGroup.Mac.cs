@@ -40,7 +40,18 @@ namespace INTV.Intellicart.Commands
         partial void AddPlatformCommands()
         {
             IntellicartToolsMenuCommand.MenuParent = RootCommandGroup.ToolsMenuCommand;
+            var fileDownloadCommand = DownloadCommand.Clone();
+            fileDownloadCommand.Weight = 0.04;
+            fileDownloadCommand.MenuItemName = DownloadCommand.ContextMenuItemName;
+            fileDownloadCommand.MenuParent = RootCommandGroup.FileMenuCommand;
+            var fileBrowseAndDownloadCommand = BrowseAndDownloadCommand.Clone();
+            fileBrowseAndDownloadCommand.Weight = 0.05;
+            fileBrowseAndDownloadCommand.MenuItemName = BrowseAndDownloadCommand.ContextMenuItemName;
+            fileBrowseAndDownloadCommand.MenuParent = RootCommandGroup.FileMenuCommand;
             CommandList.Add(IntellicartToolsMenuCommand.CreateSeparator(CommandLocation.Before));
+            CommandList.Add(fileDownloadCommand);
+            CommandList.Add(fileBrowseAndDownloadCommand);
+            CommandList.Add(fileBrowseAndDownloadCommand.CreateSeparator(CommandLocation.After));
         }
     }
 }

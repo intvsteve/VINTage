@@ -89,7 +89,7 @@
     <Compile Include="Model\Program\IProgramInformationHelpers.cs" />
     <Compile Include="Model\Program\IProgramInformationTable.cs" />
     <Compile Include="Model\Program\IncompatibilityFlags.cs" />
-    <Compile Include="Model\Program\IntelliCartCC3Features.cs" />
+    <Compile Include="Model\Program\IntellicartCC3Features.cs" />
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformation.cs" />
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTable.cs" />
     <Compile Include="Model\Program\JlpFeatures.cs" />

@@ -185,9 +185,6 @@
   <ItemGroup>
     <Resource Include="Resources\LTOFlashApplicationIcon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\inty_icon_white.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>$(ProjectDir)copy_jzIntv.bat $(ProjectDir) $(ProjectDir)$(OutDir)</PostBuildEvent>

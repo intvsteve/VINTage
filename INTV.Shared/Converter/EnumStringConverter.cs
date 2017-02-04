@@ -49,7 +49,7 @@ namespace INTV.Shared.Converter
             Type enumType = GetEnumTypeFromParameter(parameter);
             EnsureConverterData(enumType);
             string userFacingString = null;
-            if (!_converterData.TryGetValue(value as string, out userFacingString))
+            if (string.IsNullOrEmpty(value as string) || !_converterData.TryGetValue(value as string, out userFacingString))
             {
                 // assume that the first value in the enum is the 'default'
                 var values = Enum.GetValues(enumType);

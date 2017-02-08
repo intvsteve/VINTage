@@ -1,4 +1,4 @@
-﻿// <copyright file="SingleInstanceApplication.Mac.cs" company="INTV Funhouse">
+// <copyright file="SingleInstanceApplication.Mac.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -303,7 +303,9 @@ namespace INTV.Shared.Utility
                             }
                             break;
                         case FirstResponderValueName:
-                            INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+                            // When called early during startup, it's possible the MonoMac system hasn't fully initialized yet, which
+                            // can cause spurious "InvalidCast" errors.
+                            BeginInvokeOnMainThread(() => INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested());
                             break;
                     }
                 }

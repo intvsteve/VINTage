@@ -494,6 +494,11 @@ namespace INTV.Shared.ViewModel
                             {
                                 Model.SelectionIndexes.Remove(index);
                             }
+                            foreach (var outOfRangeIndex in Model.SelectionIndexes.Where(i => i >= Model.Count).ToList())
+                            {
+                                // Unable to locate the item in the list. Clean up indexes as necessary.
+                                Model.SelectionIndexes.Remove(outOfRangeIndex);
+                            }
                             programDescription.PropertyChanged -= HandleProgramDescriptionChanged;
                         }
                     }

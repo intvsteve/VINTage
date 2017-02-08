@@ -1,5 +1,5 @@
-﻿// <copyright file="MenuLayoutViewController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// <copyright file="MenuLayoutViewController.Mac.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -981,29 +981,35 @@ namespace INTV.LtoFlash.View
                 if ((proposedParentItem != null) && (index >= 0))
                 {
                     var node = proposedParentItem as NSTreeNode;
-                    var proposedParent = node.GetRepresentedObject() as FileNodeViewModel;
-                    var pasteboard = info.DraggingPasteboard;
-                    targetName = proposedParent.LongName;
-                    if (pasteboard.CanReadItemWithDataConformingToTypes(MenuLayoutPasteboardDataTypeArray))
+                    var proposedParent = node == null ? null : node.GetRepresentedObject() as FileNodeViewModel;
+                    if ((node != null) && (proposedParent != null))
                     {
-                        // Dragging within the menu layout editor.
-                        var draggedItems = DragDropHelpers.GetDataForType<IEnumerable<FileNodeViewModel>>(pasteboard, MenuLayoutPasteboardDataTypeArray);
-                        if (ShouldAcceptProposedIndex(draggedItems, proposedParent, index) && proposedParent.ShouldAcceptDraggedItems(draggedItems.Select(draggedItem => draggedItem.Model)))
+                        var pasteboard = info.DraggingPasteboard;
+                        targetName = proposedParent.LongName;
+                        if (pasteboard.CanReadItemWithDataConformingToTypes(MenuLayoutPasteboardDataTypeArray))
                         {
-                            operation = NSDragOperation.Move;
+                            // Dragging within the menu layout editor.
+                            var draggedItems = DragDropHelpers.GetDataForType<IEnumerable<FileNodeViewModel>>(pasteboard, MenuLayoutPasteboardDataTypeArray);
+                            if (ShouldAcceptProposedIndex(draggedItems, proposedParent, index) && proposedParent.ShouldAcceptDraggedItems(draggedItems.Select(draggedItem => draggedItem.Model)))
+                            {
+                                operation = NSDragOperation.Move;
+                            }
+                        }
+                        else if (pasteboard.CanReadItemWithDataConformingToTypes(ProgramDescriptionPasteboardDataTypeArray))
+                        {
+                            DebugDragDropPrint("OutlineView received drop of ProgramDescriptions!");
+                            var draggedItems = DragDropHelpers.GetDataForType<IEnumerable<ProgramDescriptionViewModel>>(pasteboard, ProgramDescriptionPasteboardDataTypeArray);
+                            IEnumerable<ProgramDescription> droppedPrograms = ((draggedItems != null) && draggedItems.Any()) ? draggedItems.Select(draggedItem => draggedItem.Model) : null;
+                            if (proposedParent.ShouldAcceptDraggedItems(droppedPrograms))
+                            {
+                                operation = NSDragOperation.Link;
+                            }
                         }
                     }
-                    else if(pasteboard.CanReadItemWithDataConformingToTypes(ProgramDescriptionPasteboardDataTypeArray))
+                    else
                     {
-                        DebugDragDropPrint("OutlineView received drop of ProgramDescriptions!");
-                        var draggedItems = DragDropHelpers.GetDataForType<IEnumerable<ProgramDescriptionViewModel>>(pasteboard, ProgramDescriptionPasteboardDataTypeArray);
-                        IEnumerable<ProgramDescription> droppedPrograms = ((draggedItems != null) && draggedItems.Any()) ? draggedItems.Select(draggedItem => draggedItem.Model) : null;
-                        if (proposedParent.ShouldAcceptDraggedItems(droppedPrograms))
-                        {
-                            operation = NSDragOperation.Link;
-                        }
+                        DebugDragDropPrint("**** OutlineView.ValidateDrop parent not NSTreeNode! Type is: " + proposedParentItem.GetType().FullName);
                     }
-
                 }
                 DebugDragDropPrint("**** OutlineView.ValidateDrop index: " + index + ", returning: " + operation);
                 return operation;

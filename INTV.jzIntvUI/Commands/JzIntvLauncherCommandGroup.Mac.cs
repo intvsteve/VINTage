@@ -40,10 +40,11 @@ namespace INTV.JzIntvUI.Commands
         #region LaunchInJzIntvCommand
 
         private const int SDLNotLoadedError = 133;
+        private const int SDLNotLoadedError_Sierra = 134;
 
         static partial void OSErrorHandler(Emulator emulator, string message, int exitCode, Exception exception)
         {
-            if (exitCode == SDLNotLoadedError)
+            if ((exitCode == SDLNotLoadedError) || (exitCode == SDLNotLoadedError_Sierra))
             {
                 if (OSMessageBox.Show(Resources.Strings.SDLNotFound_ErrorMessage, Resources.Strings.SDLNotFound_ErrorTitle, OSMessageBoxButton.YesNo) == OSMessageBoxResult.Yes)
                 {

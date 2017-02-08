@@ -323,7 +323,6 @@ namespace INTV.JzIntvUI.View
             }
         }
 
-
         private void HandleViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

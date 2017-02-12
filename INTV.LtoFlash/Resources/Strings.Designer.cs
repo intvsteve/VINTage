@@ -1378,6 +1378,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select ROM to Send to LTO Flash!.
+        /// </summary>
+        internal static string DownloadAndPlayCommand_BrowseDialogPrompt {
+            get {
+                return ResourceManager.GetString("DownloadAndPlayCommand_BrowseDialogPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when loading {0}. The error was:
         ///
         ///{1}

@@ -154,7 +154,8 @@
         <KeyBinding Command="{x:Static ltoFlashCommands:DownloadCommandGroup.DownloadAndPlayPromptCommand}" CommandParameter="{Binding Path=LtoFlash}" Gesture="CTRL+SHIFT+P"/>
         <KeyBinding Command="{x:Static ltoFlashCommands:DeviceCommandGroup.SearchForDevicesCommand}" CommandParameter="{Binding Path=LtoFlash}" Gesture="CTRL+F"/>
         <KeyBinding Command="{x:Static ltoFlashCommands:DeviceCommandGroup.DisconnectDeviceCommand}" CommandParameter="{Binding Path=LtoFlash}" Gesture="CTRL+D"/>
-        <KeyBinding Command="{x:Static intellicartCommands:DeviceCommandGroup.DownloadCommand}" CommandParameter="{Binding Path=Intellicart}" Gesture="CTRL+SHIFT+I"/>
+        <KeyBinding Command="{x:Static intellicartCommands:DeviceCommandGroup.DownloadCommand}" CommandParameter="{Binding Path=Intellicart}" Gesture="CTRL+ALT+I"/>
+        <KeyBinding Command="{x:Static intellicartCommands:DeviceCommandGroup.BrowseAndDownloadCommand}" CommandParameter="{Binding Path=Intellicart}" Gesture="CTRL+SHIFT+I"/>
     </Ribbon:RibbonWindow.InputBindings>
     <Grid Name="_rootVisual">
         <Grid.RowDefinitions>

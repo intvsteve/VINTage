@@ -208,7 +208,7 @@ namespace INTV.LtoFlash.Commands
             if (CanDownloadAndPlayPrompt(parameter))
             {
                 var ltoFlashViewModel = parameter as LtoFlashViewModel;
-                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false).FirstOrDefault();
+                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false, Resources.Strings.DownloadAndPlayCommand_BrowseDialogPrompt).FirstOrDefault();
                 if (selectedFile != null)
                 {
                     var rom = selectedFile.GetRomFromPath();

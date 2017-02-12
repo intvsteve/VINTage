@@ -256,4 +256,7 @@ does not appear to be a valid ROM file.</value>
   <data name="DownloadCommand_RibbonButtonName" xml:space="preserve">
     <value>Play on Intellicart!</value>
   </data>
+  <data name="BrowseAndDownloadCommand_BrowseDialogPrompt" xml:space="preserve">
+    <value>Select ROM to Send to Intellicart</value>
+  </data>
 </root>

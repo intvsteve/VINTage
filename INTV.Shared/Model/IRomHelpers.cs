@@ -191,12 +191,30 @@ namespace INTV.Shared.Model
         /// <returns>The files selected, or an empty enumerable.</returns>
         public static IEnumerable<string> BrowseForRoms(bool multiselect)
         {
+            return BrowseForRoms(multiselect, null);
+        }
+
+        /// <summary>
+        /// Shows the file system file chooser to select one or more ROM files.
+        /// </summary>
+        /// <param name="multiselect">If <c>true</c>, instructs the file browser to allow the user to select multiple files.</param>
+        /// <param name="prompt">The prompt to show in the file browser. If <c>null</c> or empty, a default will be used.</param>
+        /// <returns>The files selected, or an empty enumerable.</returns>
+        public static IEnumerable<string> BrowseForRoms(bool multiselect, string prompt)
+        {
             var selectedFiles = System.Linq.Enumerable.Empty<string>();
             var fileBrowser = FileDialogHelpers.Create();
             fileBrowser.IsFolderBrowser = false;
             fileBrowser.AddFilter(Resources.Strings.FileDialog_SelectRomFilesFilter, ProgramFileKind.Rom.FileExtensions());
             fileBrowser.AddFilter(FileDialogHelpers.AllFilesFilter, new string[] { ".*" });
-            fileBrowser.Title = multiselect ? Resources.Strings.FileDialog_SelectFilesPrompt : Resources.Strings.FileDialog_SelectFilePrompt;
+            if (!string.IsNullOrEmpty(prompt))
+            {
+                fileBrowser.Title = prompt;
+            }
+            else
+            {
+                fileBrowser.Title = multiselect ? Resources.Strings.FileDialog_SelectFilesPrompt : Resources.Strings.FileDialog_SelectFilePrompt;
+            }
             fileBrowser.EnsureFileExists = true;
             fileBrowser.EnsurePathExists = true;
             fileBrowser.Multiselect = multiselect;

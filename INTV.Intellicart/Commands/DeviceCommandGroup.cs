@@ -277,8 +277,8 @@ namespace INTV.Intellicart.Commands
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             Weight = 0.2,
             MenuParent = IntellicartToolsMenuCommand,
-            KeyboardShortcutKey = "I",
-            KeyboardShortcutModifiers = OSModifierKeys.Menu,
+            KeyboardShortcutKey = "i",
+            KeyboardShortcutModifiers = OSModifierKeys.Menu | OSModifierKeys.Alt,
         };
 
         private static void OnDownload(object parameter)
@@ -347,6 +347,8 @@ namespace INTV.Intellicart.Commands
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/browse_download_play_16xLG.png"),
             Weight = 0.21,
             MenuParent = IntellicartToolsMenuCommand,
+            KeyboardShortcutKey = "I",
+            KeyboardShortcutModifiers = OSModifierKeys.Menu,
         };
 
         private static void BrowseAndDownload(object parameter)
@@ -354,7 +356,7 @@ namespace INTV.Intellicart.Commands
             if (CanBrowseAndDownload(parameter))
             {
                 var intellicart = parameter as IntellicartViewModel;
-                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false).FirstOrDefault();
+                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false, Resources.Strings.BrowseAndDownloadCommand_BrowseDialogPrompt).FirstOrDefault();
                 if (selectedFile != null)
                 {
                     var rom = selectedFile.GetRomFromPath();

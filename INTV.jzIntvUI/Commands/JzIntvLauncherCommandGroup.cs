@@ -462,7 +462,7 @@ namespace INTV.JzIntvUI.Commands
         {
             if (CanBrowseAndDownload(parameter))
             {
-                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false).FirstOrDefault();
+                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false, Resources.Strings.BrowseAndLaunchInJzIntvCommand_BrowseDialogPrompt).FirstOrDefault();
                 if (selectedFile != null)
                 {
                     var rom = selectedFile.GetRomFromPath();

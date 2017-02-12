@@ -2423,4 +2423,7 @@ is too small ({1} bytes)</value>
   <data name="SortItemsAscendingCommand_Name" xml:space="preserve">
     <value>Sort by Name (Ascending)</value>
   </data>
+  <data name="DownloadAndPlayCommand_BrowseDialogPrompt" xml:space="preserve">
+    <value>Select ROM to Send to LTO Flash!</value>
+  </data>
 </root>

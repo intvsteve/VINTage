@@ -61,6 +61,15 @@ namespace INTV.Intellicart.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select ROM to Send to Intellicart.
+        /// </summary>
+        internal static string BrowseAndDownloadCommand_BrowseDialogPrompt {
+            get {
+                return ResourceManager.GetString("BrowseAndDownloadCommand_BrowseDialogPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file:
         ///
         ///{0}

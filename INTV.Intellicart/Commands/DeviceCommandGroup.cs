@@ -356,7 +356,7 @@ namespace INTV.Intellicart.Commands
             if (CanBrowseAndDownload(parameter))
             {
                 var intellicart = parameter as IntellicartViewModel;
-                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false).FirstOrDefault();
+                var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false, Resources.Strings.BrowseAndDownloadCommand_BrowseDialogPrompt).FirstOrDefault();
                 if (selectedFile != null)
                 {
                     var rom = selectedFile.GetRomFromPath();

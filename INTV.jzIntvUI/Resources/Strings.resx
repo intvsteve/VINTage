@@ -524,9 +524,6 @@ NOTE: The solution will only apply for the currently logged in user.
 
 Would you like to have LUI attempt to automatically resolve the problem?</value>
   </data>
-  <data name="ShowGettingStartedCommand_TipDescription" xml:space="preserve">
-    <value>Show a brief guide for further information about how to set up integration with jzIntv.</value>
-  </data>
   <data name="SDLNotFound_ErrorTitle" xml:space="preserve">
     <value>SDL Not Installed</value>
   </data>
@@ -590,5 +587,8 @@ The call to hdiutil returned:
   </data>
   <data name="ShowInstalledDocumentsCommand_Tip" xml:space="preserve">
     <value>Show the included jzIntv documentation files in the file system.</value>
+  </data>
+  <data name="BrowseAndLaunchInJzIntvCommand_BrowseDialogPrompt" xml:space="preserve">
+    <value>Select ROM to Run in jzIntv</value>
   </data>
 </root>

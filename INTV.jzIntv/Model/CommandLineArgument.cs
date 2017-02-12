@@ -196,7 +196,7 @@ namespace INTV.JzIntv.Model
             { CommandLineArgument.DisplaySize, new Tuple<string, Type>("-z{0}", typeof(DisplayResolution)) }, // TODO The emulator also supports custom resolutions here! This could be a string that is properly formatted.
             { CommandLineArgument.Fullscreen, new Tuple<string, Type>("-f{0}", typeof(DisplayMode)) },
             { CommandLineArgument.Prescale, new Tuple<string, Type>("--prescale={0}", typeof(PrescaleMode)) }, // NOTE: This could be determined by invoking jzIntvy w/ --prescale=-1 and parsing results
-            { CommandLineArgument.AlternateColorPalette, new Tuple<string, Type>("--gfx-palette=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.AlternateColorPalette, new Tuple<string, Type>("\"--gfx-palette={0}\"", typeof(string)) },
             { CommandLineArgument.AudioRate, new Tuple<string, Type>("-a{0}", typeof(SampleRate)) }, // Requires 4000 <= rate <= 96000
             { CommandLineArgument.AudioFileName, new Tuple<string, Type>("-F{0}", typeof(string)) }, // NOTE! This must not contain spaces!
             { CommandLineArgument.AudioFilterWindow, new Tuple<string, Type>("-w{0}", typeof(int)) }, // NOTE: Should be >= 1; -1 is default
@@ -217,18 +217,18 @@ namespace INTV.JzIntv.Model
             { CommandLineArgument.IntellicartRomEmulationFlags, new Tuple<string, Type>("-c{0}", typeof(IntellicartCacheOption)) },
             { CommandLineArgument.EnableDebugger, new Tuple<string, Type>("-d", null) },
             { CommandLineArgument.DebuggerSymbolFilePath, new Tuple<string, Type>("-S\"{0}\"", typeof(string)) },
-            { CommandLineArgument.DebuggerSourceListingMapPath, new Tuple<string, Type>("--src-map=\"{0}\"", typeof(string)) },
-            { CommandLineArgument.DebuggerScriptPath, new Tuple<string, Type>("--script=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.DebuggerSourceListingMapPath, new Tuple<string, Type>("\"--src-map={0}\"", typeof(string)) },
+            { CommandLineArgument.DebuggerScriptPath, new Tuple<string, Type>("\"--script={0}\"", typeof(string)) },
             { CommandLineArgument.DebuggerRandomizeMemoryAtStartup, new Tuple<string, Type>("--rand-mem", null) },
             { CommandLineArgument.RateControl, new Tuple<string, Type>("-r{0:0.00}", typeof(double)) },
             { CommandLineArgument.RomSearchPath, new Tuple<string, Type>("-p \"{0}\"", typeof(string)) },
             { CommandLineArgument.QuietMode, new Tuple<string, Type>("-q", null) },
             { CommandLineArgument.GuiMode, new Tuple<string, Type>("--gui-mode", null) },
             { CommandLineArgument.Jlp, new Tuple<string, Type>("-J{0}", typeof(JlpFeatures)) }, // NOTE: Only "compatibilty" flags used
-            { CommandLineArgument.JlpSaveGamePath, new Tuple<string, Type>("--jlp-savegame=\"{0}\"", typeof(string)) }, // NOTE Also sets JLP=3
+            { CommandLineArgument.JlpSaveGamePath, new Tuple<string, Type>("\"--jlp-savegame={0}\"", typeof(string)) }, // NOTE Also sets JLP=3
             { CommandLineArgument.JlpFlash, new Tuple<string, Type>("-j\"{0}\"", typeof(string)) },
             { CommandLineArgument.Locutus, new Tuple<string, Type>("--locutus", null) },
-            { CommandLineArgument.FileIO, new Tuple<string, Type>("--file-io=\"{0}\"", typeof(string)) }, // TODO Check if this is correct
+            { CommandLineArgument.FileIO, new Tuple<string, Type>("\"--file-io={0}\"", typeof(string)) }, // TODO Check if this is correct
             { CommandLineArgument.NoBusyWait, new Tuple<string, Type>("-9", null) },
             { CommandLineArgument.DemoFile, new Tuple<string, Type>("-D\"{0}\"", typeof(string)) }, // TODO Check if this is correct
             { CommandLineArgument.EnableMouse, new Tuple<string, Type>("--enable-mouse", null) },
@@ -240,19 +240,19 @@ namespace INTV.JzIntv.Model
         private static readonly Dictionary<CommandLineArgument, Tuple<string, Type>> LongArgumentStrings = new Dictionary<CommandLineArgument, Tuple<string, Type>>()
         {
             { CommandLineArgument.Custom, new Tuple<string, Type>("{0}", typeof(string)) },
-            { CommandLineArgument.ExecPath, new Tuple<string, Type>("--execimg=\"{0}\"", typeof(string)) },
-            { CommandLineArgument.GromPath, new Tuple<string, Type>("--gromimg=\"{0}\"", typeof(string)) },
-            { CommandLineArgument.EcsPath, new Tuple<string, Type>("--ecsimg=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.ExecPath, new Tuple<string, Type>("\"--execimg={0}\"", typeof(string)) },
+            { CommandLineArgument.GromPath, new Tuple<string, Type>("\"--gromimg={0}\"", typeof(string)) },
+            { CommandLineArgument.EcsPath, new Tuple<string, Type>("\"--ecsimg={0}\"", typeof(string)) },
             { CommandLineArgument.EnableEcs, new Tuple<string, Type>("--ecs={0}", typeof(bool)) },
             { CommandLineArgument.EnableIntellivoice, new Tuple<string, Type>("--voice={0}", typeof(bool)) },
             { CommandLineArgument.VoiceFilterWindow, new Tuple<string, Type>("--voicewindow={0}", typeof(int)) }, // -1 is default, otherwise seems to be not checked
-            { CommandLineArgument.VoiceRecordFileName, new Tuple<string, Type>("--voicefiles=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.VoiceRecordFileName, new Tuple<string, Type>("\"--voicefiles={0}\"", typeof(string)) },
             { CommandLineArgument.DisplaySize, new Tuple<string, Type>("--displaysize={0}", typeof(DisplayResolution)) }, // TODO The emulator also supports custom resolutions here! This could be a string that is properly formatted...
             { CommandLineArgument.Fullscreen, new Tuple<string, Type>("--fullscreen={0}", typeof(DisplayMode)) },
             { CommandLineArgument.Prescale, new Tuple<string, Type>("--prescale={0}", typeof(PrescaleMode)) }, // NOTE: This could be determined by invoking jzIntvy w/ --prescale=-1 and parsing results
-            { CommandLineArgument.AlternateColorPalette, new Tuple<string, Type>("--gfx-palette=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.AlternateColorPalette, new Tuple<string, Type>("\"--gfx-palette={0}\"", typeof(string)) },
             { CommandLineArgument.AudioRate, new Tuple<string, Type>("--audiorate={0}", typeof(SampleRate)) }, // Requires 4000 <= rate <= 96000
-            { CommandLineArgument.AudioFileName, new Tuple<string, Type>("--audiofile=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.AudioFileName, new Tuple<string, Type>("\"--audiofile={0}\"", typeof(string)) },
             { CommandLineArgument.AudioFilterWindow, new Tuple<string, Type>("--audiowindow={0}", typeof(int)) }, // NOTE: Should be >= 1; -1 is default
             { CommandLineArgument.AudioBufferSize, new Tuple<string, Type>("--audiobufsize={0}", typeof(int)) },
             { CommandLineArgument.AudioBufferCount, new Tuple<string, Type>("--audiobufcnt={0}", typeof(int)) },
@@ -260,31 +260,31 @@ namespace INTV.JzIntv.Model
             { CommandLineArgument.AviRate, new Tuple<string, Type>("--avirate={0:0.00}", typeof(double)) },
             { CommandLineArgument.KeyboardHackFile, new Tuple<string, Type>("--kbdhackfile={0}", typeof(string)) }, // NOTE! This path MUST NOT be quoted, and cannot contain spaces!
             { CommandLineArgument.KeyboardMap, new Tuple<string, Type>("--kbdmap={0}", typeof(KeyboardMap)) },
-            { CommandLineArgument.Joystick0Configuration, new Tuple<string, Type>("--js0=\"{0}\"", typeof(string)) },
-            { CommandLineArgument.Joystick1Configuration, new Tuple<string, Type>("--js1=\"{0}\"", typeof(string)) },
-            { CommandLineArgument.Joystick2Configuration, new Tuple<string, Type>("--js2=\"{0}\"", typeof(string)) },
-            { CommandLineArgument.Joystick3Configuration, new Tuple<string, Type>("--js3=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.Joystick0Configuration, new Tuple<string, Type>("\"--js0={0}\"", typeof(string)) },
+            { CommandLineArgument.Joystick1Configuration, new Tuple<string, Type>("\"--js1={0}\"", typeof(string)) },
+            { CommandLineArgument.Joystick2Configuration, new Tuple<string, Type>("\"--js2={0}\"", typeof(string)) },
+            { CommandLineArgument.Joystick3Configuration, new Tuple<string, Type>("\"--js3={0}\"", typeof(string)) },
             { CommandLineArgument.Intv2PCMaster, new Tuple<string, Type>("--intv2pc0={0}", typeof(Intv2PcPort)) },
             { CommandLineArgument.Intv2PCEcs, new Tuple<string, Type>("--intv2pc1={0}", typeof(Intv2PcPort)) },
             { CommandLineArgument.ClassicGameControllerMaster, new Tuple<string, Type>("--cgc0={0}", typeof(string)) },
             { CommandLineArgument.ClassicGameControllerEcs, new Tuple<string, Type>("--cgc1={0}", typeof(string)) },
             { CommandLineArgument.IntellicartRomEmulationFlags, new Tuple<string, Type>("--icartcache={0}", typeof(IntellicartCacheOption)) },
             { CommandLineArgument.EnableDebugger, new Tuple<string, Type>("--debugger", null) },
-            { CommandLineArgument.DebuggerSymbolFilePath, new Tuple<string, Type>("--sym-file=\"{0}\"", typeof(string)) },
-            { CommandLineArgument.DebuggerSourceListingMapPath, new Tuple<string, Type>("--src-map=\"{0}\"", typeof(string)) },
-            { CommandLineArgument.DebuggerScriptPath, new Tuple<string, Type>("--script=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.DebuggerSymbolFilePath, new Tuple<string, Type>("\"--sym-file={0}\"", typeof(string)) },
+            { CommandLineArgument.DebuggerSourceListingMapPath, new Tuple<string, Type>("\"--src-map={0}\"", typeof(string)) },
+            { CommandLineArgument.DebuggerScriptPath, new Tuple<string, Type>("\"--script={0}\"", typeof(string)) },
             { CommandLineArgument.DebuggerRandomizeMemoryAtStartup, new Tuple<string, Type>("--rand-mem", null) },
             { CommandLineArgument.RateControl, new Tuple<string, Type>("--ratecontrol={0:0.00}", typeof(double)) },
-            { CommandLineArgument.RomSearchPath, new Tuple<string, Type>("--rom-path=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.RomSearchPath, new Tuple<string, Type>("\"--rom-path={0}\"", typeof(string)) },
             { CommandLineArgument.QuietMode, new Tuple<string, Type>("--quiet", null) },
             { CommandLineArgument.GuiMode, new Tuple<string, Type>("--gui-mode", null) },
             { CommandLineArgument.Jlp, new Tuple<string, Type>("--jlp={0}", typeof(JlpFeatures)) },
-            { CommandLineArgument.JlpSaveGamePath, new Tuple<string, Type>("--jlp-savegame=\"{0}\"", typeof(string)) },
-            { CommandLineArgument.JlpFlash, new Tuple<string, Type>("--jlp-flash=\"{0}\"", typeof(string)) },
+            { CommandLineArgument.JlpSaveGamePath, new Tuple<string, Type>("\"--jlp-savegame={0}\"", typeof(string)) },
+            { CommandLineArgument.JlpFlash, new Tuple<string, Type>("\"--jlp-flash={0}\"", typeof(string)) },
             { CommandLineArgument.Locutus, new Tuple<string, Type>("--locutus", null) },
-            { CommandLineArgument.FileIO, new Tuple<string, Type>("--file-io==\"{0}\"", typeof(string)) },
+            { CommandLineArgument.FileIO, new Tuple<string, Type>("\"--file-io=={0}\"", typeof(string)) },
             { CommandLineArgument.NoBusyWait, new Tuple<string, Type>("--nobusywait", null) },
-            { CommandLineArgument.DemoFile, new Tuple<string, Type>("--demofile==\"{0}\"", typeof(string)) },
+            { CommandLineArgument.DemoFile, new Tuple<string, Type>("\"--demofile=={0}\"", typeof(string)) },
             { CommandLineArgument.EnableMouse, new Tuple<string, Type>("--enable-mouse", null) },
             { CommandLineArgument.PalEmulation, new Tuple<string, Type>("--pal", null) },
             { CommandLineArgument.StartDelay, new Tuple<string, Type>("--start-delay={0:0.000}", typeof(float)) }, // TODO Check -- start delay in milliseconds?

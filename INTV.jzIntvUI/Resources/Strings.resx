@@ -591,4 +591,30 @@ The call to hdiutil returned:
   <data name="BrowseAndLaunchInJzIntvCommand_BrowseDialogPrompt" xml:space="preserve">
     <value>Select ROM to Run in jzIntv</value>
   </data>
+  <data name="ShowJzIntvCommandLineCommand_Name" xml:space="preserve">
+    <value>Show Command Line</value>
+  </data>
+  <data name="ShowJzIntvCommandLineCommand_MenuItemName" xml:space="preserve">
+    <value>Show Command Line...</value>
+  </data>
+  <data name="ShowJzIntvCommandLineCommand_ContextMenuItemName" xml:space="preserve">
+    <value>Show jzIntv Command Line...</value>
+  </data>
+  <data name="ShowJzIntvCommandLineCommand_TipTitle" xml:space="preserve">
+    <value>Show Command Line for ROM</value>
+  </data>
+  <data name="ShowJzIntvCommandLineCommand_TipDescription" xml:space="preserve">
+    <value>Show the command line used to launch jzIntv with the selected ROM.</value>
+  </data>
+  <data name="ShowJzIntvCommandLineCommand_DialogTitle_Format" xml:space="preserve">
+    <value>jzIntv Command Line for {0}</value>
+  </data>
+  <data name="ShowJzIntvCommandLineCommand_DialogMessage_Format" xml:space="preserve">
+    <value>The command line used to run the ROM '{0}' is displayed below.</value>
+  </data>
+  <data name="ShowJzIntvCommandLineCommand_CommandLineMessage_Format" xml:space="preserve">
+    <value>jzIntv will execute the ROM '{0}' with the following command line, based on the current settings:
+
+{1}</value>
+  </data>
 </root>

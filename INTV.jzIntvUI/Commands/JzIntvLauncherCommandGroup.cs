@@ -511,6 +511,7 @@ namespace INTV.JzIntvUI.Commands
             Name = Resources.Strings.ShowJzIntvCommandLineCommand_Name,
             MenuItemName = Resources.Strings.ShowJzIntvCommandLineCommand_MenuItemName,
             ContextMenuItemName = Resources.Strings.ShowJzIntvCommandLineCommand_ContextMenuItemName,
+            SmallIcon = typeof(JzIntvLauncherCommandGroup).LoadImageResource("Resources/Images/show_command_line_16x.png"),
             ToolTip = Resources.Strings.ShowJzIntvCommandLineCommand_TipDescription,
             ToolTipTitle = Resources.Strings.ShowJzIntvCommandLineCommand_TipTitle,
             ToolTipDescription = Resources.Strings.ShowJzIntvCommandLineCommand_TipDescription,

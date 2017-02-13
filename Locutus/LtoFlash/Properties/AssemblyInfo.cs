@@ -1,5 +1,5 @@
 ﻿// <copyright file="AssemblyInfo.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("INTVFunhouse")]
 [assembly: AssemblyProduct("LTOFlash")]
-[assembly: AssemblyCopyright("Copyright © 2014-2016")]
+[assembly: AssemblyCopyright("Copyright © INTV Funhouse 2014-2017")]
 [assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. LTO Flash! is a product from Left Turn Only, LLC. Steve Orth and INTV Funhouse, and Joe Zbiciak and Left Turn Only, LLC are not affiliated with Intellivision Productions.")]
 [assembly: AssemblyCulture("")]
 

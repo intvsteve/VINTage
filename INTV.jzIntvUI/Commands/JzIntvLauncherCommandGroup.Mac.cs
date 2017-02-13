@@ -44,7 +44,7 @@ namespace INTV.JzIntvUI.Commands
 
         static partial void OSErrorHandler(Emulator emulator, string message, int exitCode, Exception exception)
         {
-            if ((exitCode == SDLNotLoadedError) || (exitCode == SDLNotLoadedError_Sierra))
+            if (IsSDLMissingError(exitCode))
             {
                 if (OSMessageBox.Show(Resources.Strings.SDLNotFound_ErrorMessage, Resources.Strings.SDLNotFound_ErrorTitle, OSMessageBoxButton.YesNo) == OSMessageBoxResult.Yes)
                 {
@@ -54,6 +54,21 @@ namespace INTV.JzIntvUI.Commands
                     installSDLTask.RunTask(installSDLTaskData, InstallSDL, InstallSDLComplete);
                 }
             }
+        }
+
+        private static bool IsSDLMissingError(int exitCode)
+        {
+            var macOSVersion = OSVersion.Current;
+            var isSDLMissingError = false;
+            if (macOSVersion.Minor >= 12)
+            {
+                isSDLMissingError = exitCode == SDLNotLoadedError_Sierra;
+            }
+            else
+            {
+                isSDLMissingError = exitCode == SDLNotLoadedError;
+            }
+            return isSDLMissingError;
         }
 
         private static void InstallSDL(AsyncTaskData taskData)
@@ -209,20 +224,40 @@ namespace INTV.JzIntvUI.Commands
         partial void AddPlatformCommands()
         {
             JzIntvToolsMenuCommand.MenuParent = RootCommandGroup.ToolsMenuCommand;
-            BrowseAndLaunchInJzIntvCommand.MenuParent = JzIntvToolsMenuCommand;
-            var fileLaunchInJzIntvCommand = LaunchInJzIntvCommand.Clone();
-            fileLaunchInJzIntvCommand.Weight = 0.06;
-            fileLaunchInJzIntvCommand.MenuItemName = LaunchInJzIntvCommand.ContextMenuItemName;
-            fileLaunchInJzIntvCommand.MenuParent = RootCommandGroup.FileMenuCommand;
-            var fileBrowseAndLaunchInJzIntvCommand = BrowseAndLaunchInJzIntvCommand.Clone();
-            fileBrowseAndLaunchInJzIntvCommand.Weight = 0.07;
-            fileBrowseAndLaunchInJzIntvCommand.MenuItemName = BrowseAndLaunchInJzIntvCommand.ContextMenuItemName;
-            fileBrowseAndLaunchInJzIntvCommand.MenuParent = RootCommandGroup.FileMenuCommand;
-            CommandList.Add(JzIntvToolsMenuCommand.CreateSeparator(CommandLocation.Before));
+            LaunchInJzIntvCommand.MenuParent = RootCommandGroup.FileMenuCommand;
+            LaunchInJzIntvCommand.MenuItemName = LaunchInJzIntvCommand.ContextMenuItemName;
+            LaunchInJzIntvCommand.Weight = 0.06;
+            BrowseAndLaunchInJzIntvCommand.MenuParent = RootCommandGroup.FileMenuCommand; // JzIntvToolsMenuCommand;
+            BrowseAndLaunchInJzIntvCommand.MenuItemName = BrowseAndLaunchInJzIntvCommand.ContextMenuItemName;
+            BrowseAndLaunchInJzIntvCommand.Weight = 0.07;
+            ShowJzIntvCommandLineCommand.MenuParent = RootCommandGroup.FileMenuCommand;
+            ShowJzIntvCommandLineCommand.MenuItemName = ShowJzIntvCommandLineCommand.ContextMenuItemName;
+            ShowJzIntvCommandLineCommand.Weight = 0.08;
+            CommandList.Add(ShowJzIntvCommandLineCommand.CreateSeparator(CommandLocation.After));
+
+            var toolsLaunchInJzIntvCommand = LaunchInJzIntvCommand.Clone();
+            toolsLaunchInJzIntvCommand.Weight = 0.2;
+            toolsLaunchInJzIntvCommand.MenuItemName = Resources.Strings.LaunchInJzIntvCommand_MenuItemName; // LaunchInJzIntvCommand.ContextMenuItemName;
+            toolsLaunchInJzIntvCommand.MenuParent = JzIntvToolsMenuCommand;
+
+            var toolsBrowseAndLaunchInJzIntvCommand = BrowseAndLaunchInJzIntvCommand.Clone();
+            toolsBrowseAndLaunchInJzIntvCommand.Weight = 0.21;
+            toolsBrowseAndLaunchInJzIntvCommand.MenuItemName = Resources.Strings.BrowseAndLaunchInJzIntvCommand_Name; // BrowseAndLaunchInJzIntvCommand.ContextMenuItemName;
+            toolsBrowseAndLaunchInJzIntvCommand.MenuParent = JzIntvToolsMenuCommand; //RootCommandGroup.FileMenuCommand;
+
+            var toolsShowJzIntvCommandLineCommand = ShowJzIntvCommandLineCommand.Clone();
+            toolsShowJzIntvCommandLineCommand.Weight = 0.22;
+            toolsShowJzIntvCommandLineCommand.MenuItemName = Resources.Strings.ShowJzIntvCommandLineCommand_MenuItemName;
+            toolsShowJzIntvCommandLineCommand.MenuParent = JzIntvToolsMenuCommand;
+
             CommandList.Add(BrowseAndLaunchInJzIntvCommand);
-            CommandList.Add(fileLaunchInJzIntvCommand);
-            CommandList.Add(fileBrowseAndLaunchInJzIntvCommand);
-            CommandList.Add(fileBrowseAndLaunchInJzIntvCommand.CreateSeparator(CommandLocation.After));
+            CommandList.Add(ShowJzIntvCommandLineCommand);
+
+            CommandList.Add(JzIntvToolsMenuCommand.CreateSeparator(CommandLocation.Before));
+            CommandList.Add(toolsLaunchInJzIntvCommand);
+            CommandList.Add(toolsBrowseAndLaunchInJzIntvCommand);
+            CommandList.Add(toolsShowJzIntvCommandLineCommand);
+            CommandList.Add(toolsShowJzIntvCommandLineCommand.CreateSeparator(CommandLocation.After));
         }
     }
 }

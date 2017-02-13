@@ -77,8 +77,11 @@ namespace INTV.JzIntvUI.Commands
         partial void AddPlatformCommands()
         {
             OpenSettingsDialogCommand.MenuParent = JzIntvLauncherCommandGroup.JzIntvToolsMenuCommand;
+            OpenSettingsDialogCommand.Weight = 0.5;
             ShowGettingStartedCommand.MenuParent = JzIntvLauncherCommandGroup.JzIntvToolsMenuCommand;
+            ShowGettingStartedCommand.Weight = 0.51;
             ShowInstalledDocumentsCommand.MenuParent = JzIntvLauncherCommandGroup.JzIntvToolsMenuCommand;
+            ShowInstalledDocumentsCommand.Weight = 0.52;
             CommandList.Add(ShowGettingStartedCommand);
             CommandList.Add(ShowInstalledDocumentsCommand);
         }

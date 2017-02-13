@@ -81,9 +81,9 @@ namespace INTV.JzIntvUI.Commands
             UseXamlResource = true
         };
 
-        #endregion // DownloadRibbonSplitButtonCommand
+        #endregion // LaunchInJzIntvRibbonSplitButtonCommand
 
-        #region DownloadRibbonButtonCommand
+        #region LaunchInJzIntvRibbonButtonCommand
 
         /// <summary>
         /// Command to load a ROM onto an Intellicart! to be inserted into the Play button in the Home tab.
@@ -135,12 +135,17 @@ namespace INTV.JzIntvUI.Commands
         /// </summary>
         partial void AddPlatformCommands()
         {
+            ShowJzIntvCommandLineCommand.UseXamlResource = true;
+            ShowJzIntvCommandLineCommand.Weight = 0.5;
+            ShowJzIntvCommandLineCommand.VisualParent = ConfigurationCommandGroup.ConfigurationRibbonGroupCommand;
+
             CommandList.Add(JzIntvRibbonTabCommand);
             CommandList.Add(LaunchRibbonGroupCommand);
             CommandList.Add(LaunchInJzIntvRibbonSplitButtonCommand);
             CommandList.Add(LaunchInJzIntvRibbonButtonCommand.CreateRibbonMenuSeparator(CommandLocation.Before, false));
             CommandList.Add(LaunchInJzIntvRibbonButtonCommand);
             CommandList.Add(BrowseAndLaunchInJzIntvRibbonButtonCommand);
+            CommandList.Add(ShowJzIntvCommandLineCommand);
         }
 
         #endregion // CommandGroup

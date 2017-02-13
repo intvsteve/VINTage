@@ -102,8 +102,7 @@ namespace INTV.JzIntvUI.Commands
             ToolTipDescription = Resources.Strings.LaunchInJzIntvCommand_TipDescription,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             ////Weight = 0.2,
-            MenuParent = JzIntvToolsMenuCommand,
-            KeyboardShortcutKey = "J",
+            KeyboardShortcutKey = "j",
             KeyboardShortcutModifiers = OSModifierKeys.Menu,
         };
 
@@ -121,241 +120,7 @@ namespace INTV.JzIntvUI.Commands
                 try
                 {
                     programName = programDescription.Name;
-                    var options = new Dictionary<CommandLineArgument, object>();
-                    var forceSetting = false;
-                    var commandLineMode = CommandLineModeHelpers.FromSettingsString(Properties.Settings.Default.CommandLineMode);
-                    var customCommandLine = commandLineMode == CommandLineMode.Custom;
-                    var useRomSettingsWithCustomCommandLine = customCommandLine && Properties.Settings.Default.UseROMFeatureSettingsWithCustomCommandLine;
-
-                    if (customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.CustomCommandLine))
-                    {
-                        options[CommandLineArgument.Custom] = Properties.Settings.Default.CustomCommandLine;
-                    }
-
-                    // EXEC argument
-                    if (!customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.ExecRomPath) && ConfigurationCommandGroup.IsExecRomPathvalid(Properties.Settings.Default.ExecRomPath))
-                    {
-                        var execPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ExecRomPath);
-                        options[CommandLineArgument.ExecPath] = execPath;
-                    }
-
-                    // GROM argument
-                    if (!customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.GromRomPath) && ConfigurationCommandGroup.IsGromRomPathValid(Properties.Settings.Default.GromRomPath))
-                    {
-                        var gromPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.GromRomPath);
-                        options[CommandLineArgument.GromPath] = gromPath;
-                    }
-
-                    // ECS argument
-                    var enableEcs = false;
-                    forceSetting = false;
-                    switch (EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableEcs))
-                    {
-                        case EnableFeature.Always:
-                            if (!customCommandLine)
-                            {
-                                enableEcs = true;
-                            }
-                            break;
-                        case EnableFeature.UseRomSetting:
-                            enableEcs = programDescription.Features.Ecs > EcsFeatures.Tolerates;
-                            if (customCommandLine)
-                            {
-                                enableEcs &= useRomSettingsWithCustomCommandLine;
-                            }
-                            break;
-                        case EnableFeature.Never:
-                            if (!customCommandLine)
-                            {
-                                forceSetting = true;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    if (enableEcs || forceSetting)
-                    {
-                        if (enableEcs)
-                        {
-                            if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.EcsRomPath) && ConfigurationCommandGroup.IsEcsRomPathValid())
-                            {
-                                var ecsPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.EcsRomPath);
-                                options[CommandLineArgument.EcsPath] = ecsPath;
-                            }
-                        }
-                        options[CommandLineArgument.EnableEcs] = enableEcs;
-                    }
-
-                    // Intellivoice argument
-                    var enableIntellivoice = false;
-                    forceSetting = false;
-                    switch (EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableIntellivoice))
-                    {
-                        case EnableFeature.Always:
-                            if (!customCommandLine)
-                            {
-                                enableIntellivoice = true;
-                            }
-                            break;
-                        case EnableFeature.UseRomSetting:
-                            enableIntellivoice = programDescription.Features.Intellivoice > FeatureCompatibility.Tolerates;
-                            if (customCommandLine)
-                            {
-                                enableIntellivoice &= useRomSettingsWithCustomCommandLine;
-                            }
-                            break;
-                        case EnableFeature.Never:
-                            if (!customCommandLine)
-                            {
-                                forceSetting = true;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    if (enableIntellivoice || forceSetting)
-                    {
-                        options[CommandLineArgument.EnableIntellivoice] = enableIntellivoice;
-                    }
-
-                    // JLP argument
-                    var enableJlp = false;
-                    forceSetting = false;
-                    switch (EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableJlp))
-                    {
-                        case EnableFeature.Always:
-                            if (!customCommandLine)
-                            {
-                                enableJlp = true;
-                            }
-                            break;
-                        case EnableFeature.UseRomSetting:
-                            enableJlp = programDescription.Features.Jlp > JlpFeatures.Incompatible;
-                            if (customCommandLine)
-                            {
-                                enableJlp &= useRomSettingsWithCustomCommandLine;
-                            }
-                            break;
-                        case EnableFeature.Never:
-                        default:
-                            break;
-                    }
-                    if (enableJlp)
-                    {
-                        options[CommandLineArgument.Jlp] = enableJlp;
-                        if (enableJlp && (programDescription.Features.JlpFlashMinimumSaveSectors > 0))
-                        {
-                            var jlpSavegame = System.IO.Path.ChangeExtension(programDescription.Rom.RomPath, ProgramFileKind.SaveData.FileExtension());
-                            options[CommandLineArgument.JlpSaveGamePath] = jlpSavegame;
-                        }
-                    }
-
-                    // Locutus argument
-                    if (!customCommandLine && (programDescription.Rom.Format == INTV.Core.Model.RomFormat.Luigi))
-                    {
-                        options[CommandLineArgument.Locutus] = true;
-                    }
-
-                    // Mute argument
-                    if (!customCommandLine && Properties.Settings.Default.MuteAudio)
-                    {
-                        options[CommandLineArgument.AudioRate] = 0;
-                    }
-
-                    // Display mode and resolution arguments
-                    if (!customCommandLine)
-                    {
-                        var displayMode = DisplayMode.Default;
-                        var displayModeString = Properties.Settings.Default.DisplayMode;
-                        if (!string.IsNullOrWhiteSpace(displayModeString))
-                        {
-                            displayMode = DisplayModeHelpers.FromSettingString(displayModeString);
-                            options[CommandLineArgument.Fullscreen] = displayMode;
-                        }
-                        if (displayMode != DisplayMode.Fullscreen)
-                        {
-                            var displaySizeString = Properties.Settings.Default.DisplaySize;
-                            if (!string.IsNullOrWhiteSpace(displaySizeString))
-                            {
-                                options[CommandLineArgument.DisplaySize] = DisplayResolutionHelpers.FromLongCommandLineArgumentString(displaySizeString);
-                            }
-                        }
-                        else
-                        {
-                            var mainScreenInfo = VisualHelpers.GetPrimaryDisplayInfo();
-                            var resolution = string.Format("{0}x{1},{2}bpp", mainScreenInfo.Item1, mainScreenInfo.Item2, mainScreenInfo.Item3);
-                            options[CommandLineArgument.DisplaySize] = resolution; 
-                        }
-                    }
-
-                    // Keyboard hackfile argument
-                    if (!customCommandLine && ConfigurationCommandGroup.IsPathValid(Properties.Settings.Default.DefaultKeyboardConfigPath))
-                    {
-                        var hackfile = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.DefaultKeyboardConfigPath);
-                        options[CommandLineArgument.KeyboardHackFile] = hackfile;
-                    }
-
-                    // Keyboard map argument
-                    if (!customCommandLine)
-                    {
-                        var keyboardMap = KeyboardMapHelpers.FromSettingString(Properties.Settings.Default.InitialKeyboardMap);
-                        if (Properties.Settings.Default.UseEcsKeymapForEcsRoms && (programDescription.Features.Ecs > EcsFeatures.Tolerates))
-                        {
-                            keyboardMap = KeyboardMap.EcsKeyboard;
-                        }
-                        if (keyboardMap != KeyboardMap.Default)
-                        {
-                            options[CommandLineArgument.KeyboardMap] = keyboardMap;
-                        }
-                    }
-
-                    // Joystick configuration file arguments
-                    if (!customCommandLine)
-                    {
-                        if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.Joystick0Config))
-                        {
-                            options[CommandLineArgument.Joystick0Configuration] = Properties.Settings.Default.Joystick0Config;
-                        }
-                        if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.Joystick1Config))
-                        {
-                            options[CommandLineArgument.Joystick1Configuration] = Properties.Settings.Default.Joystick1Config;
-                        }
-                        if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.Joystick2Config))
-                        {
-                            options[CommandLineArgument.Joystick2Configuration] = Properties.Settings.Default.Joystick2Config;
-                        }
-                        if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.Joystick3Config))
-                        {
-                            options[CommandLineArgument.Joystick3Configuration] = Properties.Settings.Default.Joystick3Config;
-                        }
-                    }
-
-                    // Enable mouse argument
-                    if (!customCommandLine && Properties.Settings.Default.EnableMouse)
-                    {
-                        options[CommandLineArgument.EnableMouse] = true;
-                    }
-
-                    // Classic Game Controller configuration arguments
-                    if (!customCommandLine)
-                    {
-                        if (ConfigurationCommandGroup.IsPathValid(Properties.Settings.Default.ClassicGameController0ConfigPath))
-                        {
-                            var configfile = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ClassicGameController0ConfigPath);
-                            options[CommandLineArgument.ClassicGameControllerMaster] = configfile;
-                        }
-                        if (ConfigurationCommandGroup.IsPathValid(Properties.Settings.Default.ClassicGameController1ConfigPath))
-                        {
-                            var configfile = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ClassicGameController1ConfigPath);
-                            options[CommandLineArgument.ClassicGameControllerEcs] = configfile;
-                        }
-                    }
-
-                    if (!customCommandLine && (commandLineMode == CommandLineMode.AutomaticWithAdditionalArguments) && !string.IsNullOrWhiteSpace(Properties.Settings.Default.AdditionalCommandLineArguments))
-                    {
-                        options[CommandLineArgument.AdditionalArguments] = Properties.Settings.Default.AdditionalCommandLineArguments;
-                    }
-
+                    var options = GetCommandLineOptionsForRom(programDescription);
                     var romPath = programDescription.Rom.RomPath;
                     var jzIntvPath = ConfigurationCommandGroup.ResolvePathSetting(JzIntvLauncherConfiguration.Instance.EmulatorPath);
                     var jzIntv = new Emulator(jzIntvPath, LaunchInJzIntvErrorHandler);
@@ -368,6 +133,246 @@ namespace INTV.JzIntvUI.Commands
                     INTV.Shared.View.OSMessageBox.Show(message, Resources.Strings.UnableToLaunchJzIntv_Error_Title);
                 }
             }
+        }
+
+        private static IDictionary<CommandLineArgument, object> GetCommandLineOptionsForRom(ProgramDescription programDescription)
+        {
+            var options = new Dictionary<CommandLineArgument, object>();
+            var forceSetting = false;
+            var commandLineMode = CommandLineModeHelpers.FromSettingsString(Properties.Settings.Default.CommandLineMode);
+            var customCommandLine = commandLineMode == CommandLineMode.Custom;
+            var useRomSettingsWithCustomCommandLine = customCommandLine && Properties.Settings.Default.UseROMFeatureSettingsWithCustomCommandLine;
+
+            if (customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.CustomCommandLine))
+            {
+                options[CommandLineArgument.Custom] = Properties.Settings.Default.CustomCommandLine;
+            }
+
+            // EXEC argument
+            if (!customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.ExecRomPath) && ConfigurationCommandGroup.IsExecRomPathvalid(Properties.Settings.Default.ExecRomPath))
+            {
+                var execPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ExecRomPath);
+                options[CommandLineArgument.ExecPath] = execPath;
+            }
+
+            // GROM argument
+            if (!customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.GromRomPath) && ConfigurationCommandGroup.IsGromRomPathValid(Properties.Settings.Default.GromRomPath))
+            {
+                var gromPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.GromRomPath);
+                options[CommandLineArgument.GromPath] = gromPath;
+            }
+
+            // ECS argument
+            var enableEcs = false;
+            forceSetting = false;
+            switch (EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableEcs))
+            {
+                case EnableFeature.Always:
+                    if (!customCommandLine)
+                    {
+                        enableEcs = true;
+                    }
+                    break;
+                case EnableFeature.UseRomSetting:
+                    enableEcs = programDescription.Features.Ecs > EcsFeatures.Tolerates;
+                    if (customCommandLine)
+                    {
+                        enableEcs &= useRomSettingsWithCustomCommandLine;
+                    }
+                    break;
+                case EnableFeature.Never:
+                    if (!customCommandLine)
+                    {
+                        forceSetting = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (enableEcs || forceSetting)
+            {
+                if (enableEcs)
+                {
+                    if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.EcsRomPath) && ConfigurationCommandGroup.IsEcsRomPathValid())
+                    {
+                        var ecsPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.EcsRomPath);
+                        options[CommandLineArgument.EcsPath] = ecsPath;
+                    }
+                }
+                options[CommandLineArgument.EnableEcs] = enableEcs;
+            }
+
+            // Intellivoice argument
+            var enableIntellivoice = false;
+            forceSetting = false;
+            switch (EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableIntellivoice))
+            {
+                case EnableFeature.Always:
+                    if (!customCommandLine)
+                    {
+                        enableIntellivoice = true;
+                    }
+                    break;
+                case EnableFeature.UseRomSetting:
+                    enableIntellivoice = programDescription.Features.Intellivoice > FeatureCompatibility.Tolerates;
+                    if (customCommandLine)
+                    {
+                        enableIntellivoice &= useRomSettingsWithCustomCommandLine;
+                    }
+                    break;
+                case EnableFeature.Never:
+                    if (!customCommandLine)
+                    {
+                        forceSetting = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (enableIntellivoice || forceSetting)
+            {
+                options[CommandLineArgument.EnableIntellivoice] = enableIntellivoice;
+            }
+
+            // JLP argument
+            var enableJlp = false;
+            forceSetting = false;
+            switch (EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableJlp))
+            {
+                case EnableFeature.Always:
+                    if (!customCommandLine)
+                    {
+                        enableJlp = true;
+                    }
+                    break;
+                case EnableFeature.UseRomSetting:
+                    enableJlp = programDescription.Features.Jlp > JlpFeatures.Incompatible;
+                    if (customCommandLine)
+                    {
+                        enableJlp &= useRomSettingsWithCustomCommandLine;
+                    }
+                    break;
+                case EnableFeature.Never:
+                default:
+                    break;
+            }
+            if (enableJlp)
+            {
+                options[CommandLineArgument.Jlp] = enableJlp;
+                if (enableJlp && (programDescription.Features.JlpFlashMinimumSaveSectors > 0))
+                {
+                    var jlpSavegame = System.IO.Path.ChangeExtension(programDescription.Rom.RomPath, ProgramFileKind.SaveData.FileExtension());
+                    options[CommandLineArgument.JlpSaveGamePath] = jlpSavegame;
+                }
+            }
+
+            // Locutus argument
+            if (!customCommandLine && (programDescription.Rom.Format == INTV.Core.Model.RomFormat.Luigi))
+            {
+                options[CommandLineArgument.Locutus] = true;
+            }
+
+            // Mute argument
+            if (!customCommandLine && Properties.Settings.Default.MuteAudio)
+            {
+                options[CommandLineArgument.AudioRate] = 0;
+            }
+
+            // Display mode and resolution arguments
+            if (!customCommandLine)
+            {
+                var displayMode = DisplayMode.Default;
+                var displayModeString = Properties.Settings.Default.DisplayMode;
+                if (!string.IsNullOrWhiteSpace(displayModeString))
+                {
+                    displayMode = DisplayModeHelpers.FromSettingString(displayModeString);
+                    options[CommandLineArgument.Fullscreen] = displayMode;
+                }
+                if (displayMode != DisplayMode.Fullscreen)
+                {
+                    var displaySizeString = Properties.Settings.Default.DisplaySize;
+                    if (!string.IsNullOrWhiteSpace(displaySizeString))
+                    {
+                        options[CommandLineArgument.DisplaySize] = DisplayResolutionHelpers.FromLongCommandLineArgumentString(displaySizeString);
+                    }
+                }
+                else
+                {
+                    var mainScreenInfo = VisualHelpers.GetPrimaryDisplayInfo();
+                    var resolution = string.Format("{0}x{1},{2}bpp", mainScreenInfo.Item1, mainScreenInfo.Item2, mainScreenInfo.Item3);
+                    options[CommandLineArgument.DisplaySize] = resolution; 
+                }
+            }
+
+            // Keyboard hackfile argument
+            if (!customCommandLine && ConfigurationCommandGroup.IsPathValid(Properties.Settings.Default.DefaultKeyboardConfigPath))
+            {
+                var hackfile = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.DefaultKeyboardConfigPath);
+                options[CommandLineArgument.KeyboardHackFile] = hackfile;
+            }
+
+            // Keyboard map argument
+            if (!customCommandLine)
+            {
+                var keyboardMap = KeyboardMapHelpers.FromSettingString(Properties.Settings.Default.InitialKeyboardMap);
+                if (Properties.Settings.Default.UseEcsKeymapForEcsRoms && (programDescription.Features.Ecs > EcsFeatures.Tolerates))
+                {
+                    keyboardMap = KeyboardMap.EcsKeyboard;
+                }
+                if (keyboardMap != KeyboardMap.Default)
+                {
+                    options[CommandLineArgument.KeyboardMap] = keyboardMap;
+                }
+            }
+
+            // Joystick configuration file arguments
+            if (!customCommandLine)
+            {
+                if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.Joystick0Config))
+                {
+                    options[CommandLineArgument.Joystick0Configuration] = Properties.Settings.Default.Joystick0Config;
+                }
+                if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.Joystick1Config))
+                {
+                    options[CommandLineArgument.Joystick1Configuration] = Properties.Settings.Default.Joystick1Config;
+                }
+                if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.Joystick2Config))
+                {
+                    options[CommandLineArgument.Joystick2Configuration] = Properties.Settings.Default.Joystick2Config;
+                }
+                if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.Joystick3Config))
+                {
+                    options[CommandLineArgument.Joystick3Configuration] = Properties.Settings.Default.Joystick3Config;
+                }
+            }
+
+            // Enable mouse argument
+            if (!customCommandLine && Properties.Settings.Default.EnableMouse)
+            {
+                options[CommandLineArgument.EnableMouse] = true;
+            }
+
+            // Classic Game Controller configuration arguments
+            if (!customCommandLine)
+            {
+                if (ConfigurationCommandGroup.IsPathValid(Properties.Settings.Default.ClassicGameController0ConfigPath))
+                {
+                    var configfile = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ClassicGameController0ConfigPath);
+                    options[CommandLineArgument.ClassicGameControllerMaster] = configfile;
+                }
+                if (ConfigurationCommandGroup.IsPathValid(Properties.Settings.Default.ClassicGameController1ConfigPath))
+                {
+                    var configfile = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ClassicGameController1ConfigPath);
+                    options[CommandLineArgument.ClassicGameControllerEcs] = configfile;
+                }
+            }
+
+            if (!customCommandLine && (commandLineMode == CommandLineMode.AutomaticWithAdditionalArguments) && !string.IsNullOrWhiteSpace(Properties.Settings.Default.AdditionalCommandLineArguments))
+            {
+                options[CommandLineArgument.AdditionalArguments] = Properties.Settings.Default.AdditionalCommandLineArguments;
+            }
+
+            return options;
         }
 
         private static bool CanLaunch(object parameter)
@@ -455,7 +460,8 @@ namespace INTV.JzIntvUI.Commands
             LargeIcon = typeof(JzIntvLauncherCommandGroup).LoadImageResource("Resources/Images/browse_download_play_32xLG.png"),
             SmallIcon = typeof(JzIntvLauncherCommandGroup).LoadImageResource("Resources/Images/browse_download_play_16xLG.png"),
             ////Weight = 0.21,
-            MenuParent = JzIntvToolsMenuCommand,
+            KeyboardShortcutKey = "J",
+            KeyboardShortcutModifiers = OSModifierKeys.Menu,
         };
 
         private static void BrowseAndDownload(object parameter)
@@ -469,7 +475,6 @@ namespace INTV.JzIntvUI.Commands
                     IProgramDescription programDescription = null;
                     if (rom != null)
                     {
-                        var fileName = System.IO.Path.GetFileName(rom.RomPath);
                         var programInfo = rom.GetProgramInformation();
                         programDescription = new ProgramDescription(rom.Crc, rom, programInfo);
                     }
@@ -495,6 +500,43 @@ namespace INTV.JzIntvUI.Commands
 
         #endregion // BrowseAndLaunchInJzIntvCommand
 
+        #region ShowJzIntvCommandLineCommand
+
+        /// <summary>
+        /// Command to display the command line used to run a particular ROM in jzIntv to the user.
+        /// </summary>
+        public static readonly VisualRelayCommand ShowJzIntvCommandLineCommand = new VisualRelayCommand(OnShowCommandLine, CanLaunch)
+        {
+            UniqueId = UniqueNameBase + ".ShowJzIntvCommandLineCommand",
+            Name = Resources.Strings.ShowJzIntvCommandLineCommand_Name,
+            MenuItemName = Resources.Strings.ShowJzIntvCommandLineCommand_MenuItemName,
+            ContextMenuItemName = Resources.Strings.ShowJzIntvCommandLineCommand_ContextMenuItemName,
+            SmallIcon = typeof(JzIntvLauncherCommandGroup).LoadImageResource("Resources/Images/show_command_line_16x.png"),
+            ToolTip = Resources.Strings.ShowJzIntvCommandLineCommand_TipDescription,
+            ToolTipTitle = Resources.Strings.ShowJzIntvCommandLineCommand_TipTitle,
+            ToolTipDescription = Resources.Strings.ShowJzIntvCommandLineCommand_TipDescription,
+            ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+        };
+
+        private static void OnShowCommandLine(object parameter)
+        {
+            var programDescription = GetProgramDescription(parameter);
+            if (CanLaunch(programDescription))
+            {
+                var title = string.Format(Resources.Strings.ShowJzIntvCommandLineCommand_DialogTitle_Format, programDescription.Name);
+                var message = string.Format(Resources.Strings.ShowJzIntvCommandLineCommand_DialogMessage_Format, programDescription.Name);
+                var dialog = ReportDialog.Create(title, message);
+                dialog.ShowSendEmailButton = false;
+                var options = GetCommandLineOptionsForRom(programDescription);
+                var jzIntvPath = ConfigurationCommandGroup.ResolvePathSetting(JzIntvLauncherConfiguration.Instance.EmulatorPath);
+                var commandLine = jzIntvPath + ' ' + options.BuildCommandLineArguments(programDescription.Rom.RomPath, false);
+                dialog.ReportText = string.Format(Resources.Strings.ShowJzIntvCommandLineCommand_CommandLineMessage_Format, programDescription.Name, commandLine);
+                dialog.ShowDialog(Resources.Strings.ReportErrorDialogButtonText);
+            }
+        }
+
+        #endregion // ShowJzIntvCommandLineCommand
+
         #region CommandGroup
 
         /// <inheritdoc/>
@@ -503,6 +545,7 @@ namespace INTV.JzIntvUI.Commands
             if (((target is ProgramDescriptionViewModel) || (target == null)) && (context is RomListViewModel))
             {
                 yield return CreateContextMenuCommand(target, LaunchInJzIntvCommand, context);
+                yield return CreateContextMenuCommand(target, ShowJzIntvCommandLineCommand, context);
             }
         }
 

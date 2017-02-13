@@ -183,6 +183,9 @@
     <EmbeddedResource Include="Resources\Images\jlp_9xSM.png">
       <LogicalName>Resources/Images/jlp_9xSM.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\show_command_line_16x.png">
+      <LogicalName>Resources/Images/show_command_line_16x.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="View\JzIntvSettingsPage.xib" />

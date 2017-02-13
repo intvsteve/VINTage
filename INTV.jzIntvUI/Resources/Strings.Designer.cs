@@ -1379,6 +1379,80 @@ namespace INTV.JzIntvUI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to jzIntv will execute the ROM &apos;{0}&apos; with the following command line, based on the current settings:
+        ///
+        ///{1}.
+        /// </summary>
+        internal static string ShowJzIntvCommandLineCommand_CommandLineMessage_Format {
+            get {
+                return ResourceManager.GetString("ShowJzIntvCommandLineCommand_CommandLineMessage_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show jzIntv Command Line....
+        /// </summary>
+        internal static string ShowJzIntvCommandLineCommand_ContextMenuItemName {
+            get {
+                return ResourceManager.GetString("ShowJzIntvCommandLineCommand_ContextMenuItemName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The command line used to run the ROM &apos;{0}&apos; is displayed below..
+        /// </summary>
+        internal static string ShowJzIntvCommandLineCommand_DialogMessage_Format {
+            get {
+                return ResourceManager.GetString("ShowJzIntvCommandLineCommand_DialogMessage_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to jzIntv Command Line for {0}.
+        /// </summary>
+        internal static string ShowJzIntvCommandLineCommand_DialogTitle_Format {
+            get {
+                return ResourceManager.GetString("ShowJzIntvCommandLineCommand_DialogTitle_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Command Line....
+        /// </summary>
+        internal static string ShowJzIntvCommandLineCommand_MenuItemName {
+            get {
+                return ResourceManager.GetString("ShowJzIntvCommandLineCommand_MenuItemName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Command Line.
+        /// </summary>
+        internal static string ShowJzIntvCommandLineCommand_Name {
+            get {
+                return ResourceManager.GetString("ShowJzIntvCommandLineCommand_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show the command line used to launch jzIntv with the selected ROM..
+        /// </summary>
+        internal static string ShowJzIntvCommandLineCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("ShowJzIntvCommandLineCommand_TipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Command Line for ROM.
+        /// </summary>
+        internal static string ShowJzIntvCommandLineCommand_TipTitle {
+            get {
+                return ResourceManager.GetString("ShowJzIntvCommandLineCommand_TipTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to launch jzIntv to run &apos;{0}&apos;.
         ///The error message was:
         ///

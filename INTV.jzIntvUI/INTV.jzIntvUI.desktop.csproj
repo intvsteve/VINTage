@@ -126,6 +126,9 @@
     <EmbeddedResource Include="Commands\Resources\ShowInstalledDocumentsCommand.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\ShowJzIntvCommandLineCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Page Include="View\JzIntvSettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -193,6 +196,7 @@
     <Resource Include="Resources\Images\jlp_9xSM.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\show_command_line_16x.png" />
     <Resource Include="Resources\Images\Information_16x16.png" />
     <Resource Include="Resources\Images\Information_32x.png" />
     <None Include="jzIntv\Win\bin\.readme.txt" />

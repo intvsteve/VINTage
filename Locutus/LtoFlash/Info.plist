@@ -12,14 +12,14 @@
 		<string>Yes</string>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2014-2016 Steven A. Orth
+	<string>Copyright © 2014-2017 Steven A. Orth
 All Rights Reserved.</string>
 	<key>CFBundleExecutable</key>
 	<string></string>
 	<key>CFBundleName</key>
 	<string>LTO Flash!</string>
 	<key>CFBundleVersion</key>
-	<string>Build 2587</string>
+	<string>Build 2918</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.7</string>
 	<key>NSMainNibFile</key>

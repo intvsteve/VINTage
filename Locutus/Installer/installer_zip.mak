@@ -9,7 +9,7 @@
 # Base name of the output zip file.
 NAME ?= LTOFlash
 # Version string used for the file name.
-VERSION ?= 1.0.0.2587
+VERSION ?= 1.0.0.2918
 
 # Determine the target OS. Modified from the technique found here:
 #  http://stackoverflow.com/questions/714100/os-detecting-makefile

@@ -1,4 +1,22 @@
 ==============================================================================
+    Firmware 2893
+------------------------------------------------------------------------------
+
+ -- Update copyright year on title screen to 2017.
+ -- Accelerate garbage collection when at "Flash info..." screen in menu.
+ -- Fix occasional glitch due to background garbage collection.
+ -- Reinitalize config words and dirty bits if set to all 1s (an otherwise
+    invalid setting).
+ -- Make keyclicks-on the factory default as originally intended.
+
+==============================================================================
+    Firmware 2638
+------------------------------------------------------------------------------
+
+ -- Manufacturing related tweaks.
+ -- Record firmware revisions in crash log.
+
+==============================================================================
     Firmware 2386
 ------------------------------------------------------------------------------
 

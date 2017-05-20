@@ -543,17 +543,25 @@ namespace INTV.LtoFlash.Model
         {
             Device ltoFlash = null;
             var port = connection as IStreamConnection;
+            var validConnection = false;
             switch (connection.Type)
             {
                 case ConnectionType.Serial:
-                case ConnectionType.NamedPipe:
-                    var creationInfo = state as DeviceCreationInfo;
-                    if (creationInfo == null)
-                    {
-                        creationInfo = new DeviceCreationInfo(Properties.Settings.Default.AutomaticallyConnectToDevices, false, Properties.Settings.Default.AutomaticallyConnectToDevices ? ActivationMode.ActivateIfFirst : ActivationMode.UserSettings);
-                    }
-                    ltoFlash = new Device(port, creationInfo);
+                    // We're essentially skipping the other potential implementations of sharing policy and smugly assuming that if *ours* says it's OK, then just do it.
+                    validConnection = !Properties.Settings.Default.VerifyVIDandPIDBeforeConnecting || SerialConnectionPolicy.Instance.ExclusiveAccess(connection);
                     break;
+                case ConnectionType.NamedPipe:
+                    validConnection = true; // skipping validation
+                    break;
+            }
+            if (validConnection)
+            {
+                var creationInfo = state as DeviceCreationInfo;
+                if (creationInfo == null)
+                {
+                    creationInfo = new DeviceCreationInfo(Properties.Settings.Default.AutomaticallyConnectToDevices, false, Properties.Settings.Default.AutomaticallyConnectToDevices ? ActivationMode.ActivateIfFirst : ActivationMode.UserSettings);
+                }
+                ltoFlash = new Device(port, creationInfo);
             }
             return ltoFlash;
         }
@@ -1003,7 +1011,7 @@ namespace INTV.LtoFlash.Model
                         validationResponse.FileSystemFlags = GetDirtyFlags.Instance.Execute<LfsDirtyFlags>(device.Port, data);
                         DebugOutput("DirtyFlags: " + data.Succeeded);
                     }
-                    if (data.Succeeded && device.CommandAvailability.IsCommandAvailable(ProtocolCommandId.LfsDownloadGlobalTables, device.HardwareStatus) && (Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu || validationResponse.FileSystemFlags.HasFlag(LfsDirtyFlags.FileSystemUpdateInProgress) || true))
+                    if (data.Succeeded && device.CommandAvailability.IsCommandAvailable(ProtocolCommandId.LfsDownloadGlobalTables, device.HardwareStatus))
                     {
                         validationResponse.FileSystem = DownloadFileSystemTables.Instance.Execute<FileSystem>(device.Port, data);
                         DebugOutput("GetFileSystem: " + data.Succeeded);

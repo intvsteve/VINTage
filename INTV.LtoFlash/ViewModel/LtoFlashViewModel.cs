@@ -747,6 +747,10 @@ namespace INTV.LtoFlash.ViewModel
 
         private void HandleDeviceAdded(object sender, DeviceChangeEventArgs e)
         {
+            if ((SerialConnectionPolicy.Instance != null) && (e.Type == Core.Model.Device.ConnectionType.Serial) && DeviceChange.IsDeviceChangeFromSystem(e.State))
+            {
+                SerialConnectionPolicy.Instance.Reset();
+            }
             if ((e.Type == Core.Model.Device.ConnectionType.Serial) && IsLtoFlashSerialPort(Connection.CreatePseudoConnection(e.Name, e.Type)))
             {
                 if (!PotentialDevicePorts.Any(c => c.Name == e.Name))
@@ -770,6 +774,10 @@ namespace INTV.LtoFlash.ViewModel
         private void HandleDeviceRemoved(object sender, DeviceChangeEventArgs e)
         {
             object creationInfo = null;
+            if ((SerialConnectionPolicy.Instance != null) && (e.Type == Core.Model.Device.ConnectionType.Serial) && DeviceChange.IsDeviceChangeFromSystem(e.State))
+            {
+                SerialConnectionPolicy.Instance.Reset();
+            }
             e.State.TryGetValue(DeviceCreationInfo.ConfigName, out creationInfo);
             if ((e.Type == Core.Model.Device.ConnectionType.Serial) && !(creationInfo is DeviceCreationInfo) && DeviceChange.IsDeviceChangeFromSystem(e.State))
             {
@@ -1022,6 +1030,20 @@ namespace INTV.LtoFlash.ViewModel
             if (e.PropertyName == "ReconcileDeviceMenuWithLocalMenu")
             {
                 System.Diagnostics.Debug.WriteLine("ReconcileDeviceMenuWithLocalMenu CHANGED");
+            }
+            if (e.PropertyName == "VerifyVIDandPIDBeforeConnecting")
+            {
+                var newPotentialPorts = DeviceConnectionViewModel.GetAvailableConnections(this);
+                var itemsToRemove = _potentialDevicePorts.Where(p => !newPotentialPorts.Select(n => n.Name).Contains(p.Name)).ToList();
+                foreach (var itemToRemove in itemsToRemove)
+                {
+                    _potentialDevicePorts.Remove(itemToRemove);
+                }
+                var itemsToAdd = newPotentialPorts.Where(n => !_potentialDevicePorts.Select(p => p.Name).Contains(n.Name)).ToList();
+                foreach (var itemToAdd in itemsToAdd)
+                {
+                    _potentialDevicePorts.Add(itemToAdd);
+                }
             }
         }
 

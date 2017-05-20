@@ -1,5 +1,5 @@
 ﻿// <copyright file="SerialPortConnection.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -25,6 +25,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using INTV.Core.Model.Device;
 using INTV.Shared.Utility;
 
 namespace INTV.Shared.Model.Device
@@ -85,10 +86,10 @@ namespace INTV.Shared.Model.Device
         /// </summary>
         public static readonly string InvalidPortName = Resources.Strings.InvalidSerialPortName;
 
-        private static ConcurrentDictionary<string, WeakReference> _portsInUse = new ConcurrentDictionary<string, WeakReference>();
+        private static readonly ConcurrentDictionary<string, WeakReference> _portsInUse = new ConcurrentDictionary<string, WeakReference>();
 
 #if TRACK_PORT_LIFETIMES
-        private static ConcurrentDictionary<string, WeakReference> _createdPorts = new ConcurrentDictionary<string, WeakReference>();
+        private static readonly ConcurrentDictionary<string, WeakReference> _createdPorts = new ConcurrentDictionary<string, WeakReference>();
 #endif // TRACK_PORT_LIFETIMES
 
         #region Constructors
@@ -284,6 +285,17 @@ namespace INTV.Shared.Model.Device
             var serialPortConnection = new SerialPortConnection((string)configurationData[PortNameConfigDataName]);
             serialPortConnection.Configure(configurationData);
             return serialPortConnection;
+        }
+
+        /// <summary>
+        /// Gets the available ports by applying the supplied filter.
+        /// </summary>
+        /// <param name="filter">A predicate to filter out ports that should not be included. If <c>null</c>, all ports in <see cref="AvailablePorts"/> are returned.</param>
+        /// <returns>The available ports, excluding those that do not pass the given filter.</returns>
+        public static IEnumerable<string> GetAvailablePorts(Predicate<INTV.Core.Model.Device.IConnection> filter)
+        {
+            var availablePorts = filter == null ? AvailablePorts : AvailablePorts.Where(p => filter(Connection.CreatePseudoConnection(p, ConnectionType.Serial)));
+            return availablePorts;
         }
 
         #region IStreamConnection

@@ -806,10 +806,6 @@ namespace INTV.LtoFlash.ViewModel
                             PromptForFirmwareUpgrade(device);
                         }
                     }
-                    if (_cachedFileSystemsCompareResult.HasValue && ((device == null) || !device.IsValid))
-                    {
-                        ResetCachedFileSystemsCompareResult();
-                    }
                     UpdateItemStatesAsNecessary(device);
                     break;
                 case Device.FileSystemPropertyName:

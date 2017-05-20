@@ -291,12 +291,26 @@ namespace INTV.Shared.ViewModel
 
         private void DeviceRemoved(object sender, INTV.Shared.Interop.DeviceManagement.DeviceChangeEventArgs e)
         {
-            if ((e.Type == INTV.Core.Model.Device.ConnectionType.Serial) && DeviceChange.IsDeviceChangeFromSystem(e.State))
+            if (e.Type == INTV.Core.Model.Device.ConnectionType.Serial)
             {
                 var removedDevice = AvailableSerialPorts.FirstOrDefault(p => p.PortName == e.Name);
-                if ((removedDevice != null) && AvailableSerialPorts.Remove(removedDevice))
+                if (DeviceChange.IsDeviceChangeFromSystem(e.State))
                 {
-                    INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+                    if ((removedDevice != null) && AvailableSerialPorts.Remove(removedDevice))
+                    {
+                        INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+                    }
+                }
+                else
+                {
+                    // Removal may also indicate that the device is not valid for use by the party responsible for showing the dialog.
+                    // In such a case, disable the item.
+                    if ((removedDevice != null) && !DisabledSerialPorts.Contains(e.Name))
+                    {
+                        removedDevice.IsSelectable = false;
+                        DisabledSerialPorts.Add(e.Name);
+                        INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+                    }
                 }
             }
         }

@@ -136,7 +136,7 @@ namespace INTV.Intellicart.Commands
         private static void OnSelectPort(object parameter)
         {
             var intellicart = parameter as IntellicartViewModel;
-            var ports = SerialPortConnection.AvailablePorts.ToList();
+            var ports = intellicart.SerialPorts.Select(p => p.PortName).ToList();
             var currentPort = intellicart.SerialPort;
             var disabledPorts = new List<string>();
 
@@ -155,7 +155,7 @@ namespace INTV.Intellicart.Commands
                 defaultBaudRate = IntellicartModel.DefaultBaudRate;
             }
 
-            var dialog = INTV.Shared.View.SerialPortSelectorDialog.Create(null, Resources.Strings.SelectSerialPortDialog_Message, ports, disabledPorts, currentPort, Model.IntellicartModel.BaudRates, defaultBaudRate, true);
+            var dialog = INTV.Shared.View.SerialPortSelectorDialog.Create(null, Resources.Strings.SelectSerialPortDialog_Message, ports, disabledPorts, currentPort, Model.IntellicartModel.BaudRates, defaultBaudRate, true, IntellicartViewModel.IsNotExclusivePort);
             var setPort = dialog.ShowDialog(!DeviceCommandGroup.Group.SelectPortFromPreferences);
 
             if (setPort.HasValue && setPort.Value)
@@ -318,7 +318,7 @@ namespace INTV.Intellicart.Commands
             var intellicart = parameter as IntellicartViewModel;
             var canExecute = (intellicart != null) && !string.IsNullOrWhiteSpace(intellicart.SerialPort);
             canExecute = canExecute && !SerialPortConnection.PortsInUse.Contains(intellicart.SerialPort);
-            canExecute = canExecute && SerialPortConnection.AvailablePorts.Contains(intellicart.SerialPort);
+            canExecute = canExecute && intellicart.SerialPorts.Select(p => p.PortName).Contains(intellicart.SerialPort);
             canExecute = canExecute && intellicart.Roms.SelectionIndexes.Any();
             return canExecute;
         }
@@ -363,7 +363,6 @@ namespace INTV.Intellicart.Commands
                     IProgramDescription programDescription = null;
                     if (rom != null)
                     {
-                        var fileName = System.IO.Path.GetFileName(rom.RomPath);
                         var programInfo = rom.GetProgramInformation();
                         programDescription = new ProgramDescription(rom.Crc, rom, programInfo);
                     }
@@ -385,7 +384,7 @@ namespace INTV.Intellicart.Commands
             var intellicart = parameter as IntellicartViewModel;
             var canExecute = (intellicart != null) && !string.IsNullOrWhiteSpace(intellicart.SerialPort);
             canExecute = canExecute && !SerialPortConnection.PortsInUse.Contains(intellicart.SerialPort);
-            canExecute = canExecute && SerialPortConnection.AvailablePorts.Contains(intellicart.SerialPort);
+            canExecute = canExecute && intellicart.SerialPorts.Select(p => p.PortName).Contains(intellicart.SerialPort);
             return canExecute;
         }
 

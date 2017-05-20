@@ -1,5 +1,5 @@
 ﻿// <copyright file="Device.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -48,6 +48,30 @@ namespace INTV.LtoFlash.Model
         public delegate bool DeviceErrorHandler(DeviceStatusFlagsLo deviceStatusFlags, ProtocolCommandId commandId, string errorMessage, Exception exception);
 
         #region Constants
+
+        /// <summary>
+        /// The USB vendor ID for LTO Flash!.
+        /// </summary>
+        /// <remarks>On Mac, use this value with the idVendor for IOKit operations.</remarks>
+        public const int UsbVendorId = 0x403;
+
+        /// <summary>
+        /// The USB product ID for LTO Flash!.
+        /// </summary>
+        /// <remarks>On Mac, use this value with idProduct for IOKit operations.</remarks>
+        public const int UsbProductId = 0x6015;
+
+        /// <summary>
+        /// The USB vendor name for LTO Flash!.
+        /// </summary>
+        /// <remarks>On Mac, use this value when verifying a USB device's "USB Vendor Name" in IOKit.</remarks>
+        public const string UsbVendorName = "Left Turn Only"; // "USB Vendor Name"
+
+        /// <summary>
+        /// The USB product name for LTO Flash!.
+        /// </summary>
+        /// <remarks>On Mac, use this value when verifying a USB device's "USB Product Name", "Product Name", "USB Interface Name", IORegistryEntryName, or IOObjectClass in IOKit.</remarks>
+        public const string UsbProductName = "LTO Flash!";
 
         #region Property Names
 

@@ -1,5 +1,5 @@
 ﻿// <copyright file="IntellicartViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,10 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using INTV.Core.Model.Device;
 using INTV.Intellicart.Model;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Interop.DeviceManagement;
@@ -38,8 +40,6 @@ namespace INTV.Intellicart.ViewModel
         /// </summary>
         public IntellicartViewModel()
         {
-            var ports = INTV.Shared.Model.Device.SerialPortConnection.AvailablePorts;
-            SerialPorts = new ObservableCollection<SerialPortViewModel>(ports.OrderBy(p => p).Select(p => new SerialPortViewModel(p)));
             DeviceChange.DeviceAdded += DeviceAdded;
             DeviceChange.DeviceRemoved += DeviceRemoved;
             BaudRates = new ObservableCollection<BaudRateViewModel>(IntellicartModel.BaudRates.Select(r => new BaudRateViewModel(r)));
@@ -103,6 +103,12 @@ namespace INTV.Intellicart.ViewModel
             get { return SerialPorts.Any(); }
         }
 
+        /// <summary>
+        /// Gets or sets the connection sharing policies.
+        /// </summary>
+        [System.ComponentModel.Composition.ImportMany(typeof(IConnectionSharingPolicy))]
+        public IEnumerable<System.Lazy<IConnectionSharingPolicy>> ConnectionSharingPolicies { get; set; }
+
         #region Model Access
 
         /// <summary>
@@ -151,6 +157,8 @@ namespace INTV.Intellicart.ViewModel
         public void OnImportsSatisfied()
         {
             Model.PropertyChanged += HandlePropertyChanged;
+            var ports = INTV.Shared.Model.Device.SerialPortConnection.GetAvailablePorts(IsNotExclusivePort);
+            SerialPorts = new ObservableCollection<SerialPortViewModel>(ports.OrderBy(p => p).Select(p => new SerialPortViewModel(p)));
             if (!string.IsNullOrWhiteSpace(Model.SerialPort) && (SerialPorts.FirstOrDefault(p => p.PortName == Model.SerialPort) == null))
             {
                 SerialPorts.Add(new SerialPortViewModel(Model.SerialPort));
@@ -158,6 +166,28 @@ namespace INTV.Intellicart.ViewModel
         }
 
         #endregion //  IPartImportsSatisfiedNotification Members
+
+        /// <summary>
+        /// Filter function for serial ports, which rejects exclusive ports.
+        /// </summary>
+        /// <param name="connection">The IConnection to test.</param>
+        /// <returns><c>true</c>, if exclusive ports was rejected, <c>false</c> otherwise.</returns>
+        internal bool IsNotExclusivePort(IConnection connection)
+        {
+            var acceptPort = false;
+            if (connection.Type == ConnectionType.Serial)
+            {
+                foreach (var policy in ConnectionSharingPolicies)
+                {
+                    acceptPort = !policy.Value.ExclusiveAccess(connection);
+                    if (!acceptPort)
+                    {
+                        break;
+                    }
+                }
+            }
+            return acceptPort;
+        }
 
         private void HandlePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -178,7 +208,8 @@ namespace INTV.Intellicart.ViewModel
         {
             if ((e.Type == INTV.Core.Model.Device.ConnectionType.Serial) && DeviceChange.IsDeviceChangeFromSystem(e.State))
             {
-                if (!SerialPorts.Any(p => p.PortName == e.Name))
+                var acceptPort = IsNotExclusivePort(Connection.CreatePseudoConnection(e.Name, ConnectionType.Serial));
+                if (acceptPort && !SerialPorts.Any(p => p.PortName == e.Name))
                 {
                     SerialPorts.Add(new SerialPortViewModel(e.Name));
                 }

@@ -146,6 +146,10 @@
     <Compile Include="Interop\DeviceManagement\DeviceChangeEvent.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceType.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceChange.cs" />
+    <Compile Include="Interop\SetupDi\DeviceInformation.cs" />
+    <Compile Include="Interop\SetupDi\DeviceInformation.WPF.cs" />
+    <Compile Include="Interop\SetupDi\NativeMethods.cs" />
+    <Compile Include="Interop\SetupDi\NativeMethods.WPF.cs" />
     <Compile Include="Model\CanonicalRomComparer.cs" />
     <Compile Include="Model\CanonicalRomComparerStrict.cs" />
     <Compile Include="Model\Device\SerialPortConnection.WPF.cs" />

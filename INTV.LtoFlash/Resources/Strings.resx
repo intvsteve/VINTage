@@ -2426,4 +2426,16 @@ is too small ({1} bytes)</value>
   <data name="DownloadAndPlayCommand_BrowseDialogPrompt" xml:space="preserve">
     <value>Select ROM to Send to LTO Flash!</value>
   </data>
+  <data name="CheckForDevices_PortBrowser_Title" xml:space="preserve">
+    <value>Find LTO Flash! Devices</value>
+  </data>
+  <data name="CheckForDevices_PortBrowser_Message" xml:space="preserve">
+    <value>No new devices found. Already connected to the following:</value>
+  </data>
+  <data name="CheckForDevices_PortBrowserNoneFound_Message" xml:space="preserve">
+    <value>No LTO Flash! devices were found.</value>
+  </data>
+  <data name="SettingsPage_VerifyVIDandPIDBeforeConnecting" xml:space="preserve">
+    <value>Only connect to devices that can be identified as LTO Flash!</value>
+  </data>
 </root>

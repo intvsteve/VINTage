@@ -1,5 +1,5 @@
 ﻿// <copyright file="CheckForDevicesTaskData.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.Model.Device;
 using INTV.LtoFlash.Model;
 using INTV.Shared.Model.Device;
 using INTV.Shared.Utility;
@@ -111,8 +112,7 @@ namespace INTV.LtoFlash.ViewModel
             var data = (CheckForDevicesTaskData)taskData;
             var validPorts = new HashSet<string>();
             data.ValidDevicePorts = validPorts;
-            var potentialPorts = SerialPortConnection.AvailablePorts.Except(data.CurrentDevices).ToList();
-
+            var potentialPorts = data.LtoFlashViewModel.AvailableDevicePorts.Except(data.CurrentDevices).ToList();
             if (!string.IsNullOrWhiteSpace(data.LastKnownPort) && (potentialPorts.Count > 1) && potentialPorts.Remove(data.LastKnownPort))
             {
                 potentialPorts.Insert(0, data.LastKnownPort);
@@ -264,14 +264,13 @@ namespace INTV.LtoFlash.ViewModel
             {
                 if (data.LtoFlashViewModel.ActiveLtoFlashDevices.Any())
                 {
-                    // TODO Move strings to resources.
-                    var dialog = INTV.Shared.View.SerialPortSelectorDialog.Create("Find LTO Flash! Devices", "No new devices found. Already connected to the following:", connectedPortNames, connectedPortNames, Device.DefaultBaudRate);
+                    var dialog = INTV.Shared.View.SerialPortSelectorDialog.Create(Resources.Strings.CheckForDevices_PortBrowser_Title, Resources.Strings.CheckForDevices_PortBrowser_Message, connectedPortNames, connectedPortNames, Device.DefaultBaudRate, (p) => data.LtoFlashViewModel.IsLtoFlashSerialPort(p));
                     reportDialogAction = new Action(() => dialog.ShowDialog());
                 }
                 else
                 {
                     // TODO Move strings to resources.
-                    reportDialogAction = new Action(() => INTV.Shared.View.OSMessageBox.Show("No LTO Flash! devices were found.", "Find LTO Flash! Devices"));
+                    reportDialogAction = new Action(() => INTV.Shared.View.OSMessageBox.Show(Resources.Strings.CheckForDevices_PortBrowserNoneFound_Message, Resources.Strings.CheckForDevices_PortBrowser_Title));
                 }
             }
             if (reportDialogAction != null)

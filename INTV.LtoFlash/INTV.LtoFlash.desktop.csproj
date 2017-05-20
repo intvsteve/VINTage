@@ -167,6 +167,8 @@
     <Compile Include="Model\OrphanedFileSystemEntries.cs" />
     <Compile Include="Model\ResetBehavior.cs" />
     <Compile Include="Model\SaveMenuPositionFlags.cs" />
+    <Compile Include="Model\SerialConnectionPolicy.cs" />
+    <Compile Include="Model\SerialConnectionPolicy.WPF.cs" />
     <Compile Include="Model\ShowTitleScreenFlags.cs" />
     <Compile Include="UnsupportedCommandException.cs" />
     <Compile Include="UnsupportedForkKindException.cs" />

@@ -562,6 +562,33 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No new devices found. Already connected to the following:.
+        /// </summary>
+        internal static string CheckForDevices_PortBrowser_Message {
+            get {
+                return ResourceManager.GetString("CheckForDevices_PortBrowser_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find LTO Flash! Devices.
+        /// </summary>
+        internal static string CheckForDevices_PortBrowser_Title {
+            get {
+                return ResourceManager.GetString("CheckForDevices_PortBrowser_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No LTO Flash! devices were found..
+        /// </summary>
+        internal static string CheckForDevices_PortBrowserNoneFound_Message {
+            get {
+                return ResourceManager.GetString("CheckForDevices_PortBrowserNoneFound_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contents of the ROMs cache directory have been deleted..
         /// </summary>
         internal static string ClearCacheCommand_CompleteMessage {
@@ -5620,6 +5647,15 @@ namespace INTV.LtoFlash.Resources {
         internal static string SettingsPage_ValidateMenuAtLaunch {
             get {
                 return ResourceManager.GetString("SettingsPage_ValidateMenuAtLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only connect to devices that can be identified as LTO Flash!.
+        /// </summary>
+        internal static string SettingsPage_VerifyVIDandPIDBeforeConnecting {
+            get {
+                return ResourceManager.GetString("SettingsPage_VerifyVIDandPIDBeforeConnecting", resourceCulture);
             }
         }
         

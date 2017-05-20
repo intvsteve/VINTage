@@ -1,5 +1,5 @@
 ﻿// <copyright file="IOMachPort.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -49,7 +49,7 @@ namespace INTV.Shared.Interop.IOKit
         /// <summary>
         /// Gets an iterator to enumerate RS-232 serial services.
         /// </summary>
-        /// <returns>The R s232 serial services iterator.</returns>
+        /// <returns>The RS-232 serial services iterator.</returns>
         public IOIterator GetRS232SerialServicesIterator()
         {
             IOIterator iterator = null;
@@ -65,6 +65,7 @@ namespace INTV.Shared.Interop.IOKit
         /// Gets the RS-232 serial match dictionary.
         /// </summary>
         /// <returns>The RS-232 serial match dictionary.</returns>
+        /// <remarks>NOTE: This matching dictionary is specifically configured to locate BSD RS-232 serial ports.</remarks>
         public static NSMutableDictionary GetRS232SerialMatchDictionary()
         {
             var servicesDictionary = IOService.MatchingServicesFromName(NativeMethods.kIOSerialBSDServiceValue);
@@ -76,12 +77,45 @@ namespace INTV.Shared.Interop.IOKit
         }
 
         /// <summary>
+        /// Gets the USB device services iterator.
+        /// </summary>
+        /// <param name="vendorId">The numeric value of the vendor ID to match. If zero, this is ignored.</param>
+        /// <param name="productId">The numeric value of the product ID to match. If zero, this is ignored.</param>
+        /// <returns>The USB device services iterator.</returns>
+        public IOIterator GetUSBServicesIterator(int vendorId, int productId)
+        {
+            IOIterator iterator = null;
+            var servicesDictionary = GetUSBMatchDictionary(vendorId, productId);
+            if (servicesDictionary != null)
+            {
+                iterator = new IOIterator(this, servicesDictionary);
+            }
+            return iterator;
+        }
+
+        /// <summary>
         /// Gets the USB match dictionary.
         /// </summary>
+        /// <param name="vendorId">The numeric value of the vendor ID to match. If zero, this is ignored.</param>
+        /// <param name="productId">The numeric value of the product ID to match. If zero, this is ignored.</param>
         /// <returns>The USB match dictionary.</returns>
-        public static NSMutableDictionary GetUSBMatchDictionary()
+        /// <remarks>NOTE: This dictionary is configured to match USB Devices -- not USB Interfaces.</remarks>
+        public static NSMutableDictionary GetUSBMatchDictionary(int vendorId, int productId)
         {
-            var servicesDictionary = IOService.MatchingServicesFromName(NativeMethods.kUSBDeviceClass);
+            var servicesDictionary = IOService.MatchingServicesFromName(NativeMethods.kIOUSBDeviceClassName);
+            if (servicesDictionary != null)
+            {
+                if (vendorId != 0)
+                {
+                    var vid = NSNumber.FromInt32(vendorId);
+                    servicesDictionary.SetValueForKey(vid, (NSString)NativeMethods.kUSBVendorID);
+                }
+                if (productId != 0)
+                {
+                    var pid = NSNumber.FromInt32(productId);
+                    servicesDictionary.SetValueForKey(pid, (NSString)NativeMethods.kUSBProductID);
+                }
+            }
             return servicesDictionary;
         }
 

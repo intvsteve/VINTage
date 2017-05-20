@@ -34,6 +34,19 @@ namespace INTV.Shared.Interop.IOKit
     /// </summary>
     public static class IOKitHelpers
     {
+        #region USBSpec.h
+
+        /// <summary>The key used to get the USB Vendor Name property from an instance of IOKitRegistryEntry.</summary>
+        public static readonly string kUSBVendorString = "USB Vendor Name";
+
+        /// <summary>The key used to get the USB Product Name property from an instance of IOKitRegistryEntry.</summary>
+        public static readonly string kUSBProductString = "USB Product Name";
+
+        /// <summary>The key used to get the USB Serial Number property from an instance of IOKitRegistryEntry.</summary>
+        public static readonly string kUSBSerialNumberString = "USB Serial Number";
+
+        #endregion // USBSpec.h
+
         /// <summary>
         /// Enumerates the serial ports.
         /// </summary>

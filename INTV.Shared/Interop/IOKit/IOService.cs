@@ -20,7 +20,6 @@
 
 #define USE_IOKIT_NOTIFICATIONS
 ////#define ENABLE_DEBUG_OUTPUT
-////#define TEST_IOREG
 
 using System.Collections.Generic;
 using System.Linq;
@@ -333,19 +332,6 @@ namespace INTV.Shared.Interop.IOKit
                     PublishNotificationIterator.EnumerateSerialPorts(null);
                     TerminateNotificationIterator.EnumerateSerialPorts(null);
                 }
-
-                // UNDONE The following was the beginnings of an experiment to
-                // use the ioreg command line facility to extract USB / serial port
-                // information from the system, rather than writing (likely buggy)
-                // bindings to IOKit. Didn't get very far.
-#if TEST_IOREG
-                // var cc = IOMachPort.GetUSBMatchDictionary();
-                var ioreg = "ioreg";
-                var ioregResults = RunExternalProgram.CallAndReturnStdOut(ioreg, "-al -c IOSerialBSDClient", null);
-                var plist = new PList();
-                plist.Parse(ioregResults);
-                DebugOutput(ioregResults);
-#endif // TEST_IOREG
             }
 
             internal override void StopInThread()

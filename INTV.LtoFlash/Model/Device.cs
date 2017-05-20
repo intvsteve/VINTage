@@ -769,7 +769,7 @@ namespace INTV.LtoFlash.Model
                 {
                     device.InTimer = true;
                     entered = true;
-                    device.Port.LogPortMessage("<<<< TIMER PROC ENTERED");
+                    device.Port.LogPortMessage("<<<< TIMER PROC ENTERED; device in state: " + device.ConnectionState);
                     int period = System.Threading.Timeout.Infinite;
                     device.DeviceStatusUpdatePeriod = System.Threading.Timeout.Infinite; // no more timer ticks until this one is done
 
@@ -872,6 +872,10 @@ namespace INTV.LtoFlash.Model
                         // Restart the timer.
                         SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new Action(() => device.RestartTimer(deviceState, period)));
                     }
+                }
+                else
+                {
+                    device.Port.LogPortMessage("<<<< TIMER PROC !!!NOT!!! ENTERED; device in state: " + device.ConnectionState + ">>>>");
                 }
             }
             catch (InvalidOperationException)

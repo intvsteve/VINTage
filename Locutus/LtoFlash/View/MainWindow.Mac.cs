@@ -1,4 +1,4 @@
-﻿// <copyright file="MainWindow.Mac.cs" company="INTV Funhouse">
+// <copyright file="MainWindow.Mac.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2016 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -65,6 +65,7 @@ namespace Locutus.View
             var viewModel = new Locutus.ViewModel.MainWindowViewModel();
             SingleInstanceApplication.Instance.DataContext = viewModel;
             DataContext = viewModel;
+            CollectionBehavior = NSWindowCollectionBehavior.FullScreenPrimary;
         }
 
         #endregion // Constructors
@@ -81,6 +82,34 @@ namespace Locutus.View
         }
 
         #endregion // IFakeDependencyObject Properties
+
+        /// <summary>
+        /// Gets or sets the tabbing mode.
+        /// </summary>
+        /// <remarks>The tabbing mode was introduced in macOS Sierra (10.12) and is not desired. Since we're targeting 10.7 and later,
+        /// the property is not part of Xamarin.Mac (as of this writing), so just directly implement it.</remarks>
+        public NSWindowTabbingMode TabbingMode
+        {
+            [Export("tabbingMode")]
+            get { return NSWindowTabbingMode.Disallowed; }
+
+            [Export("setTabbingMode:")]
+            set { }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:Locutus.View.MainWindow"/> allows automatic window tabbing.
+        /// </summary>
+        /// <remarks>The tabbing mode was introduced in macOS Sierra (10.12) and is not desired. Since we're targeting 10.7 and later,
+        /// the property is not part of Xamarin.Mac (as of this writing), so just directly implement it.</remarks>
+        public bool AllowsAutomaticWindowTabbing
+        {
+            [Export("allowsAutomaticWindowTabbing")]
+            get { return false; }
+
+            [Export("setAllowsAutomaticWindowTabbing:")]
+            set { }
+        }
 
         /// <summary>
         /// Gets the view model for the main window.
@@ -132,6 +161,33 @@ namespace Locutus.View
         {
             // HACK This is required for the NIB constructor to be called!
             ////base.AwakeFromNib(); // There is no need to call the base class implementation -- it is a no-op. We only need this method to be present on the type.
+        }
+
+        /// <summary>
+        /// Beginning in macOS Sierra (10.12) all apps get this mode "for free". We're opting out.
+        /// </summary>
+        /// <remarks>From NSWindow.h:
+        ///  typedef NS_ENUM(NSInteger, NSWindowTabbingMode) {
+        /// NSWindowTabbingModeAutomatic, // The system automatically prefers to tab this window when appropriate
+        /// NSWindowTabbingModePreferred, // The window explicitly should prefer to tab when shown
+        /// NSWindowTabbingModeDisallowed // The window explicitly should not prefer to tab when shown
+        /// }  NS_ENUM_AVAILABLE_MAC(10_12);
+        /// </remarks>
+#if __UNIFIED__
+        [ObjCRuntime.Native]
+        public enum NSWindowTabbingMode : long
+#else
+        public enum NSWindowTabbingMode 
+#endif
+        {
+            /// <summary>The system automatically prefers to tab this window when appropriate.</summary>
+            Automatic,
+
+            /// <summary>The window explicitly should prefer to tab when shown.</summary>
+            Preferred,
+
+            /// <summary>The window explicitly should not prefer to tab when shown.</summary>
+            Disallowed
         }
     }
 }

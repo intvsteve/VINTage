@@ -50,6 +50,7 @@ namespace INTV.LtoFlash.Properties
             NSUserDefaultsObserver.AddPreferenceChangedNotification(SettingsPageViewModel.PromptToInstallFTDIDriverPropertyName, RaisePropertyChanged);
             NSUserDefaultsObserver.AddPreferenceChangedNotification(SettingsPageViewModel.PromptToImportStarterRomsPropertyName, RaisePropertyChanged);
             NSUserDefaultsObserver.AddPreferenceChangedNotification(SettingsPageViewModel.PromptForFirmwareUpgradeSettingName, RaisePropertyChanged);
+            NSUserDefaultsObserver.AddPreferenceChangedNotification(SettingsPageViewModel.VerifyVIDandPIDBeforeConnectingSettingName, RaisePropertyChanged);
         }
 
         /// <summary>
@@ -90,6 +91,7 @@ namespace INTV.LtoFlash.Properties
                     defaults[SettingsPageViewModel.PromptToInstallFTDIDriverPropertyName] = new NSNumber(true);
                     defaults[SettingsPageViewModel.PromptToImportStarterRomsPropertyName] = new NSNumber(true);
                     defaults[SettingsPageViewModel.PromptForFirmwareUpgradeSettingName] = new NSNumber(true);
+                    defaults[SettingsPageViewModel.VerifyVIDandPIDBeforeConnectingSettingName] = new NSNumber(true);
                     _userDefaults.RegisterDefaults(defaults);
                 }
                 return _userDefaults;
@@ -223,6 +225,15 @@ namespace INTV.LtoFlash.Properties
         {
             get { return UserDefaults.BoolForKey(SettingsPageViewModel.PromptForFirmwareUpgradeSettingName); }
             set { UserDefaults.SetBool(value, SettingsPageViewModel.PromptForFirmwareUpgradeSettingName); }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to verify USB VID and PID before connecting to a serial port.
+        /// </summary>
+        public bool VerifyVIDandPIDBeforeConnecting
+        {
+            get { return UserDefaults.BoolForKey(SettingsPageViewModel.VerifyVIDandPIDBeforeConnectingSettingName); }
+            set { UserDefaults.SetBool(value, SettingsPageViewModel.VerifyVIDandPIDBeforeConnectingSettingName); }
         }
 
         /// <summary>

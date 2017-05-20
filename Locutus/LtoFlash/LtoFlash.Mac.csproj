@@ -13,6 +13,7 @@
     <AssemblyName>LtoFlash</AssemblyName>
     <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
     <SuppressXamMacMigration>True</SuppressXamMacMigration>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,9 +32,16 @@
     <EnablePackageSigning>false</EnablePackageSigning>
     <CreatePackage>false</CreatePackage>
     <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv" workingdir="${ProjectDir}" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -53,17 +61,24 @@
     <CreatePackage>false</CreatePackage>
     <DefineConstants>MAC</DefineConstants>
     <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv" workingdir="${ProjectDir}" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|x86' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Mac\x86\AppStore</OutputPath>
-    <IntermediateOutputPath>obj\Mac\x86\AppStore\</IntermediateOutputPath>
+    <OutputPath>bin\AppStore\Mac\x86</OutputPath>
+    <IntermediateOutputPath>obj\AppStore\Mac\x86\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseSGen>false</UseSGen>
@@ -77,6 +92,8 @@
     <CreatePackage>true</CreatePackage>
     <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
     <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

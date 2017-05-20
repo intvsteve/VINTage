@@ -11,6 +11,7 @@
     <RootNamespace>INTV.JzIntvUI</RootNamespace>
     <AssemblyName>INTV.jzIntvUI</AssemblyName>
     <SuppressXamMacMigration>True</SuppressXamMacMigration>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,16 +31,26 @@
     <EnablePackageSigning>false</EnablePackageSigning>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="make -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac" workingdir="${ProjectDir}" />
-        <Command type="AfterClean" command="make -f build_jzIntv.mak clean SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac" workingdir="${ProjectDir}" />
+        <Command>
+          <type>BeforeBuild</type>
+          <command>make -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+        <Command>
+          <type>AfterClean</type>
+          <command>make -f build_jzIntv.mak clean SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\Mac</OutputPath>
     <IntermediateOutputPath>obj\Release\Mac\</IntermediateOutputPath>
-    <DefineConstants>MAC</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -52,10 +63,21 @@
     <DefineConstants>MAC</DefineConstants>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="make -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac" workingdir="${ProjectDir}" />
-        <Command type="AfterClean" command="make -f build_jzIntv.mak clean SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac" workingdir="${ProjectDir}" />
+        <Command>
+          <type>BeforeBuild</type>
+          <command>make -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+        <Command>
+          <type>AfterClean</type>
+          <command>make -f build_jzIntv.mak clean SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
+     <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

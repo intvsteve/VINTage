@@ -23,8 +23,16 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
-        <Command type="AfterClean" command="make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+        <Command>
+          <type>AfterClean</type>
+          <command>make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -38,8 +46,16 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
-        <Command type="AfterClean" command="make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
+        <Command>
+          <type>AfterBuild</type>
+          <command>make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+        <Command>
+          <type>AfterClean</type>
+          <command>make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

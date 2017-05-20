@@ -59,6 +59,7 @@
     <Compile Include="Model\Device\ConnectionType.cs" />
     <Compile Include="Model\Device\ControllerKeys.cs" />
     <Compile Include="Model\Device\IConnection.cs" />
+    <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
     <Compile Include="Model\Device\IPeripheral.cs" />
     <Compile Include="Model\Device\MemoryMap.cs" />
     <Compile Include="Model\Device\MemoryMap`T.cs" />

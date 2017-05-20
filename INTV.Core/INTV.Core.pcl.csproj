@@ -18,6 +18,8 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,6 +64,7 @@
     <Compile Include="Model\Device\ConnectionType.cs" />
     <Compile Include="Model\Device\ControllerKeys.cs" />
     <Compile Include="Model\Device\IConnection.cs" />
+    <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
     <Compile Include="Model\Device\IPeripheral.cs" />
     <Compile Include="Model\Device\MemoryMap.cs" />
     <Compile Include="Model\Device\MemoryMap`T.cs" />

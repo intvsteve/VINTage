@@ -112,15 +112,22 @@ namespace INTV.LtoFlash.Utility
         private static IEnumerable<System.Diagnostics.FileVersionInfo> GetDriverFileVersions()
         {
             var driverFileVersions = new List<System.Diagnostics.FileVersionInfo>();
-            var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_SystemDriver WHERE Name LIKE 'FTDIBUS'");
-            foreach (var driver in searcher.Get().Cast<ManagementObject>())
+            try
             {
-                var driverPath = driver["PathName"] as string;
-                if (!string.IsNullOrEmpty(driverPath) && System.IO.File.Exists(driverPath))
+                var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_SystemDriver WHERE Name LIKE 'FTDIBUS'");
+                foreach (var driver in searcher.Get().Cast<ManagementObject>())
                 {
-                    var driverFileVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(driverPath);
-                    driverFileVersions.Add(driverFileVersion);
+                    var driverPath = driver["PathName"] as string;
+                    if (!string.IsNullOrEmpty(driverPath) && System.IO.File.Exists(driverPath))
+                    {
+                        var driverFileVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(driverPath);
+                        driverFileVersions.Add(driverFileVersion);
+                    }
                 }
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                // The above fails on guest user accounts - at least as tried in Windows Vista and Windows 7.
             }
 
             if (!driverFileVersions.Any())

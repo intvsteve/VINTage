@@ -1,5 +1,5 @@
 ﻿// <copyright file="SerialPortSelectorViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -22,8 +22,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using INTV.Core.Model.Device;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Interop.DeviceManagement;
+using INTV.Shared.Model.Device;
 
 namespace INTV.Shared.ViewModel
 {
@@ -77,7 +79,7 @@ namespace INTV.Shared.ViewModel
         /// Initializes a new instances of SerialPortSelectorViewModel.
         /// </summary>
         public SerialPortSelectorViewModel()
-            : this(Resources.Strings.SerialPortSelector_Prompt, null, null, null, null, 9600, false)
+            : this(Resources.Strings.SerialPortSelector_Prompt, null, null, null, null, 9600, false, null)
         {
         }
 
@@ -91,8 +93,10 @@ namespace INTV.Shared.ViewModel
         /// <param name="baudRates">Available baud rates to choose from.</param>
         /// <param name="defaultBaudRate">The default baud rate.</param>
         /// <param name="checkPortAvailability">If <c>true</c>, check the port to see if it is already in use before adding it to the selection list.</param>
-        public SerialPortSelectorViewModel(string prompt, IEnumerable<string> availablePorts, IEnumerable<string> disabledPorts, string selectedSerialPort, IEnumerable<int> baudRates, int defaultBaudRate, bool checkPortAvailability)
+        /// <param name="inclusionFilter">If <c>null</c> or it returns <c>true</c>, ports from all available ports are included.</param>
+        public SerialPortSelectorViewModel(string prompt, IEnumerable<string> availablePorts, IEnumerable<string> disabledPorts, string selectedSerialPort, IEnumerable<int> baudRates, int defaultBaudRate, bool checkPortAvailability, Predicate<IConnection> inclusionFilter)
         {
+            InclusionFilter = inclusionFilter;
             if (!string.IsNullOrWhiteSpace(prompt))
             {
                 Prompt = prompt;
@@ -112,7 +116,7 @@ namespace INTV.Shared.ViewModel
             var ports = availablePorts;
             if ((ports == null) || !ports.Any())
             {
-                ports = INTV.Shared.Model.Device.SerialPortConnection.AvailablePorts;
+                ports = inclusionFilter == null ? SerialPortConnection.AvailablePorts : SerialPortConnection.GetAvailablePorts(inclusionFilter);
             }
             if (ports != null)
             {
@@ -133,12 +137,12 @@ namespace INTV.Shared.ViewModel
             if (checkPortAvailability)
             {
                 var portsInUse = INTV.Shared.Model.Device.SerialPortConnection.PortsInUse;
-                foreach (var portInUse in portsInUse)
+                foreach (var portInUse in portsInUse.Where(p => (InclusionFilter == null) || InclusionFilter(Connection.CreatePseudoConnection(p, ConnectionType.Serial))))
                 {
                     DisabledSerialPorts.Add(portInUse);
                 }
             }
-            foreach (var disabledPort in DisabledSerialPorts.OrderBy(p => p).Reverse())
+            foreach (var disabledPort in DisabledSerialPorts.Where(p => (InclusionFilter == null) || InclusionFilter(Connection.CreatePseudoConnection(p, ConnectionType.Serial))).OrderBy(p => p).Reverse())
             {
                 var viewModel = AvailableSerialPorts.FirstOrDefault(p => p.PortName == disabledPort);
                 if (viewModel == null)
@@ -260,6 +264,8 @@ namespace INTV.Shared.ViewModel
         /// </summary>
         public int DefaultBaudRate { get; protected set; }
 
+        private Predicate<IConnection> InclusionFilter { get; set; }
+
         #endregion // Properties
 
         #region Events
@@ -275,7 +281,7 @@ namespace INTV.Shared.ViewModel
         {
             if ((e.Type == INTV.Core.Model.Device.ConnectionType.Serial) && DeviceChange.IsDeviceChangeFromSystem(e.State))
             {
-                if (!AvailableSerialPorts.Any(p => p.PortName == e.Name))
+                if (!AvailableSerialPorts.Any(p => p.PortName == e.Name) && ((InclusionFilter == null) || InclusionFilter(Connection.CreatePseudoConnection(e.Name, e.Type))))
                 {
                     AvailableSerialPorts.Add(new SerialPortViewModel(e.Name));
                 }

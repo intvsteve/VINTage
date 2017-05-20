@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceSelectionDialogViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -77,7 +77,11 @@ namespace INTV.LtoFlash.ViewModel
         {
             if (!AvailableDevicePorts.Contains(e.Name))
             {
-                AvailableDevicePorts.Add(e.Name);
+                var ltoFlashViewModel = CompositionHelpers.Container.GetExportedValueOrDefault<LtoFlashViewModel>();
+                if (ltoFlashViewModel.IsLtoFlashSerialPort(INTV.Core.Model.Device.Connection.CreatePseudoConnection(e.Name, e.Type)))
+                {
+                    AvailableDevicePorts.Add(e.Name);
+                }
             }
             CommandManager.InvalidateRequerySuggested();
         }

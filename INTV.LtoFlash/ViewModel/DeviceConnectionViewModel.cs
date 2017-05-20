@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceConnectionViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -78,7 +78,7 @@ namespace INTV.LtoFlash.ViewModel
         public static IEnumerable<DeviceConnectionViewModel> GetAvailableConnections(LtoFlashViewModel ltoFlashViewModel)
         {
             var ports = new List<DeviceConnectionViewModel>();
-            var available = INTV.Shared.Model.Device.SerialPortConnection.AvailablePorts.OrderBy(p => p);
+            var available = ltoFlashViewModel.AvailableDevicePorts.OrderBy(p => p);
             if (available.Any())
             {
                 ports.AddRange(available.Select(p => new DeviceConnectionViewModel(ltoFlashViewModel, p)));

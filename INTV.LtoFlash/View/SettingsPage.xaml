@@ -37,6 +37,7 @@
         <StackPanel>
             <CheckBox Margin="4" IsChecked="{Binding SearchForDevicesAtStartup}" Content="{x:Static viewModel:SettingsPageViewModel.SearchForDevicesPreferenceText}"/>
             <CheckBox Margin="4" IsChecked="{Binding AutomaticallyConnectToDevices}" Content="{x:Static viewModel:SettingsPageViewModel.AutomaticallyConnectToDevicesPreferenceText}"/>
+            <CheckBox Margin="4" IsChecked="{Binding VerifyVIDandPIDBeforeConnecting}" Content="{x:Static viewModel:SettingsPageViewModel.VerifyVIDandPIDBeforeConnectingPreferenceText}"/>
             <CheckBox Margin="4" IsChecked="{Binding RunGarbageCollector}" Content="{x:Static viewModel:SettingsPageViewModel.RunGarbageCollectorPreferenceText}" Visibility="Collapsed"/>
             <CheckBox Margin="4" IsChecked="{Binding PromptToAddRomsToMenu}" Content="{x:Static viewModel:SettingsPageViewModel.PromptToAddRomsPreferenceText}"/>
             <CheckBox Margin="4" IsChecked="{Binding AddRomsToMenu}" Content="{x:Static viewModel:SettingsPageViewModel.AddRomsToMenuPreferenceText}"/>

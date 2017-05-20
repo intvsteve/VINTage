@@ -86,7 +86,7 @@ namespace INTV.Shared.Model.Device
         /// </summary>
         public static readonly string InvalidPortName = Resources.Strings.InvalidSerialPortName;
 
-        private static readonly ConcurrentDictionary<string, WeakReference> _portsInUse = new ConcurrentDictionary<string, WeakReference>();
+        private static readonly ConcurrentDictionary<string, WeakReference> PortsInUseDictionary = new ConcurrentDictionary<string, WeakReference>();
 
 #if TRACK_PORT_LIFETIMES
         private static readonly ConcurrentDictionary<string, WeakReference> _createdPorts = new ConcurrentDictionary<string, WeakReference>();
@@ -145,8 +145,8 @@ namespace INTV.Shared.Model.Device
         {
             get
             {
-                UpdateWeakDictionary(_portsInUse);
-                var portsInUse = _portsInUse.Keys;
+                UpdateWeakDictionary(PortsInUseDictionary);
+                var portsInUse = PortsInUseDictionary.Keys;
                 return portsInUse;
             }
         }
@@ -305,7 +305,7 @@ namespace INTV.Shared.Model.Device
         {
             Log("OPEN port");
             OpenPort();
-            _portsInUse[Name] = new WeakReference(this);
+            PortsInUseDictionary[Name] = new WeakReference(this);
         }
 
         /// <inheritdoc />
@@ -314,7 +314,7 @@ namespace INTV.Shared.Model.Device
             Log("CLOSE port");
             Port.Close();
             WeakReference closedPort;
-            _portsInUse.TryRemove(Port.PortName, out closedPort);
+            PortsInUseDictionary.TryRemove(Port.PortName, out closedPort);
         }
 
         /// <inheritdoc />

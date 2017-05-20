@@ -1,5 +1,5 @@
 ﻿// <copyright file="SettingsPageViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -54,6 +54,7 @@ namespace INTV.LtoFlash.ViewModel
         public const string PromptToInstallFTDIDriverPropertyName = "PromptToInstallFTDIDriver";
         public const string PromptToImportStarterRomsPropertyName = "PromptToImportStarterRoms";
         public const string PromptForFirmwareUpgradeSettingName = "PromptForFirmwareUpgrade";
+        public const string VerifyVIDandPIDBeforeConnectingSettingName = "VerifyVIDandPIDBeforeConnecting";
 
         #endregion // Property Names
 
@@ -70,6 +71,7 @@ namespace INTV.LtoFlash.ViewModel
         public static readonly string EnableSerialPortLoggingPreferenceText = Resources.Strings.SettingsPage_EnablePortLogging;
         public static readonly string PromptForFirmwareUpgradePreferenceText = Resources.Strings.SettingsPage_PromptForFirmwareUpdate;
         public static readonly string ShowAdvancedFeaturesPreferenceText = Resources.Strings.SettingsPage_ShowAdvancedFeatures;
+        public static readonly string VerifyVIDandPIDBeforeConnectingPreferenceText = Resources.Strings.SettingsPage_VerifyVIDandPIDBeforeConnecting;
 
         #endregion // UI Strings
 
@@ -81,6 +83,7 @@ namespace INTV.LtoFlash.ViewModel
             _validateMenuAtLaunch = Properties.Settings.Default.ValidateMenuAtStartup;
             _searchForDevicesAtStartup = Properties.Settings.Default.SearchForDevicesAtStartup;
             _automaticallyConnectToDevices = Properties.Settings.Default.AutomaticallyConnectToDevices;
+            _verifyVIDandPIDBeforeConnecting = Properties.Settings.Default.VerifyVIDandPIDBeforeConnecting;
             _addRomsToMenu = Properties.Settings.Default.AddRomsToMenu;
             _promptToAddRomsToMenu = Properties.Settings.Default.PromptToAddRomsToMenu;
             _reconcileDeviceMenuWithLocalMenu = Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu;
@@ -137,6 +140,16 @@ namespace INTV.LtoFlash.ViewModel
             set { AssignAndUpdateProperty(AutomaticallyConnectToDevicesSettingName, value, ref _automaticallyConnectToDevices, (n, v) => Properties.Settings.Default.AutomaticallyConnectToDevices = v); }
         }
         private bool _automaticallyConnectToDevices;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to verify that a device truly appears to be LTO Flash! hardware before attempting to connect to it.
+        /// </summary>
+        public bool VerifyVIDandPIDBeforeConnecting
+        {
+            get { return _verifyVIDandPIDBeforeConnecting; }
+            set { AssignAndUpdateProperty(VerifyVIDandPIDBeforeConnectingSettingName, value, ref _verifyVIDandPIDBeforeConnecting, (n, v) => Properties.Settings.Default.VerifyVIDandPIDBeforeConnecting = v); }
+        }
+        private bool _verifyVIDandPIDBeforeConnecting;
 
         /// <summary>
         /// Gets or sets a value indicating whether to reconcile the device menu with the locally defined menu when attached.

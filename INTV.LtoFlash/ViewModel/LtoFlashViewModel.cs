@@ -1,5 +1,5 @@
 ﻿// <copyright file="LtoFlashViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -55,7 +55,7 @@ namespace INTV.LtoFlash.ViewModel
     /// </summary>
     /// <remarks>The current MenuLayoutViewModel probably belongs here.</remarks>
     ////[System.ComponentModel.Composition.Export(typeof(IPrimaryComponent))]
-    public partial class LtoFlashViewModel : FolderViewModel, IPrimaryComponent
+    public partial class LtoFlashViewModel : FolderViewModel, IPrimaryComponent, IPartImportsSatisfiedNotification
     {
         #region Constants
 
@@ -107,7 +107,6 @@ namespace INTV.LtoFlash.ViewModel
             _activeLtoFlashDevices = new ObservableCollection<DeviceViewModel>();
             _connectionMonitor = new ConnectionMonitor();
             _devices = new ObservableViewModelCollection<DeviceViewModel, Device>(new ObservableCollection<Device>(), DeviceViewModel.Factory, null);
-            _potentialDevicePorts = new ObservableCollection<DeviceConnectionViewModel>(DeviceConnectionViewModel.GetAvailableConnections(this));
             _fileSystemStatistics = new FileSystemStatisticsViewModel();
             _firmwareRevisions = new FirmwareRevisionsViewModel();
             _connectionMonitor.Peripherals.CollectionChanged += HandlePeripheralsCollectionChanged;
@@ -159,6 +158,7 @@ namespace INTV.LtoFlash.ViewModel
             _fixCfgFiles = new FixCfgFilesPatchInMenu(this);
             _fixCfgFiles.Register();
 #endif // ENABLE_ROMS_PATCH
+            this.DoImport();
         }
 
         #endregion // Constructors
@@ -198,6 +198,14 @@ namespace INTV.LtoFlash.ViewModel
             get { return _potentialDevicePorts; }
         }
         private ObservableCollection<DeviceConnectionViewModel> _potentialDevicePorts;
+
+        /// <summary>
+        /// Gets the available device LTO Flash! ports.
+        /// </summary>
+        public IEnumerable<string> AvailableDevicePorts
+        {
+            get { return SerialPortConnection.GetAvailablePorts(IsLtoFlashSerialPort); }
+        }
 
         /// <summary>
         /// Gets the active Locutus device.
@@ -299,6 +307,12 @@ namespace INTV.LtoFlash.ViewModel
         private bool _showFileSystemsDifferIcon;
 
         /// <summary>
+        /// Gets or sets the connection sharing policies.
+        /// </summary>
+        [System.ComponentModel.Composition.ImportMany(typeof(IConnectionSharingPolicy))]
+        public IEnumerable<System.Lazy<IConnectionSharingPolicy>> ConnectionSharingPolicies { get; set; }
+
+        /// <summary>
         /// Gets the attached peripherals.
         /// </summary>
         internal IEnumerable<IPeripheral> AttachedPeripherals
@@ -309,6 +323,38 @@ namespace INTV.LtoFlash.ViewModel
         private bool SelectionDialogShowing { get; set; }
 
         #endregion // Properties
+
+        #region IPartImportsSatisfiedNotification Members
+
+        /// <inheritdoc />
+        public void OnImportsSatisfied()
+        {
+            _potentialDevicePorts = new ObservableCollection<DeviceConnectionViewModel>(DeviceConnectionViewModel.GetAvailableConnections(this));
+        }
+
+        #endregion // IPartImportsSatisfiedNotification Members
+
+        /// <summary>
+        /// Filter function for serial ports.
+        /// </summary>
+        /// <param name="connection">The IConnection to test.</param>
+        /// <returns><c>true</c>, if the given connection is a serial port on LTO Flash! hardware, <c>false</c> otherwise.</returns>
+        internal bool IsLtoFlashSerialPort(IConnection connection)
+        {
+            var isValidPort = !Properties.Settings.Default.VerifyVIDandPIDBeforeConnecting;
+            if (!isValidPort)
+            {
+                foreach (var policy in ConnectionSharingPolicies)
+                {
+                    isValidPort = policy.Value.ExclusiveAccess(connection);
+                    if (!isValidPort)
+                    {
+                        break;
+                    }
+                }
+            }
+            return isValidPort;
+        }
 
         /// <summary>
         /// Show a dialog to select a device or switch to another one.
@@ -331,7 +377,7 @@ namespace INTV.LtoFlash.ViewModel
                     {
                         disabledPorts.Add(ActiveLtoFlashDevice.Device.Port.Name);
                     }
-                    dialog = INTV.Shared.View.SerialPortSelectorDialog.Create(title, message, ports, disabledPorts, Device.DefaultBaudRate);
+                    dialog = INTV.Shared.View.SerialPortSelectorDialog.Create(title, message, ports, disabledPorts, Device.DefaultBaudRate, IsLtoFlashSerialPort);
 
                     var viewModel = dialog.DataContext as SerialPortSelectorDialogViewModel;
                     var result = dialog.ShowDialog();
@@ -701,7 +747,7 @@ namespace INTV.LtoFlash.ViewModel
 
         private void HandleDeviceAdded(object sender, DeviceChangeEventArgs e)
         {
-            if (e.Type == Core.Model.Device.ConnectionType.Serial)
+            if ((e.Type == Core.Model.Device.ConnectionType.Serial) && IsLtoFlashSerialPort(Connection.CreatePseudoConnection(e.Name, e.Type)))
             {
                 if (!PotentialDevicePorts.Any(c => c.Name == e.Name))
                 {

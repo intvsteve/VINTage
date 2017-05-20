@@ -769,6 +769,7 @@
     <EmbeddedResource Include="Resources\Images\remove_32xLG.png">
       <LogicalName>Resources/Images/remove_32xLG.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db.yaml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Strings.resx">

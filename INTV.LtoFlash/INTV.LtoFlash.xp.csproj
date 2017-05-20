@@ -505,6 +505,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.upg" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db.yaml" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\lto_flash_contents_not_in_sync_16xLG.png" />

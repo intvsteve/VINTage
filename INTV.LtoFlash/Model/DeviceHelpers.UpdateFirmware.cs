@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceHelpers.UpdateFirmware.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -79,7 +79,45 @@ namespace INTV.LtoFlash.Model
             if (succeeded)
             {
                 ValidateFirmwareImageInRam.Instance.Execute(device.Port, data, out succeeded);
-                if (!succeeded)
+                if (succeeded)
+                {
+                    // Check to see if there's an error database file. If so, and it's different than the one
+                    // we've cached in the FirmwareUpdates directory, copy it over so we'll have a matching error_db.yaml.
+                    // We're not going to complain if this part fails, so sit on any exceptions that may happen.
+                    try
+                    {
+                        var configuration = Configuration.Instance;
+                        var sourceErrorDatabaseFilePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(firmwareUpdateFile), ErrorLog.ErrorDatabaseFileName);
+                        if (System.IO.File.Exists(sourceErrorDatabaseFilePath))
+                        {
+                            if (!System.IO.Directory.Exists(configuration.FirmwareUpdatesDirectory))
+                            {
+                                System.IO.Directory.CreateDirectory(configuration.FirmwareUpdatesDirectory);
+                            }
+                            var destinationErrorDatabaseFilePath = System.IO.Path.Combine(configuration.FirmwareUpdatesDirectory, ErrorLog.ErrorDatabaseFileName);
+                            var crcOfSource = INTV.Core.Utility.Crc32.OfFile(sourceErrorDatabaseFilePath);
+                            var crcOfDestination = 0u;
+                            if (System.IO.File.Exists(destinationErrorDatabaseFilePath))
+                            {
+                                crcOfDestination = INTV.Core.Utility.Crc32.OfFile(destinationErrorDatabaseFilePath);
+                                if (crcOfSource != crcOfDestination)
+                                {
+                                    var backupPath = destinationErrorDatabaseFilePath.GetUniqueBackupFilePath();
+                                    System.IO.File.Move(destinationErrorDatabaseFilePath, backupPath);
+                                }
+                            }
+                            if ((crcOfDestination == 0) || (crcOfSource != crcOfDestination))
+                            {
+                                System.IO.File.Copy(sourceErrorDatabaseFilePath, destinationErrorDatabaseFilePath);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Failed to copy error database file: " + e);
+                    }
+                }
+                else
                 {
                     data.FailureMessage = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.UpdateFirmwareCommand_ValidationFailedFormat, firmwareUpdateFile);
                 }

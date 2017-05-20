@@ -102,9 +102,6 @@ namespace INTV.Shared.Interop.IOKit
         public static readonly string kUSBInterfaceProtocol = "bInterfaceProtocol";
         public static readonly string kUSBInterfaceStringIndex = "iInterface";
         public static readonly string kUSBConfigurationValue = "bConfigurationValue";
-        public static readonly string kUSBProductString = "USB Product Name";
-        public static readonly string kUSBVendorString = "USB Vendor Name";
-        public static readonly string kUSBSerialNumberString = "USB Serial Number";
         public static readonly string kUSB1284DeviceID = "1284 Device ID";
 
         #endregion // USBSpec.h

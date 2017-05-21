@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,8 @@
 // </copyright>
 
 ////#define REPORT_OLD_LUIGI_FILES
+////#define REPORT_PERFORMANCE
+////#define RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
 
 using System;
 using System.Collections.Generic;
@@ -35,6 +37,34 @@ namespace INTV.LtoFlash.Model
     /// </summary>
     public static class IRomHelpers
     {
+#if REPORT_PERFORMANCE
+        private static INTV.Shared.Utility.Logger Logger
+        {
+            get
+            {
+                if (_logger == null)
+                {
+                    _logger = new Logger(System.IO.Path.Combine(Configuration.Instance.ErrorLogDirectory, "LtoFlash.PrepareForDeploymentLog.txt"));
+                }
+                return _logger;
+            }
+        }
+        private static INTV.Shared.Utility.Logger _logger;
+
+        private static TimeSpan _accumulatedPrepareTime { get; set; }
+        private static TimeSpan _accumulatedPrepareValidateTime { get; set; }
+        private static TimeSpan _accumulatedPrepareSetupTime { get; set; }
+        private static TimeSpan _accumulatedPrepareConverterAppsTime { get; set; }
+        private static TimeSpan _accumulatedPrepareStagingTime { get; set; }
+        private static TimeSpan _accumulatedPrepareCacheLookupTime { get; set; }
+        private static TimeSpan _accumulatedPrepareLuigiHeaderTime { get; set; }
+        private static TimeSpan _accumulatedPrepareCachedChangedTime { get; set; }
+        private static TimeSpan _accumulatedPrepareLuigiUpdateTime { get; set; }
+#if RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, int> PrepareForDeploymentVisits = new System.Collections.Concurrent.ConcurrentDictionary<string, int>();
+#endif // RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
+#endif // REPORT_PERFORMANCE
+
         /// <summary>
         /// Prepares a ROM for deployment to a Locutus device.
         /// </summary>
@@ -43,11 +73,36 @@ namespace INTV.LtoFlash.Model
         /// <returns>The fully qualified path of the prepared output data file to deploy to Locutus.</returns>
         public static string PrepareForDeployment(this IRom rom, LuigiGenerationMode updateMode)
         {
+#if REPORT_PERFORMANCE
+#if RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
+            int visits;
+            if (PrepareForDeploymentVisits.TryGetValue(rom.RomPath, out visits))
+            {
+                PrepareForDeploymentVisits[rom.RomPath] = ++visits;
+            }
+            else
+            {
+                PrepareForDeploymentVisits[rom.RomPath] = 1;
+            }
+#endif // RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+            var stopwatch2 = System.Diagnostics.Stopwatch.StartNew();
+#endif // REPORT_PERFORMANCE
             rom.Validate();
+#if REPORT_PERFORMANCE
+            stopwatch2.Stop();
+            _accumulatedPrepareValidateTime += stopwatch2.Elapsed;
+#endif // REPORT_PERFORMANCE
             if ((updateMode == LuigiGenerationMode.Passthrough) && (rom.Format == RomFormat.Luigi))
             {
                 return rom.RomPath;
             }
+#if REPORT_PERFORMANCE
+            stopwatch2.Restart();
+            var stopwatch3 = System.Diagnostics.Stopwatch.StartNew();
+#endif // REPORT_PERFORMANCE
             var jzIntvConfiguration = SingleInstanceApplication.Instance.GetConfiguration<INTV.JzIntv.Model.Configuration>();
             var converterApps = jzIntvConfiguration.GetConverterApps(rom, RomFormat.Luigi);
             if (!converterApps.Any())
@@ -60,16 +115,36 @@ namespace INTV.LtoFlash.Model
                 var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_ConversionToolNotFound_Error_Format, converterApp);
                 throw new LuigiFileGenerationException(message, Resources.Strings.RomToLuigiFailed_ConversionToolNotFound_Error_Description);
             }
+#if REPORT_PERFORMANCE
+            stopwatch3.Stop();
+            _accumulatedPrepareConverterAppsTime += stopwatch3.Elapsed;
+            stopwatch3.Restart();
+#endif // REPORT_PERFORMANCE
             var romStagingArea = SingleInstanceApplication.Instance.GetConfiguration<Configuration>().RomsStagingAreaPath;
             var stagingAreaPath = rom.GetStagingAreaPath(romStagingArea);
             var cachedRomPath = rom.GetCachedRomFilePath(stagingAreaPath);
             var cachedConfigPath = rom.GetCachedConfigFilePath(stagingAreaPath);
             var luigiFile = rom.GetOutputFilePath(stagingAreaPath, ProgramFileKind.LuigiFile);
+#if REPORT_PERFORMANCE
+            stopwatch3.Stop();
+            _accumulatedPrepareStagingTime += stopwatch3.Elapsed;
+            stopwatch3.Restart();
+#endif // REPORT_PERFORMANCE
 
             bool createLuigiFile = true;
             bool changed;
             bool isSourceFileInCache = rom.IsInCache(stagingAreaPath, out changed);
+#if REPORT_PERFORMANCE
+            stopwatch3.Stop();
+            _accumulatedPrepareCacheLookupTime += stopwatch3.Elapsed;
+#endif // REPORT_PERFORMANCE
 
+#if REPORT_PERFORMANCE
+            stopwatch2.Stop();
+            _accumulatedPrepareSetupTime += stopwatch2.Elapsed;
+
+            stopwatch2.Restart();
+#endif // REPORT_PERFORMANCE
             var luigiHeader = rom.GetLuigiHeader();
             if (luigiHeader != null)
             {
@@ -107,6 +182,12 @@ namespace INTV.LtoFlash.Model
                     }
                 }
             }
+#if REPORT_PERFORMANCE
+            stopwatch2.Stop();
+            _accumulatedPrepareLuigiHeaderTime += stopwatch2.Elapsed;
+
+            stopwatch2.Restart();
+#endif // REPORT_PERFORMANCE
 
             if (isSourceFileInCache)
             {
@@ -123,13 +204,19 @@ namespace INTV.LtoFlash.Model
                 }
                 else if ((string.IsNullOrEmpty(rom.ConfigPath) || !System.IO.File.Exists(rom.ConfigPath)) && System.IO.File.Exists(cachedConfigPath))
                 {
-                    // The ROM's config path doesn't exist, but there's one in the cache. Remove it.
+                    // The ROM's configuration file path doesn't exist, but there's one in the cache. Remove it.
                     FileUtilities.DeleteFile(cachedConfigPath, false, 2);
                     cachedConfigPath = null; // this is OK, because the ClearReadOnlyAttribute() extension method is null-safe
                 }
                 cachedRomPath.ClearReadOnlyAttribute();
                 cachedConfigPath.ClearReadOnlyAttribute();
             }
+#if REPORT_PERFORMANCE
+            stopwatch2.Stop();
+            _accumulatedPrepareCachedChangedTime += stopwatch2.Elapsed;
+
+            stopwatch2.Restart();
+#endif // REPORT_PERFORMANCE
 
             if (createLuigiFile || ((updateMode == LuigiGenerationMode.FeatureUpdate) || (updateMode == LuigiGenerationMode.Reset)))
             {
@@ -235,6 +322,10 @@ namespace INTV.LtoFlash.Model
             ////catch (UnauthorizedAccessException e)
             ////catch (InvalidOperationException e)
             ////catch (LuigiFileGenerationException e)
+#if REPORT_PERFORMANCE
+            stopwatch2.Stop();
+            _accumulatedPrepareLuigiUpdateTime += stopwatch2.Elapsed;
+#endif // REPORT_PERFORMANCE
 
             if (string.IsNullOrEmpty(luigiFile) || !System.IO.File.Exists(luigiFile))
             {
@@ -243,7 +334,18 @@ namespace INTV.LtoFlash.Model
                 throw new LuigiFileGenerationException(message, description);
             }
 
+#if REPORT_PERFORMANCE
+            stopwatch.Stop();
+#endif // REPORT_PERFORMANCE
             return luigiFile;
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                _accumulatedPrepareTime += stopwatch.Elapsed;
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         /// <summary>
@@ -357,6 +459,87 @@ namespace INTV.LtoFlash.Model
             }
             errorDialog.ShowSendEmailButton = (exception != null) && !(exception is LuigiFileGenerationException) && !(exception is System.IO.IOException);
             errorDialog.ShowDialog(Resources.Strings.OK);
+        }
+
+        [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
+        internal static void ResetAccumulatedTimes()
+        {
+#if REPORT_PERFORMANCE
+            _accumulatedPrepareTime = TimeSpan.Zero;
+            _accumulatedPrepareValidateTime = TimeSpan.Zero;
+            _accumulatedPrepareSetupTime = TimeSpan.Zero;
+            _accumulatedPrepareConverterAppsTime = TimeSpan.Zero;
+            _accumulatedPrepareStagingTime = TimeSpan.Zero;
+            _accumulatedPrepareCacheLookupTime = TimeSpan.Zero;
+            _accumulatedPrepareLuigiHeaderTime = TimeSpan.Zero;
+            _accumulatedPrepareCachedChangedTime = TimeSpan.Zero;
+            _accumulatedPrepareLuigiUpdateTime = TimeSpan.Zero;
+            INTV.Shared.Model.IRomHelpers.ResetAccumulatedTimes();
+#endif // REPORT_PERFORMANCE
+        }
+
+        [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
+        internal static void ReportAccumulatedTimes(Logger logger, string prefix)
+        {
+            ReportAccumulatedTimes(logger != null, logger, prefix);
+        }
+
+        [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
+        private static void ReportAccumulatedTimes(bool log, Logger logger, string prefix)
+        {
+            Action<string> logIt = (o) => System.Diagnostics.Debug.WriteLine(o.ToString());
+            if (log)
+            {
+                if (logger != null)
+                {
+                    logIt = logger.Log;
+                }
+#if REPORT_PERFORMANCE
+                else
+                {
+                    logIt = _logger.Log;
+                }
+#endif // REPORT_PERFORMANCE
+            }
+#if REPORT_PERFORMANCE
+            logIt(prefix + " Total PrepareForDeployment --------------: " + _accumulatedPrepareTime.ToString());
+            logIt(prefix + " Total PrepareForDeploymentValidate ------: " + _accumulatedPrepareValidateTime.ToString());
+            logIt(prefix + " Total PrepareForDeploymentSetup ---------: " + _accumulatedPrepareSetupTime.ToString());
+            logIt(prefix + " Total  PrepareForDeploymentGetApps ------: " + _accumulatedPrepareConverterAppsTime.ToString());
+            logIt(prefix + " Total  PrepareForDeploymentStaging ------: " + _accumulatedPrepareStagingTime.ToString());
+            logIt(prefix + " Total  PrepareForDeploymenCacheLookup ---: " + _accumulatedPrepareCacheLookupTime.ToString());
+            INTV.Shared.Model.IRomHelpers.ReportAccumulatedTimes(logger, prefix);
+            logIt(prefix + " Total  PrepareForDeploymentLuigiHeader --: " + _accumulatedPrepareLuigiHeaderTime.ToString());
+            logIt(prefix + " Total  PrepareForDeploymentCacheChanged -: " + _accumulatedPrepareCachedChangedTime.ToString());
+            logIt(prefix + " Total  PrepareForDeploymentLuigiUpdate --: " + _accumulatedPrepareLuigiUpdateTime.ToString());
+#else
+            logIt(prefix + " REPORT_PERFORMANCE has not been #defined in:" + typeof(IRomHelpers).FullName);
+#endif // REPORT_PERFORMANCE
+        }
+
+        [System.Diagnostics.Conditional("RECORD_PREPARE_FOR_DEPLOYMENT_VISITS")]
+        internal static void ResetPrepareForDeploymentVisits()
+        {
+#if RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
+#endif // RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
+        }
+
+        [System.Diagnostics.Conditional("RECORD_PREPARE_FOR_DEPLOYMENT_VISITS")]
+        internal static void ReportPrepareForDeploymentVisits(Logger logger)
+        {
+            Action<string> logIt = (o) => System.Diagnostics.Debug.WriteLine(o.ToString());
+            if (logger == null)
+            {
+                logIt = logger.Log;
+            }
+#if RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
+            foreach (var visit in PrepareForDeploymentVisits)
+            {
+                Logger.Log("PrepareForDeployment visits: " + visit.Key + ": " + visit.Value);
+            }
+#else
+            logIt("RECORD_PREPARE_FOR_DEPLOYMENT_VISITS has not been #defined in:" + typeof(IRomHelpers).FullName);
+#endif // RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
         }
     }
 }

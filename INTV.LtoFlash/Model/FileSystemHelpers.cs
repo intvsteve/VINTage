@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileSystemHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,6 +21,8 @@
 #define IGNORE_EMPTY_FORK_PATHS
 ////#define DEBUG_ENTRY_REMOVAL
 ////#define ENABLE_ACTIVITY_LOGGER
+////#define REPORT_PERFORMANCE
+////#define RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
 
 using System;
 using System.Collections.Generic;
@@ -35,6 +37,26 @@ namespace INTV.LtoFlash.Model
     /// </summary>
     internal static class FileSystemHelpers
     {
+#if REPORT_PERFORMANCE
+        internal static INTV.Shared.Utility.Logger Logger
+        {
+            get
+            {
+                if (_logger == null)
+                {
+                    _logger = new Logger(System.IO.Path.Combine(Configuration.Instance.ErrorLogDirectory, "FileSystemCompareLog.txt"));
+                }
+                return _logger;
+            }
+        }
+        private static INTV.Shared.Utility.Logger _logger;
+
+        private static TimeSpan _accumulatedForkValidation = TimeSpan.Zero;
+        private static TimeSpan _accumulatedCanExecuteOnDevice = TimeSpan.Zero;
+        private static TimeSpan _accumulatedForkCompare = TimeSpan.Zero;
+        private static TimeSpan _accumulatedFilesUsingForks = TimeSpan.Zero;
+#endif // REPORT_PERFORMANCE
+
         /// <summary>
         /// Decompresses entries from a LFS table.
         /// </summary>
@@ -180,6 +202,11 @@ namespace INTV.LtoFlash.Model
         /// the fork that acts as the key.</returns>
         public static Dictionary<Fork, ILfsFileInfo> GetFilesUsingForks(this FileSystem fileSystem, IEnumerable<Fork> forks)
         {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             var filesForForks = new Dictionary<Fork, ILfsFileInfo>();
             foreach (var fork in forks)
             {
@@ -190,6 +217,15 @@ namespace INTV.LtoFlash.Model
                 }
             }
             return filesForForks;
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>FileSystem.GetFilesUsingForks() took: + " + stopwatch.Elapsed.ToString());
+                _accumulatedFilesUsingForks += stopwatch.Elapsed;
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         /// <summary>
@@ -500,17 +536,57 @@ namespace INTV.LtoFlash.Model
         /// <paramref name="targetDevice"/> will be reported as errors in the difference result.</remarks>
         public static LfsDifferences CompareTo(this FileSystem referenceFileSystem, FileSystem otherFileSystem, Device targetDevice, bool refresh)
         {
-            var gdtDescriptor = new GatherDifferencesDescriptor<IDirectory>(LfsEntityType.Directory, otherFileSystem.Directories, FileSystemHelpers.CompareIDirectories);
-            var gdtDiff = referenceFileSystem.Directories.GatherDifferences(gdtDescriptor, targetDevice, refresh);
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            Logger.Log("FileSystem.CompareTo() BEGIN ---------------------------------");
+#endif // REPORT_PERFORMANCE
+            try
+            {
+                var gdtDescriptor = new GatherDifferencesDescriptor<IDirectory>(LfsEntityType.Directory, otherFileSystem.Directories, FileSystemHelpers.CompareIDirectories);
+                var gdtDiff = referenceFileSystem.Directories.GatherDifferences(gdtDescriptor, targetDevice, refresh);
+#if REPORT_PERFORMANCE
+                Logger.Log("FileSystem.CompareTo() ELAPSED: GDN --> " + stopwatch.Elapsed.ToString());
+#endif // REPORT_PERFORMANCE
 
-            var gftDescriptor = new GatherDifferencesDescriptor<ILfsFileInfo>(LfsEntityType.File, otherFileSystem.Files, FileSystemHelpers.CompareILfsFileInfo, ValidateFile);
-            var gftDiff = referenceFileSystem.Files.GatherDifferences(gftDescriptor, targetDevice, refresh);
+                var gftDescriptor = new GatherDifferencesDescriptor<ILfsFileInfo>(LfsEntityType.File, otherFileSystem.Files, FileSystemHelpers.CompareILfsFileInfo, ValidateFile);
+                var gftDiff = referenceFileSystem.Files.GatherDifferences(gftDescriptor, targetDevice, refresh);
+#if REPORT_PERFORMANCE
+                Logger.Log("FileSystem.CompareTo() ELAPSED: GFN --> " + stopwatch.Elapsed.ToString() + "\nFileSystem.CompareTo() START: GKN ...");
+                IRomHelpers.ResetAccumulatedTimes();
+                Fork.ResetAccumulatedTimes();
+                _accumulatedForkValidation = TimeSpan.Zero;
+                _accumulatedCanExecuteOnDevice = TimeSpan.Zero;
+                _accumulatedForkCompare = TimeSpan.Zero;
+                _accumulatedFilesUsingForks = TimeSpan.Zero;
+                IRomHelpers.ResetPrepareForDeploymentVisits();
+                var forkwatch = System.Diagnostics.Stopwatch.StartNew();
+#endif // REPORT_PERFORMANCE
 
-            var gktDescriptor = new GatherDifferencesDescriptor<Fork>(LfsEntityType.Fork, otherFileSystem.Forks, FileSystemHelpers.CompareForks, ValidateFork);
-            var gktDiff = referenceFileSystem.Forks.GatherDifferences(gktDescriptor, targetDevice, refresh);
+                var gktDescriptor = new GatherDifferencesDescriptor<Fork>(LfsEntityType.Fork, otherFileSystem.Forks, FileSystemHelpers.CompareForks, ValidateFork);
+                var gktDiff = referenceFileSystem.Forks.GatherDifferences(gktDescriptor, targetDevice, refresh);
+#if REPORT_PERFORMANCE
+                forkwatch.Stop();
+                Logger.Log("FileSystem.CompareTo() FINISH: GKN --> " + forkwatch.Elapsed.ToString() + "\nFileSystem.CompareTo() ELAPSED: GKN --> " + stopwatch.Elapsed.ToString());
+#endif // REPORT_PERFORMANCE
 
-            var allDifferences = new LfsDifferences(gdtDiff, gftDiff, gktDiff);
-            return allDifferences;
+                var allDifferences = new LfsDifferences(gdtDiff, gftDiff, gktDiff);
+                return allDifferences;
+            }
+            finally
+            {
+#if REPORT_PERFORMANCE
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>FileSystem.CompareTo() took: " + stopwatch.Elapsed.ToString());
+                Logger.Log("FileSystem.CompareTo() FINISH ---------------------------------: " + stopwatch.Elapsed.ToString());
+                IRomHelpers.ReportAccumulatedTimes(Logger, "FileSystem.CompareTo()");
+                Logger.Log("FileSystem.CompareTo() Total ValidateFork ---------------------: " + _accumulatedForkValidation.ToString());
+                Fork.ReportAccumulatedTimes(Logger, "FileSystem.CompareTo()");
+                Logger.Log("FileSystem.CompareTo() Total CanExecute -----------------------: " + _accumulatedCanExecuteOnDevice.ToString());
+                Logger.Log("FileSystem.CompareTo() Total FilesUsingForks ------------------: " + _accumulatedFilesUsingForks.ToString());
+                Logger.Log("FileSystem.CompareTo() Total CompareFork ----------------------: " + _accumulatedForkCompare.ToString());
+                IRomHelpers.ReportPrepareForDeploymentVisits(Logger);
+#endif // REPORT_PERFORMANCE
+            }
         }
 
         /// <summary>
@@ -770,6 +846,11 @@ namespace INTV.LtoFlash.Model
         /// <returns>The accumulated differences between the host file system table and corresponding Locutus file system table.</returns>
         private static FileSystemDifferences<T> GatherDifferences<T>(this FixedSizeCollection<T> sourceFileSystemTable, GatherDifferencesDescriptor<T> descriptor, Device targetDevice, bool forceUpdate) where T : class, IGlobalFileSystemEntry
         {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             var deviceId = targetDevice == null ? null : targetDevice.UniqueId;
 
             var differences = new FileSystemDifferences<T>();
@@ -825,6 +906,15 @@ namespace INTV.LtoFlash.Model
                 }
             }
             return differences;
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>FileSystem.GatherDifferences<" + typeof(T) + ">() took: + " + stopwatch.Elapsed.ToString());
+                Logger.Log("FileSystem.GatherDifferences<" + typeof(T) + ">() took: + " + stopwatch.Elapsed.ToString());
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         /// <summary>
@@ -1349,6 +1439,11 @@ namespace INTV.LtoFlash.Model
         /// via a GKT table walk. By definition, they will always match. They are not part of LFS, they are implicit.</remarks>
         private static bool CompareForks(Fork lhs, Fork rhs, bool forceUpdate, out string failedCompareEntryName, out Exception error)
         {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             failedCompareEntryName = null;
             error = null;
             if (lhs.FileSystem.Origin == FileSystemOrigin.HostComputer)
@@ -1361,10 +1456,24 @@ namespace INTV.LtoFlash.Model
             }
             var areEqual = (lhs.Crc24 == rhs.Crc24) && (lhs.Size == rhs.Size);
             return areEqual;
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>FileSystem.CompareForks() took: + " + stopwatch.Elapsed.ToString());
+                _accumulatedForkCompare += stopwatch.Elapsed;
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         private static bool ValidateFork(Fork fork, Device targetDevice, bool forceUpdate, out string failedValidationEntryName, out Exception error)
         {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             failedValidationEntryName = null;
             error = null;
             var valid = true;
@@ -1378,13 +1487,29 @@ namespace INTV.LtoFlash.Model
                     var rom = program.Description.Rom;
                     if ((targetDevice != null) && !rom.CanExecuteOnDevice(targetDevice.UniqueId))
                     {
+#if REPORT_PERFORMANCE
+                        var canexecstopwatch = System.Diagnostics.Stopwatch.StartNew();
+#endif // REPORT_PERFORMANCE
                         valid = false;
                         failedValidationEntryName = program.Name;
                         error = new IncompatibleRomException(rom, rom.GetTargetDeviceUniqueId(), targetDevice.UniqueId, LfsEntityType.Fork, fork.GlobalForkNumber);
+#if REPORT_PERFORMANCE
+                        canexecstopwatch.Stop();
+                        _accumulatedCanExecuteOnDevice += canexecstopwatch.Elapsed;
+#endif // REPORT_PERFORMANCE
                     }
                 }
             }
             return valid;
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>FileSystem.ValidateFork() took: + " + stopwatch.Elapsed.ToString());
+                _accumulatedForkValidation += stopwatch.Elapsed;
+            }
+#endif // REPORT_PERFORMANCE
         }
     }
 }

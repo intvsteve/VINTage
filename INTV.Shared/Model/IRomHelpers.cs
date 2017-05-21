@@ -36,6 +36,44 @@ namespace INTV.Shared.Model
     /// </summary>
     public static class IRomHelpers
     {
+#if REPORT_PERFORMANCE
+        private static TimeSpan _accumulatedCacheCheckTime = TimeSpan.Zero;
+        private static TimeSpan _accumulatedGetPathTime = TimeSpan.Zero;
+        private static TimeSpan _accumulatedGetCrcsTime = TimeSpan.Zero;
+        private static TimeSpan _accumulatedCacheRecheckTime = TimeSpan.Zero;
+#endif // REPORT_PERFORMANCE
+
+        [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
+        public static void ResetAccumulatedTimes()
+        {
+#if REPORT_PERFORMANCE
+            _accumulatedCacheCheckTime = TimeSpan.Zero;
+            _accumulatedGetPathTime = TimeSpan.Zero;
+            _accumulatedGetCrcsTime = TimeSpan.Zero;
+            _accumulatedCacheRecheckTime = TimeSpan.Zero;
+            Rom.AccumulatedRefreshCrcsTime = TimeSpan.Zero;
+#endif // REPORT_PERFORMANCE
+        }
+
+        [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
+        public static void ReportAccumulatedTimes(Logger logger, string prefix)
+        {
+            Action<string> logIt = (o) => System.Diagnostics.Debug.WriteLine(o.ToString());
+            if (logger == null)
+            {
+                logIt = logger.Log;
+            }
+#if REPORT_PERFORMANCE
+            logIt(prefix + " Total   Prepare.CacheLookup.Total ------: " + _accumulatedCacheCheckTime.ToString());
+            logIt(prefix + " Total   Prepare.CacheLookup.GetPath ----: " + _accumulatedGetPathTime.ToString());
+            logIt(prefix + " Total   Prepare.CacheLookup.GetCrcs ----: " + _accumulatedGetCrcsTime.ToString());
+            logIt(prefix + " Total    Prepare.CacheLookup.Rom.GetCrcs: " + Rom.AccumulatedRefreshCrcsTime.ToString());
+            logIt(prefix + " Total   Prepare.CacheLookup.CacheRecheck: " + _accumulatedCacheRecheckTime.ToString());
+#else
+            logIt(prefix + " REPORT_PERFORMANCE has not been #defined in:" + typeof(IRomHelpers).FullName);
+#endif // REPORT_PERFORMANCE
+        }
+
         #region Comparison
 
         /// <summary>
@@ -336,7 +374,7 @@ namespace INTV.Shared.Model
         /// have a configuration file, then <c>null</c> is returned.</returns>
         public static string GetCachedConfigFilePath(this IRom rom, string romStagingAreaPath)
         {
-            // NOTE: There's a goofy thing in that files w/o a cfg use the bin path... why?
+            // NOTE: BUG ? : There's a goofy thing in that files w/o a cfg use the bin path... why?
             string cachedConfigPath = null;
             if (!string.IsNullOrWhiteSpace(rom.ConfigPath) && !string.IsNullOrWhiteSpace(rom.RomPath) && (rom.RomPath != rom.ConfigPath))
             {
@@ -383,13 +421,6 @@ namespace INTV.Shared.Model
             return path;
         }
 
-#if REPORT_PERFORMANCE
-        public static TimeSpan AccumulatedCacheCheckTime = TimeSpan.Zero;
-        public static TimeSpan AccumulatedGetPathTime = TimeSpan.Zero;
-        public static TimeSpan AccumulatedGetCrcsTime = TimeSpan.Zero;
-        public static TimeSpan AccumulatedCacheRecheckTime = TimeSpan.Zero;
-#endif // REPORT_PERFORMANCE
-
         /// <summary>
         /// Determines if the source ROM is already in the cache.
         /// </summary>
@@ -410,7 +441,7 @@ namespace INTV.Shared.Model
             bool fileInCache = System.IO.File.Exists(cachedRomPath);
 #if REPORT_PERFORMANCE
             stopwatch2.Stop();
-            AccumulatedGetPathTime += stopwatch2.Elapsed;
+            _accumulatedGetPathTime += stopwatch2.Elapsed;
 #endif // REPORT_PERFORMANCE
             if (fileInCache)
             {
@@ -422,7 +453,7 @@ namespace INTV.Shared.Model
                 uint preexistingCrc = Rom.GetRefreshedCrcs(cachedRomPath, rom.ConfigPath, out preexistingCfgCrc);
 #if REPORT_PERFORMANCE
                 stopwatch2.Stop();
-                AccumulatedGetCrcsTime += stopwatch2.Elapsed;
+                _accumulatedGetCrcsTime += stopwatch2.Elapsed;
                 stopwatch2.Restart();
 #endif // REPORT_PERFORMANCE
                 fileInCache = (rom.RefreshCrc(out romChanged) == preexistingCrc) && rom.IsConfigFileInCache(romStagingAreaPath, out cfgChanged); // use CanonicalRomComparerStrict.Default here?
@@ -441,12 +472,12 @@ namespace INTV.Shared.Model
                 changed = romChanged || cfgChanged;
 #if REPORT_PERFORMANCE
                 stopwatch2.Stop();
-                AccumulatedCacheRecheckTime += stopwatch2.Elapsed;
+                _accumulatedCacheRecheckTime += stopwatch2.Elapsed;
 #endif // REPORT_PERFORMANCE
             }
 #if REPORT_PERFORMANCE
             stopwatch.Stop();
-            AccumulatedCacheCheckTime += stopwatch.Elapsed;
+            _accumulatedCacheCheckTime += stopwatch.Elapsed;
 #endif // REPORT_PERFORMANCE
             return fileInCache;
         }

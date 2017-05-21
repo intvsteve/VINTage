@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define REPORT_PERFORMANCE
+
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
@@ -43,6 +45,14 @@ namespace INTV.LtoFlash.Model
     /// </remarks>
     public class Fork : INTV.Core.Utility.ByteSerializer, IGlobalFileSystemEntry
     {
+#if REPORT_PERFORMANCE
+        private static System.TimeSpan AccumulatedRefreshTime { get; set; }
+        private static System.TimeSpan AccumulatedUpdateFilePathTime { get; set; }
+        private static System.TimeSpan AccumulatedUpdateFilePathRawTime { get; set; }
+        private static System.TimeSpan AccumulatedUpdateFilePathForcedTime { get; set; }
+        private static System.TimeSpan AccumulatedUpdateFilePathForcedPrepareTime { get; set; }
+#endif // REPORT_PERFORMANCE
+
         #region Constants
 
         /// <summary>
@@ -244,6 +254,37 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Properties
 
+        [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
+        internal static void ResetAccumulatedTimes()
+        {
+#if REPORT_PERFORMANCE
+            AccumulatedRefreshTime = System.TimeSpan.Zero;
+            AccumulatedUpdateFilePathTime = System.TimeSpan.Zero;
+            AccumulatedUpdateFilePathRawTime = System.TimeSpan.Zero;
+            AccumulatedUpdateFilePathForcedTime = System.TimeSpan.Zero;
+            AccumulatedUpdateFilePathForcedPrepareTime = System.TimeSpan.Zero;
+#endif // REPORT_PERFORMANCE
+        }
+
+        [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
+        public static void ReportAccumulatedTimes(INTV.Shared.Utility.Logger logger, string prefix)
+        {
+            System.Action<string> logIt = (o) => System.Diagnostics.Debug.WriteLine(o.ToString());
+            if (logger == null)
+            {
+                logIt = logger.Log;
+            }
+#if REPORT_PERFORMANCE
+            logIt(prefix + " Total RefreshFork ----------------------: " + AccumulatedRefreshTime.ToString());
+            logIt(prefix + " Total UpdateFilePath -------------------: " + AccumulatedUpdateFilePathTime.ToString());
+            logIt(prefix + " Total UpdateFilePathRaw ----------------: " + AccumulatedUpdateFilePathRawTime.ToString());
+            logIt(prefix + " Total UpdateFilePathForced -------------: " + AccumulatedUpdateFilePathForcedTime.ToString());
+            logIt(prefix + " Total UpdateFilePathForcedPrepare ------: " + AccumulatedUpdateFilePathForcedPrepareTime.ToString());
+#else
+            logIt(prefix + " REPORT_PERFORMANCE has not been #defined in:" + typeof(Fork).FullName);
+#endif // REPORT_PERFORMANCE
+        }
+
         /// <summary>
         /// Refreshes the data describing the instance.
         /// </summary>
@@ -253,6 +294,12 @@ namespace INTV.LtoFlash.Model
         /// <returns><c>true</c> if the size or Crc24/Uid changes or fails to update.</returns>
         internal bool Refresh(bool checkCrc, out System.Exception error, out string fileFailedToUpdate)
         {
+#if REPORT_PERFORMANCE
+            System.Diagnostics.Debug.WriteLine(">> ENTER Fork.Refresh(" + checkCrc + ", " + _filePath + ")");
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             fileFailedToUpdate = null;
             error = null;
             var crc = Crc24;
@@ -300,6 +347,15 @@ namespace INTV.LtoFlash.Model
                 }
             }
             return (error != null) || (filePath != FilePath) || (crc != Crc24) || (size != Size);
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">> EXIT  Fork.Refresh(" + checkCrc + ", " + _filePath + ")"); // took: + " + stopwatch.Elapsed.ToString());
+                AccumulatedRefreshTime += stopwatch.Elapsed;
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         #region IGlobalFileSystemEntry
@@ -458,6 +514,12 @@ namespace INTV.LtoFlash.Model
 
         private System.Exception UpdateFilePath(string filePath, bool forceUpdate)
         {
+#if REPORT_PERFORMANCE
+            System.Diagnostics.Debug.WriteLine(">>>> ENTER Fork.UpdateFilePath(" + filePath + "," + forceUpdate + ") + T:" + System.Threading.Thread.CurrentThread.ManagedThreadId);
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             System.Exception error = null;
             if ((FileSystem != null) && FileSystem.Frozen)
             {
@@ -471,6 +533,12 @@ namespace INTV.LtoFlash.Model
                 {
                     if (forceUpdate)
                     {
+#if REPORT_PERFORMANCE
+                        System.Diagnostics.Debug.WriteLine(">>>>>> ENTER Fork.UpdateFilePath(forceUpdate): GetRom");
+                        var stopwatch2 = System.Diagnostics.Stopwatch.StartNew();
+                        try
+                        {
+#endif // REPORT_PERFORMANCE
                         var filesUsingFork = FileSystem.GetFilesUsingForks(new[] { this }).Values;
                         foreach (var program in filesUsingFork.OfType<Program>())
                         {
@@ -479,9 +547,27 @@ namespace INTV.LtoFlash.Model
                             var rom = program.Description.GetRom();
                             if ((rom != null) && !string.IsNullOrEmpty(rom.RomPath))
                             {
-                                UpdateFilePath(rom.PrepareForDeployment(LuigiGenerationMode.Standard));
+                                var path = string.Empty;
+#if REPORT_PERFORMANCE
+                                var stopwatch3 = System.Diagnostics.Stopwatch.StartNew();
+#endif // REPORT_PERFORMANCE
+                                path = rom.PrepareForDeployment(LuigiGenerationMode.Standard);
+#if REPORT_PERFORMANCE
+                                stopwatch3.Stop();
+                                AccumulatedUpdateFilePathForcedPrepareTime += stopwatch3.Elapsed;
+#endif // REPORT_PERFORMANCE
+                                UpdateFilePath(path);
                             }
                         }
+#if REPORT_PERFORMANCE
+                        }
+                        finally
+                        {
+                            stopwatch2.Stop();
+                            System.Diagnostics.Debug.WriteLine(">>>>>> EXIT  Fork.UpdateFilePath(forceUpdate): GetRom"); // took: + " + stopwatch2.Elapsed.ToString());
+                            AccumulatedUpdateFilePathForcedTime += stopwatch2.Elapsed;
+                        }
+#endif // REPORT_PERFORMANCE
                     }
                     else
                     {
@@ -571,10 +657,24 @@ namespace INTV.LtoFlash.Model
                 }
             }
             return error;
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>>> EXIT  Fork.UpdateFilePath(" + filePath + ",force)"); // took: + " + stopwatch.Elapsed.ToString());
+                AccumulatedUpdateFilePathTime += stopwatch.Elapsed;
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         private void UpdateFilePath(string filePath)
         {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             if (_filePath != filePath)
             {
                 _filePath = filePath;
@@ -598,6 +698,15 @@ namespace INTV.LtoFlash.Model
                     Crc24 = MenuPositionForkUid;
                 }
             }
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>Fork..Crc24.OfFile() took: + " + stopwatch.Elapsed.ToString());
+                AccumulatedUpdateFilePathRawTime += stopwatch.Elapsed;
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         private enum SerializationOperation

@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.Utility;
+
 namespace INTV.LtoFlash.Model.Commands
 {
     /// <summary>
@@ -119,7 +121,7 @@ namespace INTV.LtoFlash.Model.Commands
         /// <inheritdoc />
         public override int Serialize(Core.Utility.BinaryWriter writer)
         {
-            using (var file = new System.IO.FileStream(FileInfo.FullName, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+            using (var file = FileUtilities.OpenFileStream(FileInfo.FullName))
             {
                 file.CopyTo(writer.BaseStream);
             }

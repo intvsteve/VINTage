@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define REPORT_PERFORMANCE
+
+using System;
 using System.Collections.Generic;
 using INTV.Core.Utility;
 
@@ -34,6 +37,13 @@ namespace INTV.Core.Model
         /// The maximum size of a ROM.
         /// </summary>
         public const uint MaxROMSize = 0x100000; // 1 MB
+
+#if REPORT_PERFORMANCE
+        /// <summary>
+        /// Gets or sets the accumulated time spent in the GetRefreshedCrcs() method when measuring performance.
+        /// </summary>
+        public static TimeSpan AccumulatedRefreshCrcsTime { get; set; }
+#endif // REPORT_PERFORMANCE
 
         #region IRom
 
@@ -61,20 +71,78 @@ namespace INTV.Core.Model
         /// Creates an instance of IRom, which represents a program ROM, given at least one valid file path.
         /// </summary>
         /// <param name="filePath">The path to the ROM file.</param>
-        /// <param name="configFilePath">The path to the config file (as determined necessary depending on ROM format).</param>
+        /// <param name="configFilePath">The path to the configuration file (as determined necessary depending on ROM format).</param>
         /// <returns>If the file at the given path appears to be a valid program ROM, returns an instance of IRom, otherwise <c>null</c>.</returns>
         public static IRom Create(string filePath, string configFilePath)
         {
-            Rom rom = LuigiFormatRom.Create(filePath);
-            if (rom == null)
+            Rom rom = null;
+            var format = CheckRomFormat(filePath);
+            switch (format)
             {
-                rom = RomFormatRom.Create(filePath);
-            }
-            if (rom == null)
-            {
-                rom = BinFormatRom.Create(filePath, configFilePath);
+                case RomFormat.Intellicart:
+                case RomFormat.CuttleCart3:
+                case RomFormat.CuttleCart3Advanced:
+                    rom = RomFormatRom.Create(filePath);
+                    break;
+                case RomFormat.Bin:
+                    rom = BinFormatRom.Create(filePath, configFilePath);
+                    break;
+                case RomFormat.Luigi:
+                    rom = LuigiFormatRom.Create(filePath);
+                    break;
+                case RomFormat.None:
+                    break;
             }
             return rom;
+        }
+
+        /// <summary>
+        /// Get up-to-date CRC32 values for a ROM's file and, possibly, it's configuration file.
+        /// </summary>
+        /// <param name="filePath">Absolute path to the ROM file.</param>
+        /// <param name="configFilePath">Absolute path to the configuration file (for .bin format ROMs). May be <c>null</c>.</param>
+        /// <param name="cfgCrc">Receives the CRC32 of <paramref name="configFilePath"/> if it is valid.</param>
+        /// <returns>CRC32 of <paramref name="filePath"/>.</returns>
+        public static uint GetRefreshedCrcs(string filePath, string configFilePath, out uint cfgCrc)
+        {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+#endif // REPORT_PERFORMANCE
+            uint romCrc = 0;
+            cfgCrc = 0;
+            switch (CheckRomFormat(filePath))
+            {
+                case RomFormat.Bin:
+                    romCrc = BinFormatRom.GetCrcs(filePath, configFilePath, out cfgCrc);
+                    break;
+                case RomFormat.Intellicart:
+                case RomFormat.CuttleCart3:
+                case RomFormat.CuttleCart3Advanced:
+                    romCrc = RomFormatRom.GetCrcs(filePath, configFilePath, out cfgCrc);
+                    break;
+                case RomFormat.Luigi:
+                    romCrc = LuigiFormatRom.GetCrcs(filePath, configFilePath, out cfgCrc);
+                    break;
+                case RomFormat.None:
+                    break;
+            }
+#if REPORT_PERFORMANCE
+            stopwatch.Stop();
+            AccumulatedRefreshCrcsTime += stopwatch.Elapsed;
+#endif // REPORT_PERFORMANCE
+            return romCrc;
+        }
+
+        /// <summary>
+        /// Efficiently check to see if the file at the given path is of a known ROM type.
+        /// </summary>
+        /// <param name="filePath">Absolute path of the file to check.</param>
+        /// <returns>Format of the ROM, <c>RomFormat.None</c> if the format cannot be determined.</returns>
+        public static RomFormat CheckRomFormat(string filePath)
+        {
+            var format = RomFormat.None;
+            Memos.CheckAddMemo(filePath, null, out format);
+            return format;
         }
 
         /// <summary>

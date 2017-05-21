@@ -159,7 +159,7 @@ namespace INTV.Core.Model.Program
         public string RomImagePath
         {
             get { return (_programRom == null) ? null : _programRom.RomPath; }
-            set { UpdateProgramRom(ProgramFileKind.Rom, value); }
+            set { UpdateProgramRom(ProgramFileKind.Rom, value); } // If this is only present for XML... why go through the complex code?
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace INTV.Core.Model.Program
         public string RomConfigurationFilePath
         {
             get { return _programRom.ConfigPath; }
-            set { UpdateProgramRom(ProgramFileKind.CfgFile, value); }
+            set { UpdateProgramRom(ProgramFileKind.CfgFile, value); } // If this is only present for XML... why go through the complex code?
         }
 
         /// <summary>
@@ -487,9 +487,7 @@ namespace INTV.Core.Model.Program
             cfgCrc = 0u;
             try
             {
-                var rom = INTV.Core.Model.Rom.Create(romPath, cfgPath);
-                refreshedCrc = rom.Crc;
-                cfgCrc = rom.CfgCrc;
+                refreshedCrc = Core.Model.Rom.GetRefreshedCrcs(romPath, cfgPath, out cfgCrc);
             }
             catch (System.Exception)
             {

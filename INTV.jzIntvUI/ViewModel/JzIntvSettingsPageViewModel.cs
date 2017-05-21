@@ -1,5 +1,5 @@
 ﻿// <copyright file="JzIntvSettingsPageViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -37,8 +37,8 @@ using SettingsPageVisualType = INTV.JzIntvUI.View.JzIntvSettingsPageController;
 using OSColor = AppKit.NSColor;
 #else
 using OSColor = MonoMac.AppKit.NSColor;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN
 
 namespace INTV.JzIntvUI.ViewModel
 {

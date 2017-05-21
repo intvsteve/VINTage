@@ -257,7 +257,7 @@ namespace INTV.LtoFlash.Model
                                 cacheEntry.CfgPath = cfgPath.Substring(cacheDirectoryLength);
                                 cacheEntry.CfgSize = (uint)(new FileInfo(cfgPath)).Length;
                             }
-#endif
+#endif // false
                             }
 
                             restoredCacheEntries.Add(cacheEntry);
@@ -285,7 +285,7 @@ namespace INTV.LtoFlash.Model
                         {
                             System.Diagnostics.Debug.WriteLine("LSDKFLSKDFJLSJDF");
                         }
-#endif
+#endif // false
                         }
 #if false
                     if (File.Exists(cfgPath))
@@ -294,7 +294,7 @@ namespace INTV.LtoFlash.Model
                         cacheEntry.CfgPath = cfgPath.Substring(cacheDirectoryLength);
                         cacheEntry.CfgSize = (uint)(new FileInfo(cfgPath)).Length;
                     }
-#endif
+#endif // false
                     }
 
                     var sourcePath = System.IO.Path.GetFileNameWithoutExtension(nonLuigiRom.RomPath);

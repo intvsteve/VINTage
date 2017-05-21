@@ -624,7 +624,7 @@ namespace INTV.LtoFlash.ViewModel
                                 itemToHighlight.IsSelected = true;
 #if MAC
                                 CurrentSelection = itemToHighlight;
-#endif
+#endif // MAC
                             }
                             ++RetainFocus;
                             if (!deletedItemParentModel.Items.Any())
@@ -886,7 +886,7 @@ namespace INTV.LtoFlash.ViewModel
             }
 #elif MAC
             ErrorReporting.ReportNotImplementedError("FileNodeFileModel.DragManualEnter");
-#endif
+#endif // WIN
         }
 
         private void SetColor(object newColor)

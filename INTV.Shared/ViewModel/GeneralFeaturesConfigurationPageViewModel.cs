@@ -1,5 +1,5 @@
 ﻿// <copyright file="GeneralFeaturesConfigurationPageViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2015 All Rights Reserved
+// Copyright (c) 2015-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -29,7 +29,7 @@ using INTV.Shared.Utility;
 using GeneralFeaturesVisualType = INTV.Shared.View.GeneralFeaturesConfigurationPage;
 #elif MAC
 using GeneralFeaturesVisualType = INTV.Shared.View.GeneralFeaturesConfigurationPageController;
-#endif
+#endif // WIN
 
 namespace INTV.Shared.ViewModel
 {

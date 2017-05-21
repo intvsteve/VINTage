@@ -881,7 +881,7 @@ namespace INTV.LtoFlash.Model
 #if false
                                 period = Properties.Settings.Default.RunGCWhenConnected ? DefaultGarbageCollectionPeriod : DefaultPingPeriod;
                                 device.ConnectionState = Properties.Settings.Default.RunGCWhenConnected ? ConnectionState.GarbageCollect : ConnectionState.Ping;
-#endif
+#endif // false
                             }
                             break;
                         case ConnectionState.Idle:
@@ -985,7 +985,7 @@ namespace INTV.LtoFlash.Model
                     serialPort.Port.Handshake = System.IO.Ports.Handshake.RequestToSend;
                 }
                 device.Port.Open();
-#endif
+#endif // false
                 data.Succeeded = device.WaitForBeacon(ProtocolCommand.WaitForBeaconTimeout);
                 DebugOutput("Beacon: " + data.Succeeded);
                 if (validationGuidance.PerformFullValidation)
@@ -1012,7 +1012,7 @@ namespace INTV.LtoFlash.Model
                         validationResponse.ErrorLog.Add(DownloadErrorLog.Instance.Execute<ErrorLog>(device.Port, data));
                         DebugOutput("ErrorLog: " + data.Succeeded);
                     }
-#endif
+#endif // false
                     if (data.Succeeded && device.CommandAvailability.IsCommandAvailable(ProtocolCommandId.FirmwareGetRevisions, device.HardwareStatus))
                     {
                         validationResponse.FirmwareRevisions = QueryFirmwareRevisions.Instance.Execute<FirmwareRevisions>(device.Port, data);
@@ -1448,7 +1448,7 @@ namespace INTV.LtoFlash.Model
                             }
                             DebugOutput("**** ValidateDevice **** Opening port; internal: " + serialPort.IsOpen);
                             Port.Open();
-#endif
+#endif // true
                             DebugOutput("**** ValidateDevice **** Opened port");
                             var executeCommandTaskData = new ExecuteDeviceCommandAsyncTaskData(this, ProtocolCommandId.MultistagePseudoCommand)
                             {

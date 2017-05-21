@@ -1,5 +1,5 @@
 ﻿// <copyright file="CommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,7 +26,7 @@ using Foundation;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
@@ -38,7 +38,7 @@ using OSCommandVisual = Foundation.NSObject;
 #else
 using OSMenuItem = MonoMac.AppKit.NSMenuItem;
 using OSCommandVisual = MonoMac.Foundation.NSObject;
-#endif
+#endif // __UNIFIED__
 
 namespace INTV.Shared.Commands
 {

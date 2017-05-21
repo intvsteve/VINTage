@@ -22,7 +22,7 @@
 using Foundation;
 #else
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 
 namespace INTV.JzIntvUI.Model
 {

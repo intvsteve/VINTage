@@ -1,5 +1,5 @@
 ﻿// <copyright file="SettingsPageViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2015 All Rights Reserved
+// Copyright (c) 2015-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,7 +26,7 @@ using INTV.Shared.ViewModel;
 using SettingsPageVisualType = INTV.Intellicart.View.IntellicartSettingsPage;
 #elif MAC
 using SettingsPageVisualType = INTV.Intellicart.View.IntellicartSettingsPageController;
-#endif
+#endif // WIN
 
 namespace INTV.Intellicart.ViewModel
 {

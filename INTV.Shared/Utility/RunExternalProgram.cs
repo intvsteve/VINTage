@@ -1,5 +1,5 @@
 ﻿// <copyright file="RunExternalProgram.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -172,7 +172,7 @@ namespace INTV.Shared.Utility
 #if ENABLE_DEBUG_SPAM
             var errorOutput = process.StandardError.ReadToEnd();
             System.Diagnostics.Debug.WriteLine("stderr for " + System.IO.Path.GetFileName(programPath) + ": " + errorOutput);
-#endif
+#endif // ENABLE_DEBUG_SPAM
             process.WaitForExit();
             return output;
         }
@@ -389,7 +389,7 @@ namespace INTV.Shared.Utility
             var alwaysAllowSend = false;
 #if DEBUG
             alwaysAllowSend = true;
-#endif
+#endif // DEBUG
             System.Net.ServicePointManager.ServerCertificateValidationCallback -= SendEmailCertificateChecker;
             return alwaysAllowSend || ((sslPolicyErrors == System.Net.Security.SslPolicyErrors.None) && certificate.Subject.Contains("CN=my trusted entity"));
         }

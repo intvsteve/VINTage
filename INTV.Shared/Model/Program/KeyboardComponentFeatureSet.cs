@@ -1,5 +1,5 @@
 ﻿// <copyright file="KeyboardComponentFeatureSet.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -28,8 +28,8 @@ using OSImage = System.Windows.Media.ImageSource;
 using OSImage = AppKit.NSImage;
 #else
 using OSImage = MonoMac.AppKit.NSImage;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN
 
 namespace INTV.Shared.Model.Program
 {

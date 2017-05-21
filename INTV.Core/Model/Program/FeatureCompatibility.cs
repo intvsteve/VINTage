@@ -1,5 +1,5 @@
 ﻿// <copyright file="FeatureCompatibility.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,9 +26,7 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public enum FeatureCompatibility : uint
     {
-        /// <summary>
-        /// Program is incompatible with a peripheral.
-        /// </summary>
+        /// <summary>Program is incompatible with a peripheral.</summary>
         Incompatible = 0,
 
         /// <summary>
@@ -43,14 +41,10 @@ namespace INTV.Core.Model.Program
         /// </summary>
         Enhances,
 
-        /// <summary>
-        /// Program requires the peripheral to function correctly.
-        /// </summary>
+        /// <summary>Program requires the peripheral to function correctly.</summary>
         Requires,
 
-        /// <summary>
-        /// Sentinel value for number of compatibility modes.
-        /// </summary>
+        /// <summary>Sentinel value for number of compatibility modes.</summary>
         NumCompatibilityModes,
     }
 
@@ -59,14 +53,10 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public static class FeatureCompatibilityHelpers
     {
-        /// <summary>
-        /// Mask to use to retrieve basic compatibility mask from larger flag sets.
-        /// </summary>
+        /// <summary>Mask to use to retrieve basic compatibility mask from larger flag sets.</summary>
         public const uint CompatibilityMask = 0x03;
 
-        /// <summary>
-        /// Valid flags.
-        /// </summary>
+        /// <summary>Valid flags.</summary>
         public const FeatureCompatibility ValidFeaturesMask = (FeatureCompatibility)CompatibilityMask;
 
         /// <summary>

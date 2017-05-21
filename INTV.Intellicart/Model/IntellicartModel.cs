@@ -234,7 +234,7 @@ namespace INTV.Intellicart.Model
                 }
             }
         }
-#endif
+#endif // IMPLEMENT_DOWNLOAD
 
         private void UpdateSerialPort(string portName, int baudRate, int timeout)
         {
@@ -274,7 +274,7 @@ namespace INTV.Intellicart.Model
             }
 #if WIN
             ((System.Configuration.ApplicationSettingsBase)Configuration.Instance.Settings).Save();
-#endif
+#endif // WIN
         }
     }
 }

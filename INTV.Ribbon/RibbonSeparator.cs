@@ -1,5 +1,5 @@
 ﻿// <copyright file="RibbonSeparator.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -22,7 +22,7 @@
 using RibbonSeparatorBase = Microsoft.Windows.Controls.Ribbon.RibbonSeparator;
 #else
 using RibbonSeparatorBase = System.Windows.Controls.Ribbon.RibbonSeparator;
-#endif
+#endif // WIN_XP
 
 namespace INTV.Ribbon
 {

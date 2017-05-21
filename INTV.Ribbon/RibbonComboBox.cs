@@ -1,5 +1,5 @@
 ﻿// <copyright file="RibbonComboBox.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -22,7 +22,7 @@
 using RibbonComboBoxBase = Microsoft.Windows.Controls.Ribbon.RibbonComboBox;
 #else
 using RibbonComboBoxBase = System.Windows.Controls.Ribbon.RibbonComboBox;
-#endif
+#endif // WIN_XP
 
 namespace INTV.Ribbon
 {

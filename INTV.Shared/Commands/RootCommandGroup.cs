@@ -80,7 +80,7 @@ namespace INTV.Shared.Commands
             CommandList.Add(ApplicationMenuCommand);
 #if DEBUG
             CommandList.Add(DebugCommandGroup.DebugMenuCommand);
-#endif
+#endif // DEBUG
             AddPlatformCommands();
         }
 

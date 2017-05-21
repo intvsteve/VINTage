@@ -1,5 +1,5 @@
 ﻿// <copyright file="Crc8.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -84,7 +84,7 @@ namespace INTV.Core.Utility
             var s = sb.ToString();
             return s;
         }
-#endif
+#endif // false
 
         /// <summary>
         /// Accumulates a CRC value using the internally specified lookup table.

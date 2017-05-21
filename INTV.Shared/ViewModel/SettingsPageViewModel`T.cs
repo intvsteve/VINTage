@@ -1,5 +1,5 @@
 ﻿// <copyright file="SettingsPageViewModel`T.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -32,8 +32,8 @@ using OSVisual = AppKit.NSViewController;
 #else
 using BaseClass = MonoMac.Foundation.NSObject;
 using OSVisual = MonoMac.AppKit.NSViewController;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN
 
 namespace INTV.Shared.ViewModel
 {

@@ -1,5 +1,5 @@
 // <copyright file="MainWindow.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -24,7 +24,7 @@ using Foundation;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 using Locutus.ViewModel;
@@ -177,8 +177,8 @@ namespace Locutus.View
         [ObjCRuntime.Native]
         public enum NSWindowTabbingMode : long
 #else
-        public enum NSWindowTabbingMode 
-#endif
+        public enum NSWindowTabbingMode
+#endif // __UNIFIED__
         {
             /// <summary>The system automatically prefers to tab this window when appropriate.</summary>
             Automatic,

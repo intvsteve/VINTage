@@ -34,8 +34,8 @@ using OSWindow = AppKit.NSWindow;
 #else
 using OSVisual = MonoMac.AppKit.NSView;
 using OSWindow = MonoMac.AppKit.NSWindow;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN
 
 namespace INTV.Shared.Utility
 {

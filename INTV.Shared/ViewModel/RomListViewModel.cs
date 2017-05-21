@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -319,7 +319,7 @@ namespace INTV.Shared.ViewModel
                 fileBrowser.AddFilter(Resources.Strings.FileDialog_SelectRomFilesFilter, ProgramFileKind.Rom.FileExtensions());
 #if !MAC
                 fileBrowser.AddFilter(FileDialogHelpers.AllFilesFilter, new string[] { ".*" });
-#endif
+#endif // !MAC
             }
             fileBrowser.Title = fileBrowser.IsFolderBrowser ? Resources.Strings.FileDialog_SelectFoldersPrompt : Resources.Strings.FileDialog_SelectFilesPrompt;
             fileBrowser.EnsureFileExists = true;

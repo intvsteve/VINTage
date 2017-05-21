@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathUtils.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -103,7 +103,7 @@ namespace INTV.Shared.Utility
                     {
                         firstElement += Path.DirectorySeparatorChar;
                     }
-#endif
+#endif // WIN
                     if (paths.All(p => p.StartsWith(firstElement)))
                     {
                         longestCommonPath = firstElement;
@@ -183,7 +183,7 @@ namespace INTV.Shared.Utility
                 }
             }
         }
-#endif
+#endif // false
 
         /// <summary>
         /// Gets a 'backup' file path for the given path.

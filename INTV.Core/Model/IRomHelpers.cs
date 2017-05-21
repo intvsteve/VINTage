@@ -388,7 +388,7 @@ namespace INTV.Core.Model
             // solution is to register the 'FixUpUri' method and use it instead... In fact, it would be better to just have a
             // file system interface to use for stuff like this... Maybe imported via MEF or some such...
             stockCfgFilePath = stockCfgFilePath.Replace('/', '\\');
-#endif
+#endif // WIN
             if (!stockCfgFilePath.FileExists())
             {
                 stockCfgFilePath = null;

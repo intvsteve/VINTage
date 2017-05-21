@@ -59,7 +59,7 @@ namespace INTV.Shared.Behavior
             }
 #elif MAC
             ErrorReporting.ReportNotImplementedError("MultiSelectDragStartCommand.Execute");
-#endif
+#endif // WIN
             base.Execute(parameter);
         }
 
@@ -82,7 +82,7 @@ namespace INTV.Shared.Behavior
             }
 #elif MAC
             ErrorReporting.ReportNotImplementedError("MultiSelectDragStartCommand.CanDragStart");
-#endif
+#endif // WIN
             return canStartDrag;
         }
     }

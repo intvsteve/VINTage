@@ -25,7 +25,7 @@ using INTV.Shared.ViewModel;
 using SettingsPageVisualType = INTV.LtoFlash.View.SettingsPage;
 #elif MAC
 using SettingsPageVisualType = INTV.LtoFlash.View.SettingsPageController;
-#endif
+#endif // WIN
 
 namespace INTV.LtoFlash.ViewModel
 {
@@ -242,7 +242,7 @@ namespace INTV.LtoFlash.ViewModel
             set { AssignAndUpdateProperty(EnablePortLoggingPropertyName, value, ref _enablePortLogging, (n, v) => Properties.Settings.Default.EnablePortLogging = v); }
         }
         private bool _enablePortLogging;
-#endif
+#endif // ENABLE_PORT_LOG
 
         /// <summary>
         /// Gets a value indicating whether or not to show the Enable Port Logging option.
@@ -255,7 +255,7 @@ namespace INTV.LtoFlash.ViewModel
                 return true;
 #else
                 return false;
-#endif
+#endif // ENABLE_PORT_LOG
             }
         }
 

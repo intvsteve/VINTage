@@ -33,7 +33,7 @@ namespace INTV.Shared.Commands
             Groups.Add(ApplicationCommandGroup.Group);
 #if DEBUG
             Groups.Add(DebugCommandGroup.Group);
-#endif
+#endif // DEBUG
         }
 
         /// <inheritdoc />

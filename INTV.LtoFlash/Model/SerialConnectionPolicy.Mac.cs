@@ -27,7 +27,7 @@ using INTV.Shared.Interop.IOKit;
 using Foundation;
 #else
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 
 namespace INTV.LtoFlash.Model
 {

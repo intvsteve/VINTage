@@ -89,7 +89,7 @@ namespace INTV.LtoFlash.Model
             {
                 HandleProgramSupportFilesPropertyChanged(_description.Files, new System.ComponentModel.PropertyChangedEventArgs(supportFile));
             }
-#endif
+#endif // false
         }
 
         #endregion // Constructors

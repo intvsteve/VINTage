@@ -1,5 +1,5 @@
 ﻿// <copyright file="LtoFlashViewModel.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -69,7 +69,7 @@ namespace INTV.LtoFlash.ViewModel
                 System.Windows.Application.Current.MainWindow.InputBindings.Add(new System.Windows.Input.KeyBinding(InjectFirmwareCrashCommand, System.Windows.Input.Key.W, System.Windows.Input.ModifierKeys.Control | System.Windows.Input.ModifierKeys.Alt | System.Windows.Input.ModifierKeys.Shift));
                 System.Windows.Application.Current.MainWindow.InputBindings.Add(new System.Windows.Input.KeyBinding(WaitForBeaconCommand, System.Windows.Input.Key.B, System.Windows.Input.ModifierKeys.Control | System.Windows.Input.ModifierKeys.Alt | System.Windows.Input.ModifierKeys.Shift));
             }
-#endif
+#endif // DEBUG
         }
     }
 }

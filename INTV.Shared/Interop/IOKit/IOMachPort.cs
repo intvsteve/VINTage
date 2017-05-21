@@ -24,7 +24,7 @@
 using Foundation;
 #else
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 
 namespace INTV.Shared.Interop.IOKit
 {
@@ -128,7 +128,7 @@ namespace INTV.Shared.Interop.IOKit
             {
                 throw new System.InvalidOperationException("Failed to open master port");
             }
-#endif
+#endif // !USE_NULL_MASTER_PORT
             return masterPort;
         }
     }

@@ -647,7 +647,7 @@ namespace INTV.LtoFlash.Model
                 // Consider freezing the file systems based on the 'refresh' option.
                 referenceFileSystem.Frozen = !refresh;
                 otherFileSystem.Frozen = !refresh;
-#endif
+#endif // false
                 var gdtDescriptor = new GatherDifferencesDescriptor<IDirectory>(LfsEntityType.Directory, otherFileSystem.Directories, FileSystemHelpers.CompareIDirectories);
                 var gdtDiff = referenceFileSystem.Directories.GatherDifferences(gdtDescriptor, targetDevice, refresh, GatherExitNever<IDirectory>);
 #if REPORT_PERFORMANCE
@@ -762,7 +762,7 @@ namespace INTV.LtoFlash.Model
                     // Consider freezing the file systems based on the 'refresh' option.
                     referenceFileSystem.Frozen = !refresh;
                     otherFileSystem.Frozen = !refresh;
-#endif
+#endif // false
                     var gdtDescriptor = new GatherDifferencesDescriptor<IDirectory>(LfsEntityType.Directory, data.OtherFileSystem.Directories, FileSystemHelpers.CompareIDirectories);
                     var gdtDiff = data.ReferenceFileSystem.Directories.GatherDifferences(gdtDescriptor, data.TargetDevice, data.Refresh, (d) => GatherExitIfCancelled<IDirectory>(d, data));
 
@@ -988,7 +988,7 @@ namespace INTV.LtoFlash.Model
                         // TODO What? Complain somehow, I suppose...
 #if DEBUG
                         System.Diagnostics.Debug.Assert(referenceFileSystem.Forks[(int)failedForkComparison.Value.GlobalFileSystemNumber] == null, "File system inconsistency! Why are we deleting this fork if files still refer to it?");
-#endif
+#endif // DEBUG
                     }
                 }
             }
@@ -1616,7 +1616,7 @@ namespace INTV.LtoFlash.Model
 #else
                 areEqual = lhs.ParentDirectoryGlobalFileNumber == rhs.ParentDirectoryGlobalFileNumber;
                 areEqual &= lhs.PresentationOrder == rhs.PresentationOrder;
-#endif
+#endif // false
             }
             return areEqual;
         }
@@ -1677,7 +1677,7 @@ namespace INTV.LtoFlash.Model
                 }
                 areEqual = (hostFile.FileType == ltoFlashFile.FileType) && (hostFile.Color == ltoFlashFile.Color) && (hostFile.GlobalDirectoryNumber == ltoFlashFile.GlobalDirectoryNumber);
                 areEqual = areEqual && (hostFile.LongName == ltoFlashFile.LongName) && (hostFile.Reserved == ltoFlashFile.Reserved);
-#endif
+#endif // false
                 areEqual = (lhs.FileType == rhs.FileType) && (lhs.Color == rhs.Color) && (lhs.GlobalDirectoryNumber == rhs.GlobalDirectoryNumber);
                 areEqual = areEqual && (lhs.LongName == rhs.LongName) && (lhs.Reserved == rhs.Reserved);
                 if (areEqual)
@@ -1719,7 +1719,7 @@ namespace INTV.LtoFlash.Model
                     {
                         areEqual = hostFile.ShortName == ltoFlashFile.ShortName;
                     }
-#endif
+#endif // false
                 }
 #if false
                 for (int k = 0; areEqual && (k < hostFile.ForkNumbers.Length); ++k)
@@ -1730,7 +1730,7 @@ namespace INTV.LtoFlash.Model
                         areEqual = hostFile.ForkNumbers[k] == ltoFlashFile.ForkNumbers[k];
                     }
                 }
-#endif
+#endif // false
                 for (int k = 0; areEqual && (k < lhs.ForkNumbers.Length); ++k)
                 {
                     // For compares, always ignore the fork number for JLP Flash for now.

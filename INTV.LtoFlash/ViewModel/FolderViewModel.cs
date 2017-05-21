@@ -1,5 +1,5 @@
 ﻿// <copyright file="FolderViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -39,8 +39,8 @@ using OSImage = System.Windows.Media.ImageSource;
 using OSImage = AppKit.NSImage;
 #else
 using OSImage = MonoMac.AppKit.NSImage;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN
 
 namespace INTV.LtoFlash.ViewModel
 {
@@ -420,7 +420,7 @@ namespace INTV.LtoFlash.ViewModel
 #if REPORT_PERFORMANCE
             System.Diagnostics.Debug.WriteLine("SORT: " + LongName + " START");
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-#endif
+#endif // REPORT_PERFORMANCE
             var folder = Model as Folder;
             if (folder != null)
             {
@@ -433,7 +433,7 @@ namespace INTV.LtoFlash.ViewModel
 #if REPORT_PERFORMANCE
             stopwatch.Stop();
             System.Diagnostics.Debug.WriteLine("SORT: " + LongName + " FINISH: Duration: " + stopwatch.Elapsed);
-#endif
+#endif // REPORT_PERFORMANCE
         }
 
         /// <summary>

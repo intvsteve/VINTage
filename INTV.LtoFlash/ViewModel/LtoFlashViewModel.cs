@@ -47,7 +47,7 @@ using OSWindow = System.Windows.Window;
 #elif MAC
 using ExitEventArgs = INTV.Shared.Utility.ExitEventArgs;
 using OSWindow = INTV.Shared.View.SerialPortSelectorDialog;
-#endif
+#endif // WIN
 
 namespace INTV.LtoFlash.ViewModel
 {

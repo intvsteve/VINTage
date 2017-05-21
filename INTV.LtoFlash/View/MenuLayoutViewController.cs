@@ -31,7 +31,7 @@ using Foundation;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
@@ -546,7 +546,7 @@ namespace INTV.LtoFlash.View
                 }
                 else
                 return [self menu];
-#endif
+#endif // false
                 Window.MakeFirstResponder(this);
                 // Select the clicked item when we get context menu click.
                 var menuPoint = ConvertPointFromView(theEvent.LocationInWindow, null);
@@ -888,7 +888,7 @@ namespace INTV.LtoFlash.View
             {
                 throw new System.NotImplementedException ();
             }
-#endif
+#endif // false
 
             private NSTreeController TreeData { get; set; }
 

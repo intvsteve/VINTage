@@ -25,7 +25,7 @@ using Foundation;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 using INTV.LtoFlash.View;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.Commands;

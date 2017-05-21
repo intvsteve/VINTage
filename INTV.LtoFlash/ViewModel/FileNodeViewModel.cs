@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileNodeViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -36,8 +36,8 @@ using OSImage = System.Windows.Media.ImageSource;
 using OSImage = AppKit.NSImage;
 #else
 using OSImage = MonoMac.AppKit.NSImage;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN
 
 namespace INTV.LtoFlash.ViewModel
 {
@@ -801,7 +801,7 @@ namespace INTV.LtoFlash.ViewModel
                     {
                         args.MenuLayout.CurrentSelection = highlightItem;
                     }
-#endif
+#endif // MAC
                 }
             }
             if ((args.Error != null) || args.FailedToAdd.Any())
@@ -936,9 +936,9 @@ namespace INTV.LtoFlash.ViewModel
             }
 #elif MAC
             ErrorReporting.ReportNotImplementedError("FileNodeFileModel.DropItems");
-#endif
+#endif // WIN
         }
-#endif
+#endif // false
 
         /// <summary>
         /// Determines if the item should accept a collection of dragged items.

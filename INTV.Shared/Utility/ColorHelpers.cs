@@ -1,5 +1,5 @@
 ﻿// <copyright file="ColorHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -30,8 +30,8 @@ using OSColor = System.Windows.Media.Color;
 using OSColor = AppKit.NSColor;
 #else
 using OSColor = MonoMac.AppKit.NSColor;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN || WIN_XP
 
 namespace INTV.Shared.Utility
 {

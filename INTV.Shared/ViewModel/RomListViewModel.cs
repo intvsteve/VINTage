@@ -511,9 +511,24 @@ namespace INTV.Shared.ViewModel
             CommandManager.InvalidateRequerySuggested();
         }
 
+        private bool IsPersistedDescriptionProperty(string propertyName)
+        {
+            // This relies on the ViewModel having properties that are pass-through to the Model for anything that is persisted.
+            // This would mean Name, ShortName, Crc, paths, etc. Perhaps there should be a more direct mechanism... But, we "know" that
+            // the active selection in the ROM list (which is what users can edit) will pass through all model property changes.
+            // See ProgramDescriptionViewModel.OnPropertyChanged().
+            var propertyInfos = typeof(ProgramDescription).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty);
+            var isPersisted = propertyInfos.FirstOrDefault(p => p.CanWrite && (p.Name == propertyName));
+            return isPersisted != null;
+        }
+
         private void HandleProgramDescriptionChanged(object sender, PropertyChangedEventArgs e)
         {
-            SaveRomList(true);
+            var needsSave = IsPersistedDescriptionProperty(e.PropertyName);
+            if (needsSave)
+            {
+                SaveRomList(true);
+            }
         }
 
         private void HandleProgramCollectionPropertyChanged(object sender, PropertyChangedEventArgs e)

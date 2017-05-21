@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.Utility;
+
 namespace INTV.LtoFlash.Model.Commands
 {
     /// <summary>
@@ -51,7 +53,7 @@ namespace INTV.LtoFlash.Model.Commands
         /// <inheritdoc />
         public override object Execute(INTV.Shared.Model.IStreamConnection target, ExecuteDeviceCommandAsyncTaskData taskData, out bool succeeded)
         {
-            using (var data = new System.IO.FileStream(File.FileInfo.FullName, System.IO.FileMode.Open))
+            using (var data = FileUtilities.OpenFileStream(File.FileInfo.FullName))
             {
                 succeeded = ExecuteCommandWithData(target, taskData, data, () => taskData.Device.ConnectionState = ConnectionState.WaitForBeacon);
             }

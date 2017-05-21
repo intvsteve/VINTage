@@ -373,7 +373,7 @@ namespace INTV.LtoFlash.Commands
             var updateVersion = FirmwareRevisions.UnavailableFirmwareVersion;
             try
             {
-                using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                using (var fileStream = FileUtilities.OpenFileStream(filePath))
                 {
                     fileStream.Seek(FirmwareUpdateVersionOffset, System.IO.SeekOrigin.Begin);
                     var versionBuffer = new byte[4];

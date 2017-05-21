@@ -143,7 +143,7 @@ namespace INTV.Shared.Model.Program
                 ProgramCollection programs = null;
                 if (File.Exists(path))
                 {
-                    using (var fileStream = new FileStream(path, FileMode.Open))
+                    using (var fileStream = FileUtilities.OpenFileStream(path))
                     {
                         var serializer = new System.Xml.Serialization.XmlSerializer(typeof(Program.ProgramCollection));
                         programs = serializer.Deserialize(fileStream) as ProgramCollection;

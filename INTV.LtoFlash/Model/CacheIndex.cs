@@ -1,5 +1,5 @@
 ﻿// <copyright file="CacheIndex.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -57,7 +57,7 @@ namespace INTV.LtoFlash.Model
                     }
                     if (File.Exists(CacheIndex.Path))
                     {
-                        using (var fileStream = new FileStream(CacheIndex.Path, FileMode.Open))
+                        using (var fileStream = FileUtilities.OpenFileStream(CacheIndex.Path))
                         {
                             var serializer = new System.Xml.Serialization.XmlSerializer(typeof(CacheIndex), new Type[] { typeof(CacheIndexEntry) });
                             _instance = serializer.Deserialize(fileStream) as CacheIndex;
@@ -146,11 +146,7 @@ namespace INTV.LtoFlash.Model
                 foreach (var cachedLuigiRom in cachedLuigiRoms)
                 {
                     // Get the LUIGI header.
-                    LuigiFileHeader luigiHeader = null;
-                    using (var file = File.Open(cachedLuigiRom.RomPath, FileMode.Open))
-                    {
-                        luigiHeader = LuigiFileHeader.Inflate(file);
-                    }
+                    LuigiFileHeader luigiHeader = LuigiFileHeader.GetHeader(cachedLuigiRom.RomPath);
 
                     // Initialize the LUIGI part of the cache entry.
                     var cacheEntry = new CacheIndexEntry();

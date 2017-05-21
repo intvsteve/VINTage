@@ -543,13 +543,13 @@ namespace INTV.LtoFlash.Model
             try
             {
                 var gdtDescriptor = new GatherDifferencesDescriptor<IDirectory>(LfsEntityType.Directory, otherFileSystem.Directories, FileSystemHelpers.CompareIDirectories);
-                var gdtDiff = referenceFileSystem.Directories.GatherDifferences(gdtDescriptor, targetDevice, refresh);
+                var gdtDiff = referenceFileSystem.Directories.GatherDifferences(gdtDescriptor, targetDevice, refresh, GatherExitNever<IDirectory>);
 #if REPORT_PERFORMANCE
                 Logger.Log("FileSystem.CompareTo() ELAPSED: GDN --> " + stopwatch.Elapsed.ToString());
 #endif // REPORT_PERFORMANCE
 
                 var gftDescriptor = new GatherDifferencesDescriptor<ILfsFileInfo>(LfsEntityType.File, otherFileSystem.Files, FileSystemHelpers.CompareILfsFileInfo, ValidateFile);
-                var gftDiff = referenceFileSystem.Files.GatherDifferences(gftDescriptor, targetDevice, refresh);
+                var gftDiff = referenceFileSystem.Files.GatherDifferences(gftDescriptor, targetDevice, refresh, GatherExitNever<ILfsFileInfo>);
 #if REPORT_PERFORMANCE
                 Logger.Log("FileSystem.CompareTo() ELAPSED: GFN --> " + stopwatch.Elapsed.ToString() + "\nFileSystem.CompareTo() START: GKN ...");
                 IRomHelpers.ResetAccumulatedTimes();
@@ -563,7 +563,7 @@ namespace INTV.LtoFlash.Model
 #endif // REPORT_PERFORMANCE
 
                 var gktDescriptor = new GatherDifferencesDescriptor<Fork>(LfsEntityType.Fork, otherFileSystem.Forks, FileSystemHelpers.CompareForks, ValidateFork);
-                var gktDiff = referenceFileSystem.Forks.GatherDifferences(gktDescriptor, targetDevice, refresh);
+                var gktDiff = referenceFileSystem.Forks.GatherDifferences(gktDescriptor, targetDevice, refresh, GatherExitNever<Fork>);
 #if REPORT_PERFORMANCE
                 forkwatch.Stop();
                 Logger.Log("FileSystem.CompareTo() FINISH: GKN --> " + forkwatch.Elapsed.ToString() + "\nFileSystem.CompareTo() ELAPSED: GKN --> " + stopwatch.Elapsed.ToString());
@@ -835,6 +835,11 @@ namespace INTV.LtoFlash.Model
             return shouldCleanUp;
         }
 
+        private static bool GatherExitNever<T>(FileSystemDifferences<T> differences) where T : class, IGlobalFileSystemEntry
+        {
+            return false;
+        }
+
         /// <summary>
         /// Gather up the differences between a reference FileSystem table and a target FileSystem to be brought into agreement.
         /// </summary>
@@ -843,8 +848,9 @@ namespace INTV.LtoFlash.Model
         /// <param name="descriptor">The target file system and related information for producing the comparison result.</param>
         /// <param name="targetDevice">The device corresponding to <paramref name="otherFileSystem"/> used to validate entries from <paramref name="referenceFileSystem"/>.</param>
         /// <param name="forceUpdate">If true, refresh data before validating or comparing.</param>
+        /// <param name="shouldStop">Predicate to call to see if the comparison loop should exit early.</param>
         /// <returns>The accumulated differences between the host file system table and corresponding Locutus file system table.</returns>
-        private static FileSystemDifferences<T> GatherDifferences<T>(this FixedSizeCollection<T> sourceFileSystemTable, GatherDifferencesDescriptor<T> descriptor, Device targetDevice, bool forceUpdate) where T : class, IGlobalFileSystemEntry
+        private static FileSystemDifferences<T> GatherDifferences<T>(this FixedSizeCollection<T> sourceFileSystemTable, GatherDifferencesDescriptor<T> descriptor, Device targetDevice, bool forceUpdate, Predicate<FileSystemDifferences<T>> shouldStop) where T : class, IGlobalFileSystemEntry
         {
 #if REPORT_PERFORMANCE
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -854,7 +860,7 @@ namespace INTV.LtoFlash.Model
             var deviceId = targetDevice == null ? null : targetDevice.UniqueId;
 
             var differences = new FileSystemDifferences<T>();
-            for (int i = 0; i < sourceFileSystemTable.Size; ++i)
+            for (int i = 0; !shouldStop(differences) && (i < sourceFileSystemTable.Size); ++i)
             {
                 var refresh = forceUpdate;
                 var sourceEntry = sourceFileSystemTable[i];

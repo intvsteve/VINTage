@@ -67,7 +67,7 @@ namespace INTV.LtoFlash.Utility
                     }
                     if (System.IO.File.Exists(driverPlistPath))
                     {
-                        using (var plist = System.IO.File.OpenRead(driverPlistPath))
+                        using (var plist = FileUtilities.OpenFileStream(driverPlistPath))
                         {
                             var plistXmlDocument = System.Xml.Linq.XDocument.Load(plist);
                             versionString = plistXmlDocument.Descendants("key").First(k => k.Value.Equals("CFBundleVersion", StringComparison.Ordinal)).ElementsAfterSelf().First().Value;

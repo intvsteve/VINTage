@@ -61,7 +61,7 @@ namespace INTV.Intellicart.Model
             var cancelled = data.AcceptCancelIfRequested();
             if (!cancelled)
             {
-                using (var rom = System.IO.File.OpenRead(romPath))
+                using (var rom = FileUtilities.OpenFileStream(romPath))
                 {
                     var configData = new Dictionary<string, object>() { { SerialPortConnection.PortNameConfigDataName, data.Intellicart.SerialPort } };
                     using (var port = SerialPortConnection.Create(configData))

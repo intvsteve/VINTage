@@ -23,6 +23,7 @@
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.Model
 {
@@ -432,7 +433,7 @@ namespace INTV.LtoFlash.Model
             ////writer.Write(StartingVirtualBlock);
             ////writer.Write(System.BitConverter.GetBytes(Size), 0, 3);
             ////writer.Write(System.BitConverter.GetBytes(Crc24), 0, 3);
-            using (var file = System.IO.File.OpenRead(FilePath))
+            using (var file = FileUtilities.OpenFileStream(FilePath))
             {
                 file.CopyTo(writer.BaseStream);
             }

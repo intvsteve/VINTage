@@ -23,6 +23,7 @@
 ////#define ENABLE_ACTIVITY_LOGGER
 ////#define REPORT_PERFORMANCE
 ////#define RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
+#define USE_SPECIALIZED_SIMPLE_COMPARE
 
 using System;
 using System.Collections.Generic;
@@ -513,6 +514,103 @@ namespace INTV.LtoFlash.Model
             return modified;
         }
 
+        private static bool IgnoreRootFork(Fork fork)
+        {
+            bool ignore = false;
+            if (fork.GlobalForkNumber != GlobalForkTable.InvalidForkNumber)
+            {
+                var rootFile = fork.FileSystem.Files[GlobalFileTable.RootDirectoryFileNumber];
+                ignore = (rootFile.Manual != null) && ((rootFile.Manual.GlobalForkNumber == fork.GlobalForkNumber) || (rootFile.JlpFlash.GlobalForkNumber == fork.GlobalForkNumber));
+            }
+            return ignore;
+        }
+
+        /// <summary>
+        /// Do a fast and simple comparison between two file systems. This will NOT validate the integrity of the files on the local system!
+        /// </summary>
+        /// <param name="referenceFileSystem">The reference file system.</param>
+        /// <param name="otherFileSystem">The file system to compare against the reference file system.</param>
+        /// <param name="targetDevice">The device corresponding to <paramref name="otherFileSystem"/> used to validate entries from <paramref name="referenceFileSystem"/>.</param>
+        /// <returns>If the two file systems should be considered equivalent, returns 0. A nonzero return value indicates the two file systems are different in some way.</returns>
+        /// <remarks>This comparison may not be completely accurate. For example, if in-memory data differs from what is current in the file system,
+        /// results will be inaccurate in some circumstances. Consider a case in which a device file system was populated with a .bin format ROM, but locally, the
+        /// .cfg file of that ROM has changed after the application was started. This comparison will NOT detect such a change. The fully-featured <see cref="FileSystemHelpers.CompareTo"/>
+        /// method will detect such a change. However, that comparison method can be orders of magnitude slower, due to necessary access to the file system.</remarks>
+        public static int SimpleCompare(this FileSystem referenceFileSystem, FileSystem otherFileSystem, Device targetDevice)
+        {
+            var difference = object.ReferenceEquals(referenceFileSystem, otherFileSystem) ? 0 : -2;
+            if (difference != 0)
+            {
+                if (referenceFileSystem == null)
+                {
+                    return -1;
+                }
+                else if (otherFileSystem == null)
+                {
+                    return 1;
+                }
+#if REPORT_PERFORMANCE
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                Logger.Log("FileSystem.SimpleCompare() BEGIN ---------------------------------");
+#endif // REPORT_PERFORMANCE
+                var referenceFileSystemWasFrozen = referenceFileSystem.Frozen;
+                var otherFileSystemWasFrozen = otherFileSystem.Frozen;
+                try
+                {
+                    referenceFileSystem.Frozen = true;
+                    otherFileSystem.Frozen = true;
+                    var gdtDescriptor = new GatherDifferencesDescriptor<IDirectory>(LfsEntityType.Directory, otherFileSystem.Directories, FileSystemHelpers.CompareIDirectories);
+#if USE_SPECIALIZED_SIMPLE_COMPARE
+                    difference = referenceFileSystem.Directories.SimpleCompare(gdtDescriptor, targetDevice);
+#else
+                    difference = referenceFileSystem.Directories.GatherDifferences(gdtDescriptor, targetDevice, false, GatherExitOnFirst<IDirectory>).Any() ? 1 : 0;
+#endif // USE_SPECIALIZED_SIMPLE_COMPARE
+#if REPORT_PERFORMANCE
+                    Logger.Log("FileSystem.SimpleCompare(): GDN --> diff: " + difference + " : ELAPSED: " + stopwatch.Elapsed.ToString());
+#endif // REPORT_PERFORMANCE
+
+                    if (difference == 0)
+                    {
+                        var gftDescriptor = new GatherDifferencesDescriptor<ILfsFileInfo>(LfsEntityType.File, otherFileSystem.Files, FileSystemHelpers.CompareILfsFileInfo, ValidateFile);
+#if USE_SPECIALIZED_SIMPLE_COMPARE
+                        difference = referenceFileSystem.Files.SimpleCompare(gftDescriptor, targetDevice);
+#else
+                        difference = referenceFileSystem.Files.GatherDifferences(gftDescriptor, targetDevice, false, GatherExitOnFirst<ILfsFileInfo>).Any() ? 1 : 0;
+#endif // USE_SPECIALIZED_SIMPLE_COMPARE
+#if REPORT_PERFORMANCE
+                        Logger.Log("FileSystem.SimpleCompare(): GFN --> diff: " + difference + " : ELAPSED: " + stopwatch.Elapsed.ToString());
+#endif // REPORT_PERFORMANCE
+                    }
+
+                    if (difference == 0)
+                    {
+                        var gktDescriptor = new GatherDifferencesDescriptor<Fork>(LfsEntityType.Fork, otherFileSystem.Forks, FileSystemHelpers.CompareForks, ValidateFork, IgnoreRootFork);
+#if USE_SPECIALIZED_SIMPLE_COMPARE
+                        difference = referenceFileSystem.Forks.SimpleCompare(gktDescriptor, targetDevice);
+#else
+                        difference = referenceFileSystem.Forks.GatherDifferences(gktDescriptor, targetDevice, false, GatherExitOnFirst<Fork>).Any() ? 1 : 0;
+#endif // USE_SPECIALIZED_SIMPLE_COMPARE
+#if REPORT_PERFORMANCE
+                        Logger.Log("FileSystem.SimpleCompare(): GKN -->  diff: " + difference + " : ELAPSED: " + stopwatch.Elapsed.ToString());
+#endif // REPORT_PERFORMANCE
+                    }
+
+                    return difference;
+                }
+                finally
+                {
+                    otherFileSystem.Frozen = otherFileSystemWasFrozen;
+                    referenceFileSystem.Frozen = referenceFileSystemWasFrozen;
+#if REPORT_PERFORMANCE
+                    stopwatch.Stop();
+                    System.Diagnostics.Debug.WriteLine("FileSystem.SimpleCompare() took: + " + stopwatch.Elapsed.ToString());
+                    Logger.Log("FileSystem.SimpleCompare() FINISH ---------------------------------: diff: " + difference + " : " + stopwatch.Elapsed.ToString());
+#endif // REPORT_PERFORMANCE
+                }
+            }
+            return difference;
+        }
+
         /// <summary>
         /// Compares two Locutus File Systems.
         /// </summary>
@@ -834,6 +932,81 @@ namespace INTV.LtoFlash.Model
             }
             return shouldCleanUp;
         }
+
+#if USE_SPECIALIZED_SIMPLE_COMPARE
+
+        private static int SimpleCompare<T>(this FixedSizeCollection<T> sourceFileSystemTable, GatherDifferencesDescriptor<T> descriptor, Device targetDevice) where T : class, IGlobalFileSystemEntry
+        {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
+                var deviceId = targetDevice == null ? null : targetDevice.UniqueId;
+                var result = 0;
+                for (int i = 0; (result == 0) && (i < sourceFileSystemTable.Size); ++i)
+                {
+                    var sourceEntry = sourceFileSystemTable[i];
+                    var targetEntry = descriptor.TargetFileSystemTable[i];
+                    if ((sourceEntry == null) && (targetEntry != null))
+                    {
+                        if (!descriptor.Ignore(targetEntry))
+                        {
+                            --result; // An entry is not in the source file system, but is present in the target.
+                        }
+                    }
+                    else if ((sourceEntry != null) && (targetEntry == null))
+                    {
+                        if (!descriptor.Ignore(sourceEntry))
+                        {
+                            ++result; // An entry is in the source file system, but is not in the target.
+                        }
+                    }
+                    else if ((sourceEntry != null) && (targetEntry != null))
+                    {
+                        if (!descriptor.Ignore(sourceEntry) && !descriptor.Ignore(targetEntry))
+                        {
+                            string failedToUpdate;
+                            Exception updateError;
+                            /*
+                            if (!descriptor.Validate(sourceEntry, targetDevice, false, out failedToUpdate, out updateError))
+                            {
+                                // entry is not compatible with the given device -- should this count as a "difference"? : NO - ignored during transfer operations anyway
+                            }
+                             */
+                            if (!descriptor.Compare(sourceEntry, targetEntry, false, out failedToUpdate, out updateError))
+                            {
+                                // Entries are different;
+                                ++result;
+                            }
+                            /*
+                            if (updateError != null)
+                            {
+                                // an error occurred during the update -- should this count as a difference? : NO - informational only
+                            }
+                             */
+                        }
+                    }
+                }
+                return result;
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>FileSystem.GatherDifferences<" + typeof(T) + ">() took: + " + stopwatch.Elapsed.ToString());
+            }
+#endif // REPORT_PERFORMANCE
+        }
+
+#else
+
+        private static bool GatherExitOnFirst<T>(FileSystemDifferences<T> differences) where T : class, IGlobalFileSystemEntry
+        {
+            bool shouldStop = differences.Any();
+            return shouldStop;
+        }
+#endif
 
         private static bool GatherExitNever<T>(FileSystemDifferences<T> differences) where T : class, IGlobalFileSystemEntry
         {

@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -225,10 +225,7 @@ namespace INTV.Core.Model
             LuigiFileHeader luigiHeader = null;
             if ((rom != null) && (rom.Format == RomFormat.Luigi) && !string.IsNullOrEmpty(rom.RomPath) && rom.RomPath.FileExists() && LuigiFileHeader.PotentialLuigiFile(rom.RomPath))
             {
-                using (var file = rom.RomPath.OpenFileStream())
-                {
-                    luigiHeader = LuigiFileHeader.Inflate(file);
-                }
+                luigiHeader = LuigiFileHeader.GetHeader(rom.RomPath);
             }
             return luigiHeader;
         }
@@ -317,7 +314,7 @@ namespace INTV.Core.Model
                     System.Diagnostics.Debug.WriteLine("Failed to get LUIGI metadata. Error: " + e.Message);
 #if DEBUG
                     throw;
-#endif
+#endif // DEBUG
                 }
             }
             return programInfo;

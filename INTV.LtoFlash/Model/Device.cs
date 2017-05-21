@@ -350,8 +350,18 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public FileSystem FileSystem
         {
-            get { return _fileSystem; }
-            internal set { AssignAndUpdateProperty(FileSystemPropertyName, value, ref _fileSystem, (p, v) => UpdateNameAndOwner(v)); }
+            get
+            {
+                return _fileSystem;
+            }
+
+            internal set
+            {
+                if (value.SimpleCompare(_fileSystem, null) != 0)
+                {
+                    AssignAndUpdateProperty(FileSystemPropertyName, value, ref _fileSystem, (p, v) => UpdateNameAndOwner(v));
+                }
+            }
         }
         private FileSystem _fileSystem;
 
@@ -1097,7 +1107,16 @@ namespace INTV.LtoFlash.Model
                 {
                     device.Name = PeripheralName;
                     device.UpdateDeviceStatus(deviceStatusResponse.Status);
-                    device.FileSystem = deviceStatusResponse.FileSystem;
+                    if (Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu || deviceStatusResponse.FileSystemFlags.HasFlag(LfsDirtyFlags.FileSystemUpdateInProgress))
+                    {
+                        // If we detect interrupted update, always trigger 'file system changed' - in such a case we want to do the extra work.
+                        device.FileSystem = deviceStatusResponse.FileSystem;
+                    }
+                    else
+                    {
+                        // Don't use the setter - it will trigger file system compare. Instead, just directly assign the file system to the backing field.
+                        device._fileSystem = deviceStatusResponse.FileSystem;
+                    }
                     device.FileSystemFlags = deviceStatusResponse.FileSystemFlags;
                     device.FirmwareRevisions = deviceStatusResponse.FirmwareRevisions;
                     device.FileSystemStatistics = deviceStatusResponse.FileSystemStatistics;

@@ -1,5 +1,5 @@
 ﻿// <copyright file="CanonicalRomComparer.cs" company="INTV Funhouse">
-// Copyright (c) 2015 All Rights Reserved
+// Copyright (c) 2015-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -239,8 +239,7 @@ namespace INTV.Shared.Model
             var needsUpdate = !File.Exists(luigiPath);
             if (!needsUpdate)
             {
-                luigiRom = Rom.Create(luigiPath, null);
-                var luigiHeader = luigiRom.GetLuigiHeader();
+                var luigiHeader = LuigiFileHeader.GetHeader(luigiPath);
                 if (luigiHeader != null)
                 {
                     needsUpdate = (rom.Format != luigiHeader.OriginalRomFormat) || (rom.Crc != luigiHeader.OriginalRomCrc32) || (rom.CfgCrc != luigiHeader.OriginalCfgCrc32);

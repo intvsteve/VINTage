@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -17,6 +17,8 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
+
+////#define REPORT_PERFORMANCE
 
 using System;
 using System.Collections.Generic;
@@ -381,6 +383,13 @@ namespace INTV.Shared.Model
             return path;
         }
 
+#if REPORT_PERFORMANCE
+        public static TimeSpan AccumulatedCacheCheckTime = TimeSpan.Zero;
+        public static TimeSpan AccumulatedGetPathTime = TimeSpan.Zero;
+        public static TimeSpan AccumulatedGetCrcsTime = TimeSpan.Zero;
+        public static TimeSpan AccumulatedCacheRecheckTime = TimeSpan.Zero;
+#endif // REPORT_PERFORMANCE
+
         /// <summary>
         /// Determines if the source ROM is already in the cache.
         /// </summary>
@@ -392,28 +401,53 @@ namespace INTV.Shared.Model
         /// has a configuration file, the CRC32 checksums of the configuration files must also match.</remarks>
         public static bool IsInCache(this IRom rom, string romStagingAreaPath, out bool changed)
         {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var stopwatch2 = System.Diagnostics.Stopwatch.StartNew();
+#endif // REPORT_PERFORMANCE
             changed = true;
             var cachedRomPath = rom.GetCachedRomFilePath(romStagingAreaPath);
             bool fileInCache = System.IO.File.Exists(cachedRomPath);
+#if REPORT_PERFORMANCE
+            stopwatch2.Stop();
+            AccumulatedGetPathTime += stopwatch2.Elapsed;
+#endif // REPORT_PERFORMANCE
             if (fileInCache)
             {
+#if REPORT_PERFORMANCE
+                stopwatch2.Restart();
+#endif // REPORT_PERFORMANCE
                 bool romChanged, cfgChanged = false;
-                var preexistingRom = Rom.Create(cachedRomPath, rom.ConfigPath);
-                fileInCache = (rom.RefreshCrc(out romChanged) == preexistingRom.Crc) && rom.IsConfigFileInCache(romStagingAreaPath, out cfgChanged); // use CanonicalRomComparerStrict.Default here?
+                uint preexistingCfgCrc;
+                uint preexistingCrc = Rom.GetRefreshedCrcs(cachedRomPath, rom.ConfigPath, out preexistingCfgCrc);
+#if REPORT_PERFORMANCE
+                stopwatch2.Stop();
+                AccumulatedGetCrcsTime += stopwatch2.Elapsed;
+                stopwatch2.Restart();
+#endif // REPORT_PERFORMANCE
+                fileInCache = (rom.RefreshCrc(out romChanged) == preexistingCrc) && rom.IsConfigFileInCache(romStagingAreaPath, out cfgChanged); // use CanonicalRomComparerStrict.Default here?
                 if (fileInCache && !romChanged && !cfgChanged)
                 {
                     if (rom.Format == RomFormat.Luigi)
                     {
-                        changed = !File.Exists(rom.RomPath) || (INTV.Core.Utility.Crc32.OfFile(rom.RomPath) != INTV.Core.Utility.Crc32.OfFile(preexistingRom.RomPath));
+                        changed = !File.Exists(rom.RomPath) || (INTV.Core.Utility.Crc32.OfFile(rom.RomPath) != INTV.Core.Utility.Crc32.OfFile(cachedRomPath));
                     }
                     else if (rom.Format == RomFormat.Bin)
                     {
                         // when the preexistingRom is created, it recomputes the .cfg file's CRC, so see if it's changed
-                        cfgChanged = rom.CfgCrc != preexistingRom.CfgCrc;
+                        cfgChanged = rom.CfgCrc != preexistingCfgCrc;
                     }
                 }
                 changed = romChanged || cfgChanged;
+#if REPORT_PERFORMANCE
+                stopwatch2.Stop();
+                AccumulatedCacheRecheckTime += stopwatch2.Elapsed;
+#endif // REPORT_PERFORMANCE
             }
+#if REPORT_PERFORMANCE
+            stopwatch.Stop();
+            AccumulatedCacheCheckTime += stopwatch.Elapsed;
+#endif // REPORT_PERFORMANCE
             return fileInCache;
         }
 
@@ -446,8 +480,9 @@ namespace INTV.Shared.Model
                         var cachedLuigiPath = rom.GetCachedRomFilePath(romStagingAreaPath);
                         if (!string.IsNullOrEmpty(cachedLuigiPath) && System.IO.File.Exists(cachedLuigiPath))
                         {
-                            var tempLuigiRom = Rom.Create(cachedLuigiPath, null);
-                            changed = rom.CfgCrc != tempLuigiRom.CfgCrc;
+                            uint luigiCfgCrc;
+                            Rom.GetRefreshedCrcs(cachedLuigiPath, null, out luigiCfgCrc);
+                            changed = rom.CfgCrc != luigiCfgCrc;
                         }
                     }
                     else
@@ -541,10 +576,9 @@ namespace INTV.Shared.Model
                         }
                         if (programInfo != null)
                         {
-                            var supportRom = INTV.Core.Model.Rom.Create(romFilePath, null);
-                            if (supportRom != null)
+                            if (INTV.Core.Model.Rom.CheckRomFormat(romFilePath) != RomFormat.None)
                             {
-                                yield return supportRom;
+                                yield return INTV.Core.Model.Rom.Create(romFilePath, null);
                             }
                         }
                     }
@@ -599,10 +633,9 @@ namespace INTV.Shared.Model
                     }
                     if (programInfo != null)
                     {
-                        var supportRom = INTV.Core.Model.Rom.Create(romFilePath, null);
-                        if (supportRom != null)
+                        if (INTV.Core.Model.Rom.CheckRomFormat(romFilePath) != RomFormat.None)
                         {
-                            programRom = supportRom;
+                            programRom = INTV.Core.Model.Rom.Create(romFilePath, null);
                         }
                     }
                 }

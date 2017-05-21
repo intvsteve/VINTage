@@ -1,5 +1,5 @@
 ﻿// <copyright file="MenuLayout.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,7 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-#define MEASURE_SAVE_PERFORMANCE
+////#define MEASURE_LOAD_PERFORMANCE
+////#define MEASURE_SAVE_PERFORMANCE
 ////#define DEBUG_RESERVED_FORKS
 
 using System.Collections.Generic;
@@ -134,13 +135,28 @@ namespace INTV.LtoFlash.Model
 
         #endregion // ILfsFileInfo Properties
 
-        /// <summary>
-        /// Gets a value indicating whether this <see cref="INTV.LtoFlash.Model.MenuLayout"/> was creating for save operations.
-        /// </summary>
-        internal bool ForSave { get; private set; }
-
         [System.Xml.Serialization.XmlIgnore]
         private uint SaveGeneration { get; set; }
+
+#if MEASURE_LOAD_PERFORMANCE || MEASURE_SAVE_PERFORMANCE
+        /// <summary>
+        /// Gets the logger used by the port.
+        /// </summary>
+        private INTV.Shared.Utility.Logger Logger
+        {
+            get
+            {
+                if (_logger == null)
+                {
+                    var path = System.IO.Path.Combine(Configuration.Instance.ErrorLogDirectory, "MenuSaveLoadLog.txt");
+                    _logger = new Logger(path);
+                }
+                return _logger;
+            }
+        }
+
+        private INTV.Shared.Utility.Logger _logger;
+#endif // MEASURE_LOAD_PERFORMANCE || MEASURE_SAVE_PERFORMANCE
 
         #endregion // Properties
 
@@ -161,18 +177,36 @@ namespace INTV.LtoFlash.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity", Justification = "We intern the string prior to locking, so it is not weak.")]
         public static MenuLayout Load(string filePath)
         {
+            MenuLayout menuLayout = null;
+#if MEASURE_LOAD_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // MEASURE_LOAD_PERFORMANCE
             var path = string.Intern(filePath);
             lock (path)
             {
-                using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Open))
+                using (var fileStream = FileUtilities.OpenFileStream(filePath))
                 {
                     var overrides = GetAttributeOverrides();
                     var serializer = new System.Xml.Serialization.XmlSerializer(typeof(MenuLayout), overrides, new System.Type[] { typeof(FileNode), typeof(MenuLayout), typeof(Folder), typeof(Program) }, null, null);
-                    var menuLayout = serializer.Deserialize(fileStream) as MenuLayout;
+                    menuLayout = serializer.Deserialize(fileStream) as MenuLayout;
                     menuLayout.LoadComplete(false);
                     return menuLayout;
                 }
             }
+#if MEASURE_LOAD_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                DebugMessage("Load " + filePath + " took " + stopwatch.Elapsed.ToString());
+                if (menuLayout != null)
+                {
+                    menuLayout.Logger.Log("Load: " + filePath + " took " + stopwatch.Elapsed.ToString());
+                }
+            }
+#endif // MEASURE_LOAD_PERFORMANCE
         }
 
         /// <summary>
@@ -288,9 +322,9 @@ namespace INTV.LtoFlash.Model
             }
 #if MEASURE_SAVE_PERFORMANCE
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-#endif // MEASURE_SAVE_PERFORMANCE
             try
             {
+#endif // MEASURE_SAVE_PERFORMANCE
                 if (taskData.AcceptCancelIfRequested())
                 {
                     DebugMessage("Save CANCELLED for " + path + " GENERATION " + menuLayout.SaveGeneration);
@@ -316,14 +350,18 @@ namespace INTV.LtoFlash.Model
                         serializer.Serialize(fileStream, menuLayout);
                     }
                 }
+#if MEASURE_SAVE_PERFORMANCE
             }
             finally
             {
-#if MEASURE_SAVE_PERFORMANCE
                 stopwatch.Stop();
                 DebugMessage("Save " + path + " GENERATION " + menuLayout.SaveGeneration + " took " + stopwatch.Elapsed.ToString());
-#endif // MEASURE_SAVE_PERFORMANCE
+                if (menuLayout != null)
+                {
+                    menuLayout.Logger.Log("Save: " + path + " GENERATION " + menuLayout.SaveGeneration + " took " + stopwatch.Elapsed.ToString());
+                }
             }
+#endif // MEASURE_SAVE_PERFORMANCE
         }
 
         private static void SaveComplete(AsyncTaskData taskData)
@@ -355,6 +393,7 @@ namespace INTV.LtoFlash.Model
         }
 
         [System.Diagnostics.Conditional("MEASURE_SAVE_PERFORMANCE")]
+        [System.Diagnostics.Conditional("MEASURE_LOAD_PERFORMANCE")]
         private static void DebugMessage(object message)
         {
             System.Diagnostics.Debug.WriteLine("## ThId" + System.Threading.Thread.CurrentThread.ManagedThreadId + ": " + message);
@@ -393,7 +432,7 @@ namespace INTV.LtoFlash.Model
                 if (menuLayout.FileSystem.Origin == FileSystemOrigin.HostComputer)
                 {
                     MenuLayoutToSave = menuLayout.FileSystem.Clone().Directories[GlobalDirectoryTable.RootDirectoryNumber] as MenuLayout;
-                    MenuLayoutToSave.ForSave = true;
+                    MenuLayoutToSave.FileSystem.Frozen = true;
 #if MEASURE_SAVE_PERFORMANCE
                     MenuLayoutToSave.SaveGeneration = menuLayout.SaveGeneration;
 #endif // MEASURE_SAVE_PERFORMANCE

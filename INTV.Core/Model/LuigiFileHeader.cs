@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFileHeader.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -33,11 +33,6 @@ namespace INTV.Core.Model
         /// Version of the header currently supported. All previous versions will also be supported.
         /// </summary>
         public const byte CurrentVersion = 1;
-
-        /// <summary>
-        /// Gets the size of the largest known LUIGI header.
-        /// </summary>
-        public static readonly int MaxHeaderSize = Math.Max(BaseFlatSize, VersionOneFlatSize);
 
         #region Constants for all LUIGI header versions (Version 0)
 
@@ -90,6 +85,13 @@ namespace INTV.Core.Model
         private const int VersionOneFlatSize = BaseFlatSize + VersionOneAdditionalSize;
 
         #endregion // Constants for LUIGI header version 1 and newer
+
+        /// <summary>
+        /// Gets the size of the largest known LUIGI header.
+        /// </summary>
+        public static readonly int MaxHeaderSize = Math.Max(BaseFlatSize, VersionOneFlatSize);
+
+        private static readonly LuigiHeaderMemo Memos = new LuigiHeaderMemo();
 
         #region Key data for all LUIGI header versions (Version 0)
 
@@ -187,31 +189,24 @@ namespace INTV.Core.Model
         /// Determines whether the given file contents begin with a LUIGI file header.
         /// </summary>
         /// <param name="filePath">The file to check to see if it could be a LUIGI file.</param>
-        /// <returns><c>true</c> if the stream begins with the 'magic' for a LUIGI header.</returns>
+        /// <returns><c>true</c> if the file contents begin with the 'magic' for a LUIGI header.</returns>
         public static bool PotentialLuigiFile(string filePath)
         {
-            bool isPotentialLuigiFile = false;
-            using (var file = filePath.OpenFileStream())
-            {
-                isPotentialLuigiFile = PotentialLuigiFile(file);
-            }
+            LuigiFileHeader header;
+            bool isPotentialLuigiFile = Memos.CheckAddMemo(filePath, null, out header) && (header != null);
             return isPotentialLuigiFile;
         }
 
         /// <summary>
-        /// Determines whether the given stream is currently looking at a LUIGI file header.
+        /// Get the LUIGI file header from the ROM at the given absolute path.
         /// </summary>
-        /// <param name="stream">The stream to inspect.</param>
-        /// <returns><c>true</c> if the stream begins with the 'magic' for a LUIGI header.</returns>
-        public static bool PotentialLuigiFile(System.IO.Stream stream)
+        /// <param name="filePath">Absolute path to the ROM whose LUIGI header is desired.</param>
+        /// <returns>The LUIGI header, or <c>null</c> if the ROM is not of the expected format.</returns>
+        public static LuigiFileHeader GetHeader(string filePath)
         {
-            bool isPotentialLuigiFile = false;
-            using (var reader = new INTV.Core.Utility.BinaryReader(stream))
-            {
-                byte[] header = reader.ReadBytes(MagicKey.Length);
-                isPotentialLuigiFile = header.SequenceEqual(MagicKey);
-            }
-            return isPotentialLuigiFile;
+            LuigiFileHeader header;
+            Memos.CheckAddMemo(filePath, null, out header);
+            return header;
         }
 
         /// <summary>
@@ -394,5 +389,44 @@ namespace INTV.Core.Model
         }
 
         #endregion // ByteSerializer
+
+        private class LuigiHeaderMemo : FileMemo<LuigiFileHeader>
+        {
+            /// <inheritdoc />
+            protected override LuigiFileHeader DefaultMemoValue
+            {
+                get { return null; }
+            }
+
+            /// <inheritdoc />
+            protected override LuigiFileHeader GetMemo(string filePath, object data)
+            {
+                LuigiFileHeader luigiHeader = null;
+                try
+                {
+                    using (var file = filePath.OpenFileStream())
+                    {
+                        var reader = new INTV.Core.Utility.BinaryReader(file);
+                        byte[] header = reader.ReadBytes(MagicKey.Length);
+                        if (header.SequenceEqual(MagicKey))
+                        {
+                            file.Seek(0, System.IO.SeekOrigin.Begin);
+                            luigiHeader = LuigiFileHeader.Inflate(file);
+                        }
+                    }
+                }
+                catch (INTV.Core.UnexpectedFileTypeException)
+                {
+                    // Just in case the header looks OK, but turns out to be bad.
+                }
+                return luigiHeader;
+            }
+
+            /// <inheritdoc />
+            protected override bool IsValidMemo(LuigiFileHeader memo)
+            {
+                return memo != null;
+            }
+        }
     }
 }

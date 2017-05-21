@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileSystem.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -104,6 +104,14 @@ namespace INTV.LtoFlash.Model
         }
 
         #endregion // ByteSerializer Properties
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the file system can accept changes. When frozen, changes to files or contents within should be disallowed.
+        /// </summary>
+        /// <remarks>This is not strictly enforced. It was introduced in the wake of severe performance problems encountered by some
+        /// users. In the ensuing investigation, many unnecessary calls to the file system -- especially for Fork validation -- were found.
+        /// During file system comparison operations, a </remarks>
+        internal bool Frozen { get; set; }
 
         #endregion // Properties
 

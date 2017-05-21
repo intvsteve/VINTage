@@ -1,5 +1,5 @@
 ﻿// <copyright file="Program.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -74,6 +74,9 @@ namespace INTV.LtoFlash.Model
             }
             _description.Files.DefaultLtoFlashDataPath = _description.Rom.GetLtoFlashFilePath();
 
+            // The following block causes at least two extra calls to IRomHelpers.PrepareForDeployment.
+            // It's not clear exactly what the benefit of this is based on simple code inspection.
+#if false
             // Force updates for support files.
             var forceSupportFilesUpdates = new[]
                 {
@@ -86,6 +89,7 @@ namespace INTV.LtoFlash.Model
             {
                 HandleProgramSupportFilesPropertyChanged(_description.Files, new System.ComponentModel.PropertyChangedEventArgs(supportFile));
             }
+#endif
         }
 
         #endregion // Constructors
@@ -292,17 +296,7 @@ namespace INTV.LtoFlash.Model
                     if (Crc32 == 0)
                     {
                         var filePath = Rom.FilePath;
-                        INTV.Core.Model.LuigiFileHeader luigiHeader = null;
-                        using (var fileStream = new System.IO.FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
-                        {
-                            try
-                            {
-                                luigiHeader = INTV.Core.Model.LuigiFileHeader.Inflate(fileStream);
-                            }
-                            catch (INTV.Core.UnexpectedFileTypeException)
-                            {
-                            }
-                        }
+                        INTV.Core.Model.LuigiFileHeader luigiHeader = LuigiFileHeader.GetHeader(filePath);
                         if (luigiHeader != null)
                         {
                             string cfgFile = null;

@@ -1,5 +1,5 @@
 ﻿// <copyright file="BinFormatRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -95,7 +95,8 @@ namespace INTV.Core.Model
             var crc = _crc;
             if (IsValid && RomPath.FileExists())
             {
-                _crc = Crc32.OfFile(RomPath);
+                uint dontCare;
+                _crc = GetCrcs(RomPath, null, out dontCare);
                 if (crc == 0)
                 {
                     crc = _crc; // lazy initialization means on first read, we should never get a change
@@ -111,7 +112,7 @@ namespace INTV.Core.Model
             var cfgCrc = _cfgCrc;
             if (IsValid && !string.IsNullOrEmpty(ConfigPath) && ConfigPath.FileExists())
             {
-                _cfgCrc = Crc32.OfFile(ConfigPath);
+                GetCrcs(null, ConfigPath, out _cfgCrc);
                 if (cfgCrc == 0)
                 {
                     cfgCrc = _cfgCrc; // lazy initialization means on first read, we should never get a change
@@ -143,26 +144,76 @@ namespace INTV.Core.Model
         internal static new BinFormatRom Create(string filePath, string configFilePath)
         {
             BinFormatRom bin = null;
-            using (System.IO.Stream file = filePath.OpenFileStream(), configFile = (configFilePath == null) ? null : configFilePath.OpenFileStream())
+            var format = CheckFormat(filePath);
+            if (format == RomFormat.Bin)
             {
-                // any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason, these all seem to be a multiple of
-                // 8KB + 1 byte in size. So allow those through, too.
-                var configFileCheck = ((configFile != null) && (configFile.Length > 0)) || configFile == null;
-                var fileSizeCheck = file != null;
-                if (fileSizeCheck && ProgramFileKind.Rom.HasCustomRomExtension(filePath))
+                using (System.IO.Stream configFile = (configFilePath == null) ? null : configFilePath.OpenFileStream())
                 {
-                    fileSizeCheck = (file.Length >= MinRomSize) && ((file.Length % MinRomSize) == 0);
-                }
-                else if (fileSizeCheck)
-                {
-                    fileSizeCheck = (file.Length >= MinRomSize) && (((file.Length % 2) == 0) || (((file.Length - 1) % MinRomSize) == 0));
-                }
-                if (configFileCheck && fileSizeCheck)
-                {
-                    bin = new BinFormatRom() { Format = RomFormat.Bin, IsValid = true, RomPath = filePath, ConfigPath = configFilePath };
+                    // any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason, these all seem to be a multiple of
+                    // 8KB + 1 byte in size. So allow those through, too.
+                    var configFileCheck = ((configFile != null) && (configFile.Length > 0)) || configFile == null;
+                    if (configFileCheck)
+                    {
+                        bin = new BinFormatRom() { Format = RomFormat.Bin, IsValid = true, RomPath = filePath, ConfigPath = configFilePath };
+                    }
                 }
             }
             return bin;
+        }
+
+        /// <summary>
+        /// Given an absolute path to a ROM file, attempt to determine the format of the ROM.
+        /// </summary>
+        /// <param name="filePath">Absolute path to the potential ROM file.</param>
+        /// <returns>The format of the file. If it does not appear to be a ROM, then <c>RomFormat.None</c> is returned.</returns>
+        internal static RomFormat CheckFormat(string filePath)
+        {
+            var format = CheckMemo(filePath);
+            if (format == RomFormat.None)
+            {
+                using (System.IO.Stream file = filePath.OpenFileStream())
+                {
+                    // any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason, these all seem to be a multiple of
+                    // 8KB + 1 byte in size. So allow those through, too.
+                    var fileSizeCheck = file != null;
+                    if (fileSizeCheck && ProgramFileKind.Rom.HasCustomRomExtension(filePath))
+                    {
+                        fileSizeCheck = (file.Length >= MinRomSize) && ((file.Length % MinRomSize) == 0);
+                    }
+                    else if (fileSizeCheck)
+                    {
+                        fileSizeCheck = (file.Length >= MinRomSize) && (((file.Length % 2) == 0) || (((file.Length - 1) % MinRomSize) == 0));
+                    }
+                    if (fileSizeCheck)
+                    {
+                        format = RomFormat.Bin;
+                    }
+                }
+            }
+            return format;
+        }
+
+        /// <summary>
+        /// Get the Crc32 values of a ROM.
+        /// </summary>
+        /// <param name="romPath">Absolute path of the ROM whose CRC32 value is desired.</param>
+        /// <param name="cfgPath">Absolute path of the configuration (.cfg) file whose CRC32 is desired. May be <c>null</c>, depending on the ROM.</param>
+        /// <param name="cfgCrc">Receives the CRC32 of the configuration file, if applicable. Could be zero.</param>
+        /// <returns>CRC32 of the ROM file.</returns>
+        /// <remarks>Instead of zero, should the Crc32.InitialValue be used as a sentinel 'invalid' value?</remarks>
+        internal static uint GetCrcs(string romPath, string cfgPath, out uint cfgCrc)
+        {
+            cfgCrc = 0;
+            uint romCrc = 0;
+            if (!string.IsNullOrEmpty(romPath) && romPath.FileExists())
+            {
+                romCrc = Crc32.OfFile(romPath);
+            }
+            if (!string.IsNullOrEmpty(cfgPath) && cfgPath.FileExists())
+            {
+                cfgCrc = Crc32.OfFile(cfgPath);
+            }
+            return romCrc;
         }
     }
 }

@@ -20,6 +20,7 @@
 
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 ////#define ENABLE_PING_ONLY_OPTION
+////#define REPORT_PERFORMANCE
 
 using System;
 using System.Collections.Generic;
@@ -349,8 +350,18 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public FileSystem FileSystem
         {
-            get { return _fileSystem; }
-            internal set { AssignAndUpdateProperty(FileSystemPropertyName, value, ref _fileSystem, (p, v) => UpdateNameAndOwner(v)); }
+            get
+            {
+                return _fileSystem;
+            }
+
+            internal set
+            {
+                if (value.SimpleCompare(_fileSystem, null) != 0)
+                {
+                    AssignAndUpdateProperty(FileSystemPropertyName, value, ref _fileSystem, (p, v) => UpdateNameAndOwner(v));
+                }
+            }
         }
         private FileSystem _fileSystem;
 
@@ -950,6 +961,11 @@ namespace INTV.LtoFlash.Model
 
         private static void ValidateDevice(AsyncTaskData taskData)
         {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             var data = (ExecuteDeviceCommandAsyncTaskData)taskData;
             var device = data.Device;
             var validationResponse = new DeviceValidationResponse();
@@ -1061,6 +1077,14 @@ namespace INTV.LtoFlash.Model
 
                 // One user who was having troubles w/ the system recognizing LTO Flash! encountered this.
             }
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>FileSystem.CompareTo() took: + " + stopwatch.Elapsed.ToString());
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         private static void ValidateDeviceComplete(Device device, bool isValid, DeviceValidationResponse deviceStatusResponse)
@@ -1083,7 +1107,16 @@ namespace INTV.LtoFlash.Model
                 {
                     device.Name = PeripheralName;
                     device.UpdateDeviceStatus(deviceStatusResponse.Status);
-                    device.FileSystem = deviceStatusResponse.FileSystem;
+                    if (Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu || deviceStatusResponse.FileSystemFlags.HasFlag(LfsDirtyFlags.FileSystemUpdateInProgress))
+                    {
+                        // If we detect interrupted update, always trigger 'file system changed' - in such a case we want to do the extra work.
+                        device.FileSystem = deviceStatusResponse.FileSystem;
+                    }
+                    else
+                    {
+                        // Don't use the setter - it will trigger file system compare. Instead, just directly assign the file system to the backing field.
+                        device._fileSystem = deviceStatusResponse.FileSystem;
+                    }
                     device.FileSystemFlags = deviceStatusResponse.FileSystemFlags;
                     device.FirmwareRevisions = deviceStatusResponse.FirmwareRevisions;
                     device.FileSystemStatistics = deviceStatusResponse.FileSystemStatistics;

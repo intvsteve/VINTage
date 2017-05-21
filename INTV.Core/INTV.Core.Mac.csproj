@@ -114,6 +114,7 @@
     <Compile Include="Model\Program\ProgramInformationTableDescriptor.cs" />
     <Compile Include="Model\Program\ProgramSupportFileState.cs" />
     <Compile Include="Model\Program\ProgramSupportFiles.cs" />
+    <Compile Include="Model\Program\ProgramSupportFilesHelpers.cs" />
     <Compile Include="Model\Program\UnmergedProgramInformation.cs" />
     <Compile Include="Model\Program\UnmergedProgramInformationTable.cs" />
     <Compile Include="Model\Program\UserSpecifiedProgramInformation.cs" />
@@ -146,6 +147,8 @@
     <Compile Include="Model\LuigiFileHeader.cs" />
     <Compile Include="Model\LuigiFormatRom.cs" />
     <Compile Include="Utility\Crc8.cs" />
+    <Compile Include="Utility\FileMemo`T.cs" />
+    <Compile Include="Utility\IStorageAccess.cs" />
     <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="Model\Program\Bee3Features.cs" />
     <Compile Include="Model\Program\CuttleCart3Features.cs" />

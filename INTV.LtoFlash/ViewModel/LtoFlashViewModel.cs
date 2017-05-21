@@ -22,6 +22,7 @@
 ////#define ENABLE_ROMS_PATCH
 ////#define ENABLE_DRIVER_NAG
 ////#define MULTIPLE_DEVICE_ENHANCEMENTS
+#define USE_SIMPLE_FILE_SYSTEM_COMPARE
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -70,6 +71,14 @@ namespace INTV.LtoFlash.ViewModel
         private ConnectionMonitor _connectionMonitor;
 
         private List<ProgramDescription> _programsToAdd;
+
+        /// <summary>
+        /// Cache the notion of 'dirtiness' for performance reasons.
+        /// </summary>
+        /// <remarks>Even with the SimpleCompare, some menu layouts can result in slower-than-desired comparisons. To avoid this,
+        /// treat any change made by the user as dirtying. It should remain 'dirty' until the user performs a sync operation, or
+        /// disconnects the active device.</remarks>
+        private int? _cachedFileSystemsCompareResult = null;
 
 #if ENABLE_ROMS_PATCH
         private FixJlpAndOtherFlagsInMenu _fixRoms;
@@ -334,6 +343,52 @@ namespace INTV.LtoFlash.ViewModel
 
         #endregion // IPartImportsSatisfiedNotification Members
 
+        #region IPrimaryComponent
+
+        /// <inheritdoc />
+        public void Initialize()
+        {
+            // Freeze so we don't do the expensive work yet.
+            bool? wasFrozen = MenuLayout.FileSystem.Frozen;
+            try
+            {
+                // Copy out programs and forks.
+                IEnumerable<Fork> forks;
+                IEnumerable<Program> programs;
+                lock (MenuLayout.FileSystem)
+                {
+                    MenuLayout.FileSystem.Frozen = true;
+                    programs = MenuLayout.FileSystem.Files.OfType<Program>().Where(p => p != null).ToList();
+                    forks = MenuLayout.FileSystem.Forks.Where(f => (f != null) && !string.IsNullOrEmpty(f.FilePath)).ToList();
+                    MenuLayout.FileSystem.Frozen = wasFrozen.Value;
+                    wasFrozen = null;
+                }
+                foreach (var fork in forks)
+                {
+                    if (!string.IsNullOrEmpty(fork.FilePath))
+                    {
+                        INTV.Core.Utility.Crc24.OfFile(fork.FilePath);
+                    }
+                }
+
+                // TODO: How to deal with Alternates?
+                foreach (var program in programs)
+                {
+                    uint cfgCrc;
+                    Core.Model.Rom.GetRefreshedCrcs(program.Description.Files.RomImagePath, program.Description.Files.RomConfigurationFilePath, out cfgCrc);
+                }
+            }
+            finally
+            {
+                if (wasFrozen != null)
+                {
+                    MenuLayout.FileSystem.Frozen = wasFrozen.Value;
+                }
+            }
+        }
+
+        #endregion // IPrimaryComponent
+
         /// <summary>
         /// Filter function for serial ports.
         /// </summary>
@@ -412,6 +467,14 @@ namespace INTV.LtoFlash.ViewModel
                     SingleInstanceApplication.Instance.IsBusy = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Reset the cached result of a file system comparison to ensure a re-do of comparison can be done.
+        /// </summary>
+        internal void ResetCachedFileSystemsCompareResult()
+        {
+            _cachedFileSystemsCompareResult = null;
         }
 
         private static bool MessageBoxExceptionFilter(System.Exception exception)
@@ -532,7 +595,10 @@ namespace INTV.LtoFlash.ViewModel
                     // ^^^^ The above is weird... what we do here is, after the 'main' menu finishes saving,
                     // we spawn saving a copy of it in a device-specific directory -- when a device is connected.
                 }
-                UpdateFileSystemsInSync();
+
+                // Either force compare w/ device... OR... assume that any 'save' is 'dirty' until re-sync.
+                _cachedFileSystemsCompareResult = 1;
+                UpdateFileSystemsInSync(true); // always do the refresh after a save
             }
             else
             {
@@ -806,6 +872,10 @@ namespace INTV.LtoFlash.ViewModel
                             PromptForFirmwareUpgrade(device);
                         }
                     }
+                    if (_cachedFileSystemsCompareResult.HasValue && ((device == null) || !device.IsValid))
+                    {
+                        ResetCachedFileSystemsCompareResult();
+                    }
                     UpdateItemStatesAsNecessary(device);
                     break;
                 case Device.FileSystemPropertyName:
@@ -866,7 +936,7 @@ namespace INTV.LtoFlash.ViewModel
                     {
                         Model = EmptyMenuLayout;
                     }
-                    UpdateFileSystemsInSync();
+                    UpdateFileSystemsInSync(true); // always do after file system changes
                     break;
                 case Device.FileSystemStatisticsPropertyName:
                     FileSystemStatistics.FileSystemStatistics = ActiveLtoFlashDevice.Device.FileSystemStatistics;
@@ -882,31 +952,47 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
-        private void UpdateFileSystemsInSync()
+        // TODO: MOVE OFF-THREAD!
+        private void UpdateFileSystemsInSync(bool doFileSystemCompare)
         {
-            var showFileSystemsDifferIcon = false;
-            if (ActiveLtoFlashDevice.IsValid && (ActiveLtoFlashDevice.Device.FileSystem != null))
+            var showFileSystemsDifferIcon = _cachedFileSystemsCompareResult.HasValue && (_cachedFileSystemsCompareResult.Value != 0);
+            if (!_cachedFileSystemsCompareResult.HasValue)
             {
-                var deviceFileSystem = ActiveLtoFlashDevice.Device.FileSystem;
-                var hostFileSystem = HostPCMenuLayout.MenuLayout.FileSystem.Clone();
-                hostFileSystem.SuppressRootFileNameDifferences(ActiveLtoFlashDevice.Device);
-                hostFileSystem.RemoveMenuPositionData();
-                hostFileSystem.PopulateSaveDataForksFromDevice(deviceFileSystem);
-                var deviceSaveMenuPositionFork = deviceFileSystem.RemoveMenuPositionData();
-                var differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device);
-                if (deviceSaveMenuPositionFork != null)
+                if (doFileSystemCompare && ActiveLtoFlashDevice.IsValid && (ActiveLtoFlashDevice.Device.FileSystem != null))
                 {
-                    deviceFileSystem.SetMenuPositionData(deviceSaveMenuPositionFork);
-                }
+                    var deviceFileSystem = ActiveLtoFlashDevice.Device.FileSystem; // .Clone();
+                    var hostFileSystem = HostPCMenuLayout.MenuLayout.FileSystem.Clone();
+                    hostFileSystem.SuppressRootFileNameDifferences(ActiveLtoFlashDevice.Device); // TODO: Instead of this, offer option to ignore file name compares on root?
+                    hostFileSystem.RemoveMenuPositionData();
+                    hostFileSystem.PopulateSaveDataForksFromDevice(deviceFileSystem);
+                    var deviceSaveMenuPositionFork = deviceFileSystem.RemoveMenuPositionData();
+#if USE_SIMPLE_FILE_SYSTEM_COMPARE
+                    // TODO: If this is still too slow, farm off to another thread!
+                    _cachedFileSystemsCompareResult = hostFileSystem.SimpleCompare(deviceFileSystem, ActiveLtoFlashDevice.Device);
+                    showFileSystemsDifferIcon = _cachedFileSystemsCompareResult.Value != 0;
+#else
+                    var differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device, true); // TODO: reevaluate if this is needed
+                    if (deviceSaveMenuPositionFork != null)
+                    {
+                        deviceFileSystem.SetMenuPositionData(deviceSaveMenuPositionFork);
+                    }
 
-                // Now, ignore things due to incompatibilities.
-                if (differences.GetAllFailures(null).Any())
-                {
-                    hostFileSystem = hostFileSystem.Clone();
-                    hostFileSystem.CleanUpInvalidEntries(deviceFileSystem, differences, FileSystemHelpers.ShouldRemoveInvalidEntry, null);
-                    differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device);
+                    // Now, ignore things due to incompatibilities.
+                    if (differences.GetAllFailures(null).Any())
+                    {
+                        // HERE: Instead of cloning and doing everything all over again, how about, as invalid entries are discovered, scoop out things from the *already in-hand diff!* :B
+                        hostFileSystem = hostFileSystem.Clone();
+                        hostFileSystem.CleanUpInvalidEntries(deviceFileSystem, differences, FileSystemHelpers.ShouldRemoveInvalidEntry, null);
+                        differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device, false); // TODO: reevaluate if this is OK - ideally unnecessary!
+                    }
+                    showFileSystemsDifferIcon = differences.Any();
+#endif // USE_SIMPLE_FILE_SYSTEM_COMPARE
                 }
-                showFileSystemsDifferIcon = differences.Any();
+                else if (!ActiveLtoFlashDevice.IsValid || (ActiveLtoFlashDevice.Device.FileSystem == null))
+                {
+                    ResetCachedFileSystemsCompareResult();
+                    showFileSystemsDifferIcon = false;
+                }
             }
             ShowFileSystemsDifferIcon = showFileSystemsDifferIcon;
         }
@@ -926,7 +1012,7 @@ namespace INTV.LtoFlash.ViewModel
             {
                 HostPCMenuLayout.ClearItemStates(AttachedPeripherals);
             }
-            UpdateFileSystemsInSync();
+            UpdateFileSystemsInSync(Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu);
         }
 
         private void PromptForFirmwareUpgrade(DeviceViewModel newDevice)

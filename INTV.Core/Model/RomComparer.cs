@@ -18,10 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-#if !PCL
-// Stopwatch class is not available in the version of Portable Class Libraries currently being used.
-////#define ENABLE_MEASURE_PERFORMANCE
-#endif
+////#define REPORT_PERFORMANCE
 
 //// #define CANONICAL_COMPARE_SUPPORTED
 
@@ -123,20 +120,20 @@ namespace INTV.Core.Model
         public int Compare(IRom x, IRom y)
         {
             var result = -1;
-#if ENABLE_MEASURE_PERFORMANCE
+#if REPORT_PERFORMANCE
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             try
             {
-#endif // ENABLE_MEASURE_PERFORMANCE
-                result = Compare(x, null, y, null);
-#if ENABLE_MEASURE_PERFORMANCE
+#endif // REPORT_PERFORMANCE
+            result = Compare(x, null, y, null);
+#if REPORT_PERFORMANCE
             }
             finally
             {
                 stopwatch.Stop();
                 System.Diagnostics.Debug.WriteLine("ROM comparer: " + GetType().Name + "; result: " + result + "; duration: " + stopwatch.Elapsed + "; x: " + ((x == null) ? "<null>" : x.RomPath) + ", y: " + ((y == null) ? "<null>" : y.RomPath));
             }
-#endif // ENABLE_MEASURE_PERFORMANCE
+#endif // REPORT_PERFORMANCE
             return result;
         }
 

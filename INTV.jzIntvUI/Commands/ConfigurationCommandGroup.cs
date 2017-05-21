@@ -1,5 +1,5 @@
 ﻿// <copyright file="ConfigurationCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -451,8 +451,7 @@ namespace INTV.JzIntvUI.Commands
             if (isValid)
             {
                 // Ensure that this at least appears to be a valid ROM.
-                var rom = Rom.Create(ecsRomPath, null);
-                isValid = (rom != null) && rom.IsValid && (rom.Format == RomFormat.Bin);
+                isValid = Rom.CheckRomFormat(ecsRomPath) == RomFormat.Bin;
             }
             return isValid;
         }
@@ -467,9 +466,9 @@ namespace INTV.JzIntvUI.Commands
             var isValid = IsPathValid(path);
             if (isValid)
             {
-                // Ensure that this at least appears to be a valid ROM.
-                var rom = Rom.Create(path, null);
-                isValid = (rom != null) && rom.IsValid && (rom.Format == RomFormat.Bin);
+                // Ensure that this at least appears to be a valid .bin format ROM. We don't care about .cfg validity.
+                var format = Rom.CheckRomFormat(path);
+                isValid = format == RomFormat.Bin;
             }
             return isValid;
         }

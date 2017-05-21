@@ -1315,18 +1315,28 @@ namespace INTV.LtoFlash.Model
         {
             failedCompareEntryName = null;
             error = null;
-            var hostDirectory = lhs as Folder;
-            if (hostDirectory == null)
+            var areEqual = object.ReferenceEquals(lhs, rhs);
+            if (!areEqual)
             {
-                hostDirectory = rhs as Folder;
+                // There's no clear reason here to require the casting to Folder vs. Directory. Perhaps this was written before PresentationOrder was unified?
+#if false
+                var hostDirectory = lhs as Folder;
+                if (hostDirectory == null)
+                {
+                    hostDirectory = rhs as Folder;
+                }
+                var ltoFlashDirectory = rhs as Directory;
+                if (ltoFlashDirectory == null)
+                {
+                    ltoFlashDirectory = lhs as Directory;
+                }
+                areEqual = hostDirectory.ParentDirectoryGlobalFileNumber == ltoFlashDirectory.ParentDirectoryGlobalFileNumber;
+                areEqual &= hostDirectory.PresentationOrder == ltoFlashDirectory.PresentationOrder;
+#else
+                areEqual = lhs.ParentDirectoryGlobalFileNumber == rhs.ParentDirectoryGlobalFileNumber;
+                areEqual &= lhs.PresentationOrder == rhs.PresentationOrder;
+#endif
             }
-            var ltoFlashDirectory = rhs as Directory;
-            if (ltoFlashDirectory == null)
-            {
-                ltoFlashDirectory = lhs as Directory;
-            }
-            var areEqual = hostDirectory.ParentDirectoryGlobalFileNumber == ltoFlashDirectory.ParentDirectoryGlobalFileNumber;
-            areEqual &= hostDirectory.PresentationOrder == ltoFlashDirectory.PresentationOrder;
             return areEqual;
         }
 

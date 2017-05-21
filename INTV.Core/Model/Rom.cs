@@ -203,6 +203,10 @@ namespace INTV.Core.Model
             protected override RomFormat GetMemo(string filePath, object data)
             {
                 var format = LuigiFormatRom.CheckFormat(filePath);
+                if (format == RomFormat.None)
+                {
+                    format = BinFormatRom.CheckFormat(filePath);
+                }
                 return format;
             }
 

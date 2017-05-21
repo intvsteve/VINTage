@@ -458,6 +458,9 @@ namespace INTV.LtoFlash.Model
             errorDialog.ShowDialog(Resources.Strings.OK);
         }
 
+        /// <summary>
+        /// Reset internal performance timing data.
+        /// </summary>
         [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
         internal static void ResetAccumulatedTimes()
         {
@@ -475,6 +478,12 @@ namespace INTV.LtoFlash.Model
 #endif // REPORT_PERFORMANCE
         }
 
+        /// <summary>
+        /// Report performance data to a logger or debug output.
+        /// </summary>
+        /// <param name="logger">A logger to record into. May be <c>null</c>.</param>
+        /// <param name="prefix">Prefix to include in each line of the output.</param>
+        /// <remarks>If <param name="logger"/> is <c>null</c>, output is reported to debug output.</remarks>
         [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
         internal static void ReportAccumulatedTimes(Logger logger, string prefix)
         {
@@ -498,22 +507,26 @@ namespace INTV.LtoFlash.Model
                 }
 #endif // REPORT_PERFORMANCE
             }
+            prefix = prefix == null ? string.Empty : prefix + " ";
 #if REPORT_PERFORMANCE
-            logIt(prefix + " Total PrepareForDeployment --------------: " + _accumulatedPrepareTime.ToString());
-            logIt(prefix + " Total PrepareForDeploymentValidate ------: " + _accumulatedPrepareValidateTime.ToString());
-            logIt(prefix + " Total PrepareForDeploymentSetup ---------: " + _accumulatedPrepareSetupTime.ToString());
-            logIt(prefix + " Total  PrepareForDeploymentGetApps ------: " + _accumulatedPrepareConverterAppsTime.ToString());
-            logIt(prefix + " Total  PrepareForDeploymentStaging ------: " + _accumulatedPrepareStagingTime.ToString());
-            logIt(prefix + " Total  PrepareForDeploymenCacheLookup ---: " + _accumulatedPrepareCacheLookupTime.ToString());
+            logIt(prefix + "Total PrepareForDeployment --------------: " + _accumulatedPrepareTime.ToString());
+            logIt(prefix + "Total PrepareForDeploymentValidate ------: " + _accumulatedPrepareValidateTime.ToString());
+            logIt(prefix + "Total PrepareForDeploymentSetup ---------: " + _accumulatedPrepareSetupTime.ToString());
+            logIt(prefix + "Total  PrepareForDeploymentGetApps ------: " + _accumulatedPrepareConverterAppsTime.ToString());
+            logIt(prefix + "Total  PrepareForDeploymentStaging ------: " + _accumulatedPrepareStagingTime.ToString());
+            logIt(prefix + "Total  PrepareForDeploymenCacheLookup ---: " + _accumulatedPrepareCacheLookupTime.ToString());
             INTV.Shared.Model.IRomHelpers.ReportAccumulatedTimes(logger, prefix);
-            logIt(prefix + " Total  PrepareForDeploymentLuigiHeader --: " + _accumulatedPrepareLuigiHeaderTime.ToString());
-            logIt(prefix + " Total  PrepareForDeploymentCacheChanged -: " + _accumulatedPrepareCachedChangedTime.ToString());
-            logIt(prefix + " Total  PrepareForDeploymentLuigiUpdate --: " + _accumulatedPrepareLuigiUpdateTime.ToString());
+            logIt(prefix + "Total  PrepareForDeploymentLuigiHeader --: " + _accumulatedPrepareLuigiHeaderTime.ToString());
+            logIt(prefix + "Total  PrepareForDeploymentCacheChanged -: " + _accumulatedPrepareCachedChangedTime.ToString());
+            logIt(prefix + "Total  PrepareForDeploymentLuigiUpdate --: " + _accumulatedPrepareLuigiUpdateTime.ToString());
 #else
-            logIt(prefix + " REPORT_PERFORMANCE has not been #defined in:" + typeof(IRomHelpers).FullName);
+            logIt(prefix + "REPORT_PERFORMANCE has not been #defined in:" + typeof(IRomHelpers).FullName);
 #endif // REPORT_PERFORMANCE
         }
 
+        /// <summary>
+        /// Reset internal prepare for deployment performance data.
+        /// </summary>
         [System.Diagnostics.Conditional("RECORD_PREPARE_FOR_DEPLOYMENT_VISITS")]
         internal static void ResetPrepareForDeploymentVisits()
         {
@@ -521,6 +534,11 @@ namespace INTV.LtoFlash.Model
 #endif // RECORD_PREPARE_FOR_DEPLOYMENT_VISITS
         }
 
+        /// <summary>
+        /// Report prepare for deployment performance data to a logger or debug output.
+        /// </summary>
+        /// <param name="logger">A logger to record into. May be <c>null</c>.</param>
+        /// <remarks>If <param name="logger"/> is <c>null</c>, output is reported to debug output.</remarks>
         [System.Diagnostics.Conditional("RECORD_PREPARE_FOR_DEPLOYMENT_VISITS")]
         internal static void ReportPrepareForDeploymentVisits(Logger logger)
         {

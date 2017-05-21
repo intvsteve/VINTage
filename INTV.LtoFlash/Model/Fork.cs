@@ -276,6 +276,9 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Properties
 
+        /// <summary>
+        /// Reset internal performance timing data.
+        /// </summary>
         [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
         internal static void ResetAccumulatedTimes()
         {
@@ -288,6 +291,12 @@ namespace INTV.LtoFlash.Model
 #endif // REPORT_PERFORMANCE
         }
 
+        /// <summary>
+        /// Report performance data to a logger or debug output.
+        /// </summary>
+        /// <param name="logger">A logger to record into. May be <c>null</c>.</param>
+        /// <param name="prefix">Prefix to include in each line of the output.</param>
+        /// <remarks>If <param name="logger"/> is <c>null</c>, output is reported to debug output.</remarks>
         [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
         public static void ReportAccumulatedTimes(INTV.Shared.Utility.Logger logger, string prefix)
         {
@@ -296,14 +305,15 @@ namespace INTV.LtoFlash.Model
             {
                 logIt = logger.Log;
             }
+            prefix = prefix == null ? string.Empty : prefix + " ";
 #if REPORT_PERFORMANCE
-            logIt(prefix + " Total RefreshFork ----------------------: " + AccumulatedRefreshTime.ToString());
-            logIt(prefix + " Total UpdateFilePath -------------------: " + AccumulatedUpdateFilePathTime.ToString());
-            logIt(prefix + " Total UpdateFilePathRaw ----------------: " + AccumulatedUpdateFilePathRawTime.ToString());
-            logIt(prefix + " Total UpdateFilePathForced -------------: " + AccumulatedUpdateFilePathForcedTime.ToString());
-            logIt(prefix + " Total UpdateFilePathForcedPrepare ------: " + AccumulatedUpdateFilePathForcedPrepareTime.ToString());
+            logIt(prefix + "Total RefreshFork ----------------------: " + AccumulatedRefreshTime.ToString());
+            logIt(prefix + "Total UpdateFilePath -------------------: " + AccumulatedUpdateFilePathTime.ToString());
+            logIt(prefix + "Total UpdateFilePathRaw ----------------: " + AccumulatedUpdateFilePathRawTime.ToString());
+            logIt(prefix + "Total UpdateFilePathForced -------------: " + AccumulatedUpdateFilePathForcedTime.ToString());
+            logIt(prefix + "Total UpdateFilePathForcedPrepare ------: " + AccumulatedUpdateFilePathForcedPrepareTime.ToString());
 #else
-            logIt(prefix + " REPORT_PERFORMANCE has not been #defined in:" + typeof(Fork).FullName);
+            logIt(prefix + "REPORT_PERFORMANCE has not been #defined in:" + typeof(Fork).FullName);
 #endif // REPORT_PERFORMANCE
         }
 

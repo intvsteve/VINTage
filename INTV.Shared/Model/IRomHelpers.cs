@@ -43,6 +43,9 @@ namespace INTV.Shared.Model
         private static TimeSpan _accumulatedCacheRecheckTime = TimeSpan.Zero;
 #endif // REPORT_PERFORMANCE
 
+        /// <summary>
+        /// Reset internal performance timing data.
+        /// </summary>
         [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
         public static void ResetAccumulatedTimes()
         {
@@ -55,6 +58,12 @@ namespace INTV.Shared.Model
 #endif // REPORT_PERFORMANCE
         }
 
+        /// <summary>
+        /// Report performance data to a logger or debug output.
+        /// </summary>
+        /// <param name="logger">A logger to record into. May be <c>null</c>.</param>
+        /// <param name="prefix">Prefix to include in each line of the output.</param>
+        /// <remarks>If <param name="logger"/> is <c>null</c>, output is reported to debug output.</remarks>
         [System.Diagnostics.Conditional("REPORT_PERFORMANCE")]
         public static void ReportAccumulatedTimes(Logger logger, string prefix)
         {
@@ -63,14 +72,15 @@ namespace INTV.Shared.Model
             {
                 logIt = logger.Log;
             }
+            prefix = prefix == null ? string.Empty : prefix + " ";
 #if REPORT_PERFORMANCE
-            logIt(prefix + " Total   Prepare.CacheLookup.Total ------: " + _accumulatedCacheCheckTime.ToString());
-            logIt(prefix + " Total   Prepare.CacheLookup.GetPath ----: " + _accumulatedGetPathTime.ToString());
-            logIt(prefix + " Total   Prepare.CacheLookup.GetCrcs ----: " + _accumulatedGetCrcsTime.ToString());
-            logIt(prefix + " Total    Prepare.CacheLookup.Rom.GetCrcs: " + Rom.AccumulatedRefreshCrcsTime.ToString());
-            logIt(prefix + " Total   Prepare.CacheLookup.CacheRecheck: " + _accumulatedCacheRecheckTime.ToString());
+            logIt(prefix + "Total   Prepare.CacheLookup.Total ------: " + _accumulatedCacheCheckTime.ToString());
+            logIt(prefix + "Total   Prepare.CacheLookup.GetPath ----: " + _accumulatedGetPathTime.ToString());
+            logIt(prefix + "Total   Prepare.CacheLookup.GetCrcs ----: " + _accumulatedGetCrcsTime.ToString());
+            logIt(prefix + "Total    Prepare.CacheLookup.Rom.GetCrcs: " + Rom.AccumulatedRefreshCrcsTime.ToString());
+            logIt(prefix + "Total   Prepare.CacheLookup.CacheRecheck: " + _accumulatedCacheRecheckTime.ToString());
 #else
-            logIt(prefix + " REPORT_PERFORMANCE has not been #defined in:" + typeof(IRomHelpers).FullName);
+            logIt(prefix + "REPORT_PERFORMANCE has not been #defined in:" + typeof(IRomHelpers).FullName);
 #endif // REPORT_PERFORMANCE
         }
 

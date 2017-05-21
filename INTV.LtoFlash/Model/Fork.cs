@@ -581,8 +581,7 @@ namespace INTV.LtoFlash.Model
                             if (!prepareForDeployment && System.IO.File.Exists(_filePath))
                             {
                                 // Check to see if it looks like a valid LUIGI file.
-                                var luigiRom = INTV.Core.Model.Rom.Create(_filePath, null);
-                                prepareForDeployment = luigiRom.GetLuigiHeader() == null;
+                                prepareForDeployment = LuigiFileHeader.GetHeader(_filePath) == null;
                             }
                         }
                         if (prepareForDeployment)

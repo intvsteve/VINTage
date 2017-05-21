@@ -532,7 +532,8 @@ namespace INTV.LtoFlash.ViewModel
                     // ^^^^ The above is weird... what we do here is, after the 'main' menu finishes saving,
                     // we spawn saving a copy of it in a device-specific directory -- when a device is connected.
                 }
-                UpdateFileSystemsInSync();
+
+                UpdateFileSystemsInSync(true); // always do the refresh after a save
             }
             else
             {
@@ -866,7 +867,7 @@ namespace INTV.LtoFlash.ViewModel
                     {
                         Model = EmptyMenuLayout;
                     }
-                    UpdateFileSystemsInSync();
+                    UpdateFileSystemsInSync(true); // always do after file system changes
                     break;
                 case Device.FileSystemStatisticsPropertyName:
                     FileSystemStatistics.FileSystemStatistics = ActiveLtoFlashDevice.Device.FileSystemStatistics;
@@ -882,10 +883,11 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
-        private void UpdateFileSystemsInSync()
+        // TODO: MOVE OFF-THREAD!
+        private void UpdateFileSystemsInSync(bool doFileSystemCompare)
         {
             var showFileSystemsDifferIcon = false;
-            if (ActiveLtoFlashDevice.IsValid && (ActiveLtoFlashDevice.Device.FileSystem != null))
+            if (doFileSystemCompare && ActiveLtoFlashDevice.IsValid && (ActiveLtoFlashDevice.Device.FileSystem != null))
             {
                 var deviceFileSystem = ActiveLtoFlashDevice.Device.FileSystem;
                 var hostFileSystem = HostPCMenuLayout.MenuLayout.FileSystem.Clone();
@@ -902,6 +904,7 @@ namespace INTV.LtoFlash.ViewModel
                 // Now, ignore things due to incompatibilities.
                 if (differences.GetAllFailures(null).Any())
                 {
+                    // HERE: Instead of cloning and doing everything all over again, how about, as invalid entries are discovered, scoop out things from the *already in-hand diff!* :B
                     hostFileSystem = hostFileSystem.Clone();
                     hostFileSystem.CleanUpInvalidEntries(deviceFileSystem, differences, FileSystemHelpers.ShouldRemoveInvalidEntry, null);
                     differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device);
@@ -926,7 +929,7 @@ namespace INTV.LtoFlash.ViewModel
             {
                 HostPCMenuLayout.ClearItemStates(AttachedPeripherals);
             }
-            UpdateFileSystemsInSync();
+            UpdateFileSystemsInSync(Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu);
         }
 
         private void PromptForFirmwareUpgrade(DeviceViewModel newDevice)

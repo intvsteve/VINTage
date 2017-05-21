@@ -20,6 +20,7 @@
 
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 ////#define ENABLE_PING_ONLY_OPTION
+////#define REPORT_PERFORMANCE
 
 using System;
 using System.Collections.Generic;
@@ -950,6 +951,11 @@ namespace INTV.LtoFlash.Model
 
         private static void ValidateDevice(AsyncTaskData taskData)
         {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             var data = (ExecuteDeviceCommandAsyncTaskData)taskData;
             var device = data.Device;
             var validationResponse = new DeviceValidationResponse();
@@ -1061,6 +1067,14 @@ namespace INTV.LtoFlash.Model
 
                 // One user who was having troubles w/ the system recognizing LTO Flash! encountered this.
             }
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine(">>FileSystem.CompareTo() took: + " + stopwatch.Elapsed.ToString());
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         private static void ValidateDeviceComplete(Device device, bool isValid, DeviceValidationResponse deviceStatusResponse)

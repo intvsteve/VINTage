@@ -1,5 +1,5 @@
 ﻿// <copyright file="Crc32.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,8 @@ namespace INTV.Core.Utility
     /// </summary>
     public static class Crc32
     {
+        private static readonly Crc32Memo Memos = new Crc32Memo();
+
         /* ======================================================================== */
         /*  CRC-32 routines                                        J. Zbiciak, 2001 */
         /*                                           Adapted to C# by S. Orth, 2013 */
@@ -104,18 +107,6 @@ namespace INTV.Core.Utility
         };
 
         /// <summary>
-        /// Accumulates a CRC value using the internally specified lookup table.
-        /// </summary>
-        /// <param name="crc">The current CRC value.</param>
-        /// <param name="data">The new data to incorporate into the CRC.</param>
-        /// <returns>The new CRC value.</returns>
-        /// <remarks>The 32-bit CRC is set up as a right-shifting CRC with no inversions.</remarks>
-        public static uint Update(uint crc, byte data)
-        {
-            return (crc >> 8) ^ Crc32Table[(crc ^ data) & 0xFF];
-        }
-
-        /// <summary>
         /// Compute a CRC value for a file.
         /// </summary>
         /// <param name="file">The absolute path to the file for which to compute a 32-bit CRC.</param>
@@ -158,11 +149,7 @@ namespace INTV.Core.Utility
         /// <returns>The 32-bit CRC of the stream.</returns>
         public static uint OfFile(string file, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
         {
-            uint crc = InitialValue;
-            using (var fileStream = file.OpenFileStream())
-            {
-                crc = OfStream(fileStream, replaceFirstByte, alternateFirstByte, ignoreRanges);
-            }
+            uint crc = CheckMemo(file, replaceFirstByte, alternateFirstByte, ignoreRanges);
             return crc;
         }
 
@@ -182,7 +169,7 @@ namespace INTV.Core.Utility
         /// <param name="dataStream">The data stream upon which to compute a CRC.</param>
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the <paramref name="data"/> array, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
-        public static uint OfStream(Stream dataStream, IEnumerable<Range<int>> ignoreRanges)
+        private static uint OfStream(Stream dataStream, IEnumerable<Range<int>> ignoreRanges)
         {
             return OfStream(dataStream, false, 0, ignoreRanges);
         }
@@ -194,7 +181,7 @@ namespace INTV.Core.Utility
         /// <param name="replaceFirstByte">If <c>true</c>, replaces the first byte in the calculation with the value in alternateFirstByte.</param>
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
-        public static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte)
+        private static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte)
         {
             return OfStream(dataStream, replaceFirstByte, alternateFirstByte, null);
         }
@@ -207,7 +194,7 @@ namespace INTV.Core.Utility
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the <paramref name="data"/> array, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
-        public static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
+        private static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
         {
             var crc = InitialValue;
             var data = new byte[1024];
@@ -233,7 +220,7 @@ namespace INTV.Core.Utility
         /// </summary>
         /// <param name="data">The data from which to compute the CRC.</param>
         /// <returns>The CRC of the data block.</returns>
-        public static uint OfBlock(byte[] data)
+        private static uint OfBlock(byte[] data)
         {
             uint crc = OfBlock(data, InitialValue) ^ InitialValue;
             return crc;
@@ -245,7 +232,7 @@ namespace INTV.Core.Utility
         /// <param name="data">The data from which to compute an updated running CRC.</param>
         /// <param name="runningValue">Running value of the CRC.</param>
         /// <returns>Running CRC, updated with the contents of the given data block.</returns>
-        public static uint OfBlock(byte[] data, uint runningValue)
+        private static uint OfBlock(byte[] data, uint runningValue)
         {
             return OfBlock(data, data.Length, null, runningValue);
         }
@@ -258,7 +245,7 @@ namespace INTV.Core.Utility
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the <paramref name="data"/> array, to exclude from the checksum.</param>
         /// <param name="runningValue">Running value of the CRC.</param>
         /// <returns>Running CRC, updated with the contents of the given data block.</returns>
-        public static uint OfBlock(byte[] data, int numBytesToProcess, IEnumerable<Range<int>> ignoreRanges, uint runningValue)
+        private static uint OfBlock(byte[] data, int numBytesToProcess, IEnumerable<Range<int>> ignoreRanges, uint runningValue)
         {
             var crc = runningValue;
             var checkIgnoreRange = (ignoreRanges != null) && ignoreRanges.Any(r => r.IsValid);
@@ -275,6 +262,52 @@ namespace INTV.Core.Utility
                 }
             }
             return crc;
+        }
+
+        /// <summary>
+        /// Accumulates a CRC value using the internally specified lookup table.
+        /// </summary>
+        /// <param name="crc">The current CRC value.</param>
+        /// <param name="data">The new data to incorporate into the CRC.</param>
+        /// <returns>The new CRC value.</returns>
+        /// <remarks>The 32-bit CRC is set up as a right-shifting CRC with no inversions.</remarks>
+        private static uint Update(uint crc, byte data)
+        {
+            return (crc >> 8) ^ Crc32Table[(crc ^ data) & 0xFF];
+        }
+
+        private static uint CheckMemo(string file, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
+        {
+            uint crc;
+            var added = Memos.CheckAddMemo(file, new Tuple<bool, byte, IEnumerable<Range<int>>>(replaceFirstByte, alternateFirstByte, ignoreRanges), out crc);
+            return crc;
+        }
+
+        private class Crc32Memo : FileMemo<uint>
+        {
+            protected override uint DefaultMemoValue
+            {
+                get { return InitialValue; }
+            }
+
+            protected override uint GetMemo(string filePath, object data)
+            {
+                uint crc = InitialValue;
+                using (var fileStream = filePath.OpenFileStream())
+                {
+                    var supportData = (Tuple<bool, byte, IEnumerable<Range<int>>>)data;
+                    var replaceFirstByte = supportData.Item1;
+                    var alternateFirstByte = supportData.Item2;
+                    var ignoreRanges = supportData.Item3;
+                    crc = OfStream(fileStream, replaceFirstByte, alternateFirstByte, ignoreRanges);
+                }
+                return crc;
+            }
+
+            protected override bool IsValidMemo(uint memo)
+            {
+                return memo != DefaultMemoValue;
+            }
         }
     }
 }

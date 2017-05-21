@@ -89,6 +89,7 @@ namespace INTV.LtoFlash.Model
         public static readonly Fork InvalidFork = Empty;
 
         private string _filePath;
+        private FileSystem _fileSystem;
 
         #region Constructors
 
@@ -168,7 +169,10 @@ namespace INTV.LtoFlash.Model
         {
             get
             {
-                UpdateFilePath(_filePath, false);
+                if ((FileSystem != null) && !FileSystem.Frozen)
+                {
+                    UpdateFilePath(_filePath, false);
+                }
                 return _filePath;
             }
 
@@ -232,7 +236,25 @@ namespace INTV.LtoFlash.Model
 
         /// <inheritdoc />
         [System.Xml.Serialization.XmlIgnore]
-        public FileSystem FileSystem { get; internal set; }
+        public FileSystem FileSystem
+        {
+            get
+            {
+                return _fileSystem;
+            }
+
+            internal set
+            {
+                // Ensure CRC, Size, et. al. are up-to-date. This got optimized such that during XML parse, setting FilePath directly
+                // would no longer cause additional file system activity.
+                var currentFileSystem = _fileSystem;
+                _fileSystem = value;
+                if ((currentFileSystem == null) && (value != null) && !string.IsNullOrEmpty(_filePath) && ((Crc24 == INTV.Core.Utility.Crc24.InvalidCrc) || (Size == 0)))
+                {
+                    UpdateFilePath(_filePath, true);
+                }
+            }
+        }
 
         #endregion // IGlobalFileSystemEntry
 

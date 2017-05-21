@@ -343,6 +343,52 @@ namespace INTV.LtoFlash.ViewModel
 
         #endregion // IPartImportsSatisfiedNotification Members
 
+        #region IPrimaryComponent
+
+        /// <inheritdoc />
+        public void Initialize()
+        {
+            // Freeze so we don't do the expensive work yet.
+            bool? wasFrozen = MenuLayout.FileSystem.Frozen;
+            try
+            {
+                // Copy out programs and forks.
+                IEnumerable<Fork> forks;
+                IEnumerable<Program> programs;
+                lock (MenuLayout.FileSystem)
+                {
+                    MenuLayout.FileSystem.Frozen = true;
+                    programs = MenuLayout.FileSystem.Files.OfType<Program>().Where(p => p != null).ToList();
+                    forks = MenuLayout.FileSystem.Forks.Where(f => (f != null) && !string.IsNullOrEmpty(f.FilePath)).ToList();
+                    MenuLayout.FileSystem.Frozen = wasFrozen.Value;
+                    wasFrozen = null;
+                }
+                foreach (var fork in forks)
+                {
+                    if (!string.IsNullOrEmpty(fork.FilePath))
+                    {
+                        INTV.Core.Utility.Crc24.OfFile(fork.FilePath);
+                    }
+                }
+
+                // TODO: How to deal with Alternates?
+                foreach (var program in programs)
+                {
+                    uint cfgCrc;
+                    Core.Model.Rom.GetRefreshedCrcs(program.Description.Files.RomImagePath, program.Description.Files.RomConfigurationFilePath, out cfgCrc);
+                }
+            }
+            finally
+            {
+                if (wasFrozen != null)
+                {
+                    MenuLayout.FileSystem.Frozen = wasFrozen.Value;
+                }
+            }
+        }
+
+        #endregion // IPrimaryComponent
+
         /// <summary>
         /// Filter function for serial ports.
         /// </summary>

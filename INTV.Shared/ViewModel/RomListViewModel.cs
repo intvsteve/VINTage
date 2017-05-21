@@ -115,7 +115,7 @@ namespace INTV.Shared.ViewModel
             _peripherals = new List<System.WeakReference>();
             CurrentSelection = new ObservableViewModelCollection<ProgramDescriptionViewModel, ProgramDescriptionViewModel>(NoOpFactory, null);
             CurrentSelection.CollectionChanged += HandleCurrentSelectionChanged;
-            Initialize();
+            OSInitialize();
             CompositionHelpers.Container.ComposeExportedValue<IPrimaryComponent>(this);
             CompositionHelpers.Container.ComposeExportedValue<RomListViewModel>(this);
 #if ENABLE_ROMS_PATCH
@@ -233,6 +233,21 @@ namespace INTV.Shared.ViewModel
         }
 
         #endregion // Properties
+
+        #region IPrimaryComponent
+
+        /// <inheritdoc />
+        public void Initialize()
+        {
+            // TODO: How to deal with Alternates?
+            foreach (var program in Programs)
+            {
+                uint cfgCrc;
+                Core.Model.Rom.GetRefreshedCrcs(program.Model.Files.RomImagePath, program.Model.Files.RomConfigurationFilePath, out cfgCrc);
+            }
+        }
+
+        #endregion // IPrimaryComponent
 
         /// <summary>
         /// Initialize the ROM list from the contents of a file.
@@ -618,7 +633,7 @@ namespace INTV.Shared.ViewModel
         /// <summary>
         /// Operating system-specific initialization code.
         /// </summary>
-        partial void Initialize();
+        partial void OSInitialize();
 
 #if ENABLE_ROMS_PATCH
         /// <summary>

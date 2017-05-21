@@ -1,5 +1,5 @@
 ﻿// <copyright file="SingleInstanceApplication.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -17,6 +17,8 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
+
+////#define REPORT_PERFORMANCE
 
 using System;
 using System.Collections.Concurrent;
@@ -263,6 +265,7 @@ namespace INTV.Shared.Utility
             {
                 _settings.Add(settings);
             }
+            AddStartupAction("FileMemoPrimer", FileMemoPrimer.Start, StartupTaskPriority.HighestSyncTaskPriority);
             if (INTV.Shared.Properties.Settings.Default.CheckForAppUpdatesAtLaunch)
             {
                 AddStartupAction(CheckForUpdatesStartupActionName, () => ApplicationCommandGroup.CheckForUpdatesCommand.Execute(true), StartupTaskPriority.LowestAsyncTaskPriority);
@@ -361,5 +364,60 @@ namespace INTV.Shared.Utility
         /// Custom plugin initialization during OnImportsSatisfied().
         /// </summary>
         partial void InitializePlugins();
+
+        /// <summary>
+        /// Implements an off-thread 'memo initializer' for the discovered Components.
+        /// </summary>
+        /// <remarks>Initial testing indicates this does not accomplish the ideal goal of 'priming' the memos as hoped. It turns
+        /// out that during load of ROM list and MenuLayout, most of that already happens -- on the main thread. :/ The memos,
+        /// however, *SEEM* to be pretty fast and accomplish the intended goal - as the primer typically finishes in a few
+        /// hundredths of a second when ROMs are on a 'platter' drive. (Caching, CPU, et. al. all heavily influence this, of course.)</remarks>
+        private class FileMemoPrimer : AsyncTaskData
+        {
+            private FileMemoPrimer(IEnumerable<IPrimaryComponent> components)
+                : base(null)
+            {
+#if REPORT_PERFORMANCE
+                Stopwatch = System.Diagnostics.Stopwatch.StartNew();
+#endif // REPORT_PERFORMANCE
+
+                Components = components;
+            }
+
+            private IEnumerable<IPrimaryComponent> Components { get; set; }
+
+#if REPORT_PERFORMANCE
+            private System.Diagnostics.Stopwatch Stopwatch { get; set; }
+#endif // REPORT_PERFORMANCE
+
+            /// <summary>
+            /// Start the memo primer.
+            /// </summary>
+            internal static void Start()
+            {
+                var components = CompositionHelpers.Container.GetExportedValues<IPrimaryComponent>();
+                var data = new FileMemoPrimer(components);
+                var task = new AsyncTaskWithProgress("FileMemoPrimer", false, true, false, 0);
+                task.RunTask(data, Prime, PrimeFinished);
+            }
+
+            private static void Prime(AsyncTaskData taskData)
+            {
+                var data = (FileMemoPrimer)taskData;
+                foreach (var component in data.Components)
+                {
+                    component.Initialize();
+                }
+            }
+
+            private static void PrimeFinished(AsyncTaskData taskData)
+            {
+#if REPORT_PERFORMANCE
+                var data = (FileMemoPrimer)taskData;
+                data.Stopwatch.Stop();
+                System.Diagnostics.Debug.WriteLine("FileMemoPrimer ran this long: " + data.Stopwatch.Elapsed.ToString());
+#endif // REPORT_PERFORMANCE
+            }
+        }
     }
 }

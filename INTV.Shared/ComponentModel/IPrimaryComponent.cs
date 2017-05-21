@@ -1,5 +1,5 @@
 ﻿// <copyright file="IPrimaryComponent.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,5 +26,10 @@ namespace INTV.Shared.ComponentModel
     /// </summary>
     public interface IPrimaryComponent
     {
+        /// <summary>
+        /// Components that have any post-construction initialization should implement it in this method.
+        /// </summary>
+        /// <remarks>This may be called asynchronously on worker threads. Take care!</remarks>
+        void Initialize();
     }
 }

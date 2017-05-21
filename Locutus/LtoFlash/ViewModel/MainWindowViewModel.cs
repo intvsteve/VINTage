@@ -100,7 +100,7 @@ namespace Locutus.ViewModel
         private ICommand _defaultSelectedRomCommand;
 
         /// <summary>
-        /// Gets or sets the tool tip descripton for the default command to execute on the selected ROM in the ROM list.
+        /// Gets or sets the tool tip description for the default command to execute on the selected ROM in the ROM list.
         /// </summary>
         public string DefaultSelectedRomCommandToolTipDescription
         {
@@ -145,9 +145,6 @@ namespace Locutus.ViewModel
             }
         }
         private IntellicartViewModel _intellicartViewModel;
-
-        [System.ComponentModel.Composition.ImportMany]
-        private System.Collections.Generic.IEnumerable<System.Lazy<IPrimaryComponent>> Components { get; set; }
 
         #endregion // Properties
 

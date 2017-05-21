@@ -1,5 +1,5 @@
 ﻿// <copyright file="IntellicartModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -166,6 +166,15 @@ namespace INTV.Intellicart.Model
         #endregion // IPeripheral
 
         #endregion // Properties
+
+        #region IPrimaryComponent
+
+        /// <inheritdoc />
+        public void Initialize()
+        {
+        }
+
+        #endregion // IPrimaryComponent
 
         #region IPeripheral
 

@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceHelpers.SyncHostToDevice.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -107,7 +107,7 @@ namespace INTV.LtoFlash.Model
             hostFileSystem.PopulateSaveDataForksFromDevice(deviceFileSystem);
 
             // The first pass gathers all differences, including errors.
-            var allDifferencesWithErrors = hostFileSystem.CompareTo(deviceFileSystem, device);
+            var allDifferencesWithErrors = hostFileSystem.CompareTo(deviceFileSystem, device, true);
 
 #if USE_SMART_COPY
             // Now, use a clone of the original file system to compute the actual work to do, and use the failures for a post-op error report.
@@ -121,7 +121,7 @@ namespace INTV.LtoFlash.Model
             }
 
             var partialErrors = hostFileSystemWorkingCopy.CleanUpInvalidEntries(deviceFileSystem, allDifferencesWithErrors, FileSystemHelpers.ShouldRemoveInvalidEntry, ShouldIncludeError);
-            var allDifferences = hostFileSystemWorkingCopy.CompareTo(deviceFileSystem, device);
+            var allDifferences = hostFileSystemWorkingCopy.CompareTo(deviceFileSystem, device, true);
 #else
             // This will try to copy all ROMs, even incompatible ones, and should eventually be removed.
             var hostFileSystemWorkingCopy = hostFileSystem;
@@ -415,7 +415,7 @@ namespace INTV.LtoFlash.Model
 #if DEBUG
         /// <summary>When set to <c>true</c>, incompatible ROMs encountered during copy-to-Locutus operations will be reported via the error dialog.</summary>
         private static bool _reportIncompatibleRoms = false;
-#endif
+#endif // DEBUG
 
         private static bool ShouldIncludeError(Exception error)
         {

@@ -247,10 +247,11 @@ namespace INTV.LtoFlash.Model
         /// <summary>
         /// Refreshes the data describing the instance.
         /// </summary>
+        /// <param name="checkCrc">If <c>true</c>, force a re-check of the CRC.</param>
         /// <param name="error">Receives an error that may have occurred during the refresh operation.</param>
         /// <param name="fileFailedToUpdate">Receives a description of the error that occurred during the refresh operation.</param>
         /// <returns><c>true</c> if the size or Crc24/Uid changes or fails to update.</returns>
-        internal bool Refresh(out System.Exception error, out string fileFailedToUpdate)
+        internal bool Refresh(bool checkCrc, out System.Exception error, out string fileFailedToUpdate)
         {
             fileFailedToUpdate = null;
             error = null;
@@ -259,11 +260,14 @@ namespace INTV.LtoFlash.Model
             var filePath = _filePath;
             try
             {
-                // NOTE: Reading FilePath may have side effects because it will call the PrepareForDeployment
-                // extension method in certain conditions.
-                filePath = FilePath;
-                _filePath = null;
-                error = UpdateFilePath(filePath, true);
+                if (checkCrc)
+                {
+                    // NOTE: Reading FilePath may have side effects because it will call the PrepareForDeployment
+                    // extension method in certain conditions.
+                    filePath = FilePath;
+                    _filePath = null;
+                }
+                error = UpdateFilePath(filePath, checkCrc);
             }
             catch (System.IO.IOException e)
             {

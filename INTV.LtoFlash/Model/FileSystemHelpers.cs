@@ -485,7 +485,7 @@ namespace INTV.LtoFlash.Model
         /// <returns>The differences between the two file systems.</returns>
         public static LfsDifferences CompareTo(this FileSystem referenceFileSystem, FileSystem otherFileSystem)
         {
-            return referenceFileSystem.CompareTo(otherFileSystem, null);
+            return referenceFileSystem.CompareTo(otherFileSystem, null, true);
         }
 
         /// <summary>
@@ -494,19 +494,20 @@ namespace INTV.LtoFlash.Model
         /// <param name="referenceFileSystem">The reference file system.</param>
         /// <param name="otherFileSystem">The file system to compare against the reference file system.</param>
         /// <param name="targetDevice">The device corresponding to <paramref name="otherFileSystem"/> used to validate entries from <paramref name="referenceFileSystem"/>.</param>
+        /// <param name="refresh">If <c>true</c>, force a refresh of the file system entries before comparing.</param>
         /// <returns>The differences between the two file systems.</returns>
         /// <remarks>Entries from <paramref name="referenceFileSystem"/> that are part of update or add operations, but which fail validation checks against
         /// <paramref name="targetDevice"/> will be reported as errors in the difference result.</remarks>
-        public static LfsDifferences CompareTo(this FileSystem referenceFileSystem, FileSystem otherFileSystem, Device targetDevice)
+        public static LfsDifferences CompareTo(this FileSystem referenceFileSystem, FileSystem otherFileSystem, Device targetDevice, bool refresh)
         {
             var gdtDescriptor = new GatherDifferencesDescriptor<IDirectory>(LfsEntityType.Directory, otherFileSystem.Directories, FileSystemHelpers.CompareIDirectories);
-            var gdtDiff = referenceFileSystem.Directories.GatherDifferences(gdtDescriptor, targetDevice);
+            var gdtDiff = referenceFileSystem.Directories.GatherDifferences(gdtDescriptor, targetDevice, refresh);
 
             var gftDescriptor = new GatherDifferencesDescriptor<ILfsFileInfo>(LfsEntityType.File, otherFileSystem.Files, FileSystemHelpers.CompareILfsFileInfo, ValidateFile);
-            var gftDiff = referenceFileSystem.Files.GatherDifferences(gftDescriptor, targetDevice);
+            var gftDiff = referenceFileSystem.Files.GatherDifferences(gftDescriptor, targetDevice, refresh);
 
             var gktDescriptor = new GatherDifferencesDescriptor<Fork>(LfsEntityType.Fork, otherFileSystem.Forks, FileSystemHelpers.CompareForks, ValidateFork);
-            var gktDiff = referenceFileSystem.Forks.GatherDifferences(gktDescriptor, targetDevice);
+            var gktDiff = referenceFileSystem.Forks.GatherDifferences(gktDescriptor, targetDevice, refresh);
 
             var allDifferences = new LfsDifferences(gdtDiff, gftDiff, gktDiff);
             return allDifferences;
@@ -765,45 +766,61 @@ namespace INTV.LtoFlash.Model
         /// <param name="sourceFileSystemTable">The global file system table from the host PC.</param>
         /// <param name="descriptor">The target file system and related information for producing the comparison result.</param>
         /// <param name="targetDevice">The device corresponding to <paramref name="otherFileSystem"/> used to validate entries from <paramref name="referenceFileSystem"/>.</param>
+        /// <param name="forceUpdate">If true, refresh data before validating or comparing.</param>
         /// <returns>The accumulated differences between the host file system table and corresponding Locutus file system table.</returns>
-        public static FileSystemDifferences<T> GatherDifferences<T>(this FixedSizeCollection<T> sourceFileSystemTable, GatherDifferencesDescriptor<T> descriptor, Device targetDevice) where T : class, IGlobalFileSystemEntry
+        private static FileSystemDifferences<T> GatherDifferences<T>(this FixedSizeCollection<T> sourceFileSystemTable, GatherDifferencesDescriptor<T> descriptor, Device targetDevice, bool forceUpdate) where T : class, IGlobalFileSystemEntry
         {
             var deviceId = targetDevice == null ? null : targetDevice.UniqueId;
 
             var differences = new FileSystemDifferences<T>();
             for (int i = 0; i < sourceFileSystemTable.Size; ++i)
             {
+                var refresh = forceUpdate;
                 var sourceEntry = sourceFileSystemTable[i];
                 var targetEntry = descriptor.TargetFileSystemTable[i];
                 if ((sourceEntry == null) && (targetEntry != null))
                 {
-                    differences.ToDelete.Add((uint)i);
+                    if (!descriptor.Ignore(targetEntry))
+                    {
+                        differences.ToDelete.Add((uint)i);
+                    }
                 }
                 else if ((sourceEntry != null) && (targetEntry == null))
                 {
-                    string failedToUpdate;
-                    Exception addError;
-                    if (!descriptor.Validate(sourceEntry, targetDevice, out failedToUpdate, out addError))
+                    if (!descriptor.Ignore(sourceEntry))
                     {
-                        differences.FailedOperations[failedToUpdate] = FailedOperationException.WrapIfNeeded(addError, descriptor.EntityType, (uint)i, deviceId);
+                        string failedToUpdate;
+                        Exception addError;
+                        if (!descriptor.Validate(sourceEntry, targetDevice, forceUpdate, out failedToUpdate, out addError))
+                        {
+                            differences.FailedOperations[failedToUpdate] = FailedOperationException.WrapIfNeeded(addError, descriptor.EntityType, (uint)i, deviceId);
+                        }
+                        differences.ToAdd.Add(sourceEntry);
                     }
-                    differences.ToAdd.Add(sourceEntry);
                 }
                 else if ((sourceEntry != null) && (targetEntry != null))
                 {
-                    string failedToUpdate;
-                    Exception updateError;
-                    if (!descriptor.Validate(sourceEntry, targetDevice, out failedToUpdate, out updateError))
+                    if (!descriptor.Ignore(sourceEntry) && !descriptor.Ignore(targetEntry))
                     {
-                        differences.FailedOperations[failedToUpdate] = FailedOperationException.WrapIfNeeded(updateError, descriptor.EntityType, (uint)i, deviceId);
-                    }
-                    if (!descriptor.Compare(sourceEntry, targetEntry, out failedToUpdate, out updateError))
-                    {
-                        differences.ToUpdate.Add(sourceEntry);
-                    }
-                    if (updateError != null)
-                    {
-                        differences.FailedOperations[failedToUpdate] = FailedOperationException.WrapIfNeeded(updateError, descriptor.EntityType, (uint)i, deviceId);
+                        string failedToUpdate;
+                        Exception updateError;
+                        if (!descriptor.Validate(sourceEntry, targetDevice, refresh, out failedToUpdate, out updateError))
+                        {
+                            differences.FailedOperations[failedToUpdate] = FailedOperationException.WrapIfNeeded(updateError, descriptor.EntityType, (uint)i, deviceId);
+                        }
+                        if (refresh)
+                        {
+                            // Validate check just did a refresh - no need to force it again -- it's already been done
+                            refresh = false;
+                        }
+                        if (!descriptor.Compare(sourceEntry, targetEntry, refresh, out failedToUpdate, out updateError))
+                        {
+                            differences.ToUpdate.Add(sourceEntry);
+                        }
+                        if (updateError != null)
+                        {
+                            differences.FailedOperations[failedToUpdate] = FailedOperationException.WrapIfNeeded(updateError, descriptor.EntityType, (uint)i, deviceId);
+                        }
                     }
                 }
             }
@@ -1192,12 +1209,13 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         /// <param name="lhs">The "left hand" side object.</param>
         /// <param name="rhs">The "right hand" side object.</param>
+        /// <param name="forceUpdate">If true, refresh entry data prior to comparison.</param>
         /// <param name="failedCompareEntryName">Receives the name of the directory whose compare operation failed.</param>
         /// <param name="error">Receives the error that occurred during the comparison.</param>
         /// <returns><c>true</c> if the two objects should be considered the same.</returns>
         /// <remarks>>**NOTE:** GDNs are not compared because this method is used for comparing file systems directly,
         /// via a GDT table walk. By definition, they will always match. They are not part of LFS, they are implicit.</remarks>
-        private static bool CompareIDirectories(IDirectory lhs, IDirectory rhs, out string failedCompareEntryName, out Exception error)
+        private static bool CompareIDirectories(IDirectory lhs, IDirectory rhs, bool forceUpdate, out string failedCompareEntryName, out Exception error)
         {
             failedCompareEntryName = null;
             error = null;
@@ -1221,13 +1239,14 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         /// <param name="lhs">The "left hand" side object.</param>
         /// <param name="rhs">The "right hand" side object.</param>
+        /// <param name="forceUpdate">If true, refresh entry data prior to comparison.</param>
         /// <param name="failedCompareEntryName">Receives the name of the file whose compare operation failed.</param>
         /// <param name="error">Receives the error that occurred during the comparison.</param>
         /// <returns><c>true</c> if the two objects should be considered the same.</returns>
-        private static bool CompareILfsFileInfo(ILfsFileInfo lhs, ILfsFileInfo rhs, out string failedCompareEntryName, out Exception error)
+        private static bool CompareILfsFileInfo(ILfsFileInfo lhs, ILfsFileInfo rhs, bool forceUpdate, out string failedCompareEntryName, out Exception error)
         {
             // For compares, always ignore the fork number for JLP Flash for now.
-            return CompareILfsFileInfo(lhs, rhs, new[] { ForkKind.JlpFlash }, out failedCompareEntryName, out error);
+            return CompareILfsFileInfo(lhs, rhs, forceUpdate, new[] { ForkKind.JlpFlash }, out failedCompareEntryName, out error);
         }
 
         /// <summary>
@@ -1235,6 +1254,7 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         /// <param name="lhs">The "left hand" side object.</param>
         /// <param name="rhs">The "right hand" side object.</param>
+        /// <param name="forceUpdate">If true, refresh entry data prior to comparison.</param>
         /// <param name="forkKindsToIgnore">Forks to ignore during the file system comparison.</param>
         /// <param name="failedCompareEntryName">Receives the name of the file whose compare operation failed.</param>
         /// <param name="error">Receives the error that occurred during the comparison.</param>
@@ -1243,7 +1263,7 @@ namespace INTV.LtoFlash.Model
         /// types of forks explicitly passed to this function.
         /// **NOTE:** GFNs are not compared because this method is used for comparing file systems directly,
         /// via a GFT table walk. By definition, they will always match. They are not part of LFS, they are implicit.</remarks>
-        private static bool CompareILfsFileInfo(ILfsFileInfo lhs, ILfsFileInfo rhs, IEnumerable<ForkKind> forkKindsToIgnore, out string failedCompareEntryName, out Exception error)
+        private static bool CompareILfsFileInfo(ILfsFileInfo lhs, ILfsFileInfo rhs, bool forceUpdate, IEnumerable<ForkKind> forkKindsToIgnore, out string failedCompareEntryName, out Exception error)
         {
             failedCompareEntryName = null;
             error = null;
@@ -1288,7 +1308,7 @@ namespace INTV.LtoFlash.Model
             return areEqual;
         }
 
-        private static bool ValidateFile(ILfsFileInfo file, Device targetDevice, out string failedValidationEntryName, out Exception error)
+        private static bool ValidateFile(ILfsFileInfo file, Device targetDevice, bool forceUpdate, out string failedValidationEntryName, out Exception error)
         {
             failedValidationEntryName = null;
             error = null;
@@ -1319,6 +1339,7 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         /// <param name="lhs">The "left hand" side object.</param>
         /// <param name="rhs">The "right hand" side object.</param>
+        /// <param name="forceUpdate">If true, refresh entry data prior to comparison.</param>
         /// <param name="failedCompareEntryName">Receives the name of the fork whose compare operation failed.</param>
         /// <param name="error">Receives the error that occurred during the comparison.</param>
         /// <returns><c>true</c> if the two objects should be considered the same.</returns>
@@ -1326,30 +1347,30 @@ namespace INTV.LtoFlash.Model
         /// on-device LFS only, and under its control.
         /// **NOTE:** GKNs are not compared because this method is only used for comparing file systems directly,
         /// via a GKT table walk. By definition, they will always match. They are not part of LFS, they are implicit.</remarks>
-        private static bool CompareForks(Fork lhs, Fork rhs, out string failedCompareEntryName, out Exception error)
+        private static bool CompareForks(Fork lhs, Fork rhs, bool forceUpdate, out string failedCompareEntryName, out Exception error)
         {
             failedCompareEntryName = null;
             error = null;
             if (lhs.FileSystem.Origin == FileSystemOrigin.HostComputer)
             {
-                lhs.Refresh(out error, out failedCompareEntryName);
+                lhs.Refresh(forceUpdate, out error, out failedCompareEntryName);
             }
             if (rhs.FileSystem.Origin == FileSystemOrigin.HostComputer)
             {
-                rhs.Refresh(out error, out failedCompareEntryName);
+                rhs.Refresh(forceUpdate, out error, out failedCompareEntryName);
             }
             var areEqual = (lhs.Crc24 == rhs.Crc24) && (lhs.Size == rhs.Size);
             return areEqual;
         }
 
-        private static bool ValidateFork(Fork fork, Device targetDevice, out string failedValidationEntryName, out Exception error)
+        private static bool ValidateFork(Fork fork, Device targetDevice, bool forceUpdate, out string failedValidationEntryName, out Exception error)
         {
             failedValidationEntryName = null;
             error = null;
             var valid = true;
             if (fork.FileSystem.Origin == FileSystemOrigin.HostComputer)
             {
-                fork.Refresh(out error, out failedValidationEntryName);
+                fork.Refresh(forceUpdate, out error, out failedValidationEntryName);
                 valid = error == null;
                 var program = fork.FileSystem.GetFilesUsingForks(new[] { fork }).FirstOrDefault().Value as Program;
                 if (program != null)

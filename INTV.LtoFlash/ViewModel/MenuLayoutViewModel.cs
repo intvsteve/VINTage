@@ -1,5 +1,5 @@
 ﻿// <copyright file="MenuLayoutViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -528,7 +528,7 @@ namespace INTV.LtoFlash.ViewModel
                 case MenuLayoutSynchronizationMode.ToLtoFlash:
                     using (var comparer = RomComparer.GetComparer(RomComparison.Strict))
                     {
-                        differences = MenuLayout.FileSystem.CompareTo(deviceFileSystem, LtoFlashViewModel.ActiveLtoFlashDevice.Device);
+                        differences = MenuLayout.FileSystem.CompareTo(deviceFileSystem, LtoFlashViewModel.ActiveLtoFlashDevice.Device, true);
                         foreach (var dirToAdd in differences.DirectoryDifferences.ToAdd)
                         {
                             var viewModel = FindViewModelForModel((IFileContainer)dirToAdd);

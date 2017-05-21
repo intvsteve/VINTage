@@ -895,7 +895,7 @@ namespace INTV.LtoFlash.ViewModel
                 hostFileSystem.RemoveMenuPositionData();
                 hostFileSystem.PopulateSaveDataForksFromDevice(deviceFileSystem);
                 var deviceSaveMenuPositionFork = deviceFileSystem.RemoveMenuPositionData();
-                var differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device);
+                var differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device, true); // TODO: reevaluate if this is needed
                 if (deviceSaveMenuPositionFork != null)
                 {
                     deviceFileSystem.SetMenuPositionData(deviceSaveMenuPositionFork);
@@ -907,7 +907,7 @@ namespace INTV.LtoFlash.ViewModel
                     // HERE: Instead of cloning and doing everything all over again, how about, as invalid entries are discovered, scoop out things from the *already in-hand diff!* :B
                     hostFileSystem = hostFileSystem.Clone();
                     hostFileSystem.CleanUpInvalidEntries(deviceFileSystem, differences, FileSystemHelpers.ShouldRemoveInvalidEntry, null);
-                    differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device);
+                    differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device, false); // TODO: reevaluate if this is OK - ideally unnecessary!
                 }
                 showFileSystemsDifferIcon = differences.Any();
             }

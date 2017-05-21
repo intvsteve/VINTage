@@ -89,6 +89,7 @@
     <Compile Include="Utility\RunExternalProgram.cs" />
     <Compile Include="Utility\SerialPortDetector.cs" />
     <Compile Include="Utility\SingleInstanceApplication.cs" />
+    <Compile Include="Utility\StorageAccess.cs" />
     <Compile Include="Utility\VisualHelpers.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>

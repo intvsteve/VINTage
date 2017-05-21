@@ -1,5 +1,5 @@
 ﻿// <copyright file="Fork.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -574,6 +574,11 @@ namespace INTV.LtoFlash.Model
             if (_filePath != filePath)
             {
                 _filePath = filePath;
+                if ((FileSystem == null) && !Properties.Settings.Default.ValidateMenuAtStartup)
+                {
+                    // Not in a file system yet - assume XML load, or that CRC and Size will be updated later as needed.
+                    return;
+                }
                 var originalUid = Uid;
                 Crc24 = INTV.Core.Utility.Crc24.InvalidCrc;
                 Size = 0;

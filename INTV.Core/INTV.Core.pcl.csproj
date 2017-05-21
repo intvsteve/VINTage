@@ -115,6 +115,7 @@
     <Compile Include="Model\Program\ProgramFileKind.cs" />
     <Compile Include="Model\Program\ProgramInformationMergeFieldsFlags.cs" />
     <Compile Include="Model\Program\ProgramInformationOrigin.cs" />
+    <Compile Include="Model\Program\ProgramSupportFilesHelpers.cs" />
     <Compile Include="Model\Program\ProgramSupportFileState.cs" />
     <Compile Include="Model\Program\RomFileMetadataProgramInformation.cs" />
     <Compile Include="Model\Program\UserSpecifiedProgramInformationTable.cs" />

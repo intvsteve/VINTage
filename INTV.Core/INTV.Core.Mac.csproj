@@ -114,6 +114,7 @@
     <Compile Include="Model\Program\ProgramInformationTableDescriptor.cs" />
     <Compile Include="Model\Program\ProgramSupportFileState.cs" />
     <Compile Include="Model\Program\ProgramSupportFiles.cs" />
+    <Compile Include="Model\Program\ProgramSupportFilesHelpers.cs" />
     <Compile Include="Model\Program\UnmergedProgramInformation.cs" />
     <Compile Include="Model\Program\UnmergedProgramInformationTable.cs" />
     <Compile Include="Model\Program\UserSpecifiedProgramInformation.cs" />

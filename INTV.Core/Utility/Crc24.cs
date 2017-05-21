@@ -1,5 +1,5 @@
 ﻿// <copyright file="Crc24.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -27,6 +27,8 @@ namespace INTV.Core.Utility
     /// </summary>
     public static class Crc24
     {
+        private static readonly Crc24Memo Memos = new Crc24Memo();
+
         /* ======================================================================== */
         /* Generated on Tue Apr 22 20:59:33 2014,                                   */
         /* by pycrc v0.8.1, http://www.tty1.net/pycrc/                              */
@@ -92,28 +94,13 @@ namespace INTV.Core.Utility
         };
 
         /// <summary>
-        /// Accumulates a CRC value using the internally specified lookup table.
-        /// </summary>
-        /// <param name="crc">The current CRC value.</param>
-        /// <param name="data">The new data to incorporate into the CRC.</param>
-        /// <returns>The new CRC value.</returns>
-        public static uint Update(uint crc, byte data)
-        {
-            return ((crc << 8) ^ Crc24Table[((crc >> 16) ^ data) & 0xFF]) & 0x00FFFFFF;
-        }
-
-        /// <summary>
         /// Compute a CRC value for a file.
         /// </summary>
         /// <param name="file">The absolute path to the file for which to compute a 24-bit CRC.</param>
         /// <returns>The 24-bit CRC of the stream.</returns>
         public static uint OfFile(string file)
         {
-            uint crc = InitialValue;
-            using (var fileStream = file.OpenFileStream())
-            {
-                crc = OfFile(fileStream, InitialValue);
-            }
+            uint crc = CheckMemo(file);
             return crc;
         }
 
@@ -123,7 +110,7 @@ namespace INTV.Core.Utility
         /// <param name="dataStream">The data stream upon which to compute a CRC.</param>
         /// <param name="runningValue">Running value of the CRC.</param>
         /// <returns>The 24-bit CRC of the stream.</returns>
-        public static uint OfFile(Stream dataStream, uint runningValue)
+        public static uint OfStream(Stream dataStream, uint runningValue)
         {
             uint crc = runningValue;
             byte[] data = new byte[1024];
@@ -139,6 +126,47 @@ namespace INTV.Core.Utility
             while (numBytesRead > 0);
 
             return crc & 0x00FFFFFF;
+        }
+
+        /// <summary>
+        /// Accumulates a CRC value using the internally specified lookup table.
+        /// </summary>
+        /// <param name="crc">The current CRC value.</param>
+        /// <param name="data">The new data to incorporate into the CRC.</param>
+        /// <returns>The new CRC value.</returns>
+        private static uint Update(uint crc, byte data)
+        {
+            return ((crc << 8) ^ Crc24Table[((crc >> 16) ^ data) & 0xFF]) & 0x00FFFFFF;
+        }
+
+        private static uint CheckMemo(string file)
+        {
+            uint crc;
+            var added = Memos.CheckAddMemo(file, null, out crc);
+            return crc;
+        }
+
+        private class Crc24Memo : FileMemo<uint>
+        {
+            protected override uint DefaultMemoValue
+            {
+                get { return InitialValue; }
+            }
+
+            protected override uint GetMemo(string filePath, object data)
+            {
+                uint crc = InitialValue;
+                using (var fileStream = filePath.OpenFileStream())
+                {
+                    crc = OfStream(fileStream, InitialValue);
+                }
+                return crc;
+            }
+
+            protected override bool IsValidMemo(uint memo)
+            {
+                return memo != DefaultMemoValue;
+            }
         }
     }
 }

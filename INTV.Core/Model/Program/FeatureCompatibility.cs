@@ -84,6 +84,15 @@ namespace INTV.Core.Model.Program
                         offset = LuigiFeatureFlagsHelpers.IntellivisionIIOffset;
                     }
                     break;
+                case FeatureCategory.KeyboardComponent:
+                    offset = LuigiFeatureFlagsHelpers.KeyboardComponentOffset;
+                    break;
+                case FeatureCategory.Tutorvision:
+                    // For TutorVision, we need to enable the 'feature compatibility sub-version' as well as the feature itself.
+                    // This could be any value from 1..3 (two bits). Just enable minimum necessary version.
+                    luigiFeatureFlags |= (LuigiFeatureFlags)(1ul << LuigiFeatureFlagsHelpers.ExtendedPeripheralCompatibiltyVersionOffset);
+                    offset = LuigiFeatureFlagsHelpers.TutorVisionOffset;
+                    break;
                 case FeatureCategory.Jlp:
                     offset = LuigiFeatureFlagsHelpers.JlpAccelerationOffset;
                     break;
@@ -95,7 +104,7 @@ namespace INTV.Core.Model.Program
             }
             if (offset >= 0)
             {
-                luigiFeatureFlags = (LuigiFeatureFlags)((ulong)compatibility << offset);
+                luigiFeatureFlags |= (LuigiFeatureFlags)((ulong)compatibility << offset);
             }
 
             return luigiFeatureFlags;

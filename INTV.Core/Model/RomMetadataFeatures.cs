@@ -89,7 +89,7 @@ namespace INTV.Core.Model
                 // The second byte contains more compatibility:
                 // .   7   6   5   4   3   2   1   0
                 // +---+---+---+---+---+---+---+---+
-                // | rsvd  | rsvd  | rsvd  | INTY2 |    byte 1
+                // | rsvd  | rsvd  | TUTOR | INTY2 |    byte 1
                 // +---+---+---+---+---+---+---+---+
                 var featureBits = reader.ReadByte();
                 --remainingPayload;
@@ -97,6 +97,10 @@ namespace INTV.Core.Model
                 // Bits 0,1 are Intellivision II compatibility.
                 var compatibility = RawFeatureToFeatureCompatibility(featureBits & FeatureMask);
                 Features.IntellivisionII = compatibility;
+
+                // Bits 2,3 are TutorVision compatibility.
+                compatibility = RawFeatureToFeatureCompatibility((featureBits >> 2) & FeatureMask);
+                Features.Tutorvision = compatibility;
             }
             if (remainingPayload > 0)
             {

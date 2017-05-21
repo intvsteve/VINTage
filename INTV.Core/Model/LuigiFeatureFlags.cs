@@ -61,10 +61,25 @@ namespace INTV.Core.Model
 
         #endregion // Keyboard Component Flags
 
+        #region ExtendedPeripheralCompatibilityVersion Flags
+
+        /// <summary>Mask to use to retrieve version of compatibility flags field sub-version.</summary>
+        ExtendedPeripheralCompatibilityVersionMask = 0x03ul << LuigiFeatureFlagsHelpers.ExtendedPeripheralCompatibiltyVersionOffset,
+
+        #endregion
+
+        #region TutorVision Flags
+
+        /// <summary>TutorVision compatibility mask.</summary>
+        /// <remarks>NOTE: ONLY valid if the ExtendedPeripheralCompatibility version is greater than zero!</remarks>
+        TutorVisionMask = ((ulong)FeatureCompatibilityHelpers.CompatibilityMask) << LuigiFeatureFlagsHelpers.TutorVisionOffset,
+
+        #endregion // TutorVision Flags
+
         #region Reserved Peripheral Flags
 
         /// <summary>Reserved peripheral flags mask.</summary>
-        ReservedMask = 0xFFul << LuigiFeatureFlagsHelpers.ReservedPeripheralOffset,
+        ReservedMask = 0x0Ful << LuigiFeatureFlagsHelpers.ReservedPeripheralOffset,
 
         #endregion // Reserved Peripheral Flags
 
@@ -102,7 +117,7 @@ namespace INTV.Core.Model
         FeatureFlagsExplicitlySet = 1ul << 63,
 
         /// <summary>Mask for unused feature bits.</summary>
-        UnusedMask = ~(IntellivoiceMask | EcsMask | IntellivisionIIMask | KeyboardComponentMask | JlpAccelerationMask | JlpReservedMask | JlpFlashMinimumSaveDataSectorCountMask | LtoFlashMemoryMapperEnabled | FeatureFlagsExplicitlySet)
+        UnusedMask = ~(IntellivoiceMask | EcsMask | IntellivisionIIMask | KeyboardComponentMask | ExtendedPeripheralCompatibilityVersionMask | TutorVisionMask | JlpAccelerationMask | JlpReservedMask | JlpFlashMinimumSaveDataSectorCountMask | LtoFlashMemoryMapperEnabled | FeatureFlagsExplicitlySet)
 
         #endregion // Utility Flags
     }
@@ -148,12 +163,31 @@ namespace INTV.Core.Model
 
         #endregion // Keyboard Component Bits
 
+        #region Extended Peripheral Compatibility Version Bits
+
+        /// <summary>Bit shift amount for extended peripheral compatibility bits field sub-version.</summary>
+        internal const int ExtendedPeripheralCompatibiltyVersionOffset = KeyboardComponentOffset + KeyboardComponentBitCount; // (8)
+
+        private const int ExtendedPeripheralCompatibiltyVersionBitCount = 2;
+
+        #endregion // Extended Peripheral Compatibility Version Bits
+
+        #region TutorVision Bits
+
+        /// <summary>Bit shift amount for TutorVision features.</summary>
+        /// <remarks>TutorVision bits should only be used if the compatibility sub-version is greater than zero.</remarks>
+        internal const int TutorVisionOffset = ExtendedPeripheralCompatibiltyVersionOffset + ExtendedPeripheralCompatibiltyVersionBitCount; // (10)
+
+        private const int TutorVisionBitCount = 2;
+
+        #endregion // TutorVision Bits
+
         #region Reserved Peripheral Bits
 
         /// <summary>Bit shift amount for reserved peripheral flags.</summary>
-        internal const int ReservedPeripheralOffset = KeyboardComponentOffset + KeyboardComponentBitCount; // (8)
+        internal const int ReservedPeripheralOffset = TutorVisionOffset + TutorVisionBitCount; // (12)
 
-        private const int ReservedPeripheralBitCount = 8;
+        private const int ReservedPeripheralBitCount = 4;
 
         #endregion // Reserved Peripheral Bits
 
@@ -215,6 +249,23 @@ namespace INTV.Core.Model
             var keyboardComponentCompatibility = (uint)(featureFlags & LuigiFeatureFlags.KeyboardComponentMask);
             programFeatures.KeyboardComponent = (KeyboardComponentFeatures)(keyboardComponentCompatibility >> KeyboardComponentOffset);
 
+            var extendedPeripheralCompatibilityVersion = featureFlags.ExtendedPeripheralCompatabilityBitsVersion();
+            if (extendedPeripheralCompatibilityVersion > 0)
+            {
+                var tutorvisionCompatibility = (uint)(featureFlags & LuigiFeatureFlags.TutorVisionMask);
+                programFeatures.Tutorvision = (FeatureCompatibility)(tutorvisionCompatibility >> TutorVisionOffset);
+            }
+
+            if (extendedPeripheralCompatibilityVersion > 1)
+            {
+                // TBD
+            }
+
+            if (extendedPeripheralCompatibilityVersion > 2)
+            {
+                // TBD
+            }
+
             var jlpAccelerationCompatibility = (uint)(featureFlags & LuigiFeatureFlags.JlpAccelerationMask);
             programFeatures.Jlp = (JlpFeatures)(jlpAccelerationCompatibility >> JlpAccelerationOffset);
 
@@ -233,7 +284,7 @@ namespace INTV.Core.Model
                 }
             }
 
-            var ltoFlashMemoryMapper = (uint)(featureFlags & LuigiFeatureFlags.LtoFlashMemoryMapperEnabled);
+            var ltoFlashMemoryMapper = (ulong)(featureFlags & LuigiFeatureFlags.LtoFlashMemoryMapperEnabled);
             if (ltoFlashMemoryMapper != 0)
             {
                 programFeatures.LtoFlash |= LtoFlashFeatures.LtoFlashMemoryMapped;
@@ -261,8 +312,19 @@ namespace INTV.Core.Model
         /// <returns>The minimum number of required save data sectors.</returns>
         public static ushort MinimumFlashSaveDataSectors(this LuigiFeatureFlags featureFlags)
         {
-            var minimumJlpFlashSaveSectors = (uint)(featureFlags & LuigiFeatureFlags.JlpFlashMinimumSaveDataSectorCountMask) >> JlpFlashMinimumSaveDataSectorsCountOffset;
+            var minimumJlpFlashSaveSectors = (ulong)(featureFlags & LuigiFeatureFlags.JlpFlashMinimumSaveDataSectorCountMask) >> JlpFlashMinimumSaveDataSectorsCountOffset;
             return (ushort)minimumJlpFlashSaveSectors;
+        }
+
+        /// <summary>
+        /// Extracts the version number of extended peripheral compatibility flags data from the feature flags.
+        /// </summary>
+        /// <param name="featureFlags">The flags whose extended peripheral compatibility flags are needed.</param>
+        /// <returns>The extended peripheral flags version number.</returns>
+        public static byte ExtendedPeripheralCompatabilityBitsVersion(this LuigiFeatureFlags featureFlags)
+        {
+            byte compatibilitySubVersion = (byte)((ulong)(featureFlags & LuigiFeatureFlags.ExtendedPeripheralCompatibilityVersionMask) >> ExtendedPeripheralCompatibiltyVersionOffset);
+            return compatibilitySubVersion;
         }
     }
 }

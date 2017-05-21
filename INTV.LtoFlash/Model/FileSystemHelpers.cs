@@ -1340,6 +1340,9 @@ namespace INTV.LtoFlash.Model
             return areEqual;
         }
 
+        private static readonly ForkKind[] DefaultForksToIgnore = new[] { ForkKind.JlpFlash };
+        private static readonly ForkKind[] RootFileDefaultForksToIgnore = new[] { ForkKind.JlpFlash, ForkKind.Manual };
+
         /// <summary>
         /// Compares two ILfsFileInfo objects.
         /// </summary>
@@ -1352,7 +1355,10 @@ namespace INTV.LtoFlash.Model
         private static bool CompareILfsFileInfo(ILfsFileInfo lhs, ILfsFileInfo rhs, bool forceUpdate, out string failedCompareEntryName, out Exception error)
         {
             // For compares, always ignore the fork number for JLP Flash for now.
-            return CompareILfsFileInfo(lhs, rhs, forceUpdate, new[] { ForkKind.JlpFlash }, out failedCompareEntryName, out error);
+            var isRootFile = (lhs != null) && object.ReferenceEquals(lhs.FileSystem.Files[GlobalFileTable.RootDirectoryFileNumber], lhs);
+
+            var forksToIgnore = isRootFile ? RootFileDefaultForksToIgnore : DefaultForksToIgnore;
+            return CompareILfsFileInfo(lhs, rhs, forceUpdate, forksToIgnore, out failedCompareEntryName, out error);
         }
 
         /// <summary>
@@ -1373,42 +1379,85 @@ namespace INTV.LtoFlash.Model
         {
             failedCompareEntryName = null;
             error = null;
-            var hostFile = lhs as FileNode;
-            if (hostFile == null)
+            var areEqual = object.ReferenceEquals(lhs, rhs);
+            if (!areEqual)
             {
-                hostFile = rhs as FileNode;
-            }
-            var ltoFlashFile = rhs as LfsFileInfo;
-            if (ltoFlashFile == null)
-            {
-                ltoFlashFile = lhs as LfsFileInfo;
-            }
-            var areEqual = (hostFile.FileType == ltoFlashFile.FileType) && (hostFile.Color == ltoFlashFile.Color) && (hostFile.GlobalDirectoryNumber == ltoFlashFile.GlobalDirectoryNumber);
-            areEqual = areEqual && (hostFile.LongName == ltoFlashFile.LongName) && (hostFile.Reserved == ltoFlashFile.Reserved);
-            if (areEqual)
-            {
-                if (hostFile.ShortName == null)
+                // This was probably written before ILfsFileInfo fully supported everything in the compare...
+#if false
+                var hostFile = lhs as FileNode;
+                if (hostFile == null)
                 {
-                    // On the host, we may use NULL as the short name if short and long name are the same.
+                    hostFile = rhs as FileNode;
+                }
+                var ltoFlashFile = rhs as LfsFileInfo;
+                if (ltoFlashFile == null)
+                {
+                    ltoFlashFile = lhs as LfsFileInfo;
+                }
+                areEqual = (hostFile.FileType == ltoFlashFile.FileType) && (hostFile.Color == ltoFlashFile.Color) && (hostFile.GlobalDirectoryNumber == ltoFlashFile.GlobalDirectoryNumber);
+                areEqual = areEqual && (hostFile.LongName == ltoFlashFile.LongName) && (hostFile.Reserved == ltoFlashFile.Reserved);
+#endif
+                areEqual = (lhs.FileType == rhs.FileType) && (lhs.Color == rhs.Color) && (lhs.GlobalDirectoryNumber == rhs.GlobalDirectoryNumber);
+                areEqual = areEqual && (lhs.LongName == rhs.LongName) && (lhs.Reserved == rhs.Reserved);
+                if (areEqual)
+                {
+                    // On host file systems, we may use NULL as the short name if short and long name are the same.
                     // The on-device LFS maintains these explicitly separately, so we need to ensure valid short name.
-                    var localShortName = string.Empty;
-                    if (!string.IsNullOrEmpty(hostFile.LongName))
+                    var lhsShortName = lhs.ShortName;
+                    if (lhsShortName == null)
                     {
-                        localShortName = hostFile.LongName.Substring(0, Math.Min(hostFile.LongName.Length, FileSystemConstants.MaxShortNameLength));
+                        lhsShortName = string.Empty;
+                        if (!string.IsNullOrEmpty(lhs.LongName))
+                        {
+                            lhsShortName = lhs.LongName.Substring(0, Math.Min(lhs.LongName.Length, FileSystemConstants.MaxShortNameLength));
+                        }
                     }
-                    areEqual = localShortName == ltoFlashFile.ShortName;
+                    var rhsShortName = rhs.ShortName;
+                    if (rhsShortName == null)
+                    {
+                        rhsShortName = string.Empty;
+                        if (!string.IsNullOrEmpty(rhs.LongName))
+                        {
+                            rhsShortName = rhs.LongName.Substring(0, Math.Min(rhs.LongName.Length, FileSystemConstants.MaxShortNameLength));
+                        }
+                    }
+                    areEqual = lhsShortName == rhsShortName;
+#if false
+                    if (hostFile.ShortName == null)
+                    {
+                        // On the host, we may use NULL as the short name if short and long name are the same.
+                        // The on-device LFS maintains these explicitly separately, so we need to ensure valid short name.
+                        var localShortName = string.Empty;
+                        if (!string.IsNullOrEmpty(hostFile.LongName))
+                        {
+                            localShortName = hostFile.LongName.Substring(0, Math.Min(hostFile.LongName.Length, FileSystemConstants.MaxShortNameLength));
+                        }
+                        areEqual = localShortName == ltoFlashFile.ShortName;
+                    }
+                    else
+                    {
+                        areEqual = hostFile.ShortName == ltoFlashFile.ShortName;
+                    }
+#endif
                 }
-                else
+#if false
+                for (int k = 0; areEqual && (k < hostFile.ForkNumbers.Length); ++k)
                 {
-                    areEqual = hostFile.ShortName == ltoFlashFile.ShortName;
+                    // For compares, always ignore the fork number for JLP Flash for now.
+                    if (!forkKindsToIgnore.Contains((ForkKind)k) && k != (int)ForkKind.JlpFlash)
+                    {
+                        areEqual = hostFile.ForkNumbers[k] == ltoFlashFile.ForkNumbers[k];
+                    }
                 }
-            }
-            for (int k = 0; areEqual && (k < hostFile.ForkNumbers.Length); ++k)
-            {
-                // For compares, always ignore the fork number for JLP Flash for now.
-                if (!forkKindsToIgnore.Contains((ForkKind)k) && k != (int)ForkKind.JlpFlash)
+#endif
+                for (int k = 0; areEqual && (k < lhs.ForkNumbers.Length); ++k)
                 {
-                    areEqual = hostFile.ForkNumbers[k] == ltoFlashFile.ForkNumbers[k];
+                    // For compares, always ignore the fork number for JLP Flash for now.
+                    var forkKind = (ForkKind)k;
+                    if (!forkKindsToIgnore.Contains(forkKind) && (forkKind != ForkKind.JlpFlash))
+                    {
+                        areEqual = lhs.ForkNumbers[k] == rhs.ForkNumbers[k];
+                    }
                 }
             }
             return areEqual;

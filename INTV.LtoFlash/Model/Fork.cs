@@ -455,7 +455,7 @@ namespace INTV.LtoFlash.Model
         private System.Exception UpdateFilePath(string filePath, bool forceUpdate)
         {
             System.Exception error = null;
-            if ((FileSystem != null) && FileSystem.Root.ForSave)
+            if ((FileSystem != null) && FileSystem.Frozen)
             {
                 // During save, do not attempt to regenerate contents.
                 return error;

@@ -216,7 +216,7 @@ namespace INTV.Intellicart.Model
         /// specified by the Intellicart documentation.</remarks>
         public void DownloadRom(string romPath)
         {
-            using (var rom = System.IO.File.OpenRead(romPath))
+            using (var rom = FileUtilities.OpenFileStream(romPath))
             {
                 using (var port = new SerialPortConnection(SerialPort))
                 {

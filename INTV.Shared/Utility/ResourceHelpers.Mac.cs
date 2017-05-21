@@ -75,7 +75,7 @@ namespace INTV.Shared.Utility
             NSImage image = null;
             if (System.IO.File.Exists(imagePath))
             {
-                using (var stream = System.IO.File.OpenRead(imagePath))
+                using (var stream = FileUtilities.OpenFileStream(imagePath))
                 {
                     image = InitImageFromStream(stream);
                 }

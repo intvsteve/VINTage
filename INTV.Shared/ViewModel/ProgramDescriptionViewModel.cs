@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescriptionViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define REPORT_PERFORMANCE
+
 using System.Collections.Generic;
 using INTV.Core.ComponentModel;
 using INTV.Core.Model;
@@ -32,7 +34,7 @@ using OSImage = System.Windows.Media.ImageSource;
 using OSImage = AppKit.NSImage;
 #else
 using OSImage = MonoMac.AppKit.NSImage;
-#endif
+#endif // __UNIFIED__
 #endif
 
 namespace INTV.Shared.ViewModel
@@ -42,14 +44,30 @@ namespace INTV.Shared.ViewModel
     /// </summary>
     public partial class ProgramDescriptionViewModel : System.ComponentModel.INotifyPropertyChanged
     {
+        private static readonly Dictionary<ProgramSupportFileState, OSImage> StatusIcons;
+        private static readonly Dictionary<ProgramSupportFileState, string> StatusMessages;
+
+#if REPORT_PERFORMANCE
+        private static INTV.Shared.Utility.Logger Logger
+        {
+            get
+            {
+                if (_logger == null)
+                {
+                    _logger = new Logger(System.IO.Path.Combine(INTV.Shared.Model.RomListConfiguration.Instance.ErrorLogDirectory, "ValidateRomLog.txt"));
+                }
+                return _logger;
+            }
+        }
+        private static INTV.Shared.Utility.Logger _logger;
+#endif // REPORT_PERFORMANCE
+
         /// <summary>
         /// Describes the data format for dragging a ProgramDescription. When used with
         /// Drag and Drop operations, the data must be an IEnumerable of ProgramDescription objects.
         /// </summary>
         public static readonly string DragDataFormat = "Intellivision.ProgramDescriptions";
 
-        private static readonly Dictionary<ProgramSupportFileState, OSImage> StatusIcons;
-        private static readonly Dictionary<ProgramSupportFileState, string> StatusMessages;
         private ProgramDescription _description;
 
         #region Constructors
@@ -93,7 +111,22 @@ namespace INTV.Shared.ViewModel
             _description.PropertyChanged += OnPropertyChanged;
             if (Properties.Settings.Default.RomListValidateAtStartup)
             {
+#if REPORT_PERFORMANCE
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                try
+                {
+#endif // REPORT_PERFORMANCE
                 ProgramDescription.Validate(programDescription, null, null, false);
+#if REPORT_PERFORMANCE
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                    var romPath = Rom == null ? "<invalid ROM>" : Rom.RomPath;
+                    romPath = romPath ?? "<invalid ROM path>";
+                    Logger.Log("ProgramDescriptionViewModel().Validate() for: " + romPath + " took: + " + stopwatch.Elapsed.ToString());
+                }
+#endif // REPORT_PERFORMANCE
             }
             var state = programDescription.Files.GetSupportFileState(ProgramFileKind.Rom);
             RomFileStatus = GetRomFileStatus(state);
@@ -281,6 +314,11 @@ namespace INTV.Shared.ViewModel
         /// <returns><c>true</c>, if file status changed, <c>false</c> otherwise.</returns>
         public bool RefreshFileStatus(IEnumerable<IPeripheral> peripherals)
         {
+#if REPORT_PERFORMANCE
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
+            {
+#endif // REPORT_PERFORMANCE
             var currentStatus = RomFileStatus;
             var currentIcon = RomFileStatusIcon;
             ProgramDescription.Validate(Model, peripherals, SingleInstanceApplication.Instance.GetConnectedDevicesHistory(), true);
@@ -294,6 +332,16 @@ namespace INTV.Shared.ViewModel
                 this.RaisePropertyChanged(PropertyChanged, "RomFileStatusIcon");
             }
             return statusChanged;
+#if REPORT_PERFORMANCE
+            }
+            finally
+            {
+                stopwatch.Stop();
+                var romPath = Rom == null ? "<invalid ROM>" : Rom.RomPath;
+                romPath = romPath ?? "<invalid ROM path>";
+                Logger.Log("ProgramDescriptionViewModel.RefreshFileStatus() for: " + romPath + " took: + " + stopwatch.Elapsed.ToString());
+            }
+#endif // REPORT_PERFORMANCE
         }
 
         /// <summary>

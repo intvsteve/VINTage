@@ -314,6 +314,7 @@ namespace INTV.LtoFlash.Commands
         {
             if (!cancelled)
             {
+                ltoFlashViewModel.ResetCachedFileSystemsCompareResult();
                 var menuLayout = ltoFlashViewModel.HostPCMenuLayout.MenuLayout;
                 var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
                 device.FileSystem = result.Item1;
@@ -496,6 +497,7 @@ namespace INTV.LtoFlash.Commands
         {
             if (!cancelled && (syncErrors.Data != null))
             {
+                ltoFlashViewModel.ResetCachedFileSystemsCompareResult();
                 var menuLayout = (MenuLayout)syncErrors.Data;
                 ltoFlashViewModel.HostPCMenuLayout.MenuLayout = menuLayout;
                 var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;

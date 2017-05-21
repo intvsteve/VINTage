@@ -1,5 +1,5 @@
 ﻿// <copyright file="UploadDataBlockToRam.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -64,7 +64,7 @@ namespace INTV.LtoFlash.Model.Commands
             {
                 Data.Serialize(new INTV.Shared.Utility.ASCIIBinaryWriter(data));
                 data.Seek(0, System.IO.SeekOrigin.Begin);
-                RunningCrc24 = INTV.Core.Utility.Crc24.OfFile(data, RunningCrc24);
+                RunningCrc24 = INTV.Core.Utility.Crc24.OfStream(data, RunningCrc24);
                 data.Seek(0, System.IO.SeekOrigin.Begin);
                 succeeded = ExecuteCommandWithData(target, taskData, data, null);
             }

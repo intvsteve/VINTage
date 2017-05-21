@@ -520,84 +520,8 @@ namespace INTV.LtoFlash.ViewModel
         {
             // first, clear all status
             ClearItemStates(LtoFlashViewModel.AttachedPeripherals);
-            LtoFlashViewModel.SyncMode = mode;
-
-            LfsDifferences differences = null;
-            switch (LtoFlashViewModel.SyncMode)
-            {
-                case MenuLayoutSynchronizationMode.ToLtoFlash:
-                    using (var comparer = RomComparer.GetComparer(RomComparison.Strict))
-                    {
-                        differences = MenuLayout.FileSystem.CompareTo(deviceFileSystem, LtoFlashViewModel.ActiveLtoFlashDevice.Device, true);
-                        foreach (var dirToAdd in differences.DirectoryDifferences.ToAdd)
-                        {
-                            var viewModel = FindViewModelForModel((IFileContainer)dirToAdd);
-                            viewModel.State = Core.Model.Program.ProgramSupportFileState.New;
-                        }
-                        foreach (var dirToUpdate in differences.DirectoryDifferences.ToUpdate)
-                        {
-                            var viewModel = FindViewModelForModel((IFileContainer)dirToUpdate);
-                            viewModel.State = Core.Model.Program.ProgramSupportFileState.PresentButModified;
-                        }
-                        foreach (var fileToAdd in differences.FileDifferences.ToAdd)
-                        {
-                            UpdatePreviewState(fileToAdd, (v) => !(v is FolderViewModel), ProgramSupportFileState.New, differences.FileDifferences.FailedOperations, comparer);
-                        }
-                        foreach (var fileToUpdate in differences.FileDifferences.ToUpdate)
-                        {
-                            UpdatePreviewState(fileToUpdate, (v) => !(v is FolderViewModel) || (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, differences.FileDifferences.FailedOperations, comparer);
-                        }
-                        if (differences.ForkDifferences.ToUpdate.Any())
-                        {
-                            var filesWithForksToUpdate = MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToUpdate);
-                            foreach (var filesToUpdate in filesWithForksToUpdate.Values)
-                            {
-                                foreach (var fileToUpdate in filesToUpdate)
-                                {
-                                    UpdatePreviewState(fileToUpdate, (v) => !(v is FolderViewModel) && (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, differences.FileDifferences.FailedOperations, comparer);
-                                }
-                            }
-                        }
-                    }
-                    break;
-                case MenuLayoutSynchronizationMode.FromLtoFlash:
-                    differences = deviceFileSystem.CompareTo(MenuLayout.FileSystem);
-                    foreach (var gdnToDelete in differences.DirectoryDifferences.ToDelete)
-                    {
-                        var dirToDelete = MenuLayout.FileSystem.Directories[(int)gdnToDelete];
-                        var viewModel = FindViewModelForModel((IFileContainer)dirToDelete);
-                        viewModel.State = Core.Model.Program.ProgramSupportFileState.Deleted;
-                    }
-                    foreach (var dirToUpdate in differences.DirectoryDifferences.ToUpdate)
-                    {
-                        var localModel = MenuLayout.FileSystem.Directories[dirToUpdate.GlobalDirectoryNumber];
-                        var viewModel = FindViewModelForModel((IFileContainer)localModel);
-                        viewModel.State = Core.Model.Program.ProgramSupportFileState.PresentButModified;
-                    }
-                    foreach (var gfnToDelete in differences.FileDifferences.ToDelete)
-                    {
-                        var fileToDelete = MenuLayout.FileSystem.Files[(int)gfnToDelete];
-                        UpdatePreviewState(fileToDelete, (v) => !(v is FolderViewModel), ProgramSupportFileState.Deleted, null, null);
-                    }
-                    foreach (var fileToUpdate in differences.FileDifferences.ToUpdate)
-                    {
-                        var localModel = MenuLayout.FileSystem.Files[fileToUpdate.GlobalFileNumber];
-                        UpdatePreviewState(localModel, (v) => !(v is FolderViewModel) || (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, null, null);
-                    }
-                    if (differences.ForkDifferences.ToUpdate.Any())
-                    {
-                        var filesWithForksToUpdate = MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToUpdate);
-                        foreach (var filesToUpdate in filesWithForksToUpdate.Values)
-                        {
-                            foreach (var fileToUpdate in filesToUpdate)
-                            {
-                                var localModel = MenuLayout.FileSystem.Files[fileToUpdate.GlobalFileNumber];
-                                UpdatePreviewState(localModel, (v) => !(v is FolderViewModel) && (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, null, null);
-                            }
-                        }
-                    }
-                    break;
-            }
+            var compareTask = new AsyncTaskWithProgress("Calculating Differences...", true, true);
+            MenuLayout.FileSystem.CompareTo(deviceFileSystem, LtoFlashViewModel.ActiveLtoFlashDevice.Device, true, compareTask, (d) => HighlightDifferencesFromDeviceFileSystem(d, deviceFileSystem, mode));
         }
 
         /// <summary>
@@ -840,6 +764,86 @@ namespace INTV.LtoFlash.ViewModel
             if (menuLayoutViewModel._updatingItems == 0)
             {
                 menuLayoutViewModel.MenuLayout.Save(menuLayoutViewModel.FilePath);
+            }
+        }
+
+        private void HighlightDifferencesFromDeviceFileSystem(LfsDifferences differences, FileSystem deviceFileSystem, MenuLayoutSynchronizationMode mode)
+        {
+            LtoFlashViewModel.SyncMode = mode;
+
+            switch (LtoFlashViewModel.SyncMode)
+            {
+                case MenuLayoutSynchronizationMode.ToLtoFlash:
+                    using (var comparer = RomComparer.GetComparer(RomComparison.Strict))
+                    {
+                        foreach (var dirToAdd in differences.DirectoryDifferences.ToAdd)
+                        {
+                            var viewModel = FindViewModelForModel((IFileContainer)dirToAdd);
+                            viewModel.State = Core.Model.Program.ProgramSupportFileState.New;
+                        }
+                        foreach (var dirToUpdate in differences.DirectoryDifferences.ToUpdate)
+                        {
+                            var viewModel = FindViewModelForModel((IFileContainer)dirToUpdate);
+                            viewModel.State = Core.Model.Program.ProgramSupportFileState.PresentButModified;
+                        }
+                        foreach (var fileToAdd in differences.FileDifferences.ToAdd)
+                        {
+                            UpdatePreviewState(fileToAdd, (v) => !(v is FolderViewModel), ProgramSupportFileState.New, differences.FileDifferences.FailedOperations, comparer);
+                        }
+                        foreach (var fileToUpdate in differences.FileDifferences.ToUpdate)
+                        {
+                            UpdatePreviewState(fileToUpdate, (v) => !(v is FolderViewModel) || (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, differences.FileDifferences.FailedOperations, comparer);
+                        }
+                        if (differences.ForkDifferences.ToUpdate.Any())
+                        {
+                            var filesWithForksToUpdate = MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToUpdate);
+                            foreach (var filesToUpdate in filesWithForksToUpdate.Values)
+                            {
+                                foreach (var fileToUpdate in filesToUpdate)
+                                {
+                                    UpdatePreviewState(fileToUpdate, (v) => !(v is FolderViewModel) && (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, differences.FileDifferences.FailedOperations, comparer);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case MenuLayoutSynchronizationMode.FromLtoFlash:
+                    differences = deviceFileSystem.CompareTo(MenuLayout.FileSystem);
+                    foreach (var gdnToDelete in differences.DirectoryDifferences.ToDelete)
+                    {
+                        var dirToDelete = MenuLayout.FileSystem.Directories[(int)gdnToDelete];
+                        var viewModel = FindViewModelForModel((IFileContainer)dirToDelete);
+                        viewModel.State = Core.Model.Program.ProgramSupportFileState.Deleted;
+                    }
+                    foreach (var dirToUpdate in differences.DirectoryDifferences.ToUpdate)
+                    {
+                        var localModel = MenuLayout.FileSystem.Directories[dirToUpdate.GlobalDirectoryNumber];
+                        var viewModel = FindViewModelForModel((IFileContainer)localModel);
+                        viewModel.State = Core.Model.Program.ProgramSupportFileState.PresentButModified;
+                    }
+                    foreach (var gfnToDelete in differences.FileDifferences.ToDelete)
+                    {
+                        var fileToDelete = MenuLayout.FileSystem.Files[(int)gfnToDelete];
+                        UpdatePreviewState(fileToDelete, (v) => !(v is FolderViewModel), ProgramSupportFileState.Deleted, null, null);
+                    }
+                    foreach (var fileToUpdate in differences.FileDifferences.ToUpdate)
+                    {
+                        var localModel = MenuLayout.FileSystem.Files[fileToUpdate.GlobalFileNumber];
+                        UpdatePreviewState(localModel, (v) => !(v is FolderViewModel) || (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, null, null);
+                    }
+                    if (differences.ForkDifferences.ToUpdate.Any())
+                    {
+                        var filesWithForksToUpdate = MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToUpdate);
+                        foreach (var filesToUpdate in filesWithForksToUpdate.Values)
+                        {
+                            foreach (var fileToUpdate in filesToUpdate)
+                            {
+                                var localModel = MenuLayout.FileSystem.Files[fileToUpdate.GlobalFileNumber];
+                                UpdatePreviewState(localModel, (v) => !(v is FolderViewModel) && (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, null, null);
+                            }
+                        }
+                    }
+                    break;
             }
         }
 

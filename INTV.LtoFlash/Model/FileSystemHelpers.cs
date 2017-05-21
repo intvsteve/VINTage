@@ -698,6 +698,103 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
+        /// Compares two Locutus File Systems with additional device validation asynchronously.
+        /// </summary>
+        /// <param name="referenceFileSystem">The reference file system.</param>
+        /// <param name="otherFileSystem">The file system to compare against the reference file system.</param>
+        /// <param name="targetDevice">The device corresponding to <paramref name="otherFileSystem"/> used to validate entries from <paramref name="referenceFileSystem"/>.</param>
+        /// <param name="refresh">If <c>true</c>, force a refresh of the file system entries before comparing.</param>
+        /// <param name="task">The asynchronous task to use to do the comparison.</param>
+        /// <param name="onCompareComplete">Delegate to call when comparison is complete.</param>
+        /// <remarks>Entries from <paramref name="referenceFileSystem"/> that are part of update or add operations, but which fail validation checks against
+        /// <paramref name="targetDevice"/> will be reported as errors in the difference result. The completion delegate is called on the thread that calls this method.</remarks>
+        public static void CompareTo(this FileSystem referenceFileSystem, FileSystem otherFileSystem, Device targetDevice, bool refresh, AsyncTaskWithProgress task, Action<LfsDifferences> onCompareComplete)
+        {
+            AsyncCompareFileSystems.Start(task, onCompareComplete, referenceFileSystem, otherFileSystem, targetDevice, refresh);
+        }
+
+        /// <summary>
+        /// Asynchronous task data specialization for executing a file system comparison.
+        /// </summary>
+        private class AsyncCompareFileSystems : AsyncTaskData
+        {
+            private AsyncCompareFileSystems(AsyncTaskWithProgress task, Action<LfsDifferences> onCompareComplete, FileSystem referenceFileSystem, FileSystem otherFileSystem, Device targetDevice, bool refresh)
+                : base(task)
+            {
+                OnCompareComplete = onCompareComplete;
+                ReferenceFileSystem = referenceFileSystem;
+                OtherFileSystem = otherFileSystem;
+                TargetDevice = targetDevice;
+                Refresh = refresh;
+            }
+
+            private FileSystem ReferenceFileSystem { get; set; }
+            private FileSystem OtherFileSystem { get; set; }
+            private Device TargetDevice { get; set; }
+            private bool Refresh { get; set; }
+            private Action<LfsDifferences> OnCompareComplete { get; set; }
+
+            private LfsDifferences Differences { get; set; }
+
+            /// <summary>
+            /// Starts the asynchronous task operation.
+            /// </summary>
+            /// <param name="task">The asynchronous task to use to do the comparison.</param>
+            /// <param name="onCompareComplete">Delegate to call when comparison is complete.</param>
+            /// <param name="referenceFileSystem">The reference file system.</param>
+            /// <param name="otherFileSystem">The file system to compare against the reference file system.</param>
+            /// <param name="targetDevice">The device corresponding to <paramref name="otherFileSystem"/> used to validate entries from <paramref name="referenceFileSystem"/>.</param>
+            /// <param name="refresh">If <c>true</c>, force a refresh of the file system entries before comparing.</param>
+            internal static void Start(AsyncTaskWithProgress task, Action<LfsDifferences> onCompareComplete, FileSystem referenceFileSystem, FileSystem otherFileSystem, Device targetDevice, bool refresh)
+            {
+                var data = new AsyncCompareFileSystems(task, onCompareComplete, referenceFileSystem, otherFileSystem, targetDevice, refresh);
+                task.RunTask(data, Compare, CompareComplete);
+            }
+
+            private static void Compare(AsyncTaskData taskData)
+            {
+                var data = (AsyncCompareFileSystems)taskData;
+                var referenceFileSystemWasFrozen = data.ReferenceFileSystem.Frozen;
+                var otherFileSystemWasFrozen = data.OtherFileSystem.Frozen;
+                try
+                {
+#if false
+                    // Consider freezing the file systems based on the 'refresh' option.
+                    referenceFileSystem.Frozen = !refresh;
+                    otherFileSystem.Frozen = !refresh;
+#endif
+                    var gdtDescriptor = new GatherDifferencesDescriptor<IDirectory>(LfsEntityType.Directory, data.OtherFileSystem.Directories, FileSystemHelpers.CompareIDirectories);
+                    var gdtDiff = data.ReferenceFileSystem.Directories.GatherDifferences(gdtDescriptor, data.TargetDevice, data.Refresh, (d) => GatherExitIfCancelled<IDirectory>(d, data));
+
+                    var gftDescriptor = new GatherDifferencesDescriptor<ILfsFileInfo>(LfsEntityType.File, data.OtherFileSystem.Files, FileSystemHelpers.CompareILfsFileInfo, ValidateFile);
+                    var gftDiff = data.ReferenceFileSystem.Files.GatherDifferences(gftDescriptor, data.TargetDevice, data.Refresh, (d) => GatherExitIfCancelled<ILfsFileInfo>(d, data));
+
+                    var gktDescriptor = new GatherDifferencesDescriptor<Fork>(LfsEntityType.Fork, data.OtherFileSystem.Forks, FileSystemHelpers.CompareForks, ValidateFork);
+                    var gktDiff = data.ReferenceFileSystem.Forks.GatherDifferences(gktDescriptor, data.TargetDevice, data.Refresh, (d) => GatherExitIfCancelled<Fork>(d, data));
+
+                    var allDifferences = new LfsDifferences(gdtDiff, gftDiff, gktDiff);
+                    data.Differences = allDifferences;
+                }
+                finally
+                {
+                    data.OtherFileSystem.Frozen = otherFileSystemWasFrozen;
+                    data.ReferenceFileSystem.Frozen = referenceFileSystemWasFrozen;
+                }
+            }
+
+            private static void CompareComplete(AsyncTaskData taskData)
+            {
+                var data = (AsyncCompareFileSystems)taskData;
+                data.OnCompareComplete(data.Differences);
+            }
+
+            private static bool GatherExitIfCancelled<T>(FileSystemDifferences<T> differences, AsyncCompareFileSystems data) where T : class, IGlobalFileSystemEntry
+            {
+                return data.CancelRequsted;
+            }
+        }
+
+        /// <summary>
         /// Removes entries from / repairs entries in <paramref name="referenceFileSystem"/> that are identified as causing errors in the
         /// provided <paramref name="differences"/>. Removal is subject to the predicate supplied via <paramref name="shouldRemoveInvalidEntry"/>.
         /// A repair is used to resolve problems in cases of a missing 'secondary' fork, such as a manual, in which case the current

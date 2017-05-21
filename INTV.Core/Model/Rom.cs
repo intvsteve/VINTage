@@ -205,6 +205,10 @@ namespace INTV.Core.Model
                 var format = LuigiFormatRom.CheckFormat(filePath);
                 if (format == RomFormat.None)
                 {
+                    format = RomFormatRom.CheckFormat(filePath);
+                }
+                if (format == RomFormat.None)
+                {
                     format = BinFormatRom.CheckFormat(filePath);
                 }
                 return format;

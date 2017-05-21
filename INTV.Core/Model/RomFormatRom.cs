@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomFormatRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -136,7 +136,7 @@ namespace INTV.Core.Model
                     System.Diagnostics.Debug.WriteLine("Getting ROM metadata failed: " + e);
 #if DEBUG
                     throw;
-#endif
+#endif // DEBUG
                 }
                 return metadata;
             }
@@ -159,16 +159,9 @@ namespace INTV.Core.Model
             var crc = _crc;
             if (IsValid && RomPath.FileExists())
             {
-                byte replacementByte = AutoBaudBytes[Format];
+                uint dontCare;
+                _crc = GetCrcs(Format, RomPath, null, out dontCare);
 
-#if IGNORE_METADATA_FOR_CRC
-                var metadataRange = new List<Range<int>>();
-                var metadataOffset = GetMetadataOffset();
-                metadataRange.Add(new Range<int>(metadataOffset, int.MaxValue));
-                _crc = Crc32.OfFile(RomPath, Format != RomFormat.Intellicart, replacementByte, metadataRange);
-#else
-                _crc = Crc32.OfFile(RomPath, Format != RomFormat.Intellicart, replacementByte);
-#endif
                 if (crc == 0)
                 {
                     crc = _crc; // lazy initialization means on first read, we should never get a change
@@ -195,26 +188,85 @@ namespace INTV.Core.Model
         internal static RomFormatRom Create(string filePath)
         {
             RomFormatRom rom = null;
-            using (var file = filePath.OpenFileStream())
+            var format = CheckFormat(filePath);
+            if (format != RomFormat.None)
             {
-                if ((file != null) && (file.Length > 0))
+                // Valid header, so create the instance. Full validation would require walking
+                // all the segments -- essentially most of the ROM.
+                rom = new RomFormatRom() { Format = format, IsValid = true, RomPath = filePath };
+            }
+            return rom;
+        }
+
+        /// <summary>
+        /// Given an absolute path to a ROM file, attempt to determine the format of the ROM.
+        /// </summary>
+        /// <param name="filePath">Absolute path to the potential ROM file.</param>
+        /// <returns>The format of the file. If it does not appear to be a ROM, then <c>RomFormat.None</c> is returned.</returns>
+        internal static RomFormat CheckFormat(string filePath)
+        {
+            var format = CheckMemo(filePath);
+            if (format == RomFormat.None)
+            {
+                using (var file = filePath.OpenFileStream())
                 {
-                    byte[] data = new byte[HeaderSize];
-                    var numBytesRead = file.Read(data, 0, HeaderSize);
-                    if (numBytesRead == HeaderSize)
+                    if ((file != null) && (file.Length > 0))
                     {
-                        // Check the header (checks for both .rom and .cc3/.cc3 advanced formats)
-                        var format = AutoBaudBytes.FirstOrDefault(a => a.Value == data[0]).Key;
-                        if ((format != RomFormat.None) && !((data[1] ^ data[2]) != 0xFF))
+                        byte[] data = new byte[HeaderSize];
+                        var numBytesRead = file.Read(data, 0, HeaderSize);
+                        if (numBytesRead == HeaderSize)
                         {
-                            // Valid header, so create the instance. Full validation would require walking
-                            // all the segments -- essentially most of the ROM.
-                            rom = new RomFormatRom() { Format = format, IsValid = true, RomPath = filePath };
+                            // Check the header (checks for both .rom and .cc3/.cc3 advanced formats)
+                            format = AutoBaudBytes.FirstOrDefault(a => a.Value == data[0]).Key;
+                            if (format != RomFormat.None)
+                            {
+                                // If header appears to be valid, assume the entire ROM is valid. Full validation would require walking
+                                // all the segments -- essentially most of the ROM.
+                                if ((data[1] ^ data[2]) != 0xFF)
+                                {
+                                    format = RomFormat.None;
+                                }
+                            }
                         }
                     }
                 }
             }
-            return rom;
+            return format;
+        }
+
+        /// <summary>
+        /// Get the Crc32 values of a ROM.
+        /// </summary>
+        /// <param name="romPath">Absolute path of the ROM whose CRC32 value is desired.</param>
+        /// <param name="cfgPath">Absolute path of the configuration (.cfg) file whose CRC32 is desired. May be <c>null</c>, depending on the ROM.</param>
+        /// <param name="cfgCrc">Receives the CRC32 of the configuration file, if applicable. Could be zero.</param>
+        /// <returns>CRC32 of the ROM file.</returns>
+        /// <remarks>Instead of zero, should the Crc32.InitialValue be used as a sentinel 'invalid' value?</remarks>
+        internal static uint GetCrcs(string romPath, string cfgPath, out uint cfgCrc)
+        {
+            uint romCrc = GetCrcs(CheckFormat(romPath), romPath, cfgPath, out cfgCrc);
+            return romCrc;
+        }
+
+        private static uint GetCrcs(RomFormat format, string romPath, string cfgPath, out uint cfgCrc)
+        {
+            cfgCrc = 0;
+            uint romCrc = 0;
+
+            if (romPath.FileExists())
+            {
+                byte replacementByte = AutoBaudBytes[format];
+
+#if IGNORE_METADATA_FOR_CRC
+                var metadataRange = new List<Range<int>>();
+                var metadataOffset = GetMetadataOffset();
+                metadataRange.Add(new Range<int>(metadataOffset, int.MaxValue));
+                romCrc = Crc32.OfFile(romPath, format != RomFormat.Intellicart, replacementByte, metadataRange);
+#else
+                romCrc = Crc32.OfFile(romPath, format != RomFormat.Intellicart, replacementByte);
+#endif // IGNORE_METADATA_FOR_CRC
+            }
+            return romCrc;
         }
 
         private int GetMetadataOffset(System.IO.Stream file)

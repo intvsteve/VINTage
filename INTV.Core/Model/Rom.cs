@@ -1,5 +1,5 @@
 ﻿// <copyright file="Rom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model
 {
@@ -27,6 +28,8 @@ namespace INTV.Core.Model
     /// </summary>
     public abstract class Rom : IRom
     {
+        private static readonly RomFormatMemo Memos = new RomFormatMemo();
+
         /// <summary>
         /// The maximum size of a ROM.
         /// </summary>
@@ -165,5 +168,49 @@ namespace INTV.Core.Model
         public abstract uint RefreshCfgCrc(out bool changed);
 
         #endregion // IRom
+
+        /// <summary>
+        /// Check ROM format efficiently using the memo system.
+        /// </summary>
+        /// <param name="romPath">Absolute path of the ROM whose format is desired.</param>
+        /// <returns>ROM format.</returns>
+        protected static RomFormat CheckMemo(string romPath)
+        {
+            RomFormat format;
+            Memos.CheckMemo(romPath, out format);
+            return format;
+        }
+
+        /// <summary>
+        /// Add a memo for a ROM.
+        /// </summary>
+        /// <param name="romPath">Absolute path of the ROM whose memo is to be added.</param>
+        /// <param name="format">ROM format.</param>
+        protected static void AddMemo(string romPath, RomFormat format)
+        {
+            Memos.AddMemo(romPath, format);
+        }
+
+        private class RomFormatMemo : FileMemo<RomFormat>
+        {
+            /// <inheritdoc />
+            protected override RomFormat DefaultMemoValue
+            {
+                get { return RomFormat.None; }
+            }
+
+            /// <inheritdoc />
+            protected override RomFormat GetMemo(string filePath, object data)
+            {
+                var format = LuigiFormatRom.CheckFormat(filePath);
+                return format;
+            }
+
+            /// <inheritdoc />
+            protected override bool IsValidMemo(RomFormat memo)
+            {
+                return memo != RomFormat.None;
+            }
+        }
     }
 }

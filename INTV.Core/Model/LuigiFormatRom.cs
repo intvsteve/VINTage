@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFormatRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -28,6 +28,8 @@ namespace INTV.Core.Model
     /// </summary>
     internal class LuigiFormatRom : Rom
     {
+        private static readonly LuigiUniqueIdMemo UniqueIdMemos = new LuigiUniqueIdMemo();
+
         #region Constructors
 
         private LuigiFormatRom()
@@ -91,16 +93,11 @@ namespace INTV.Core.Model
             var crc = _crc;
             if (IsValid)
             {
-                if (Header.Version > 0)
+                uint dontCare;
+                bool usedLuigiFileForCrc;
+                _crc = GetCrcs(Header, RomPath, null, out dontCare, out usedLuigiFileForCrc);
+                if (usedLuigiFileForCrc)
                 {
-                    if ((Header.OriginalRomFormat == RomFormat.Bin) || (Header.OriginalRomFormat == RomFormat.Rom))
-                    {
-                        _crc = Header.OriginalRomCrc32; // Report the original file's CRC to help identify the ROM.
-                    }
-                }
-                if (_crc == 0 && RomPath.FileExists())
-                {
-                    _crc = INTV.Core.Utility.Crc32.OfFile(RomPath);
                     crc = _crc; // lazy initialization means on first read, we should never get a change
                 }
             }
@@ -112,10 +109,8 @@ namespace INTV.Core.Model
         public override uint RefreshCfgCrc(out bool changed)
         {
             var cfgCrc = _cfgCrc;
-            if (IsValid && (Header.Version > 0) && (Header.OriginalRomFormat == RomFormat.Bin))
-            {
-                _cfgCrc = Header.OriginalCfgCrc32;
-            }
+            bool dontCare;
+            GetCrcs(Header, RomPath, null, out _cfgCrc, out dontCare);
             changed = cfgCrc != _cfgCrc;
             return _cfgCrc;
         }
@@ -156,11 +151,7 @@ namespace INTV.Core.Model
             get
             {
                 var targetUniqueId = string.Empty;
-                var scrambleBlock = LocateDataBlock<LuigiScrambleKeyBlock>();
-                if (scrambleBlock != null)
-                {
-                    targetUniqueId = scrambleBlock.UniqueId;
-                }
+                UniqueIdMemos.CheckAddMemo(RomPath, this, out targetUniqueId);
                 return targetUniqueId;
             }
         }
@@ -175,25 +166,87 @@ namespace INTV.Core.Model
         internal static LuigiFormatRom Create(string filePath)
         {
             LuigiFormatRom rom = null;
-            using (var file = filePath.OpenFileStream())
+            if (CheckFormat(filePath) == RomFormat.Luigi)
             {
-                if ((file != null) && (file.Length > 0))
+                LuigiFileHeader header = LuigiFileHeader.GetHeader(filePath);
+                if (header != null)
                 {
-                    LuigiFileHeader luigiHeader = null;
-                    try
-                    {
-                        if (LuigiFileHeader.PotentialLuigiFile(filePath))
-                        {
-                            luigiHeader = LuigiFileHeader.Inflate(file);
-                            rom = new LuigiFormatRom() { Format = RomFormat.Luigi, IsValid = true, RomPath = filePath, Header = luigiHeader };
-                        }
-                    }
-                    catch (INTV.Core.UnexpectedFileTypeException)
-                    {
-                    }
+                    rom = new LuigiFormatRom() { Format = RomFormat.Luigi, IsValid = true, RomPath = filePath, Header = header };
                 }
             }
             return rom;
+        }
+
+        /// <summary>
+        /// Checks the format of the ROM at the given absolute path.
+        /// </summary>
+        /// <param name="filePath">Absolute path to a ROM file.</param>
+        /// <returns>The format of the ROM.</returns>
+        internal static RomFormat CheckFormat(string filePath)
+        {
+            var format = CheckMemo(filePath);
+            if (format == RomFormat.None)
+            {
+                using (var file = filePath.OpenFileStream())
+                {
+                    if ((file != null) && (file.Length > 0))
+                    {
+                        try
+                        {
+                            if (LuigiFileHeader.GetHeader(filePath) != null)
+                            {
+                                format = RomFormat.Luigi;
+                                AddMemo(filePath, format);
+                            }
+                        }
+                        catch (INTV.Core.UnexpectedFileTypeException)
+                        {
+                        }
+                    }
+                }
+            }
+            return format;
+        }
+
+        /// <summary>
+        /// Get up-to-date CRC32 values for the ROM.
+        /// </summary>
+        /// <param name="romPath">Absolute path to the ROM.</param>
+        /// <param name="cfgPath">Absolute path to the configuration file (may be <c>null</c>).</param>
+        /// <param name="cfgCrc">Receives the CRC32 of the file at <paramref name="cfgPath"/></param>
+        /// <returns>The CRC32 of the file at <paramref name="romPath"/>.</returns>
+        internal static uint GetCrcs(string romPath, string cfgPath, out uint cfgCrc)
+        {
+            bool dontCare;
+            var romCrc = GetCrcs(LuigiFileHeader.GetHeader(romPath), romPath, cfgPath, out cfgCrc, out dontCare);
+            return romCrc;
+        }
+
+        private static uint GetCrcs(LuigiFileHeader header, string romPath, string cfgPath, out uint cfgCrc, out bool usedLuigiFileCrc)
+        {
+            usedLuigiFileCrc = false;
+            uint romCrc = 0;
+            cfgCrc = 0;
+            if (header != null)
+            {
+                if (header.Version > 0)
+                {
+                    if ((header.OriginalRomFormat == RomFormat.Bin) || (header.OriginalRomFormat == RomFormat.Rom))
+                    {
+                        romCrc = header.OriginalRomCrc32; // Report the original file's CRC to help identify the ROM.
+                    }
+                    if (header.OriginalRomFormat == RomFormat.Bin)
+                    {
+                        cfgCrc = header.OriginalCfgCrc32;
+                    }
+                }
+            }
+            if (romCrc == 0 && romPath.FileExists())
+            {
+                usedLuigiFileCrc = true;
+                romCrc = INTV.Core.Utility.Crc32.OfFile(romPath);
+            }
+            return romCrc;
         }
 
         /// <summary>
@@ -272,6 +325,35 @@ namespace INTV.Core.Model
                 }
             }
             return dataBlock;
+        }
+
+        private class LuigiUniqueIdMemo : FileMemo<string>
+        {
+            /// <inheritdoc />
+            protected override string DefaultMemoValue
+            {
+                get { return string.Empty; }
+            }
+
+            /// <inheritdoc />
+            protected override string GetMemo(string filePath, object data)
+            {
+                var uniqueIdMemo = string.Empty;
+                var rom = (LuigiFormatRom)data;
+                var scrambleBlock = rom.LocateDataBlock<LuigiScrambleKeyBlock>();
+                if (scrambleBlock != null)
+                {
+                    uniqueIdMemo = scrambleBlock.UniqueId;
+                }
+                return uniqueIdMemo;
+            }
+
+            /// <inheritdoc />
+            /// <remarks>We also cache empty / null here because the unique ID in a LUIGI is not going to change unless the file itself is rebuilt.</remarks>
+            protected override bool IsValidMemo(string memo)
+            {
+                return true;
+            }
         }
     }
 }

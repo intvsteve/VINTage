@@ -358,8 +358,9 @@ namespace INTV.LtoFlash.Model
         public static void SuppressRootFileNameDifferences(this FileSystem fileSystem, Device device)
         {
             var rootFile = fileSystem.Files[GlobalFileTable.RootDirectoryFileNumber];
-            rootFile.LongName = device.Owner;
-            rootFile.ShortName = device.CustomName;
+            var deviceRootFile = device.FileSystem.Files[GlobalFileTable.RootDirectoryFileNumber];
+            rootFile.LongName = deviceRootFile.LongName;
+            rootFile.ShortName = deviceRootFile.ShortName;
         }
 
         /// <summary>

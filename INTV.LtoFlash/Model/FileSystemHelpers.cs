@@ -638,8 +638,15 @@ namespace INTV.LtoFlash.Model
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             Logger.Log("FileSystem.CompareTo() BEGIN ---------------------------------");
 #endif // REPORT_PERFORMANCE
+            var referenceFileSystemWasFrozen = referenceFileSystem.Frozen;
+            var otherFileSystemWasFrozen = otherFileSystem.Frozen;
             try
             {
+#if false
+                // Consider freezing the file systems based on the 'refresh' option.
+                referenceFileSystem.Frozen = !refresh;
+                otherFileSystem.Frozen = !refresh;
+#endif
                 var gdtDescriptor = new GatherDifferencesDescriptor<IDirectory>(LfsEntityType.Directory, otherFileSystem.Directories, FileSystemHelpers.CompareIDirectories);
                 var gdtDiff = referenceFileSystem.Directories.GatherDifferences(gdtDescriptor, targetDevice, refresh, GatherExitNever<IDirectory>);
 #if REPORT_PERFORMANCE
@@ -672,6 +679,8 @@ namespace INTV.LtoFlash.Model
             }
             finally
             {
+                otherFileSystem.Frozen = otherFileSystemWasFrozen;
+                referenceFileSystem.Frozen = referenceFileSystemWasFrozen;
 #if REPORT_PERFORMANCE
                 stopwatch.Stop();
                 System.Diagnostics.Debug.WriteLine(">>FileSystem.CompareTo() took: " + stopwatch.Elapsed.ToString());
@@ -1006,7 +1015,8 @@ namespace INTV.LtoFlash.Model
             bool shouldStop = differences.Any();
             return shouldStop;
         }
-#endif
+
+#endif // USE_SPECIALIZED_SIMPLE_COMPARE
 
         private static bool GatherExitNever<T>(FileSystemDifferences<T> differences) where T : class, IGlobalFileSystemEntry
         {

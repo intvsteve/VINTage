@@ -251,16 +251,13 @@ namespace INTV.LtoFlash.Model
 #if DEBUG
                         var complainAboutOldLuigiFile = false;
 #endif // DEBUG
-                        using (var file = System.IO.File.OpenRead(luigiFile))
-                        {
-                            luigiHeader = LuigiFileHeader.Inflate(file);
-                            features = description.Features.LuigiFeaturesLo;
+                        luigiHeader = LuigiFileHeader.GetHeader(luigiFile);
+                        features = description.Features.LuigiFeaturesLo;
 #if DEBUG
-                            var isRecognizedRom = !description.Features.GeneralFeatures.HasFlag(GeneralFeatures.UnrecognizedRom);
-                            var hasFlagsFromCfgFile = luigiHeader.Features.HasFlag(LuigiFeatureFlags.FeatureFlagsExplicitlySet);
-                            complainAboutOldLuigiFile = isRecognizedRom && hasFlagsFromCfgFile && ((luigiHeader.Features & ~LuigiFeatureFlags.FeatureFlagsExplicitlySet) != features);
+                        var isRecognizedRom = !description.Features.GeneralFeatures.HasFlag(GeneralFeatures.UnrecognizedRom);
+                        var hasFlagsFromCfgFile = luigiHeader.Features.HasFlag(LuigiFeatureFlags.FeatureFlagsExplicitlySet);
+                        complainAboutOldLuigiFile = isRecognizedRom && hasFlagsFromCfgFile && ((luigiHeader.Features & ~LuigiFeatureFlags.FeatureFlagsExplicitlySet) != features);
 #endif // DEBUG
-                        }
 #if DEBUG
                         if (complainAboutOldLuigiFile)
                         {

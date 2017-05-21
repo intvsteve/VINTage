@@ -963,7 +963,7 @@ namespace INTV.LtoFlash.Commands
 #if MAC
                 // Look for the default one embedded in the application.
                 readmeFile = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, UIReadmeFilename);
-#endif
+#endif // MAC
                 try
                 {
                     RunExternalProgram.OpenInDefaultProgram(readmeFile);

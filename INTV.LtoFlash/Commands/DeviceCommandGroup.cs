@@ -35,7 +35,7 @@ using INTV.Shared.View;
 using OSWindow = System.Windows.Window;
 #elif MAC
 using OSWindow = INTV.Shared.View.IFakeDependencyObject;
-#endif
+#endif // WIN
 
 namespace INTV.LtoFlash.Commands
 {
@@ -1121,7 +1121,7 @@ namespace INTV.LtoFlash.Commands
                 window.DialogResult = result;
 #else
                 throw new System.NotImplementedException();
-#endif
+#endif // WIN
             }
             else
             {

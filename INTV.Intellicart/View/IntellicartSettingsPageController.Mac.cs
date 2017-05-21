@@ -1,5 +1,5 @@
 ﻿// <copyright file="IntellicartSettingsPageController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2016 All Rights Reserved
+// Copyright (c) 2015-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -24,7 +24,7 @@ using Foundation;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 using INTV.Intellicart.Commands;
 using INTV.Intellicart.ViewModel;
 using INTV.Shared.View;

@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProtocolCommand.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -149,7 +149,7 @@ namespace INTV.LtoFlash.Model.Commands
                 ////arg2 = 0xDEADBEEF;
                 ////arg3 = 0xDEADBEEF;
             }
-#endif
+#endif // DEBUG
             Arg0 = arg0;
             Arg1 = arg1;
             Arg2 = arg2;
@@ -575,7 +575,7 @@ namespace INTV.LtoFlash.Model.Commands
                     reader.BaseStream.ReadTimeout = prevTimeout;
                 }
             }
-#endif
+#endif // false
             return result;
         }
 

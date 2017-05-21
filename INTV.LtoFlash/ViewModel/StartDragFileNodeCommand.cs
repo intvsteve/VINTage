@@ -25,7 +25,7 @@ using INTV.Shared.ComponentModel;
 using DragDropEffects = System.Windows.DragDropEffects;
 #elif MAC
 using DragDropEffects = INTV.Shared.Behavior.DragDropEffects;
-#endif
+#endif // WIN
 
 namespace INTV.LtoFlash.ViewModel
 {

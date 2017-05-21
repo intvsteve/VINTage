@@ -1,5 +1,5 @@
 ﻿// <copyright file="ReportDialogViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -141,7 +141,7 @@ namespace INTV.Shared.ViewModel
 #if SMTP_SUPPORT
             // While sending email, disable the close button until we return. Hope this never hangs!
             viewModel.CloseDialogButtonEnabled = false;
-#endif
+#endif // SMTP_SUPPORT
             try
             {
                 // If the address isn't valid, just use Anonymous.
@@ -225,7 +225,7 @@ namespace INTV.Shared.ViewModel
             viewModel.CloseDialogButtonEnabled = true;
         }
 
-#endif
+#endif // SMTP_SUPPORT
 
         private static void ReportSendErrorReportFailure(ReportDialogViewModel viewModel, Exception exception)
         {
@@ -281,7 +281,7 @@ namespace INTV.Shared.ViewModel
             ShowSendEmailButton = true;
 #if SMTP_SUPPORT
             ShowEmailSender = true;
-#endif
+#endif // SMTP_SUPPORT
             TextWrapping = INTV.Shared.View.OSTextWrapping.NoWrap;
             Attachments = new ObservableCollection<string>();
             Attachments.CollectionChanged += (s, e) => RaisePropertyChanged(HasAttachmentsPropertyName);

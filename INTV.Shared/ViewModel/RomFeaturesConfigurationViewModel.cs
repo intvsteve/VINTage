@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomFeaturesConfigurationViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2016 All Rights Reserved
+// Copyright (c) 2015-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -33,8 +33,8 @@ using OSVisual = System.Windows.FrameworkElement;
 using OSVisual = AppKit.NSViewController;
 #else
 using OSVisual = MonoMac.AppKit.NSViewController;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN
 
 namespace INTV.Shared.ViewModel
 {
@@ -55,7 +55,7 @@ namespace INTV.Shared.ViewModel
             _pageVisuals = new Dictionary<IRomFeaturesConfigurationPage, OSVisual>();
 #if DEBUG && WIN
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
-#endif
+#endif // DEBUG && WIN
             {
                 this.DoImport();
             }

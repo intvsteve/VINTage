@@ -1,5 +1,5 @@
 ﻿// <copyright file="ReportDialogController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,7 +26,7 @@ using Foundation;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
@@ -37,7 +37,7 @@ using nint = System.nint;
 #else
 using nfloat = System.Single;
 using nint = System.Int32;
-#endif
+#endif // __UNIFIED__
 
 namespace INTV.Shared.View
 {

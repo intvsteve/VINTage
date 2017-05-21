@@ -31,7 +31,7 @@ using INTV.Shared.View;
 using Foundation;
 #else
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 
 namespace INTV.JzIntvUI.Commands
 {

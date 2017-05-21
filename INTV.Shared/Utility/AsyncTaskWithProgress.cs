@@ -1,5 +1,5 @@
 ﻿// <copyright file="AsyncTaskWithProgress.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -36,7 +36,7 @@ namespace INTV.Shared.Utility
     {
 #if USE_ASYNC
         private BackgroundWorker _backgroundWorker;
-#endif
+#endif // USE_ASYNC
         private ProgressIndicatorViewModel _progressIndicator;
         private Action<AsyncTaskData> _doWork;
         private Action<AsyncTaskData> _workComplete;
@@ -116,7 +116,7 @@ namespace INTV.Shared.Utility
             _backgroundWorker.DoWork += AsyncTaskDoWork;
             _backgroundWorker.ProgressChanged += AsyncTaskProgressChanged;
             _backgroundWorker.RunWorkerCompleted += AsynTaskRunWorkerCompleted;
-#endif
+#endif // USE_ASYNC
         }
 
         #endregion // Constructors
@@ -150,7 +150,7 @@ namespace INTV.Shared.Utility
         {
             get { return false; }
         }
-#endif
+#endif // USE_ASYNC
 
         /// <summary>
         /// Gets a value indicating whether or not the progress indicator was made visible during the task.
@@ -173,7 +173,7 @@ namespace INTV.Shared.Utility
         {
 #if MAC
             INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
-#endif
+#endif // MAC
             if (_showsProgress && (_progressIndicator != null))
             {
                 _didShowProgresss = _progressIndicator.IsVisible;
@@ -191,7 +191,7 @@ namespace INTV.Shared.Utility
             doWork(taskData);
             onWorkComplete(taskData);
             IsBusy = false;
-#endif
+#endif // USE_ASYNC
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace INTV.Shared.Utility
 #if USE_ASYNC
             var message = _backgroundWorker.CancellationPending ? Resources.Strings.ProgressIndicator_CancelRequested : updateText;
             _backgroundWorker.ReportProgress(Convert.ToInt32(Math.Round(percentDone)), message);
-#endif
+#endif // USE_ASYNC
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace INTV.Shared.Utility
         {
 #if USE_ASYNC
             _backgroundWorker.CancelAsync();
-#endif
+#endif // USE_ASYNC
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace INTV.Shared.Utility
             }
 #if MAC
             INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
-#endif
+#endif // MAC
             _workComplete(_taskData);
         }
 

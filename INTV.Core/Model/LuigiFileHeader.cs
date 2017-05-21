@@ -353,7 +353,7 @@ namespace INTV.Core.Model
             var crc8 = Crc8.OfBlock(data);
             reader.BaseStream.Seek(bytesRead, System.IO.SeekOrigin.Begin);
             System.Diagnostics.Debug.Assert(crc8 == Crc, "Failed to correctly compute DOWCRC for LUIGI header!");
-#endif
+#endif // DEBUG
             _deserializeByteCount = bytesRead;
             return bytesRead;
         }

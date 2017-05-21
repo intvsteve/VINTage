@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileNodeColorViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -33,8 +33,8 @@ using OSBrush = AppKit.NSColor;
 #else
 using NodeColorBase = MonoMac.Foundation.NSObject;
 using OSBrush = MonoMac.AppKit.NSColor;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN
 
 namespace INTV.LtoFlash.ViewModel
 {
@@ -57,7 +57,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             _color = color;
 
-            // TODO Even though redunant on Mac, could we make the code the same for both platforms?
+            // TODO Even though redundant on Mac, could we make the code the same for both platforms?
 #if WIN
             _fill = new OSBrush(color.ToColor());
 #elif MAC

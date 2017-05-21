@@ -1,5 +1,5 @@
 ﻿// <copyright file="Configuration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -92,7 +92,7 @@ namespace INTV.LtoFlash.Model
                 _versionCheckPostData += "win";
                 MinimumOSVersion = new OSVersion(5, 1, 0); // Windows xp
                 RecommendedOSVersion = new OSVersion(6, 1, 0); // Windows 7 or later
-#endif
+#endif // MAC
                 var versionParts = SingleInstanceApplication.Version.Split('.');
                 _helpPostData += "&ver=" + versionParts[0] + versionParts[1];
                 _instance = this;

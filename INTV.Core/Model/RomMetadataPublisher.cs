@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataPublisher.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -158,7 +158,7 @@ namespace INTV.Core.Model
             IntellivisionRevolution = 0x13,
             BBWW = 0x14,
             Atari2600Land = 0x15,
-#endif
+#endif // false
 
             /// <summary>
             /// Other game publisher, name included in metadata.

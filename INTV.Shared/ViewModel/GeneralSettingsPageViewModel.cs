@@ -1,5 +1,5 @@
 ﻿// <copyright file="GeneralSettingsPageViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2016 All Rights Reserved
+// Copyright (c) 2015-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,7 +26,7 @@ using INTV.Shared.Utility;
 using GeneralSettingsVisualType = INTV.Shared.View.GeneralSettingsPage;
 #elif MAC
 using GeneralSettingsVisualType = INTV.Shared.View.GeneralSettingsPageController;
-#endif
+#endif // WIN
 
 namespace INTV.Shared.ViewModel
 {
@@ -54,7 +54,7 @@ namespace INTV.Shared.ViewModel
         /// Default value for ShowDetailedErrors option.
         /// </summary>
         public const bool DefaultShowDetailedErrorsSetting = false;
-#endif
+#endif // DEBUG
 
         #region Property Names
 

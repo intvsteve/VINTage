@@ -1,5 +1,5 @@
 ﻿// <copyright file="BaudRateViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -25,8 +25,8 @@ using BaseClass = System.Object;
 using BaseClass = Foundation.NSObject;
 #else
 using BaseClass = MonoMac.Foundation.NSObject;
-#endif
-#endif
+#endif // __UNIFIED__
+#endif // WIN
 
 namespace INTV.Shared.ViewModel
 {

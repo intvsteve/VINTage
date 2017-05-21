@@ -1,5 +1,5 @@
 ﻿// <copyright file="TextCellInPlaceEditor.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -30,7 +30,7 @@ using Foundation;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-#endif
+#endif // __UNIFIED__
 using INTV.Shared.Behavior;
 using INTV.Shared.Utility;
 
@@ -52,7 +52,7 @@ namespace INTV.Shared.View
         private static readonly NSString NSControlTextDidBeginEditingNotification = new NSString("NSControlTextDidBeginEditingNotification");
         private static readonly NSString NSControlTextDidChangeNotification = new NSString("NSControlTextDidChangeNotification");
         private static readonly NSString NSControlTextDidEndEditingNotification = new NSString("NSControlTextDidEndEditingNotification");
-#endif
+#endif // USE_APPKIT_CONSTANTS
         private static readonly NSString FieldEditorKey = new NSString("NSFieldEditor");
 
         private static readonly char[] AlwaysAllowedCharacters = new char[]

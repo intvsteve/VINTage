@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListSettingsPageViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -24,7 +24,7 @@ using INTV.Shared.ComponentModel;
 using RomListSettingsVisualType = INTV.Shared.View.RomListSettingsPage;
 #elif MAC
 using RomListSettingsVisualType = INTV.Shared.View.RomListSettingsPageController;
-#endif
+#endif // WIN
 
 namespace INTV.Shared.ViewModel
 {

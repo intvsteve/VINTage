@@ -1,5 +1,5 @@
 ﻿// <copyright file="Configuration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ namespace INTV.JzIntv.Model
         internal static readonly string ProgramSuffix = ".exe";
 #else
         internal static readonly string ProgramSuffix = string.Empty;
-#endif
+#endif // WIN || WIN_XP
 
         private static Configuration _instance;
         private Dictionary<ProgramFile, string> _programPaths = new Dictionary<ProgramFile, string>();

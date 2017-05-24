@@ -1,5 +1,5 @@
 ﻿// <copyright file="MenuSaveCompleteEventArgs.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -31,12 +31,14 @@ namespace INTV.LtoFlash.Model
         /// <param name="originalPath">The original path for the menu layout to save to.</param>
         /// <param name="error">If an error occurred during save, this is it.</param>
         /// <param name="backupPath">The backup path to use in case an error occurred.</param>
+        /// <param name="nonDirtying">If <c>true</c>, indicates save was not due to user edits, but some other operation.</param>
         /// <remarks>It's presumed that the menu layout stored at <paramref name="backupPath"/> is valid.</remarks>
-        public MenuSaveCompleteEventArgs(string originalPath, System.Exception error, string backupPath)
+        public MenuSaveCompleteEventArgs(string originalPath, System.Exception error, string backupPath, bool nonDirtying)
         {
             MenuPath = originalPath;
             Error = error;
             BackupPath = backupPath;
+            NonDirtying = nonDirtying;
         }
 
         /// <summary>
@@ -53,5 +55,10 @@ namespace INTV.LtoFlash.Model
         /// Gets the backup path to use in case of a save error.
         /// </summary>
         public string BackupPath { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating that the save operation was incidental, and not due to user edits.
+        /// </summary>
+        public bool NonDirtying { get; private set; }
     }
 }

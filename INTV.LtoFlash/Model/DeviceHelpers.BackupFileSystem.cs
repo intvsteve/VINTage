@@ -113,7 +113,7 @@ namespace INTV.LtoFlash.Model
                     var menuBackupPath = System.IO.Path.Combine(backupDirectory, configuration.DefaultMenuLayoutFileName);
                     var menuLayout = new MenuLayout(fileSystem, device.UniqueId);
                     menuLayout.LoadComplete(false);
-                    menuLayout.Save(menuBackupPath);
+                    menuLayout.Save(menuBackupPath, true);
                 }
                 else if (data.CancelRequsted && succeeded)
                 {

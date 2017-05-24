@@ -252,6 +252,28 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
+        /// Gets a dictionary containing all files that refer to each of the given fork numbers. The fork numbers act as keys to the returned dictionary.
+        /// </summary>
+        /// <param name="fileSystem">The file system.</param>
+        /// <param name="forkNumbers">The fork numbers for which files are being located.</param>
+        /// <returns>A dictionary that includes key value pairs in which the keys are fork numbers that have at least one file
+        /// referring to them. The corresponding value for each key is an enumerable of all the files in the given file
+        /// system that refer to the fork with the given global fork number.</returns>
+        public static Dictionary<ushort, IEnumerable<ILfsFileInfo>> GetAllFilesUsingForks(this FileSystem fileSystem, IEnumerable<ushort> forkNumbers)
+        {
+            var allFilesForForks = new Dictionary<ushort, IEnumerable<ILfsFileInfo>>();
+            foreach (var forkNumber in forkNumbers)
+            {
+                var files = (forkNumber == GlobalForkTable.InvalidForkNumber) ? null : fileSystem.Files.Where(f => (f != null) && (f.ForkNumbers != null) && f.ForkNumbers.Contains(forkNumber));
+                if ((files != null) && files.Any())
+                {
+                    allFilesForForks[forkNumber] = files;
+                }
+            }
+            return allFilesForForks;
+        }
+
+        /// <summary>
         /// Gets the kind of the given fork.
         /// </summary>
         /// <param name="fileSystem">The file system.</param>

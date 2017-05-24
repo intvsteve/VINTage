@@ -257,11 +257,21 @@ namespace INTV.LtoFlash.Model
         /// <param name="path">The absolute path of the file to save.</param>
         public void Save(string path)
         {
+            Save(path, false);
+        }
+
+        /// <summary>
+        /// Save the menu layout to a specific path.
+        /// </summary>
+        /// <param name="path">The absolute path of the file to save.</param>
+        /// <param name="nonDirtying">If <c>true</c>, indicates save was not due to user edits, but some other operation.</param>
+        internal void Save(string path, bool nonDirtying)
+        {
             SaveMenuLayoutTaskData existingSave;
             if (!_saveTasks.TryGetValue(SaveGeneration, out existingSave))
             {
                 var saveMenuTask = new AsyncTaskWithProgress("SaveMenuLayout", true); // does not show progress
-                var saveTaskData = new SaveMenuLayoutTaskData(saveMenuTask, this, path);
+                var saveTaskData = new SaveMenuLayoutTaskData(saveMenuTask, this, path, nonDirtying);
                 DebugMessage("Save BEGIN " + path + " GENERATION " + SaveGeneration);
                 _saveTasks[SaveGeneration] = saveTaskData;
                 saveMenuTask.RunTask(saveTaskData, Save, SaveComplete);
@@ -377,7 +387,7 @@ namespace INTV.LtoFlash.Model
             {
                 // re-queue the save.
                 DebugMessage("Re-queue save for: " + saveMenuTaskData.Path + " GENERATION " + savedMenu.SaveGeneration);
-                savedMenu.Save(saveMenuTaskData.Path);
+                savedMenu.Save(saveMenuTaskData.Path, saveMenuTaskData.NonDirtying);
             }
             else
             {
@@ -386,7 +396,7 @@ namespace INTV.LtoFlash.Model
                 var menuLayoutSaved = saveMenuTaskData.OriginalMenuLayout.MenuLayoutSaved;
                 if (menuLayoutSaved != null)
                 {
-                    var saveFinishedArgs = new MenuSaveCompleteEventArgs(saveMenuTaskData.Path, taskData.Error, saveMenuTaskData.BackupPath);
+                    var saveFinishedArgs = new MenuSaveCompleteEventArgs(saveMenuTaskData.Path, taskData.Error, saveMenuTaskData.BackupPath, saveMenuTaskData.NonDirtying);
                     menuLayoutSaved(savedMenu, saveFinishedArgs);
                 }
             }
@@ -410,8 +420,9 @@ namespace INTV.LtoFlash.Model
             /// <param name="task">The task that's going to use this instance.</param>
             /// <param name="menuLayout">The MenuLayout being saved.</param>
             /// <param name="path">The absolute path to save the MenuLayout to.</param>
+            /// <param name="nonDirtying">If <c>true</c>, indicates save was not due to user edits, but some other operation.</param>
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity", Justification = "We intern the string prior to locking, so it is not weak.")]
-            public SaveMenuLayoutTaskData(AsyncTaskWithProgress task, MenuLayout menuLayout, string path)
+            public SaveMenuLayoutTaskData(AsyncTaskWithProgress task, MenuLayout menuLayout, string path, bool nonDirtying)
                 : base(task)
             {
                 lock (menuLayout.FileSystem)
@@ -442,6 +453,7 @@ namespace INTV.LtoFlash.Model
                     MenuLayoutToSave = menuLayout;
                 }
                 Path = path;
+                NonDirtying = nonDirtying;
             }
 
             /// <summary>
@@ -459,7 +471,15 @@ namespace INTV.LtoFlash.Model
             /// </summary>
             public string BackupPath { get; private set; }
 
-            public uint SaveGeneration { get; private set; }
+            /// <summary>
+            /// Gets the internal 'save generation' number.
+            /// </summary>
+            internal uint SaveGeneration { get; private set; }
+
+            /// <summary>
+            /// Gets a value indicating whether the save operation was incidental, and not due to user edits.
+            /// </summary>
+            internal bool NonDirtying { get; private set; }
 
             private MenuLayout MenuLayoutToSave { get; set; }
 

@@ -318,7 +318,7 @@ namespace INTV.LtoFlash.Commands
                 var menuLayout = ltoFlashViewModel.HostPCMenuLayout.MenuLayout;
                 var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
                 device.FileSystem = result.Item1;
-                menuLayout.Save(configuration.GetMenuLayoutPath(device.UniqueId));
+                menuLayout.Save(configuration.GetMenuLayoutPath(device.UniqueId), true);
                 ltoFlashViewModel.HostPCMenuLayout.ClearItemStates(ltoFlashViewModel.AttachedPeripherals);
             }
             SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new System.Action(() => SyncHostToDeviceCompleteDialog(cancelled, didShowProgress, ltoFlashViewModel, result == null ? null : result.Item2)));
@@ -501,7 +501,7 @@ namespace INTV.LtoFlash.Commands
                 var menuLayout = (MenuLayout)syncErrors.Data;
                 ltoFlashViewModel.HostPCMenuLayout.MenuLayout = menuLayout;
                 var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
-                menuLayout.Save(configuration.GetMenuLayoutPath(device.UniqueId));
+                menuLayout.Save(configuration.GetMenuLayoutPath(device.UniqueId), true);
                 ltoFlashViewModel.HostPCMenuLayout.ClearItemStates(ltoFlashViewModel.AttachedPeripherals);
             }
             SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new System.Action(() => SyncDeviceToHostCompleteDialog(cancelled, didShowProgress, ltoFlashViewModel, syncErrors)));

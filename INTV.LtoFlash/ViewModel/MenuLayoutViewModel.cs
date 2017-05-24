@@ -771,43 +771,74 @@ namespace INTV.LtoFlash.ViewModel
         {
             LtoFlashViewModel.SyncMode = mode;
 
+            // TODO: Make 'shadow' elements for "to be added" or "to be deleted" items?
             switch (LtoFlashViewModel.SyncMode)
             {
                 case MenuLayoutSynchronizationMode.ToLtoFlash:
                     using (var comparer = RomComparer.GetComparer(RomComparison.Strict))
                     {
+                        // Add glyphs for directories that are to be added to cart.
                         foreach (var dirToAdd in differences.DirectoryDifferences.ToAdd)
                         {
                             var viewModel = FindViewModelForModel((IFileContainer)dirToAdd);
                             viewModel.State = Core.Model.Program.ProgramSupportFileState.New;
                         }
+
+                        // Add glyphs for directories that will be modified on cart.
                         foreach (var dirToUpdate in differences.DirectoryDifferences.ToUpdate)
                         {
                             var viewModel = FindViewModelForModel((IFileContainer)dirToUpdate);
                             viewModel.State = Core.Model.Program.ProgramSupportFileState.PresentButModified;
                         }
+
+                        // Can't show glyphs for directories that will be deleted -- they're already gone in the UI!
+
+                        // Add glyphs for files that will be added.
                         foreach (var fileToAdd in differences.FileDifferences.ToAdd)
                         {
                             UpdatePreviewState(fileToAdd, (v) => !(v is FolderViewModel), ProgramSupportFileState.New, differences.FileDifferences.FailedOperations, comparer);
                         }
+
+                        // Add glyphs for files that will be modified.
                         foreach (var fileToUpdate in differences.FileDifferences.ToUpdate)
                         {
                             UpdatePreviewState(fileToUpdate, (v) => !(v is FolderViewModel) || (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, differences.FileDifferences.FailedOperations, comparer);
                         }
-                        if (differences.ForkDifferences.ToUpdate.Any())
+
+                        // Can't show glyph for files that will be deleted -- they're already gone in the UI!
+
+                        // Add glyphs for forks that will be added. A single file supports numerous forks - so a fork addition does not necessarily equate to a file addition!
+                        // File addition may - or may not - mean ROM fork addition.
+                        foreach (var addedForkAndFiles in MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToAdd))
                         {
-                            var filesWithForksToUpdate = MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToUpdate);
-                            foreach (var filesToUpdate in filesWithForksToUpdate.Values)
+                            foreach (var file in addedForkAndFiles.Value)
                             {
-                                foreach (var fileToUpdate in filesToUpdate)
-                                {
-                                    UpdatePreviewState(fileToUpdate, (v) => !(v is FolderViewModel) && (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, differences.FileDifferences.FailedOperations, comparer);
-                                }
+                                UpdatePreviewState(file, (v) => ForkUpdateShouldIndicateFileUpdate(v, LfsOperations.Add), ProgramSupportFileState.PresentButModified, differences.ForkDifferences.FailedOperations, comparer);
+                            }
+                        }
+
+                        // Add glyphs for forks that will be modified. For ROM forks this typically equates "file" modification. For other fork types, it also implies "file" modification.
+                        foreach (var updatedForkAndFiles in MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToUpdate))
+                        {
+                            foreach (var file in updatedForkAndFiles.Value)
+                            {
+                                UpdatePreviewState(file, (v) => ForkUpdateShouldIndicateFileUpdate(v, LfsOperations.Update), ProgramSupportFileState.PresentButModified, differences.ForkDifferences.FailedOperations, comparer);
+                            }
+                        }
+
+                        // Add glyphs for fork deletions. Because forks are 'deduped' this really should mean that *all* files referring to the fork are
+                        // no longer using the fork. However, fork deletion does not mean *file* deletion! Manual removal is a perfect example of this.
+                        foreach (var deletedForkAndFiles in MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToDelete.Select(gkn => (ushort)gkn)))
+                        {
+                            foreach (var file in deletedForkAndFiles.Value)
+                            {
+                                UpdatePreviewState(file, (v) => ForkUpdateShouldIndicateFileUpdate(v, LfsOperations.Remove), ProgramSupportFileState.PresentButModified, differences.ForkDifferences.FailedOperations, comparer);
                             }
                         }
                     }
                     break;
                 case MenuLayoutSynchronizationMode.FromLtoFlash:
+                    // Add glyphs for directories that are to be deleted from local menu layout.
                     differences = deviceFileSystem.CompareTo(MenuLayout.FileSystem);
                     foreach (var gdnToDelete in differences.DirectoryDifferences.ToDelete)
                     {
@@ -815,45 +846,119 @@ namespace INTV.LtoFlash.ViewModel
                         var viewModel = FindViewModelForModel((IFileContainer)dirToDelete);
                         viewModel.State = Core.Model.Program.ProgramSupportFileState.Deleted;
                     }
+ 
+                    // Add glyphs for directories that will be modified in local menu layout.
                     foreach (var dirToUpdate in differences.DirectoryDifferences.ToUpdate)
                     {
                         var localModel = MenuLayout.FileSystem.Directories[dirToUpdate.GlobalDirectoryNumber];
                         var viewModel = FindViewModelForModel((IFileContainer)localModel);
                         viewModel.State = Core.Model.Program.ProgramSupportFileState.PresentButModified;
                     }
+
+                    // Can't show glyphs for directories that will be added -- they don't exist in the UI!
+
+                    // Add glyphs for files that will be deleted from local menu layout.
                     foreach (var gfnToDelete in differences.FileDifferences.ToDelete)
                     {
                         var fileToDelete = MenuLayout.FileSystem.Files[(int)gfnToDelete];
                         UpdatePreviewState(fileToDelete, (v) => !(v is FolderViewModel), ProgramSupportFileState.Deleted, null, null);
                     }
+
+                    // Add glyphs for files that will be modified in local menu layout.
                     foreach (var fileToUpdate in differences.FileDifferences.ToUpdate)
                     {
                         var localModel = MenuLayout.FileSystem.Files[fileToUpdate.GlobalFileNumber];
                         UpdatePreviewState(localModel, (v) => !(v is FolderViewModel) || (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, null, null);
                     }
-                    if (differences.ForkDifferences.ToUpdate.Any())
+
+                    // Can't show glyph for files that will be added -- they don't exist in the UI!
+
+                    // Add glyphs for fork deletions. Because forks are 'deduped' this really should mean that *all* files referring to the fork are
+                    // no longer using the fork. However, fork deletion does not mean *file* deletion! Manual removal is a perfect example of this.
+                    foreach (var deletedForkAndFiles in MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToDelete.Select(gkn => (ushort)gkn)))
                     {
-                        var filesWithForksToUpdate = MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToUpdate);
-                        foreach (var filesToUpdate in filesWithForksToUpdate.Values)
+                        foreach (var file in deletedForkAndFiles.Value)
                         {
-                            foreach (var fileToUpdate in filesToUpdate)
-                            {
-                                var localModel = MenuLayout.FileSystem.Files[fileToUpdate.GlobalFileNumber];
-                                UpdatePreviewState(localModel, (v) => !(v is FolderViewModel) && (v.State == ProgramSupportFileState.None), ProgramSupportFileState.PresentButModified, null, null);
-                            }
+                            var localModel = MenuLayout.FileSystem.Files[file.GlobalFileNumber];
+                            UpdatePreviewState(localModel, (v) => ForkUpdateShouldIndicateFileUpdate(v, LfsOperations.Remove), ProgramSupportFileState.PresentButModified, null, null);
+                        }
+                    }
+
+                    // Add glyphs for forks that will be modified. For ROM forks this typically equates "file" modification. For other fork types, it also implies "file" modification.
+                    foreach (var updatedForkAndFiles in MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToUpdate))
+                    {
+                        foreach (var file in updatedForkAndFiles.Value)
+                        {
+                            var localModel = MenuLayout.FileSystem.Files[file.GlobalFileNumber];
+                            UpdatePreviewState(localModel, (v) => ForkUpdateShouldIndicateFileUpdate(v, LfsOperations.Update), ProgramSupportFileState.PresentButModified, null, null);
+                        }
+                    }
+
+                    // Add glyphs for forks that will be added. A single file supports numerous forks - so a fork addition does not necessarily equate to a file addition!
+                    // File addition may - or may not - mean ROM fork addition.
+                    foreach (var addedForkAndFiles in MenuLayout.FileSystem.GetAllFilesUsingForks(differences.ForkDifferences.ToAdd))
+                    {
+                        foreach (var file in addedForkAndFiles.Value)
+                        {
+                            var localModel = MenuLayout.FileSystem.Files[file.GlobalFileNumber];
+                            UpdatePreviewState(localModel, (v) => ForkUpdateShouldIndicateFileUpdate(v, LfsOperations.Add), ProgramSupportFileState.PresentButModified, null, null);
                         }
                     }
                     break;
             }
         }
 
-        private void UpdatePreviewState(ILfsFileInfo file, Predicate<FileNodeViewModel> updateCondition, ProgramSupportFileState defaultState, IDictionary<string, FailedOperationException> failures, RomComparer comparer)
+        private bool ForkUpdateShouldIndicateFileUpdate(FileNodeViewModel viewModel, LfsOperations operation)
+        {
+            // We generally do not expect forks on folders in the file system -- so if the ViewModel *is* a folder, leave the state alone.
+            var updateState = !(viewModel is FolderViewModel);
+            if (updateState)
+            {
+                // based on current state of ViewModel, we may or may not desire to update it
+                switch (viewModel.State)
+                {
+                    case ProgramSupportFileState.None:
+                    case ProgramSupportFileState.PresentAndUnchanged:
+                    case ProgramSupportFileState.RequiredPeripheralAvailable:
+                        // Arises from adding manual or other fork to existing file.
+                        if (operation == LfsOperations.Add)
+                        {
+                            // Arises from adding manual or other fork to existing file.
+                            updateState = true;
+                        }
+                        else if (operation == LfsOperations.Update)
+                        {
+                            updateState = true;
+                        }
+                        else if (operation == LfsOperations.Remove)
+                        {
+                            updateState = true;
+                        }
+                        break;
+
+                    case ProgramSupportFileState.PresentButModified:
+                    case ProgramSupportFileState.Missing:
+                    case ProgramSupportFileState.New:
+                    case ProgramSupportFileState.Deleted:
+                    case ProgramSupportFileState.MissingWithAlternateFound:
+                    case ProgramSupportFileState.RequiredPeripheralIncompatible:
+                    case ProgramSupportFileState.RequiredPeripheralNotAttached:
+                    case ProgramSupportFileState.RequiredPeripheralUnknown:
+                    default:
+                        updateState = false;
+                        break;
+                }
+            }
+            return updateState;
+        }
+
+        private void UpdatePreviewState(ILfsFileInfo file, Predicate<FileNodeViewModel> updateCondition, ProgramSupportFileState updateState, IDictionary<string, FailedOperationException> failures, RomComparer comparer)
         {
             var viewModel = FindViewModelForModel((IFile)file);
             if ((viewModel != null) && updateCondition(viewModel))
             {
                 var isIncompatible = IsFileSystemEntryInFailureList(viewModel, failures, comparer);
-                viewModel.State = isIncompatible ? Core.Model.Program.ProgramSupportFileState.RequiredPeripheralIncompatible : defaultState;
+                viewModel.State = isIncompatible ? Core.Model.Program.ProgramSupportFileState.RequiredPeripheralIncompatible : updateState;
                 if (isIncompatible)
                 {
                     ((ProgramViewModel)viewModel).RefreshTipStrip();

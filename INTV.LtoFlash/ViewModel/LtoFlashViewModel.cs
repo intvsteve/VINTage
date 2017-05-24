@@ -590,14 +590,17 @@ namespace INTV.LtoFlash.ViewModel
                     // Operate on a clone of the just-saved menu so we don't trigger an infinite number of saves.
                     var configuration = Configuration.Instance;
                     var menuLayout = ((MenuLayoutViewModel)sender).MenuLayout.FileSystem.Clone().Directories[GlobalDirectoryTable.RootDirectoryNumber] as MenuLayout;
-                    menuLayout.Save(configuration.GetMenuLayoutPath(ActiveLtoFlashDevice.UniqueId));
+                    menuLayout.Save(configuration.GetMenuLayoutPath(ActiveLtoFlashDevice.UniqueId), true);
 
                     // ^^^^ The above is weird... what we do here is, after the 'main' menu finishes saving,
                     // we spawn saving a copy of it in a device-specific directory -- when a device is connected.
                 }
 
                 // Either force compare w/ device... OR... assume that any 'save' is 'dirty' until re-sync.
-                _cachedFileSystemsCompareResult = 1;
+                if (ActiveLtoFlashDevice.IsValid && !e.NonDirtying)
+                {
+                    _cachedFileSystemsCompareResult = 1;
+                }
                 UpdateFileSystemsInSync(true); // always do the refresh after a save
             }
             else

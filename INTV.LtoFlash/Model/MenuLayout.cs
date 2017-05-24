@@ -477,7 +477,7 @@ namespace INTV.LtoFlash.Model
             internal uint SaveGeneration { get; private set; }
 
             /// <summary>
-            /// Gets a value indicating that the save operation was incidental, and not due to user edits.
+            /// Gets a value indicating whether the save operation was incidental, and not due to user edits.
             /// </summary>
             internal bool NonDirtying { get; private set; }
 

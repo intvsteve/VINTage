@@ -139,6 +139,11 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 # =========================
+# SVN detritus
+# =========================
+.svn*
+
+# =========================
 # Windows detritus
 # =========================
 
@@ -152,6 +157,15 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
+# =========================
+# Mac detritus
+# =========================
+
 # Mac desktop service store files
 .DS_Store
 /.project
+
+# =========================
+# Mono/Xamarin detritus
+# =========================
+*.resources

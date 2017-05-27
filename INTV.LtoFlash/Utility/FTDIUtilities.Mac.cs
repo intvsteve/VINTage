@@ -20,6 +20,7 @@
 
 using System;
 using System.Linq;
+using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.Utility
 {

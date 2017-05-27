@@ -106,12 +106,12 @@ namespace INTV.JzIntv.Model
         Gms2Rom,
 
         /// <summary>
-        /// Not sure.
+        /// Merges multiple ROM-format files into a single ROM file.
         /// </summary>
         RomMerge,
 
         /// <summary>
-        /// Not sure.
+        /// Converts a ROM format file to a .bin + .cfg file pair.
         /// </summary>
         Rom2Bin,
 

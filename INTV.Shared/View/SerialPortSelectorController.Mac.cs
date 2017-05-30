@@ -32,8 +32,12 @@ using INTV.Shared.Utility;
 
 #if __UNIFIED__
 using nint = System.nint;
+using nuint = System.nuint;
+using SelIndexType = System.UInt64;
 #else
 using nint = System.Int32;
+using nuint = System.UInt32;
+using SelIndexType = System.Int32;
 #endif // __UNIFIED__
 
 namespace INTV.Shared.View
@@ -167,7 +171,7 @@ namespace INTV.Shared.View
                         if ((selectionIndex >= 0) && (selectionIndex < SerialPortsListArrayController.ArrangedObjects().Length))
                         {
                             _selectedPort = new NSIndexSet((uint)selectionIndex);
-                            SerialPortsListArrayController.SelectionIndex = selectionIndex;
+                            SerialPortsListArrayController.SelectionIndex = (SelIndexType)selectionIndex;
                         }
                     }
                 }
@@ -216,7 +220,7 @@ namespace INTV.Shared.View
                     var index = DataContext.AvailableSerialPorts.IndexOf(selectedPort);
                     if (index >= 0)
                     {
-                        this.SerialPortsListArrayController.SelectionIndex = index;
+                        this.SerialPortsListArrayController.SelectionIndex = (SelIndexType)index;
                     }
                 }
             }
@@ -228,7 +232,7 @@ namespace INTV.Shared.View
                     var selectedIndex = DataContext.BaudRates.IndexOf(selection);
                     if (selectedIndex >= 0)
                     {
-                        BaudRatesArrayController.SelectionIndex = selectedIndex;
+                        BaudRatesArrayController.SelectionIndex = (SelIndexType)selectedIndex;
                     }
                 }
             }
@@ -288,14 +292,14 @@ namespace INTV.Shared.View
         private  NSIndexSet GetSelectionIndexesFilter(NSTableView tableView, NSIndexSet proposedSelectionIndexes)
         {
             var selectionIndexes = new NSMutableIndexSet(proposedSelectionIndexes);
-            foreach (var index in proposedSelectionIndexes)
+            foreach (int index in proposedSelectionIndexes)
             {
                 if (index < DataContext.AvailableSerialPorts.Count())
                 {
                     var port = DataContext.AvailableSerialPorts[(int)index];
                     if (DataContext.DisabledSerialPorts.Contains(port.PortName))
                     {
-                        selectionIndexes.Remove(index);
+                        selectionIndexes.Remove((nuint)index);
                     }
                 }
             }
@@ -351,7 +355,7 @@ namespace INTV.Shared.View
                 if (tableColumn != null)
                 {
                     cell = tableColumn.DataCellForRow(row) as NSTextFieldCell;
-                    var element = DataContext.AvailableSerialPorts[row];
+                    var element = DataContext.AvailableSerialPorts[(int)row];
                     if (DataContext.DisabledSerialPorts.Contains(element.PortName))
                     {
                         cell.Enabled = false;

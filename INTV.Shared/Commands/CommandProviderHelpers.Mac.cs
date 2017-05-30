@@ -146,7 +146,7 @@ namespace INTV.Shared.Commands
                 toolbar.WillInsertItem = (t, i, b) => toolbarItem;
                 toolbar.InsertItem(((VisualRelayCommand)command).UniqueId, insertLocation);
                 toolbar.WillInsertItem = prevWillAdd;
-#endif
+#endif // false
                 toolbar.AddToolbarItem(toolbarItem, ((VisualRelayCommand)command).UniqueId, insertLocation);
             }
             if (parentVisual is NSToolbarItem)
@@ -161,7 +161,7 @@ namespace INTV.Shared.Commands
                 // will always add new cells at the end and it's just a PITA to deal w/ generally
                 // solving the shuffling of cell data at this time. Instead, always stick the new
                 // cell at the end.
-                insertLocation = segmentedControl.SegmentCount;
+                insertLocation = (int)segmentedControl.SegmentCount;
                 segmentedControl.SegmentCount = insertLocation + 1;
                 segmentedControl.SetImage(command.SmallIcon, insertLocation);
                 segmentedControl.Cell.SetToolTip(command.Name, insertLocation);
@@ -209,7 +209,7 @@ namespace INTV.Shared.Commands
                 if (parentVisual is NSSegmentedControl)
                 {
                     var segmentedControl = (NSSegmentedControl)parentVisual;
-                    insertLocation = segmentedControl.SegmentCount;
+                    insertLocation = (int)segmentedControl.SegmentCount;
                 }
                 if (insertLocation < 0)
                 {

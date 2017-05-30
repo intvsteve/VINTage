@@ -110,7 +110,11 @@ namespace INTV.Shared.Converter
             DefaultAttributesDictionary = attributes;
             var theString = StringFor(anObject);
             var newAttributes = new NSMutableDictionary(attributes);
+#if __UNIFIED__
+            newAttributes[NSStringAttributeKey.ForegroundColor] = NSColor.Red;
+#else
             newAttributes[NSAttributedString.ForegroundColorAttributeName] = NSColor.Red;
+#endif // __UNIFIED__
             AttributedString = new NSMutableAttributedString(theString, newAttributes);
             return AttributedString;
         }
@@ -150,7 +154,11 @@ namespace INTV.Shared.Converter
         {
             AttributedString.SetAttributes(DefaultAttributesDictionary, new NSRange(0, AttributedString.Length));
             var newAttributes = new NSMutableDictionary(DefaultAttributesDictionary);
+#if __UNIFIED__
+            newAttributes[NSStringAttributeKey.ForegroundColor] = NSColor.Red;
+#else
             newAttributes[NSAttributedString.ForegroundColorAttributeName] = NSColor.Red;
+#endif // __UNIFIED__
             var x = new NSMutableAttributedString(partialString, newAttributes);
             x.SetAttributes(newAttributes, new NSRange(0, partialString.Length));
             AttributedString.SetString(x);

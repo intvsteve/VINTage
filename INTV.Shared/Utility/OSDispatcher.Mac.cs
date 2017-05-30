@@ -22,8 +22,10 @@
 
 #if __UNIFIED__
 using Foundation;
+using ObjCRuntime;
 #else
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
 
 namespace INTV.Shared.Utility
@@ -113,7 +115,7 @@ namespace INTV.Shared.Utility
                 }
                 else
                 {
-                    _dispatcherObject.PerformSelector(new MonoMac.ObjCRuntime.Selector(OSDispatcher.ActionSelectorName), dispatcher.NativeDispatcher, new SelectorArgument(action), waitUntilDone);
+                    _dispatcherObject.PerformSelector(new Selector(OSDispatcher.ActionSelectorName), dispatcher.NativeDispatcher, new SelectorArgument(action), waitUntilDone);
                 }
             }
 

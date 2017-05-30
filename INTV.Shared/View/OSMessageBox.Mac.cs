@@ -67,7 +67,7 @@ namespace INTV.Shared.View
                                 System.Diagnostics.Debug.WriteLineIf((buttonTwo != null) && customButtonLabels.TryGetValue(OSMessageBoxButton.YesNo, out buttonText) && (buttonText != GetCustomTextForButton(OSMessageBoxButton.YesNo, customButtonLabels, buttons)), "Custom button2 text not used.");
                                 System.Diagnostics.Debug.WriteLineIf((buttonThree != null) && customButtonLabels.TryGetValue(OSMessageBoxButton.YesNoCancel, out buttonText) && (buttonText != GetCustomTextForButton(OSMessageBoxButton.YesNoCancel, customButtonLabels, buttons)), "Custom button3 text not used.");
                             }
-                            result = (OSMessageBoxResult)messageBox.RunModal();
+                            result = (OSMessageBoxResult)(int)messageBox.RunModal();
                         }
                     });
             }

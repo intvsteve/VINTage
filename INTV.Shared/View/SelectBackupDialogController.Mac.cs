@@ -128,7 +128,7 @@ namespace INTV.Shared.View
                 switch (keyPath)
                 {
                     case "selectionIndex":
-                        DialogDataContext.SelectedIndex = BackupDirectoriesArrayController.SelectionIndex;
+                        DialogDataContext.SelectedIndex = (int)BackupDirectoriesArrayController.SelectionIndex;
                         this.RaiseChangeValueForKey("CanRestore");
                         break;
                 }

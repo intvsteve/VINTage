@@ -35,27 +35,27 @@ namespace INTV.Shared.View
         /// No icon displayed.
         /// </summary>
         /// <remarks>OK, well, actually, you cannot have 'none' so show info.</remarks>
-        None = NSAlertStyle.Informational,
+        None = (int)NSAlertStyle.Informational,
 
         /// <summary>
         /// Question icon displayed.
         /// </summary>
         /// <remarks>Well... On Mac, it's a warning icon.</remarks>
-        Question = NSAlertStyle.Warning,
+        Question = (int)NSAlertStyle.Warning,
 
         /// <summary>
         /// Information icon displayed.
         /// </summary>
-        Information = NSAlertStyle.Informational,
+        Information = (int)NSAlertStyle.Informational,
 
         /// <summary>
         /// Exclamation icon displayed.
         /// </summary>
-        Exclamation = NSAlertStyle.Warning,
+        Exclamation = (int)NSAlertStyle.Warning,
 
         /// <summary>
         /// Error icon displayed.
         /// </summary>
-        Error = NSAlertStyle.Critical,
+        Error = (int)NSAlertStyle.Critical,
     }
 }

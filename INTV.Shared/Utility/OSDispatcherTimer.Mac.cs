@@ -75,7 +75,11 @@ namespace INTV.Shared.Utility
         /// Executes the timer function.
         /// </summary>
         /// <remarks>NOTE: This will be called from the thread the timer was targeted to when it was created.</remarks>
+#if __UNIFIED__
+        private void TimerTick(NSTimer timer)
+#else
         private void TimerTick()
+#endif // __UNIFIED__
         {
             OnTimerFire(this, System.EventArgs.Empty);
         }

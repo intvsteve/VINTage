@@ -4,7 +4,13 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 using System.CodeDom.Compiler;
 
 namespace INTV.Shared.View
@@ -13,16 +19,16 @@ namespace INTV.Shared.View
 	partial class ProgressIndicatorController
 	{
 		[Outlet]
-		MonoMac.AppKit.NSButton Cancel { get; set; }
+		NSButton Cancel { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSView FeedbackArea { get; set; }
+		NSView FeedbackArea { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSProgressIndicator ProgressBar { get; set; }
+		NSProgressIndicator ProgressBar { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTextField UpdateText { get; set; }
+		NSTextField UpdateText { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

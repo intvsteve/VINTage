@@ -4,7 +4,13 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 using System.CodeDom.Compiler;
 
 namespace INTV.Shared.View
@@ -13,13 +19,13 @@ namespace INTV.Shared.View
 	partial class JlpFeaturesConfigurationPageController
 	{
 		[Outlet]
-		MonoMac.Foundation.NSNumberFormatter FlashSectorsFormatter { get; set; }
+		NSNumberFormatter FlashSectorsFormatter { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton JlpVersionPopUpButton { get; set; }
+		NSPopUpButton JlpVersionPopUpButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton SerialPortPopUpButton { get; set; }
+		NSPopUpButton SerialPortPopUpButton { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

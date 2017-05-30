@@ -4,7 +4,13 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 using System.CodeDom.Compiler;
 
 namespace INTV.Shared.View
@@ -13,16 +19,16 @@ namespace INTV.Shared.View
 	partial class KeyboardComponentFeaturesConfigurationPageController
 	{
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton CassetteRequirementPopUpButton { get; set; }
+		NSPopUpButton CassetteRequirementPopUpButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton KeyboardComponentCompatibilityPopUpButton { get; set; }
+		NSPopUpButton KeyboardComponentCompatibilityPopUpButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton MicrosoftBasicCartridgeRequirementPopUpButton { get; set; }
+		NSPopUpButton MicrosoftBasicCartridgeRequirementPopUpButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTextField MicrosoftBasicUsageLabel { get; set; }
+		NSTextField MicrosoftBasicUsageLabel { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

@@ -1,15 +1,20 @@
-﻿
+﻿#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif // __UNIFIED__
+
 namespace INTV.Shared.View
 {
     
     // Should subclass MonoMac.AppKit.NSView
-    [MonoMac.Foundation.Register("SystemCompatibilityConfigurationPage")]
+    [Register("SystemCompatibilityConfigurationPage")]
     public partial class SystemCompatibilityConfigurationPage
     {
     }
     
     // Should subclass MonoMac.AppKit.NSViewController
-    [MonoMac.Foundation.Register("SystemCompatibilityConfigurationPageController")]
+    [Register("SystemCompatibilityConfigurationPageController")]
     public partial class SystemCompatibilityConfigurationPageController
     {
     }

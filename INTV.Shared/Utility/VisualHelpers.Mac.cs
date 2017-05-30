@@ -133,7 +133,7 @@ namespace INTV.Shared.Utility
             var mainScreen = NSScreen.MainScreen;
             var width = System.Convert.ToInt32(mainScreen.Frame.Width);
             var height = System.Convert.ToInt32(mainScreen.Frame.Height);
-            var depth = NSGraphics.BitsPerPixelFromDepth(mainScreen.Depth);
+            var depth = (int)NSGraphics.BitsPerPixelFromDepth(mainScreen.Depth);
             return new System.Tuple<int, int, int>(width, height, depth);
         }
 

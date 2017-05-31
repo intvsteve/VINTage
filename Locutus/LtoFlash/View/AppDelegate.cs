@@ -55,7 +55,11 @@ namespace Locutus.View
         }
 
         /// <inheritdoc />
+#if __UNIFIED__
+        public override void DidFinishLaunching(NSNotification notification)
+#else
         public override void FinishedLaunching(NSObject notification)
+#endif // __UNIFIED__
         {
             mainWindowController = new MainWindowController();
             mainWindowController.AppDelegate = this;
@@ -69,5 +73,23 @@ namespace Locutus.View
         public override void WillUpdate(NSNotification notification)
         {
         }
+
+#if __UNIFIED__
+        public override bool ApplicationShouldTerminateAfterLastWindowClosed(NSApplication sender)
+        {
+            return true;
+        }
+
+        public override void WillTerminate(NSNotification notification)
+        {
+            var application = notification.Object as INTV.Shared.Utility.SingleInstanceApplication;
+            application.RaiseApplicationExit();
+        }
+
+        public override NSError WillPresentError(NSApplication application, NSError error)
+        {
+            return error;
+        }
+#endif // __UNIFIED__
     }
 }

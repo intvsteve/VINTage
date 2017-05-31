@@ -60,6 +60,8 @@ namespace INTV.Shared.View
         void Initialize()
         {
             Title = "SplashScreen";
+            Restorable = false;
+            DisableSnapshotRestoration();
         }
 
         #endregion // Constructors

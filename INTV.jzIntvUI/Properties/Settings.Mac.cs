@@ -19,7 +19,9 @@
 // </copyright>
 
 using System;
-#if !__UNIFIED
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
 #endif // __UNIFIED__
 using INTV.Core.ComponentModel;

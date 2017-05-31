@@ -1,0 +1,36 @@
+<!-- All msbuild target logic needs to be inside a project tag -->
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!-- These targets will fire after mmp creates your bundle but before code signing -->
+	<PropertyGroup>
+	    <CreateAppBundleDependsOn>$(CreateAppBundleDependsOn);CopyCfgFiles;CopySDK1600Tools;LtoFlash</CreateAppBundleDependsOn>
+	</PropertyGroup>
+
+	<!-- Since this has no inputs/outputs, it will fire every build -->
+	<Target Name="LtoFlash">
+		<Message Text="This is us doing something every build, with no inputs/ouputs!" />
+	</Target>
+
+    <ItemGroup>
+        <CfgFiles Include="$(MSBuildProjectDirectory)\..\..\INTV.Core\tools\*.*" />
+    </ItemGroup>
+    <Target Name="CopyCfgFiles">
+        <Copy SourceFiles="@(CfgFiles)" DestinationFiles="@(CfgFiles->'$(AppBundleDir)/Contents/MonoBundle/tools/%(Filename)%(Extension)')" />
+        <Message Text="Copying standard .cfg file resources..." />
+    </Target>
+
+    <ItemGroup>
+        <SDK1600Tools Include="$(MSBuildProjectDirectory)\..\..\INTV.jzIntv\tools\Mac\*.*" />
+    </ItemGroup>
+    <Target Name="CopySDK1600Tools">
+        <Copy SourceFiles="@(SDK1600Tools)" DestinationFiles="@(SDK1600Tools->'$(AppBundleDir)/Contents/MonoBundle/tools/%(Filename)%(Extension)')" />
+        <Message Text="Copying SDK-1600 Tools..." />
+    </Target>
+
+	<!-- Since this has inputs/outputs, it will fire only when the inputs are changed or the output does not exist -->
+	<!-- <Target Name="CopyOurFiles" Inputs="../../INTV.Core/tools/*.*" Outputs="$(AppBundleDir)/Contents/MonoBundle/tools/*.*">
+		<Message Text="This is us copying a file into resources!" /> -->
+		<!-- This could have easily been done w/ a built in build action, but you can extend it arbitrary. -->
+	    <!-- <Copy SourceFiles="../../INTV.Core/tools/*.*" DestinationFiles="$(AppBundleDir)/Contents/MonoBundle/tools/*.*" />
+	</Target> -->
+</Project>

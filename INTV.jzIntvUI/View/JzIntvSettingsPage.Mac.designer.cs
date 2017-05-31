@@ -4,7 +4,14 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 using System.CodeDom.Compiler;
 
 namespace INTV.JzIntvUI.View
@@ -13,22 +20,22 @@ namespace INTV.JzIntvUI.View
 	partial class JzIntvSettingsPageController
 	{
 		[Outlet]
-		MonoMac.AppKit.NSArrayController DisplayResolutionsArrayController { get; set; }
+		NSArrayController DisplayResolutionsArrayController { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSArrayController JzIntvDisplayModesController { get; set; }
+		NSArrayController JzIntvDisplayModesController { get; set; }
 
 		[Action ("ClearConfigurationPath:")]
-		partial void ClearConfigurationPath (MonoMac.Foundation.NSObject sender);
+		partial void ClearConfigurationPath (NSObject sender);
 
 		[Action ("CommandLineOptionSelected:")]
-		partial void CommandLineOptionSelected (MonoMac.Foundation.NSObject sender);
+		partial void CommandLineOptionSelected (NSObject sender);
 
 		[Action ("ResetResolutionToDefault:")]
-		partial void ResetResolutionToDefault (MonoMac.Foundation.NSObject sender);
+		partial void ResetResolutionToDefault (NSObject sender);
 
 		[Action ("SetConfigurationPath:")]
-		partial void SetConfigurationPath (MonoMac.Foundation.NSObject sender);
+		partial void SetConfigurationPath (NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{

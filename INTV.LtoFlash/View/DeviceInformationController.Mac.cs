@@ -42,6 +42,15 @@ using INTV.Shared.Utility;
 using INTV.Shared.View;
 using INTV.Shared.ViewModel;
 
+#if __UNIFIED__
+using CGSize = CoreGraphics.CGSize;
+using nint = System.nint;
+#else
+using CGSize = System.Drawing.SizeF;
+using nint = System.Int32;
+using IIKImageBrowserItem = MonoMac.ImageKit.IKImageBrowserItem;
+#endif // __UNIFIED__
+
 namespace INTV.LtoFlash.View
 {
     public partial class DeviceInformationController : NSWindowController, System.ComponentModel.INotifyPropertyChanged
@@ -466,7 +475,7 @@ namespace INTV.LtoFlash.View
         public int TitleScreenSelection
         {
             get { return _titleScreenSelection; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, "TitleScreenSelection", value, ref _titleScreenSelection, (p, v) => ViewModel.ActiveLtoFlashDevice.ShowTitleScreen = (ShowTitleScreenFlags)ShowTitleScreenButton.SelectedTag); }
+            set { this.AssignAndUpdateProperty(PropertyChanged, "TitleScreenSelection", value, ref _titleScreenSelection, (p, v) => ViewModel.ActiveLtoFlashDevice.ShowTitleScreen = (ShowTitleScreenFlags)(int)ShowTitleScreenButton.SelectedTag); }
         }
         private int _titleScreenSelection;
 
@@ -477,7 +486,7 @@ namespace INTV.LtoFlash.View
         public int SaveMenuPositionSelection
         {
             get { return _saveMenuPositionSelection; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, "SaveMenuPositionSelection", value, ref _saveMenuPositionSelection, (p, v) => ViewModel.ActiveLtoFlashDevice.SaveMenuPosition = (SaveMenuPositionFlags)SaveMenuPositionButton.SelectedTag); }
+            set { this.AssignAndUpdateProperty(PropertyChanged, "SaveMenuPositionSelection", value, ref _saveMenuPositionSelection, (p, v) => ViewModel.ActiveLtoFlashDevice.SaveMenuPosition = (SaveMenuPositionFlags)(int)SaveMenuPositionButton.SelectedTag); }
         }
         private int _saveMenuPositionSelection;
 
@@ -488,7 +497,7 @@ namespace INTV.LtoFlash.View
         public int EcsCompatibilitySelection
         {
             get { return _ecsCompatibilitySelection; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, EcsCompatibilitySelectionPropertyName, value, ref _ecsCompatibilitySelection, (p, v) => ViewModel.ActiveLtoFlashDevice.EcsCompatibility = (EcsStatusFlags)ECSCompatibilityButton.SelectedTag); }
+            set { this.AssignAndUpdateProperty(PropertyChanged, EcsCompatibilitySelectionPropertyName, value, ref _ecsCompatibilitySelection, (p, v) => ViewModel.ActiveLtoFlashDevice.EcsCompatibility = (EcsStatusFlags)(int)ECSCompatibilityButton.SelectedTag); }
         }
         private int _ecsCompatibilitySelection;
 
@@ -499,7 +508,7 @@ namespace INTV.LtoFlash.View
         public int IntellivisionIICompatibilitySelection
         {
             get { return _intellivisionIICompatibilitySelection; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, IntellivisionIICompatibilitySelectionPropertyName, value, ref _intellivisionIICompatibilitySelection, (p, v) => ViewModel.ActiveLtoFlashDevice.IntvIICompatibility = (IntellivisionIIStatusFlags)IntellivisionIICompatibilityButton.SelectedTag); }
+            set { this.AssignAndUpdateProperty(PropertyChanged, IntellivisionIICompatibilitySelectionPropertyName, value, ref _intellivisionIICompatibilitySelection, (p, v) => ViewModel.ActiveLtoFlashDevice.IntvIICompatibility = (IntellivisionIIStatusFlags)(int)IntellivisionIICompatibilityButton.SelectedTag); }
         }
         private int _intellivisionIICompatibilitySelection;
 
@@ -544,8 +553,8 @@ namespace INTV.LtoFlash.View
             ControllerButtonsGrid.BackgroundColors = new [] { ColorHelpers.IntellivisionGold };
             _controllerElements = new NSMutableArray();
             ControllerElementsArrayController.SelectsInsertedObjects = false;
-            ControllerButtonsGrid.MinItemSize = new System.Drawing.SizeF(32, 32);
-            ControllerButtonsGrid.MaxItemSize = new System.Drawing.SizeF(36, 36);
+            ControllerButtonsGrid.MinItemSize = new CGSize(32, 32);
+            ControllerButtonsGrid.MaxItemSize = new CGSize(36, 36);
             var buttons = new ControllerKeys[4,5]
             {
                 { ControllerKeys.None, ControllerKeys.Keypad1, ControllerKeys.Keypad2, ControllerKeys.Keypad3, ControllerKeys.None },
@@ -616,7 +625,7 @@ namespace INTV.LtoFlash.View
                 if (image != null)
                 {
                     var currentSize = image.Size;
-                    image.Size = new System.Drawing.SizeF(currentSize.Width / 2, currentSize.Height / 2);
+                    image.Size = new CGSize(currentSize.Width / 2, currentSize.Height / 2);
                 }
                 ControllerElementsArrayController.AddObject(controllerElement);
             }
@@ -634,10 +643,10 @@ namespace INTV.LtoFlash.View
             DeviceCommandGroup.PopulateIntellivisionIICompatibilityMenu(IntellivisionIICompatibilityButton);
             DeviceCommandGroup.PopulateShowTitleMenu(ShowTitleScreenButton);
             DeviceCommandGroup.PopulateSaveMenuPositionMenu(SaveMenuPositionButton);
-            EcsCompatibilitySelection = ECSCompatibilityButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.EcsCompatibility);
-            IntellivisionIICompatibilitySelection = IntellivisionIICompatibilityButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.IntvIICompatibility);
-            TitleScreenSelection = ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.ShowTitleScreen);
-            SaveMenuPositionSelection = ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
+            EcsCompatibilitySelection = (int)ECSCompatibilityButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.EcsCompatibility);
+            IntellivisionIICompatibilitySelection = (int)IntellivisionIICompatibilityButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.IntvIICompatibility);
+            TitleScreenSelection = (int)ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.ShowTitleScreen);
+            SaveMenuPositionSelection = (int)ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
             BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
             Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
 
@@ -955,11 +964,12 @@ namespace INTV.LtoFlash.View
         {
             #region IKImageBrowserDataSource
 
-            public override int ItemCount(IKImageBrowserView aBrowser)
+            public override nint ItemCount(IKImageBrowserView aBrowser)
             {
                 throw new System.NotImplementedException();
             }
-            public override IKImageBrowserItem GetItem(IKImageBrowserView aBrowser, int index)
+
+            public override IIKImageBrowserItem GetItem(IKImageBrowserView aBrowser, nint index)
             {
                 throw new System.NotImplementedException();
             }
@@ -977,12 +987,14 @@ namespace INTV.LtoFlash.View
                     throw new System.NotImplementedException();
                 }
             }
+
             public override NSString ImageRepresentationType
             {
                 get {
                     throw new System.NotImplementedException();
                 }
             }
+
             public override NSObject ImageRepresentation
             {
                 get {

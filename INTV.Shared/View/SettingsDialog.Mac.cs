@@ -31,6 +31,12 @@ using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 
+#if __UNIFIED__
+using CGSize = CoreGraphics.CGSize;
+#else
+using CGSize = System.Drawing.SizeF;
+#endif // __UNIFIED__
+
 namespace INTV.Shared.View
 {
     /// <summary>
@@ -150,7 +156,7 @@ namespace INTV.Shared.View
                     item = new NSToolbarItem(id);
                     item.Label = pageName.TrimEnd(new char[] { '.' });
                     item.Image = page.GetType().LoadImageResource(icon);
-                    var size = new System.Drawing.SizeF(item.Image.Size.Width * 2, item.Image.Size.Height);
+                    var size = new CGSize(item.Image.Size.Width * 2, item.Image.Size.Height);
                     item.MinSize = size;
                     item.MaxSize = size;
                     Toolbar.AddToolbarItem(item, id, Toolbar.Items.Length);

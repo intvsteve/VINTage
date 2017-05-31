@@ -4,7 +4,14 @@
 // actions made in the Xcode designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 
 namespace Locutus.View
 {
@@ -12,19 +19,19 @@ namespace Locutus.View
 	partial class MainWindowController
 	{
 		[Outlet]
-		MonoMac.AppKit.NSToolbar Toolbar { get; set; }
+		NSToolbar Toolbar { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSView OverlayLayer { get; set; }
+		NSView OverlayLayer { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSSplitView SplitView { get; set; }
+		NSSplitView SplitView { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSView RomListSplitView { get; set; }
+		NSView RomListSplitView { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSView MenuLayoutSplitView { get; set; }
+		NSView MenuLayoutSplitView { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

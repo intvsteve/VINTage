@@ -36,6 +36,12 @@ using INTV.JzIntvUI.ViewModel;
 using INTV.Shared.View;
 using INTV.JzIntvUI.Commands;
 
+#if __UNIFIED__
+using SelIndexType = System.UInt64;
+#else
+using SelIndexType = System.Int32;
+#endif // __UNIFIED__
+
 namespace INTV.JzIntvUI.View
 {
     public partial class JzIntvSettingsPageController : NSViewController, IFakeDependencyObject
@@ -256,7 +262,7 @@ namespace INTV.JzIntvUI.View
                 var selectedIndex = ViewModel.AvailableDisplayResolutions.IndexOf(selectedResolutionViewModel);
                 if (selectedIndex >= 0)
                 {
-                    DisplayResolutionsArrayController.SelectionIndex = selectedIndex;
+                    DisplayResolutionsArrayController.SelectionIndex = (SelIndexType)selectedIndex;
                 }
             }
 
@@ -270,7 +276,7 @@ namespace INTV.JzIntvUI.View
                 var selectedIndex = ViewModel.AvailableDisplayModes.IndexOf(selectedModeViewModel);
                 if (selectedIndex >= 0)
                 {
-                    JzIntvDisplayModesController.SelectionIndex = selectedIndex;
+                    JzIntvDisplayModesController.SelectionIndex = (SelIndexType)selectedIndex;
                 }
             }
 
@@ -355,7 +361,7 @@ namespace INTV.JzIntvUI.View
         {
             var button = sender as NSButton;
             System.Diagnostics.Debug.WriteLine("Clicked on " + button.Identifier);
-            ViewModel.CommandLineMode = (CommandLineMode)button.Tag;
+            ViewModel.CommandLineMode = (CommandLineMode)(int)button.Tag;
         }
 
         partial void ClearConfigurationPath(NSObject sender)
@@ -364,7 +370,7 @@ namespace INTV.JzIntvUI.View
             if (control != null)
             {
                 ICommand command = null;
-                var whichFile = (EmulatorFile)control.Tag;
+                var whichFile = (EmulatorFile)(int)control.Tag;
                 switch (whichFile)
                 {
                     case EmulatorFile.JzIntv:
@@ -405,7 +411,7 @@ namespace INTV.JzIntvUI.View
             if (control != null)
             {
                 ICommand command = null;
-                var whichFile = (EmulatorFile)control.Tag;
+                var whichFile = (EmulatorFile)(int)control.Tag;
                 switch (whichFile)
                 {
                     case EmulatorFile.JzIntv:
@@ -446,7 +452,7 @@ namespace INTV.JzIntvUI.View
             var selection = ViewModel.AvailableDisplayResolutions.First(b => b.Resolution == selectedResolution);
             if (selection != null)
             {
-                var selectedIndex = ViewModel.AvailableDisplayResolutions.IndexOf(selection);
+                var selectedIndex = (SelIndexType)ViewModel.AvailableDisplayResolutions.IndexOf(selection);
                 if (selectedIndex >= 0)
                 {
                     SelectedResolution = selectedIndex;
@@ -508,6 +514,7 @@ namespace INTV.JzIntvUI.View
                 Initialize();
             }
 
+#if !__UNIFIED__
             /// <summary>
             /// Called when created directly from a XIB file.
             /// </summary>
@@ -518,6 +525,7 @@ namespace INTV.JzIntvUI.View
             {
                 Initialize();
             }
+#endif // __UNIFIED__
 
             /// <summary>Shared initialization code.</summary>
             void Initialize()
@@ -535,7 +543,7 @@ namespace INTV.JzIntvUI.View
                 {
                     newText = null;
                 }
-                var whichTextField = (TextFieldId)textField.Tag;
+                var whichTextField = (TextFieldId)(int)textField.Tag;
                 switch (whichTextField)
                 {
                     case TextFieldId.Joystick0:

@@ -29,6 +29,10 @@ using MonoMac.Foundation;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.View;
 
+#if !__UNIFIED__
+using INSApplicationDelegate = MonoMac.AppKit.NSApplicationDelegate;
+#endif // !__UNIFIED__
+
 namespace INTV.Shared.Utility
 {
     /// <summary>
@@ -120,7 +124,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets or sets the delegate.  (General paranoia about MonoMac's NSObject lifetime management.
         /// </summary>
-        private NSApplicationDelegate TheDelegate { get; set; }
+        private INSApplicationDelegate TheDelegate { get; set; }
 
         #endregion // Properties
 
@@ -277,7 +281,11 @@ namespace INTV.Shared.Utility
             if (context == this.Handle)
             {
                 var changeKindNumber = change.ValueForKey(NSObject.ChangeKindKey) as NSNumber;
+#if __UNIFIED__
+                var changeKind = (NSKeyValueChange)changeKindNumber.Int32Value;
+#else
                 var changeKind = (NSKeyValueChange)changeKindNumber.IntValue;
+#endif // __UNIFIED__
                 NSObject newValue = null;
                 switch (changeKind)
                 {
@@ -314,6 +322,11 @@ namespace INTV.Shared.Utility
 
         #endregion // NSApplication Overrides
 
+        public void RaiseApplicationExit()
+        {
+            HandleWillTerminate(this, System.EventArgs.Empty);
+        }
+
         partial void OSInitialize()
         {
             // There's an annoying mono-ism that can occur that seems innocuous.
@@ -344,15 +357,12 @@ namespace INTV.Shared.Utility
                 _splashScreen = SplashScreen.Show(_splashScreenResource);
             }
             _programDirectory = System.IO.Path.GetDirectoryName(mainBundle.BundlePath);
+#if !__UNIFIED__
             WillTerminate += HandleWillTerminate;
             this.ApplicationShouldTerminateAfterLastWindowClosed = ApplicationShouldTerminateAfterLastWindowClosedPredicate;
-            AddObserver(this, (NSString)MainWindowValueName, NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, this.Handle);
             WillPresentError = OnWillPresentError;
-        }
-
-        private static NSError OnWillPresentError(NSApplication application, NSError error)
-        {
-            return error;
+#endif // !__UNIFIED__
+            AddObserver(this, (NSString)MainWindowValueName, NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, this.Handle);
         }
 
         private static void OnDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
@@ -382,10 +392,17 @@ namespace INTV.Shared.Utility
             }
         }
 
+#if !__UNIFIED__
         private bool ApplicationShouldTerminateAfterLastWindowClosedPredicate(NSApplication sender)
         {
             return true;
         }
+
+        private static NSError OnWillPresentError(NSApplication application, NSError error)
+        {
+            return error;
+        }
+#endif // !__UNIFIED__
 
         private void HandleDidFinishLaunching(object sender, System.EventArgs e)
         {
@@ -422,7 +439,7 @@ namespace INTV.Shared.Utility
             }
         }
 
-        private void HandleWillTerminate (object sender, System.EventArgs e)
+        private void HandleWillTerminate(object sender, System.EventArgs e)
         {
             var exit = Exit;
             if (exit != null)

@@ -4,7 +4,14 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 using System.CodeDom.Compiler;
 
 namespace INTV.LtoFlash.View
@@ -13,34 +20,34 @@ namespace INTV.LtoFlash.View
 	partial class MenuLayoutViewController
 	{
 		[Outlet]
-		MonoMac.AppKit.NSImageView ConnectionIcon { get; set; }
+		NSImageView ConnectionIcon { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTextField DropFilesHereText { get; set; }
+		NSTextField DropFilesHereText { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSColorWell ItemColorWell { get; set; }
+		NSColorWell ItemColorWell { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSImageView MenuDifferencesIcon { get; set; }
+		NSImageView MenuDifferencesIcon { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTreeController MenuLayoutController { get; set; }
+		NSTreeController MenuLayoutController { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSScrollView MenuTreeScrollView { get; set; }
+		NSScrollView MenuTreeScrollView { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSButton NewFolderButton { get; set; }
+		NSButton NewFolderButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSImageView PowerStateIcon { get; set; }
+		NSImageView PowerStateIcon { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSButton RemoveItemButton { get; set; }
+		NSButton RemoveItemButton { get; set; }
 
 		[Action ("OnDoubleClick:")]
-		partial void OnDoubleClick (MonoMac.Foundation.NSObject sender);
+		partial void OnDoubleClick (NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{

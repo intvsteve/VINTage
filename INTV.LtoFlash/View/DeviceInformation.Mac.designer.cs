@@ -4,7 +4,14 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 using System.CodeDom.Compiler;
 
 namespace INTV.LtoFlash.View
@@ -13,52 +20,52 @@ namespace INTV.LtoFlash.View
 	partial class DeviceInformationController
 	{
 		[Outlet]
-		MonoMac.AppKit.NSButton BackgroundGCCheckBox { get; set; }
+		NSButton BackgroundGCCheckBox { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSButton CloseButtonControl { get; set; }
+		NSButton CloseButtonControl { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSCollectionViewItem CollectionViewItemController { get; set; }
+		NSCollectionViewItem CollectionViewItemController { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSCollectionView ControllerButtonsGrid { get; set; }
+		NSCollectionView ControllerButtonsGrid { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSArrayController ControllerElementsArrayController { get; set; }
+		NSArrayController ControllerElementsArrayController { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTextField DeviceNameEntry { get; set; }
+		NSTextField DeviceNameEntry { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTextField DeviceOwnerEntry { get; set; }
+		NSTextField DeviceOwnerEntry { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton ECSCompatibilityButton { get; set; }
+		NSPopUpButton ECSCompatibilityButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton IntellivisionIICompatibilityButton { get; set; }
+		NSPopUpButton IntellivisionIICompatibilityButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSButton KeyclicksCheckBox { get; set; }
+		NSButton KeyclicksCheckBox { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSButton RememberMenuPositionCheckBox { get; set; }
+		NSButton RememberMenuPositionCheckBox { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton SaveMenuPositionButton { get; set; }
+		NSPopUpButton SaveMenuPositionButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton ShowTitleScreenButton { get; set; }
+		NSPopUpButton ShowTitleScreenButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSButton UpdateFirmwareButton { get; set; }
+		NSButton UpdateFirmwareButton { get; set; }
 
 		[Action ("OnClose:")]
-		partial void OnClose (MonoMac.Foundation.NSObject sender);
+		partial void OnClose (NSObject sender);
 
 		[Action ("OnUpdateFirmware:")]
-		partial void OnUpdateFirmware (MonoMac.Foundation.NSObject sender);
+		partial void OnUpdateFirmware (NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{

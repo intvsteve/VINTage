@@ -4,7 +4,12 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+
+#if __UNIFIED__
+using Foundation;
+#else
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 using System.CodeDom.Compiler;
 
 namespace INTV.LtoFlash.View
@@ -13,13 +18,13 @@ namespace INTV.LtoFlash.View
 	partial class PromptToInstallFtdiDriverDialogController
 	{
 		[Action ("DoNotAskAgain:")]
-		partial void DoNotAskAgain (MonoMac.Foundation.NSObject sender);
+		partial void DoNotAskAgain (NSObject sender);
 
 		[Action ("DoNotInstall:")]
-		partial void DoNotInstall (MonoMac.Foundation.NSObject sender);
+		partial void DoNotInstall (NSObject sender);
 
 		[Action ("LaunchInstaller:")]
-		partial void LaunchInstaller (MonoMac.Foundation.NSObject sender);
+		partial void LaunchInstaller (NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{

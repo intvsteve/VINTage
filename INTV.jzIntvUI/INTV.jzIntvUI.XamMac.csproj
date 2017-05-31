@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A42922D4-8D80-41F0-BCAF-1416A5598D3E}</ProjectGuid>
+    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>INTV.JzIntvUI</RootNamespace>
+    <AssemblyName>INTV.jzIntvUI</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseXamMacFullFramework>true</UseXamMacFullFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\XamMac</OutputPath>
+    <IntermediateOutputPath>obj\Debug\XamMac\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>BeforeBuild</type>
+          <command>make -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+        <Command>
+          <type>AfterClean</type>
+          <command>make -f build_jzIntv.mak clean SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\XamMac</OutputPath>
+    <IntermediateOutputPath>obj\Release\XamMac\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>MAC</DefineConstants>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>BeforeBuild</type>
+          <command>make -f build_jzIntv.mak SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+        <Command>
+          <type>AfterClean</type>
+          <command>make -f build_jzIntv.mak clean SKIP_IF_JZINTV_EMPTY=1 CONTENT_DIR=${TargetDir}/jzIntv/Mac</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="Xamarin.Mac" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\INTV.Core\INTV.Core.XamMac.csproj">
+      <Project>{FB5C25FD-A481-48E9-A721-24DAE07DF67A}</Project>
+      <Name>INTV.Core.XamMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj">
+      <Project>{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}</Project>
+      <Name>INTV.jzIntv.XamMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.Shared\INTV.Shared.XamMac.csproj">
+      <Project>{245FD6EE-0B2E-4119-9211-4AA77511E23B}</Project>
+      <Name>INTV.Shared.XamMac</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Model\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Commands\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="View\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Model\JzIntvLauncherConfiguration.cs" />
+    <Compile Include="Properties\Settings.Mac.cs" />
+    <Compile Include="Commands\JzIntvLauncherCommandsProvider.cs" />
+    <Compile Include="Commands\ConfigurationCommandGroup.cs" />
+    <Compile Include="Commands\JzIntvLauncherCommandGroup.cs" />
+    <Compile Include="Commands\JzIntvLauncherCommandGroup.Mac.cs" />
+    <Compile Include="View\JzIntvSettingsPage.Mac.cs" />
+    <Compile Include="View\JzIntvSettingsPage.Mac.designer.cs">
+      <DependentUpon>JzIntvSettingsPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\JzIntvSettingsPageViewModel.cs" />
+    <Compile Include="View\JzIntvSettingsPageController.Mac.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\DisplayResolutionViewModel.cs" />
+    <Compile Include="ViewModel\DisplayModeViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Commands\ConfigurationCommandGroup.Mac.cs" />
+    <Compile Include="Model\EnableFeature.cs" />
+    <Compile Include="Model\CommandLineMode.cs" />
+    <Compile Include="ViewModel\KeyboardMapViewModel.cs" />
+    <Compile Include="Model\JzIntvLauncherConfiguration.Mac.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>INTV.JzIntvUI.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Information_16x16.png">
+      <LogicalName>Resources/Images/Information_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Information_32x.png">
+      <LogicalName>Resources/Images/Information_32x.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Images\Always_16xMD.png">
+      <LogicalName>Resources/Images/Always_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Display_16xMD.png">
+      <LogicalName>Resources/Images/Display_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Display_32xMD.png">
+      <LogicalName>Resources/Images/Display_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_16xLG_color.png">
+      <LogicalName>Resources/Images/download_play_16xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_32xLG_color.png">
+      <LogicalName>Resources/Images/download_play_32xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_32xMD_color.png">
+      <LogicalName>Resources/Images/download_play_32xMD_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\jzIntvUI_32xMD.png">
+      <LogicalName>Resources/Images/jzIntvUI_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\Never_16xMD.png">
+      <LogicalName>Resources/Images/Never_16xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\settings_16xLG.png">
+      <LogicalName>Resources/Images/settings_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\settings_32xMD.png">
+      <LogicalName>Resources/Images/settings_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\UseRom_16x.png">
+      <LogicalName>Resources/Images/UseRom_16x.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_16xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_32xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xMD.png">
+      <LogicalName>Resources/Images/browse_download_play_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\ecs_16xLG.png">
+      <LogicalName>Resources/Images/ecs_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\intellivoice_16xLG.png">
+      <LogicalName>Resources/Images/intellivoice_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\jlp_9xSM.png">
+      <LogicalName>Resources/Images/jlp_9xSM.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\show_command_line_16x.png">
+      <LogicalName>Resources/Images/show_command_line_16x.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="View\JzIntvSettingsPage.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="jzIntv\Mac\bin\.readme.txt" />
+    <None Include="jzIntv\Mac\doc\.readme.txt" />
+    <None Include="jzIntv\Mac\bin\SDL-1.2.15.dmg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+    <None Include="build_jzIntv.mak" />
+    <None Include="custom.mak" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="jzIntv\Getting_Started.html" />
+  </ItemGroup>
+</Project>

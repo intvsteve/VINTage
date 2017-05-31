@@ -20,7 +20,11 @@
 
 ////#define ENABLE_COLORS_PATCH
 
-using System;
+#if __UNIFIED__
+using AppKit;
+#else
+using MonoMac.AppKit;
+#endif // __UNIFIED__
 using INTV.LtoFlash.Model;
 using INTV.Shared.Commands;
 using INTV.Shared.Utility;
@@ -57,7 +61,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             var menuItem = INTV.LtoFlash.Commands.DeviceCommandGroup.ConnectToDeviceSubmenuCommand.MenuItem;
             var subMenu = menuItem != null ? menuItem.Submenu : null;
-            var menuDelegate = subMenu != null ? subMenu.Delegate : null;
+            var menuDelegate = subMenu != null ? subMenu.Delegate as NSMenuDelegate : null;
             if (menuDelegate != null)
             {
                 menuDelegate.MenuWillOpen(subMenu); // force re-initialization of the submenu

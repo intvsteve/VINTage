@@ -13,6 +13,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Intellicart.XamMac", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntv.XamMac", "..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj", "{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specifications", "Specifications", "{4B0B90D6-FC58-41BA-BBB3-3FC48610CCB1}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\doc\lfs_v2.txt = ..\..\doc\lfs_v2.txt
+		..\..\doc\locutus_operating_modes.txt = ..\..\doc\locutus_operating_modes.txt
+		..\..\doc\luigi_format.txt = ..\..\doc\luigi_format.txt
+		..\..\doc\wire_protocol.txt = ..\..\doc\wire_protocol.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6C3241D2-8326-466C-9D47-59F6FF54D1EF}"
+	ProjectSection(SolutionItems) = preProject
+		license.txt = license.txt
+		README.txt = README.txt
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.XamMac", "..\INTV.jzIntvUI\INTV.jzIntvUI.XamMac.csproj", "{A42922D4-8D80-41F0-BCAF-1416A5598D3E}"
 EndProject
 Global

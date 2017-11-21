@@ -62,17 +62,20 @@ namespace INTV.Shared.Converter
             Initialize();
         }
 
+#if !__UNIFIED__
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.Converter.ShortenedPathConverter"/> class.
         /// </summary>
         /// <param name="coder">The unarchiver.</param>
-        /// <remarks>Called when created directly from a XIB file.</remarks>
+        /// <remarks>Called when created directly from a XIB file.
+        /// NOTE: Xamarin.Mac propery does not provide this constructor, as NSValueTransformer does not conform to NSCoding.</remarks>
         [Export ("initWithCoder:")]
         public ShortenedPathConverter(NSCoder coder)
             : base(coder)
         {
             Initialize();
         }
+#endif // !__UNIFIED__
 
         /// <inheritdoc />
         public override NSObject TransformedValue (NSObject value)

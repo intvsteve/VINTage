@@ -39,21 +39,21 @@ namespace INTV.Shared.View
         /// <summary>
         /// OK button was clicked.
         /// </summary>
-        OK = NSAlertButtonReturn.First,
+        OK = (int)NSAlertButtonReturn.First,
 
         /// <summary>
         /// Yes button was clicked.
         /// </summary>
-        Yes = NSAlertButtonReturn.First,
+        Yes = (int)NSAlertButtonReturn.First,
 
         /// <summary>
         /// No button was was clicked.
         /// </summary>
-        No = NSAlertButtonReturn.Second,
+        No = (int)NSAlertButtonReturn.Second,
 
         /// <summary>
         /// Cancel button was clicked.
         /// </summary>
-        Cancel = NSAlertButtonReturn.Third,
+        Cancel = (int)NSAlertButtonReturn.Third,
     }
 }

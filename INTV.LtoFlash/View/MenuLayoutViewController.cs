@@ -28,9 +28,11 @@ using System.Linq;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
+using ObjCRuntime;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
@@ -44,6 +46,18 @@ using INTV.Shared.Utility;
 using INTV.Shared.View;
 using INTV.Shared.ViewModel;
 using INTV.Shared.Behavior;
+
+#if __UNIFIED__
+using CGPoint = CoreGraphics.CGPoint;
+using CGRect = CoreGraphics.CGRect;
+using nfloat = System.nfloat;
+using nint = System.nint;
+#else
+using CGPoint = System.Drawing.PointF;
+using CGRect = System.Drawing.RectangleF;
+using nfloat = System.Single;
+using nint = System.Int32;
+#endif // __UNIFIED__
 
 namespace INTV.LtoFlash.View
 {
@@ -238,7 +252,7 @@ namespace INTV.LtoFlash.View
             var n = MenuLayoutController.SelectedNodes[0];
             if (d.ShouldEditTableColumn(outlineView, col, n))
             {
-                outlineView.EditColumn((int)column, row);
+                outlineView.EditColumn((nint)(int)column, row);
             }
         }
 
@@ -410,9 +424,9 @@ namespace INTV.LtoFlash.View
             {
                 var mouseLocation = NSEvent.CurrentMouseLocation; // if multiple items selected, get the one that was double-clicked
                 var outline = View.FindChild<MenuOutlineView>();
-                var rect = outline.Window.ConvertRectFromScreen(new System.Drawing.RectangleF(mouseLocation.X, mouseLocation.Y, 0, 0));
+                var rect = outline.Window.ConvertRectFromScreen(new CGRect(mouseLocation.X, mouseLocation.Y, 0, 0));
                 rect = outline.ConvertRectFromView(rect, null);
-                var row = outline.GetRow(new System.Drawing.PointF(rect.X, rect.Y));
+                var row = outline.GetRow(new CGPoint(rect.X, rect.Y));
                 if (row >= 0)
                 {
                     var item = outline.ItemAtRow(row) as NSTreeNode;
@@ -679,7 +693,7 @@ namespace INTV.LtoFlash.View
             #endregion // Constructors
 
             /// <inheritdoc />
-            public override float GetRowHeight(NSOutlineView outlineView, NSObject item)
+            public override nfloat GetRowHeight(NSOutlineView outlineView, NSObject item)
             {
                 float height = 20;
                 var rowForItem = outlineView.RowForItem(item);
@@ -821,7 +835,7 @@ namespace INTV.LtoFlash.View
             }
 
             /// <inheritdoc />
-            public override string ToolTipForCell(NSOutlineView outlineView, NSCell cell, ref System.Drawing.RectangleF rect, NSTableColumn tableColumn, NSObject item, System.Drawing.PointF mouseLocation)
+            public override string ToolTipForCell(NSOutlineView outlineView, NSCell cell, ref CGRect rect, NSTableColumn tableColumn, NSObject item, CGPoint mouseLocation)
             {
                 var toolTip = string.Empty;
                 var treeNode = item as NSTreeNode;
@@ -915,7 +929,7 @@ namespace INTV.LtoFlash.View
             }
 
             /// <inheritdoc />
-            public override bool AcceptDrop(NSOutlineView outlineView, NSDraggingInfo info, NSObject item, int index)
+            public override bool AcceptDrop(NSOutlineView outlineView, NSDraggingInfo info, NSObject item, nint index)
             {
                 DebugDragDropPrint("***** OutlineView.AcceptDrop, index: " + index);
                 var dropLocationTreeNode = item as NSTreeNode;
@@ -947,13 +961,13 @@ namespace INTV.LtoFlash.View
                                     --index;
                                 }
                             }
-                            acceptedDrop = newParent.MoveItems(viewModel, newParent, index, draggedItems);
+                            acceptedDrop = newParent.MoveItems(viewModel, newParent, (int)index, draggedItems);
                         }
                     }
                     else if (acceptedDrop && pasteboard.CanReadItemWithDataConformingToTypes(ProgramDescriptionPasteboardDataTypeArray))
                     {
                         var droppedItems = DragDropHelpers.GetDataForType<IEnumerable<ProgramDescriptionViewModel>>(pasteboard, ProgramDescriptionPasteboardDataTypeArray).Select(draggedItem => draggedItem.Model);
-                        newParent.AddItems(viewModel, index, droppedItems);
+                        newParent.AddItems(viewModel, (int)index, droppedItems);
                     }
                     else
                     {
@@ -974,7 +988,7 @@ namespace INTV.LtoFlash.View
             }
 
             /// <inheritdoc />
-            public override NSDragOperation ValidateDrop(NSOutlineView outlineView, NSDraggingInfo info, NSObject proposedParentItem, int index)
+            public override NSDragOperation ValidateDrop(NSOutlineView outlineView, NSDraggingInfo info, NSObject proposedParentItem, nint index)
             {
                 var operation = NSDragOperation.None;
                 string targetName = "<NULL>";
@@ -990,7 +1004,7 @@ namespace INTV.LtoFlash.View
                         {
                             // Dragging within the menu layout editor.
                             var draggedItems = DragDropHelpers.GetDataForType<IEnumerable<FileNodeViewModel>>(pasteboard, MenuLayoutPasteboardDataTypeArray);
-                            if (ShouldAcceptProposedIndex(draggedItems, proposedParent, index) && proposedParent.ShouldAcceptDraggedItems(draggedItems.Select(draggedItem => draggedItem.Model)))
+                            if (ShouldAcceptProposedIndex(draggedItems, proposedParent, (int)index) && proposedParent.ShouldAcceptDraggedItems(draggedItems.Select(draggedItem => draggedItem.Model)))
                             {
                                 operation = NSDragOperation.Move;
                             }
@@ -1043,7 +1057,12 @@ namespace INTV.LtoFlash.View
     /// <remarks>TODO: Put into INTV.Shared to be generally available.</remarks>
     internal static class NSTableViewHelpers
     {
-        static System.IntPtr selEditColumnRowWithEventSelect_Handle = MonoMac.ObjCRuntime.Selector.GetHandle("editColumn:row:withEvent:select:");
+#if __UNIFIED__
+        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
+        private static extern void void_objc_msgSend_nint_nint_IntPtr_bool(System.IntPtr receiver, System.IntPtr selector, nint arg1, nint arg2, System.IntPtr arg3, bool arg4);
+#endif // __UNIFIED__
+
+        private static System.IntPtr selEditColumnRowWithEventSelect_Handle = Selector.GetHandle("editColumn:row:withEvent:select:");
 
         /// <summary>
         /// Edits the cell at the specified column and row using the specified event and selection behavior.
@@ -1053,10 +1072,14 @@ namespace INTV.LtoFlash.View
         /// <param name="row">The index of the row of the cell to edit.</param>
         /// <remarks>This doesn't seem to have a proper binding in MonoMac at this time. Perhaps newer versions of Xamarin.Mac have this binding. Either that, or the
         /// method fails because it won't allow passing <c>null</c> for the native method's <see cref="NSEvent"/> argument. The bindings seem to choke on that often.</remarks>
-        internal static void EditColumn(this NSTableView table, int column, int row)
+        internal static void EditColumn(this NSTableView table, nint column, nint row)
         {
             NSApplication.EnsureUIThread();
-            MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_int_int_IntPtr_bool (table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
+#if __UNIFIED__
+            void_objc_msgSend_nint_nint_IntPtr_bool(table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
+#else
+            Messaging.void_objc_msgSend_int_int_IntPtr_bool (table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
+#endif // __UNIFIED__
         }
     }
 
@@ -1066,7 +1089,14 @@ namespace INTV.LtoFlash.View
     /// <remarks>TODO: Put into INTV.Shared to be generally available.</remarks>
     internal static class NSTreeNodeHelpers
     {
-        static System.IntPtr selRepresentedObjectHandle = MonoMac.ObjCRuntime.Selector.GetHandle("representedObject");
+#if __UNIFIED__
+        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
+        private static extern System.IntPtr IntPtr_objc_msgSend(System.IntPtr receiver, System.IntPtr selector);
+        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
+        private static extern void void_objc_msgSend_IntPtr(System.IntPtr receiver, System.IntPtr selector, System.IntPtr arg1);
+#endif // __UNIFIED__
+
+        private static System.IntPtr selRepresentedObjectHandle = Selector.GetHandle("representedObject");
 
         /// <summary>
         /// Gets the represented object in the <see cref="NSTreeNode"/>.
@@ -1076,11 +1106,15 @@ namespace INTV.LtoFlash.View
         /// <remarks>The MonoMac binding for this uses the incorrect return type.</remarks>
         internal static NSObject GetRepresentedObject(this NSTreeNode node)
         {
-            var representedObject = MonoMac.ObjCRuntime.Runtime.GetNSObject(MonoMac.ObjCRuntime.Messaging.IntPtr_objc_msgSend(node.Handle, selRepresentedObjectHandle));
+#if __UNIFIED__
+            var representedObject = node.RepresentedObject;
+#else
+            var representedObject = Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend(node.Handle, selRepresentedObjectHandle));
+#endif // __UNIFIED__
             return representedObject;
         }
 
-        static System.IntPtr selSetContentObjectHandle = MonoMac.ObjCRuntime.Selector.GetHandle("setContent:");
+        static System.IntPtr selSetContentObjectHandle = Selector.GetHandle("setContent:");
 
         /// <summary>
         /// Sets the content of the tree controller.
@@ -1090,7 +1124,11 @@ namespace INTV.LtoFlash.View
         /// <remarks>The MonoMac binding uses the incorrect type for the <paramref name="content"/> argument.</remarks>
         internal static void SetContent(this NSTreeController treeController, NSObject content)
         {
-            MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_IntPtr(treeController.Handle, selSetContentObjectHandle, content.Handle);
+#if __UNIFIED__
+            treeController.Content = content;
+#else
+            Messaging.void_objc_msgSend_IntPtr(treeController.Handle, selSetContentObjectHandle, content.Handle);
+#endif // __UNIFIED__
         }
     }
 }

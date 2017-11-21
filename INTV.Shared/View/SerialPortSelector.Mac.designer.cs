@@ -4,7 +4,13 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 using System.CodeDom.Compiler;
 
 namespace INTV.Shared.View
@@ -13,22 +19,22 @@ namespace INTV.Shared.View
 	partial class SerialPortSelectorController
 	{
 		[Outlet]
-		MonoMac.AppKit.NSTextField BaudRateLabel { get; set; }
+		NSTextField BaudRateLabel { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSPopUpButton BaudRatePopUpButton { get; set; }
+		NSPopUpButton BaudRatePopUpButton { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSArrayController BaudRatesArrayController { get; set; }
+		NSArrayController BaudRatesArrayController { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSArrayController SerialPortsListArrayController { get; set; }
+		NSArrayController SerialPortsListArrayController { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTableView SerialPortsTableView { get; set; }
+		NSTableView SerialPortsTableView { get; set; }
 
 		[Action ("SerialPortDoubleClick:")]
-		partial void SerialPortDoubleClick (MonoMac.Foundation.NSObject sender);
+		partial void SerialPortDoubleClick (NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{

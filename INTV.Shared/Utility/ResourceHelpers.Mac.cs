@@ -29,6 +29,12 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
 
+#if __UNIFIED__
+using CGSize = CoreGraphics.CGSize;
+#else
+using CGSize = System.Drawing.SizeF;
+#endif // __UNIFIED__
+
 namespace INTV.Shared.Utility
 {
     /// <summary>
@@ -120,7 +126,7 @@ namespace INTV.Shared.Utility
                     {
                         var scaledHeight = (float)representation.PixelsHigh;
                         var scaledWidth = (float)representation.PixelsWide;
-                        image.Size = new System.Drawing.SizeF(scaledWidth, scaledHeight);
+                        image.Size = new CGSize(scaledWidth, scaledHeight);
                     }
                 }
             }

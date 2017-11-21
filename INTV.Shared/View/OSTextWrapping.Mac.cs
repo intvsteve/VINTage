@@ -34,16 +34,16 @@ namespace INTV.Shared.View
         /// <summary>
         /// No line-wrapping is performed.
         /// </summary>
-        NoWrap = NSLineBreakMode.Clipping,
+        NoWrap = (int)NSLineBreakMode.Clipping,
 
         /// <summary>
         /// Wrap at words, but break words across lines if needed.
         /// </summary>
-        Wrap = NSLineBreakMode.CharWrapping,
+        Wrap = (int)NSLineBreakMode.CharWrapping,
 
         /// <summary>
         /// Wrap at words, but if a natural break doesn't allow a line to fit, the line may overflow.
         /// </summary>
-        WrapWithOverflow = NSLineBreakMode.ByWordWrapping
+        WrapWithOverflow = (int)NSLineBreakMode.ByWordWrapping
     }
 }

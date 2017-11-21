@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}</ProjectGuid>
+    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>INTV.Intellicart</RootNamespace>
+    <AssemblyName>INTV.Intellicart</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseXamMacFullFramework>true</UseXamMacFullFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\XamMac</OutputPath>
+    <IntermediateOutputPath>obj\Debug\XamMac\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\XamMac</OutputPath>
+    <IntermediateOutputPath>obj\Release\XamMac\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>MONO;MAC</DefineConstants>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="Xamarin.Mac" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Commands\" />
+    <Folder Include="Model\" />
+    <Folder Include="Properties\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="View\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\INTV.Shared\INTV.Shared.XamMac.csproj">
+      <Project>{245FD6EE-0B2E-4119-9211-4AA77511E23B}</Project>
+      <Name>INTV.Shared.XamMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.Core\INTV.Core.XamMac.csproj">
+      <Project>{FB5C25FD-A481-48E9-A721-24DAE07DF67A}</Project>
+      <Name>INTV.Core.XamMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj">
+      <Project>{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}</Project>
+      <Name>INTV.jzIntv.XamMac</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="Commands\IntellicartCommandsProvider.cs" />
+    <Compile Include="Commands\DeviceCommandGroup.cs" />
+    <Compile Include="Commands\DeviceCommandGroup.Mac.cs" />
+    <Compile Include="Model\IntellicartModel.cs" />
+    <Compile Include="Properties\Settings.Mac.cs" />
+    <Compile Include="ViewModel\IntellicartViewModel.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\SettingsPageViewModel.cs" />
+    <Compile Include="View\IntellicartSettingsPage.Mac.cs" />
+    <Compile Include="View\IntellicartSettingsPage.Mac.designer.cs">
+      <DependentUpon>IntellicartSettingsPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Configuration.cs" />
+    <Compile Include="Model\DownloadTaskData.cs" />
+    <Compile Include="Model\DeviceHelpers.cs" />
+    <Compile Include="View\IntellicartSettingsPageController.Mac.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <CustomToolNamespace>INTV.Intellicart.Resources</CustomToolNamespace>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\intellicart_32xMD.png">
+      <LogicalName>Resources/Images/intellicart_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_16xLG_color.png">
+      <LogicalName>Resources/Images/download_play_16xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_32xLG_color.png">
+      <LogicalName>Resources/Images/download_play_32xLG_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\download_play_32xMD_color.png">
+      <LogicalName>Resources/Images/download_play_32xMD_color.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\port-icon_16x16.png">
+      <LogicalName>Resources/Images/port-icon_16x16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\port-icon_32x32.png">
+      <LogicalName>Resources/Images/port-icon_32x32.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_16xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xMD.png">
+      <LogicalName>Resources/Images/browse_download_play_32xMD.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\browse_download_play_32xLG.png">
+      <LogicalName>Resources/Images/browse_download_play_32xLG.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="View\IntellicartSettingsPage.xib" />
+  </ItemGroup>
+</Project>

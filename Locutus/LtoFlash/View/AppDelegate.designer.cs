@@ -1,8 +1,13 @@
+#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif // __UNIFIED__
 
 namespace Locutus.View
 {
     // Should subclass MonoMac.AppKit.NSResponder
-    [MonoMac.Foundation.Register("AppDelegate")]
+    [Register("AppDelegate")]
 	public partial class AppDelegate
     {
     }

@@ -78,7 +78,7 @@ namespace INTV.Shared.View
             _fileDialog.CanChooseFiles = !IsFolderBrowser;
             _fileDialog.AllowsMultipleSelection = Multiselect;
             var dialogResult = FileBrowserDialogResult.None;
-            var result = (NSPanelButtonType)_fileDialog.RunModal();
+            var result = (NSPanelButtonType)(int)_fileDialog.RunModal();
             if (result == NSPanelButtonType.Cancel)
             {
                 dialogResult = FileBrowserDialogResult.Cancel;

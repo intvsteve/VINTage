@@ -80,7 +80,7 @@ namespace INTV.Shared.Interop.IOKit
             var dictionaryPointer = NativeMethods.IOServiceMatching(name);
             if (dictionaryPointer != System.IntPtr.Zero)
             {
-                dictionary = MonoMac.ObjCRuntime.Runtime.GetNSObject(dictionaryPointer) as NSMutableDictionary;
+                dictionary = Runtime.GetNSObject(dictionaryPointer) as NSMutableDictionary;
             }
             return dictionary;
         }
@@ -165,12 +165,12 @@ namespace INTV.Shared.Interop.IOKit
 
             public void Stop()
             {
-                this.PerformSelector(new Selector("StopPortMonitor"), this, this, true);
+                this.PerformSelector(new Selector("StopPortMonitor:"), this, this, true);
                 PortNotifier = null;
                 this.Cancel();
             }
 
-            [Export("StopPortMonitor")]
+            [Export("StopPortMonitor:")]
             private void StopPortMonitor(NSObject data)
             {
                 PortNotifier.StopInThread();
@@ -309,8 +309,11 @@ namespace INTV.Shared.Interop.IOKit
                 NotificationPort = new IONotificationPort();
                 Interop.NativeMethods.CFRunLoopAddSource(CFRunLoop.Current, NotificationPort.RunLoopSource, (NSString)CFRunLoop.ModeDefault);
                 var servicesDictionary = IOMachPort.GetRS232SerialMatchDictionary();
+#if __UNIFIED__
+                servicesDictionary.DangerousRetain(); // retain an extra time because we're using it twice
+#else
                 servicesDictionary.Retain(); // retain an extra time because we're using it twice
-
+#endif // __UNIFIED__
                 var publishDelegate = new IONotificationPortCallback(FirstMatchNotification);
                 var callback = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(publishDelegate);
 
@@ -348,7 +351,7 @@ namespace INTV.Shared.Interop.IOKit
                 NotificationPort = null;
             }
 
-            [Export("StopPortMonitor")]
+            [Export("StopPortMonitor:")]
             private void StopPortMonitor(NSObject data)
             {
                 StopInThread();

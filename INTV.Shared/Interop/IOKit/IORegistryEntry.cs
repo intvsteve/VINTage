@@ -20,8 +20,10 @@
 
 #if __UNIFIED__
 using Foundation;
+using ObjCRuntime;
 #else
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
 
 namespace INTV.Shared.Interop.IOKit
@@ -50,7 +52,7 @@ namespace INTV.Shared.Interop.IOKit
             NSObject property = null;
             if (cfProperty != System.IntPtr.Zero)
             {
-                property = MonoMac.ObjCRuntime.Runtime.GetNSObject(cfProperty);
+                property = Runtime.GetNSObject(cfProperty);
             }
             return property;
         }

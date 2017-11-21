@@ -28,6 +28,12 @@ using MonoMac.Foundation;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.Utility;
 
+#if __UNIFIED__
+using nfloat = System.nfloat;
+#else
+using nfloat = System.Single;
+#endif // __UNIFIED__
+
 namespace INTV.LtoFlash.Converter
 {
     /// <summary>
@@ -36,6 +42,8 @@ namespace INTV.LtoFlash.Converter
     [Register("FileNodeColorViewModelToOSColorConverter")]
     public class FileNodeColorViewModelToOSColorConverter : NSValueTransformer
     {
+        private static readonly nfloat ColorEpsilon = (nfloat)0.0000001;
+
         /// <summary>
         /// Initializes a new instance of the
         /// <see cref="INTV.LtoFlash.Converter.FileNodeColorViewModelToOSColorConverter"/> class.
@@ -65,16 +73,21 @@ namespace INTV.LtoFlash.Converter
             Initialize();
         }
 
+
+#if !__UNIFIED__
         /// <summary>
         /// Called when created directly from a XIB file.
         /// </summary>
         /// <param name="coder">Used to deserialize from a XIB.</param>
+        /// <remarks>Called when created directly from a XIB file.
+        /// NOTE: Xamarin.Mac propery does not provide this constructor, as NSValueTransformer does not conform to NSCoding.</remarks>
         [Export("initWithCoder:")]
         public FileNodeColorViewModelToOSColorConverter(NSCoder coder)
             : base(coder)
         {
             Initialize();
         }
+#endif // !__UNIFIED__
 
         /// <inheritdoc />
         public override NSObject TransformedValue (NSObject value)
@@ -104,10 +117,12 @@ namespace INTV.LtoFlash.Converter
                 }
                 else if (viewModelColor.Fill.ColorSpace == osColor.ColorSpace)
                 {
-                    float r0, g0, b0, a0, r1, g1, b1, a1;
+                    nfloat r0, g0, b0, a0, r1, g1, b1, a1;
                     viewModelColor.Fill.GetRgba(out r0, out g0, out b0, out a0);
+                    ////System.Diagnostics.Debug.WriteLine(r0 + "," + g0 + "," + b0 + ",e:" + ColorEpsilon);
                     osColor.GetRgba(out r1, out g1, out b1, out a1);
-                    if ((System.Math.Abs(r1 - r0) < float.Epsilon * 2) && (System.Math.Abs(g1 - g0) < float.Epsilon * 2) && (System.Math.Abs(b1 - b0) < float.Epsilon * 2))
+                    ////System.Diagnostics.Debug.WriteLine(r1 + "," + g1 + "," + b1);
+                    if ((System.Math.Abs(r1 - r0) < ColorEpsilon * 2) && (System.Math.Abs(g1 - g0) < ColorEpsilon * 2) && (System.Math.Abs(b1 - b0) < ColorEpsilon * 2))
                     {
                         colorViewModel = viewModelColor;
                         break;

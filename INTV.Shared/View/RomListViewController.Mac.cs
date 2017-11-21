@@ -27,9 +27,11 @@ using System.Linq;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
+using ObjCRuntime;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
@@ -39,6 +41,20 @@ using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
+
+#if __UNIFIED__
+using nint = System.nint;
+using nfloat = System.nfloat;
+using INSPasteboardWriting = AppKit.INSPasteboardWriting;
+using CGPoint = CoreGraphics.CGPoint;
+using CGRect = CoreGraphics.CGRect;
+#else
+using nint = System.Int32;
+using nfloat = System.Single;
+using INSPasteboardWriting = MonoMac.AppKit.NSPasteboardWriting;
+using CGPoint = System.Drawing.PointF;
+using CGRect = System.Drawing.RectangleF;
+#endif // __UNIFIED__
 
 namespace INTV.Shared.View
 {
@@ -129,7 +145,7 @@ namespace INTV.Shared.View
             table.Delegate = tableDelegate;
             TheDelegate = tableDelegate;
             var programs = RomsArrayController.ArrangedObjects();
-            for (int i = 0; i < nsArray.Count; ++i)
+            for (int i = 0; i < (int)nsArray.Count; ++i)
             {
                 var program = programs[i] as ProgramDescriptionViewModel;
                 var featuresTip = program.FeaturesTip;
@@ -382,10 +398,10 @@ namespace INTV.Shared.View
                 // If multiple items selected, get the one that was double-clicked.
                 var mouseLocation = NSEvent.CurrentMouseLocation;
                 var table = View.FindChild<NSTableView>();
-                var rect = table.Window.ConvertRectFromScreen(new System.Drawing.RectangleF(mouseLocation.X, mouseLocation.Y, 0, 0));
+                var rect = table.Window.ConvertRectFromScreen(new CGRect(mouseLocation.X, mouseLocation.Y, 0, 0));
                 rect = table.ConvertRectFromView(rect, null);
-                var row = table.GetRow(new System.Drawing.PointF(rect.X, rect.Y));
-                if ((row >= 0) && (row < arrangedObjectsArray.Count))
+                var row = table.GetRow(new CGPoint(rect.X, rect.Y));
+                if ((row >= 0) && (row < (int)arrangedObjectsArray.Count))
                 {
                     var programs = NSArray.FromArray<ProgramDescriptionViewModel>(arrangedObjectsArray);
                     var doubleClickedProgram = programs[row];
@@ -413,6 +429,12 @@ namespace INTV.Shared.View
             /// Gets the program being dragged.
             /// </summary>
             public ProgramDescriptionViewModel ProgramDescription { get; private set; }
+
+            /// <inheritdoc/>
+            public override NSObject GetPasteboardPropertyListForType(string type)
+            {
+                return null;
+            }
 
             /// <inheritdoc/>
             public override string[] GetWritableTypesForPasteboard(NSPasteboard pasteboard)
@@ -443,7 +465,7 @@ namespace INTV.Shared.View
             private NSArrayController RomListData { get; set; }
 
             /// <inheritdoc/>
-            public override NSPasteboardWriting GetPasteboardWriterForRow(NSTableView tableView, int row)
+            public override INSPasteboardWriting GetPasteboardWriterForRow(NSTableView tableView, nint row)
             {
                 DebugDragDrop("**** ROMLIST GetPBWriterForRow CALLED");
                 var programDescriptionViewModel = RomListData.ArrangedObjects()[row] as ProgramDescriptionViewModel;
@@ -453,7 +475,7 @@ namespace INTV.Shared.View
             }
 
             /// <inheritdoc/>
-            public override void DraggingSessionWillBegin(NSTableView tableView, NSDraggingSession draggingSession, System.Drawing.PointF willBeginAtScreenPoint, NSIndexSet rowIndexes)
+            public override void DraggingSessionWillBegin(NSTableView tableView, NSDraggingSession draggingSession, CGPoint willBeginAtScreenPoint, NSIndexSet rowIndexes)
             {
                 DebugDragDrop("**** ROMLIST DRAG WILL BEGIN");
                 //var viewModel = tableView.GetInheritedValue(IFakeDependencyObjectHelpers.DataContextPropertyName) as RomListViewModel;
@@ -470,8 +492,9 @@ namespace INTV.Shared.View
                 }
             }
 
+
             /// <inheritdoc/>
-            public override void DraggingSessionEnded(NSTableView tableView, NSDraggingSession draggingSession, System.Drawing.PointF endedAtScreenPoint, NSDragOperation operation)
+            public override void DraggingSessionEnded(NSTableView tableView, NSDraggingSession draggingSession, CGPoint endedAtScreenPoint, NSDragOperation operation)
             {
                 DebugDragDrop("**** ROMLIST DRAG ENDED");
                 DragDropHelpers.FinishedWithPasteboard(draggingSession.DraggingPasteboard);
@@ -484,7 +507,7 @@ namespace INTV.Shared.View
             }
 
             /// <inheritdoc/>
-            public override NSDragOperation ValidateDrop(NSTableView tableView, NSDraggingInfo info, int row, NSTableViewDropOperation dropOperation)
+            public override NSDragOperation ValidateDrop(NSTableView tableView, NSDraggingInfo info, nint row, NSTableViewDropOperation dropOperation)
             {
                 DebugDragDrop("***** UPDATE VALIDATE DROP");
                 return NSDragOperation.Link;
@@ -544,7 +567,7 @@ namespace INTV.Shared.View
             }
 
             /// <inheritdoc/>
-            public override bool ShouldEditTableColumn(NSTableView tableView, NSTableColumn tableColumn, int row)
+            public override bool ShouldEditTableColumn(NSTableView tableView, NSTableColumn tableColumn, nint row)
             {
                 var programDescription = Programs.ArrangedObjects()[row] as ProgramDescriptionViewModel;
                 var canEdit = RomListCommandGroup.EditProgramNameCommand.CanExecute(ViewModel);
@@ -600,7 +623,7 @@ namespace INTV.Shared.View
             }
 
             /// <inheritdoc/>
-            public override void WillDisplayCell(NSTableView tableView, NSObject cell, NSTableColumn tableColumn, int row)
+            public override void WillDisplayCell(NSTableView tableView, NSObject cell, NSTableColumn tableColumn, nint row)
             {
                 var tableCell = cell as NSCell;
                 if ((tableCell != null) && (tableView.Menu != null))
@@ -609,6 +632,13 @@ namespace INTV.Shared.View
                 }
             }
 
+#if __UNIFIED__
+            /// <inheritdoc/>
+            public override NSString GetToolTip(NSTableView tableView, NSCell cell, ref CGRect rect, NSTableColumn tableColumn, nint row, CGPoint mouseLocation)
+            {
+                return GetToolTip(cell, rect, tableColumn, row, mouseLocation);
+            }
+#else
             /// <summary>
             /// Gets the tool tip to display in the ROMs feature list image cell.
             /// </summary>
@@ -622,7 +652,24 @@ namespace INTV.Shared.View
             /// <remarks>This binding isn't present, so provide it. Note that, to be on the safe side, we'll return an empty string instead of <c>null</c>.
             /// Often using a C# <c>null</c> results in Bad Things when crossing back to the unmanaged realm.</remarks>
             [OSExport("tableView:toolTipForCell:rect:tableColumn:row:mouseLocation:")]
-            public NSString ToolTipForCell(NSTableView tableView, NSCell cell, ref System.Drawing.RectangleF rect, NSTableColumn tableColumn, int row, System.Drawing.PointF mouse)
+            public NSString ToolTipForCell(NSTableView tableView, NSCell cell, ref System.Drawing.RectangleF rect, NSTableColumn tableColumn, nint row, System.Drawing.PointF mouse)
+            {
+                return GetToolTip(cell, rect, tableColumn, row, mouse);
+            }
+#endif // __UNIFIED__
+
+            /// <summary>
+            /// Cancels editing the cell being edited, if any.
+            /// </summary>
+            internal void CancelEdit()
+            {
+                if (InPlaceEditor != null)
+                {
+                    InPlaceEditor.CancelEdit();
+                }
+            }
+
+            private NSString GetToolTip(NSCell cell, CGRect rect, NSTableColumn tableColumn, nint row, CGPoint mouse)
             {
                 var programDescription = Programs.ArrangedObjects()[row] as ProgramDescriptionViewModel;
                 var toolTip = string.Empty;
@@ -636,7 +683,7 @@ namespace INTV.Shared.View
                     {
                         var space = INTV.Shared.Converter.ProgramFeaturesToImageTransformer.Padding;
                         var offsetIntoImage = mouse.X - rect.X;
-                        float leftEdgeOfImage = 0;
+                        nfloat leftEdgeOfImage = 0;
                         for (int i = 0; string.IsNullOrEmpty(toolTip) && (i < programDescription.Features.Count); ++i)
                         {
                             var feature = programDescription.Features[i];
@@ -669,17 +716,6 @@ namespace INTV.Shared.View
                     toolTip = programDescription.RomFile;
                 }
                 return new NSString(toolTip.SafeString());
-            }
-
-            /// <summary>
-            /// Cancels editing the cell being edited, if any.
-            /// </summary>
-            internal void CancelEdit()
-            {
-                if (InPlaceEditor != null)
-                {
-                    InPlaceEditor.CancelEdit();
-                }
             }
 
             private void InPlaceEditor_EditorClosed(object sender, InPlaceEditorClosedEventArgs e)
@@ -779,7 +815,7 @@ namespace INTV.Shared.View
             }
 
             // Build the context menu.
-            var target =  (row < 0) ? null : Controller.GetObjectAtRow(row);
+            var target =  (row < 0) ? null : Controller.GetObjectAtRow((int)row);
             var context = Controller.View.ViewModel;
             Menu = target.CreateContextMenu("ROMListContextMenu", context);
             return base.MenuForEvent(theEvent);
@@ -813,7 +849,11 @@ namespace INTV.Shared.View
     /// </summary>
     internal static class NSTableViewHelpers
     {
-        private static System.IntPtr selEditColumnRowWithEventSelect_Handle = MonoMac.ObjCRuntime.Selector.GetHandle("editColumn:row:withEvent:select:");
+        private static System.IntPtr selEditColumnRowWithEventSelect_Handle = Selector.GetHandle("editColumn:row:withEvent:select:");
+#if __UNIFIED__
+        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
+        private static extern void void_objc_msgSend_nint_nint_IntPtr_bool(System.IntPtr receiver, System.IntPtr selector, nint arg1, nint arg2, System.IntPtr arg3, bool arg4);
+#endif // __UNIFIED__
 
         /// <summary>
         /// Start editing a cell in a given row and column. Yeah, the name is a little off.
@@ -821,10 +861,14 @@ namespace INTV.Shared.View
         /// <param name="table">The <see cref=">NSTable"/> in which the edit operation is to occur.</param>
         /// <param name="column">The column number of the cell to edit.</param>
         /// <param name="row">The row number of the cell to edit.</param>
-        internal static void EditColumn(this NSTableView table, int column, int row)
+        internal static void EditColumn(this NSTableView table, nint column, nint row)
         {
             NSApplication.EnsureUIThread();
-            MonoMac.ObjCRuntime.Messaging.void_objc_msgSend_int_int_IntPtr_bool (table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
+#if __UNIFIED__
+            void_objc_msgSend_nint_nint_IntPtr_bool(table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
+#else
+            Messaging.void_objc_msgSend_int_int_IntPtr_bool(table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
+#endif // __UNIFIED__
         }
     }
 }

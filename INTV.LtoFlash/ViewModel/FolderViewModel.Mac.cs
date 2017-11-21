@@ -143,14 +143,14 @@ namespace INTV.LtoFlash.ViewModel
             {
                 WillChange(NSKeyValueChange.Removal, indexSetToRemove, (NSString)ItemsPropertyName);
                 Children.RemoveObjectsAtIndexes(indexSetToRemove);
-                ItemCount = Children.Count;
+                ItemCount = (uint)Children.Count;
                 DidChange(NSKeyValueChange.Removal, indexSetToRemove, (NSString)ItemsPropertyName);
             }
             if (itemsToAdd.Any())
             {
                 WillChange(NSKeyValueChange.Insertion, indexSetToAdd, (NSString)ItemsPropertyName);
                 Children.InsertObjects(itemsToAdd.ToArray(), indexSetToAdd);
-                ItemCount = Children.Count;
+                ItemCount = (uint)Children.Count;
                 DidChange(NSKeyValueChange.Insertion, indexSetToAdd, (NSString)ItemsPropertyName);
             }
             if ((sender == null) && (e == null))

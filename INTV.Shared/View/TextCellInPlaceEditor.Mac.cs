@@ -548,7 +548,7 @@ namespace INTV.Shared.View
                         // will lead to an improved result.
                         ////var mask = textStorage.EditedMask;
                         ////textStorage.Edited((uint)mask, editRange, -editRange.Length);
-                        pendingValue = pendingValue.Remove(editRange.Location, editRange.Length);
+                        pendingValue = pendingValue.Remove((int)editRange.Location, (int)editRange.Length);
                     }
                     else if (Owner.IsValidCharacter != null)
                     {

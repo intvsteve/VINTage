@@ -127,10 +127,10 @@ namespace INTV.LtoFlash.Model
 
             public void Stop()
             {
-                this.PerformSelector(new Selector("StopPortMonitor"), this, this, true);
+                this.PerformSelector(new Selector("StopPortMonitor:"), this, this, true);
             }
 
-            [Export("StopPortMonitor")]
+            [Export("StopPortMonitor:")]
             private void StopPortMonitor(NSObject data)
             {
             }

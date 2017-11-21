@@ -34,6 +34,16 @@ using INTV.Core.Model.Program;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
 
+#if __UNIFIED__
+using CGPoint = CoreGraphics.CGPoint;
+using CGRect = CoreGraphics.CGRect;
+using CGSize = CoreGraphics.CGSize;
+#else
+using CGPoint = System.Drawing.PointF;
+using CGRect = System.Drawing.RectangleF;
+using CGSize = System.Drawing.SizeF;
+#endif // __UNIFIED__
+
 namespace INTV.Shared.Converter
 {
     /// <summary>
@@ -75,16 +85,20 @@ namespace INTV.Shared.Converter
             Initialize();
         }
 
+#if !__UNIFIED__
         /// <summary>
         /// Called when created directly from a XIB file.
         /// </summary>
         /// <param name="coder">Used to deserialize from a XIB.</param>
+        /// <remarks>Called when created directly from a XIB file.
+        /// NOTE: Xamarin.Mac propery does not provide this constructor, as NSValueTransformer does not conform to NSCoding.</remarks>
         [Export("initWithCoder:")]
         public ProgramFeaturesToImageTransformer(NSCoder coder)
             : base(coder)
         {
             Initialize();
         }
+#endif // !__UNIFIED__
 
         /// <summary>
         /// Converts feature flags into an image containing glyphs.
@@ -98,16 +112,16 @@ namespace INTV.Shared.Converter
             var totHeight = 0.0f;
             foreach (var f in features)
             {
-                totWidth += f.Image.Size.Width;
-                totHeight = System.Math.Max(totHeight, f.Image.Size.Height);
+                totWidth += (float)f.Image.Size.Width;
+                totHeight = System.Math.Max(totHeight, (float)f.Image.Size.Height);
             }
-            var image = new NSImage(new System.Drawing.SizeF(totWidth, totHeight));
+            var image = new NSImage(new CGSize(totWidth, totHeight));
             image.LockFocus();
             var x = 0.0f;
             foreach (var f in features)
             {
-                f.Image.Draw(new System.Drawing.PointF(x,0), System.Drawing.RectangleF.Empty, NSCompositingOperation.Copy, 1);
-                x += Padding + f.Image.Size.Width;
+                f.Image.Draw(new CGPoint(x,0), CGRect.Empty, NSCompositingOperation.Copy, 1);
+                x += (float)Padding + (float)f.Image.Size.Width;
             }
             image.UnlockFocus();
             return image;

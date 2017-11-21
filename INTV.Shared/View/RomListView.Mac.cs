@@ -24,9 +24,11 @@ using System.Linq;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
+using ObjCRuntime;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
 using INTV.Shared.ViewModel;
 
@@ -161,10 +163,10 @@ namespace INTV.Shared.View
         {
             base.ConcludeDragOperation(sender);
             // Defer the "heavy lifting" so the drag-drop operation does not time out.
-            PerformSelector(new MonoMac.ObjCRuntime.Selector("FinishDrop"), sender, 0.1);
+            PerformSelector(new Selector("FinishDrop:"), sender, 0.1);
         }
 
-        [Export("FinishDrop")]
+        [Export("FinishDrop:")]
         private void FinishDrop(NSObject data)
         {
             ViewModel.DropFilesCommand.Execute(data);

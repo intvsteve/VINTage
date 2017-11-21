@@ -18,15 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-#if __UNIFIED__
-using AppKit;
-using Foundation;
-using ObjCRuntime;
-#else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
-#endif // __UNIFIED__
 
 namespace INTV.Shared.Utility
 {

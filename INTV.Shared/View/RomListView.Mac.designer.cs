@@ -4,7 +4,13 @@
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
+#endif // __UNIFIED__
 using System.CodeDom.Compiler;
 
 namespace INTV.Shared.View
@@ -13,19 +19,19 @@ namespace INTV.Shared.View
 	partial class RomListViewController
 	{
 		[Outlet]
-		MonoMac.AppKit.NSTextField DropFilesHint { get; set; }
+		NSTextField DropFilesHint { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTextField ItemsCount { get; set; }
+		NSTextField ItemsCount { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSArrayController RomsArrayController { get; set; }
+		NSArrayController RomsArrayController { get; set; }
 
 		[Outlet]
-		MonoMac.AppKit.NSTextField SelectedItemsCount { get; set; }
+		NSTextField SelectedItemsCount { get; set; }
 
 		[Action ("OnDoubleClick:")]
-		partial void OnDoubleClick (MonoMac.Foundation.NSObject sender);
+		partial void OnDoubleClick (NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{

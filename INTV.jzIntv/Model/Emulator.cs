@@ -1,5 +1,5 @@
 ﻿// <copyright file="Emulator.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define MAC_PERF_TEST
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -26,6 +28,16 @@ using System.Linq;
 using System.Text;
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
+
+#if MAC_PERF_TEST
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif // __UNIFIED__
+#endif // MAC_PERF_TEST
 
 namespace INTV.JzIntv.Model
 {
@@ -96,6 +108,41 @@ namespace INTV.JzIntv.Model
             var emulators = instances.Select(p => new Emulator(p.StartInfo.FileName, null) { Process = p });
             return emulators;
         }
+
+#if MAC_PERF_TEST
+        private static void FindRunningInstancesOnMac()
+        {
+            // This block runs much faster on Mac... HOWEVER, it does not give a full-fledged Process object, which is what we use in the Instances method above.
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var inst = new List<string>();
+            var launchedApps = NSWorkspace.SharedWorkspace.LaunchedApplications;
+            foreach (var launchedApp in launchedApps)
+            {
+                var instanceAlreadyRunning = string.Empty;
+                NSObject launchedAppValue;
+                //                   if (launchedApp.TryGetValue((Foundation.NSString)"NSApplicationBundleIdentifier", out launchedAppValue))
+                {
+                    // If bundle identifiers match, then check to see if it's running from another location.
+                    var mainBundle = NSBundle.MainBundle;
+                    if (/*(mainBundle.BundleIdentifier == (NSString)launchedAppValue) &&*/ launchedApp.TryGetValue((NSString)"NSApplicationPath", out launchedAppValue))
+                    {
+                        // Found an instance -- check to see if it's an instance from another location.
+                        // If so, just activate that one and let this one fizzle out.
+                        instanceAlreadyRunning = (NSString)launchedAppValue;
+                        if (!instanceAlreadyRunning.EndsWith("/jzintv", StringComparison.OrdinalIgnoreCase))
+                        {
+                            instanceAlreadyRunning = null;
+                        }
+                    }
+                }
+                if (!string.IsNullOrEmpty(instanceAlreadyRunning))
+                {
+                    inst.Add((NSString)launchedAppValue);
+                }
+            }
+            System.Diagnostics.Debug.WriteLine("NATIVE Took ms to get by name: " + stopwatch.ElapsedMilliseconds);
+        }
+#endif // MAC_PERF_TEST
 
         /// <summary>
         /// Launch the emulator to run the given ROM, using the supplied options.

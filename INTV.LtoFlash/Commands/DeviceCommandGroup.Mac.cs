@@ -30,7 +30,12 @@ using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Commands;
-using INTV.Shared.Utility;
+
+#if __UNIFIED__
+using CGSize = CoreGraphics.CGSize;
+#else
+using CGSize = System.Drawing.SizeF;
+#endif // __UNIFIED__
 
 namespace INTV.LtoFlash.Commands
 {
@@ -251,7 +256,7 @@ namespace INTV.LtoFlash.Commands
                 case UniqueNameBase + ".DeviceOwnerCommand":
                     var textField = new NSTextField();
                     toolbarItem.View = textField;
-                    toolbarItem.MinSize = new System.Drawing.SizeF(128, 22);
+                    toolbarItem.MinSize = new CGSize(128, 22);
                     break;
                 case UniqueNameBase + ".SetEcsCompatibilityCommand":
                     // Used to have NSToolbar control for this

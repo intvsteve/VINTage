@@ -1,15 +1,20 @@
-﻿
+﻿#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif // __UNIFIED__
+
 namespace INTV.Shared.View
 {
     
     // Should subclass MonoMac.AppKit.NSView
-    [MonoMac.Foundation.Register("EcsFeaturesConfigurationPage")]
+    [Register("EcsFeaturesConfigurationPage")]
     public partial class EcsFeaturesConfigurationPage
     {
     }
     
     // Should subclass MonoMac.AppKit.NSViewController
-    [MonoMac.Foundation.Register("EcsFeaturesConfigurationPageController")]
+    [Register("EcsFeaturesConfigurationPageController")]
     public partial class EcsFeaturesConfigurationPageController
     {
     }

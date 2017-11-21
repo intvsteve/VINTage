@@ -106,7 +106,16 @@ namespace INTV.LtoFlash.View
             panel.AttachColorList(colorList);
             foreach (var defaultColorList in NSColorList.AvailableColorLists)
             {
+                ////System.Diagnostics.Debug.WriteLine(defaultColorList.Name + " RetainCount: " + defaultColorList.RetainCount);
+#if __UNIFIED__
+                // HACK See this bug report: https://bugzilla.xamarin.com/show_bug.cgi?id=45621
+                // This keeps us from crashing hideously. The retain count behaves the same way in both MonoMac and Xamarin.Mac --
+                // namely, it drops by *TWO* when detaching the color list. However, in Xamarin.Mac, without this extra retain,
+                // we will CRASH HARD. Ick.
+                defaultColorList.DangerousRetain();
+#endif // __UNIFIED__
                 panel.DetachColorList(defaultColorList);
+                ////System.Diagnostics.Debug.WriteLine(defaultColorList.Name + " RetainCount: " + defaultColorList.RetainCount);
             }
             var button = panel.ContentView.FindChild<NSButton>();
             button.Enabled = false;

@@ -90,7 +90,7 @@ namespace INTV.Intellicart.Properties
         /// </summary>
         public int BaudRate
         {
-            get { return UserDefaults.IntForKey(SettingsPageViewModel.IntellicartBaudRatePropertyName); }
+            get { return (int)UserDefaults.IntForKey(SettingsPageViewModel.IntellicartBaudRatePropertyName); }
             set { UserDefaults.SetInt(value, SettingsPageViewModel.IntellicartBaudRatePropertyName); }
         }
 
@@ -99,7 +99,7 @@ namespace INTV.Intellicart.Properties
         /// </summary>
         public int Timeout
         {
-            get { return UserDefaults.IntForKey(SettingsPageViewModel.IntellicartWriteTimeoutPropertyName); }
+            get { return (int)UserDefaults.IntForKey(SettingsPageViewModel.IntellicartWriteTimeoutPropertyName); }
             set { UserDefaults.SetInt(UpdateTimeout(value), SettingsPageViewModel.IntellicartWriteTimeoutPropertyName); }
         }
 

@@ -22,9 +22,11 @@ using System.Collections.Generic;
 using System.Linq;
 #if __UNIFIED__
 using AppKit;
+using CoreGraphics;
 using Foundation;
 #else
 using MonoMac.AppKit;
+using MonoMac.CoreGraphics;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
 using INTV.Core.ComponentModel;
@@ -33,8 +35,10 @@ using INTV.Shared.ViewModel;
 
 #if __UNIFIED__
 using CGRect = CoreGraphics.CGRect;
+using nfloat = System.nfloat;
 #else
 using CGRect = System.Drawing.RectangleF;
+using nfloat = System.Single;
 #endif // __UNIFIED__
 
 namespace INTV.Shared.View
@@ -116,13 +120,13 @@ namespace INTV.Shared.View
             base.AwakeFromNib();
             View.Hidden = true;
             View.WantsLayer = true;
-            var colorSpace = MonoMac.CoreGraphics.CGColorSpace.CreateDeviceRGB();
-            var colorComponents = new float[4];
+            var colorSpace = CGColorSpace.CreateDeviceRGB();
+            var colorComponents = new nfloat[4];
             NSColor.LightGray.UsingColorSpace(NSColorSpace.DeviceRGB).GetComponents(out colorComponents);
             colorComponents[3] = 0.18f;
-            View.Layer.BackgroundColor = new MonoMac.CoreGraphics.CGColor(colorSpace, colorComponents);
+            View.Layer.BackgroundColor = new CGColor(colorSpace, colorComponents);
             NSColor.ControlBackground.UsingColorSpace(NSColorSpace.DeviceRGBColorSpace).GetComponents(out colorComponents);
-            FeedbackArea.Layer.BackgroundColor = new MonoMac.CoreGraphics.CGColor(colorSpace, colorComponents);
+            FeedbackArea.Layer.BackgroundColor = new CGColor(colorSpace, colorComponents);
             FeedbackArea.Layer.BorderWidth = 1;
             RomListCommandGroup.CancelRomsImportCommand.Visual = Cancel;
             Cancel.Activated += HandleActivated; // Doesn't go through command mechanism

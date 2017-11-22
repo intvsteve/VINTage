@@ -200,6 +200,7 @@
     <Compile Include="Utility\OSVersion.cs" />
     <Compile Include="Utility\OSVersion.WPF.cs" />
     <Compile Include="Utility\PathComparer.cs" />
+    <Compile Include="Utility\PathComparer.Default.cs" />
     <Compile Include="Utility\PathUtils.cs" />
     <Compile Include="Utility\PathUtils.WPF.cs" />
     <Compile Include="Utility\ProgramFeaturesHelpers.cs" />

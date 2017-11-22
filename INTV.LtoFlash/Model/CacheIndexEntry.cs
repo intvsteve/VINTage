@@ -1,5 +1,5 @@
 ﻿// <copyright file="CacheIndexEntry.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -134,6 +134,8 @@ namespace INTV.LtoFlash.Model
         {
             var recreatedCfgFile = false;
             var extension = Path.GetExtension(RomPath);
+
+            // Don't care about case sensitivity of file system.
             if (ProgramFileKindHelpers.RomFileExtensionsThatUseCfgFiles.Contains(extension, StringComparer.InvariantCultureIgnoreCase))
             {
                 var cacheDir = System.IO.Path.GetDirectoryName(CacheIndex.Path);

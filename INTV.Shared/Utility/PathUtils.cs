@@ -68,7 +68,7 @@ namespace INTV.Shared.Utility
             Uri pathUri = new Uri(file);
 
             // Folders must end in a slash
-            if (!relativeTo.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.InvariantCultureIgnoreCase) && !relativeTo.EndsWith(Path.AltDirectorySeparatorChar.ToString(), StringComparison.InvariantCultureIgnoreCase))
+            if (!relativeTo.EndsWith(Path.DirectorySeparatorChar.ToString(), PathComparer.DefaultPolicy) && !relativeTo.EndsWith(Path.AltDirectorySeparatorChar.ToString(), PathComparer.DefaultPolicy))
             {
                 relativeTo += Path.DirectorySeparatorChar;
             }
@@ -243,6 +243,8 @@ namespace INTV.Shared.Utility
                 "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
                 "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
             };
+
+            // Don't care about case sensitivity here.
             if (reservedNames.Contains(validatedName, StringComparer.InvariantCultureIgnoreCase))
             {
                 validatedName += "_";

@@ -357,6 +357,7 @@
     <Compile Include="Model\Program\ProgramCollectionSaveFailedEventArgs.cs" />
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Converter\NSUrlStringConverter.cs" />
+    <Compile Include="Utility\PathComparer.Default.cs" />
     <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

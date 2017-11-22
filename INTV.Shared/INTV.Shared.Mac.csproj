@@ -362,6 +362,8 @@
     <Compile Include="Utility\OSImage.cs" />
     <Compile Include="Utility\OSImage.Mac.cs" />
     <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
+    <Compile Include="View\OSMenuItem.cs" />
+    <Compile Include="View\OSMenuItem.Mac.cs" />
     <Compile Include="View\OSVisual.cs" />
     <Compile Include="View\OSVisual.Mac.cs" />
   </ItemGroup>

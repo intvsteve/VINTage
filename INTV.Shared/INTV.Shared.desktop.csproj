@@ -241,6 +241,8 @@
     <Compile Include="Utility\StorageAccess.cs" />
     <Compile Include="Utility\VisualHelpers.cs" />
     <Compile Include="Utility\VisualHelpers.WPF.cs" />
+    <Compile Include="View\OSVisual.cs" />
+    <Compile Include="View\OSVisual.WPF.cs" />
     <Compile Include="ViewModel\BackupInfoViewModel.cs" />
     <Compile Include="ViewModel\BaudRateViewModel.cs" />
     <Compile Include="ViewModel\ControllerElementViewModel.cs" />

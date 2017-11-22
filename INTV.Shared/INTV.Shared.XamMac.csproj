@@ -356,6 +356,8 @@
     <Compile Include="Utility\OSColor.cs" />
     <Compile Include="Utility\OSImage.cs" />
     <Compile Include="Utility\OSImage.Mac.cs" />
+    <Compile Include="View\OSVisual.cs" />
+    <Compile Include="View\OSVisual.Mac.cs" />
     <Compile Include="Utility\PathComparer.Default.cs" />
     <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
   </ItemGroup>

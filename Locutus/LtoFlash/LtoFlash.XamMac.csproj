@@ -74,7 +74,7 @@
         </Command>
       </CustomCommands>
     </CustomCommands>
-    <MonoBundlingExtraArgs></MonoBundlingExtraArgs>
+    <MonoBundlingExtraArgs>--registrar=dynamic</MonoBundlingExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|x86' ">
     <DebugType>none</DebugType>
@@ -125,7 +125,7 @@
     <TlsProvider>Default</TlsProvider>
     <LinkMode>None</LinkMode>
     <XamMacArch></XamMacArch>
-    <MonoBundlingExtraArgs></MonoBundlingExtraArgs>
+    <MonoBundlingExtraArgs>--registrar=dynamic</MonoBundlingExtraArgs>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

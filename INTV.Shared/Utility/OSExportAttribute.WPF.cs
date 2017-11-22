@@ -25,6 +25,10 @@ namespace INTV.Shared.Utility
     /// </summary>
     public partial class OSExportAttribute : System.Attribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INTV.Shared.Utility.OSExportAttribute"/>
+        /// </summary>
+        /// <param name="name">Name of the entity to be exported.</param>
         public OSExportAttribute(string name)
         {
         }

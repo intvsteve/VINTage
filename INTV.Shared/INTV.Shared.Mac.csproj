@@ -359,6 +359,8 @@
     <Compile Include="Converter\NSUrlStringConverter.cs" />
     <Compile Include="Utility\PathComparer.Default.cs" />
     <Compile Include="Utility\OSColor.cs" />
+    <Compile Include="Utility\OSImage.cs" />
+    <Compile Include="Utility\OSImage.Mac.cs" />
     <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

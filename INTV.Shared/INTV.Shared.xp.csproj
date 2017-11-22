@@ -198,6 +198,8 @@
     <Compile Include="Utility\OSDragDropOperation.WPF.cs" />
     <Compile Include="Utility\OSExportAttribute.cs" />
     <Compile Include="Utility\OSExportAttribute.WPF.cs" />
+    <Compile Include="Utility\OSImage.cs" />
+    <Compile Include="Utility\OSImage.WPF.cs" />
     <Compile Include="Utility\OSVersion.cs" />
     <Compile Include="Utility\OSVersion.WPF.cs" />
     <Compile Include="Utility\PathComparer.cs" />

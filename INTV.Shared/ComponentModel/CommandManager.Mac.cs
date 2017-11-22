@@ -1,4 +1,4 @@
-﻿// <copyright file="CommandManager.MONO.cs" company="INTV Funhouse">
+﻿// <copyright file="CommandManager.Mac.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -31,7 +31,7 @@ using INTV.Shared.Utility;
 namespace INTV.Shared.ComponentModel
 {
     /// <summary>
-    /// Command manager implementation that imitates part of the Microsoft CommandManager class..
+    /// Command manager implementation that imitates part of the Microsoft CommandManager class.
     /// </summary>
     public sealed class CommandManager
     {

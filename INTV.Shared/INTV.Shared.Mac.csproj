@@ -235,7 +235,7 @@
     <Compile Include="View\ReportDialog.Mac.designer.cs">
       <DependentUpon>ReportDialog.Mac.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComponentModel\CommandManager.Mono.cs" />
+    <Compile Include="ComponentModel\CommandManager.Mac.cs" />
     <Compile Include="ViewModel\RomFeaturesConfigurationViewModel.cs" />
     <Compile Include="Behavior\IInPlaceEditor.cs" />
     <Compile Include="Behavior\InPlaceEditorClosedEventArgs.cs" />

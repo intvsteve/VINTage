@@ -1,5 +1,5 @@
-﻿// <copyright file="WeakKeyDictionary`TKey`TValue.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// <copyright file="WeakKeyDictionary`TKey`TValue.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,27 +35,93 @@ namespace INTV.Core.Utility
     /// Each access to the dictionary will, by necessity, sweep for 'dead' objects.
     /// Also note that because of the object lifetime awareness via the WeakReference, this
     /// dictionary uses locks to protect access.</remarks>
-    public class WeakKeyDictionary<TKey, TValue> where TKey : class
+    public class WeakKeyDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary where TKey : class
     {
         private Dictionary<WeakReference, TValue> _dictionary = new Dictionary<WeakReference, TValue>();
 
-        /// <summary>
-        /// Gets or sets a value associated with the given key.
-        /// </summary>
-        /// <param name="key">The key whose value is desired, or which is to be associated with the given value on set.</param>
-        /// <returns>The value associated with the given key. If the key has been garbage collected, i.e. the reference
-        /// is no longer valid, the default value for the TValue type is silently returned.</returns>
+        #region Properties
+
+        #region ICollection Properties
+
+        /// <inheritdoc/>
+        public int Count
+        {
+            get { return _dictionary.Count; }
+        }
+
+        /// <inheritdoc/>
+        public bool IsSynchronized
+        {
+            get { return false; }
+        }
+
+        /// <inheritdoc/>
+        public object SyncRoot
+        {
+            get { return _dictionary; }
+        }
+
+        #endregion // ICollection Properties
+
+        #region IDictionary Properties
+
+        /// <inheritdoc/>
+        public bool IsFixedSize
+        {
+            get { return false; }
+        }
+
+        /// <inheritdoc/>
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
+
+        /// <inheritdoc/>
+        ICollection IDictionary.Keys
+        {
+            get { return _dictionary.Keys; }
+        }
+
+        /// <inheritdoc/>
+        ICollection IDictionary.Values
+        {
+            get { return _dictionary.Values; }
+        }
+
+        /// <inheritdoc/>
+        object IDictionary.this[object key]
+        {
+            get { return GetEntry((TKey)key); }
+            set { AddEntry((TKey)key, (TValue)value); }
+        }
+
+        #endregion // IDictionary Properties
+
+        #region IDictionary<TKey, TValue> Properties
+
+        /// <inheritdoc/>
+        public ICollection<TKey> Keys
+        {
+            get { return _dictionary.Keys.Where(k => k.IsAlive).Select(k => (TKey)k.Target).ToList(); }
+        }
+
+        /// <inheritdoc/>
+        public ICollection<TValue> Values
+        {
+            get { return _dictionary.Values; }
+        }
+
+        /// <inheritdoc/>
         public TValue this[TKey key]
         {
-            get
-            {
-                return GetEntry(key);
-            }
-            set
-            {
-                AddEntry(key, value);
-            }
+            get { return GetEntry(key); }
+            set { AddEntry(key, value); }
         }
+
+        #endregion // IDictionary<TKey, TValue> Properties
+
+        #endregion // Properties
 
         /// <summary>
         /// Add an entry to the dictionary.
@@ -121,6 +188,111 @@ namespace INTV.Core.Utility
             return value;
         }
 
+        #region IEnumerable
+
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _dictionary.GetEnumerator();
+        }
+
+        #endregion // IEnumerable
+
+        #region ICollection
+
+        /// <inheritdoc/>
+        public void CopyTo(Array array, int index)
+        {
+            throw new NotImplementedException("ICollection.CopyTo");
+        }
+
+        #endregion // ICollection
+
+        #region IDictionary
+
+        /// <inheritdoc/>
+        public void Add(object key, object value)
+        {
+            AddEntry((TKey)key, (TValue)value);
+        }
+
+        /// <inheritdoc/>
+        public void Clear()
+        {
+            _dictionary.Clear();
+        }
+
+        /// <inheritdoc/>
+        public bool Contains(object key)
+        {
+            return ContainsKey((TKey)key);
+        }
+
+        /// <inheritdoc/>
+        public IDictionaryEnumerator GetEnumerator()
+        {
+            return _dictionary.GetEnumerator();
+        }
+
+        /// <inheritdoc/>
+        public void Remove(object key)
+        {
+            RemoveEntry((TKey)key);
+        }
+
+        #endregion // IDictionary
+
+        #region IEnumerable<KeyValuePair<TKey, TValue>>
+
+        #endregion // IEnumerable<KeyValuePair<TKey, TValue>>
+
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
+        {
+            return ((IEnumerable<KeyValuePair<TKey, TValue>>)_dictionary).GetEnumerator();
+        }
+
+        #region ICollection<KeyValuePair<TKey, TValue>>
+
+        /// <inheritdoc/>
+        public void Add(KeyValuePair<TKey, TValue> item)
+        {
+            AddEntry(item.Key, item.Value);
+        }
+
+        /// <inheritdoc/>
+        void ICollection<KeyValuePair<TKey, TValue>>.Clear()
+        {
+            _dictionary.Clear();
+        }
+
+        /// <inheritdoc/>
+        public bool Contains(KeyValuePair<TKey, TValue> item)
+        {
+            return ContainsKey(item.Key);
+        }
+
+        /// <inheritdoc/>
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            ((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).CopyTo(array, arrayIndex);
+        }
+
+        /// <inheritdoc/>
+        public bool Remove(KeyValuePair<TKey, TValue> item)
+        {
+            return RemoveEntry(item.Key);
+        }
+
+        #endregion // ICollection<KeyValuePair<TKey, TValue>>
+
+        #region IDictionary<TKey, TValue>
+
+        /// <inheritdoc/>
+        public void Add(TKey key, TValue value)
+        {
+            AddEntry(key, value);
+        }
+
         /// <summary>
         /// Determines whether the key exists in the dictionary.
         /// </summary>
@@ -136,6 +308,18 @@ namespace INTV.Core.Utility
             }
             return containsKey;
         }
+
+        public bool Remove(TKey key)
+        {
+            return RemoveEntry(key);
+        }
+
+        public bool TryGetValue(TKey key, out TValue value)
+        {
+            throw new NotImplementedException("WeakKeyDictionary.TryGetValue()");
+        }
+
+        #endregion // IDictionary<TKey, TValue>
 
         private void PurgeDeadEntries()
         {

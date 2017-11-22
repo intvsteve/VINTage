@@ -209,6 +209,7 @@
     <Compile Include="Utility\NativeMethods.WPF.cs" />
     <Compile Include="Utility\ObservableCollectionHelpers.cs" />
     <Compile Include="Utility\OneShotLaunchTask.cs" />
+    <Compile Include="Utility\OSColor.cs" />
     <Compile Include="Utility\OSDispatcher.cs" />
     <Compile Include="Utility\OSDispatcher.WPF.cs" />
     <Compile Include="Utility\OSDispatcherPriority.WPF.cs" />

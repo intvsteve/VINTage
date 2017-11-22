@@ -353,6 +353,7 @@
     <Compile Include="Model\Program\ProgramCollectionSaveFailedEventArgs.cs" />
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Converter\NSUrlStringConverter.cs" />
+    <Compile Include="Utility\OSColor.cs" />
     <Compile Include="Utility\PathComparer.Default.cs" />
     <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
   </ItemGroup>

@@ -39,7 +39,7 @@ namespace INTV.Shared.Utility
     /// Mac-specific implementation.
     /// </summary>
     [Register("SingleInstanceApplication")]
-    public partial class SingleInstanceApplication : NSApplication, IFakeDependencyObject, System.ComponentModel.Composition.IPartImportsSatisfiedNotification
+    public partial class SingleInstanceApplication : NSApplication, IFakeDependencyObject
     {
         private const string ShowSplashScreenName = "LUI_SHOW_SPLASH_SCREEN";
         private const string MainWindowValueName = "mainWindow";

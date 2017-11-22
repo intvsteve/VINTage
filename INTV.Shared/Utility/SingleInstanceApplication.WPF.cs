@@ -28,7 +28,7 @@ namespace INTV.Shared.Utility
     /// <summary>
     /// WPF-specific implementation of SingleInstanceApplication.
     /// </summary>
-    public partial class SingleInstanceApplication : System.Windows.Application, System.ComponentModel.Composition.IPartImportsSatisfiedNotification
+    public partial class SingleInstanceApplication : System.Windows.Application
     {
         #region Constructors
 

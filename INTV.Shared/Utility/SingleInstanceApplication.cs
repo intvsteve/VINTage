@@ -38,7 +38,7 @@ namespace INTV.Shared.Utility
     /// activate the main window of the other instance. It presumes that the main window will react to a unique
     /// message broadcast throughout the system.
     /// </summary>
-    public partial class SingleInstanceApplication
+    public partial class SingleInstanceApplication : System.ComponentModel.Composition.IPartImportsSatisfiedNotification
     {
         private const string CheckForUpdatesStartupActionName = "CheckForUpdates";
 

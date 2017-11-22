@@ -41,25 +41,12 @@ namespace INTV.Shared.View
     /// Extension methods for sort of kind of DependencyObject-like properties that can also assist
     /// with implementing IFakeDependencyObject.
     /// </summary>
-    public static class IFakeDependencyObjectHelpers
+    public static partial class IFakeDependencyObjectHelpers
     {
         /// <summary>
         /// Name used for a DataContext-like fake attached property.
         /// </summary>
         public const string DataContextPropertyName = "DataContext";
-
-        private static WeakKeyDictionary<object, Dictionary<string, object>> AttachedProperties
-        {
-            get
-            {
-                if (_masterAttachedPropertiesList == null)
-                {
-                    _masterAttachedPropertiesList = new WeakKeyDictionary<object, Dictionary<string, object>>();
-                }
-                return _masterAttachedPropertiesList;
-            }
-        }
-        private static WeakKeyDictionary<object, Dictionary<string, object>> _masterAttachedPropertiesList;
 
         /// <summary>
         /// Gets a named property's value.
@@ -92,18 +79,6 @@ namespace INTV.Shared.View
             return value;
         }
 
-        private static bool GetValue(this object o, string property, out object value)
-        {
-            bool gotValue = false;
-            value = null;
-            var properties = AttachedProperties.GetEntry(o);
-            if (properties != null)
-            {
-                gotValue = properties.TryGetValue(property, out value);
-            }
-            return gotValue;
-        }
-
         /// <summary>
         /// Gets a named property's value, moving up the visual's parent chain if not directly on the given visual.
         /// </summary>
@@ -133,61 +108,6 @@ namespace INTV.Shared.View
             object value = null;
             visual.GetInheritedValue(property, out value);
             return value;
-        }
-
-        private static bool GetInheritedValue(this OSVisualBase visual, string property, out object propertyValue)
-        {
-            bool gotValue = false;
-            propertyValue = null;
-            var window = visual as OSWindow;
-            var view = visual as OSVisual;
-            OSVisualBase root = window;
-            if (root == null)
-            {
-                if (view != null)
-                {
-                    root = view.Window;
-                }
-                if (root == null)
-                {
-                    root = INTV.Shared.Utility.SingleInstanceApplication.Current;
-                }
-            }
-            while ((visual != null) && !gotValue)
-            {
-                var properties = AttachedProperties.GetEntry(visual);
-                if (properties != null)
-                {
-                    gotValue = properties.TryGetValue(property, out propertyValue);
-                }
-                if (!gotValue)
-                {
-                    if (view != null)
-                    {
-                        window = view.Window;
-                        visual = view.Superview;
-                        view = visual as OSVisual;
-                        if (view == null)
-                        {
-                            visual = window;
-                        }
-                        if (visual == null)
-                        {
-                            visual = INTV.Shared.Utility.SingleInstanceApplication.Current;
-                        }
-                    }
-                    else if (window != null)
-                    {
-                        visual = INTV.Shared.Utility.SingleInstanceApplication.Current;
-                        window = null;
-                    }
-                    else
-                    {
-                        visual = null;
-                    }
-                }
-            }
-            return gotValue;
         }
 
         /// <summary>
@@ -254,18 +174,24 @@ namespace INTV.Shared.View
         /// <param name="propertyChanged">If not <c>null</c>, this method is invoked if the value of <paramref name="value"/> is changed.</param>
         public static void SetPropertyValue(this object o, string property, object propertyValue, PropertyChangedEventHandler propertyChanged)
         {
+            if ((o != null) && (o.GetType() == typeof(OSVisual)))
+            {
+                o = ((OSVisual)o).NativeVisual;
+            }
+            else if ((o != null) && (o.GetType() == typeof(OSMenuItem)))
+            {
+                o = ((OSMenuItem)o).NativeMenuItem;
+            }
+            if (o == null)
+            {
+                return;
+            }
             object oldValue = null;
             if (propertyChanged != null)
             {
                 oldValue = o.GetValue(property);
             }
-            var properties = AttachedProperties.GetEntry(o);
-            if (properties == null)
-            {
-                properties = new Dictionary<string, object>();
-                AttachedProperties[o] = properties;
-            }
-            properties[property] = propertyValue;
+            o.SetAttachedPropertyValue(property, propertyValue);
             if ((propertyChanged != null) && INTV.Core.ComponentModel.INotifyPropertyChangedHelpers.SafeDidValueChangeCompare(oldValue, propertyValue))
             {
                 propertyChanged(o, new PropertyChangedEventArgs(property));
@@ -314,6 +240,13 @@ namespace INTV.Shared.View
         {
             d.SetDataContext(value);
             ((INotifyPropertyChanged)value).PropertyChanged += propertyChanged;
+        }
+
+        private static bool GetValue(this object o, string property, out object value)
+        {
+            value = null;
+            var gotValue = o.TryGetAttachedValue(property, out value);
+            return gotValue;
         }
     }
 }

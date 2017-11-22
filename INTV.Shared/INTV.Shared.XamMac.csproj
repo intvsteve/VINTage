@@ -353,6 +353,7 @@
     <Compile Include="Model\Program\ProgramCollectionSaveFailedEventArgs.cs" />
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Converter\NSUrlStringConverter.cs" />
+    <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj">

@@ -361,6 +361,7 @@
     <Compile Include="Properties\SettingsBase.Mac.cs" />
     <Compile Include="Properties\SettingsBase.Mono.cs" />
     <Compile Include="Properties\SettingsBase`T.cs" />
+    <Compile Include="Commands\RootCommandGroup.Mono.cs" />
     <Compile Include="Utility\OSImage.cs" />
     <Compile Include="Utility\OSImage.Mac.cs" />
     <Compile Include="View\OSMenuItem.cs" />

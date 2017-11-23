@@ -27,6 +27,7 @@ using MonoMac.Foundation;
 #endif // __UNIFIED__
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
+using INTV.Shared.View;
 
 namespace INTV.Shared.Commands
 {
@@ -42,66 +43,6 @@ namespace INTV.Shared.Commands
         {
             UniqueId = UniqueNameBase + ".AppMenu",
             Weight = 0,
-            MenuParent = RootMenuCommand
-        };
-
-        /// <summary>
-        /// Command for the File submenu in the menu bar.
-        /// </summary>
-        public static readonly VisualRelayCommand FileMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
-        {
-            UniqueId = UniqueNameBase + ".FileMenu",
-            Weight = 0.1,
-            MenuParent = RootMenuCommand
-        };
-
-        /// <summary>
-        /// Command for the Edit submenu in the menu bar.
-        /// </summary>
-        public static readonly VisualRelayCommand EditMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
-        {
-            UniqueId = UniqueNameBase + ".EditMenu",
-            Weight = 0.2,
-            MenuParent = RootMenuCommand
-        };
-
-        /// <summary>
-        /// Command for the View submenu in the menu bar.
-        /// </summary>
-        public static readonly VisualRelayCommand ViewMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
-        {
-            UniqueId = UniqueNameBase + ".ViewMenu",
-            Weight = 0.3,
-            MenuParent = RootMenuCommand
-        };
-
-        /// <summary>
-        /// Command for the Tools submenu in the menu bar.
-        /// </summary>
-        public static readonly VisualRelayCommand ToolsMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
-        {
-            UniqueId = UniqueNameBase + ".ToolsMenu",
-            Weight = 0.4,
-            MenuParent = RootMenuCommand
-        };
-
-        /// <summary>
-        /// Command for the Window submenu in the menu bar.
-        /// </summary>
-        public static readonly VisualRelayCommand WindowMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
-        {
-            UniqueId = UniqueNameBase + ".WindowMenu",
-            Weight = 0.5,
-            MenuParent = RootMenuCommand
-        };
-
-        /// <summary>
-        /// Command for the Help submenu in the menu bar.
-        /// </summary>
-        public static readonly VisualRelayCommand HelpMenuCommand = new VisualRelayCommand(RelayCommand.NoOp)
-        {
-            UniqueId = UniqueNameBase + ".HelpMenu",
-            Weight = 0.6,
             MenuParent = RootMenuCommand
         };
 
@@ -182,7 +123,7 @@ namespace INTV.Shared.Commands
         #region ICommandGroup
 
         /// <inheritdoc />
-        public override NSMenuItem CreateMenuItemForCommand(ICommand command)
+        public override OSMenuItem CreateMenuItemForCommand(ICommand command)
         {
             var visualCommand = (VisualRelayCommand)command;
             if (visualCommand.Visual == null)

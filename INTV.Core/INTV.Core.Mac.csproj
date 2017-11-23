@@ -181,6 +181,7 @@
     <Compile Include="Model\RomMetadataCredits.cs" />
     <Compile Include="Model\RomMetadataControllerBindings.cs" />
     <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
+    <Compile Include="Utility\ResourceHelpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

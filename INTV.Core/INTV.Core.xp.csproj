@@ -167,6 +167,7 @@
     <Compile Include="Utility\StreamUtilities.cs" />
     <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="Utility\WeakKeyDictionary`TKey`TValue.cs" />
+    <Compile Include="Utility\ResourceHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Strings.resx">

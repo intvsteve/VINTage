@@ -86,6 +86,7 @@
     <Compile Include="Utility\Crc32.cs" />
     <Compile Include="Utility\RandomUtilities.cs" />
     <Compile Include="Utility\Range.cs" />
+    <Compile Include="Utility\ResourceHelpers.cs" />
     <Compile Include="Utility\StreamUtilities.cs" />
     <Compile Include="Model\Program\CrcData.cs" />
     <Compile Include="Model\Program\EcsFeatures.cs" />

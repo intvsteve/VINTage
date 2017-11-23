@@ -31,6 +31,13 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("LTOFlash")]
 [assembly: AssemblyCopyright("Copyright © INTV Funhouse 2014-2017")]
 [assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. LTO Flash! is a product from Left Turn Only, LLC. Steve Orth and INTV Funhouse, and Joe Zbiciak and Left Turn Only, LLC are not affiliated with Intellivision Productions.")]
+//// Stupid xp... .NET 4.5 or later required for AssemblyMetadataAttribute
+#if !WIN_XP
+[assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.AuthorKey, "Steven A. Orth")]
+[assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.AboutKey, "Intellivision® ROM library manager and user interface for the LTO Flash! cartridge from Left Turn Only, LLC.")]
+[assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.WebsiteKey, "http://www.intvfunhouse.com/intvfunhouse/ltoflash/")]
+[assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.WebsiteNameKey, "INTV Funhouse")]
+#endif // !WIN
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

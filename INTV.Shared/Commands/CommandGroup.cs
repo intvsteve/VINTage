@@ -25,11 +25,7 @@ using INTV.Shared.ComponentModel;
 #if WIN
 using OSImage = System.Windows.Media.Imaging.BitmapImage;
 #elif MAC
-#if __UNIFIED__
-using OSImage = AppKit.NSImage;
-#else
-using OSImage = MonoMac.AppKit.NSImage;
-#endif // __UNIFIED__
+using INTV.Shared.Utility;
 #endif // WIN
 
 namespace INTV.Shared.Commands

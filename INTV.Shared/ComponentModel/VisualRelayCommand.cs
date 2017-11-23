@@ -25,18 +25,16 @@ using INTV.Shared.Commands;
 using INTV.Shared.Utility;
 
 #if WIN
-using OSImage = System.Windows.Media.ImageSource;
-using OSMenuItem = System.Windows.Controls.Control;
-using OSVisual = System.Windows.UIElement;
+using INTV.Shared.View;
+using NativeImage = System.Windows.Media.ImageSource;
 #elif MAC
+using INTV.Shared.View;
 #if __UNIFIED__
-using OSImage = AppKit.NSImage;
-using OSMenuItem = AppKit.NSMenuItem;
 using OSVisual = Foundation.NSObject;
+using NativeImage = Foundation.AppKit.NSImage;
 #else
-using OSImage = MonoMac.AppKit.NSImage;
-using OSMenuItem = MonoMac.AppKit.NSMenuItem;
 using OSVisual = MonoMac.Foundation.NSObject;
+using NativeImage = MonoMac.AppKit.NSImage;
 #endif // __UNIFIED__
 #endif // WIN
 
@@ -50,7 +48,7 @@ namespace INTV.Shared.ComponentModel
         /// <summary>
         /// A default icon to use for rich ToolTips.
         /// </summary>
-        public static readonly OSImage DefaultToolTipIcon = typeof(VisualRelayCommand).LoadImageResource("ViewModel/Resources/Images/Information_32x.png");
+        public static readonly NativeImage DefaultToolTipIcon = typeof(VisualRelayCommand).LoadImageResource("ViewModel/Resources/Images/Information_32x.png");
 
         #region Constructors
 
@@ -201,22 +199,22 @@ namespace INTV.Shared.ComponentModel
         /// <summary>
         /// Gets or sets the icon to display for a rich tool tip.
         /// </summary>
-        public OSImage ToolTipIcon
+        public NativeImage ToolTipIcon
         {
             get { return _toolTipIcon == null ? DefaultToolTipIcon : _toolTipIcon; }
             set { _toolTipIcon = value; }
         }
-        private OSImage _toolTipIcon;
+        private NativeImage _toolTipIcon;
 
         /// <summary>
         /// Gets or sets a small graphical image to display for the command, typically a 16x16 icon.
         /// </summary>
-        public OSImage SmallIcon { get; set; }
+        public NativeImage SmallIcon { get; set; }
 
         /// <summary>
         /// Gets or sets a graphical image to display for the command, typically a 32x32 icon.
         /// </summary>
-        public OSImage LargeIcon { get; set; }
+        public NativeImage LargeIcon { get; set; }
 
         /// <summary>
         /// Gets or sets the weight of the command.

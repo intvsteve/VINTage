@@ -1112,24 +1112,27 @@ namespace INTV.LtoFlash.Commands
 
         private static void OnSetActiveDeviceCommand(object parameter)
         {
-            var window = parameter as OSWindow;
-            if (window != null)
+            if (CanSetActiveDeviceCommand(parameter))
             {
-#if WIN
-                var viewModel = window.DataContext as DeviceSelectionDialogViewModel;
-                var result = viewModel.SelectedDevice != null;
-                window.DialogResult = result;
-#else
-                throw new System.NotImplementedException();
-#endif // WIN
-            }
-            else
-            {
-                var deviceConnectionViewModel = parameter as DeviceConnectionViewModel;
-                if (deviceConnectionViewModel != DeviceConnectionViewModel.NoneAvailable)
+                var window = parameter as OSWindow;
+                if (window != null)
                 {
-                    var creationInfo = new Dictionary<string, object>() { { DeviceCreationInfo.ConfigName, new DeviceCreationInfo(true, true, ActivationMode.ForceActivate) } };
-                    INTV.Shared.Interop.DeviceManagement.DeviceChange.ReportDeviceAdded(parameter, deviceConnectionViewModel.Name, Core.Model.Device.ConnectionType.Serial, creationInfo);
+#if WIN
+                    var viewModel = window.DataContext as DeviceSelectionDialogViewModel;
+                    var result = viewModel.SelectedDevice != null;
+                    window.DialogResult = result;
+#else
+                    throw new System.NotImplementedException();
+#endif // WIN
+                }
+                else
+                {
+                    var deviceConnectionViewModel = parameter as DeviceConnectionViewModel;
+                    if (deviceConnectionViewModel != DeviceConnectionViewModel.NoneAvailable)
+                    {
+                        var creationInfo = new Dictionary<string, object>() { { DeviceCreationInfo.ConfigName, new DeviceCreationInfo(true, true, ActivationMode.ForceActivate) } };
+                        INTV.Shared.Interop.DeviceManagement.DeviceChange.ReportDeviceAdded(parameter, deviceConnectionViewModel.Name, Core.Model.Device.ConnectionType.Serial, creationInfo);
+                    }
                 }
             }
         }

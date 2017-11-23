@@ -87,7 +87,7 @@
     <Compile Include="Utility\SerialPortDetector.cs" />
     <Compile Include="Utility\SingleInstanceApplication.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
-    <Compile Include="Utility\VisualHelpers.cs" />
+    <Compile Include="View\VisualHelpers.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
@@ -263,7 +263,7 @@
     <Compile Include="View\OSWindowState.Mac.cs" />
     <Compile Include="View\SerialPortSelectorDialog.cs" />
     <Compile Include="Utility\ColorHelpers.Mac.cs" />
-    <Compile Include="Utility\VisualHelpers.Mac.cs" />
+    <Compile Include="View\VisualHelpers.Mac.cs" />
     <Compile Include="Utility\OSExportAttribute.Mac.cs" />
     <Compile Include="ViewModel\SettingsPageViewModel`T.Mac.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />

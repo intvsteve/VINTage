@@ -26,14 +26,12 @@ using OSCommandVisual = System.Windows.UIElement;
 using OSImage = System.Windows.Media.Imaging.BitmapImage;
 using OSMenuItem = System.Windows.Controls.Control;
 #elif MAC
+using INTV.Shared.View;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using OSCommandVisual = Foundation.NSObject;
-using OSImage = AppKit.NSImage;
-using OSMenuItem = AppKit.NSMenuItem;
 #else
 using OSCommandVisual = MonoMac.Foundation.NSObject;
-using OSImage = MonoMac.AppKit.NSImage;
-using OSMenuItem = MonoMac.AppKit.NSMenuItem;
 #endif // __UNIFIED__
 #endif // WIN
 

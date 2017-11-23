@@ -232,7 +232,7 @@ namespace INTV.Shared.Commands
             foreach (var command in target.GetContextMenuCommands(context).OfType<VisualRelayCommand>().OrderBy(c => c.Weight))
             {
                 menu.AddItem(command.MenuItem);
-                command.MenuItem.Menu.AutoEnablesItems = false;
+                command.MenuItem.NativeMenuItem.Menu.AutoEnablesItems = false;
             }
             CommandManager.InvalidateRequerySuggested(); // Ensure items in context menu properly updated
             return menu;
@@ -302,11 +302,11 @@ namespace INTV.Shared.Commands
                     if (requiresParentMenu)
                     {
                         var menuCommand = (VisualRelayCommand)command.MenuParent;
-                        if (menuCommand.MenuItem == null)
+                        if (menuCommand.MenuItem.IsEmpty)
                         {
                             menuCommand.MenuItem = group.CreateMenuItemForCommand(menuCommand);
                         }
-                        var menu = menuCommand.MenuItem != null ? menuCommand.MenuItem.Submenu : null;
+                        var menu = !menuCommand.MenuItem.IsEmpty ? menuCommand.MenuItem.NativeMenuItem.Submenu : null;
                         if ((menu == null) && (menuCommand.UniqueId == RootCommandGroup.RootMenuCommand.UniqueId))
                         {
                             menu = menuCommand.Visual as NSMenu;
@@ -319,7 +319,7 @@ namespace INTV.Shared.Commands
                                 name = menuCommand.Name;
                             }
                             menu = new NSMenu(name);
-                            menuCommand.MenuItem.Submenu = menu;
+                            menuCommand.MenuItem.NativeMenuItem.Submenu = menu;
                         }
                         if (menu.Delegate == null)
                         {

@@ -26,6 +26,7 @@ using INTV.Shared.Behavior;
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
+using INTV.Shared.View;
 
 namespace INTV.LtoFlash.Commands
 {
@@ -164,9 +165,9 @@ namespace INTV.LtoFlash.Commands
         private static void AddSetColorSubmenuItem(Control parentMenuItem, VisualRelayCommand submenuItemCommand, System.Tuple<MenuLayoutViewModel, FileNodeViewModel, INTV.Core.Model.Stic.Color> context)
         {
             var parent = (MenuItem)parentMenuItem;
-            var submenuItem = submenuItemCommand.MenuItem as MenuItem;
+            MenuItem submenuItem = submenuItemCommand.MenuItem;
             submenuItem.CommandParameter = context;
-            parent.Items.Add(submenuItemCommand.MenuItem);
+            parent.Items.Add(submenuItemCommand.MenuItem.NativeMenuItemBase);
         }
 
         private static ItemsControl FindVisualContainerForViewModel(ItemsControl menuLayoutTree, FolderViewModel root, FileNodeViewModel item)

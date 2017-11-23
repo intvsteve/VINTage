@@ -239,8 +239,6 @@
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
-    <Compile Include="Utility\VisualHelpers.cs" />
-    <Compile Include="Utility\VisualHelpers.WPF.cs" />
     <Compile Include="View\OSMenuItem.cs" />
     <Compile Include="View\OSMenuItem.WPF.cs" />
     <Compile Include="View\OSVisual.cs" />
@@ -369,6 +367,8 @@
     <Compile Include="View\TextBlockEditorAdorner.cs" />
     <Compile Include="View\TreeListView.WPF.cs" />
     <Compile Include="View\TreeListViewItem.WPF.cs" />
+    <Compile Include="View\VisualHelpers.cs" />
+    <Compile Include="View\VisualHelpers.WPF.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.Core\INTV.Core.pcl.csproj">

@@ -33,7 +33,7 @@ namespace INTV.LtoFlash.Model
     [System.ComponentModel.Composition.Export(typeof(IApplicationInfo))]
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", FeatureName)]
-    public class Configuration : IApplicationInfo, IConfiguration
+    public partial class Configuration : IApplicationInfo, IConfiguration
     {
         /// <summary>File extension to use for a generic LFS fork when stored as a file on disk.</summary>
         public const string ForkExtension = ".fork";
@@ -63,6 +63,7 @@ namespace INTV.LtoFlash.Model
 
         private Configuration()
         {
+            // TODO Make partial class instead of preprocessor check.
             // This null check keeps the WPF XAML designer output clean.
             if (INTV.Shared.Utility.SingleInstanceApplication.Instance != null)
             {

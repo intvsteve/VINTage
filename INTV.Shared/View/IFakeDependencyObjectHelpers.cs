@@ -25,13 +25,9 @@ using INTV.Core.Utility;
 
 #if MAC
 #if __UNIFIED__
-using OSVisual = AppKit.NSView;
 using OSVisualBase = AppKit.NSResponder;
-using OSWindow = AppKit.NSWindow;
 #else
-using OSVisual = MonoMac.AppKit.NSView;
 using OSVisualBase = MonoMac.AppKit.NSResponder;
-using OSWindow = MonoMac.AppKit.NSWindow;
 #endif // __UNIFIED__
 #endif // MAC
 

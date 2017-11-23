@@ -193,7 +193,11 @@ namespace INTV.Shared.View
 
         private void HandleActivated(object sender, System.EventArgs e)
         {
-            RomListCommandGroup.CancelRomsImportCommand.Execute(View.DataContext);
+            var viewModel = ((ProgressIndicatorViewModel)View.DataContext);
+            if (viewModel.CancelCommand.CanExecute(viewModel))
+            {
+                viewModel.CancelCommand.Execute(viewModel);
+            }
         }
     }
 }

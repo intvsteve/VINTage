@@ -251,7 +251,7 @@
     <Compile Include="Interop\IOKit\IONotificationPort.cs" />
     <Compile Include="Interop\IOKit\IONotificationEventArgs.cs" />
     <Compile Include="Interop\IOKit\IOKitHelpers.cs" />
-    <Compile Include="Utility\ExitEventArgs.Mac.cs" />
+    <Compile Include="Utility\ExitEventArgs.Mono.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceManagementInterfaceKind.Mac.cs" />
     <Compile Include="ComponentModel\RelayCommand.Mono.cs" />
     <Compile Include="Interop\NativeMethods.Mac.cs" />

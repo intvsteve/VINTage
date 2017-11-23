@@ -1,5 +1,5 @@
-﻿// <copyright file="ExitEventArgs.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+﻿// <copyright file="ExitEventArgs.Mono.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,7 +21,7 @@
 namespace INTV.Shared.Utility
 {
     /// <summary>
-    /// Mac version of application exit event arguments.
+    /// Mono version of application exit event arguments.
     /// </summary>
     public class ExitEventArgs : System.EventArgs
     {

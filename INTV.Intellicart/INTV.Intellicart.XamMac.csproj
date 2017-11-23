@@ -88,7 +88,9 @@
     <Compile Include="Commands\DeviceCommandGroup.cs" />
     <Compile Include="Commands\DeviceCommandGroup.Mac.cs" />
     <Compile Include="Model\IntellicartModel.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="Properties\Settings.Mac.cs" />
+    <Compile Include="Properties\Settings.Mono.cs" />
     <Compile Include="ViewModel\IntellicartViewModel.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>

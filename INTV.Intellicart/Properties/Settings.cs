@@ -1,5 +1,5 @@
-﻿// <copyright file="Settings.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+﻿// <copyright file="Settings.cs" company="INTV Funhouse">
+// Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,16 +21,16 @@
 namespace INTV.Intellicart.Properties
 {
     /// <summary>
-    /// Mac-specific implementation.
+    /// Common Settings implementation for INTV.Intellicart.
+    /// Defines names of the options. In Windows, these are not used -- these
+    /// strings are from the .config file created by Visual Studio. Maybe some
+    /// gracious soul with ample free time could write a tool to *generate* this
+    /// file for the non-Windows platforms.
     /// </summary>
     internal sealed partial class Settings
     {
-        /// <summary>
-        /// Mac-specific initialization.
-        /// </summary>
-        partial void OSInitializeDefaults()
-        {
-            InitializeUserDefaults();
-        }
+        public const string IntellicartSerialPortSettingName = "IntellicartSerialPort";
+        public const string IntellicartBaudRateSettingName = "IntellicartBaudRate";
+        public const string IntellicartWriteTimeoutSettingName = "IntellicartWriteTimeout";
     }
 }

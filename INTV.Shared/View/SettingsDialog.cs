@@ -31,6 +31,8 @@ namespace INTV.Shared.View
     /// </summary>
     public partial class SettingsDialog : System.ComponentModel.Composition.IPartImportsSatisfiedNotification
     {
+        private static string LastSelectedPreferencesPage { get; set; }
+
         /// <summary>
         /// Gets or sets the pages in the dialog.
         /// </summary>

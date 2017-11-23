@@ -57,13 +57,21 @@ namespace INTV.LtoFlash.Model
                     }
                     if (File.Exists(CacheIndex.Path))
                     {
-                        using (var fileStream = FileUtilities.OpenFileStream(CacheIndex.Path))
+                        try
                         {
-                            var serializer = new System.Xml.Serialization.XmlSerializer(typeof(CacheIndex), new Type[] { typeof(CacheIndexEntry) });
-                            _instance = serializer.Deserialize(fileStream) as CacheIndex;
+                            using (var fileStream = FileUtilities.OpenFileStream(CacheIndex.Path))
+                            {
+                                var serializer = new System.Xml.Serialization.XmlSerializer(typeof(CacheIndex), new Type[] { typeof(CacheIndexEntry) });
+                                _instance = serializer.Deserialize(fileStream) as CacheIndex;
+                            }
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // Happens if file is somehow corrupt. If so, re-create it.
                         }
                     }
-                    else
+                    bool createEmptyIndex = _instance == null;
+                    if (createEmptyIndex)
                     {
                         _instance = new CacheIndex();
 

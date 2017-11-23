@@ -22,22 +22,12 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Shared.Utility;
 
-#if WIN
-using BaseClass = System.Object;
-#elif MAC
-#if __UNIFIED__
-using BaseClass = Foundation.NSObject;
-#else
-using BaseClass = MonoMac.Foundation.NSObject;
-#endif // __UNIFIED__
-#endif // WIN
-
 namespace INTV.Shared.ViewModel
 {
     /// <summary>
     /// ViewModel for selecting backup data for a restore operation.
     /// </summary>
-    public class BackupInfoViewModel : BaseClass
+    public class BackupInfoViewModel : OSViewModelBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.ViewModel.BackupInfoViewModel"/> class.

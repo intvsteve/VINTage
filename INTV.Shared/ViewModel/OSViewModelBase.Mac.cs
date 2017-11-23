@@ -1,5 +1,5 @@
-﻿// <copyright file="BaudRateViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+﻿// <copyright file="OSViewModelBase.Mac.cs" company="INTV Funhouse">
+// Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,26 +18,18 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+#if __UNIFIED__
+using Foundation;
+#else
+using MonoMac.Foundation;
+#endif
+
 namespace INTV.Shared.ViewModel
 {
     /// <summary>
-    /// ViewModel for displaying serial port baud rate.
+    /// Mac-specific implementation.
     /// </summary>
-    public class BaudRateViewModel : OSViewModelBase
+    public abstract class OSViewModelBase : NSObject
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.ViewModel.BaudRateViewModel"/> class.
-        /// </summary>
-        /// <param name="baudRate">Baud rate.</param>
-        public BaudRateViewModel(int baudRate)
-        {
-            BaudRate = baudRate;
-        }
-
-        /// <summary>
-        /// Gets the baud rate.
-        /// </summary>
-        [INTV.Shared.Utility.OSExportAttribute("BaudRate")]
-        public int BaudRate { get; private set; }
     }
 }

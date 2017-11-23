@@ -221,6 +221,7 @@
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
+    <Compile Include="ViewModel\OSViewModelBase.WPF.cs" />
     <Compile Include="View\OSMenuItem.cs" />
     <Compile Include="View\OSMenuItem.WPF.cs" />
     <Compile Include="View\OSVisual.cs" />

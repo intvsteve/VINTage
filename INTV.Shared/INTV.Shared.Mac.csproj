@@ -366,6 +366,7 @@
     <Compile Include="View\OSMenuItem.Mac.cs" />
     <Compile Include="View\OSVisual.cs" />
     <Compile Include="View\OSVisual.Mac.cs" />
+    <Compile Include="ViewModel\OSViewModelBase.Mac.cs" />
     <Compile Include="Properties\ISettings.cs" />
     <Compile Include="Properties\Settings.cs" />
     <Compile Include="Properties\Settings.Mono.cs" />

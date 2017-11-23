@@ -24,16 +24,13 @@ using INTV.Core.Model.Device;
 using INTV.Shared.Utility;
 
 #if WIN
-using BaseClass = System.Object;
-using OSImage = System.Windows.Media.ImageSource;
+using NativeImage = System.Windows.Media.ImageSource;
 #elif MAC
 #if __UNIFIED__
-using BaseClass = Foundation.NSObject;
-using OSImage = AppKit.NSImage;
+using NativeImage = AppKit.NSImage;
 #else
-using BaseClass = MonoMac.Foundation.NSObject;
-using OSImage = MonoMac.AppKit.NSImage;
-#endif // __UNIFIED__
+using NativeImage = MonoMac.AppKit.NSImage;
+#endif // __UNIFIED
 #endif // WIN
 
 namespace INTV.Shared.ViewModel
@@ -42,7 +39,7 @@ namespace INTV.Shared.ViewModel
     /// ViewModel for an element used in the presentation of an Intellivision controller
     /// as a visual in a user interface. This type is only used to represent keys.
     /// </summary>
-    public class ControllerElementViewModel : BaseClass, System.ComponentModel.INotifyPropertyChanged
+    public class ControllerElementViewModel : OSViewModelBase, System.ComponentModel.INotifyPropertyChanged
     {
         private static readonly Dictionary<ControllerKeys, string> ResourceStrings = new Dictionary<ControllerKeys, string>()
         {
@@ -118,8 +115,9 @@ namespace INTV.Shared.ViewModel
         /// <summary>
         /// Gets the image for the key.
         /// </summary>
+        /// <remarks>NOTE: We use NativeImage here because OS-specific code makes direct reference to this property.</remarks>
         [OSExport("Image")]
-        public OSImage Image
+        public NativeImage Image
         {
             get { return _image; }
             private set { _image = value; }

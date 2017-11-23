@@ -279,7 +279,7 @@ namespace INTV.Core.Utility
         private static uint CheckMemo(string file, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
         {
             uint crc;
-            var added = Memos.CheckAddMemo(file, new Tuple<bool, byte, IEnumerable<Range<int>>>(replaceFirstByte, alternateFirstByte, ignoreRanges), out crc);
+            Memos.CheckAddMemo(file, new Tuple<bool, byte, IEnumerable<Range<int>>>(replaceFirstByte, alternateFirstByte, ignoreRanges), out crc);
             return crc;
         }
 

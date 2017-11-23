@@ -142,7 +142,7 @@ namespace INTV.Core.Utility
         private static uint CheckMemo(string file)
         {
             uint crc;
-            var added = Memos.CheckAddMemo(file, null, out crc);
+            Memos.CheckAddMemo(file, null, out crc);
             return crc;
         }
 

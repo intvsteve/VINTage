@@ -439,7 +439,7 @@ namespace INTV.LtoFlash.Model.Commands
             {
                 var errorString = string.Empty;
                 IDictionary<int, IDictionary<int, int>> firmwareVersionEntries;
-                if (ErrorMaps.TryGetValue(errorLogEntry.LogId, out firmwareVersionEntries))
+                if ((ErrorMaps != null) && ErrorMaps.TryGetValue(errorLogEntry.LogId, out firmwareVersionEntries))
                 {
                     var isUnreleased = firmwareVersion & FirmwareRevisions.UnofficialReleaseMask;
                     var firmwareVersionKey = ((firmwareVersion & FirmwareRevisions.BaseVersionMask) >> 1) + isUnreleased;

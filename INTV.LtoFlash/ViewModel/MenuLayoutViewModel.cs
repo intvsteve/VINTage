@@ -511,6 +511,13 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
+        /// <inheritdoc/>
+        internal override void ClearItemStates(IEnumerable<INTV.Core.Model.Device.IPeripheral> peripherals)
+        {
+            base.ClearItemStates(peripherals);
+            OSFinishedUpdatingItemStates();
+        }
+
         /// <summary>
         /// Highlight directories and files that have changed by comparing the device and host menu layouts to each other.
         /// </summary>
@@ -906,6 +913,7 @@ namespace INTV.LtoFlash.ViewModel
                     }
                     break;
             }
+            OSFinishedUpdatingItemStates();
         }
 
         private bool ForkUpdateShouldIndicateFileUpdate(FileNodeViewModel viewModel, LfsOperations operation)
@@ -1102,5 +1110,10 @@ namespace INTV.LtoFlash.ViewModel
         /// Platform-specific initialization.
         /// </summary>
         partial void Initialize();
+
+        /// <summary>
+        /// Platform-specific work to execute after updating item states.
+        /// </summary>
+        partial void OSFinishedUpdatingItemStates();
     }
 }

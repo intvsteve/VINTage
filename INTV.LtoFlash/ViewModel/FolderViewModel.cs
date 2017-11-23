@@ -440,7 +440,7 @@ namespace INTV.LtoFlash.ViewModel
         /// Clear all item states, so the will no longer display any 'dirty' glyph.
         /// </summary>
         /// <param name="peripherals">The peripherals attached to the system, used for compatibility checks.</param>
-        internal void ClearItemStates(IEnumerable<IPeripheral> peripherals)
+        internal virtual void ClearItemStates(IEnumerable<IPeripheral> peripherals)
         {
             LtoFlashViewModel.SyncMode = MenuLayoutSynchronizationMode.RomList;
             foreach (var item in Items)

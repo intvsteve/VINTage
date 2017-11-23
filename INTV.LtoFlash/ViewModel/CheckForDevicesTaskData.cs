@@ -269,7 +269,6 @@ namespace INTV.LtoFlash.ViewModel
                 }
                 else
                 {
-                    // TODO Move strings to resources.
                     reportDialogAction = new Action(() => INTV.Shared.View.OSMessageBox.Show(Resources.Strings.CheckForDevices_PortBrowserNoneFound_Message, Resources.Strings.CheckForDevices_PortBrowser_Title));
                 }
             }

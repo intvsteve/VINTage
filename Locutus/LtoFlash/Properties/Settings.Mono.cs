@@ -25,7 +25,7 @@ using INTV.Shared.Properties;
 #if __UNIFIED__
 using SplitterPosition = nfloat;
 #else
-using SplitterPosition = float;
+using SplitterPosition = System.Single;
 #endif // __UNIFIED__
 #elif GTK
 using SplitterPosition = System.Int32;

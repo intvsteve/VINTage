@@ -44,7 +44,6 @@ namespace INTV.Shared.Utility
         private const string ShowSplashScreenName = "LUI_SHOW_SPLASH_SCREEN";
         private const string MainWindowValueName = "mainWindow";
         private const string FirstResponderValueName = "firstResponder";
-        private static bool AlreadyDisplayedExceptionDialog { get; set; }
         private static System.Configuration.ApplicationSettingsBase _launchSettings;
         private SplashScreen _splashScreen;
         private bool _registeredObserver;

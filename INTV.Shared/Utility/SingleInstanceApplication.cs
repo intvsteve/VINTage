@@ -109,6 +109,8 @@ namespace INTV.Shared.Utility
             get { return SharedSettings.Default; }
         }
 
+        private static bool AlreadyDisplayedExceptionDialog { get; set; }
+
         /// <summary>
         /// Gets the settings associated with the application.
         /// </summary>

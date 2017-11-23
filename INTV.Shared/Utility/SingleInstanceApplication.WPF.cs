@@ -62,8 +62,6 @@ namespace INTV.Shared.Utility
             get { return INTV.Shared.Properties.Settings.Default; }
         }
 
-        private static bool AlreadyDisplayedExceptionDialog { get; set; }
-
         /// <summary>
         /// Gets or sets the unique window activate message to send to the original instance.
         /// </summary>

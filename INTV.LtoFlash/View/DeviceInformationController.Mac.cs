@@ -550,12 +550,12 @@ namespace INTV.LtoFlash.View
         public override void AwakeFromNib()
         {
             INTV.Shared.Utility.SingleInstanceApplication.Instance.IsBusy = true;
-            ControllerButtonsGrid.BackgroundColors = new[] { ColorHelpers.IntellivisionGold };
+            ControllerButtonsGrid.BackgroundColors = new NSColor[] { ColorHelpers.IntellivisionGold };
             _controllerElements = new NSMutableArray();
             ControllerElementsArrayController.SelectsInsertedObjects = false;
             ControllerButtonsGrid.MinItemSize = new CGSize(32, 32);
             ControllerButtonsGrid.MaxItemSize = new CGSize(36, 36);
-            var buttons = new ControllerKeys[4, 5]
+            var buttons = new ControllerKeys[4,5]
             {
                 { ControllerKeys.None, ControllerKeys.Keypad1, ControllerKeys.Keypad2, ControllerKeys.Keypad3, ControllerKeys.None },
                 { ControllerKeys.ActionKeyTop, ControllerKeys.Keypad4, ControllerKeys.Keypad5, ControllerKeys.Keypad6, ControllerKeys.ActionKeyTop | ControllerKeys.NoneActive },
@@ -625,7 +625,7 @@ namespace INTV.LtoFlash.View
                 if (image != null)
                 {
                     var currentSize = image.Size;
-                    image.Size = new CGSize(currentSize.Width / 2, currentSize.Height / 2);
+                    ((NSImage)image).Size = new CGSize(currentSize.Width / 2, currentSize.Height / 2);
                 }
                 ControllerElementsArrayController.AddObject(controllerElement);
             }
@@ -768,7 +768,7 @@ namespace INTV.LtoFlash.View
             return true;
         }
 
-        private void InPlaceEditor_EditorClosed(object sender, InPlaceEditorClosedEventArgs e)
+        private void InPlaceEditor_EditorClosed (object sender, InPlaceEditorClosedEventArgs e)
         {
             if (InPlaceEditor != null)
             {
@@ -829,7 +829,7 @@ namespace INTV.LtoFlash.View
             UpdateFirmwareButton.Enabled = FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(ViewModel);
         }
 
-        private void HandleViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleViewModelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -841,7 +841,7 @@ namespace INTV.LtoFlash.View
             }
         }
 
-        private void HandleDevicePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleDevicePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -960,10 +960,6 @@ namespace INTV.LtoFlash.View
             Owner
         }
 
-#if false
-        // The following is disabled because of a bug in the static registrar code generator in Xamarin Studio / Visual Studio for Mac:
-        // See: https://bugzilla.xamarin.com/show_bug.cgi?id=57030
-
         private class ControllerButtonsData : IKImageBrowserDataSource
         {
             #region IKImageBrowserDataSource
@@ -1008,6 +1004,5 @@ namespace INTV.LtoFlash.View
 
             #endregion // IKImageBrowserItem
         }
-#endif // false
     }
 }

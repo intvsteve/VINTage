@@ -60,7 +60,7 @@ namespace INTV.LtoFlash.ViewModel
         partial void OSDeviceArrivalDepartureActiveChanged()
         {
             var menuItem = INTV.LtoFlash.Commands.DeviceCommandGroup.ConnectToDeviceSubmenuCommand.MenuItem;
-            var subMenu = menuItem != null ? menuItem.Submenu : null;
+            var subMenu = !menuItem.IsEmpty ? menuItem.NativeMenuItem.Submenu : null;
             var menuDelegate = subMenu != null ? subMenu.Delegate as NSMenuDelegate : null;
             if (menuDelegate != null)
             {

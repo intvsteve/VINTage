@@ -92,7 +92,7 @@ namespace INTV.Shared.Commands
             NSObject visual = null;
             if (command == SettingsDialogCommand)
             {
-                var menu = RootCommandGroup.ApplicationMenuCommand.MenuItem.Submenu;
+                var menu = RootCommandGroup.ApplicationMenuCommand.MenuItem.NativeMenuItem.Submenu;
                 var item = menu.ItemWithTag((int)StandardMenuCommandId.Preferences);
                 item.RepresentedObject = new NSObjectWrapper<ICommand>(command);
                 item.Activated += HandleActivated; // doesn't use standard approach

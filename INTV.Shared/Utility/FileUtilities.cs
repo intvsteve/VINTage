@@ -141,6 +141,7 @@ namespace INTV.Shared.Utility
                 if (!_showingErrorDialog && Properties.Settings.Default.ShowDetailedErrors)
                 {
                     // Why are background complete callbacks not happening on UI thread on Mac???
+                    // Mono BUG: https://bugzilla.xamarin.com/show_bug.cgi?id=57544
                     SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new Action(() =>
                         {
                             var error = e.Error == null ? e.Result as Exception : e.Error;

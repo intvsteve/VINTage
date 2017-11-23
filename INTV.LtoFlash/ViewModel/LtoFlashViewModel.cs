@@ -39,13 +39,16 @@ using INTV.Shared.Interop.DeviceManagement;
 using INTV.Shared.Model.Device;
 using INTV.Shared.Model.Program;
 using INTV.Shared.Utility;
+using INTV.Shared.View;
 using INTV.Shared.ViewModel;
 
 #if WIN
 using ExitEventArgs = System.Windows.ExitEventArgs;
+using MenuLayoutView = INTV.LtoFlash.View.MenuTreeView;
 using OSWindow = System.Windows.Window;
 #elif MAC
 using ExitEventArgs = INTV.Shared.Utility.ExitEventArgs;
+using MenuLayoutView = INTV.LtoFlash.View.MenuLayoutView;
 using OSWindow = INTV.Shared.View.SerialPortSelectorDialog;
 #endif // WIN
 
@@ -59,6 +62,8 @@ namespace INTV.LtoFlash.ViewModel
     public partial class LtoFlashViewModel : FolderViewModel, IPrimaryComponent, IPartImportsSatisfiedNotification
     {
         #region Constants
+
+        public const string ComponentId = "INTV.LtoFlash";
 
         public const string ActiveLtoFlashDevicePropertyName = "ActiveLtoFlashDevice";
 
@@ -173,6 +178,16 @@ namespace INTV.LtoFlash.ViewModel
         #endregion // Constructors
 
         #region Properties
+
+        #region IPrimaryComponent Properties
+
+        /// <inheritdoc/>
+        public string UniqueId
+        {
+            get { return ComponentId; }
+        }
+
+        #endregion // IPrimaryComponent Properties
 
         /// <summary>
         /// Gets or sets the 'synchronization mode' used to reflect differences between the host and target menu layout.
@@ -386,6 +401,20 @@ namespace INTV.LtoFlash.ViewModel
                 }
             }
         }
+
+        /// <inheritdoc/>
+        public IEnumerable<ComponentVisual> GetVisuals()
+        {
+            // TODO: This is wrong... ViewModel should not create the visual - it should be the other way around
+            if (_visual == null)
+            {
+                OSCreateVisuals();
+            }
+            MenuLayoutView menuLayoutView = _visual.IsAlive ? _visual.Target as MenuLayoutView : null;
+            var componentVisual = new ComponentVisual(MenuLayoutView.Id, menuLayoutView, "LTO Flash! Menu Layout");
+            yield return componentVisual;
+        }
+        private System.WeakReference _visual;
 
         #endregion // IPrimaryComponent
 
@@ -1150,6 +1179,11 @@ namespace INTV.LtoFlash.ViewModel
         /// Called when a potential device arrives or departs, or active device changes.
         /// </summary>
         partial void OSDeviceArrivalDepartureActiveChanged();
+
+        /// <summary>
+        /// OS-specific implementation to create the visuals.
+        /// </summary>
+        partial void OSCreateVisuals();
 
 #if DEBUG
 #if WIN

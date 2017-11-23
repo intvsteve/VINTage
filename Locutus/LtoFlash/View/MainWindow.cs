@@ -1,5 +1,5 @@
-﻿// <copyright file="MainWindow.xaml.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+﻿// <copyright file="MainWindow.cs" company="INTV Funhouse">
+// Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,25 +20,20 @@
 
 using System.Collections.Generic;
 using INTV.Shared.ComponentModel;
+using INTV.Shared.View;
 
 namespace Locutus.View
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : INTV.Ribbon.RibbonWindow
+    public partial class MainWindow : IMainWindow
     {
-        /// <summary>
-        /// Initializes a new instance of MainWindow.
-        /// </summary>
-        public MainWindow()
+        #region IMainWindow
+
+        /// <inheritdoc/>
+        public void AddPrimaryComponentVisuals(IPrimaryComponent primaryComponent, IEnumerable<ComponentVisual> visuals)
         {
-            InitializeComponent();
+            OSAddPrimaryComponentVisuals(primaryComponent, visuals);
         }
 
-        private void OSAddPrimaryComponentVisuals(IPrimaryComponent primaryComponent, IEnumerable<ComponentVisual> visuals)
-        {
-            // TODO: This is not implemented yet!
-        }
+        #endregion // IMainWindow
     }
 }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="MenuTreeView.xaml.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -32,6 +32,11 @@ namespace INTV.LtoFlash.View
     /// </summary>
     public partial class MenuTreeView : TreeListView
     {
+        /// <summary>
+        /// Just use the same thing as the other platforms. We don't really have a real MenuLayoutView yet for WPF. :/
+        /// </summary>
+        public const string Id = MenuLayoutView.Id;
+
         /// <summary>
         /// Initializes a new instance of the MenuTreeView type.
         /// </summary>

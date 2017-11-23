@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Generic;
+using INTV.Shared.View;
+
 namespace INTV.Shared.ComponentModel
 {
     /// <summary>
@@ -27,9 +30,21 @@ namespace INTV.Shared.ComponentModel
     public interface IPrimaryComponent
     {
         /// <summary>
+        /// Gets the unique identifier of the component.
+        /// </summary>
+        string UniqueId { get; }
+
+        /// <summary>
         /// Components that have any post-construction initialization should implement it in this method.
         /// </summary>
         /// <remarks>This may be called asynchronously on worker threads. Take care!</remarks>
         void Initialize();
+
+        /// <summary>
+        /// Gets the main visual that represents the component. May be empty.
+        /// </summary>
+        /// <returns>The primary visual of the component. If a component does not
+        /// present a main visual working area, it may return <see cref="OSVisual.Empty"/>.</returns>
+        IEnumerable<ComponentVisual> GetVisuals();
     }
 }

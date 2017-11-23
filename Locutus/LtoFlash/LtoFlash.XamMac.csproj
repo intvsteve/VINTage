@@ -148,6 +148,7 @@
       <DependentUpon>AppDelegate.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="View\MainWindow.cs" />
     <Compile Include="View\MainWindow.Mac.cs" />
     <Compile Include="View\MainWindow.Mac.designer.cs">
       <DependentUpon>MainWindow.Mac.cs</DependentUpon>

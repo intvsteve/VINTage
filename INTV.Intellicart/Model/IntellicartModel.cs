@@ -36,6 +36,11 @@ namespace INTV.Intellicart.Model
     public sealed class IntellicartModel : Peripheral, IDisposable, INTV.Shared.ComponentModel.IPrimaryComponent
     {
         /// <summary>
+        /// The unique identifier for the component.
+        /// </summary>
+        public const string Id = "INTV.Intellicart.Model";
+
+        /// <summary>
         /// Max ROM size is ~128KB: 256 * (512+4) + 53 = 132149 bytes.
         /// </summary>
         public const int MaxROMSize = 132149;
@@ -165,6 +170,16 @@ namespace INTV.Intellicart.Model
 
         #endregion // IPeripheral
 
+        #region IPrimaryComponent Properties
+
+        /// <inheritdoc/>
+        public string UniqueId
+        {
+            get { return Id; }
+        }
+
+        #endregion // IPrimaryComponent Properties
+
         #endregion // Properties
 
         #region IPrimaryComponent
@@ -172,6 +187,13 @@ namespace INTV.Intellicart.Model
         /// <inheritdoc />
         public void Initialize()
         {
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<INTV.Shared.ComponentModel.ComponentVisual> GetVisuals()
+        {
+            // no main visual component to add
+            yield break;
         }
 
         #endregion // IPrimaryComponent

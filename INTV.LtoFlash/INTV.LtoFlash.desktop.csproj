@@ -244,6 +244,7 @@
     <Compile Include="View\FileSystemStatisticsView.xaml.cs">
       <DependentUpon>FileSystemStatisticsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MenuLayoutView.cs" />
     <Compile Include="View\MenuTreeView.xaml.cs">
       <DependentUpon>MenuTreeView.xaml</DependentUpon>
     </Compile>

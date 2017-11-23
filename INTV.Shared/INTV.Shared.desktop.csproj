@@ -112,6 +112,7 @@
     <Compile Include="Commands\StandardMenuCommandId.cs" />
     <Compile Include="Commands\StandardMenuId.cs" />
     <Compile Include="ComponentModel\CommandManager.WPF.cs" />
+    <Compile Include="ComponentModel\ComponentVisual.cs" />
     <Compile Include="ComponentModel\CompositionHelpers.cs" />
     <Compile Include="ComponentModel\IApplicationInfo.cs" />
     <Compile Include="ComponentModel\ICommand.WPF.cs" />
@@ -242,10 +243,12 @@
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
     <Compile Include="ViewModel\OSViewModelBase.WPF.cs" />
+    <Compile Include="View\IMainWindow.cs" />
     <Compile Include="View\OSMenuItem.cs" />
     <Compile Include="View\OSMenuItem.WPF.cs" />
     <Compile Include="View\OSVisual.cs" />
     <Compile Include="View\OSVisual.WPF.cs" />
+    <Compile Include="View\RomListView.cs" />
     <Compile Include="ViewModel\BackupInfoViewModel.cs" />
     <Compile Include="ViewModel\BaudRateViewModel.cs" />
     <Compile Include="ViewModel\ControllerElementViewModel.cs" />

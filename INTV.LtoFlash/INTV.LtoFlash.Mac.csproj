@@ -267,6 +267,7 @@
     <Compile Include="Model\DeviceHelpers.SyncDeviceToHost.cs" />
     <Compile Include="Model\SerialConnectionPolicy.Mac.cs" />
     <Compile Include="Model\SerialConnectionPolicy.cs" />
+    <Compile Include="View\MenuLayoutView.cs" />
     <Compile Include="Properties\Settings.Mono.cs" />
     <Compile Include="Properties\Settings.cs" />
   </ItemGroup>

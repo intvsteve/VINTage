@@ -41,6 +41,11 @@ namespace INTV.Shared.ViewModel
     ////[System.ComponentModel.Composition.Export(typeof(INTV.Shared.ComponentModel.IPrimaryComponent))]
     public partial class RomListViewModel : ViewModelBase, System.Collections.Specialized.INotifyCollectionChanged, IPrimaryComponent
     {
+        /// <summary>
+        /// Identifier for this component.
+        /// </summary>
+        public const string ComponentId = "INTV.Shared.RomList";
+
         #region Property Names
 
         public const string SortColumnPropertyName = "SortColumn";
@@ -185,6 +190,16 @@ namespace INTV.Shared.ViewModel
             set { Model.CanEditElements = value; }
         }
 
+        #region IPrimaryComponent Properties
+
+        /// <inheritdoc/>
+        public string UniqueId
+        {
+            get { return ComponentId; }
+        }
+
+        #endregion // IPrimaryComponent Properties
+
         #region Commands
 
         /// <summary>
@@ -246,6 +261,21 @@ namespace INTV.Shared.ViewModel
                 Core.Model.Rom.GetRefreshedCrcs(program.Model.Files.RomImagePath, program.Model.Files.RomConfigurationFilePath, out cfgCrc);
             }
         }
+
+        /// <inheritdoc/>
+        public IEnumerable<ComponentVisual> GetVisuals()
+        {
+            // TODO: This is wrong... ViewModel should not create the visual - it should be the other way around
+            if (_visual == null)
+            {
+                var view = OSInitializeVisual().AsType<RomListView>();
+                _visual = new System.WeakReference(view);
+            }
+            RomListView romListView = _visual.IsAlive ? _visual.Target as RomListView : null; // ugh... .NET 4.0 doesn't have better Generic version of WeakReference<T> :(
+            var componentVisual = new ComponentVisual(RomListView.Id, romListView, Resources.Strings.RomListSettingsPage_Title);
+            yield return componentVisual;
+        }
+        private System.WeakReference _visual;
 
         #endregion // IPrimaryComponent
 

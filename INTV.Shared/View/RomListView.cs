@@ -1,5 +1,5 @@
-﻿// <copyright file="MainWindow.xaml.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+﻿// <copyright file="RomListView.cs" company="INTV Funhouse">
+// Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,27 +18,16 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System.Collections.Generic;
-using INTV.Shared.ComponentModel;
-
-namespace Locutus.View
+namespace INTV.Shared.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Common code for the ROM list visual.
     /// </summary>
-    public partial class MainWindow : INTV.Ribbon.RibbonWindow
+    public partial class RomListView
     {
         /// <summary>
-        /// Initializes a new instance of MainWindow.
+        /// The unique identifier for the component.
         /// </summary>
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-
-        private void OSAddPrimaryComponentVisuals(IPrimaryComponent primaryComponent, IEnumerable<ComponentVisual> visuals)
-        {
-            // TODO: This is not implemented yet!
-        }
+        public const string Id = "INTV.Shared.RomListView";
     }
 }

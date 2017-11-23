@@ -1,5 +1,5 @@
-﻿// <copyright file="Settings.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+﻿// <copyright file="SettingsBase`T.cs" company="INTV Funhouse">
+// Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,19 +18,30 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-namespace INTV.LtoFlash.Properties
+namespace INTV.Shared.Properties
 {
     /// <summary>
-    /// Mac-specific implementation.
+    /// This generic provides a simple way for derived types to have some common
+    /// implementation. Most crucially, it replicates the static 'Default' property
+    /// that is widely used throughout this codebase to access settings.
     /// </summary>
-    internal sealed partial class Settings
+    public abstract class SettingsBase<T> : SettingsBase where T : SettingsBase, new()
     {
         /// <summary>
-        /// Mac-specific initialization.
+        /// Get the default instance of the settings.
         /// </summary>
-        partial void OSInitializeDefaults()
+        /// <value>The default.</value>
+        public static T Default
         {
-            InitializeUserDefaults();
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new T();
+                }
+                return _instance;
+            }
         }
+        private static T _instance;
     }
 }

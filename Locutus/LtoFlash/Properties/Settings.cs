@@ -1,5 +1,5 @@
-﻿// <copyright file="Settings.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+﻿// <copyright file="Settings.cs" company="INTV Funhouse">
+// Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,19 +18,23 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-namespace INTV.LtoFlash.Properties
+using INTV.Shared.Properties;
+
+namespace LtoFlash.Properties
 {
     /// <summary>
-    /// Mac-specific implementation.
+    /// Common Settings implementation for INTV.Shared.
+    /// Defines names of the options. In Windows, these are not used -- these
+    /// strings are from the .config file created by Visual Studio. Maybe some
+    /// gracious soul with ample free time could write a tool to *generate* this
+    /// file for the non-Windows platforms.
     /// </summary>
-    internal sealed partial class Settings
+    internal sealed partial class Settings : ISettings
     {
-        /// <summary>
-        /// Mac-specific initialization.
-        /// </summary>
-        partial void OSInitializeDefaults()
-        {
-            InitializeUserDefaults();
-        }
+        #region Setting Names
+
+        public const string PrimarySplitterPositionSettingName = "PrimarySplitterPosition";
+
+        #endregion // Setting Names
     }
 }

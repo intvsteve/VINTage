@@ -1,5 +1,5 @@
-﻿// <copyright file="Settings.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+﻿// <copyright file="ISettings.cs" company="INTV Funhouse">
+// Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,19 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-namespace INTV.LtoFlash.Properties
+namespace INTV.Shared.Properties
 {
     /// <summary>
-    /// Mac-specific implementation.
+    /// Minimal interface for platform abstraction of settings.
     /// </summary>
-    internal sealed partial class Settings
+    public interface ISettings
     {
-        /// <summary>
-        /// Mac-specific initialization.
-        /// </summary>
-        partial void OSInitializeDefaults()
-        {
-            InitializeUserDefaults();
-        }
     }
 }

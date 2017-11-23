@@ -113,7 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\JzIntvLauncherConfiguration.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="Properties\Settings.Mac.cs" />
+    <Compile Include="Properties\Settings.Mono.cs" />
     <Compile Include="Commands\JzIntvLauncherCommandsProvider.cs" />
     <Compile Include="Commands\ConfigurationCommandGroup.cs" />
     <Compile Include="Commands\JzIntvLauncherCommandGroup.cs" />

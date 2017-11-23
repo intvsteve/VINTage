@@ -366,6 +366,12 @@
     <Compile Include="View\OSMenuItem.Mac.cs" />
     <Compile Include="View\OSVisual.cs" />
     <Compile Include="View\OSVisual.Mac.cs" />
+    <Compile Include="Properties\ISettings.cs" />
+    <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Properties\Settings.Mono.cs" />
+    <Compile Include="Properties\SettingsBase.Mac.cs" />
+    <Compile Include="Properties\SettingsBase.Mono.cs" />
+    <Compile Include="Properties\SettingsBase`T.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />

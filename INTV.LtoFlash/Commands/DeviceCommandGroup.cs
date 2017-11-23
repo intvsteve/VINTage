@@ -1112,6 +1112,7 @@ namespace INTV.LtoFlash.Commands
 
         private static void OnSetActiveDeviceCommand(object parameter)
         {
+            // Does this hide a deeper problem?
             if (CanSetActiveDeviceCommand(parameter))
             {
                 var window = parameter as OSWindow;

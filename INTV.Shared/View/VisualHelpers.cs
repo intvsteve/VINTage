@@ -25,19 +25,22 @@ using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 
 #if WIN
-using OSVisual = System.Windows.DependencyObject;
-using OSWindow = System.Windows.Window;
+using NativeVisual = System.Windows.DependencyObject;
+using NativeWindow = System.Windows.Window;
 #elif MAC
 #if __UNIFIED__
-using OSVisual = AppKit.NSView;
-using OSWindow = AppKit.NSWindow;
+using NativeVisual = AppKit.NSView;
+using NativeWindow = AppKit.NSWindow;
 #else
-using OSVisual = MonoMac.AppKit.NSView;
-using OSWindow = MonoMac.AppKit.NSWindow;
+using NativeVisual = MonoMac.AppKit.NSView;
+using NativeWindow = MonoMac.AppKit.NSWindow;
 #endif // __UNIFIED__
+#elif GTK
+using NativeVisual = Gtk.Widget;
+using NativeWindow = Gtk.Window;
 #endif // WIN
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.View
 {
     /// <summary>
     /// Useful extension methods for working with visual / event handler types.
@@ -50,7 +53,7 @@ namespace INTV.Shared.Utility
         /// <typeparam name="T">The data type of the parent visual to locate.</typeparam>
         /// <param name="visual">The visual whose parent of a specific type is desired.</param>
         /// <returns>The first ancestor in the visual tree of the requested type.</returns>
-        public static T GetParent<T>(this OSVisual visual) where T : OSVisual
+        public static T GetParent<T>(this NativeVisual visual) where T : NativeVisual
         {
             return visual.GetParent<T>(null);
         }
@@ -62,7 +65,7 @@ namespace INTV.Shared.Utility
         /// <param name="visual">The visual whose parent of a specific type is desired.</param>
         /// <param name="filter">A filter to be applied to determine if a parent of the requested type shall be accepted. If <c>null</c>, the first parent of the requested type matches.</param>
         /// <returns>The first ancestor in the visual tree of the requested type that also satisfies the condition of the filter.</returns>
-        public static T GetParent<T>(this OSVisual visual, Func<T, bool> filter) where T : OSVisual
+        public static T GetParent<T>(this NativeVisual visual, Func<T, bool> filter) where T : NativeVisual
         {
             T parentOfType = null;
             var current = visual;
@@ -84,7 +87,7 @@ namespace INTV.Shared.Utility
         /// <typeparam name="T">The data type of the parent visual to locate.</typeparam>
         /// <param name="visual">The visual whose child of a specific type is desired.</param>
         /// <returns>The first child in the visual tree of the requested type.</returns>
-        public static T FindChild<T>(this OSVisual visual) where T : OSVisual
+        public static T FindChild<T>(this NativeVisual visual) where T : NativeVisual
         {
             return FindChild<T>(visual, null);
         }
@@ -96,7 +99,7 @@ namespace INTV.Shared.Utility
         /// <param name="visual">The visual whose child of a specific type is desired.</param>
         /// <param name="filter">A filter to be applied to determine if a child of the requested type shall be accepted. If <c>null</c>, the first child of the requested type matches.</param>
         /// <returns>The first child in the visual tree of the requested type that also satisfies the condition of the filter.</returns>
-        public static T FindChild<T>(this OSVisual visual, Func<T, bool> filter) where T : OSVisual
+        public static T FindChild<T>(this NativeVisual visual, Func<T, bool> filter) where T : NativeVisual
         {
             var child = default(T);
             var numChildren = visual.GetChildVisualCount();
@@ -112,7 +115,7 @@ namespace INTV.Shared.Utility
             {
                 for (int i = 0; (i < numChildren) && (child == null); ++i)
                 {
-                    child = FindChild<T>(visual.GetChildAtIndex<OSVisual>(i), filter);
+                    child = FindChild<T>(visual.GetChildAtIndex<NativeVisual>(i), filter);
                 }
             }
             return child;
@@ -124,7 +127,7 @@ namespace INTV.Shared.Utility
         /// <typeparam name="T">The class of window to create.</typeparam>
         /// <param name="ownerWindow">The owner window. If <c>null</c>, the current window is used.</param>
         /// <returns>A new instance of the type.</returns>
-        public static T Create<T>(this OSWindow ownerWindow) where T : OSWindow, new()
+        public static T Create<T>(this NativeWindow ownerWindow) where T : NativeWindow, new()
         {
             GetWindowOwner(ref ownerWindow);
             var newWindow = new T();
@@ -136,21 +139,21 @@ namespace INTV.Shared.Utility
         /// Platform-specific method to get a window's owner if provided owner is <c>null.</c>
         /// </summary>
         /// <param name="owner">The owner for the window. Set to current MainWindow if <c>null</c>.</param>
-        static partial void GetWindowOwner(ref OSWindow owner);
+        static partial void GetWindowOwner(ref NativeWindow owner);
 
         /// <summary>
         /// Platform-specific ownership and position setup.
         /// </summary>
         /// <param name="newWindow">A window being created.</param>
         /// <param name="owner">The owner to assign to the window.</param>
-        static partial void SetWindowOwner(this OSWindow newWindow, OSWindow owner);
+        static partial void SetWindowOwner(this NativeWindow newWindow, NativeWindow owner);
 
         /// <summary>
         /// Adds commands to the main window.
         /// </summary>
         /// <param name="window">The application window to which command visuals, menus, etc. are to be added.</param>
         /// <param name="commandProviders">The command providers.</param>
-        public static void AddCommandsToMainWindow(this OSWindow window, IEnumerable<ICommandProvider> commandProviders)
+        public static void AddCommandsToMainWindow(this NativeWindow window, IEnumerable<ICommandProvider> commandProviders)
         {
             // Visit providers by weight.
             foreach (var commandProvider in commandProviders.OrderBy(c => c.Weight))
@@ -171,7 +174,7 @@ namespace INTV.Shared.Utility
             return OSGetPrimaryDisplayInfo();
         }
 
-        private static void AddCommandGroups(this OSWindow window, IEnumerable<ICommandGroup> commandGroups)
+        private static void AddCommandGroups(this NativeWindow window, IEnumerable<ICommandGroup> commandGroups)
         {
             int totalCommandCount = 0;
             foreach (var commandGroup in commandGroups)
@@ -182,11 +185,11 @@ namespace INTV.Shared.Utility
             {
                 foreach (var command in commandGroup.Commands.Select(c => (VisualRelayCommand)c).OrderBy(c => c.Weight))
                 {
-                    if (command.Visual == null)
+                    if (((OSVisual)command.Visual).IsEmpty)
                     {
                         command.Visual = commandGroup.CreateVisualForCommand(command);
                     }
-                    if (command.MenuItem == null)
+                    if (command.MenuItem.IsEmpty)
                     {
                         command.MenuItem = commandGroup.CreateMenuItemForCommand(command);
                     }
@@ -207,6 +210,6 @@ namespace INTV.Shared.Utility
         /// Called after provider commands have been added in the AddCommandGroups method.
         /// </summary>
         /// <param name="window">Window whose commands have just been added.</param>
-        static partial void AddCommandsToMainWindowComplete(this OSWindow window);
+        static partial void AddCommandsToMainWindowComplete(this NativeWindow window);
     }
 }

@@ -252,6 +252,7 @@ namespace INTV.Shared.Utility
             // Based on this post: http://forums.xamarin.com/discussion/6404/memory-leaks-and-nsautoreleasepool
             // it is unclear whether it's necessary. The thread's about iOS, but is likely
             // applicable to Mac OS X as well.
+            // This: https://stackoverflow.com/questions/7659843/system-componentmodel-backgroundworker-in-monotouch-correct-usage
             // using (var pool = new NSAutoreleasePool())
             _taskData.DoWorkArgs = e;
             _doWork(_taskData);
@@ -259,6 +260,11 @@ namespace INTV.Shared.Utility
 
         private void AsyncTaskProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+#if MAC
+            // BUG reported here: https://bugzilla.xamarin.com/show_bug.cgi?id=57544
+            INTV.Shared.Utility.OSDispatcher.Current.InvokeOnMainDispatcher(() =>
+                {
+#endif // MAC
             if (_showsProgress && (_progressIndicator != null))
             {
                 if (e.UserState is string)
@@ -275,10 +281,25 @@ namespace INTV.Shared.Utility
                     _progressIndicator.UpdateText = Resources.Strings.ProgressIndicator_Cancelled;
                 }
             }
+#if MAC
+                });
+#endif // MAC
         }
 
         private void AsynTaskRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            // BUG: In Mono, this is NOT NOT NOT getting called on the same thread as the
+            // one that started the worker. Testing on:
+            // Mono 5.0.1.1 (2017-02/5077205 Thu May 25 09:19:18 UTC 2017) (64-bit)
+            // GTK+ 2.24.30 (Ambiance theme)
+            // This bug report sounds much like the problem, too: https://bugzilla.xamarin.com/show_bug.cgi?id=2916
+            // NEW bug report here: https://bugzilla.xamarin.com/show_bug.cgi?id=57544
+            // Notes over in FileUtilities - which are less than a year old? - indicate the same
+            // problem happens on Mac.
+#if MAC
+            INTV.Shared.Utility.OSDispatcher.Current.InvokeOnMainDispatcher(() =>
+                {
+#endif // MAC
             _taskData.WorkerCompletedArgs = e;
             _taskData.Error = e.Error;
             if (_progressIndicator != null)
@@ -291,8 +312,11 @@ namespace INTV.Shared.Utility
             }
 #if MAC
             INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
-#endif // MAC
             _workComplete(_taskData);
+            });
+#else
+            _workComplete(_taskData);
+#endif // MAC
         }
 
         private void OnProgressIndicatorPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -50,9 +50,7 @@ namespace INTV.Shared.ViewModel
                 _previousShouldClosePredicate = application.MainWindow.WindowShouldClose;
                 application.MainWindow.WindowShouldClose = MainWindowShouldClose;
             }
-#if ENABLE_DEBUG_OUTPUT
-            System.Diagnostics.Debug.WriteLine("****** SHOWING PROGRESS from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
-#endif // ENABLE_DEBUG_OUTPUT
+            DebugOutput("****** SHOWING PROGRESS from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
         }
 
         private void PlatformOnHide(SingleInstanceApplication application)

@@ -20,7 +20,7 @@
 
 using System.Windows;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.View
 {
     /// <summary>
     /// Windows-specific implementation.

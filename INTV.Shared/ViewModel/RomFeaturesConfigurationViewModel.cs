@@ -27,12 +27,12 @@ using INTV.Shared.Behavior;
 using INTV.Shared.ComponentModel;
 
 #if WIN
-using OSVisual = System.Windows.FrameworkElement;
+using NativeVisual = System.Windows.FrameworkElement;
 #elif MAC
 #if __UNIFIED__
-using OSVisual = AppKit.NSViewController;
+using NativeVisual = AppKit.NSViewController;
 #else
-using OSVisual = MonoMac.AppKit.NSViewController;
+using NativeVisual = MonoMac.AppKit.NSViewController;
 #endif // __UNIFIED__
 #endif // WIN
 
@@ -43,7 +43,7 @@ namespace INTV.Shared.ViewModel
     /// </summary>
     public partial class RomFeaturesConfigurationViewModel : ViewModelBase, System.ComponentModel.Composition.IPartImportsSatisfiedNotification
     {
-        private readonly Dictionary<IRomFeaturesConfigurationPage, OSVisual> _pageVisuals;
+        private readonly Dictionary<IRomFeaturesConfigurationPage, NativeVisual> _pageVisuals;
 
         #region Constructor
 
@@ -52,7 +52,7 @@ namespace INTV.Shared.ViewModel
         /// </summary>
         public RomFeaturesConfigurationViewModel()
         {
-            _pageVisuals = new Dictionary<IRomFeaturesConfigurationPage, OSVisual>();
+            _pageVisuals = new Dictionary<IRomFeaturesConfigurationPage, NativeVisual>();
 #if DEBUG && WIN
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
 #endif // DEBUG && WIN
@@ -89,12 +89,12 @@ namespace INTV.Shared.ViewModel
         /// <summary>
         /// Gets the visual for the currently selected feature group.
         /// </summary>
-        public OSVisual CurrentSelectionVisual
+        public NativeVisual CurrentSelectionVisual
         {
             get { return _currentSelectionVisual; }
             private set { AssignAndUpdateProperty("CurrentSelectionVisual", value, ref _currentSelectionVisual); }
         }
-        private OSVisual _currentSelectionVisual;
+        private NativeVisual _currentSelectionVisual;
 
         /// <summary>
         /// Gets the in-place editor (Adorner) hosting this feature editor.
@@ -244,7 +244,7 @@ namespace INTV.Shared.ViewModel
         {
             if (newPage != null)
             {
-                OSVisual pageVisual;
+                NativeVisual pageVisual;
                 if (!_pageVisuals.TryGetValue(newPage, out pageVisual))
                 {
                     pageVisual = newPage.CreateVisual();

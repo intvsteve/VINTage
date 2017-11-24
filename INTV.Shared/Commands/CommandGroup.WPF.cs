@@ -37,7 +37,7 @@ namespace INTV.Shared.Commands
         {
             OSCommandVisual visual = null;
             var visualCommand = command as VisualRelayCommand;
-            if ((visualCommand != null) && (visualCommand.Visual == null))
+            if ((visualCommand != null) && visualCommand.Visual.IsEmpty)
             {
                 visual = visualCommand.CreateVisualForCommand(visualCommand.VisualParent != null);
             }
@@ -65,7 +65,7 @@ namespace INTV.Shared.Commands
 
         private void InitializeMenuItem(VisualRelayCommand command, object target, object context)
         {
-            var menuItem = command.MenuItem as System.Windows.Controls.MenuItem;
+            var menuItem = command.MenuItem.NativeMenuItem;
             if (menuItem != null)
             {
                 menuItem.CommandParameter = GetContextForCommand(target, command, context);

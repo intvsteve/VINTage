@@ -30,14 +30,16 @@ using INTV.Shared.ViewModel;
 
 #if WIN
 using OSColor = System.Windows.Media.Color;
+using Settings = INTV.JzIntvUI.Properties.Settings;
 using SettingsPageVisualType = INTV.JzIntvUI.View.JzIntvSettingsPage;
 #elif MAC
-using SettingsPageVisualType = INTV.JzIntvUI.View.JzIntvSettingsPageController;
 #if __UNIFIED__
 using OSColor = AppKit.NSColor;
 #else
 using OSColor = MonoMac.AppKit.NSColor;
 #endif // __UNIFIED__
+using Settings = INTV.JzIntvUI.Properties.Settings;
+using SettingsPageVisualType = INTV.JzIntvUI.View.JzIntvSettingsPageController;
 #endif // WIN
 
 namespace INTV.JzIntvUI.ViewModel
@@ -52,63 +54,33 @@ namespace INTV.JzIntvUI.ViewModel
 
         public const DisplayMode DefaultMode = DisplayMode.Default;
 
-        #region Setting Names
-
-        public const string EmulatorPathSettingName = "EmulatorPath";
-        public const string ExecRomPathSettingName = "ExecRomPath";
-        public const string GromRomPathSettingName = "GromRomPath";
-        public const string EcsRomPathSettingName = "EcsRomPath";
-        public const string DefaultKeyboardConfigPathSettingName = "DefaultKeyboardConfigPath";
-        public const string InitialKeyboardMapSettingName = "JzIntvInitialKeyboardMap";
-        public const string InitialKeyboardMapSettingNameAlt = "InitialKeyboardMap";
-        public const string Joystick0ConfigSettingName = "JzIntvJoystick0Config";
-        public const string Joystick0ConfigSettingNameAlt = "Joystick0Config";
-        public const string Joystick1ConfigSettingName = "JzIntvJoystick1Config";
-        public const string Joystick1ConfigSettingNameAlt = "Joystick1Config";
-        public const string Joystick2ConfigSettingName = "JzIntvJoystick2Config";
-        public const string Joystick2ConfigSettingNameAlt = "Joystick2Config";
-        public const string Joystick3ConfigSettingName = "JzIntvJoystick3Config";
-        public const string Joystick3ConfigSettingNameAlt = "Joystick3Config";
-        public const string ClassicGameController0ConfigPathSettingName = "JzIntvCgc0ConfigPath";
-        public const string ClassicGameController0ConfigPathSettingNameAlt = "ClassicGameController0ConfigPath";
-        public const string ClassicGameController1ConfigPathSettingName = "JzIntvCgc1ConfigPath";
-        public const string ClassicGameController1ConfigPathSettingNameAlt = "ClassicGameController1ConfigPath";
-        public const string DisplaySizeSettingName = "JzIntvDisplaySize";
-        public const string DisplaySizeSettingNameAlt = "DisplaySize";
-        public const string DisplayModeSettingName = "JzIntvDisplayMode";
-        public const string DisplayModeSettingNameAlt = "DisplayMode";
-        public const string EnableMouseSettingName = "jzIntvEnableMouse";
-        public const string EnableMouseSettingNameAlt = "EnableMouse";
-        public const string MuteAudioSettingName = "JzIntvMuteAudio";
-        public const string MuteAudioSettingNameAlt = "MuteAudio";
-        public const string EnableIntellivoiceSettingName = "JzIntvEnableIntellivoice";
-        public const string EnableIntellivoiceSettingNameAlt = "EnableIntellivoice";
-        public const string EnableEcsSettingName = "JzIntvEnableEcs";
-        public const string EnableEcsSettingNameAlt = "EnableEcs";
-        public const string EnableJlpSettingName = "jzIntvEnableJlp";
-        public const string EnableJlpSettingNameAlt = "EnableJlp";
-        public const string AllowMultipleInstancesSettingName = "jzIntvAllowMultipleInstances";
-        public const string AllowMultipleInstancesSettingNameAlt = "AllowMultipleInstances";
-        public const string UseEcsKeymapForECSGamesSettingName = "JzIntvUseECSMapForECSRoms";
-        public const string UseEcsKeymapForECSGamesSettingNameAlt = "UseEcsKeymapForEcsRoms";
-        public const string CommandLineModeSettingName = "JzIntvCommandLineMode";
-        public const string CommandLineModeSettingNameAlt = "CommandLineMode";
-        public const string AdditionalCommandLineArgumentsSettingName = "JzIntvAdditionalCommandLineArguments";
-        public const string AdditionalCommandLineArgumentsSettingNameAlt = "AdditionalCommandLineArguments";
-        public const string CustomCommandLineSettingName = "JzIntvCustomCommandLine";
-        public const string CustomCommandLineSettingNameAlt = "CustomCommandLine";
-        public const string UseROMFeatureSettingsWithCustomCommandLineSettingName = "JzIntvUseROMFeatureSettingsWithCustomCommandLine";
-        public const string UseROMFeatureSettingsWithCustomCommandLineSettingNameAlt = "UseROMFeatureSettingsWithCustomCommandLine";
-
-        #endregion // Setting Names
-
         #region Property Names
 
         public const string EnableIntellivoicePropertyName = "EnableIntellivoice";
         public const string EnableEcsPropertyName = "EnableEcs";
         public const string EnableJlpPropertyName = "EnableJlp";
+        public const string InitialKeyboardMapPropertyName = "InitialKeyboardMap";
         public const string StatusPropertyName = "Status";
         public const string ConfigurationStatusColorPropertyName = "ConfigurationStatusColor";
+        public const string EmulatorPathPropertyName = "EmulatorPath";
+        public const string ExecRomPathPropertyName = "ExecRomPath";
+        public const string GromRomPathPropertyName = "GromRomPath";
+        public const string EcsRomPathPropertyName = "EcsRomPath";
+        public const string DefaultKeyboardConfigPathPropertyName = "DefaultKeyboardConfigPath";
+        public const string Joystick0ConfigPropertyName = "Joystick0Config";
+        public const string Joystick1ConfigPropertyName = "Joystick1Config";
+        public const string Joystick2ConfigPropertyName = "Joystick2Config";
+        public const string Joystick3ConfigPropertyName = "Joystick3Config";
+        public const string Joystick4ConfigPropertyName = "Joystick4Config";
+        public const string Joystick5ConfigPropertyName = "Joystick5Config";
+        public const string Joystick6ConfigPropertyName = "Joystick6Config";
+        public const string Joystick7ConfigPropertyName = "Joystick7Config";
+        public const string Joystick8ConfigPropertyName = "Joystick8Config";
+        public const string Joystick9ConfigPropertyName = "Joystick9Config";
+        public const string JzIntvCgc0ConfigPathPropertyName = "JzIntvCgc0ConfigPath";
+        public const string JzIntvCgc1ConfigPathPropertyName = "JzIntvCgc1ConfigPath";
+        public const string JzIntvDisplaySizePropertyName = "JzIntvDisplaySize";
+        public const string JzIntvDisplayModePropertyName = "JzIntvDisplayMode";
         public const string LastSelectedPageIndexPropertyName = "LastSelectedPageIndex";
 
         #endregion // Property Names
@@ -311,7 +283,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string EmulatorPath
         {
             get { return _emulatorPath; }
-            set { AssignAndUpdateProperty(EmulatorPathSettingName, value, ref _emulatorPath, (n, v) => JzIntvLauncherConfiguration.Instance.EmulatorPath = v); }
+            set { AssignAndUpdateProperty(EmulatorPathPropertyName, value, ref _emulatorPath, (n, v) => JzIntvLauncherConfiguration.Instance.EmulatorPath = v); }
         }
         private string _emulatorPath;
 
@@ -321,7 +293,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string ExecRomPath
         {
             get { return _execRomPath; }
-            set { AssignAndUpdateProperty(ExecRomPathSettingName, value, ref _execRomPath, (n, v) => Properties.Settings.Default.ExecRomPath = v); }
+            set { AssignAndUpdateProperty(ExecRomPathPropertyName, value, ref _execRomPath, (n, v) => Properties.Settings.Default.ExecRomPath = v); }
         }
         private string _execRomPath;
 
@@ -331,7 +303,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string GromRomPath
         {
             get { return _gromRomPath; }
-            set { AssignAndUpdateProperty(GromRomPathSettingName, value, ref _gromRomPath, (n, v) => Properties.Settings.Default.GromRomPath = v); }
+            set { AssignAndUpdateProperty(GromRomPathPropertyName, value, ref _gromRomPath, (n, v) => Properties.Settings.Default.GromRomPath = v); }
         }
         private string _gromRomPath;
 
@@ -341,7 +313,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string EcsRomPath
         {
             get { return _ecsRomPath; }
-            set { AssignAndUpdateProperty(EcsRomPathSettingName, value, ref _ecsRomPath, (n, v) => Properties.Settings.Default.EcsRomPath = v); }
+            set { AssignAndUpdateProperty(EcsRomPathPropertyName, value, ref _ecsRomPath, (n, v) => Properties.Settings.Default.EcsRomPath = v); }
         }
         private string _ecsRomPath;
 
@@ -351,14 +323,14 @@ namespace INTV.JzIntvUI.ViewModel
         public string DefaultKeyboardConfigPath
         {
             get { return _defaultKeyboardConfigPath; }
-            set { AssignAndUpdateProperty(DefaultKeyboardConfigPathSettingName, value, ref _defaultKeyboardConfigPath, (n, v) => Properties.Settings.Default.DefaultKeyboardConfigPath = v); }
+            set { AssignAndUpdateProperty(DefaultKeyboardConfigPathPropertyName, value, ref _defaultKeyboardConfigPath, (n, v) => Properties.Settings.Default.DefaultKeyboardConfigPath = v); }
         }
         private string _defaultKeyboardConfigPath;
 
         public KeyboardMap InitialKeyboardMap
         {
             get { return _initialKeyboardMap; }
-            set { AssignAndUpdateProperty(InitialKeyboardMapSettingName, value, ref _initialKeyboardMap, (p, v) => Properties.Settings.Default.InitialKeyboardMap = v == KeyboardMap.Default ? null : v.ToString()); }
+            set { AssignAndUpdateProperty(InitialKeyboardMapPropertyName, value, ref _initialKeyboardMap, (p, v) => Properties.Settings.Default.InitialKeyboardMap = v == KeyboardMap.Default ? null : v.ToString()); }
         }
         private KeyboardMap _initialKeyboardMap;
 
@@ -386,7 +358,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string JzIntvJoystick0Config
         {
             get { return _jzIntvJoystick0Config; }
-            set { AssignAndUpdateProperty(Joystick0ConfigSettingName, value, ref _jzIntvJoystick0Config, (n, v) => Properties.Settings.Default.Joystick0Config = v); }
+            set { AssignAndUpdateProperty(Joystick0ConfigPropertyName, value, ref _jzIntvJoystick0Config, (n, v) => Properties.Settings.Default.Joystick0Config = v); }
         }
         private string _jzIntvJoystick0Config;
 
@@ -396,7 +368,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string JzIntvJoystick1Config
         {
             get { return _jzIntvJoystick1Config; }
-            set { AssignAndUpdateProperty(Joystick1ConfigSettingName, value, ref _jzIntvJoystick1Config, (n, v) => Properties.Settings.Default.Joystick1Config = v); }
+            set { AssignAndUpdateProperty(Joystick1ConfigPropertyName, value, ref _jzIntvJoystick1Config, (n, v) => Properties.Settings.Default.Joystick1Config = v); }
         }
         private string _jzIntvJoystick1Config;
 
@@ -406,7 +378,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string JzIntvJoystick2Config
         {
             get { return _jzIntvJoystick2Config; }
-            set { AssignAndUpdateProperty(Joystick2ConfigSettingName, value, ref _jzIntvJoystick2Config, (n, v) => Properties.Settings.Default.Joystick2Config = v); }
+            set { AssignAndUpdateProperty(Joystick2ConfigPropertyName, value, ref _jzIntvJoystick2Config, (n, v) => Properties.Settings.Default.Joystick2Config = v); }
         }
         private string _jzIntvJoystick2Config;
 
@@ -416,7 +388,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string JzIntvJoystick3Config
         {
             get { return _jzIntvJoystick3Config; }
-            set { AssignAndUpdateProperty(Joystick3ConfigSettingName, value, ref _jzIntvJoystick3Config, (n, v) => Properties.Settings.Default.Joystick3Config = v); }
+            set { AssignAndUpdateProperty(Joystick3ConfigPropertyName, value, ref _jzIntvJoystick3Config, (n, v) => Properties.Settings.Default.Joystick3Config = v); }
         }
         private string _jzIntvJoystick3Config;
 
@@ -426,7 +398,7 @@ namespace INTV.JzIntvUI.ViewModel
         public string JzIntvCgc0ConfigPath
         {
             get { return _jzIntvCgc0ConfigPath; }
-            set { AssignAndUpdateProperty(ClassicGameController0ConfigPathSettingName, value, ref _jzIntvCgc0ConfigPath, (n, v) => Properties.Settings.Default.ClassicGameController0ConfigPath = v); }
+            set { AssignAndUpdateProperty(JzIntvCgc0ConfigPathPropertyName, value, ref _jzIntvCgc0ConfigPath, (n, v) => Properties.Settings.Default.ClassicGameController0ConfigPath = v); }
         }
         private string _jzIntvCgc0ConfigPath;
 
@@ -436,18 +408,18 @@ namespace INTV.JzIntvUI.ViewModel
         public string JzIntvCgc1ConfigPath
         {
             get { return _jzIntvCgc1ConfigPath; }
-            set { AssignAndUpdateProperty(ClassicGameController1ConfigPathSettingName, value, ref _jzIntvCgc1ConfigPath, (n, v) => Properties.Settings.Default.ClassicGameController1ConfigPath = v); }
+            set { AssignAndUpdateProperty(JzIntvCgc1ConfigPathPropertyName, value, ref _jzIntvCgc1ConfigPath, (n, v) => Properties.Settings.Default.ClassicGameController1ConfigPath = v); }
         }
         private string _jzIntvCgc1ConfigPath;
 
         /// <summary>
         /// Gets or sets the selected jzIntv resolution.
         /// </summary>
-        [OSExport(DisplaySizeSettingName)]
+        [OSExport(JzIntvDisplaySizePropertyName)]
         public string JzIntvDisplaySize
         {
             get { return _jzIntvDisplaySize; }
-            set { AssignAndUpdateProperty(DisplaySizeSettingName, value, ref _jzIntvDisplaySize); }
+            set { AssignAndUpdateProperty(JzIntvDisplaySizePropertyName, value, ref _jzIntvDisplaySize); }
         }
         private string _jzIntvDisplaySize;
 
@@ -472,11 +444,11 @@ namespace INTV.JzIntvUI.ViewModel
         /// <summary>
         /// Gets or sets the selected jzIntv resolution.
         /// </summary>
-        ////[INTV.Shared.Utility.OSExport(DisplayModeSettingName)]
+        ////[INTV.Shared.Utility.OSExport(JzIntvDisplayModePropertyName)]
         public string JzIntvDisplayMode
         {
             get { return _jzIntvDisplayMode; }
-            set { AssignAndUpdateProperty(DisplayModeSettingName, value, ref _jzIntvDisplayMode); }
+            set { AssignAndUpdateProperty(JzIntvDisplayModePropertyName, value, ref _jzIntvDisplayMode); }
         }
         private string _jzIntvDisplayMode;
 
@@ -558,71 +530,71 @@ namespace INTV.JzIntvUI.ViewModel
         {
             switch (e.PropertyName)
             {
-                case EmulatorPathSettingName:
+                case Settings.EmulatorPathSettingName:
                     EmulatorPath = JzIntvLauncherConfiguration.Instance.EmulatorPath;
                     break;
-                case ExecRomPathSettingName:
+                case Settings.ExecRomPathSettingName:
                     ExecRomPath = Properties.Settings.Default.ExecRomPath;
                     break;
-                case GromRomPathSettingName:
+                case Settings.GromRomPathSettingName:
                     GromRomPath = Properties.Settings.Default.GromRomPath;
                     break;
-                case EcsRomPathSettingName:
+                case Settings.EcsRomPathSettingName:
                     EcsRomPath = Properties.Settings.Default.EcsRomPath;
                     break;
-                case DefaultKeyboardConfigPathSettingName:
+                case Settings.DefaultKeyboardConfigPathSettingName:
                     DefaultKeyboardConfigPath = Properties.Settings.Default.DefaultKeyboardConfigPath;
                     break;
-                case Joystick0ConfigSettingName:
-                case Joystick0ConfigSettingNameAlt:
+                case Settings.Joystick0ConfigSettingName:
+                case Settings.Joystick0ConfigSettingNameAlt:
                     JzIntvJoystick0Config = Properties.Settings.Default.Joystick0Config;
                     break;
-                case Joystick1ConfigSettingName:
-                case Joystick1ConfigSettingNameAlt:
+                case Settings.Joystick1ConfigSettingName:
+                case Settings.Joystick1ConfigSettingNameAlt:
                     JzIntvJoystick1Config = Properties.Settings.Default.Joystick1Config;
                     break;
-                case Joystick2ConfigSettingName:
-                case Joystick2ConfigSettingNameAlt:
+                case Settings.Joystick2ConfigSettingName:
+                case Settings.Joystick2ConfigSettingNameAlt:
                     JzIntvJoystick2Config = Properties.Settings.Default.Joystick2Config;
                     break;
-                case Joystick3ConfigSettingName:
-                case Joystick3ConfigSettingNameAlt:
+                case Settings.Joystick3ConfigSettingName:
+                case Settings.Joystick3ConfigSettingNameAlt:
                     JzIntvJoystick3Config = Properties.Settings.Default.Joystick3Config;
                     break;
-                case ClassicGameController0ConfigPathSettingName:
-                case ClassicGameController0ConfigPathSettingNameAlt:
+                case Settings.ClassicGameController0ConfigPathSettingName:
+                case Settings.ClassicGameController0ConfigPathSettingNameAlt:
                     JzIntvCgc0ConfigPath = Properties.Settings.Default.ClassicGameController0ConfigPath;
                     break;
-                case ClassicGameController1ConfigPathSettingName:
-                case ClassicGameController1ConfigPathSettingNameAlt:
+                case Settings.ClassicGameController1ConfigPathSettingName:
+                case Settings.ClassicGameController1ConfigPathSettingNameAlt:
                     JzIntvCgc1ConfigPath = Properties.Settings.Default.ClassicGameController1ConfigPath;
                     break;
-                case DisplaySizeSettingName:
-                case DisplaySizeSettingNameAlt:
+                case Settings.DisplaySizeSettingName:
+                case Settings.DisplaySizeSettingNameAlt:
                     var resolutionFromSettings = DisplayResolutionHelpers.FromLongCommandLineArgumentString(Properties.Settings.Default.DisplaySize);
                     SelectedDisplayResolutionViewModel = AvailableDisplayResolutions.First(r => r.Resolution == resolutionFromSettings);
                     break;
-                case DisplayModeSettingName:
-                case DisplayModeSettingNameAlt:
+                case Settings.DisplayModeSettingName:
+                case Settings.DisplayModeSettingNameAlt:
                     var modeFromSettings = DisplayModeHelpers.FromSettingString(Properties.Settings.Default.DisplayMode);
                     SelectedDisplayModeViewModel = AvailableDisplayModes.First(m => m.DisplayMode == modeFromSettings);
                     break;
-                case EnableMouseSettingName:
-                case EnableMouseSettingNameAlt:
+                case Settings.EnableMouseSettingName:
+                case Settings.EnableMouseSettingNameAlt:
                     break;
-                case MuteAudioSettingName:
-                case MuteAudioSettingNameAlt:
+                case Settings.MuteAudioSettingName:
+                case Settings.MuteAudioSettingNameAlt:
                     break;
-                case EnableIntellivoiceSettingName:
-                case EnableIntellivoiceSettingNameAlt:
+                case Settings.EnableIntellivoiceSettingName:
+                case Settings.EnableIntellivoiceSettingNameAlt:
                     EnableIntellivoice = EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableIntellivoice);
                     break;
-                case EnableEcsSettingName:
-                case EnableEcsSettingNameAlt:
+                case Settings.EnableEcsSettingName:
+                case Settings.EnableEcsSettingNameAlt:
                     EnableEcs = EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableEcs);
                     break;
-                case EnableJlpSettingName:
-                case EnableJlpSettingNameAlt:
+                case Settings.EnableJlpSettingName:
+                case Settings.EnableJlpSettingNameAlt:
                     EnableJlp = EnableFeatureHelpers.FromSettingString(Properties.Settings.Default.EnableJlp);
                     break;
                 default:

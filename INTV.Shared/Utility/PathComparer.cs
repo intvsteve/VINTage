@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathComparer.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,14 +26,34 @@ using System.IO;
 namespace INTV.Shared.Utility
 {
     /// <summary>
-    /// Comparison implementation suitable for Windows file paths.
+    /// Comparison implementation suitable for file paths.
     /// </summary>
-    public class PathComparer : IComparer<string>, IComparer, IEqualityComparer<string>, IEqualityComparer
+    public partial class PathComparer : IComparer<string>, IComparer, IEqualityComparer<string>, IEqualityComparer
     {
         /// <summary>
         /// We really only need one instance of this...
         /// </summary>
         public static readonly PathComparer Instance = new PathComparer();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INTV.Shared.Utility.PathComparer"/> class,
+        /// using the default path comparison policy for the compile-time target platform.
+        /// </summary>
+        public PathComparer()
+            : this(DefaultPolicy)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INTV.Shared.Utility.PathComparer"/> class.
+        /// </summary>
+        /// <param name="policy">The path comparison policy to use.</param>
+        public PathComparer(StringComparison policy)
+        {
+            Policy = policy;
+        }
+
+        public StringComparison Policy { get; set; }
 
         #region IComparer<string> Members
 
@@ -41,7 +61,7 @@ namespace INTV.Shared.Utility
         /// <remarks>NOTE: Always performs case insensitive path comparisons.</remarks>
         public int Compare(string x, string y)
         {
-            return CompareCore(x, y, StringComparison.InvariantCultureIgnoreCase);
+            return CompareCore(x, y, Policy);
         }
 
         #endregion // IComparer<string>
@@ -63,7 +83,7 @@ namespace INTV.Shared.Utility
         /// <remarks>NOTE: Always performs case insensitive path comparisons.</remarks>
         public bool Equals(string x, string y)
         {
-            return Compare(x, y, StringComparison.InvariantCultureIgnoreCase);
+            return Compare(x, y, Policy);
         }
 
         /// <inheritdoc />

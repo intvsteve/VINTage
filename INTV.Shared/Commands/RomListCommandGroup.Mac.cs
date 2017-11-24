@@ -161,14 +161,14 @@ namespace INTV.Shared.Commands
         }
 
         /// <inheritdoc/>
-        public override NSMenuItem CreateMenuItemForCommand(ICommand command)
+        public override OSMenuItem CreateMenuItemForCommand(ICommand command)
         {
             var menuItem = base.CreateMenuItemForCommand(command);
             var relayCommand = command as RelayCommand;
             if (relayCommand.UniqueId == RomListCommandGroup.ShowRomInfoCommand.UniqueId)
             {
                 var showDetails = Properties.Settings.Default.ShowRomDetails;
-                menuItem.State = showDetails ? NSCellStateValue.On : NSCellStateValue.Off;
+                menuItem.NativeMenuItem.State = showDetails ? NSCellStateValue.On : NSCellStateValue.Off;
             }
             return menuItem;
         }
@@ -182,7 +182,7 @@ namespace INTV.Shared.Commands
             {
                 var newState = !Properties.Settings.Default.ShowRomDetails;
                 NSUserDefaults.StandardUserDefaults[RomListSettingsPageViewModel.ShowRomDetailsPropertyName] = new NSNumber(newState);
-                relayCommand.MenuItem.State = newState ? NSCellStateValue.On : NSCellStateValue.Off;
+                relayCommand.MenuItem.NativeMenuItem.State = newState ? NSCellStateValue.On : NSCellStateValue.Off;
             }
             else
             {
@@ -212,8 +212,8 @@ namespace INTV.Shared.Commands
                         {
                             canExecute = (RomListView != null) && (RomListView.FindChild<NSTableView>() == firstResponder);
                         }
-                        command.MenuItem.KeyEquivalent = canExecute ? RemoveRomsCommand.KeyboardShortcutKey : string.Empty;
-                        command.MenuItem.KeyEquivalentModifierMask = (NSEventModifierMask)(canExecute ? RemoveRomsCommand.KeyboardShortcutModifiers : OSModifierKeys.None);
+                        command.MenuItem.NativeMenuItem.KeyEquivalent = canExecute ? RemoveRomsCommand.KeyboardShortcutKey : string.Empty;
+                        command.MenuItem.NativeMenuItem.KeyEquivalentModifierMask = (NSEventModifierMask)(canExecute ? RemoveRomsCommand.KeyboardShortcutModifiers : OSModifierKeys.None);
                     }
                 }
             }

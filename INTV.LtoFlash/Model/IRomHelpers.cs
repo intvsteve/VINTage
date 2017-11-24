@@ -450,7 +450,7 @@ namespace INTV.LtoFlash.Model
             }
             var errorDialog = INTV.Shared.View.ReportDialog.Create(title, message);
             errorDialog.ReportText = failedToAddText;
-            if (SingleInstanceApplication.SharedSettings.ShowDetailedErrors)
+            if (SingleInstanceApplication.SharedSettings.ShowDetailedErrors || string.IsNullOrEmpty(failedToAddText))
             {
                 errorDialog.Exception = exception;
             }

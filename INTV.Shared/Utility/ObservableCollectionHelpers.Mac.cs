@@ -118,6 +118,7 @@ namespace INTV.Shared.Utility
         /// <typeparam name="T">Type of element in the collection.</typeparam>
         /// <param name="controller">The controller to synchronize with.</param>
         /// <param name="collection">The collection to copy into the controller.</param>
+        /// <remarks>TODO / BUG: Blindly adds everything! Should confirm what's already in <paramref name="controller"/> and remove what's not!</remarks>
         public static void SynchronizeCollection<T>(this NSObjectController controller, ObservableCollection<T> collection)
         {
             var selectAddedObjects = false;

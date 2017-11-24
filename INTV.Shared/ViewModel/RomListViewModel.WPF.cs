@@ -26,6 +26,7 @@ using INTV.Core.Model.Program;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Model;
 using INTV.Shared.Utility;
+using INTV.Shared.View;
 
 namespace INTV.Shared.ViewModel
 {
@@ -300,6 +301,13 @@ namespace INTV.Shared.ViewModel
         private bool CanRemoveRoms(object parameter)
         {
             return CurrentSelection.Count > 0;
+        }
+
+        private OSVisual OSInitializeVisual()
+        {
+            var visual = new RomListView();
+            visual.DataContext = this; // not sure if this needs to be done...
+            return visual;
         }
 
         /// <summary>

@@ -78,8 +78,6 @@ namespace INTV.Shared.View
 
         #region Properties
 
-        private static string LastSelectedPreferencesPage { get; set; }
-
         /// <summary>
         /// Gets or sets the visual that presents the property pages.
         /// </summary>

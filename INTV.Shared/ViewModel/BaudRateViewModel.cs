@@ -18,22 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-#if WIN
-using BaseClass = System.Object;
-#elif MAC
-#if __UNIFIED__
-using BaseClass = Foundation.NSObject;
-#else
-using BaseClass = MonoMac.Foundation.NSObject;
-#endif // __UNIFIED__
-#endif // WIN
-
 namespace INTV.Shared.ViewModel
 {
     /// <summary>
     /// ViewModel for displaying serial port baud rate.
     /// </summary>
-    public class BaudRateViewModel : BaseClass
+    public class BaudRateViewModel : OSViewModelBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.ViewModel.BaudRateViewModel"/> class.

@@ -33,18 +33,18 @@ namespace INTV.Shared.ComponentModel
         private string GetMenuItemName()
         {
             string menuItemName = null;
-            if (MenuItem != null)
+            if (!MenuItem.IsEmpty)
             {
-                menuItemName = MenuItem.Title;
+                menuItemName = MenuItem.Name;
             }
             return menuItemName;
         }
 
         private void SetMenuItemName(string menuItemName)
         {
-            if (MenuItem != null)
+            if (!MenuItem.IsEmpty)
             {
-                MenuItem.Title = menuItemName;
+                MenuItem.SetName(menuItemName);
             }
         }
 

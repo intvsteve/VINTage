@@ -27,7 +27,6 @@ namespace INTV.Shared.View
     /// </summary>
     public partial class SettingsDialog : System.Windows.Window
     {
-        private static string LastSelectedPreferencesPage { get; set; }
         private bool FinishedAddingTabs { get; set; }
 
         /// <summary>

@@ -20,16 +20,7 @@
 
 using System.Linq;
 using INTV.Shared.Model.Device;
-
-#if WIN
-using OSImage = System.Windows.Media.ImageSource;
-#elif MAC
-#if __UNIFIED__
-using OSImage = AppKit.NSImage;
-#else
-using OSImage = MonoMac.AppKit.NSImage;
-#endif // __UNIFIED__
-#endif
+using INTV.Shared.Utility;
 
 namespace INTV.Shared.ViewModel.LtoFlash
 {

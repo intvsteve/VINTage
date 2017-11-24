@@ -56,10 +56,10 @@ namespace INTV.Shared.Commands
             if (!string.IsNullOrEmpty(command.KeyboardShortcutKey))
             {
                 ErrorReporting.ReportErrorIf(command.KeyboardShortcutKey.Length != 1, "Invalid keyboard shortcut!");
-                var modfiers = (ModifierKeys)command.KeyboardShortcutModifiers;
+                var modifiers = (ModifierKeys)command.KeyboardShortcutModifiers;
                 if (char.IsUpper(command.KeyboardShortcutKey[0]))
                 {
-                    modfiers |= ModifierKeys.Shift;
+                    modifiers |= ModifierKeys.Shift;
                 }
                 var keyConverter = new KeyConverter();
                 var key = (Key)keyConverter.ConvertFromInvariantString(command.KeyboardShortcutKey);
@@ -67,7 +67,7 @@ namespace INTV.Shared.Commands
                 {
                     visual = SingleInstanceApplication.Current.MainWindow;
                 }
-                visual.InputBindings.Add(new KeyBinding(command, key, modfiers));
+                visual.InputBindings.Add(new KeyBinding(command, key, modifiers));
             }
         }
 
@@ -83,7 +83,7 @@ namespace INTV.Shared.Commands
             var menu = new ContextMenu();
             foreach (var command in target.GetContextMenuCommands(context).OfType<VisualRelayCommand>().OrderBy(c => c.Weight))
             {
-                menu.Items.Add(command.MenuItem);
+                menu.Items.Add(command.MenuItem.NativeMenuItemBase);
             }
             INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested(); // Ensure items in context menu properly updated
             return menu;
@@ -144,7 +144,7 @@ namespace INTV.Shared.Commands
             UIElement parentVisual = null;
             if (parentCommand != null)
             {
-                if (parentCommand.Visual == null)
+                if (parentCommand.Visual.IsEmpty)
                 {
                     var group = parentCommand.GetCommandGroup();
                     if (group != null)
@@ -152,8 +152,8 @@ namespace INTV.Shared.Commands
                         parentCommand.Visual = group.CreateVisualForCommand(parentCommand);
                     }
                 }
-                ErrorReporting.ReportErrorIf(requiresParentCommand && (parentCommand.Visual == null), "Failed to create parent visual for command: " + command.Name + "(" + command.UniqueId + ")");
-                parentVisual = parentCommand.Visual;
+                ErrorReporting.ReportErrorIf(requiresParentCommand && parentCommand.Visual.IsEmpty, "Failed to create parent visual for command: " + command.Name + "(" + command.UniqueId + ")");
+                parentVisual = parentCommand.Visual.AsType<UIElement>();
             }
 
             DebugOutputIf(requiresParentCommand && (parentCommand == null), "No parent visual for command: " + command.Name + "(" + command.UniqueId + ")");
@@ -190,7 +190,7 @@ namespace INTV.Shared.Commands
                 Control parentMenuItemVisual = null;
                 if (parentCommand != null)
                 {
-                    if (parentCommand.MenuItem == null)
+                    if (parentCommand.MenuItem.IsEmpty)
                     {
                         var group = parentCommand.GetCommandGroup();
                         if (group != null)
@@ -198,11 +198,11 @@ namespace INTV.Shared.Commands
                             parentCommand.MenuItem = group.CreateMenuItemForCommand(parentCommand);
                         }
                     }
-                    DebugOutputIf(requiresParentCommand && (parentCommand.MenuItem == null) && (parentCommand.Visual == null), "Failed to create parent menu item for command: " + command.Name + "(" + command.UniqueId + ")");
+                    DebugOutputIf(requiresParentCommand && parentCommand.MenuItem.IsEmpty && parentCommand.Visual.IsEmpty, "Failed to create parent menu item for command: " + command.Name + "(" + command.UniqueId + ")");
                     parentMenuItemVisual = parentCommand.MenuItem;
                 }
 
-                DebugOutputIf(requiresParentCommand && (parentCommand == null) && (parentCommand.Visual == null), "No parent menu item for command: " + command.Name + "(" + command.UniqueId + ")");
+                DebugOutputIf(requiresParentCommand && (parentCommand == null) && parentCommand.Visual.IsEmpty, "No parent menu item for command: " + command.Name + "(" + command.UniqueId + ")");
 
                 if (menuItemVisual == null)
                 {
@@ -230,7 +230,7 @@ namespace INTV.Shared.Commands
             UIElement parent = null;
             if (parentCommand != null)
             {
-                if (parentCommand.Visual == null)
+                if (parentCommand.Visual.IsEmpty)
                 {
                     var group = parentCommand.GetCommandGroup();
                     if (group != null)
@@ -238,7 +238,7 @@ namespace INTV.Shared.Commands
                         parentCommand.Visual = group.CreateVisualForCommand(parentCommand);
                     }
                 }
-                parent = parentCommand.Visual;
+                parent = parentCommand.Visual.AsType<UIElement>();
             }
             if ((parent != null) && (child != null))
             {
@@ -289,7 +289,7 @@ namespace INTV.Shared.Commands
             Control parent = null;
             if (parentCommand != null)
             {
-                if (parentCommand.MenuItem == null)
+                if (parentCommand.MenuItem.IsEmpty)
                 {
                     var group = parentCommand.GetCommandGroup();
                     if (group != null)
@@ -459,7 +459,7 @@ namespace INTV.Shared.Commands
             int insertLocation = -1; // default to unknown
             if (parentCommand != null)
             {
-                var parentVisual = useMenuItem ? parentCommand.MenuItem : parentCommand.Visual;
+                var parentVisual = useMenuItem ? parentCommand.MenuItem.NativeMenuItemBase : parentCommand.Visual.AsType<Control>();
                 var items = GetItemVisuals(parentVisual);
                 if (items != null)
                 {

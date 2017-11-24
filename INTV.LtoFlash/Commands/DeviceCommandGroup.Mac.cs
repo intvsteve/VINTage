@@ -191,14 +191,14 @@ namespace INTV.LtoFlash.Commands
         public void InitializeConnectionMenu(LtoFlashViewModel viewModel)
         {
             var menuItem = ConnectToDeviceSubmenuCommand.MenuItem;
-            if (menuItem.Submenu == null)
+            if (menuItem.NativeMenuItem.Submenu == null)
             {
                 var menu = new NSMenu();
                 MenuDelegate = new ConnectionMenuDelegate(viewModel, this);
                 menu.Delegate = MenuDelegate;
                 menu.AutoEnablesItems = false;
                 MenuDelegate.InitializeMenu(menu);
-                menuItem.Submenu = menu;
+                menuItem.NativeMenuItem.Submenu = menu;
             }
         }
 
@@ -367,7 +367,7 @@ namespace INTV.LtoFlash.Commands
 
             private void HandleRequerySuggested(object sender, System.EventArgs e)
             {
-                var connectionsMenuItem = ConnectToDeviceSubmenuCommand.MenuItem;
+                var connectionsMenuItem = ConnectToDeviceSubmenuCommand.MenuItem.NativeMenuItem;
                 if ((connectionsMenuItem != null) && connectionsMenuItem.HasSubmenu && (connectionsMenuItem.Submenu != null))
                 {
                     foreach (var menuItem in connectionsMenuItem.Submenu.ItemArray())

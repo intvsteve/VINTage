@@ -33,10 +33,8 @@ using INTV.Shared.View;
 using INTV.Shared.ViewModel;
 
 #if __UNIFIED__
-using OSMenuItem = AppKit.NSMenuItem;
 using OSCommandVisual = Foundation.NSObject;
 #else
-using OSMenuItem = MonoMac.AppKit.NSMenuItem;
 using OSCommandVisual = MonoMac.Foundation.NSObject;
 #endif // __UNIFIED__
 
@@ -47,6 +45,11 @@ namespace INTV.Shared.Commands
     /// </summary>
     public abstract partial class CommandGroup
     {
+        /// <summary>
+        /// The name of the attached command property.
+        /// </summary>
+        public const string AttachedCommandPropertyName = "Command";
+
         /// <summary>
         /// This name is used to attach additional visuals to a <see cref="VisualRelayCommand"/> beyond the stock supported visual types.
         /// </summary>
@@ -64,7 +67,7 @@ namespace INTV.Shared.Commands
         {
             var visualCommand = (VisualRelayCommand)command;
             var visual = visualCommand.CreateVisualForCommand(true);
-            visual.SetValue("Command", command);
+            visual.SetValue(AttachedCommandPropertyName, command);
             AttachActivateHandler(visualCommand, visual);
             return visual;
         }
@@ -103,7 +106,7 @@ namespace INTV.Shared.Commands
                         additionalVisuals.Add(visual);
                         command.SetValue(AdditionalVisualsPropertyName, additionalVisuals);
                     }
-                    visual.SetValue("Command", command);
+                    visual.SetValue(AttachedCommandPropertyName, command);
                     var view = visual as NSView;
                     if ((view != null) && !string.IsNullOrEmpty(command.ToolTip))
                     {
@@ -235,10 +238,10 @@ namespace INTV.Shared.Commands
                     control.ToolTip = command.ToolTip.SafeString();
                 }
                 var menuItem = command.MenuItem;
-                if (menuItem != null)
+                if (!menuItem.IsEmpty)
                 {
-                    menuItem.Enabled = canExecute;
-                    menuItem.ToolTip = command.ToolTip.SafeString();
+                    menuItem.NativeMenuItem.Enabled = canExecute;
+                    menuItem.NativeMenuItem.ToolTip = command.ToolTip.SafeString();
                 }
                 var additionalVisuals = command.GetValue(AdditionalVisualsPropertyName) as IList<object>;
                 if (additionalVisuals != null)
@@ -294,7 +297,7 @@ namespace INTV.Shared.Commands
             }
             if (command == null)
             {
-                command = sender.GetValue("Command") as ICommand;
+                command = sender.GetValue(AttachedCommandPropertyName) as ICommand;
             }
             return command;
         }

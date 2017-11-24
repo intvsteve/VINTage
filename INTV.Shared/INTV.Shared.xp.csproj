@@ -93,6 +93,7 @@
     <Compile Include="Commands\StandardMenuCommandId.cs" />
     <Compile Include="Commands\StandardMenuId.cs" />
     <Compile Include="ComponentModel\CommandManager.WPF.cs" />
+    <Compile Include="ComponentModel\ComponentVisual.cs" />
     <Compile Include="ComponentModel\CompositionHelpers.cs" />
     <Compile Include="ComponentModel\IApplicationInfo.cs" />
     <Compile Include="ComponentModel\ICommand.WPF.cs" />
@@ -166,6 +167,8 @@
     <Compile Include="Model\RomListConfiguration.cs" />
     <Compile Include="Model\SearchDirectories.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\ISettings.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -189,6 +192,7 @@
     <Compile Include="Utility\NativeMethods.WPF.cs" />
     <Compile Include="Utility\ObservableCollectionHelpers.cs" />
     <Compile Include="Utility\OneShotLaunchTask.cs" />
+    <Compile Include="Utility\OSColor.cs" />
     <Compile Include="Utility\OSDispatcher.cs" />
     <Compile Include="Utility\OSDispatcher.WPF.cs" />
     <Compile Include="Utility\OSDispatcherPriority.WPF.cs" />
@@ -197,9 +201,12 @@
     <Compile Include="Utility\OSDragDropOperation.WPF.cs" />
     <Compile Include="Utility\OSExportAttribute.cs" />
     <Compile Include="Utility\OSExportAttribute.WPF.cs" />
+    <Compile Include="Utility\OSImage.cs" />
+    <Compile Include="Utility\OSImage.WPF.cs" />
     <Compile Include="Utility\OSVersion.cs" />
     <Compile Include="Utility\OSVersion.WPF.cs" />
     <Compile Include="Utility\PathComparer.cs" />
+    <Compile Include="Utility\PathComparer.Default.cs" />
     <Compile Include="Utility\PathUtils.cs" />
     <Compile Include="Utility\PathUtils.WPF.cs" />
     <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
@@ -215,11 +222,18 @@
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
-    <Compile Include="Utility\VisualHelpers.cs" />
+    <Compile Include="ViewModel\OSViewModelBase.WPF.cs" />
+    <Compile Include="View\IMainWindow.cs" />
+    <Compile Include="View\OSMenuItem.cs" />
+    <Compile Include="View\OSMenuItem.WPF.cs" />
+    <Compile Include="View\OSVisual.cs" />
+    <Compile Include="View\OSVisual.WPF.cs" />
+    <Compile Include="View\RomListView.cs" />
+    <Compile Include="View\VisualHelpers.cs" />
     <Compile Include="Behavior\ActualSizeObserver.cs" />
     <Compile Include="Behavior\DragDropHelpers.cs" />
     <Compile Include="Behavior\DragLeaveBehavior.cs" />
-    <Compile Include="Utility\VisualHelpers.WPF.cs" />
+    <Compile Include="View\VisualHelpers.WPF.cs" />
     <Compile Include="ViewModel\BackupInfoViewModel.cs" />
     <Compile Include="ViewModel\BaudRateViewModel.cs" />
     <Compile Include="ViewModel\ControllerElementViewModel.cs" />

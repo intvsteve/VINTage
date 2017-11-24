@@ -143,8 +143,8 @@ namespace INTV.LtoFlash.Commands
                     {
                         canExecute = (MenuLayoutView != null) && (MenuLayoutView.FindChild<NSOutlineView>() == firstResponder);
                     }
-                    command.MenuItem.KeyEquivalent = canExecute ? DeleteItemsCommand.KeyboardShortcutKey : string.Empty;
-                    command.MenuItem.KeyEquivalentModifierMask = (NSEventModifierMask)(canExecute ? DeleteItemsCommand.KeyboardShortcutModifiers : OSModifierKeys.None);
+                    command.MenuItem.NativeMenuItem.KeyEquivalent = canExecute ? DeleteItemsCommand.KeyboardShortcutKey : string.Empty;
+                    command.MenuItem.NativeMenuItem.KeyEquivalentModifierMask = (NSEventModifierMask)(canExecute ? DeleteItemsCommand.KeyboardShortcutModifiers : OSModifierKeys.None);
                 }
             }
             return canExecute;
@@ -216,7 +216,7 @@ namespace INTV.LtoFlash.Commands
                 parentMenuItem.Submenu = parentMenu;
             }
             submenuItemCommand.SetValue("DataContext", context);
-            submenuItemCommand.MenuItem.Image = submenuItemCommand.SmallIcon;
+            submenuItemCommand.MenuItem.NativeMenuItem.Image = submenuItemCommand.SmallIcon;
             parentMenu.AddItem(submenuItemCommand.MenuItem);
         }
     }

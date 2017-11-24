@@ -139,6 +139,8 @@
     <Compile Include="Model\CommandLineMode.cs" />
     <Compile Include="ViewModel\KeyboardMapViewModel.cs" />
     <Compile Include="Model\JzIntvLauncherConfiguration.Mac.cs" />
+    <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Properties\Settings.Mono.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Strings.resx">

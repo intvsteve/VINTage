@@ -32,6 +32,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("VINTage")]
 [assembly: AssemblyCopyright("Copyright © INTV Funhouse 2014-2017")]
 [assembly: AssemblyTrademark("")]
+//// Stupid xp... .NET 4.5 or later required for AssemblyMetadataAttribute
+#if !WIN_XP
+[assembly: AssemblyMetadata("Author", "Steven A. Orth")]
+#endif // !WIN
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

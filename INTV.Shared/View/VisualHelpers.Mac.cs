@@ -27,8 +27,9 @@ using MonoMac.Foundation;
 #endif // __UNIFIED__
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.View
 {
     /// <summary>
     /// Mac-specific implementation.

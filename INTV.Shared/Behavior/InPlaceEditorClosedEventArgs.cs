@@ -1,5 +1,5 @@
 ﻿// <copyright file="InPlaceEditorClosedEventArgs.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -30,13 +30,29 @@ namespace INTV.Shared.Behavior
         /// </summary>
         /// <param name="committedChanges">If <c>true</c>, indicates that when the IInPlaceEditor closed, it committed any changes to the item it was editing.</param>
         public InPlaceEditorClosedEventArgs(bool committedChanges)
+            : this(committedChanges, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INTV.Shared.Behavior.InPlaceEditorClosedEventArgs"/> class.
+        /// </summary>
+        /// <param name="committedChanges">If <c>true</c>, indicates that when the IInPlaceEditor closed, it committed any changes to the item it was editing.</param>
+        /// <param name="state">State that may be meaningful to recipient.</param>
+        public InPlaceEditorClosedEventArgs(bool committedChanges, object state)
         {
             CommitedChanges = committedChanges;
+            State = state;
         }
 
         /// <summary>
         /// Gets a value indicating whether or not changes made by the IInPlaceEditor were committed.
         /// </summary>
         public bool CommitedChanges { get; private set; }
+
+        /// <summary>
+        /// Gets implementation-defined state data that may be passed through the event.
+        /// </summary>
+        public object State { get; private set; }
     }
 }

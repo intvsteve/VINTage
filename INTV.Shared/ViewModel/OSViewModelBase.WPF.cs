@@ -1,5 +1,5 @@
-﻿// <copyright file="ExitEventArgs.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+﻿// <copyright file="OSViewModelBase.WPF.cs" company="INTV Funhouse">
+// Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -17,24 +17,14 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
+//
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.ViewModel
 {
     /// <summary>
-    /// Mac version of application exit event arguments.
+    /// WPF-specific implementation.
     /// </summary>
-    public class ExitEventArgs : System.EventArgs
+    public abstract class OSViewModelBase : object
     {
-        /// <summary>
-        /// Initialize a new instance of the type.
-        /// </summary>
-        public ExitEventArgs()
-        {
-        }
-
-        /// <summary>
-        /// Gets or sets the application exit code. (No effect on Mac.)
-        /// </summary>
-        public int ApplicationExitCode { get; set; }
     }
 }

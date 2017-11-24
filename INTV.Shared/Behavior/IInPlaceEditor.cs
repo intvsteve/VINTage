@@ -21,12 +21,12 @@
 using System;
 
 #if WIN
-using OSVisual = System.Windows.UIElement;
+using NativeVisual = System.Windows.UIElement;
 #elif MAC
 #if __UNIFIED__
-using OSVisual = AppKit.NSView;
+using NativeVisual = AppKit.NSView;
 #else
-using OSVisual = MonoMac.AppKit.NSView;
+using NativeVisual = MonoMac.AppKit.NSView;
 #endif // __UNIFIED__
 #endif // WIN
 
@@ -46,12 +46,12 @@ namespace INTV.Shared.Behavior
         /// <summary>
         /// Gets the element that contains the data to be edited.
         /// </summary>
-        OSVisual EditedElement { get; }
+        NativeVisual EditedElement { get; }
 
         /// <summary>
         /// Gets or sets the owner of the element being edited.
         /// </summary>
-        OSVisual ElementOwner { get; set; }
+        NativeVisual ElementOwner { get; set; }
 
         /// <summary>
         /// Call this method to indicate to the editor that it should begin editing operations.

@@ -1,5 +1,5 @@
 ﻿// <copyright file="SingleInstanceApplication.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -22,13 +22,14 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using INTV.Shared.View;
 
 namespace INTV.Shared.Utility
 {
     /// <summary>
     /// WPF-specific implementation of SingleInstanceApplication.
     /// </summary>
-    public partial class SingleInstanceApplication : System.Windows.Application, System.ComponentModel.Composition.IPartImportsSatisfiedNotification
+    public partial class SingleInstanceApplication : System.Windows.Application
     {
         #region Constructors
 
@@ -60,8 +61,6 @@ namespace INTV.Shared.Utility
         {
             get { return INTV.Shared.Properties.Settings.Default; }
         }
-
-        private static bool AlreadyDisplayedExceptionDialog { get; set; }
 
         /// <summary>
         /// Gets or sets the unique window activate message to send to the original instance.

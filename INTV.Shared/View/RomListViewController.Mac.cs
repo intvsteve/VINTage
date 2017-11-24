@@ -259,7 +259,7 @@ namespace INTV.Shared.View
             {
                 var newState = !Properties.Settings.Default.ShowRomDetails;
                 NSUserDefaults.StandardUserDefaults[RomListSettingsPageViewModel.ShowRomDetailsPropertyName] = new NSNumber(newState);
-                relayCommand.MenuItem.State = newState ? NSCellStateValue.On : NSCellStateValue.Off;
+                relayCommand.MenuItem.NativeMenuItem.State = newState ? NSCellStateValue.On : NSCellStateValue.Off;
             }
             else
             {
@@ -275,9 +275,9 @@ namespace INTV.Shared.View
                 CancelEditProgramDescription();
             }
             var menuItem = RomListCommandGroup.EditProgramNameCommand.MenuItem;
-            if (menuItem != null)
+            if (!menuItem.IsEmpty)
             {
-                menuItem.Enabled = canExecute;
+                menuItem.NativeMenuItem.Enabled = canExecute;
             }
         }
 

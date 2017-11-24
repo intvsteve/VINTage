@@ -109,7 +109,7 @@ namespace INTV.JzIntvUI.View
         /// <summary>
         /// Gets or sets the selected resolution.
         /// </summary>
-        [INTV.Shared.Utility.OSExport("SelectedResolution")]
+        [OSExport("SelectedResolution")]
         public NSNumber SelectedResolution
         {
             get
@@ -140,7 +140,7 @@ namespace INTV.JzIntvUI.View
         /// <summary>
         /// Gets or sets the selected display mode.
         /// </summary>
-        [INTV.Shared.Utility.OSExport("SelectedMode")]
+        [OSExport("SelectedMode")]
         public NSNumber SelectedMode
         {
             get
@@ -168,28 +168,28 @@ namespace INTV.JzIntvUI.View
         private NSNumber _selectedMode;
         private bool _initializeDisplayModes;
 
-        [OSExport(JzIntvSettingsPageViewModel.EnableIntellivoicePropertyName)]
+        [OSExport("EnableIntellivoice")]
         private int EnableIntellivoice
         {
             get { return (int)ViewModel.EnableIntellivoice; }
             set { ViewModel.EnableIntellivoice = (EnableFeature)value; }
         }
 
-        [OSExport(JzIntvSettingsPageViewModel.EnableEcsPropertyName)]
+        [OSExport("EnableEcs")]
         private int EnableEcs
         {
             get { return (int)ViewModel.EnableEcs; }
             set { ViewModel.EnableEcs = (EnableFeature)value; }
         }
 
-        [OSExport(JzIntvSettingsPageViewModel.EnableJlpPropertyName)]
+        [OSExport("EnableJlp")]
         private int EnableJlp
         {
             get { return (int)ViewModel.EnableJlp; }
             set { ViewModel.EnableJlp = (EnableFeature)value; }
         }
 
-        [OSExport(JzIntvSettingsPageViewModel.InitialKeyboardMapSettingName)]
+        [OSExport("JzIntvInitialKeyboardMap")]
         private int InitialKeyboardMap
         {
             get { return (int)ViewModel.InitialKeyboardMap; }

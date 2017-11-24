@@ -124,5 +124,11 @@ namespace INTV.Shared.ViewModel
                 }
             }
         }
+
+        private INTV.Shared.View.OSVisual OSInitializeVisual()
+        {
+            var controller = new INTV.Shared.View.RomListViewController();
+            return controller.View;
+        }
     }
 }

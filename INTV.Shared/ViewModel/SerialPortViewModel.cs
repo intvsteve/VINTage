@@ -21,22 +21,12 @@
 using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 
-#if WIN
-using BaseClass = System.Object;
-#elif MAC
-#if __UNIFIED__
-using BaseClass = Foundation.NSObject;
-#else
-using BaseClass = MonoMac.Foundation.NSObject;
-#endif // __UNIFIED__
-#endif // WIN
-
 namespace INTV.Shared.ViewModel
 {
     /// <summary>
     /// The ViewModel for a serial port for use with dialogs.
     /// </summary>
-    public class SerialPortViewModel : BaseClass, System.ComponentModel.INotifyPropertyChanged
+    public class SerialPortViewModel : OSViewModelBase, System.ComponentModel.INotifyPropertyChanged
     {
         /// <summary>
         /// Initializes a new instance of the type.

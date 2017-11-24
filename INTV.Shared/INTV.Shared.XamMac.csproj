@@ -87,7 +87,7 @@
     <Compile Include="Utility\SerialPortDetector.cs" />
     <Compile Include="Utility\SingleInstanceApplication.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
-    <Compile Include="Utility\VisualHelpers.cs" />
+    <Compile Include="View\VisualHelpers.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
@@ -231,7 +231,7 @@
     <Compile Include="View\ReportDialog.Mac.designer.cs">
       <DependentUpon>ReportDialog.Mac.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComponentModel\CommandManager.Mono.cs" />
+    <Compile Include="ComponentModel\CommandManager.Mac.cs" />
     <Compile Include="ViewModel\RomFeaturesConfigurationViewModel.cs" />
     <Compile Include="Behavior\IInPlaceEditor.cs" />
     <Compile Include="Behavior\InPlaceEditorClosedEventArgs.cs" />
@@ -251,7 +251,7 @@
     <Compile Include="Interop\IOKit\IONotificationPort.cs" />
     <Compile Include="Interop\IOKit\IONotificationEventArgs.cs" />
     <Compile Include="Interop\IOKit\IOKitHelpers.cs" />
-    <Compile Include="Utility\ExitEventArgs.Mac.cs" />
+    <Compile Include="Utility\ExitEventArgs.Mono.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceManagementInterfaceKind.Mac.cs" />
     <Compile Include="ComponentModel\RelayCommand.Mono.cs" />
     <Compile Include="Interop\NativeMethods.Mac.cs" />
@@ -263,7 +263,7 @@
     <Compile Include="View\OSWindowState.Mac.cs" />
     <Compile Include="View\SerialPortSelectorDialog.cs" />
     <Compile Include="Utility\ColorHelpers.Mac.cs" />
-    <Compile Include="Utility\VisualHelpers.Mac.cs" />
+    <Compile Include="View\VisualHelpers.Mac.cs" />
     <Compile Include="Utility\OSExportAttribute.Mac.cs" />
     <Compile Include="ViewModel\SettingsPageViewModel`T.Mac.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
@@ -353,6 +353,26 @@
     <Compile Include="Model\Program\ProgramCollectionSaveFailedEventArgs.cs" />
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Converter\NSUrlStringConverter.cs" />
+    <Compile Include="Utility\OSColor.cs" />
+    <Compile Include="ViewModel\OSViewModelBase.Mac.cs" />
+    <Compile Include="ComponentModel\ComponentVisual.cs" />
+    <Compile Include="Properties\ISettings.cs" />
+    <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Properties\Settings.Mono.cs" />
+    <Compile Include="Properties\SettingsBase.Mac.cs" />
+    <Compile Include="Properties\SettingsBase.Mono.cs" />
+    <Compile Include="Properties\SettingsBase`T.cs" />
+    <Compile Include="Commands\RootCommandGroup.Mono.cs" />
+    <Compile Include="View\RomListView.cs" />
+    <Compile Include="Utility\OSImage.cs" />
+    <Compile Include="Utility\OSImage.Mac.cs" />
+    <Compile Include="View\OSMenuItem.cs" />
+    <Compile Include="View\OSMenuItem.Mac.cs" />
+    <Compile Include="View\OSVisual.cs" />
+    <Compile Include="View\OSVisual.Mac.cs" />
+    <Compile Include="Utility\PathComparer.Default.cs" />
+    <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
+    <Compile Include="View\IMainWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj">

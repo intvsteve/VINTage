@@ -23,15 +23,12 @@ using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
 
 #if WIN
-using BaseClass = System.Object;
-using OSVisual = System.Windows.FrameworkElement;
+using NativeVisual = System.Windows.FrameworkElement;
 #elif MAC
 #if __UNIFIED__
-using BaseClass = Foundation.NSObject;
-using OSVisual = AppKit.NSViewController;
+using NativeVisual = AppKit.NSViewController;
 #else
-using BaseClass = MonoMac.Foundation.NSObject;
-using OSVisual = MonoMac.AppKit.NSViewController;
+using NativeVisual = MonoMac.AppKit.NSViewController;
 #endif // __UNIFIED__
 #endif // WIN
 
@@ -41,7 +38,7 @@ namespace INTV.Shared.ViewModel
     /// Provides the skeleton ViewModel for implementing pages in the settings dialog.
     /// </summary>
     /// <typeparam name="T">The data type of the visual for which this class acts as a ViewModel.</typeparam>
-    public abstract partial class SettingsPageViewModel<T> : BaseClass, System.ComponentModel.INotifyPropertyChanged, ISettingsPage where T : OSVisual, new()
+    public abstract partial class SettingsPageViewModel<T> : OSViewModelBase, System.ComponentModel.INotifyPropertyChanged, ISettingsPage where T : NativeVisual, new()
     {
         #region INotifyPropertyChanged
 

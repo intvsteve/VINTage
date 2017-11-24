@@ -18,23 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define ENABLE_DEBUG_OUTPUT
+
 using System;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
-
-#if MAC
 using INTV.Shared.View;
-#endif // MAC
-
-#if WIN
-using OSVisual = System.Windows.FrameworkElement;
-#elif MAC
-#if __UNIFIED__
-using OSVisual = AppKit.NSWindow;
-#else
-using OSVisual = MonoMac.AppKit.NSWindow;
-#endif // __UNIFIED__
-#endif // WIN
 
 namespace INTV.Shared.ViewModel
 {
@@ -116,15 +105,15 @@ namespace INTV.Shared.ViewModel
         /// </summary>
         /// <param name="visual">The visual with which to associate the progress indicator.</param>
         /// <remarks>This is an atypical construction pattern, driven partly by pragmatism and partly
-        /// by laziness in getting the different platforms invovled. Blame the Mac and me not caring
+        /// by laziness in getting the different platforms involved. Blame the Mac and me not caring
         /// to revisit every off-the-cuff workaround I created while trying to avoid replicating the
         /// notion of DependencyObject / DependencyPropery and the whole inheritance mechanism.</remarks>
         public ProgressIndicatorViewModel(OSVisual visual)
         {
             DisplayDelay = DefaultDisplayDelay;
-            if (visual != null)
+            if (!visual.IsEmpty)
             {
-                visual.SetValue(ProgressIndicatorViewModelDataContextProperty, this);
+                visual.NativeVisual.SetValue(ProgressIndicatorViewModelDataContextProperty, this);
             }
         }
 
@@ -306,6 +295,12 @@ namespace INTV.Shared.ViewModel
             {
                 Hide();
             }
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DEBUG_OUTPUT")]
+        private static void DebugOutput(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
         }
 
         /// <summary>

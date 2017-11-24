@@ -31,6 +31,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("VINTage")]
 [assembly: AssemblyCopyright("Copyright © INTV Funhouse 2013-2017")]
 [assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. Steve Orth and INTV Funhouse, and Joe Zbiciak and Left Turn Only, LLC are not affiliated with Intellivision Productions.")]
+//// Stupid xp... .NET 4.5 or later required for AssemblyMetadataAttribute
+#if !WIN
+[assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.AuthorKey, "Steven A. Orth")]
+#endif // !WIN
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

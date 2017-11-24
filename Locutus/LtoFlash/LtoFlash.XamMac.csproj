@@ -102,7 +102,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\XamMac</OutputPath>
     <IntermediateOutputPath>obj\Debug\XamMac\</IntermediateOutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>__UNIFIED__;__MACOS__;DEBUG;MAC</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncludeMonoRuntime>false</IncludeMonoRuntime>
     <UseSGen>false</UseSGen>
@@ -117,7 +117,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Release\XamMac</OutputPath>
     <IntermediateOutputPath>obj\Release\XamMac\</IntermediateOutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>__UNIFIED__;__MACOS__;MAC</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncludeMonoRuntime>false</IncludeMonoRuntime>
     <UseSGen>false</UseSGen>
@@ -148,12 +148,15 @@
       <DependentUpon>AppDelegate.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="View\MainWindow.cs" />
     <Compile Include="View\MainWindow.Mac.cs" />
     <Compile Include="View\MainWindow.Mac.designer.cs">
       <DependentUpon>MainWindow.Mac.cs</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindowController.Mac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Properties\Settings.Mono.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>

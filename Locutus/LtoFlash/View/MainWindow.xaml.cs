@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Generic;
+using INTV.Shared.ComponentModel;
+
 namespace Locutus.View
 {
     /// <summary>
@@ -31,6 +34,11 @@ namespace Locutus.View
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void OSAddPrimaryComponentVisuals(IPrimaryComponent primaryComponent, IEnumerable<ComponentVisual> visuals)
+        {
+            // TODO: This is not implemented yet!
         }
     }
 }

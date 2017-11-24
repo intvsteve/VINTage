@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Generic;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,10 +26,10 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
+using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 using Locutus.ViewModel;
-
 namespace Locutus.View
 {
     /// <summary>
@@ -188,6 +189,11 @@ namespace Locutus.View
 
             /// <summary>The window explicitly should not prefer to tab when shown.</summary>
             Disallowed
+        }
+
+        private void OSAddPrimaryComponentVisuals(IPrimaryComponent primaryComponent, IEnumerable<ComponentVisual> visuals)
+        {
+            // TODO: OSAddPrimaryComponentVisuals is not yet implemented.
         }
     }
 }

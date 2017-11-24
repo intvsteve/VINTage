@@ -38,7 +38,7 @@ namespace INTV.Shared.Utility
     /// activate the main window of the other instance. It presumes that the main window will react to a unique
     /// message broadcast throughout the system.
     /// </summary>
-    public partial class SingleInstanceApplication
+    public partial class SingleInstanceApplication : System.ComponentModel.Composition.IPartImportsSatisfiedNotification
     {
         private const string CheckForUpdatesStartupActionName = "CheckForUpdates";
 
@@ -71,13 +71,12 @@ namespace INTV.Shared.Utility
         {
             get
             {
-                var versionString = _versionString;
                 if (string.IsNullOrEmpty(_versionString))
                 {
                     var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-                    versionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).ProductVersion;
+                    _versionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).ProductVersion;
                 }
-                return versionString;
+                return _versionString;
             }
         }
 
@@ -109,6 +108,8 @@ namespace INTV.Shared.Utility
         {
             get { return SharedSettings.Default; }
         }
+
+        private static bool AlreadyDisplayedExceptionDialog { get; set; }
 
         /// <summary>
         /// Gets the settings associated with the application.

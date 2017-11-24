@@ -32,6 +32,7 @@ using System.Resources;
 [assembly: AssemblyCopyright("Copyright © INTV Funhouse 2013-2017")]
 [assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. Steve Orth and INTV Funhouse are not affiliated with Intellivision Productions.")]
 [assembly: AssemblyCulture("")]
+////[assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.AuthorKey, "Steven A. Orth")]
 [assembly: NeutralResourcesLanguage("en")]
 
 // Version information for an assembly consists of the following four values:

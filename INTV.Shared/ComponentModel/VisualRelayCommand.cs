@@ -31,7 +31,7 @@ using NativeImage = System.Windows.Media.ImageSource;
 using INTV.Shared.View;
 #if __UNIFIED__
 using OSVisual = Foundation.NSObject;
-using NativeImage = Foundation.AppKit.NSImage;
+using NativeImage = AppKit.NSImage;
 #else
 using OSVisual = MonoMac.Foundation.NSObject;
 using NativeImage = MonoMac.AppKit.NSImage;

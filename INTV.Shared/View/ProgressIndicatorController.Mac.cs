@@ -126,6 +126,7 @@ namespace INTV.Shared.View
             colorComponents[3] = 0.18f;
             View.Layer.BackgroundColor = new CGColor(colorSpace, colorComponents);
             NSColor.ControlBackground.UsingColorSpace(NSColorSpace.DeviceRGBColorSpace).GetComponents(out colorComponents);
+            FeedbackArea.WantsLayer = true; // macOS 10.13 (High Sierra) changed behavior of how WantsLayer works to apparently no longer create layers for all children immediately.
             FeedbackArea.Layer.BackgroundColor = new CGColor(colorSpace, colorComponents);
             FeedbackArea.Layer.BorderWidth = 1;
             RomListCommandGroup.CancelRomsImportCommand.Visual = Cancel;

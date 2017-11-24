@@ -18,12 +18,11 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-//using INTV.Shared.ViewModel;
 using INTV.Shared.Properties;
 
 #if MAC
 #if __UNIFIED__
-using SplitterPosition = nfloat;
+using SplitterPosition = System.nfloat;
 #else
 using SplitterPosition = System.Single;
 #endif // __UNIFIED__
@@ -38,14 +37,14 @@ namespace LtoFlash.Properties
     /// </summary>
     internal sealed partial class Settings : SettingsBase<Settings>
     {
-        private const SplitterPosition DefaultSplitterPosition = 444;
+        private static readonly SplitterPosition DefaultSplitterPosition = 444;
 
         #region Properties
 
         /// <summary>
         /// Gets the setting indicating whether to validate the ROMs at startup.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if you attempt to assign the property.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if you attempt to assign the property.</exception>
         public SplitterPosition PrimarySplitterPosition
         {
             get { return GetSetting<SplitterPosition>(PrimarySplitterPositionSettingName); }

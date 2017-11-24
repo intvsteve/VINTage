@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BFDAE622-36B2-453D-92C8-C996BAA9E848}</ProjectGuid>
+    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Locutus</RootNamespace>
+    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+    <AssemblyName>LtoFlash</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseXamMacFullFramework>true</UseXamMacFullFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\VSMac\x86</OutputPath>
+    <IntermediateOutputPath>obj\Debug\VSMac\x86\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <PlatformTarget>x86</PlatformTarget>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <ConsolePause>false</ConsolePause>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <CreatePackage>false</CreatePackage>
+    <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>AfterBuild</type>
+          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\VSMac\x86</OutputPath>
+    <IntermediateOutputPath>obj\Release\VSMac\x86\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseSGen>false</UseSGen>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <PlatformTarget>x86</PlatformTarget>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <ConsolePause>false</ConsolePause>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <CreatePackage>false</CreatePackage>
+    <DefineConstants>MAC</DefineConstants>
+    <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>AfterBuild</type>
+          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
+    <MonoBundlingExtraArgs>--registrar=dynamic</MonoBundlingExtraArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\AppStore\VSMac\x86</OutputPath>
+    <IntermediateOutputPath>obj\AppStore\VSMac\x86\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseSGen>false</UseSGen>
+    <IncludeMonoRuntime>true</IncludeMonoRuntime>
+    <PlatformTarget>x86</PlatformTarget>
+    <LinkMode>None</LinkMode>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <EnableCodeSigning>true</EnableCodeSigning>
+    <ConsolePause>false</ConsolePause>
+    <EnablePackageSigning>true</EnablePackageSigning>
+    <CreatePackage>true</CreatePackage>
+    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+    <UseRefCounting>false</UseRefCounting>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\VSMac</OutputPath>
+    <IntermediateOutputPath>obj\Debug\VSMac\</IntermediateOutputPath>
+    <DefineConstants></DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
+    <XamMacArch>x86_64</XamMacArch>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\VSMac</OutputPath>
+    <IntermediateOutputPath>obj\Release\VSMac\</IntermediateOutputPath>
+    <DefineConstants></DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
+    <XamMacArch></XamMacArch>
+    <MonoBundlingExtraArgs>--registrar=dynamic</MonoBundlingExtraArgs>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="Xamarin.Mac" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="View\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="View\AppDelegate.cs" />
+    <Compile Include="View\AppDelegate.designer.cs">
+      <DependentUpon>AppDelegate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="View\MainWindow.Mac.cs" />
+    <Compile Include="View\MainWindow.Mac.designer.cs">
+      <DependentUpon>MainWindow.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainWindowController.Mac.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="View\MainMenu.xib" />
+    <InterfaceDefinition Include="View\MainWindow.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="license.rtf" />
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+    <None Include="KNOWN_ISSUES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="README.Mac.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="README.Windows.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\INTV.LtoFlash\INTV.LtoFlash.VSMac.csproj">
+      <Project>{C22BB800-6112-49A6-A81B-882F6355ABE7}</Project>
+      <Name>INTV.LtoFlash.VSMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\INTV.Shared\INTV.Shared.VSMac.csproj">
+      <Project>{245FD6EE-0B2E-4119-9211-4AA77511E23B}</Project>
+      <Name>INTV.Shared.VSMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\INTV.Intellicart\INTV.Intellicart.VSMac.csproj">
+      <Project>{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}</Project>
+      <Name>INTV.Intellicart.VSMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\INTV.jzIntv\INTV.jzIntv.VSMac.csproj">
+      <Project>{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}</Project>
+      <Name>INTV.jzIntv.VSMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\INTV.Core\INTV.Core.VSMac.csproj">
+      <Project>{FB5C25FD-A481-48E9-A721-24DAE07DF67A}</Project>
+      <Name>INTV.Core.VSMac</Name>
+    </ProjectReference>
+    <None Include="CustomBuildActions.targets" />
+    <ProjectReference Include="..\..\INTV.jzIntvUI\INTV.jzIntvUI.VSMac.csproj">
+      <Project>{A42922D4-8D80-41F0-BCAF-1416A5598D3E}</Project>
+      <Name>INTV.jzIntvUI.VSMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\YAML\Abstract\Abstract.Net4.VSMac.csproj">
+      <Project>{74CF1BDC-74B0-4B96-A2B5-A8A89A57295E}</Project>
+      <Name>Abstract.Net4.VSMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\YAML\Core\Core.Net4.VSMac.csproj">
+      <Project>{F9E90814-289A-4244-AB47-8ACC29A03B07}</Project>
+      <Name>Core.Net4.VSMac</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <Import Project="CustomBuildActions.targets" />
+  <ItemGroup>
+    <BundleResource Include="Resources\LtoFlash.icns" />
+    <BundleResource Include="Resources\Credits.html" />
+    <BundleResource Include="Resources\LTOFlashApplicationIcon.icns" />
+    <BundleResource Include="Resources\Images\LTOFlashSplash.png">
+      <LogicalName>LTOFlashSplash.png</LogicalName>
+    </BundleResource>
+    <BundleResource Include="full_credits.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Locutus.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

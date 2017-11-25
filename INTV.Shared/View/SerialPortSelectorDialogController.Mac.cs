@@ -138,6 +138,11 @@ namespace INTV.Shared.View
 
         private void HandlePortSelectorPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            this.HandleEventOnMainThread(sender, e, HandlePortSelectorPropertyChangedCore);
+        }
+
+        private void HandlePortSelectorPropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
             switch (e.PropertyName)
             {
                 case SerialPortSelectorViewModel.SelectedSerialPortPropertyName:

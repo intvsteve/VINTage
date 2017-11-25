@@ -236,11 +236,18 @@ namespace INTV.Shared.View
                     }
                 }
             }
-            DataContext.AvailableSerialPorts.CollectionChanged += AvalailablePortsChanged;
-            DataContext.DisabledSerialPorts.CollectionChanged += DisabledPortsChanged;
+            DataContext.AvailableSerialPorts.CollectionChanged += HandleAvailablePortsChanged;
+            DataContext.DisabledSerialPorts.CollectionChanged += HandleDisabledPortsChanged;
         }
 
-        private void HandleWillDisplayCell (object sender, NSTableViewCellEventArgs e)
+        protected override void Dispose(bool disposing)
+        {
+            DataContext.AvailableSerialPorts.CollectionChanged -= HandleAvailablePortsChanged;
+            DataContext.DisabledSerialPorts.CollectionChanged -= HandleDisabledPortsChanged;
+            base.Dispose(disposing);
+        }
+
+        private void HandleWillDisplayCell(object sender, NSTableViewCellEventArgs e)
         {
             var cell = e.Cell as NSTextFieldCell;
             if (cell != null)
@@ -316,13 +323,24 @@ namespace INTV.Shared.View
             return true;
         }
 
-        private void AvalailablePortsChanged (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void HandleAvailablePortsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleAvailablePortsChangedCore);
+        }
+
+        private void HandleAvailablePortsChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             SerialPortsListArrayController.SynchronizeCollection<SerialPortViewModel>(e);
         }
 
-        private void DisabledPortsChanged (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void HandleDisabledPortsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            this.HandleEventOnMainThread(sender, e, HandleDisabledPortsChangedCore);
+        }
+
+        private void HandleDisabledPortsChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // TODO: Is there something we should implement here?
         }
 
         ///<summary>

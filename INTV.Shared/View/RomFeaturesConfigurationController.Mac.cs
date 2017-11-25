@@ -75,7 +75,7 @@ namespace INTV.Shared.View
         private void Initialize()
         {
             ViewModel = new RomFeaturesConfigurationViewModel();
-            ViewModel.PropertyChanged += ViewModelPropertyChanged;
+            ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
             DataContext = ViewModel;
         }
 
@@ -214,21 +214,26 @@ namespace INTV.Shared.View
         public override void AwakeFromNib()
         {
             FeaturePagesArrayController.SynchronizeCollection(ViewModel.FeatureGroups);
-            ViewModelPropertyChanged(ViewModel, new System.ComponentModel.PropertyChangedEventArgs("CurrentSelection"));
-            ViewModelPropertyChanged(ViewModel, new System.ComponentModel.PropertyChangedEventArgs("CurrentSelectionVisual"));
+            HandleViewModelPropertyChanged(ViewModel, new System.ComponentModel.PropertyChangedEventArgs("CurrentSelection"));
+            HandleViewModelPropertyChanged(ViewModel, new System.ComponentModel.PropertyChangedEventArgs("CurrentSelectionVisual"));
         }
 
         /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
-            ViewModel.PropertyChanged -= ViewModelPropertyChanged;
+            ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(
             // base.Dispose(disposing);
         }
 
-        private void ViewModelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleViewModelPropertyChangedCore);
+        }
+
+        private void HandleViewModelPropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

@@ -72,6 +72,24 @@ namespace INTV.Shared.View
         }
 
         /// <summary>
+        /// Ensures that an event handler is invoked on main the thread.
+        /// </summary>
+        /// <param name="instance">Typically a NSController or NSView that must handle an event from a ViewModel.</param>
+        /// <param name="sender">Sender of the orginal event.</param>
+        /// <param name="args">Event data.</param>
+        /// <param name="handler">The event handler to ensure is executed on the main thread.</param>
+        /// <typeparam name="TEventArgs">The data type of the event handler's data.</typeparam>
+        public static void HandleEventOnMainThread<TEventArgs>(this NSResponder instance, object sender, TEventArgs args, System.Action<object, TEventArgs> handler) where TEventArgs : System.EventArgs
+        {
+            if (!OSDispatcher.IsMainThread)
+            {
+                instance.InvokeOnMainThread(() => handler(sender, args));
+                return;
+            }
+            handler(sender, args);
+        }
+
+        /// <summary>
         /// Shows a modal dialog.
         /// </summary>
         /// <param name="window">The dialog to show.</param>

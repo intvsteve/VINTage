@@ -45,6 +45,12 @@ namespace INTV.Shared.View
     , IDisposable
 #endif // IMPLEMENTS_IDISPOSABLE
     {
+        /// <summary>
+        /// The return key code used in the event system.
+        /// </summary>
+        /// <remarks>Do we need another value for enter vs. return... Fn+return on laptop keyboards (or numeric keypad key)?</remarks></remarks>
+        public const ushort ReturnKey = 0x24;
+
 #if USE_APPKIT_CONSTANTS
         private const string AppKitLibrary = "/System/Library/Frameworks/AppKit.framework/AppKit";
         static IntPtr AppKit = MonoMac.ObjCRuntime.Dlfcn.dlopen(AppKitLibrary, 1);

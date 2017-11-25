@@ -277,7 +277,12 @@ namespace INTV.LtoFlash.View
 
         private DeviceViewModel _activeDeviceViewModel;
 
-        private void HandleLtoFlashPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleLtoFlashPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleLtoFlashPropertyChangedCore);
+        }
+
+        private void HandleLtoFlashPropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -301,11 +306,11 @@ namespace INTV.LtoFlash.View
 
         private void HandleActiveDevicePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (!OSDispatcher.IsMainThread)
-            {
-                this.InvokeOnMainThread(() => HandleActiveDevicePropertyChanged(sender, e));
-                return;
-            }
+            this.HandleEventOnMainThread(sender, e, HandleActiveDevicePropertyChangedCore);
+        }
+
+        private void HandleActiveDevicePropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
             switch (e.PropertyName)
             {
                 case "PowerState":
@@ -333,7 +338,12 @@ namespace INTV.LtoFlash.View
             }
         }
 
-        private void HandleMenuLayoutPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleMenuLayoutPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleMenuLayoutPropertyChangedCore);
+        }
+
+        private void HandleMenuLayoutPropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -392,11 +402,8 @@ namespace INTV.LtoFlash.View
                     this.RaiseChangeValueForKey("OverallInUsePercent");
                     break;
             }
-            if (OSDispatcher.IsMainThread)
-            {
-                View.NeedsDisplay = true;
-                RemoveItemButton.ToolTip = ViewModel.DeleteSelectedItemTip.SafeString();
-            }
+            View.NeedsDisplay = true;
+            RemoveItemButton.ToolTip = ViewModel.DeleteSelectedItemTip.SafeString();
         }
 
         private void UpdateDropProgramsHint()
@@ -792,9 +799,9 @@ namespace INTV.LtoFlash.View
                     InPlaceEditor.EditorClosed += InPlaceEditor_EditorClosed;
                     InPlaceEditor.BeginEdit();
                 }
-                else if ((SingleInstanceApplication.Current.LastKeyPressed == 0x24) && (SingleInstanceApplication.Current.LastKeyPressedTimestamp != ReturnKeyTimestamp))
+                else if ((SingleInstanceApplication.Current.LastKeyPressed == TextCellInPlaceEditor.ReturnKey) && (SingleInstanceApplication.Current.LastKeyPressedTimestamp != ReturnKeyTimestamp))
                 {
-                    // return was pressed
+                    // return was pressed -- do we need to check for <enter> vs. <return> (on laptops, Fn+return)?
                     ReturnKeyTimestamp = SingleInstanceApplication.Current.LastKeyPressedTimestamp;
                     if (!outlineView.IsExpandable(item) && DownloadCommandGroup.DownloadAndPlayCommand.CanExecute(ViewModel))
                     {

@@ -183,7 +183,12 @@ namespace Locutus.View
             window.LayoutIfNeeded(); // Ensure that we get a refresh of layout after tinkering with the visual tree.
         }
 
-        private void HandleMenuLayoutPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleMenuLayoutPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleMenuLayoutPropertyChangedCore);
+        }
+
+        private void HandleMenuLayoutPropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == INTV.LtoFlash.ViewModel.MenuLayoutViewModel.CurrentSelectionPropertyName)
             {

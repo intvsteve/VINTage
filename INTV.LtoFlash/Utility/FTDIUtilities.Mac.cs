@@ -58,29 +58,34 @@ namespace INTV.LtoFlash.Utility
         {
             get
             {
-                var versionString = string.Empty; // change to resource for unknown?
-                try
+                var versionString = _versionString;
+                if (string.IsNullOrEmpty(versionString))
                 {
-                    var driverPlistPath = "/Library/Extensions/FTDIUSBSerialDriver.kext/Contents/Info.plist";
-                    if (INTV.Shared.Utility.OSVersion.Current.Minor < UseNewDriverOSMinorVersion)
+                    try
                     {
-                        driverPlistPath = "/System" + driverPlistPath;
-                    }
-                    if (System.IO.File.Exists(driverPlistPath))
-                    {
-                        using (var plist = FileUtilities.OpenFileStream(driverPlistPath))
+                        var driverPlistPath = "/Library/Extensions/FTDIUSBSerialDriver.kext/Contents/Info.plist";
+                        if (INTV.Shared.Utility.OSVersion.Current.Minor < UseNewDriverOSMinorVersion)
                         {
-                            var plistXmlDocument = System.Xml.Linq.XDocument.Load(plist);
-                            versionString = plistXmlDocument.Descendants("key").First(k => k.Value.Equals("CFBundleVersion", StringComparison.Ordinal)).ElementsAfterSelf().First().Value;
+                            driverPlistPath = "/System" + driverPlistPath;
+                        }
+                        if (System.IO.File.Exists(driverPlistPath))
+                        {
+                            using (var plist = FileUtilities.OpenFileStream(driverPlistPath))
+                            {
+                                var plistXmlDocument = System.Xml.Linq.XDocument.Load(plist);
+                                _versionString = plistXmlDocument.Descendants("key").First(k => k.Value.Equals("CFBundleVersion", StringComparison.Ordinal)).ElementsAfterSelf().First().Value;
+                                versionString = _versionString;
+                            }
                         }
                     }
-                }
-                catch (Exception)
-                {
-                    // quietly fail if something goes wrong.
+                    catch (Exception)
+                    {
+                        // Quietly fail if something goes wrong. TODO: Just put an "<unknown>" type value here?
+                    }
                 }
                 return versionString;
             }
         }
+        private static string _versionString = string.Empty; // change to resource for unknown?
     }
 }

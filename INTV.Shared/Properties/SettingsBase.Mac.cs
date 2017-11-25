@@ -172,14 +172,21 @@ namespace INTV.Shared.Properties
         /// <param name="value">The new value for the setting.</param>
         protected void OSSetSetting(string key, object value)
         {
-            Converters converters;
-            if (_converters.TryGetValue(value.GetType(), out converters))
+            if (value == null)
             {
-                converters.Item2(key, value);
+                UserDefaults.RemoveObject(key);
             }
             else
             {
-                throw new InvalidOperationException("No setter for setting: " + key + " of type: " + value.GetType());
+                Converters converters;
+                if (_converters.TryGetValue(value.GetType(), out converters))
+                {
+                    converters.Item2(key, value);
+                }
+                else
+                {
+                    throw new InvalidOperationException("No setter for setting: " + key + " of type: " + value.GetType());
+                }
             }
         }
 

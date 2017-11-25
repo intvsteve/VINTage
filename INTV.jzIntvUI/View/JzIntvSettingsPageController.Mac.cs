@@ -331,6 +331,11 @@ namespace INTV.JzIntvUI.View
 
         private void HandleViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            this.HandleEventOnMainThread(sender, e, HandleViewModelPropertyChangedCore);
+        }
+
+        private void HandleViewModelPropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
             switch (e.PropertyName)
             {
                 case JzIntvSettingsPageViewModel.EnableEcsPropertyName:

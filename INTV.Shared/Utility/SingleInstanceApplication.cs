@@ -309,17 +309,20 @@ namespace INTV.Shared.Utility
 
         private void StartupActionWrapper(Action startupAction)
         {
+            // Disable unused variable warning
+#pragma warning disable 168
             try
             {
                 startupAction();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 // Let this silently fail in release builds.
 #if DEBUG
-                System.Diagnostics.Debug.Assert(false, "Failure in async startup action! Let's see what's going on here, shall we?");
+                System.Diagnostics.Debug.Assert(false, "Failure in async startup action! Let's see what's going on here, shall we?\n" + e);
 #endif // DEBUG
             }
+#pragma warning restore 168
         }
 
         private void ReportStartupActionErrors(List<Tuple<string, Exception>> errors)

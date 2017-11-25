@@ -829,7 +829,12 @@ namespace INTV.LtoFlash.View
             UpdateFirmwareButton.Enabled = FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(ViewModel);
         }
 
-        private void HandleViewModelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleViewModelPropertyChangedCore);
+        }
+
+        private void HandleViewModelPropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -841,7 +846,12 @@ namespace INTV.LtoFlash.View
             }
         }
 
-        private void HandleDevicePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleDevicePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleDevicePropertyChangedCore);
+        }
+
+        private void HandleDevicePropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

@@ -159,8 +159,8 @@ namespace INTV.Shared.View
             HandlePreferenceChanged(null, new System.ComponentModel.PropertyChangedEventArgs(RomListSettingsPageViewModel.ShowRomDetailsPropertyName));
 
             View.RegisterForDraggedTypes(new string[] { NSPasteboard.NSFilenamesType });
-            INTV.Core.Model.Device.Peripheral.PeripheralAttached += (sender, e) => View.NeedsDisplay = true;
-            INTV.Core.Model.Device.Peripheral.PeripheralDetached += (sender, e) => View.NeedsDisplay = true;
+            INTV.Core.Model.Device.Peripheral.PeripheralAttached += HandlePeripheralArrivalOrDeparture;
+            INTV.Core.Model.Device.Peripheral.PeripheralDetached += HandlePeripheralArrivalOrDeparture;
         }
 
         /// <summary>
@@ -207,7 +207,34 @@ namespace INTV.Shared.View
             RomsArrayController.RearrangeObjects();
         }
 
-        private void HandlePreferenceChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        /// <inheritdoc/>
+        protected override void Dispose(bool disposing)
+        {
+            // TODO: Disconnect event handlers?
+            View.ViewModel.Programs.CollectionChanged -= HandleProgramsChanged;
+            View.ViewModel.CurrentSelection.CollectionChanged -= HandleRomListSelectionChanged;
+            INTV.Shared.Properties.Settings.Default.PropertyChanged -= HandlePreferenceChanged;
+            INTV.Core.Model.Device.Peripheral.PeripheralAttached -= HandlePeripheralArrivalOrDeparture;
+            INTV.Core.Model.Device.Peripheral.PeripheralDetached -= HandlePeripheralArrivalOrDeparture;
+            base.Dispose(disposing);
+        }
+
+        private void HandlePeripheralArrivalOrDeparture(object sender, INTV.Core.Model.Device.PeripheralEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandlePeripheralArrivalOrDepartureCore);
+        }
+
+        private void HandlePeripheralArrivalOrDepartureCore(object sender, INTV.Core.Model.Device.PeripheralEventArgs e)
+        {
+            View.NeedsDisplay = true;
+        }
+
+        private void HandlePreferenceChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandlePreferenceChangedCore);
+        }
+
+        private void HandlePreferenceChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -283,11 +310,11 @@ namespace INTV.Shared.View
 
         private void HandleProgramsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (!OSDispatcher.IsMainThread)
-            {
-                this.InvokeOnMainThread(() => HandleProgramsChanged(sender, e));
-                return;
-            }
+            this.HandleEventOnMainThread(sender, e, HandleProgramsChangedCore);
+        }
+
+        private void HandleProgramsChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
             DebugItemChange("ROMS COLLECTION CHANGED");
             switch(e.Action)
             {
@@ -339,11 +366,11 @@ namespace INTV.Shared.View
 
         private void HandleRomListSelectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (!OSDispatcher.IsMainThread)
-            {
-                this.InvokeOnMainThread(() => HandleRomListSelectionChanged(sender, e));
-                return;
-            }
+            this.HandleEventOnMainThread(sender, e, HandleRomListSelectionChangedCore);
+        }
+
+        private void HandleRomListSelectionChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
             var numberOfRoms = View.ViewModel.Programs.Count;
 
             if (numberOfRoms == 0)

@@ -151,7 +151,12 @@ namespace INTV.Shared.View
             ProgressBar.Indeterminate = progressViewModel.IsIndeterminate;
         }
 
-        private void HandlePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandlePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandlePropertyChangedCore);
+        }
+
+        private void HandlePropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var viewModel = ((ProgressIndicatorViewModel)View.DataContext);
             switch (e.PropertyName)

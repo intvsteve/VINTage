@@ -1,5 +1,5 @@
 ﻿// <copyright file="Crc16.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -37,6 +37,11 @@ namespace INTV.Core.Utility
         /*  Programs are free to use the CRC-16 functions contained in this file    */
         /*  for whatever purpose they desire, with no strings attached.             */
         /* ======================================================================== */
+
+        /// <summary>
+        /// The initial value to use for a CRC16.
+        /// </summary>
+        public const ushort InitialValue = 0xffff;
 
         /// <summary>
         /// Lookup table used for the CRC-16 code.
@@ -111,13 +116,10 @@ namespace INTV.Core.Utility
         /// <remarks>The 16-bit CRC is set up as a left-shifting CRC with no inversions.</remarks>
         public static ushort OfBlock(byte[] data, int len, ushort runningValue)
         {
-            int i;
-
-            for (i = 0; i < len; i++)
+            for (var i = 0; i < len; i++)
             {
                 runningValue = (ushort)((runningValue << 8) ^ Crc16Table[(runningValue >> 8) ^ data[i]]);
             }
-
             return runningValue;
         }
     }

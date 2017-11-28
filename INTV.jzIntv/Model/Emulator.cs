@@ -104,8 +104,17 @@ namespace INTV.JzIntv.Model
         public static IEnumerable<Emulator> Instances()
         {
             // NOTE: GetProcessesByName seems *really* slow in macOS 10.12. Slower than 10.8.5 at least.
-            var instances = System.Diagnostics.Process.GetProcessesByName("jzintv");
-            var emulators = instances.Select(p => new Emulator(p.StartInfo.FileName, null) { Process = p });
+            // Also, on Mac OS X 10.8.5, this has been found to throw InvalidOperationException on a dev
+            // machine on occasion, so let's just catch that exception, shall we?
+            var emulators = Enumerable.Empty<Emulator>();
+            try
+            {
+                var instances = System.Diagnostics.Process.GetProcessesByName("jzintv");
+                emulators = instances.Select(p => new Emulator(p.StartInfo.FileName, null) { Process = p });
+            }
+            catch (InvalidOperationException)
+            {
+            }
             return emulators;
         }
 

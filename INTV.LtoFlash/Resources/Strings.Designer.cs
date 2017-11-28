@@ -330,9 +330,9 @@ namespace INTV.LtoFlash.Resources {
         ///
         ///This may occur if LTO Flash! is connected to your computer and a powered-on Intellivision simultaneously, or the device is unplugged from the system during the backup.
         ///
-        ///To avoid this problem, ensure the remains off for the duration of the backup operation. Also, do not unplug your LTO Flash! during the backup.
+        ///To avoid this problem, ensure the Master Component remains off for the duration of the backup operation. Also, do not unplug your LTO Flash! from the computer during the backup.
         ///
-        ///The backup may be incomplete. Would you like to keep it? If you choose &apos;No&apos;, it will be deleted..
+        ///The backup may be incomplete. Would you like to keep it? If you choose &apos;N [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string BackupCommand_Failed_Message_Format {
             get {

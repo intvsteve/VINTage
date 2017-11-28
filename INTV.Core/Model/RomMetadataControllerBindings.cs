@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataControllerBindings.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -301,12 +301,12 @@ namespace INTV.Core.Model
             #region Controller 0: 0x80 - 0x8F
 
             /// <summary>
-            /// Sentinal value for first input for controller 0.
+            /// Sentinel value for first input for controller 0.
             /// </summary>
             Controller0First = Controller0Bits,
 
             /// <summary>
-            /// Sentinal value for last input for controller 0.
+            /// Sentinel value for last input for controller 0.
             /// </summary>
             Controller0Last = Controller0Bits | InputSelectorMask,
 
@@ -395,12 +395,12 @@ namespace INTV.Core.Model
             #region Controller 1: 0x90 - 0x9F
 
             /// <summary>
-            /// Sentinal value for first input for controller 1.
+            /// Sentinel value for first input for controller 1.
             /// </summary>
             Controller1First = Controller1Bits,
 
             /// <summary>
-            /// Sentinal value for last input for controller 1.
+            /// Sentinel value for last input for controller 1.
             /// </summary>
             Controller1Last = Controller1Bits | InputSelectorMask,
 
@@ -489,12 +489,12 @@ namespace INTV.Core.Model
             #region Controller 2: 0xA0 - 0xAF
 
             /// <summary>
-            /// Sentinal value for first input for controller 2.
+            /// Sentinel value for first input for controller 2.
             /// </summary>
             Controller2First = Controller2Bits,
 
             /// <summary>
-            /// Sentinal value for last input for controller 2.
+            /// Sentinel value for last input for controller 2.
             /// </summary>
             Controller2Last = Controller2Bits | InputSelectorMask,
 
@@ -583,12 +583,12 @@ namespace INTV.Core.Model
             #region Controller 3: 0xB0 - 0xBF
 
             /// <summary>
-            /// Sentinal value for first input for controller 3.
+            /// Sentinel value for first input for controller 3.
             /// </summary>
             Controller3First = Controller3Bits,
 
             /// <summary>
-            /// Sentinal value for last input for controller 3.
+            /// Sentinel value for last input for controller 3.
             /// </summary>
             Controller3Last = Controller3Bits | InputSelectorMask,
 
@@ -677,12 +677,12 @@ namespace INTV.Core.Model
             #region Any Controller (Controller 0, 1, 2, or 3): 0xC0 - 0xCF
 
             /// <summary>
-            /// Sentinal value for first input for any controller.
+            /// Sentinel value for first input for any controller.
             /// </summary>
             ControllerAnyFirst = ControllerAnyBits,
 
             /// <summary>
-            /// Sentinal value for last input for any controller.
+            /// Sentinel value for last input for any controller.
             /// </summary>
             ControllerAnyLast = ControllerAnyBits | InputSelectorMask,
 
@@ -771,12 +771,12 @@ namespace INTV.Core.Model
             #region ECS Keyboard: 0xD0 - 0xFF
 
             /// <summary>
-            /// Sentinal value for first input for ECS keyboard.
+            /// Sentinel value for first input for ECS keyboard.
             /// </summary>
             KeyboardFirst = FirstKeyboardInputBits,
 
             /// <summary>
-            /// Sentinal value for last input for ECS keyboard.
+            /// Sentinel value for last input for ECS keyboard.
             /// </summary>
             KeyboardLast = FirstKeyboardInputBits | LastKeyboardInputBits,
 

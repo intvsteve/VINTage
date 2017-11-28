@@ -343,7 +343,7 @@ namespace INTV.LtoFlash.Model
                         fork = FileSystem.Forks.AddFork(Description.GetRom());
                         if (!System.IO.File.Exists(fork.FilePath))
                         {
-                            var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Format, Description.Rom.RomPath, System.IO.Path.GetFileNameWithoutExtension(filePath));
+                            var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Format, Description.Rom.RomPath, fork.FilePath);
                             throw new LuigiFileGenerationException(message, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Description_Format);
                         }
                     }

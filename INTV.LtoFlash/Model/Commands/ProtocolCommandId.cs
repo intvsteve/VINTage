@@ -31,6 +31,8 @@ namespace INTV.LtoFlash.Model.Commands
     /// </summary>
     public enum ProtocolCommandId : byte
     {
+        #region General Commands
+
         /// <summary>
         /// First general-purpose command.
         /// </summary>
@@ -98,6 +100,10 @@ namespace INTV.LtoFlash.Model.Commands
         /// Backdoor command only supported by Locutus simulator, which is used to set "hardware" status flags.
         /// </summary>
         DebugSetHardwareStatus = 0x0F,
+
+        #endregion // General Commands
+
+        #region File System Commands
 
         /// <summary>
         /// Get the file system's statistics.
@@ -179,6 +185,10 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         LfsReformatFileSystem = 0x1F,
 
+        #endregion // File System Commands
+
+        #region Firmware Commands
+
         /// <summary>
         /// Gets the primary, secondary, and active firmware revisions.
         /// </summary>
@@ -199,6 +209,13 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         FirmwareProgramSecondary = 0x23,
 
+        #endregion // Firmware Commands
+
+        // A note regarding reserved commands: This UI software never sends these commands to the device,
+        // as they do not exist in the firmware. This is an abuse of the design, as it is using command IDs
+        // from the reserved space for its own internal purposes.
+        #region Reserved Commands
+
         /// <summary>
         /// Sentinel value indicating start of reserved command ID range.
         /// </summary>
@@ -218,6 +235,8 @@ namespace INTV.LtoFlash.Model.Commands
         /// Represents an unknown command.
         /// </summary>
         UnknownCommand = 0xFF,
+
+        #endregion // Reserved Commands
     }
 
     /// <summary>

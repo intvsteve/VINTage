@@ -414,11 +414,13 @@ namespace INTV.LtoFlash.ViewModel
             var componentVisual = new ComponentVisual(MenuLayoutView.Id, menuLayoutView, "LTO Flash! Menu Layout");
             yield return componentVisual;
         }
+
         // Disable never assigned to warning, since whether this value is assigned to depends on the OS.
         // TODO: Eventually, Mac and Windows will use this... Eventually.
 #pragma warning disable 649
         private System.WeakReference _visual;
 #pragma warning restore 649
+
         #endregion // IPrimaryComponent
 
         /// <summary>

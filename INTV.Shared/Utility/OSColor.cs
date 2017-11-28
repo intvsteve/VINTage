@@ -1,4 +1,4 @@
-﻿// <copyright file="OSColor.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="OSColor.cs" company="INTV Funhouse">
 // Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -46,31 +46,11 @@ namespace INTV.Shared.Utility
             _color = color;
         }
 
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return _color.GetHashCode();
-        }
-
-        /// <inheritdoc/>
-        public override bool Equals(object obj)
-        {
-            if (obj is OSColor)
-            {
-                return object.Equals(_color, ((OSColor)obj)._color);
-            }
-            else if (obj is NativeColor)
-            {
-                return object.Equals(_color, ((NativeColor)obj));
-            }
-            return false;
-        }
-
         /// <summary>Tests two colors for equality.</summary>
         /// <param name="lhs">A color to compare.</param>
         /// <param name="rhs">Another color to compare.</param>
         /// <returns><c>true</c> if the colors are equal.</returns>
-        public static bool operator == (OSColor lhs, OSColor rhs)
+        public static bool operator ==(OSColor lhs, OSColor rhs)
         {
             return object.Equals(lhs._color, rhs._color);
         }
@@ -79,7 +59,7 @@ namespace INTV.Shared.Utility
         /// <param name="lhs">A color to compare.</param>
         /// <param name="rhs">Another color to compare.</param>
         /// <returns><c>true</c> if the colors are not equal.</returns>
-        public static bool operator != (OSColor lhs, OSColor rhs)
+        public static bool operator !=(OSColor lhs, OSColor rhs)
         {
             return !object.Equals(lhs._color, rhs._color);
         }
@@ -98,6 +78,26 @@ namespace INTV.Shared.Utility
         public static implicit operator NativeColor(OSColor color)
         {
             return color._color;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return _color.GetHashCode();
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            if (obj is OSColor)
+            {
+                return object.Equals(_color, ((OSColor)obj)._color);
+            }
+            else if (obj is NativeColor)
+            {
+                return object.Equals(_color, (NativeColor)obj);
+            }
+            return false;
         }
     }
 }

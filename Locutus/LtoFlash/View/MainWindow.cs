@@ -24,6 +24,9 @@ using INTV.Shared.View;
 
 namespace Locutus.View
 {
+    /// <summary>
+    /// Platform-agnostic portion of the implementation.
+    /// </summary>
     public partial class MainWindow : IMainWindow
     {
         #region IMainWindow

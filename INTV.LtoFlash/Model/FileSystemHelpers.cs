@@ -1071,7 +1071,6 @@ namespace INTV.LtoFlash.Model
             try
             {
 #endif // REPORT_PERFORMANCE
-                var deviceId = targetDevice == null ? null : targetDevice.UniqueId;
                 var result = 0;
                 for (int i = 0; (result == 0) && (i < sourceFileSystemTable.Size); ++i)
                 {

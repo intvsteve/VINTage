@@ -1,5 +1,5 @@
 ﻿// <copyright file="UnmergedProgramInformationTable.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -47,6 +47,7 @@ namespace INTV.Core.Model.Program
             new UnmergedProgram("mshm", "Astrosmash / Meteor", Mattel, "1981", new[] { 0x00BE8BBAu, 0xB9BB15EBu }, new[] { string.Empty, string.Empty }),
             new UnmergedProgram("dndc", "Adventure", Mattel, "1982", new[] { 0x11C3BCFAu, 0x36675697u }, new[] { "Advanced Dungeon & Dragons prototype", "Advanced Dungeon & Dragons prototype" }),
             new UnmergedProgram("air", "Air Strike", Mattel, "1982", new[] { 0x2C668249u, 0x677E0C65u }, new[] { "Prototype", "Prototype" }),
+            ////new UnmergedProgram("blow", "Blowout", Mattel, "1982", new[] { ,  }, new[] { "Unreleased", "Unreleased" }),
             new UnmergedProgram("scad", "Space Cadet", Mattel, "1982", new[] { 0xF8EF3E5Au, 0x44F676A6u }, new[] { "Unreleased", "Unreleased" }),
             new UnmergedProgram("czyc", "Crazy Clones", Mattel, "1981", new[] { 0xE1EE408Fu, 0x6E2A2FF8u }, new[] { "Prototype", "Prototype" }),
             new UnmergedProgram("78a", "Mattel Demonstration Cartridge", Mattel, "1978", new[] { 0x0487675Cu, 0xDC9CA967u }, new[] { "Revised", "Revised" }),
@@ -82,6 +83,8 @@ namespace INTV.Core.Model.Program
             new UnmergedProgram("upng", "Ultimate Pong", "Intellivision Revolution", "2016", new[] { 0x9FAC74A0u, 0x8590788Au, 0x2C020099u, 0xD868176Fu, 0x1716CC79u, 0x7F76E3CAu, 0xFDFEB70Au, 0x88AC9B98u, 0x83317B00u, 0xA4BBCD2Du }, new[] { "v2", "v2", "v3", "v3", "v4", "v4", "v5", "v5", "v6", "v6" }, EcsFeatures.Enhances),
             new UnmergedProgram("smf", "Super Mine-Field", "CollectorVision", "2016", new[] { 0x4A823F45u, 0xC1F16FA6u, 0x44F88BB2u, 0x0A6D052Du, 0x42B58218u, 0x3F746DF9u, 0x19542F38u, 0x4170603Fu }, new[] { string.Empty, string.Empty, "v1", "v1", "v2", "v2", "v3", "v3" }),
             new UnmergedProgram("spgs", "Super Pro Gosub", "Intellivision Revolution", "2016", new[] { 0x64ACF739u, 0xFC7C9B9Bu, 0x73B69904u, 0x7555CAD6u, 0x2611F934u, 0xECFFF425u }, new[] { "proto v5", "proto v5", "proto v6", "proto v6", "proto v6.1", "proto v6.1" }, EcsFeatures.Incompatible),
+            ////new UnmergedProgram("isv1", "IntyBASIC Showcase Volume 1", "Intellivision Revolution", "2016", new[] { ,  }, new[] { string.Empty, string.Empty }),
+            ////new UnmergedProgram("db", "Desert Bus", "Freewheeling Games", "2016", new[] { ,  }, new[] { string.Empty, string.Empty}),
         };
 
         private static readonly UnmergedProgramInformationTable TheInstance = new UnmergedProgramInformationTable();

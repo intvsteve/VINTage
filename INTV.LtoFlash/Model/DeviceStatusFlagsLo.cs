@@ -21,7 +21,7 @@
 namespace INTV.LtoFlash.Model
 {
     /// <summary>
-    /// These flags identify the low 8 bytes of status flags available from a Locutus device.
+    /// These flags identify the low 8 bytes (64 bits) of status flags available from a Locutus device.
     /// </summary>
     /// <remarks>Presently, these flags consist of three separate subdivisions: Hardware status (four bytes),
     /// Intellivision II status (one byte), and ECS status (one byte). The remaining two bytes are reserved.</remarks>
@@ -31,7 +31,7 @@ namespace INTV.LtoFlash.Model
         /// <summary>
         /// No status flags are set.
         /// </summary>
-        None  = 0,
+        None = 0,
 
         #region Hardware Flags
 
@@ -243,7 +243,7 @@ namespace INTV.LtoFlash.Model
         /// <summary>
         /// Location in the bit array where the background garbage collection bit is set.
         /// </summary>
-        internal const int BackgroundGCBitsOffset = SaveMenuPositionBitsOffset + SaveMenuPositionBitCount;
+        internal const int BackgroundGCBitsOffset = SaveMenuPositionBitsOffset + SaveMenuPositionBitCount; // (52)
 
         private const int BackgroundGCBitCount = 1;
 
@@ -254,7 +254,7 @@ namespace INTV.LtoFlash.Model
         /// <summary>
         /// Location in the bit array where the keyclicks bit is set.
         /// </summary>
-        internal const int KeyclicksBitsOffset = BackgroundGCBitsOffset + BackgroundGCBitCount;
+        internal const int KeyclicksBitsOffset = BackgroundGCBitsOffset + BackgroundGCBitCount; // (53)
 
         private const int KeyclicksBitCount = 1;
 

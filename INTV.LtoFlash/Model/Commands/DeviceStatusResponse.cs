@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceStatusResponse.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -30,7 +30,11 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public const int FlatSizeInBytes = UniqueIdSize + StatusBytesSize;
 
-        private const int UniqueIdSize = 16;
+        /// <summary>
+        /// The size of the unique identifier, in bytes.
+        /// </summary>
+        internal const int UniqueIdSize = 16;
+
         private const int StatusBytesSize = sizeof(DeviceStatusFlagsLo) + sizeof(DeviceStatusFlagsHi);
 
         #region Properties

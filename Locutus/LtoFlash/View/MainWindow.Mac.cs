@@ -30,6 +30,7 @@ using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 using Locutus.ViewModel;
+
 namespace Locutus.View
 {
     /// <summary>

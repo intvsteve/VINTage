@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomFileMetadataProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -40,7 +40,7 @@ namespace INTV.Core.Model.Program
         /// <param name="rom">The ROM from which program information is collected.</param>
         public RomFileMetadataProgramInformation(IRom rom)
         {
-            _features = ProgramFeatures.EmptyFeatures.Clone();
+            _features = ProgramFeatures.DefaultFeatures.Clone();
             Metadata = Enumerable.Empty<RomMetadataBlock>();
             var romFormatRom = Rom.AsSpecificRomType<RomFormatRom>(rom);
             if (romFormatRom != null)

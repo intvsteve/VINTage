@@ -50,7 +50,6 @@
     <UseRefCounting>false</UseRefCounting>
     <HttpClientHandler>HttpClientHandler</HttpClientHandler>
     <TlsProvider>Default</TlsProvider>
-    <LinkMode>None</LinkMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -61,6 +61,7 @@ JZINTV_UTILITIES = \
   bin2rom \
   intvname \
   luigi2bin \
+  rom_merge \
   rom2bin \
   rom2luigi
 

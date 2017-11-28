@@ -414,8 +414,11 @@ namespace INTV.LtoFlash.ViewModel
             var componentVisual = new ComponentVisual(MenuLayoutView.Id, menuLayoutView, "LTO Flash! Menu Layout");
             yield return componentVisual;
         }
+        // Disable never assigned to warning, since whether this value is assigned to depends on the OS.
+        // TODO: Eventually, Mac and Windows will use this... Eventually.
+#pragma warning disable 649
         private System.WeakReference _visual;
-
+#pragma warning restore 649
         #endregion // IPrimaryComponent
 
         /// <summary>
@@ -997,12 +1000,13 @@ namespace INTV.LtoFlash.ViewModel
                     hostFileSystem.SuppressRootFileNameDifferences(ActiveLtoFlashDevice.Device); // TODO: Instead of this, offer option to ignore file name compares on root?
                     hostFileSystem.RemoveMenuPositionData();
                     hostFileSystem.PopulateSaveDataForksFromDevice(deviceFileSystem);
-                    var deviceSaveMenuPositionFork = deviceFileSystem.RemoveMenuPositionData();
 #if USE_SIMPLE_FILE_SYSTEM_COMPARE
                     // TODO: If this is still too slow, farm off to another thread!
+                    deviceFileSystem.RemoveMenuPositionData();
                     _cachedFileSystemsCompareResult = hostFileSystem.SimpleCompare(deviceFileSystem, ActiveLtoFlashDevice.Device);
                     showFileSystemsDifferIcon = _cachedFileSystemsCompareResult.Value != 0;
 #else
+                    var deviceSaveMenuPositionFork = deviceFileSystem.RemoveMenuPositionData();
                     var differences = hostFileSystem.CompareTo(deviceFileSystem, ActiveLtoFlashDevice.Device, true); // TODO: reevaluate if this is needed
                     if (deviceSaveMenuPositionFork != null)
                     {

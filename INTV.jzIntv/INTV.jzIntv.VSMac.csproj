@@ -114,6 +114,10 @@
       <Link>tools\intvname</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="tools\Mac\rom_merge">
+      <Link>tools\rom_merge</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="tools\Mac\rom2bin">
       <Link>tools\rom2bin</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

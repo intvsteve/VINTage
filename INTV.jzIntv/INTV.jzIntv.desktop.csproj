@@ -91,6 +91,9 @@
     <Content Include="tools\luigi2bin.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="tools\rom_merge.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="tools\rom2luigi.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -47,6 +47,12 @@ namespace INTV.Core.Model.Program
             Hive = HiveFeatures.Incompatible
         };
 
+        /// <summary>
+        /// A set of default features.
+        /// </summary>
+        /// <remarks>NOTE: This does not assume 'unknown' for the GeneralFeatures field.</remarks>
+        public static readonly ProgramFeatures DefaultFeatures = new ProgramFeatures(GeneralFeatures.None, FeatureCompatibility.Tolerates, FeatureCompatibility.Tolerates);
+
         private System.Collections.Generic.Dictionary<FeatureCategory, uint> _features;
 
         #region Constructors

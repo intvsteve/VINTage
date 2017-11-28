@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataIdTag.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -64,6 +64,9 @@ namespace INTV.Core.Model
 
         /// <summary>The release license for the ROM.</summary>
         License = 0x09,
+
+        /// <summary>/// A description of the game./// </summary>
+        Description = 0x0A,
 
         //// IDs 0x10 - 0x1F are reserved for future use.
 

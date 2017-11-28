@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -98,19 +98,18 @@ namespace INTV.Core.Model
         public static RomMetadataBlock Inflate(INTV.Core.Utility.BinaryReader reader)
         {
             RomMetadataBlock metadataBlock = null;
-            int numBytesInPayloadLength;
-            var payloadLength = DecodeLength(reader, out numBytesInPayloadLength);
-            metadataBlock._deserializeByteCount = (int)payloadLength + numBytesInPayloadLength;
+            int additionalBytesInPayloadLength;
+            var payloadLength = DecodeLength(reader, out additionalBytesInPayloadLength);
             var metadataBlockType = RomMetadataIdTag.Ignore;
             if (payloadLength > 0)
             {
                 metadataBlockType = (RomMetadataIdTag)reader.ReadByte();
-                metadataBlock._deserializeByteCount += CrcByteCount + sizeof(RomMetadataIdTag);
                 switch (metadataBlockType)
                 {
                     case RomMetadataIdTag.Title:
                     case RomMetadataIdTag.ShortTitle:
                     case RomMetadataIdTag.License:
+                    case RomMetadataIdTag.Description:
                         metadataBlock = new RomMetadataString(payloadLength, metadataBlockType);
                         break;
                     case RomMetadataIdTag.ReleaseDate:
@@ -133,7 +132,14 @@ namespace INTV.Core.Model
                         metadataBlock = new RomMetadataBlock(payloadLength, metadataBlockType);
                         break;
                 }
+                metadataBlock._deserializeByteCount = (int)payloadLength + additionalBytesInPayloadLength + 1 + CrcByteCount + sizeof(RomMetadataIdTag);
                 metadataBlock.Deserialize(reader);
+                // Re-reading the block is more expensive than having a running CRC16 but it's easier to implement. :P
+                var numBytesInForCrc = metadataBlock._deserializeByteCount - CrcByteCount;
+                reader.BaseStream.Seek(-numBytesInForCrc, System.IO.SeekOrigin.Current);
+                var crc16 = INTV.Core.Utility.Crc16.OfBlock(reader.ReadBytes(numBytesInForCrc), INTV.Core.Utility.Crc16.InitialValue);
+                metadataBlock.Crc = (ushort)(((int)reader.ReadByte() << 8) | reader.ReadByte());
+                // TODO: Report error if CRCs do not match.
             }
             return metadataBlock;
         }
@@ -174,12 +180,12 @@ namespace INTV.Core.Model
             return Length;
         }
 
-        private static uint DecodeLength(Core.Utility.BinaryReader reader, out int numBytesInPayloadLength)
+        private static uint DecodeLength(Core.Utility.BinaryReader reader, out int additionalBytesInPayloadLength)
         {
             var data = reader.ReadByte();
             uint payloadLength = (uint)(data & ~PayloadLengthMask); // low 6 bits are the low 6 bits of payload length
-            numBytesInPayloadLength = (data & PayloadLengthMask) >> PayloadLengthBitShift;
-            for (var i = 0; i < numBytesInPayloadLength; ++i)
+            additionalBytesInPayloadLength = (data & PayloadLengthMask) >> PayloadLengthBitShift;
+            for (var i = 0; i < additionalBytesInPayloadLength; ++i)
             {
                 uint partialLengthBits = reader.ReadByte();
                 partialLengthBits = partialLengthBits << ((i * 8) + PayloadLengthBitShift);

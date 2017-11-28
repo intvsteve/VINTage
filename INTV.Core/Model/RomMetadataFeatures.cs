@@ -63,9 +63,9 @@ namespace INTV.Core.Model
                 // The first byte contains compatibility:
                 // .   7   6   5   4   3   2   1   0
                 // +---+---+---+---+---+---+---+---+
-                // |  ECS  | 4CTRL | VOICE | KEYBD |    byte 0
+                // |  ECS  | rsvd | VOICE | KEYBD |    byte 0
                 // +---+---+---+---+---+---+---+---+
-                Features = new ProgramFeatures();
+                Features = ProgramFeatures.DefaultFeatures.Clone();
                 var featureBits = reader.ReadByte();
                 --remainingPayload;
 
@@ -77,8 +77,8 @@ namespace INTV.Core.Model
                 compatibility = RawFeatureToFeatureCompatibility((featureBits >> 2) & FeatureMask);
                 Features.Intellivoice = compatibility;
 
-                // Bits 4,5 are 4-controller capability (ignored)
-                compatibility = RawFeatureToFeatureCompatibility((featureBits >> 4) & FeatureMask);
+                // Bits 4,5 are reserved (used to be 4-controller capability) (ignored)
+                ////compatibility = RawFeatureToFeatureCompatibility((featureBits >> 4) & FeatureMask);
 
                 // Bits 6,7 are ECS compatibility.
                 compatibility = RawFeatureToFeatureCompatibility((featureBits >> 6) & FeatureMask);

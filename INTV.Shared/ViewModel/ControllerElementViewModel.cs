@@ -61,26 +61,6 @@ namespace INTV.Shared.ViewModel
             { ControllerKeys.ActionKeyBottomRight, "controller_action_right_24x64.png" },
         };
 
-        private static readonly Dictionary<ControllerKeys, string> Names = new Dictionary<ControllerKeys, string>()
-        {
-            { ControllerKeys.Keypad1, "1" },
-            { ControllerKeys.Keypad2, "2" },
-            { ControllerKeys.Keypad3, "3" },
-            { ControllerKeys.Keypad4, "4" },
-            { ControllerKeys.Keypad5, "5" },
-            { ControllerKeys.Keypad6, "6" },
-            { ControllerKeys.Keypad7, "7" },
-            { ControllerKeys.Keypad8, "8" },
-            { ControllerKeys.Keypad9, "9" },
-            { ControllerKeys.KeypadClear, "clear" },
-            { ControllerKeys.Keypad0, "0" },
-            { ControllerKeys.KeypadEnter, "enter" },
-            { ControllerKeys.ActionKeyTop, "TOP" },
-            { ControllerKeys.ActionKeyTop | ControllerKeys.NoneActive, "TOP" },
-            { ControllerKeys.ActionKeyBottomLeft, "LEFT" },
-            { ControllerKeys.ActionKeyBottomRight, "RIGHT" },
-        };
-
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.ViewModel.ControllerElementViewModel"/> class.
         /// </summary>
@@ -88,15 +68,11 @@ namespace INTV.Shared.ViewModel
         public ControllerElementViewModel(ControllerKeys key)
         {
             Key = key;
-            var value = string.Empty;
-            if (!Names.TryGetValue(key, out value))
+            Name = (key & ~ControllerKeys.NoneActive).ToDisplayString();
+            string imageResource;
+            if (ResourceStrings.TryGetValue(key, out imageResource))
             {
-                value = string.Empty;
-            }
-            Name = value;
-            if (ResourceStrings.TryGetValue(key, out value))
-            {
-                Image = typeof(ControllerElementViewModel).LoadImageResource("ViewModel/Resources/Images/" + value);
+                Image = typeof(ControllerElementViewModel).LoadImageResource("ViewModel/Resources/Images/" + imageResource);
             }
         }
 

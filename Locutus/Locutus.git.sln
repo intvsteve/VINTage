@@ -7,6 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LtoFlash.desktop", "LtoFlas
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WindowsAPICodePack", "WindowsAPICodePack", "{89D4579C-5E17-45DF-861F-5034647E9D24}"
+	ProjectSection(SolutionItems) = preProject
+		..\WindowsAPICodePack\LICENSE.txt = ..\WindowsAPICodePack\LICENSE.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\WindowsAPICodePack\Core\Core.csproj", "{2E1FB0DF-F9BB-4909-9F32-2D9D022A8E57}"
 EndProject

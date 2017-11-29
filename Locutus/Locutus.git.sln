@@ -7,6 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LtoFlash.desktop", "LtoFlas
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WindowsAPICodePack", "WindowsAPICodePack", "{89D4579C-5E17-45DF-861F-5034647E9D24}"
+	ProjectSection(SolutionItems) = preProject
+		..\WindowsAPICodePack\LICENSE.txt = ..\WindowsAPICodePack\LICENSE.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\WindowsAPICodePack\Core\Core.csproj", "{2E1FB0DF-F9BB-4909-9F32-2D9D022A8E57}"
 EndProject
@@ -33,44 +36,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.desktop", "..\INTV.jzIntvUI\INTV.jzIntvUI.desktop.csproj", "{F5D99023-C6DE-472F-9D8F-055DEDDB0046}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://astrosmash:8080/tfs/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = ..\\WindowsAPICodePack\\Core\\Core.csproj
-		SccProjectTopLevelParentUniqueName1 = Locutus.svn.sln
-		SccProjectName1 = ../WindowsAPICodePack/Core
-		SccLocalPath1 = ..\\WindowsAPICodePack\\Core
-		SccProjectUniqueName2 = ..\\WindowsAPICodePack\\Shell\\Shell.csproj
-		SccProjectTopLevelParentUniqueName2 = Locutus.svn.sln
-		SccProjectName2 = ../WindowsAPICodePack/Shell
-		SccLocalPath2 = ..\\WindowsAPICodePack\\Shell
-		SccProjectUniqueName3 = ..\\INTV.Core\\INTV.Core.pcl.csproj
-		SccProjectName3 = ../INTV.Core
-		SccLocalPath3 = ..\\INTV.Core
-		SccProjectUniqueName4 = ..\\INTV.Shared\\INTV.Shared.desktop.csproj
-		SccProjectName4 = ../INTV.Shared
-		SccLocalPath4 = ..\\INTV.Shared
-		SccProjectUniqueName5 = ..\\INTV.Ribbon\\INTV.Ribbon.csproj
-		SccProjectName5 = ../INTV.Ribbon
-		SccLocalPath5 = ..\\INTV.Ribbon
-		SccProjectUniqueName6 = ..\\INTV.LtoFlash\\INTV.LtoFlash.desktop.csproj
-		SccProjectName6 = ../INTV.LtoFlash
-		SccLocalPath6 = ..\\INTV.LtoFlash
-		SccProjectUniqueName7 = ..\\INTV.jzIntv\\INTV.jzIntv.desktop.csproj
-		SccProjectName7 = ../INTV.jzIntv
-		SccLocalPath7 = ..\\INTV.jzIntv
-		SccProjectUniqueName8 = LtoFlash\\LtoFlash.desktop.csproj
-		SccProjectName8 = LtoFlash
-		SccLocalPath8 = LtoFlash
-		SccProjectUniqueName9 = ..\\INTV.Intellicart\\INTV.Intellicart.desktop.csproj
-		SccProjectName9 = ../INTV.Intellicart
-		SccLocalPath9 = ..\\INTV.Intellicart
-		SccProjectUniqueName10 = ..\\INTV.jzIntvUI\\INTV.jzIntvUI.desktop.csproj
-		SccProjectName10 = ../INTV.jzIntvUI
-		SccLocalPath10 = ..\\INTV.jzIntvUI
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
 		CD_ROM|Mixed Platforms = CD_ROM|Mixed Platforms

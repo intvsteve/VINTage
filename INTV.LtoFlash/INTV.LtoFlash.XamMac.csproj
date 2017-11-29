@@ -240,9 +240,7 @@
     <Compile Include="Model\CrashLog.cs" />
     <Compile Include="Model\Commands\DownloadCrashLog.cs" />
     <Compile Include="Model\Commands\EraseCrashLog.cs" />
-    <Compile Include="Model\LuigiGenerationMode.cs" />
-    <Compile Include="Model\LfsOperationFailure.cs" />
-    <Compile Include="Model\MenuSaveCompleteEventArgs.cs" />
+    <Compile Include="Model\ControllerKeyValidationFlags.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateDeviceName.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateDeviceOwner.cs" />
     <Compile Include="Model\DeviceHelpers.DownloadAndPlay.cs" />
@@ -262,6 +260,9 @@
     <Compile Include="Model\DeviceHelpers.UpdateFirmware.cs" />
     <Compile Include="Model\DeviceHelpers.SyncHostToDevice.cs" />
     <Compile Include="Model\DeviceHelpers.SyncDeviceToHost.cs" />
+    <Compile Include="Model\LfsOperationFailure.cs" />
+    <Compile Include="Model\LuigiGenerationMode.cs" />
+    <Compile Include="Model\MenuSaveCompleteEventArgs.cs" />
     <Compile Include="Model\SerialConnectionPolicy.Mac.cs" />
     <Compile Include="Model\SerialConnectionPolicy.cs" />
     <Compile Include="View\MenuLayoutView.cs" />

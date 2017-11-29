@@ -2922,6 +2922,105 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Matches controller disc position + action key input: {0}..
+        /// </summary>
+        internal static string KeyCombination_AliasesDiscPositionPlusActionKey_Format {
+            get {
+                return ResourceManager.GetString("KeyCombination_AliasesDiscPositionPlusActionKey_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string KeyCombination_ExactHardwareMatch {
+            get {
+                return ResourceManager.GetString("KeyCombination_ExactHardwareMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches key combination used to reset the console..
+        /// </summary>
+        internal static string KeyCombination_MatchesResetConsole {
+            get {
+                return ResourceManager.GetString("KeyCombination_MatchesResetConsole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matches key combination used to reset to the configuration menu..
+        /// </summary>
+        internal static string KeyCombination_MatchesResetToMenu {
+            get {
+                return ResourceManager.GetString("KeyCombination_MatchesResetToMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;not set&gt;.
+        /// </summary>
+        internal static string KeyCombination_NotSet {
+            get {
+                return ResourceManager.GetString("KeyCombination_NotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only one key selected. Use up to four..
+        /// </summary>
+        internal static string KeyCombination_OnlyOneKeySet {
+            get {
+                return ResourceManager.GetString("KeyCombination_OnlyOneKeySet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reserved by system..
+        /// </summary>
+        internal static string KeyCombination_ReservedBySystem {
+            get {
+                return ResourceManager.GetString("KeyCombination_ReservedBySystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key combination for Reset Console: {0}.
+        /// </summary>
+        internal static string KeyCombination_ResetConsole_Format {
+            get {
+                return ResourceManager.GetString("KeyCombination_ResetConsole_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key combination for Reset to Menu: {0}.
+        /// </summary>
+        internal static string KeyCombination_ResetToMenu_Format {
+            get {
+                return ResourceManager.GetString("KeyCombination_ResetToMenu_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many keys selected. Use up to four..
+        /// </summary>
+        internal static string KeyCombination_TooManyKeysSet {
+            get {
+                return ResourceManager.GetString("KeyCombination_TooManyKeysSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid.
+        /// </summary>
+        internal static string KeyCombination_Valid {
+            get {
+                return ResourceManager.GetString("KeyCombination_Valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Launch FTDI Driver Installer.
         /// </summary>
         internal static string LaunchFtdiDriverInstallerCommand_Name {

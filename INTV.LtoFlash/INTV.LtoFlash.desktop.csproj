@@ -119,6 +119,7 @@
     <Compile Include="Model\Commands\ValidateFirmwareImageInRam.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\ConnectionState.cs" />
+    <Compile Include="Model\ControllerKeyValidationFlags.cs" />
     <Compile Include="Model\CrashLog.cs" />
     <Compile Include="Model\Device.cs" />
     <Compile Include="Model\DeviceCommandAvailability.cs" />

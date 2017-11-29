@@ -2438,4 +2438,37 @@ is too small ({1} bytes)</value>
   <data name="SettingsPage_VerifyVIDandPIDBeforeConnecting" xml:space="preserve">
     <value>Only connect to devices that can be identified as LTO Flash!</value>
   </data>
+  <data name="KeyCombination_AliasesDiscPositionPlusActionKey_Format" xml:space="preserve">
+    <value>Matches controller disc position + action key input: {0}.</value>
+  </data>
+  <data name="KeyCombination_ExactHardwareMatch" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KeyCombination_MatchesResetConsole" xml:space="preserve">
+    <value>Matches key combination used to reset the console.</value>
+  </data>
+  <data name="KeyCombination_MatchesResetToMenu" xml:space="preserve">
+    <value>Matches key combination used to reset to the configuration menu.</value>
+  </data>
+  <data name="KeyCombination_NotSet" xml:space="preserve">
+    <value>&lt;not set&gt;</value>
+  </data>
+  <data name="KeyCombination_OnlyOneKeySet" xml:space="preserve">
+    <value>Only one key selected. Use up to four.</value>
+  </data>
+  <data name="KeyCombination_ReservedBySystem" xml:space="preserve">
+    <value>Reserved by system.</value>
+  </data>
+  <data name="KeyCombination_ResetConsole_Format" xml:space="preserve">
+    <value>Key combination for Reset Console: {0}</value>
+  </data>
+  <data name="KeyCombination_ResetToMenu_Format" xml:space="preserve">
+    <value>Key combination for Reset to Menu: {0}</value>
+  </data>
+  <data name="KeyCombination_TooManyKeysSet" xml:space="preserve">
+    <value>Too many keys selected. Use up to four.</value>
+  </data>
+  <data name="KeyCombination_Valid" xml:space="preserve">
+    <value>Valid</value>
+  </data>
 </root>

@@ -16,7 +16,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specifications", "Specifications", "{4B0B90D6-FC58-41BA-BBB3-3FC48610CCB1}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\doc\lfs_v2.txt = ..\..\doc\lfs_v2.txt
-		..\..\doc\locutus_file_system.txt = ..\..\doc\locutus_file_system.txt
 		..\..\doc\locutus_operating_modes.txt = ..\..\doc\locutus_operating_modes.txt
 		..\..\doc\luigi_format.txt = ..\..\doc\luigi_format.txt
 		..\..\doc\wire_protocol.txt = ..\..\doc\wire_protocol.txt
@@ -154,5 +153,11 @@ Global
 		$3.inheritsSet = Mono
 		$3.inheritsScope = text/x-csharp
 		$3.scope = text/x-csharp
+		$3.SpacingAfterMethodDeclarationName = False
+		$3.SpaceAfterMethodCallName = False
+		$3.SpaceBeforeOpenSquareBracket = False
+		$0.StandardHeader = $4
+		$4.Text = @// <copyright file=".cs" company="INTV Funhouse">\n// Copyright (c) 2014-2016 All Rights Reserved\n// <author>Steven A. Orth</author>\n//\n// This program is free software: you can redistribute it and/or modify it\n// under the terms of the GNU General Public License as published by the\n// Free Software Foundation, either version 2 of the License, or (at your\n// option) any later version.\n//\n// This program is distributed in the hope that it will be useful, but\n// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\n// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\n// for more details.\n//\n// You should have received a copy of the GNU General Public License along\n// with this software. If not, see: http://www.gnu.org/licenses/.\n// or write to the Free Software Foundation, Inc.,\n// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA\n// </copyright>\n
+		$4.IncludeInNewFiles = True
 	EndGlobalSection
 EndGlobal

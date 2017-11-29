@@ -10,13 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Core.xp", "..\INTV.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Shared.xp", "..\INTV.Shared\INTV.Shared.xp.csproj", "{C852CAA1-ABE8-45D7-8BC5-94B61B71617A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specifications", "Specifications", "{9AE9D3F3-27E7-4B5E-9455-BA1F39A2F360}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\doc\lfs_v2.txt = ..\..\doc\lfs_v2.txt
-		..\..\doc\luigi_format.txt = ..\..\doc\luigi_format.txt
-		..\..\doc\wire_protocol.txt = ..\..\doc\wire_protocol.txt
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Ribbon.xp", "..\INTV.Ribbon\INTV.Ribbon.xp.csproj", "{5C833300-A573-4F08-92E7-B02C7E8AA41D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.xp", "..\INTV.LtoFlash\INTV.LtoFlash.xp.csproj", "{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}"

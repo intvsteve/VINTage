@@ -27,36 +27,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.xp", "..\INTV.jzIntvUI\INTV.jzIntvUI.xp.csproj", "{E3A74F20-E27F-42BF-9ED7-48B033B878FE}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 9
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://astrosmash:8080/tfs/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = ..\\INTV.Core\\INTV.Core.xp.csproj
-		SccProjectName1 = ../INTV.Core
-		SccLocalPath1 = ..\\INTV.Core
-		SccProjectUniqueName2 = ..\\INTV.Shared\\INTV.Shared.xp.csproj
-		SccProjectName2 = ../INTV.Shared
-		SccLocalPath2 = ..\\INTV.Shared
-		SccProjectUniqueName3 = ..\\INTV.Ribbon\\INTV.Ribbon.xp.csproj
-		SccProjectName3 = ../INTV.Ribbon
-		SccLocalPath3 = ..\\INTV.Ribbon
-		SccProjectUniqueName4 = ..\\INTV.LtoFlash\\INTV.LtoFlash.xp.csproj
-		SccProjectName4 = ../INTV.LtoFlash
-		SccLocalPath4 = ..\\INTV.LtoFlash
-		SccProjectUniqueName5 = LtoFlash\\LtoFlash.xp.csproj
-		SccProjectName5 = LtoFlash
-		SccLocalPath5 = LtoFlash
-		SccProjectUniqueName6 = ..\\INTV.jzIntv\\INTV.jzIntv.xp.csproj
-		SccProjectName6 = ../INTV.jzIntv
-		SccLocalPath6 = ..\\INTV.jzIntv
-		SccProjectUniqueName7 = ..\\INTV.Intellicart\\INTV.Intellicart.xp.csproj
-		SccProjectName7 = ../INTV.Intellicart
-		SccLocalPath7 = ..\\INTV.Intellicart
-		SccProjectUniqueName8 = ..\\INTV.jzIntvUI\\INTV.jzIntvUI.xp.csproj
-		SccProjectName8 = ../INTV.jzIntvUI
-		SccLocalPath8 = ..\\INTV.jzIntvUI
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
 		CD_ROM|Mixed Platforms = CD_ROM|Mixed Platforms

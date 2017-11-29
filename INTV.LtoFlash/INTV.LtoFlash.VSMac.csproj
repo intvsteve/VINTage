@@ -243,6 +243,7 @@
     <Compile Include="Model\LuigiGenerationMode.cs" />
     <Compile Include="Model\LfsOperationFailure.cs" />
     <Compile Include="Model\MenuSaveCompleteEventArgs.cs" />
+    <Compile Include="Model\ControllerKeyValidationFlags.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateDeviceName.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateDeviceOwner.cs" />
     <Compile Include="Model\DeviceHelpers.DownloadAndPlay.cs" />

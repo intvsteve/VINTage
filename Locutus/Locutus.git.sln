@@ -16,14 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Core.pcl", "..\INTV.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Shared.desktop", "..\INTV.Shared\INTV.Shared.desktop.csproj", "{C852CAA1-ABE8-45D7-8BC5-94B61B71617A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specifications", "Specifications", "{D2058AC5-2714-48EF-A38C-E9671119866A}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\doc\lfs_v2.txt = ..\..\doc\lfs_v2.txt
-		..\..\doc\locutus_operating_modes.txt = ..\..\doc\locutus_operating_modes.txt
-		..\..\doc\luigi_format.txt = ..\..\doc\luigi_format.txt
-		..\..\doc\wire_protocol.txt = ..\..\doc\wire_protocol.txt
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Ribbon", "..\INTV.Ribbon\INTV.Ribbon.csproj", "{36F9511F-4B39-4320-A1AC-C11AB6297C06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.desktop", "..\INTV.LtoFlash\INTV.LtoFlash.desktop.csproj", "{A1376EF6-C8CE-4A9C-A6E1-1BAF764E5E89}"

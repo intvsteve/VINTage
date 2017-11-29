@@ -193,6 +193,34 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            var areEqual = base.Equals(obj);
+            var other = obj as FileSystemStatistics;
+            if (other != null)
+            {
+                areEqual = (VirtualBlocksAvailable == other.VirtualBlocksAvailable) &&
+                           (VirtualBlocksTotal == other.VirtualBlocksTotal) &&
+                           (PhysicalSectorsClean == other.PhysicalSectorsClean) && 
+                           (PhysicalBlocksTotal == other.PhysicalBlocksTotal) &&
+                           (PhysicalSectorErasures == other.PhysicalSectorErasures) &&
+                           (MetadataSectorErasures == other.MetadataSectorErasures) &&
+                           (VirtualToPhysicalMapVersion == other.VirtualToPhysicalMapVersion);
+                           // ignoring ReservedData
+            }
+            return areEqual;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            int hashCode = (VirtualBlocksAvailable << 16) | VirtualBlocksTotal;
+            hashCode ^= (PhysicalSectorsClean << 16) | PhysicalBlocksTotal;
+            hashCode ^= (int)(PhysicalSectorErasures ^ MetadataSectorErasures ^ VirtualToPhysicalMapVersion);
+            return hashCode;
+        }
+
+        /// <inheritdoc />
         protected override int Deserialize(INTV.Core.Utility.BinaryReader reader)
         {
             VirtualBlocksAvailable = reader.ReadUInt16();

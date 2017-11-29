@@ -13,7 +13,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specifications", "Specifications", "{9AE9D3F3-27E7-4B5E-9455-BA1F39A2F360}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\doc\lfs_v2.txt = ..\..\doc\lfs_v2.txt
-		..\..\doc\locutus_file_system.txt = ..\..\doc\locutus_file_system.txt
 		..\..\doc\luigi_format.txt = ..\..\doc\luigi_format.txt
 		..\..\doc\wire_protocol.txt = ..\..\doc\wire_protocol.txt
 	EndProjectSection

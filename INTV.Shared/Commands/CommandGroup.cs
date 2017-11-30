@@ -26,6 +26,8 @@ using INTV.Shared.ComponentModel;
 using OSImage = System.Windows.Media.Imaging.BitmapImage;
 #elif MAC
 using INTV.Shared.Utility;
+#elif GTK
+using INTV.Shared.Utility;
 #endif // WIN
 
 namespace INTV.Shared.Commands

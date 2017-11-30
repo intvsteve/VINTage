@@ -27,11 +27,11 @@ using INTV.Shared.ComponentModel;
 using INTV.Shared.Model.Program;
 using INTV.Shared.Utility;
 
-#if WIN
+#if WIN || GTK
 using JlpFeaturesVisualType = INTV.Shared.View.JlpFeaturesConfigurationPage;
 #elif MAC
 using JlpFeaturesVisualType = INTV.Shared.View.JlpFeaturesConfigurationPageController;
-#endif // WIN
+#endif // WIN || GTK
 
 namespace INTV.Shared.ViewModel
 {

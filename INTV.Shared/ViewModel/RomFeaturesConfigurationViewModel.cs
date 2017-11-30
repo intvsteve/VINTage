@@ -34,6 +34,8 @@ using NativeVisual = AppKit.NSViewController;
 #else
 using NativeVisual = MonoMac.AppKit.NSViewController;
 #endif // __UNIFIED__
+#elif GTK
+using NativeVisual = Gtk.Widget;
 #endif // WIN
 
 namespace INTV.Shared.ViewModel

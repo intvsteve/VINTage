@@ -35,6 +35,7 @@ using OSImage = AppKit.NSImage;
 #else
 using OSImage = MonoMac.AppKit.NSImage;
 #endif // __UNIFIED__
+#elif GTK
 #endif // WIN
 
 namespace INTV.Shared.ViewModel

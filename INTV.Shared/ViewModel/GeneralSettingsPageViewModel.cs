@@ -22,11 +22,11 @@ using INTV.Shared.ComponentModel;
 using INTV.Shared.Model;
 using INTV.Shared.Utility;
 
-#if WIN
+#if WIN || GTK
 using GeneralSettingsVisualType = INTV.Shared.View.GeneralSettingsPage;
 #elif MAC
 using GeneralSettingsVisualType = INTV.Shared.View.GeneralSettingsPageController;
-#endif // WIN
+#endif // WIN || GTK
 
 namespace INTV.Shared.ViewModel
 {

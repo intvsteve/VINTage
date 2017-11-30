@@ -21,7 +21,7 @@
 using INTV.Shared.ComponentModel;
 using INTV.Shared.ViewModel;
 
-#if WIN
+#if WIN || GTK
 using SettingsPageVisualType = INTV.LtoFlash.View.SettingsPage;
 #elif MAC
 using SettingsPageVisualType = INTV.LtoFlash.View.SettingsPageController;

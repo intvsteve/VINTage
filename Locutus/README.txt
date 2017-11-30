@@ -32,16 +32,20 @@ the future, new additions to the software may bring additional functionality.
 REQUIREMENTS
 =============================================================================
 The Windows application requires .NET 4.0 to run on Windows xp, and .NET 4.5
-for Windows Vista or later. The Mac OS X release requires Mono 4.2.
+for Windows Vista or later. The Mac OS X release requires Mono 4.2. For the
+Linux (GTK) version, Mono 5.0.1.1 or later is recommended.
 
 Supported Platforms:
 --------------------
 Windows xp
 Windows Vista, Windows 7, Windows 8, , Windows 8.1, Windows 10
 Mac OS X 10.7 or newer
+Linux ????
 
 HOW TO BUILD
 =============================================================================
+Windows
+-------
 The Windows solutions for desktop (Windows Vista and later) require the
 ability to build Portable Class Libraries. At the time this effort began,
 Visual Studio 2012 Ultimate was the product used to create the projects and
@@ -56,6 +60,8 @@ could be built using Microsoft Visual Studio Express as well.
 Newer versions of Visual Studio have not been tested. Perhaps support for
 Portable Class Libraries is available in the free editions now, too.
 
+macOS
+-----
 The Mac OS X projects have been built using Xamarin Studio 5.8.3 (as well as
 some previous versions). Newer versions of Xamarin Studio have not been
 tested, as they require OS X 10.9 or newer, and the primary Mac developer
@@ -75,6 +81,16 @@ The Mac OS X application requires MonoMac to be installed. The current
 release can be found here:
   http://www.mono-project.com/download/
 
+Linux
+-----
+The Linux version is built using MonoDevelop, GtkSharp and GConfSharp.
+  See: http://www.mono-project.com/docs/gui/gtksharp/
+
+You may need to install gnome-sharp2 to get the GConf bindings.
+
+To this point, development and testing for Linux has only beed done using
+Ubuntu 16.04.2.
+
  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 You will find various *.sln (Visual Studio Solution) files in this directory.
@@ -89,36 +105,43 @@ The solutions and projects generally follow a simple naming convention:
 
 Target platforms are:
 ---------------------
-  Mac     : Mac OS X 10.7 and newer
-  xp      : Windows xp - restricted to .NET 4.0
-  desktop : Windows Vista and newer
-  pcl     : Windows Portable Class Library (currently .NET 4.0 era)
+  Mac       : Mac OS X 10.7 and newer
+  xp        : Windows xp - restricted to .NET 4.0
+  desktop   : Windows Vista and newer
+  Linux/GTK : GTK2 ????
+  pcl       : Windows Portable Class Library (currently .NET 4.0 era)
 
 If no target is explicitly declared in a project's name, presume it is
 targeted to Windows desktop.
 _____________________________________________________________________________
   Locutus.svn.sln | Visual Studio 2012 solution to build application and
-                  | support libraries based on sources in the Spatula-City
-                  | SVN repository; requires .NET 4.5 and the ability to
-                  | build Portable Class Libraries; targets Windows Vista+
+                  | support libraries; if building sources for SDK-1600
+                  | and/or jzIntv, you will need to specify their location;
+                  | requires .NET 4.5 and the ability to build
+                  | Portable Class Libraries; targets Windows Vista+
   -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
   Locutus.installer.svn.sln | Same as Locutus.svn.sln, but includes projects
                             | for InstallShield LE 2013 installers
  ---------------------------------------------------------------------------
   Locutus.xp.svn.sln | Visual Studio 2012 solution to build application and
-                     | support libraries based on sources in the Spatula-City
-                     | SVN repository; requires .NET 4.0; targets Windows xp
+                     | support libraries; if building sources for SDK-1600
+                     | and/or jzIntv, you will need to specify their
+                     | location;requires .NET 4.0; targets Windows xp
   -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
   Locutus.xp.installer.svn.sln | Same as Locutus.xp.svn.sln, but includes
                                | projects for InstallShield LE 2013 installers
  ---------------------------------------------------------------------------
   Locutus.Mac.svn.sln | Xamarin Studio 5.8.3 solution to build application and
-                      | support libraries based on sources in the Spatula-City
-                      | SVN repository; requires MonoMac 4.2;
-                      | targets Mac OS X 10.7 and newer
+                      | support libraries; if building sources for SDK-1600
+                      | and/or jzIntv, you will need to specify their location;
+                      | requires MonoMac 4.2; targets Mac OS X 10.7 and newer
   -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
   Locutus.Mac.installer.svn.sln | Same as Locutus.Mac.svn.sln, but includes
                                 | projects for installers
+ ---------------------------------------------------------------------------
+  Locutus.Gtk.svn.sln | MonoDevelop 5.10 solution to build application and
+                      | support libraries; if building sources for SDK-1600
+                      | and/or jzIntv, you will need to specify their location
 _____________________________________________________________________________
 
 The components necessary to build the LTO Flash! User Interface Software are:
@@ -135,10 +158,14 @@ ___________________________________________________________________________
 | WindowsAPICodePack | .NET 4.5-specific library used by desktop builds
 ---------------------------------------------------------------------------
 
-At this time, one "expansion" feature has also been added: INTV.Intellicart.
-Future expansion features may include INTV.CuttleCart3 and INTV.jzIntvUI.
-It is not necessary to build the Intellicart feature in order to create an
-application to work with LTO Flash! hardware.
+At this time, the following "expansion" features have also been added:
+  1. INTV.Intellicart
+  2. INTV.jzIntvUI
+
+Future expansion features may include INTV.CuttleCart3 and other yet-to-be
+defined capabilities. It is not necessary to build the Intellicart or
+jzIntvUI features in order to create an application to work with LTO Flash!
+hardware.
 
 Each project directory contains a README.txt file (or an obvious analog)
 with information specific to the project within that directory.

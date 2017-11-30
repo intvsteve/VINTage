@@ -436,7 +436,6 @@
     <Compile Include="Model\SerialConnectionPolicy.Linux.cs" />
     <Compile Include="Model\PresentationOrder.cs" />
     <Compile Include="Model\Program.cs" />
-    <Compile Include="Model\ResetAfterIdle.cs" />
     <Compile Include="Model\ResetBehavior.cs" />
     <Compile Include="Model\SaveMenuPositionFlags.cs" />
     <Compile Include="Model\ShowTitleScreenFlags.cs" />

@@ -11,22 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LtoFlash.Gtk", "LtoFlash\Lt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.Gtk", "..\INTV.LtoFlash\INTV.LtoFlash.Gtk.csproj", "{C794FDC9-B7A7-4EC5-96A5-3FC90718D53D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "YAML", "YAML", "{3BF8A3DB-7685-4C89-A1F6-E93B4A7CEE71}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abstract.Net4.Gtk", "..\YAML\Abstract\Abstract.Net4.Gtk.csproj", "{74CF1BDC-74B0-4B96-A2B5-A8A89A57295E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Net4.Gtk", "..\YAML\Core\Core.Net4.Gtk.csproj", "{F9E90814-289A-4244-AB47-8ACC29A03B07}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{74CF1BDC-74B0-4B96-A2B5-A8A89A57295E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{74CF1BDC-74B0-4B96-A2B5-A8A89A57295E}.Debug|x86.Build.0 = Debug|Any CPU
-		{74CF1BDC-74B0-4B96-A2B5-A8A89A57295E}.Release|x86.ActiveCfg = Release|Any CPU
-		{74CF1BDC-74B0-4B96-A2B5-A8A89A57295E}.Release|x86.Build.0 = Release|Any CPU
 		{887F7BEA-10D4-400B-BFB8-7CAF51F310FF}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{887F7BEA-10D4-400B-BFB8-7CAF51F310FF}.Debug|x86.Build.0 = Debug|Any CPU
 		{887F7BEA-10D4-400B-BFB8-7CAF51F310FF}.Release|x86.ActiveCfg = Release|Any CPU
@@ -47,10 +37,6 @@ Global
 		{F150EA52-9705-4F27-BDEF-48FFEFBB9961}.Debug|x86.Build.0 = Debug|Any CPU
 		{F150EA52-9705-4F27-BDEF-48FFEFBB9961}.Release|x86.ActiveCfg = Release|Any CPU
 		{F150EA52-9705-4F27-BDEF-48FFEFBB9961}.Release|x86.Build.0 = Release|Any CPU
-		{F9E90814-289A-4244-AB47-8ACC29A03B07}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F9E90814-289A-4244-AB47-8ACC29A03B07}.Debug|x86.Build.0 = Debug|Any CPU
-		{F9E90814-289A-4244-AB47-8ACC29A03B07}.Release|x86.ActiveCfg = Release|Any CPU
-		{F9E90814-289A-4244-AB47-8ACC29A03B07}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
@@ -86,9 +72,5 @@ Global
 		$2.inheritsSet = Mono
 		$2.inheritsScope = text/x-csharp
 		$2.scope = text/x-csharp
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{74CF1BDC-74B0-4B96-A2B5-A8A89A57295E} = {3BF8A3DB-7685-4C89-A1F6-E93B4A7CEE71}
-		{F9E90814-289A-4244-AB47-8ACC29A03B07} = {3BF8A3DB-7685-4C89-A1F6-E93B4A7CEE71}
 	EndGlobalSection
 EndGlobal

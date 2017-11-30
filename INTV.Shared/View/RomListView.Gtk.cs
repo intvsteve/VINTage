@@ -1,0 +1,327 @@
+﻿// <copyright file="RomListView.Gtk.cs" company="INTV Funhouse">
+// Copyright (c) 2017 All Rights Reserved
+// <author>Steven A. Orth</author>
+//
+// This program is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation, either version 2 of the License, or (at your
+// option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+// for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this software. If not, see: http://www.gnu.org/licenses/.
+// or write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+// </copyright>
+
+using System.Collections.Generic;
+using System.Linq;
+using INTV.Shared.Commands;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
+
+namespace INTV.Shared.View
+{
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
+    /// <remarks>Much of the model work here could / should be relocated to a RomListViewModel.Gtk.cs file.</remarks>
+    [System.ComponentModel.ToolboxItem(true)]
+    [Gtk.Binding(Gdk.Key.Delete, "HandleDeleteSelectedItems")]
+    [Gtk.Binding(Gdk.Key.BackSpace, "HandleDeleteSelectedItems")]
+    public partial class RomListView : Gtk.Bin, IFakeDependencyObject
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INTV.Shared.View.RomListView"/> class.
+        /// </summary>
+        public RomListView(RomListViewModel viewModel)
+        {
+            // TODO: Set up sorting!
+            // TODO: DragDrop!
+
+            DataContext = viewModel;
+            this.Build();
+            var treeView = _romListView;
+            treeView.Selection.Mode = Gtk.SelectionMode.Multiple;
+            treeView.HasTooltip = true;
+
+            var column = new Gtk.TreeViewColumn();
+            Gtk.CellRenderer cellRenderer = new Gtk.CellRendererPixbuf();
+            column.PackStart(cellRenderer, true);
+            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellImageColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.RomFileStatusIcon));
+            column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            column.FixedWidth = 20;
+            treeView.AppendColumn(column);
+
+            column = new Gtk.TreeViewColumn() { Title = RomListViewModel.TitleHeader };
+            cellRenderer = new Gtk.CellRendererText();
+            column.PackStart(cellRenderer, true);
+            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Name));
+            column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            column.FixedWidth = Properties.Settings.Default.RomListNameColWidth;
+            column.Resizable = true;
+            treeView.AppendColumn(column);
+
+            column = new Gtk.TreeViewColumn() { Title = RomListViewModel.CompanyHeader };
+            cellRenderer = new Gtk.CellRendererText();
+            column.PackStart(cellRenderer, true);
+            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Vendor));
+            column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            column.FixedWidth = Properties.Settings.Default.RomListVendorColWidth;
+            column.Resizable = true;
+            treeView.AppendColumn(column);
+
+            column = new Gtk.TreeViewColumn() { Title = RomListViewModel.YearHeader };
+            cellRenderer = new Gtk.CellRendererText();
+            column.PackStart(cellRenderer, true);
+            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Year));
+            column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            column.FixedWidth = Properties.Settings.Default.RomListYearColWidth;
+            column.Resizable = true;
+            treeView.AppendColumn(column);
+
+            column = new Gtk.TreeViewColumn() { Title = RomListViewModel.FeaturesHeader };
+            cellRenderer = new Gtk.CellRendererPixbuf();
+            cellRenderer.Xalign = 0;
+            column.PackStart(cellRenderer, true);
+            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellImageColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => INTV.Shared.Converter.ProgramFeaturesToPixbufConverter.ConvertToPixbuf(p)));
+            column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            column.FixedWidth = Properties.Settings.Default.RomListFeaturesColWidth;
+            column.Resizable = true;
+            treeView.AppendColumn(column);
+
+            column = new Gtk.TreeViewColumn() { Title = RomListViewModel.RomFileHeader};
+            cellRenderer = new Gtk.CellRendererText();
+            column.PackStart(cellRenderer, true);
+            column.SetCellDataFunc(cellRenderer, (l,c,m,i) =>VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Rom.RomPath));
+            ////column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            ////column.FixedWidth = Properties.Settings.Default.RomListPathColWidth;
+            column.Resizable = true;
+            treeView.AppendColumn(column);
+
+            treeView.QueryTooltip += HandleQueryTooltip;
+
+            ////column = new Gtk.TreeViewColumn() { Title = "Manual" };
+            ////cellRenderer = new Gtk.CellRendererText();
+            ////column.PackStart(cellRenderer, true);
+            ////column.SetCellDataFunc(cellRenderer, (l,c,m,i) =>VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.ManualPath));
+            ////column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            ////column.FixedWidth = Properties.Settings.Default.RomListManualPathColWidth;;
+            ////column.Resizable = true;
+            ////treeView.AppendColumn(column);
+
+            var romListStore = new Gtk.ListStore(typeof(ProgramDescriptionViewModel));
+            romListStore.SynchronizeCollection(viewModel.Programs);
+            treeView.Model = romListStore;
+
+            // Hackish way to get the visibility right.
+            HandleSettingsChanged(Properties.Settings.Default, new System.ComponentModel.PropertyChangedEventArgs(Properties.Settings.ShowRomDetailsSettingName));
+            Properties.Settings.Default.PropertyChanged += HandleSettingsChanged;
+            viewModel.Programs.CollectionChanged += HandleProgramsChanged;
+            viewModel.Model.ProgramStatusChanged += HandleProgramStatusChanged;
+
+            treeView.Selection.Changed += HandleSelectionChanged;
+        }
+
+        #region IFakeDependencyObject
+
+        /// <inheritdoc/>
+        public object DataContext
+        {
+            get { return this.GetDataContext(); }
+            set { this.SetDataContext(value); }
+        }
+
+        /// <inheritdoc/>
+        public object GetValue(string propertyName)
+        {
+            return this.GetValue(propertyName);
+        }
+
+        /// <inheritdoc/>
+        public void SetValue(string propertyName, object value)
+        {
+            this.SetValue(propertyName, value);
+        }
+
+        #endregion // IFakeDependencyObject
+
+        /// <inheritdoc/>
+        protected override void OnDestroyed()
+        {
+            var columnNumbers = new[] { RomListColumn.Title, RomListColumn.Vendor, RomListColumn.Year, RomListColumn.Features, RomListColumn.RomFile /*, RomListColumn.ManualFile*/ };
+            foreach (var columnNumber in columnNumbers)
+            {
+                var column = _romListView.Columns[(int)columnNumber];
+                var width = column.Width;
+                if (width == 0)
+                {
+                    continue;
+                }
+                switch (columnNumber)
+                {
+                    case RomListColumn.Title:
+                        Properties.Settings.Default.RomListNameColWidth = width;
+                        break;
+                    case RomListColumn.Vendor:
+                        Properties.Settings.Default.RomListVendorColWidth = width;
+                        break;
+                    case RomListColumn.Year:
+                        Properties.Settings.Default.RomListYearColWidth = width;
+                        break;
+                    case RomListColumn.Features:
+                        Properties.Settings.Default.RomListFeaturesColWidth = width;
+                        break;
+                    case RomListColumn.RomFile:
+                        ////Properties.Settings.Default.RomListPathColWidth = width;
+                        break;
+                    case RomListColumn.ManualFile:
+                        throw new System.NotImplementedException("RomList Manual File column width");
+                    default:
+                        break;
+                }
+            }
+            base.OnDestroyed();
+        }
+
+        /// <summary>
+        /// Handles the rom list FocusIn event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleRomListFocusIn(object o, Gtk.FocusInEventArgs args)
+        {
+            var viewModel = DataContext as RomListViewModel;
+            viewModel.ListHasFocus = true;
+        }
+
+        /// <summary>
+        /// Handles the rom list FocusOut event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleRomListFocusOut(object o, Gtk.FocusOutEventArgs args)
+        {
+            var viewModel = DataContext as RomListViewModel;
+            viewModel.ListHasFocus = false;
+        }
+
+        private void HandleDeleteSelectedItems()
+        {
+            if (RomListCommandGroup.RemoveRomsCommand.CanExecute(DataContext))
+            {
+                RomListCommandGroup.RemoveRomsCommand.Execute(DataContext);
+            }
+        }
+
+        private void HandleQueryTooltip(object o, Gtk.QueryTooltipArgs args)
+        {
+            var treeView = o as Gtk.TreeView;
+            Gtk.TreePath path;
+            Gtk.TreeViewColumn column;
+            int x, y;
+            treeView.ConvertWidgetToBinWindowCoords(args.X, args.Y, out x, out y);
+            int cellX, cellY;
+            if (treeView.GetPathAtPos(x, y, out path, out column, out cellX, out cellY))
+            {
+                Gtk.TreeIter iter;
+                if (treeView.Model.GetIter(out iter, path))
+                {
+                    var item = treeView.Model.GetValue(iter, 0) as ProgramDescriptionViewModel;
+                    var romListColumn = (RomListColumn)System.Array.IndexOf(treeView.Columns, column);
+                    var tooltip = string.Empty;
+                    switch (romListColumn)
+                    {
+                        case RomListColumn.None:
+                            tooltip = item.RomFileStatus;
+                            break;
+                        case RomListColumn.Title:
+                            tooltip = item.Name;
+                            break;
+                        case RomListColumn.Vendor:
+                            tooltip = item.Vendor;
+                            break;
+                        case RomListColumn.Year:
+                            ////tooltip = item.Year;
+                            break;
+                        case RomListColumn.Features:
+                            tooltip = INTV.Shared.Converter.ProgramFeaturesToPixbufConverter.GetFeatureTooltip(item, cellX, cellY);
+                            break;
+                        case RomListColumn.RomFile:
+                            tooltip = item.Rom.RomPath;
+                            break;
+                        case RomListColumn.ManualFile:
+                            throw new System.NotImplementedException("RomListView.HandleQueryTooltip(): ManualFile");
+                        default:
+                            break;
+                    }
+
+                    if (!string.IsNullOrEmpty(tooltip))
+                    {
+                        args.Tooltip.Text = tooltip;
+                        args.RetVal = true;
+                    }
+                }
+            }
+        }
+
+        private void HandleSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var show = Properties.Settings.Default.ShowRomDetails;
+            switch (e.PropertyName)
+            {
+                case Properties.Settings.ShowRomDetailsSettingName:
+                    _romListView.Columns[(int)RomListColumn.Vendor].Visible = show;
+                    _romListView.Columns[(int)RomListColumn.Year].Visible = show;
+                    _romListView.Columns[(int)RomListColumn.Features].Visible = show;
+                    ////_romListView.Columns[(int)RomListColumn.ManualFile].Visible = show;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void HandleProgramsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            _romListView.Model.SynchronizeCollection<ProgramDescriptionViewModel>(e);
+        }
+
+        private void HandleProgramStatusChanged(object sender, INTV.Shared.Model.Program.ProgramFeaturesChangedEventArgs e)
+        {
+            // Need to goose the TreeView to re-draw the status icons.
+            _romListView.QueueDraw();
+        }
+
+        private void HandleSelectionChanged(object sender, System.EventArgs e)
+        {
+            var viewModelSelection = ((RomListViewModel)DataContext).CurrentSelection;
+            var selectedItems = new List<ProgramDescriptionViewModel>();
+            var selection = sender as Gtk.TreeSelection;
+            var selectedItemPaths = selection.GetSelectedRows();
+            foreach (var path in selectedItemPaths)
+            {
+                Gtk.TreeIter iter;
+                if (selection.TreeView.Model.GetIter(out iter, path))
+                {
+                    var item = selection.TreeView.Model.GetValue(iter, 0) as ProgramDescriptionViewModel;
+                    selectedItems.Add(item);
+                }
+            }
+            var itemsToRemove = viewModelSelection.Except(selectedItems).ToList();
+            foreach (var itemToRemove in itemsToRemove)
+            {
+                viewModelSelection.Remove(itemToRemove);
+            }
+            foreach (var selectedItem in selectedItems.Except(viewModelSelection).ToList())
+            {
+                viewModelSelection.Add(selectedItem);
+            }
+
+            INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+        }
+    }
+}

@@ -29,6 +29,8 @@ using OSVisualBase = AppKit.NSResponder;
 #else
 using OSVisualBase = MonoMac.AppKit.NSResponder;
 #endif // __UNIFIED__
+#elif GTK
+using OSVisualBase = Gtk.Widget;
 #endif // MAC
 
 namespace INTV.Shared.View

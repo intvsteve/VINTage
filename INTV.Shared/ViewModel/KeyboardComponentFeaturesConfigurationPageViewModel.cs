@@ -25,11 +25,11 @@ using INTV.Shared.ComponentModel;
 using INTV.Shared.Model.Program;
 using INTV.Shared.Utility;
 
-#if WIN
+#if WIN || GTK
 using KeyboardComponentFeaturesVisualType = INTV.Shared.View.KeyboardComponentFeaturesConfigurationPage;
 #elif MAC
 using KeyboardComponentFeaturesVisualType = INTV.Shared.View.KeyboardComponentFeaturesConfigurationPageController;
-#endif // WIN
+#endif // WIN || GTK
 
 namespace INTV.Shared.ViewModel
 {

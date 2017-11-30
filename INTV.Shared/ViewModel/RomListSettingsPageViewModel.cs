@@ -20,11 +20,11 @@
 
 using INTV.Shared.ComponentModel;
 
-#if WIN
+#if WIN || GTK
 using RomListSettingsVisualType = INTV.Shared.View.RomListSettingsPage;
 #elif MAC
 using RomListSettingsVisualType = INTV.Shared.View.RomListSettingsPageController;
-#endif // WIN
+#endif // WIN || GTK
 
 namespace INTV.Shared.ViewModel
 {

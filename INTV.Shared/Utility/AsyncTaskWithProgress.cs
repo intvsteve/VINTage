@@ -260,11 +260,11 @@ namespace INTV.Shared.Utility
 
         private void AsyncTaskProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-#if MAC
+#if MAC || GTK
             // BUG reported here: https://bugzilla.xamarin.com/show_bug.cgi?id=57544
             INTV.Shared.Utility.OSDispatcher.Current.InvokeOnMainDispatcher(() =>
                 {
-#endif // MAC
+#endif // MAC || GTK
             if (_showsProgress && (_progressIndicator != null))
             {
                 if (e.UserState is string)
@@ -281,14 +281,14 @@ namespace INTV.Shared.Utility
                     _progressIndicator.UpdateText = Resources.Strings.ProgressIndicator_Cancelled;
                 }
             }
-#if MAC
+#if MAC || GTK
                 });
-#endif // MAC
+#endif // MAC || GTK
         }
 
         private void AsynTaskRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            // BUG: In Mono, this is NOT NOT NOT getting called on the same thread as the
+            // BUG: In Mono on Linux, this is NOT NOT NOT getting called on the same thread as the
             // one that started the worker. Testing on:
             // Mono 5.0.1.1 (2017-02/5077205 Thu May 25 09:19:18 UTC 2017) (64-bit)
             // GTK+ 2.24.30 (Ambiance theme)
@@ -296,10 +296,10 @@ namespace INTV.Shared.Utility
             // NEW bug report here: https://bugzilla.xamarin.com/show_bug.cgi?id=57544
             // Notes over in FileUtilities - which are less than a year old? - indicate the same
             // problem happens on Mac.
-#if MAC
+#if MAC || GTK
             INTV.Shared.Utility.OSDispatcher.Current.InvokeOnMainDispatcher(() =>
                 {
-#endif // MAC
+#endif // MAC || GTK
             _taskData.WorkerCompletedArgs = e;
             _taskData.Error = e.Error;
             if (_progressIndicator != null)
@@ -310,13 +310,13 @@ namespace INTV.Shared.Utility
                     _progressIndicator.Hide();
                 }
             }
-#if MAC
+#if MAC || GTK
             INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
             _workComplete(_taskData);
             });
 #else
             _workComplete(_taskData);
-#endif // MAC
+#endif // MAC || GTK
         }
 
         private void OnProgressIndicatorPropertyChanged(object sender, PropertyChangedEventArgs e)

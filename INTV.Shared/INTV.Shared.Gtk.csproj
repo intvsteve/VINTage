@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{887F7BEA-10D4-400B-BFB8-7CAF51F310FF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>INTV.Shared</RootNamespace>
+    <AssemblyName>INTV.Shared</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Linux</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Linux\</IntermediateOutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DEBUG;MONO;GTK</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\Linux</OutputPath>
+    <IntermediateOutputPath>obj\Release\Linux\</IntermediateOutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>MONO;GTK</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>glib-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>glade-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="Mono.Posix" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="gconf-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gconf-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <!--  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup> -->
+  <ItemGroup>
+    <Compile Include="Behavior\IInPlaceEditor.cs" />
+    <Compile Include="Behavior\InPlaceEditorClosedEventArgs.cs" />
+    <Compile Include="Behavior\SortCommandData.cs" />
+    <Compile Include="Behavior\ValidEmailAddressBehavior.cs" />
+    <Compile Include="Commands\ApplicationCommandGroup.cs" />
+    <Compile Include="Commands\ApplicationCommandGroup.Gtk.cs" />
+    <Compile Include="Commands\ApplicationCommandsProvider.cs" />
+    <Compile Include="Commands\CommandGroup.cs" />
+    <Compile Include="Commands\CommandGroup.Gtk.cs" />
+    <Compile Include="Commands\CommandLocation.cs" />
+    <Compile Include="Commands\CommandProvider.cs" />
+    <Compile Include="Commands\CommandProviderHelpers.cs" />
+    <Compile Include="Commands\CommandProviderHelpers.Gtk.cs" />
+    <Compile Include="Commands\DebugCommandGroup.cs" />
+    <Compile Include="Commands\DebugCommandGroup.Gtk.cs" />
+    <Compile Include="Commands\ICommandGroup.cs" />
+    <Compile Include="Commands\ICommandProvider.cs" />
+    <Compile Include="Commands\OSModifierKeys.Gtk.cs" />
+    <Compile Include="Commands\RomListCommandGroup.cs" />
+    <Compile Include="Commands\RomListCommandGroup.Gtk.cs" />
+    <Compile Include="Commands\RomListCommandsProvider.cs" />
+    <Compile Include="Commands\RootCommandGroup.cs" />
+    <Compile Include="Commands\RootCommandGroup.Gtk.cs" />
+    <Compile Include="Commands\RootCommandGroup.Mono.cs" />
+    <Compile Include="ComponentModel\CommandManager.Gtk.cs" />
+    <Compile Include="ComponentModel\ComponentVisual.cs" />
+    <Compile Include="ComponentModel\CompositionHelpers.cs" />
+    <Compile Include="ComponentModel\IApplicationInfo.cs" />
+    <Compile Include="ComponentModel\ICommand.Mono.cs" />
+    <Compile Include="ComponentModel\IconAttribute.cs" />
+    <Compile Include="ComponentModel\IPrimaryComponent.cs" />
+    <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
+    <Compile Include="ComponentModel\PropertyChangedNotifierHelpers.cs" />
+    <Compile Include="ComponentModel\RelayCommand.cs" />
+    <Compile Include="ComponentModel\RelayCommand.Mono.cs" />
+    <Compile Include="ComponentModel\VisualRelayCommand.cs" />
+    <Compile Include="ComponentModel\VisualRelayCommand.Gtk.cs" />
+    <Compile Include="ComponentModel\WeightAttribute.cs" />
+    <Compile Include="Converter\ProgramFeaturesToPixbufConverter.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChange.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChangeEvent.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceChangeEventArgs.cs" />
+    <Compile Include="Interop\DeviceManagement\DeviceType.cs" />
+    <Compile Include="Model\CanonicalRomComparer.cs" />
+    <Compile Include="Model\CanonicalRomComparerStrict.cs" />
+    <Compile Include="Model\Device\ConnectionMonitor.cs" />
+    <Compile Include="Model\Device\NamedPipeConnection.cs" />
+    <Compile Include="Model\Device\SerialPortConnection.cs" />
+    <Compile Include="Model\Device\SerialPortConnection.Linux.cs" />
+    <Compile Include="Model\IRomHelpers.cs" />
+    <Compile Include="Model\IStreamConnection.cs" />
+    <Compile Include="Model\Program\AddRomsFromFilesBeginEventArgs.cs" />
+    <Compile Include="Model\Program\AddRomsFromFilesEndEventArgs.cs" />
+    <Compile Include="Model\Program\Bee3FeatureSet.cs" />
+    <Compile Include="Model\Program\CuttleCart3FeatureSet.cs" />
+    <Compile Include="Model\Program\EcsFeatureSet.cs" />
+    <Compile Include="Model\Program\GeneralFeatureSet.cs" />
+    <Compile Include="Model\Program\HiveFeatureSet.cs" />
+    <Compile Include="Model\Program\IProgramFeatureSet.cs" />
+    <Compile Include="Model\Program\IProgramFeatureSet`T.cs" />
+    <Compile Include="Model\Program\IntellicartFeatureSet.cs" />
+    <Compile Include="Model\Program\IntellivisionIIFeatureSet.cs" />
+    <Compile Include="Model\Program\IntellivoiceFeatureSet.cs" />
+    <Compile Include="Model\Program\InvokeProgramEventArgs.cs" />
+    <Compile Include="Model\Program\JlpFeatureSet.cs" />
+    <Compile Include="Model\Program\KeyboardComponentFeatureSet.cs" />
+    <Compile Include="Model\Program\LtoFlashFeatureSet.cs" />
+    <Compile Include="Model\Program\NtscFeatureSet.cs" />
+    <Compile Include="Model\Program\PalFeatureSet.cs" />
+    <Compile Include="Model\Program\ProgramCollection.cs" />
+    <Compile Include="Model\Program\ProgramCollectionSaveFailedEventArgs.cs" />
+    <Compile Include="Model\Program\ProgramFeatureSet`T.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesChangedEventArgs.cs" />
+    <Compile Include="Model\Program\ProgramFileKindHelpers.cs" />
+    <Compile Include="Model\Program\SuperVideoArcadeFeatureSet.cs" />
+    <Compile Include="Model\Program\TutorvisionFeatureSet.cs" />
+    <Compile Include="Model\RomListConfiguration.cs" />
+    <Compile Include="Model\SearchDirectories.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\ISettings.cs" />
+    <Compile Include="Properties\Settings.Gtk.cs" />
+    <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Properties\Settings.Mono.cs" />
+    <Compile Include="Properties\SettingsBase`T.cs" />
+    <Compile Include="Properties\SettingsBase.Gtk.cs" />
+    <Compile Include="Properties\SettingsBase.Mono.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\ASCIIBinaryReader.cs" />
+    <Compile Include="Utility\ASCIIBinaryWriter.cs" />
+    <Compile Include="Utility\AsyncTaskData.cs" />
+    <Compile Include="Utility\AsyncTaskWithProgress.cs" />
+    <Compile Include="Utility\ColorHelpers.cs" />
+    <Compile Include="Utility\ColorHelpers.Gtk.cs" />
+    <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\ErrorReporting.cs" />
+    <Compile Include="Utility\ExitEventArgs.Mono.cs" />
+    <Compile Include="Utility\FileBrowserDialogResult.cs" />
+    <Compile Include="Utility\FileDialogHelpers.cs" />
+    <Compile Include="Utility\FileUtilities.cs" />
+    <Compile Include="Utility\FixedSizeCollection`T.cs" />
+    <Compile Include="Utility\IFileBrowserDialog.cs" />
+    <Compile Include="Utility\IFixedSizeCollection.cs" />
+    <Compile Include="Utility\Logger.cs" />
+    <Compile Include="Utility\ObservableCollectionHelpers.cs" />
+    <Compile Include="Utility\ObservableCollectionHelpers.Gtk.cs" />
+    <Compile Include="Utility\OneShotLaunchTask.cs" />
+    <Compile Include="Utility\OSColor.cs" />
+    <Compile Include="Utility\OSColor.Gtk.cs" />
+    <Compile Include="Utility\OSDispatcher.cs" />
+    <Compile Include="Utility\OSDispatcher.Gtk.cs" />
+    <Compile Include="Utility\OSDispatcherPriority.Mono.cs" />
+    <Compile Include="Utility\OSDispatcherTimer.cs" />
+    <Compile Include="Utility\OSDispatcherTimer.Gtk.cs" />
+    <Compile Include="Utility\OSExportAttribute.cs" />
+    <Compile Include="Utility\OSExportAttribute.Gtk.cs" />
+    <Compile Include="Utility\OSImage.cs" />
+    <Compile Include="Utility\OSImage.Gtk.cs" />
+    <Compile Include="Utility\OSVersion.cs" />
+    <Compile Include="Utility\OSVersion.Gtk.cs" />
+    <Compile Include="Utility\PathComparer.Linux.cs" />
+    <Compile Include="Utility\PathComparer.cs" />
+    <Compile Include="Utility\PathUtils.Linux.cs" />
+    <Compile Include="Utility\PathUtils.cs" />
+    <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
+    <Compile Include="Utility\ReflectionHelpers.cs" />
+    <Compile Include="Utility\ResourceHelpers.cs" />
+    <Compile Include="Utility\ResourceHelpers.Gtk.cs" />
+    <Compile Include="Utility\RunExternalProgram.cs" />
+    <Compile Include="Utility\RunExternalProgram.Gtk.cs" />
+    <Compile Include="Utility\SharedSettings.cs" />
+    <Compile Include="Utility\SingleInstanceApplication.cs" />
+    <Compile Include="Utility\SingleInstanceApplication.Gtk.cs" />
+    <Compile Include="Utility\StartupTaskPriority.cs" />
+    <Compile Include="Utility\StopBitsHelpers.cs" />
+    <Compile Include="Utility\StorageAccess.cs" />
+    <Compile Include="View\EcsFeaturesConfigurationPage.Gtk.cs" />
+    <Compile Include="View\FileBrowserDialog.Gtk.cs" />
+    <Compile Include="View\FileBrowserDialogBase.cs" />
+    <Compile Include="View\GeneralFeaturesConfigurationPage.Gtk.cs" />
+    <Compile Include="View\GeneralSettingsPage.Gtk.cs" />
+    <Compile Include="View\IFakeDependencyObject.cs" />
+    <Compile Include="View\IFakeDependencyObjectHelpers.cs" />
+    <Compile Include="View\IFakeDependencyObjectHelpers.Gtk.cs" />
+    <Compile Include="View\IMainWindow.cs" />
+    <Compile Include="View\JlpFeaturesConfigurationPage.Gtk.cs" />
+    <Compile Include="View\KeyboardComponentFeaturesConfigurationPage.Gtk.cs" />
+    <Compile Include="View\LtoFlashFeaturesConfigurationPage.Gtk.cs" />
+    <Compile Include="View\OSMenuItem.cs" />
+    <Compile Include="View\OSMenuItem.Gtk.cs" />
+    <Compile Include="View\OSMessageBox.cs" />
+    <Compile Include="View\OSMessageBox.Gtk.cs" />
+    <Compile Include="View\OSMessageBoxButton.Gtk.cs" />
+    <Compile Include="View\OSMessageBoxIcon.Gtk.cs" />
+    <Compile Include="View\OSMessageBoxResult.Gtk.cs" />
+    <Compile Include="View\OSTextWrapping.Gtk.cs" />
+    <Compile Include="View\OSVisual.cs" />
+    <Compile Include="View\OSVisual.Gtk.cs" />
+    <Compile Include="View\ProgressIndicator.Gtk.cs" />
+    <Compile Include="View\ProgressIndicatorOverlay.Gtk.cs" />
+    <Compile Include="View\ReportDialog.Gtk.cs" />
+    <Compile Include="View\ReportDialog.cs" />
+    <Compile Include="View\RomFeaturesConfiguration.Gtk.cs" />
+    <Compile Include="View\RomListSettingsPage.Gtk.cs" />
+    <Compile Include="View\RomListView.cs" />
+    <Compile Include="View\RomListView.Gtk.cs" />
+    <Compile Include="View\SelectBackupDialog.cs" />
+    <Compile Include="View\SelectBackupDialog.Gtk.cs" />
+    <Compile Include="View\SerialPortSelector.Gtk.cs" />
+    <Compile Include="View\SerialPortSelectorDialog.cs" />
+    <Compile Include="View\SerialPortSelectorDialog.Gtk.cs" />
+    <Compile Include="View\SettingsDialog.cs" />
+    <Compile Include="View\SettingsDialog.Gtk.cs" />
+    <Compile Include="View\SplashScreen.Gtk.cs" />
+    <Compile Include="View\SystemCompatibilityConfigurationPage.Gtk.cs" />
+    <Compile Include="View\TextCellInPlaceEditor.Gtk.cs" />
+    <Compile Include="View\VisualHelpers.cs" />
+    <Compile Include="View\VisualHelpers.Gtk.cs" />
+    <Compile Include="ViewModel\BackupInfoViewModel.cs" />
+    <Compile Include="ViewModel\BaudRateViewModel.cs" />
+    <Compile Include="ViewModel\ControllerElementViewModel.cs" />
+    <Compile Include="ViewModel\EcsFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\GeneralFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\GeneralSettingsPageViewModel.cs" />
+    <Compile Include="ViewModel\IObservableViewModelCollection.cs" />
+    <Compile Include="ViewModel\IRomFeaturesConfigurationPage.cs" />
+    <Compile Include="ViewModel\ISettingsPage.cs" />
+    <Compile Include="ViewModel\ISettingsPageMetadata.cs" />
+    <Compile Include="ViewModel\JlpFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\JlpFlashStorageUsageLevel.cs" />
+    <Compile Include="ViewModel\KeyboardComponentFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\LtoFlashFeaturesConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\ObservableViewModelCollection`TViewModel`TModel.cs" />
+    <Compile Include="ViewModel\OSViewModelBase.Gtk.cs" />
+    <Compile Include="ViewModel\ProgramDescriptionViewModel.cs" />
+    <Compile Include="ViewModel\ProgramFeatureImageViewModel.cs" />
+    <Compile Include="ViewModel\ProgressIndicatorViewModel.cs" />
+    <Compile Include="ViewModel\ProgressIndicatorViewModel.Gtk.cs" />
+    <Compile Include="ViewModel\ReportDialogViewModel.cs" />
+    <Compile Include="ViewModel\ReportDialogViewModel.Gtk.cs" />
+    <Compile Include="ViewModel\RomDiscoveryData.cs" />
+    <Compile Include="ViewModel\RomDiscoveryOptions.cs" />
+    <Compile Include="ViewModel\RomFeaturesConfigurationViewModel.cs" />
+    <Compile Include="ViewModel\RomListColumn.cs" />
+    <Compile Include="ViewModel\RomListSettingsPageViewModel.cs" />
+    <Compile Include="ViewModel\RomListViewModel.cs" />
+    <Compile Include="ViewModel\RomListViewModel.Gtk.cs" />
+    <Compile Include="ViewModel\SelectBackupDialogViewModel.cs" />
+    <Compile Include="ViewModel\SerialPortConnectionViewModel.cs" />
+    <Compile Include="ViewModel\SerialPortSelectorDialogViewModel.cs" />
+    <Compile Include="ViewModel\SerialPortSelectorViewModel.cs" />
+    <Compile Include="ViewModel\SerialPortViewModel.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel`T.cs" />
+    <Compile Include="ViewModel\SettingsPageViewModel`T.Gtk.cs" />
+    <Compile Include="ViewModel\SystemCompatibilityConfigurationPageViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\ViewModelHelpers.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.EcsFeaturesConfigurationPage.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.GeneralFeaturesConfigurationPage.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.GeneralSettingsPage.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.JlpFeaturesConfigurationPage.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.KeyboardComponentFeaturesConfigurationPage.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.LtoFlashFeaturesConfigurationPage.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.ProgressIndicator.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.ProgressIndicatorOverlay.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.ReportDialog.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.RomFeaturesConfiguration.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.RomListSettingsPage.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.RomListView.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.SettingsDialog.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.SelectBackupDialog.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.SerialPortSelectorDialog.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.SerialPortSelector.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.SplashScreen.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.SystemCompatibilityConfigurationPage.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\INTV.Core\INTV.Core.pcl.csproj">
+      <Project>{B90D8E04-5F83-45D7-BD39-0198A7C7C325}</Project>
+      <Name>INTV.Core.pcl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.Gtk.csproj">
+      <Project>{C1185AA4-E7D9-449C-97E1-D0EEEE2CB719}</Project>
+      <Name>INTV.jzIntv.Gtk</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>INTV.Shared.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_file_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_file_32xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_files_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_files_32xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_to_database_16xMD.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\add_to_database_32xMD.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\bankswitch_16xMD.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\bankswitch_mattel_16XLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\baudrate_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\bee3_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\bee3_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\bee3_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\blocked_16xMD_color.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\cancel_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\console_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_action_left_24x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_action_right_24x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_action_topleft_24x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_action_topright_24x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_0_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_1_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_2_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_3_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_4_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_5_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_6_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_7_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_8_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_9_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_clear_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\controller_button_enter_x64.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\cuttlecart3_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\cuttlecart3_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\cuttlecart3_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\delete_document_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\delete_folder.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\download_Selection_32xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ecs_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ecs_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ecs_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\error_16xLG_color.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\fullscreen_32x32.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\hive_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\hive_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\hive_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\Information_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\Information_32x.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellicart_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellicart_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellicart_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellivisionproductions_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellivoice_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellivoice_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intellivoice_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intvfunhouse_info_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intv_ii_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intv_ii_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\intv_ii_issues_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\jlp_9xSM.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\jlp_enhanced_9xSM.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\jlp_incompatible_9xSM.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\jlp_required_9xSM.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_basic_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_basic_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\kc_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\lto_9xSM.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\lto_enhanced_9xSM.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\lto_incompatible_9xSM.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\lto_logo_32.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\manual_16x.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\microphone_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ntsc_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ntsc_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ntsc_unknown_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ok_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\pal_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\pal_incompatible_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\pal_unknown_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\Play_32xLG_color.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\port-icon_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\port-icon_32x32.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\printer_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ram_08_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ram_16_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\refresh_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\refresh_32xMD.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\remove_file_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\remove_file_32xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\resolution_320x200_selected_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\resolution_320x200_unselected_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\resolution_320x240_selected_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\resolution_320x240_unselected_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\resolution_640x480_selected_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\resolution_640x480_unselected_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\romsearch_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\romsearch_32xMD.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\save_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\save_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\ScreenResolution_32x32.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\sears_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\sears_incompatible_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\sears_warning_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\serialport_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\serialport_enhanced_16x16.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\settings_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\settings_32xMD.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\sunburst_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\synth_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\tape_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\tape_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\timeout_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\tutorvision_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\tutorvision_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\tutorvision_incompatible16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\undo_16x.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\universally_compatible_16xMD.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\unrecognized_rom_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\usb_enhanced_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\usb_required_16xLG.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\warning_16xLG_color.png" />
+    <EmbeddedResource Include="ViewModel\Resources\Images\warning_16xMD_color.png" />
+    <EmbeddedResource Include="Resources\Images\backup_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\backup_32xLG.png" />
+    <EmbeddedResource Include="Resources\Images\download_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\download_32xLG.png" />
+    <EmbeddedResource Include="Resources\Images\exit_16xLG_color.png" />
+    <EmbeddedResource Include="Resources\Images\help_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\help_16xLG_color.png" />
+    <EmbeddedResource Include="Resources\Images\help_32xLG.png" />
+    <EmbeddedResource Include="Resources\Images\help_32xLG_color.png" />
+    <EmbeddedResource Include="Resources\Images\help_32xMD.png" />
+    <EmbeddedResource Include="Resources\Images\help_32xMD_color.png" />
+    <EmbeddedResource Include="Resources\Images\jlp03_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\jlp04_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\jlp05_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\led_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\lto_rom_compatible_9xSM.png" />
+    <EmbeddedResource Include="Resources\Images\lto_rom_incompatible_9xSM.png" />
+    <EmbeddedResource Include="Resources\Images\lto_rom_only_9xSM.png" />
+    <EmbeddedResource Include="Resources\Images\lto_rom_unknown_device_9xSM.png" />
+    <EmbeddedResource Include="Resources\Images\remove_file_32xLG.png" />
+    <EmbeddedResource Include="Resources\Images\rename_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\restore_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\restore_32xLG.png" />
+    <EmbeddedResource Include="Resources\Images\rom_32xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+  </ItemGroup>
+</Project>

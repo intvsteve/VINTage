@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C1185AA4-E7D9-449C-97E1-D0EEEE2CB719}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>INTV.jzIntv</RootNamespace>
+    <AssemblyName>INTV.jzIntv</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Linux</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Linux\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\Linux</OutputPath>
+    <IntermediateOutputPath>obj\Release\Linux\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="build_tools.mak" />
+    <None Include="custom.mak" />
+    <None Include="license.txt" />
+    <None Include="README.txt" />
+    <None Include="tools\Linux\bin2luigi">
+      <Link>tools\bin2luigi</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\Linux\bin2rom">
+      <Link>tools\bin2rom</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\Linux\intvname">
+      <Link>tools\intvname</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\Linux\rom_merge">
+      <Link>tools\rom_merge</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\Linux\rom2bin">
+      <Link>tools\rom2bin</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\Linux\rom2luigi">
+      <Link>tools\rom2luigi</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="tools\Linux\luigi2bin">
+      <Link>tools\luigi2bin</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Model\CommandLineArgument.cs" />
+    <Compile Include="Model\DisplayMode.cs" />
+    <Compile Include="Model\DisplayResolution.cs" />
+    <Compile Include="Model\PrescaleMode.cs" />
+    <Compile Include="Model\SampleRate.cs" />
+    <Compile Include="Model\IntellicartCacheOption.cs" />
+    <Compile Include="Model\Intv2PcPort.cs" />
+    <Compile Include="Model\KeyboardMap.cs" />
+    <Compile Include="Model\Configuration.cs" />
+    <Compile Include="Model\Emulator.cs" />
+    <Compile Include="Model\EmulatorFile.cs" />
+    <Compile Include="Model\ProgramFile.cs" />
+    <Compile Include="Model\ProgramFileHelpers.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\INTV.Core\INTV.Core.pcl.csproj">
+      <Project>{B90D8E04-5F83-45D7-BD39-0198A7C7C325}</Project>
+      <Name>INTV.Core.pcl</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>INTV.jzIntv.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

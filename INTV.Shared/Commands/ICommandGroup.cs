@@ -33,6 +33,10 @@ using OSCommandVisual = Foundation.NSObject;
 #else
 using OSCommandVisual = MonoMac.Foundation.NSObject;
 #endif // __UNIFIED__
+#elif GTK
+using INTV.Shared.Utility;
+using INTV.Shared.View;
+using OSCommandVisual = INTV.Shared.View.OSVisual;
 #endif // WIN
 
 namespace INTV.Shared.Commands

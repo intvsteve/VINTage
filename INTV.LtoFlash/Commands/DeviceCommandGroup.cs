@@ -33,7 +33,7 @@ using INTV.Shared.View;
 
 #if WIN
 using OSWindow = System.Windows.Window;
-#elif MAC
+#elif MAC || GTK
 using OSWindow = INTV.Shared.View.IFakeDependencyObject;
 #endif // WIN
 

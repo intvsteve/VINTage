@@ -31,6 +31,8 @@ using NativeImage = AppKit.NSImage;
 #else
 using NativeImage = MonoMac.AppKit.NSImage;
 #endif // __UNIFIED
+#elif GTK
+using NativeImage = Gdk.Pixbuf;
 #endif // WIN
 
 namespace INTV.Shared.ViewModel

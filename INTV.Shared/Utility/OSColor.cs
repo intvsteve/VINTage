@@ -26,6 +26,8 @@ using NativeColor = AppKit.NSColor;
 #else
 using NativeColor = MonoMac.AppKit.NSColor;
 #endif // __UNIFIED__
+#elif GTK
+using NativeColor = Gdk.Color;
 #endif // WIN
 
 namespace INTV.Shared.Utility

@@ -33,6 +33,7 @@ namespace INTV.Shared.Model.Program
     /// </summary>
     public static class ProgramFileKindHelpers
     {
+        // Don't care about case.
         private static HashSet<string> _romFileBlacklist = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase) { "Desktop DB" };
 
         public static void AddFileToBlacklist(string file)
@@ -79,10 +80,12 @@ namespace INTV.Shared.Model.Program
             {
                 DebugOutput("We have a custom extension!");
             }
+
+            // Don't care about case sensitivity of file system.
             bool isProgramFile = (hasExpectedExtension || hasCustomRomExtension) && (string.IsNullOrEmpty(rootFile) || Path.GetFileName(filePath).StartsWith(Path.GetFileNameWithoutExtension(rootFile), StringComparison.InvariantCultureIgnoreCase));
             if (isProgramFile)
             {
-                // Check if file name has proper suffix.
+                // Check if file name has proper suffix. Don't care about case sensitvity of file system.
                 var suffix = INTV.Core.Model.Program.ProgramFileKindHelpers.FileSuffixForFileKind[fileKind];
                 isProgramFile = string.IsNullOrEmpty(suffix) || Path.GetFileNameWithoutExtension(filePath).EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase);
 
@@ -133,7 +136,7 @@ namespace INTV.Shared.Model.Program
                 var searchPattern = "*" + ProgramFileKind.CfgFile.FileExtension();
                 var filesNextToRom = Directory.EnumerateFiles(Path.GetDirectoryName(romFilePath), searchPattern);
 #else
-                // Workaround for non-Windows, though I suppose this is necessary if there's ever a Linux port.
+                // Workaround for non-Windows. Don't care about file system case sensitivity.
                 var searchPattern = ProgramFileKind.CfgFile.FileExtension();
                 var files = Directory.EnumerateFiles(Path.GetDirectoryName(romFilePath));
                 var filesNextToRom = files.Where(f => f.EndsWith(searchPattern, StringComparison.InvariantCultureIgnoreCase));
@@ -172,7 +175,7 @@ namespace INTV.Shared.Model.Program
                     romFile = Path.Combine(directory, file);
                 }
 
-                // Try to strip out any suffix that may be appended to the filename.
+                // Try to strip out any suffix that may be appended to the filename, regardless of file system case sensitivity.
                 foreach (var suffix in INTV.Core.Model.Program.ProgramFileKindHelpers.SupportFileSuffixes)
                 {
                     if (!string.IsNullOrEmpty(suffix) && file.EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase))

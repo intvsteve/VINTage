@@ -134,11 +134,13 @@ namespace INTV.Core.Model
                 }
                 metadataBlock._deserializeByteCount = (int)payloadLength + additionalBytesInPayloadLength + 1 + CrcByteCount + sizeof(RomMetadataIdTag);
                 metadataBlock.Deserialize(reader);
+
                 // Re-reading the block is more expensive than having a running CRC16 but it's easier to implement. :P
                 var numBytesInForCrc = metadataBlock._deserializeByteCount - CrcByteCount;
                 reader.BaseStream.Seek(-numBytesInForCrc, System.IO.SeekOrigin.Current);
                 var crc16 = INTV.Core.Utility.Crc16.OfBlock(reader.ReadBytes(numBytesInForCrc), INTV.Core.Utility.Crc16.InitialValue);
                 metadataBlock.Crc = (ushort)(((int)reader.ReadByte() << 8) | reader.ReadByte());
+
                 // TODO: Report error if CRCs do not match.
             }
             return metadataBlock;

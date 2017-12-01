@@ -206,6 +206,7 @@ namespace INTV.LtoFlash.Model
                            (PhysicalSectorErasures == other.PhysicalSectorErasures) &&
                            (MetadataSectorErasures == other.MetadataSectorErasures) &&
                            (VirtualToPhysicalMapVersion == other.VirtualToPhysicalMapVersion);
+
                            // ignoring ReservedData
             }
             return areEqual;

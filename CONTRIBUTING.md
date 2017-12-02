@@ -23,15 +23,20 @@ Here is a set of [guidelines, not rules](https://www.youtube.com/watch?v=b6kgS_A
 The VINTage projects are primarily written in C#. Therefore, when you choose to contribute code, you should be sure to consider whether your changes will work on all of the [supported platforms](#supported-platforms). At this time, the following development tools are required:
 
 * **Windows:** [Microsoft Visual Studio](https://www.visualstudio.com/downloads/) - ideally 2012 or later, though Visual Studio Express 2010 works - or can be made to work
+  * **Windows xp:** Support for Windows xp is still desired
 * **Mac:** Projects exist for the following:
   * **MonoMac:** Use the *.Mac.*.sln solutions with Xamarin Studio 5.8.3 or later to build for 32-bit MonoMac
   * **Xamarin.Mac** Use the *.XamMac.*.sln solutions with newer versions of Xamarin Studio that support the UNIFIED build; *NOTE:* Consider these builds deprecated, because...
   * **Visual Studio for Mac:** Use the *.VSMac.*.sln solutions with [Visual Studio for Mac](https://www.visualstudio.com/vs/visual-studio-mac/) - the current offering for C# on Mac
 * **Linux:** To target Linux, use [MonoDevelop](http://www.monodevelop.com/) and [GKTSharp](http://www.monodevelop.com/)
 
+***NOTE:*** Because VINTage is still intended to run in Windows xp, the C# code is restricted to the features available in .NET 4.0.
+
+***Note:*** The MonoMac build is 32-bit only. For 64-bit support, use the Visual Studio for Mac build. Eventually, MonoMac support will be retired, but until then, any new features must still be implemented in a manner such that the code will build with the older tools.
+
 ***Please*** do not attempt to submit solutions that are automatically updated by newer versions of the development environments! Sure, things are *supposed* to work with different versions. But we're a bit skeptical around here.
 
-There are additional, optional aspects to the project that you may choose to explore. Specifically, the VINTage suite makes use of [jzIntv](http://spatula-city.org/~im14u2c/intv/) and utilities from the [SDK-1600](http://sdk-1600.spatula-city.org/). 
+There are additional, optional aspects to the project that you may choose to explore. Specifically, the VINTage suite makes use of [jzIntv](http://spatula-city.org/~im14u2c/intv/) and utilities from the [SDK-1600](http://sdk-1600.spatula-city.org/). The jzIntv codebase is best compiled using [GCC 7.1](https://gcc.gnu.org/gcc-7/) or later.
 
 ## How to Contribute
 

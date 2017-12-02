@@ -587,9 +587,7 @@
                                         <RotateTransform Angle="90"/>
                                     </Separator.LayoutTransform>
                                 </Separator>
-                                <TextBlock Text="{Binding MenuLayout.LongName}"/>
-                                <TextBlock Text=" :"/>
-                                <TextBlock Margin="4,0,0,0" Text="{Binding MenuLayout.Status}"/>
+                                <TextBlock Margin="0" Text="{Binding MenuLayout.Status}"/>
                             </StackPanel>
                         </Border>
                         <Border Grid.Column="1" BorderThickness="0,1,0,1" BorderBrush="LightGray" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">

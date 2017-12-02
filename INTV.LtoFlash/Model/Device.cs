@@ -570,6 +570,15 @@ namespace INTV.LtoFlash.Model
                 var creationInfo = state as DeviceCreationInfo;
                 if (creationInfo == null)
                 {
+                    var stateDictionaryData = state as Dictionary<string, object>;
+                    object creationInfoObject = null;
+                    if ((stateDictionaryData != null) && stateDictionaryData.TryGetValue(DeviceCreationInfo.ConfigName, out creationInfoObject))
+                    {
+                        creationInfo = (DeviceCreationInfo)creationInfoObject;
+                    }
+                }
+                if (creationInfo == null)
+                {
                     creationInfo = new DeviceCreationInfo(Properties.Settings.Default.AutomaticallyConnectToDevices, false, Properties.Settings.Default.AutomaticallyConnectToDevices ? ActivationMode.ActivateIfFirst : ActivationMode.UserSettings);
                 }
                 ltoFlash = new Device(port, creationInfo);

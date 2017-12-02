@@ -1,4 +1,4 @@
-# Contributing to VINTage
+ # Contributing to VINTage
 
 Here is a set of [guidelines, not rules](https://www.youtube.com/watch?v=b6kgS_AwuH0), just in case you're brave enough to navigate this pile of code and wish to improve it.
 
@@ -20,7 +20,7 @@ Here is a set of [guidelines, not rules](https://www.youtube.com/watch?v=b6kgS_A
 
 ### Development Tools
 
-The VINTage projects are primarily written in C#. Therefore, when you choose to contribute code, you should be sure to consider whether your changes will work on all of the [supported platforms](#supported-platforms). At this time, the following development tools are required:
+The VINTage projects are primarily written in C#. Also, VINTage targets the Big Three desktop platforms. When you choose to contribute code, you should be sure to consider whether your changes will work on all of the [supported platforms](#supported-platforms). At this time, the following development tools are required:
 
 * **Windows:** [Microsoft Visual Studio](https://www.visualstudio.com/downloads/) - ideally 2012 or later, though Visual Studio Express 2010 works - or can be made to work
   * **Windows xp:** Support for Windows xp is still desired

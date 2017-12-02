@@ -1,4 +1,4 @@
- Contributing to VINTage
+# Contributing to VINTage
 
 Here is a set of [guidelines, not rules](https://www.youtube.com/watch?v=b6kgS_AwuH0), just in case you're brave enough to navigate this pile of code and wish to improve it.
 

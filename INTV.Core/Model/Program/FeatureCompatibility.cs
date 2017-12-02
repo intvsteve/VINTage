@@ -60,6 +60,24 @@ namespace INTV.Core.Model.Program
         public const FeatureCompatibility ValidFeaturesMask = (FeatureCompatibility)CompatibilityMask;
 
         /// <summary>
+        /// Coerces the given video standard compatibility to a supported value.
+        /// </summary>
+        /// <param name="videoStandardCompatiblity">The video standard compatibility to coerce.</param>
+        /// <returns>The coerced value.</returns>
+        /// <remarks>The ProgramFeatures.Combine() method had a bug that would result in combining the 'Tolerates' and 'Enhances' modes,
+        /// which resulted in a value of <see cref="FeatureCompatibility.Required"/>. This method is used internally to correct for the problem.
+        /// To do so, it will strip the FeatureCompatibility.Tolerates bit. Recall that for video standards, FeatureCompatibility.Enhanced
+        /// indicates that video standard compatibility is unknown.</remarks>
+        public static FeatureCompatibility CoerceVideoStandardCompatibility(this FeatureCompatibility videoStandardCompatiblity)
+        {
+            if (videoStandardCompatiblity == FeatureCompatibility.Requires)
+            {
+                videoStandardCompatiblity = FeatureCompatibility.Enhances; // Indicates compatibility is unknown.
+            }
+            return videoStandardCompatiblity;
+        }
+
+        /// <summary>
         /// Converts standard FeatureCompatibility to LuigiFeatureFlags.
         /// </summary>
         /// <param name="compatibility">The compatibility to convert.</param>

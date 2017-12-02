@@ -83,7 +83,7 @@ namespace INTV.Core.Restricted.Model.Program
         public int NtscCompatibility
         {
             get { return _ntsc; }
-            set { _ntsc = value; }
+            set { _ntsc = (int)((FeatureCompatibility)value).CoerceVideoStandardCompatibility(); }
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace INTV.Core.Restricted.Model.Program
         public int PalCompatibility
         {
             get { return _pal; }
-            set { _pal = value; }
+            set { _pal = (int)((FeatureCompatibility)value).CoerceVideoStandardCompatibility(); }
         }
 
         /// <summary>

@@ -1253,10 +1253,7 @@ namespace INTV.LtoFlash.Model
                 UniqueId = uniqueId;
                 try
                 {
-                    // This is the simplistic way we "remember" which LTO Flash! devices have been connected.
-                    var deviceDirectory = Configuration.Instance.GetDeviceDataAreaPath(uniqueId);
-                    var directoryInfo = System.IO.Directory.CreateDirectory(deviceDirectory);
-                    DebugOutput("Directory: " + deviceDirectory + " created: " + directoryInfo.Exists);
+                    Configuration.Instance.RecordDeviceArrival(uniqueId);
                 }
                 catch (Exception)
                 {

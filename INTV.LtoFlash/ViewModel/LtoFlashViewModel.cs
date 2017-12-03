@@ -457,6 +457,16 @@ namespace INTV.LtoFlash.ViewModel
                 {
                     SelectionDialogShowing = true;
                     SingleInstanceApplication.Instance.IsBusy = true;
+                    if (!ports.Select(p => Connection.CreatePseudoConnection(p, ConnectionType.Serial)).Where(p => IsLtoFlashSerialPortConnection(p)).Any())
+                    {
+                        // The newly arrived ports do does not appear to contain any LTO Flash! hardware, so skip showing the dialog.
+                        return;
+                    }
+                    foreach (var additionalKnownLtoFlashPort in PotentialDevicePorts.Select(p => p.Name).Except(ports))
+                    {
+                        ports.Add(additionalKnownLtoFlashPort);
+                    }
+
                     OSWindow dialog = null;
                     var multiSelect = ports.Count() > 1;
                     var title = multiSelect ? Resources.Strings.SelectDeviceDialog_Title : Resources.Strings.ConnectToDevice_Title;
@@ -509,6 +519,13 @@ namespace INTV.LtoFlash.ViewModel
         internal void ResetCachedFileSystemsCompareResult()
         {
             _cachedFileSystemsCompareResult = null;
+        }
+
+        private static bool IsLtoFlashSerialPortConnection(IConnection connection)
+        {
+            // Always check the given connection regardless of the user setting. We *really* want to know if this is an LTO Flash! device.
+            var isLtoFlashPort = SerialConnectionPolicy.Instance.ExclusiveAccess(connection);
+            return isLtoFlashPort;
         }
 
         private static bool MessageBoxExceptionFilter(System.Exception exception)

@@ -178,6 +178,12 @@ namespace INTV.Intellicart.Model
             get { return Id; }
         }
 
+        /// <inheritdoc/>
+        public IEnumerable<IPeripheral> AttachedPeripherals
+        {
+            get { yield break; }
+        }
+
         #endregion // IPrimaryComponent Properties
 
         #endregion // Properties

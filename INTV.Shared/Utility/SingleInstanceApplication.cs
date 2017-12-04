@@ -172,7 +172,11 @@ namespace INTV.Shared.Utility
 
         // UNDONE One day, perhaps we can get these via MEF. Not ready yet, though.
         // [System.ComponentModel.Composition.ImportMany]
-        // public IEnumerable<Lazy<IPrimaryComponent>> Components;
+        // public IEnumerable<Lazy<IPrimaryComponent>> Components
+        public IEnumerable<IPrimaryComponent> Components
+        {
+            get { return CompositionHelpers.Container.GetExportedValues<IPrimaryComponent>(); }
+        }
 
         /// <summary>
         /// Gets the ROM list.
@@ -231,6 +235,12 @@ namespace INTV.Shared.Utility
         {
             var configuration = Configurations.Select(c => c.Value).OfType<T>().FirstOrDefault();
             return configuration;
+        }
+
+        public IEnumerable<IPeripheral> GetAttachedDevices()
+        {
+            var attachedDevices = Components.SelectMany(c => c.AttachedPeripherals);
+            return attachedDevices;
         }
 
         /// <summary>

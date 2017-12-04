@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define ENABLE_DIAGNOSTIC_OUTPUT
+
 using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.ComponentModel;
@@ -209,33 +211,14 @@ namespace INTV.LtoFlash.Model
         {
             get
             {
-                if (System.IO.Directory.Exists(Configuration.Instance.ApplicationConfigurationPath))
+                if (_knownDeviceIds == null)
                 {
-                    var genericDeviceDirectoryName = System.IO.Path.GetFileName(GetDeviceDataAreaPath(INTV.Core.Model.LuigiScrambleKeyBlock.AnyLTOFlashId));
-                    var validLtoFlashDeviceDirectoryNameLength = genericDeviceDirectoryName.Length;
-                    var deviceIdLength = INTV.Core.Model.LuigiScrambleKeyBlock.AnyLTOFlashId.Length;
-                    var deviceDirectoryWildcard = genericDeviceDirectoryName.Remove(validLtoFlashDeviceDirectoryNameLength - deviceIdLength) + "*";
-
-                    // NOTE: Mono(Mac) assume case-sensitive file system here! So the case of the wildcard must exactly match!
-                    foreach (var ltoFlashDeviceDirectory in System.IO.Directory.EnumerateDirectories(ApplicationConfigurationPath, deviceDirectoryWildcard).Where(d => System.IO.Path.GetFileName(d).Length == validLtoFlashDeviceDirectoryNameLength))
-                    {
-                        // Check that the string looks like a potentially valid DRUID. It should parse as a pair of 64-bit integers in hex.
-                        var deviceId = ltoFlashDeviceDirectory.Substring(ltoFlashDeviceDirectory.Length - deviceIdLength);
-                        var druidHi = 0ul;
-                        var druidLo = 0ul;
-                        if (ulong.TryParse(deviceId.Substring(0, 16), System.Globalization.NumberStyles.HexNumber, System.Globalization.NumberFormatInfo.InvariantInfo, out druidHi) &&
-                            ulong.TryParse(deviceId.Substring(16, 16), System.Globalization.NumberStyles.HexNumber, System.Globalization.NumberFormatInfo.InvariantInfo, out druidLo))
-                        {
-                            yield return deviceId;
-                        }
-                    }
+                    RefreshKnownDeviceIds();
                 }
-                else
-                {
-                    yield break;
-                }
+                return _knownDeviceIds;
             }
         }
+        private HashSet<string> _knownDeviceIds;
 
         #region IConfiguration
 
@@ -314,21 +297,6 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Gets a Locutus device-specific path for storing data.
-        /// </summary>
-        /// <param name="uniqueId">The unique identifier of the device.</param>
-        /// <returns>An absolute path for storing a specific device-specific content.</returns>
-        public string GetDeviceDataAreaPath(string uniqueId)
-        {
-            var recoveredDataAreaPath = ApplicationConfigurationPath;
-            if (!string.IsNullOrWhiteSpace(uniqueId))
-            {
-                recoveredDataAreaPath = System.IO.Path.Combine(ApplicationConfigurationPath, DeviceSubdirectoryBaseName + "_" + uniqueId);
-            }
-            return recoveredDataAreaPath;
-        }
-
-        /// <summary>
         /// Gets a Locutus device-specific path for storing backup data.
         /// </summary>
         /// <param name="uniqueId">The unique identifier of the device.</param>
@@ -371,6 +339,65 @@ namespace INTV.LtoFlash.Model
             var portLogFileName = portName.Replace("/dev/", string.Empty).Replace('/', '.') + "_log.txt";
             var serialPortLogPath = System.IO.Path.Combine(ApplicationConfigurationPath, portLogFileName);
             return serialPortLogPath;
+        }
+
+        internal void RecordDeviceArrival(string uniqueId)
+        {
+            // This is the simplistic way we "remember" which LTO Flash! devices have been connected.
+            _knownDeviceIds.Add(uniqueId);
+            var deviceDirectory = Configuration.Instance.GetDeviceDataAreaPath(uniqueId);
+            var directoryInfo = System.IO.Directory.CreateDirectory(deviceDirectory);
+            DebugOutput("Directory: " + deviceDirectory + " created: " + directoryInfo.Exists);
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DIAGNOSTIC_OUTPUT")]
+        private static void DebugOutput(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        private void RefreshKnownDeviceIds()
+        {
+            if (_knownDeviceIds == null)
+            {
+                _knownDeviceIds = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
+            }
+            if (System.IO.Directory.Exists(Configuration.Instance.ApplicationConfigurationPath))
+            {
+                var genericDeviceDirectoryName = System.IO.Path.GetFileName(GetDeviceDataAreaPath(INTV.Core.Model.LuigiScrambleKeyBlock.AnyLTOFlashId));
+                var validLtoFlashDeviceDirectoryNameLength = genericDeviceDirectoryName.Length;
+                var deviceIdLength = INTV.Core.Model.LuigiScrambleKeyBlock.AnyLTOFlashId.Length;
+                var deviceDirectoryWildcard = genericDeviceDirectoryName.Remove(validLtoFlashDeviceDirectoryNameLength - deviceIdLength) + "*";
+
+                // NOTE: Mono(Mac) assume case-sensitive file system here! So the case of the wildcard must exactly match!
+                foreach (var ltoFlashDeviceDirectory in System.IO.Directory.EnumerateDirectories(ApplicationConfigurationPath, deviceDirectoryWildcard).Where(d => System.IO.Path.GetFileName(d).Length == validLtoFlashDeviceDirectoryNameLength))
+                {
+                    // Check that the string looks like a potentially valid DRUID. It should parse as a pair of 64-bit integers in hex.
+                    var deviceId = ltoFlashDeviceDirectory.Substring(ltoFlashDeviceDirectory.Length - deviceIdLength);
+                    var druidHi = 0ul;
+                    var druidLo = 0ul;
+                    if (ulong.TryParse(deviceId.Substring(0, 16), System.Globalization.NumberStyles.HexNumber, System.Globalization.NumberFormatInfo.InvariantInfo, out druidHi) &&
+                        ulong.TryParse(deviceId.Substring(16, 16), System.Globalization.NumberStyles.HexNumber, System.Globalization.NumberFormatInfo.InvariantInfo, out druidLo))
+                    {
+                        _knownDeviceIds.Add(deviceId);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a Locutus device-specific path for storing data.
+        /// </summary>
+        /// <param name="uniqueId">The unique identifier of the device.</param>
+        /// <returns>An absolute path for storing a specific device-specific content.</returns>
+        private string GetDeviceDataAreaPath(string uniqueId)
+        {
+            var recoveredDataAreaPath = ApplicationConfigurationPath;
+            if (!string.IsNullOrWhiteSpace(uniqueId))
+            {
+                recoveredDataAreaPath = System.IO.Path.Combine(ApplicationConfigurationPath, DeviceSubdirectoryBaseName + "_" + uniqueId);
+            }
+            return recoveredDataAreaPath;
         }
     }
 }

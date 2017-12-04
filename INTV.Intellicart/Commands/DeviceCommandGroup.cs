@@ -316,10 +316,7 @@ namespace INTV.Intellicart.Commands
         private static bool CanDownload(object parameter)
         {
             var intellicart = parameter as IntellicartViewModel;
-            var canExecute = (intellicart != null) && !string.IsNullOrWhiteSpace(intellicart.SerialPort);
-            canExecute = canExecute && !SerialPortConnection.PortsInUse.Contains(intellicart.SerialPort);
-            canExecute = canExecute && intellicart.SerialPorts.Select(p => p.PortName).Contains(intellicart.SerialPort);
-            canExecute = canExecute && intellicart.Roms.SelectionIndexes.Any();
+            var canExecute = (intellicart != null) && intellicart.IsConfiguredPortAvailable && intellicart.Roms.SelectionIndexes.Any();
             return canExecute;
         }
 
@@ -382,9 +379,7 @@ namespace INTV.Intellicart.Commands
         private static bool CanBrowseAndDownload(object parameter)
         {
             var intellicart = parameter as IntellicartViewModel;
-            var canExecute = (intellicart != null) && !string.IsNullOrWhiteSpace(intellicart.SerialPort);
-            canExecute = canExecute && !SerialPortConnection.PortsInUse.Contains(intellicart.SerialPort);
-            canExecute = canExecute && intellicart.SerialPorts.Select(p => p.PortName).Contains(intellicart.SerialPort);
+            var canExecute = (intellicart != null) && intellicart.IsConfiguredPortAvailable;
             return canExecute;
         }
 

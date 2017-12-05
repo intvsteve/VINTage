@@ -23,9 +23,13 @@
 <Window x:Class="INTV.Shared.View.SettingsDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:rootCommands="clr-namespace:INTV.Shared.Commands"
              Title="Settings" Height="328" Width="542"
              ShowInTaskbar="False" ResizeMode="NoResize" UseLayoutRounding="True" SnapsToDevicePixels="True"
              WindowStartupLocation="CenterOwner">
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{x:Static rootCommands:RootCommandGroup.CloseWindowCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+    </Window.InputBindings>
     <Grid>
         <TabControl x:Name="_propertyPages" Margin="4"/>
     </Grid>

@@ -80,6 +80,31 @@ namespace INTV.Shared.Commands
 
         #endregion // RibbonSeparatorCommand
 
+        #region Generally Useful Commands
+
+        #region CloseWindowCommand
+
+        /// <summary>
+        /// A command to use to close a WPF window.
+        /// </summary>
+        public static readonly ICommand CloseWindowCommand = new RelayCommand(OnCloseWindow)
+        {
+            UniqueId = UniqueNameBase + ".CloseWindowCommand"
+        };
+
+        private static void OnCloseWindow(object parameter)
+        {
+            var window = parameter as Window;
+            if ((window != null) && CloseWindowCommand.CanExecute(parameter))
+            {
+                window.Close();
+            }
+        }
+
+        #endregion // CloseWindowCommand
+
+        #endregion // Generally Useful Commands
+
         #region CommandGroup
 
         /// <inheritdoc />

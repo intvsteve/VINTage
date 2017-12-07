@@ -198,6 +198,28 @@ namespace INTV.Shared.ViewModel
             get { return ComponentId; }
         }
 
+        /// <inheritdoc/>
+        public IEnumerable<IPeripheral> AttachedPeripherals
+        {
+            get
+            {
+                lock (_peripherals)
+                {
+                    var peripherals = new List<IPeripheral>();
+                    _peripherals.RemoveAll(p => !p.IsAlive);
+                    foreach (var weakPeripheralReference in _peripherals)
+                    {
+                        var peripheral = weakPeripheralReference.Target as IPeripheral;
+                        if (weakPeripheralReference.IsAlive && (peripheral != null))
+                        {
+                            peripherals.Add(peripheral);
+                        }
+                    }
+                    return peripherals;
+                }
+            }
+        }
+
         #endregion // IPrimaryComponent Properties
 
         #region Commands
@@ -222,30 +244,6 @@ namespace INTV.Shared.ViewModel
             private set { AssignAndUpdateProperty("Model", value, ref _programDescriptions, (s, p) => _programs = new ObservableViewModelCollection<ProgramDescriptionViewModel, ProgramDescription>(p, Factory, null)); }
         }
         private ProgramCollection _programDescriptions;
-
-        /// <summary>
-        /// Gets the attached peripherals.
-        /// </summary>
-        internal IEnumerable<IPeripheral> AttachedPeripherals
-        {
-            get
-            {
-                lock (_peripherals)
-                {
-                    var peripherals = new List<IPeripheral>();
-                    _peripherals.RemoveAll(p => !p.IsAlive);
-                    foreach (var weakPeripheralReference in _peripherals)
-                    {
-                        var peripheral = weakPeripheralReference.Target as IPeripheral;
-                        if (weakPeripheralReference.IsAlive && (peripheral != null))
-                        {
-                            peripherals.Add(peripheral);
-                        }
-                    }
-                    return peripherals;
-                }
-            }
-        }
 
         #endregion // Properties
 

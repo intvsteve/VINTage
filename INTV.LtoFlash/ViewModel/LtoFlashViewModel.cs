@@ -187,6 +187,14 @@ namespace INTV.LtoFlash.ViewModel
             get { return ComponentId; }
         }
 
+        /// <summary>
+        /// Gets the attached peripherals.
+        /// </summary>
+        public IEnumerable<IPeripheral> AttachedPeripherals
+        {
+            get { return ActiveLtoFlashDevices.Select(vm => vm.Device).Where(m => m.IsValid); }
+        }
+
         #endregion // IPrimaryComponent Properties
 
         /// <summary>
@@ -335,14 +343,6 @@ namespace INTV.LtoFlash.ViewModel
         /// </summary>
         [System.ComponentModel.Composition.ImportMany(typeof(IConnectionSharingPolicy))]
         public IEnumerable<System.Lazy<IConnectionSharingPolicy>> ConnectionSharingPolicies { get; set; }
-
-        /// <summary>
-        /// Gets the attached peripherals.
-        /// </summary>
-        internal IEnumerable<IPeripheral> AttachedPeripherals
-        {
-            get { return ActiveLtoFlashDevices.Select(vm => vm.Device).Where(m => m.IsValid); }
-        }
 
         private bool SelectionDialogShowing { get; set; }
 

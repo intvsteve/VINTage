@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using INTV.Core.Model.Device;
 using INTV.Shared.View;
 
 namespace INTV.Shared.ComponentModel
@@ -33,6 +34,12 @@ namespace INTV.Shared.ComponentModel
         /// Gets the unique identifier of the component.
         /// </summary>
         string UniqueId { get; }
+
+        /// <summary>
+        /// Gets an enumerable of the currently attached peripherals that the component is aware of.
+        /// </summary>
+        /// <remarks>Callers should not cache this value! It does not provide a way to be informed of peripheral arrivals or departures!</remarks>
+        IEnumerable<IPeripheral> AttachedPeripherals { get; }
 
         /// <summary>
         /// Components that have any post-construction initialization should implement it in this method.

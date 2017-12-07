@@ -117,7 +117,7 @@ namespace INTV.Shared.Behavior
             presenter.SetValue(OriginalColumnsProperty, columns);
         }
 
-        private static List<GridViewColumn> GetOriginalColumns(this GridViewRowPresenter presenter)
+        private static List<GridViewColumn> GetOriginalColumns(this System.Windows.Controls.Primitives.GridViewRowPresenterBase presenter)
         {
             return presenter.GetValue(OriginalColumnsProperty) as List<GridViewColumn>;
         }
@@ -147,7 +147,7 @@ namespace INTV.Shared.Behavior
             // will be null until the full control is loaded
             if ((rowPresenterReference != null) && rowPresenterReference.IsAlive) 
             {
-                var rowPresenter = (GridViewRowPresenter)rowPresenterReference.Target;
+                var rowPresenter = (System.Windows.Controls.Primitives.GridViewRowPresenterBase)rowPresenterReference.Target;
                 bool makeVisible = (bool)e.NewValue;
                 if (makeVisible)
                 {

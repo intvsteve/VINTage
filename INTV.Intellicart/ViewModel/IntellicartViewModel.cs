@@ -25,6 +25,7 @@ using INTV.Core.Model.Device;
 using INTV.Intellicart.Model;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Interop.DeviceManagement;
+using INTV.Shared.Model.Device;
 using INTV.Shared.Model.Program;
 using INTV.Shared.ViewModel;
 
@@ -101,6 +102,20 @@ namespace INTV.Intellicart.ViewModel
         public bool IsPortValid
         {
             get { return SerialPorts.Any(); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the configured serial port is available for use.
+        /// </summary>
+        public bool IsConfiguredPortAvailable
+        {
+            get
+            {
+                var portAvailable = !string.IsNullOrWhiteSpace(SerialPort) && SerialPortConnection.AvailablePorts.Contains(SerialPort);
+                portAvailable = portAvailable && !SerialPortConnection.PortsInUse.Contains(SerialPort);
+                portAvailable = portAvailable && SerialPorts.Select(p => p.PortName).Contains(SerialPort);
+                return portAvailable;
+            }
         }
 
         /// <summary>

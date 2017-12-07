@@ -117,7 +117,7 @@ namespace INTV.Shared.ViewModel
                 try
                 {
 #endif // REPORT_PERFORMANCE
-                ProgramDescription.Validate(programDescription, null, null, false);
+                ProgramDescription.Validate(programDescription, SingleInstanceApplication.Instance.GetAttachedDevices(), SingleInstanceApplication.Instance.GetConnectedDevicesHistory(), reportMessagesChanged: false);
 #if REPORT_PERFORMANCE
                 }
                 finally

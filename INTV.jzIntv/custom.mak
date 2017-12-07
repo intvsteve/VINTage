@@ -27,9 +27,9 @@
 # Set this variable to the absolute path to the jzIntv
 
 # Mac \/
-# JZINTV_DIR = ~/Projects/jzIntv
+JZINTV_DIR_MAC = ~/Projects/jzIntv
 
-# JZINTV_DIR = ~/jzIntv
+JZINTV_DIR_WIN = ~/jzIntv
 # Win /\
 
 #
@@ -56,9 +56,9 @@
 # environment variable during the build.
 
 # Mac \/
-ADD_ENVIRONMENT_PATH = /opt/local/bin
+ADD_ENVIRONMENT_PATH_MAC = /opt/local/bin
 
-# ADD_ENVIRONMENT_PATH = /mingw/bin
+ADD_ENVIRONMENT_PATH_WIN = /mingw/bin
 # Win /\
 
 #
@@ -70,14 +70,5 @@ ADD_ENVIRONMENT_PATH = /opt/local/bin
 # building the jzIntv components.
 #
 
-SYNC_JZINTV = svn update $(JZINTV_DIR)
+SYNC_JZINTV = svn update $(JZINTV_DIR_$(TARGET_OS))
 
-## ----------------------------- Validation ------------------------------ ##
-
-ifeq (,$(JZINTV_DIR))
-  ifneq (1,$(SKIP_IF_JZINTV_EMPTY))
-    $(error Set the JZINTV_DIR variable to the directory containing the jzIntv src directory)
-  else
-    SKIP_BUILD = 1
-  endif
-endif

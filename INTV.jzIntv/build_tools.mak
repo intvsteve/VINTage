@@ -52,6 +52,19 @@ ifeq (LINUX,$(TARGET_OS))
   TOOL_OUTPUT_DIR = tools/Linux
 endif
 
+JZINTV_DIR = $(JZINTV_DIR_$(TARGET_OS))
+ADD_ENVIRONMENT_PATH = $(ADD_ENVIRONMENT_PATH_$(TARGET_OS))
+
+## ----------------------------- Validation ------------------------------ ##
+
+ifeq (,$(JZINTV_DIR))
+  ifneq (1,$(SKIP_IF_JZINTV_EMPTY))
+    $(error Set the JZINTV_DIR variable to the directory containing the jzIntv src directory)
+  else
+    SKIP_BUILD = 1
+  endif
+endif
+
 # Directory containing output of jzIntv builds.
 TOOL_INPUT_DIR = $(JZINTV_DIR)/bin
 

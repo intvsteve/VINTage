@@ -24,6 +24,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -82,7 +83,7 @@ namespace INTV.Shared.View
         /// <param name="coder">Used to deserialize from a XIB.</param>
         [Export("initWithCoder:")]
         public RomListViewController(NSCoder coder)
-            : base (coder)
+            : base(coder)
         {
             Initialize();
         }
@@ -316,7 +317,7 @@ namespace INTV.Shared.View
         private void HandleProgramsChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             DebugItemChange("ROMS COLLECTION CHANGED");
-            switch(e.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     AddObjectsToArrayController(e.NewItems.OfType<NSObject>());
@@ -345,7 +346,7 @@ namespace INTV.Shared.View
         {
             foreach (var item in objectsToRemove)
             {
-                DebugItemChange("removed " + item + " of type " + item.GetType ().FullName);
+                DebugItemChange("removed " + item + " of type " + item.GetType().FullName);
                 RomsArrayController.RemoveObject(item);
             }
             var selectedItemsToRemove = objectsToRemove.Intersect(View.ViewModel.CurrentSelection.OfType<NSObject>());
@@ -567,7 +568,7 @@ namespace INTV.Shared.View
             private double ReturnKeyTimestamp { get; set; }
 
             ///<inheritdoc/>
-            public override void SelectionDidChange (NSNotification notification)
+            public override void SelectionDidChange(NSNotification notification)
             {
                 var romsTable = notification.Object as NSTableView;
                 var viewModel = romsTable.GetInheritedValue(IFakeDependencyObjectHelpers.DataContextPropertyName) as RomListViewModel;
@@ -588,7 +589,7 @@ namespace INTV.Shared.View
             }
 
             ///<inheritdoc/>
-            public override bool SelectionShouldChange (NSTableView tableView)
+            public override bool SelectionShouldChange(NSTableView tableView)
             {
                 return !SingleInstanceApplication.Current.IsBusy;
             }
@@ -756,7 +757,7 @@ namespace INTV.Shared.View
     /// <summary>
     /// Subclass NSTableView to get context menus to work the way we want.
     /// </summary>
-    [Register ("ROMsTableView")]
+    [Register("ROMsTableView")]
     public class ROMsTableView : NSTableView
     {
         #region Constructors
@@ -775,9 +776,9 @@ namespace INTV.Shared.View
         /// Called when created directly from a XIB file.
         /// </summary>
         /// <param name="coder">Used to deserialize from a XIB.</param>
-        [Export ("initWithCoder:")]
+        [Export("initWithCoder:")]
         public ROMsTableView(NSCoder coder)
-            : base (coder)
+            : base(coder)
         {
             Initialize();
         }
@@ -842,7 +843,7 @@ namespace INTV.Shared.View
             }
 
             // Build the context menu.
-            var target =  (row < 0) ? null : Controller.GetObjectAtRow((int)row);
+            var target = (row < 0) ? null : Controller.GetObjectAtRow((int)row);
             var context = Controller.View.ViewModel;
             Menu = target.CreateContextMenu("ROMListContextMenu", context);
             return base.MenuForEvent(theEvent);

@@ -96,8 +96,8 @@ all: $(addprefix $(TOOL_OUTPUT_DIR)/, $(JZINTV_APPS))
 define CreateToolPrerequisiteRule
 $(addprefix $(TOOL_OUTPUT_DIR)/,$(1)): $(addprefix $(TOOL_INPUT_DIR)/,$(1))
 	@echo Updating $(1)...
-	@echo Moving $$^ to $$@
-	@mv -f $$^ $$@
+	@echo Copying $$^ to $$@
+	@cp -fp $$^ $$@
 	@echo
 
 endef

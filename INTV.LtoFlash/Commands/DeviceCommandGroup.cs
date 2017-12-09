@@ -667,6 +667,10 @@ namespace INTV.LtoFlash.Commands
                 {
                     dialog.Exception = exception;
                 }
+                else
+                {
+                    dialog.TextWrapping = OSTextWrapping.Wrap;
+                }
                 dialog.ShowDialog(Resources.Strings.OK);
             }
             PromptToDeleteBackup(message, Resources.Strings.BackupCommand_Failed_Title, backupDirectory);

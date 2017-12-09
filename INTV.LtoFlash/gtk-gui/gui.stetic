@@ -44,39 +44,23 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Entry" id="_deviceName">
+              <widget class="Gtk.Label" id="_rootDirectoryUsage">
                 <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="IsEditable">True</property>
-                <property name="InvisibleChar">•</property>
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">label2</property>
               </widget>
               <packing>
                 <property name="Position">2</property>
                 <property name="AutoSize">True</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="Gtk.VSeparator" id="vseparator2">
-                <property name="MemberName" />
-              </widget>
-              <packing>
-                <property name="Position">3</property>
-                <property name="AutoSize">True</property>
                 <property name="Expand">False</property>
                 <property name="Fill">False</property>
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Label" id="_rootDirectoryUsage">
-                <property name="MemberName" />
-                <property name="LabelProp" translatable="yes">label2</property>
-              </widget>
-              <packing>
-                <property name="Position">4</property>
-                <property name="AutoSize">True</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
-              </packing>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
             </child>
             <child>
               <widget class="Gtk.Image" id="_dirtyIcon">

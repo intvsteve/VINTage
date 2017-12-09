@@ -47,7 +47,6 @@ namespace INTV.LtoFlash.View
         ////private static readonly Dictionary<string, Gdk.Pixbuf> _deleteButtonIcons = new Dictionary<string, Gdk.Pixbuf>();
 
         private DeviceViewModel _activeDevice;
-        private TextCellInPlaceEditor _deviceNameEditor;
         private TextCellInPlaceEditor _longNameEditor;
         private TextCellInPlaceEditor _shortNameEditor;
 
@@ -59,9 +58,6 @@ namespace INTV.LtoFlash.View
             this.Build();
 
             _menuLayoutTitle.Text = MenuLayoutViewModel.Title;
-
-            _deviceName.CanDefault = false;
-            _deviceNameEditor = new TextCellInPlaceEditor(_deviceName, FileSystemConstants.MaxShortNameLength) { IsValidCharacter = INTV.Core.Model.Grom.Characters.Contains };
 
             _dirtyIcon.NoShowAll = true;
             _dirtyIcon.Visible = viewModel.ShowFileSystemsDifferIcon;
@@ -247,32 +243,6 @@ namespace INTV.LtoFlash.View
         {
             var ltoFlashViewModel = DataContext as LtoFlashViewModel;
             _newFolder.Sensitive = MenuLayoutCommandGroup.NewDirectoryCommand.CanExecute(ltoFlashViewModel.HostPCMenuLayout);
-        }
-
-        private void HandleDeviceNameTextInserted(object o, Gtk.TextInsertedArgs args)
-        {
-            var entry = o as Gtk.Entry;
-            System.Diagnostics.Debug.Assert(object.ReferenceEquals(entry, _deviceName));
-            entry.TextInserted -= HandleDeviceNameTextInserted;
-            var a = entry.Action;
-            var position = args.Position;
-            var currentText = entry.Text;
-            foreach (var character in args.Text)
-            {
-                if (!INTV.Core.Model.Grom.Characters.Contains(character))
-                {
-                    var index = currentText.IndexOf(character);
-                    while (index >= 0)
-                    {
-                        entry.DeleteText(index,index + 1);
-                        args.Position = args.Position - 1;
-                        currentText = entry.Text;
-                        index = currentText.IndexOf(character);
-                    }
-                }
-            }
-
-            entry.TextInserted += HandleDeviceNameTextInserted;
         }
 
         private void InitializeColorComboBox(Gtk.ComboBox colorChooser, ObservableCollection<FileNodeColorViewModel> colors, MenuLayoutViewModel dataContext)
@@ -574,26 +544,6 @@ namespace INTV.LtoFlash.View
 
         private void UpdateActiveDeviceViewModelInfo(DeviceViewModel device)
         {
-            // TODO: Hook this stuff up correctly for device, etc.
-            // Make not editable unless device connected
-            var editable = false;
-            var deviceNameText = device.Name;
-            if (!device.IsValid)
-            {
-                var ltoFlashViewModel = DataContext as LtoFlashViewModel;
-                deviceNameText = ltoFlashViewModel.HostPCMenuLayout.ShortName;
-                if (string.IsNullOrEmpty(deviceNameText))
-                {
-                    deviceNameText = ltoFlashViewModel.HostPCMenuLayout.LongName;
-                }
-            }
-            else
-            {
-                editable = device.IsConfigurable;
-            }
-            _deviceName.Text = deviceNameText;
-            _deviceName.IsEditable = editable;
-            _deviceName.TooltipText = deviceNameText;
         }
 
         private void HandleDeleteSelectedItems()

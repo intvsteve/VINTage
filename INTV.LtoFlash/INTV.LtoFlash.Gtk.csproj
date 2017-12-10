@@ -450,6 +450,7 @@
     <Compile Include="UnsupportedForkKindException.cs" />
     <Compile Include="Utility\FTDIUtilities.Linux.cs" />
     <Compile Include="View\DeviceInformation.Gtk.cs" />
+    <Compile Include="View\DeviceInformationPage.Gtk.cs" />
     <Compile Include="View\MenuLayoutView.cs" />
     <Compile Include="View\MenuLayoutView.Gtk.cs" />
     <Compile Include="View\PromptToAddMenuItemsForNewRoms.Gtk.cs" />
@@ -477,6 +478,7 @@
     <Compile Include="ViewModel\SettingsPageViewModel.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="gtk-gui\INTV.LtoFlash.View.DeviceInformation.cs" />
+    <Compile Include="gtk-gui\INTV.LtoFlash.View.DeviceInformationPage.cs" />
     <Compile Include="gtk-gui\INTV.LtoFlash.View.MenuLayoutView.cs" />
     <Compile Include="gtk-gui\INTV.LtoFlash.View.PromptToAddMenuItemsForNewRoms.cs" />
     <Compile Include="gtk-gui\INTV.LtoFlash.View.PromptToInstallFtdiDriverDialog.cs" />

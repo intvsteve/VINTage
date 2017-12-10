@@ -6,13 +6,15 @@ namespace INTV.LtoFlash.View
 	{
 		private global::Gtk.Notebook _informationPages;
 		
-		private global::Gtk.Label label3;
+		private global::INTV.LtoFlash.View.DeviceInformationPage _infoPage;
 		
-		private global::Gtk.Label label4;
+		private global::Gtk.Label _infoPageName;
 		
-		private global::Gtk.Label label5;
+		private global::Gtk.Label _settingsPageName;
 		
-		private global::Gtk.Label label6;
+		private global::Gtk.Label _firmwarePageName;
+		
+		private global::Gtk.Label _fileSystemPageName;
 		
 		private global::Gtk.HBox hbox2;
 		
@@ -38,42 +40,44 @@ namespace INTV.LtoFlash.View
 			this._informationPages.CanFocus = true;
 			this._informationPages.Name = "_informationPages";
 			this._informationPages.CurrentPage = 0;
+			// Container child _informationPages.Gtk.Notebook+NotebookChild
+			this._infoPage = new global::INTV.LtoFlash.View.DeviceInformationPage ();
+			this._infoPage.Events = ((global::Gdk.EventMask)(256));
+			this._infoPage.Name = "_infoPage";
+			this._informationPages.Add (this._infoPage);
 			// Notebook tab
-			global::Gtk.Label w2 = new global::Gtk.Label ();
-			w2.Visible = true;
-			this._informationPages.Add (w2);
-			this.label3 = new global::Gtk.Label ();
-			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Information");
-			this._informationPages.SetTabLabel (w2, this.label3);
-			this.label3.ShowAll ();
+			this._infoPageName = new global::Gtk.Label ();
+			this._infoPageName.Name = "_infoPageName";
+			this._infoPageName.LabelProp = global::Mono.Unix.Catalog.GetString ("Information");
+			this._informationPages.SetTabLabel (this._infoPage, this._infoPageName);
+			this._infoPageName.ShowAll ();
 			// Notebook tab
 			global::Gtk.Label w3 = new global::Gtk.Label ();
 			w3.Visible = true;
 			this._informationPages.Add (w3);
-			this.label4 = new global::Gtk.Label ();
-			this.label4.Name = "label4";
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Settings");
-			this._informationPages.SetTabLabel (w3, this.label4);
-			this.label4.ShowAll ();
+			this._settingsPageName = new global::Gtk.Label ();
+			this._settingsPageName.Name = "_settingsPageName";
+			this._settingsPageName.LabelProp = global::Mono.Unix.Catalog.GetString ("Settings");
+			this._informationPages.SetTabLabel (w3, this._settingsPageName);
+			this._settingsPageName.ShowAll ();
 			// Notebook tab
 			global::Gtk.Label w4 = new global::Gtk.Label ();
 			w4.Visible = true;
 			this._informationPages.Add (w4);
-			this.label5 = new global::Gtk.Label ();
-			this.label5.Name = "label5";
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("Firmware");
-			this._informationPages.SetTabLabel (w4, this.label5);
-			this.label5.ShowAll ();
+			this._firmwarePageName = new global::Gtk.Label ();
+			this._firmwarePageName.Name = "_firmwarePageName";
+			this._firmwarePageName.LabelProp = global::Mono.Unix.Catalog.GetString ("Firmware");
+			this._informationPages.SetTabLabel (w4, this._firmwarePageName);
+			this._firmwarePageName.ShowAll ();
 			// Notebook tab
 			global::Gtk.Label w5 = new global::Gtk.Label ();
 			w5.Visible = true;
 			this._informationPages.Add (w5);
-			this.label6 = new global::Gtk.Label ();
-			this.label6.Name = "label6";
-			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("File System");
-			this._informationPages.SetTabLabel (w5, this.label6);
-			this.label6.ShowAll ();
+			this._fileSystemPageName = new global::Gtk.Label ();
+			this._fileSystemPageName.Name = "_fileSystemPageName";
+			this._fileSystemPageName.LabelProp = global::Mono.Unix.Catalog.GetString ("File System");
+			this._informationPages.SetTabLabel (w5, this._fileSystemPageName);
+			this._fileSystemPageName.ShowAll ();
 			w1.Add (this._informationPages);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(w1 [this._informationPages]));
 			w6.Position = 0;
@@ -127,6 +131,7 @@ namespace INTV.LtoFlash.View
 			this.DefaultWidth = 568;
 			this.DefaultHeight = 300;
 			this.Show ();
+			this._informationPages.SwitchPage += new global::Gtk.SwitchPageHandler (this.HandleSwitchPage);
 		}
 	}
 }

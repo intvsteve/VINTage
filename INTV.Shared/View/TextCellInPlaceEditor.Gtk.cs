@@ -30,7 +30,7 @@ namespace INTV.Shared.View
     /// </summary>
     /// <remarks>This offers a mechanism to restrict the length of the text being entered, as well as a
     /// filtering mechanism to restrict the set of allowed characters.</remarks>
-    public sealed class TextCellInPlaceEditor : IInPlaceEditor
+    public sealed class TextCellInPlaceEditor : IInPlaceEditor, IDisposable
     {
         private TextCellInPlaceEditor(Gtk.Widget owner, int maxLength, Gtk.Widget editedElement)
         {
@@ -50,6 +50,8 @@ namespace INTV.Shared.View
         {
             Editor.MaxLength = MaxLength;
             Editor.TextInserted += HandleTextInserted;
+            owner.KeyPressEvent += HandleEditorKeyPressEvent;
+            owner.Activated += HandleEditorValueCommit;
         }
 
         /// <summary>
@@ -114,18 +116,6 @@ namespace INTV.Shared.View
             treeView.SetCursorOnCell(EditingObject.Path, EditingObject.Column, Renderer, true);
         }
 
-        private void CellEditingCanceled (object sender, EventArgs e)
-        {
-            DebugOutput("!$!$!$!$ CellEditingCanceled");
-            CellEditingEnded(null, null, false);
-        }
-
-        private void CellEdited(object o, Gtk.EditedArgs args)
-        {
-            DebugOutput("!$!$!$!$ CellEdited");
-            CellEditingEnded(args.NewText, new Gtk.TreePath(args.Path), true);
-        }
-
         /// <inheritdoc/>
         public void CancelEdit()
         {
@@ -142,10 +132,55 @@ namespace INTV.Shared.View
 
         #endregion // IInPlaceEditor
 
+        #region IDisposable
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion // IDisposable
+
         [System.Diagnostics.Conditional("ENABLE_INPLACEEDIT_TRACE")]
         private static void DebugOutput(object message)
         {
             System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (ElementOwner is Gtk.Entry)
+                {
+                    var owner = (Gtk.Entry)ElementOwner;
+                    Editor.TextInserted -= HandleTextInserted;
+                    owner.KeyPressEvent -= HandleEditorKeyPressEvent;
+                    owner.Activated -= HandleEditorValueCommit;
+                }
+                if (Renderer != null)
+                {
+                    Renderer.EditingStarted -= CellEditingStarted;
+                }
+                ElementOwner = null;
+                EditedElement = null;
+                EditingObject = null;
+                Renderer = null;
+            }
+        }
+
+        private void CellEditingCanceled (object sender, EventArgs e)
+        {
+            DebugOutput("!$!$!$!$ CellEditingCanceled");
+            CellEditingEnded(null, null, false);
+        }
+
+        private void CellEdited(object o, Gtk.EditedArgs args)
+        {
+            DebugOutput("!$!$!$!$ CellEdited");
+            CellEditingEnded(args.NewText, new Gtk.TreePath(args.Path), true);
         }
 
         private void CellEditingStarted(object o, Gtk.EditingStartedArgs args)
@@ -203,6 +238,25 @@ namespace INTV.Shared.View
             }
 
             entry.TextInserted += HandleTextInserted;
+        }
+
+        private void HandleEditorKeyPressEvent(object o, Gtk.KeyPressEventArgs args)
+        {
+            if (args.Event.Key == Gdk.Key.Escape)
+            {
+                // Pushes focus out to default and cancels editing.
+                var entry = (Gtk.Entry)o;
+                entry.GetParent<Gtk.Window>().Focus = null;
+                args.RetVal = true;
+                CancelEditCore();
+            }
+        }
+
+        private void HandleEditorValueCommit(object sender, EventArgs e)
+        {
+            CommitEditCore();
+            var entry = (Gtk.Entry)sender;
+            entry.Parent.ChildFocus(Gtk.DirectionType.TabForward);
         }
 
         private void CancelEditCore()

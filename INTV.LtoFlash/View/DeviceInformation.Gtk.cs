@@ -20,9 +20,10 @@
 //
 
 using System;
-using INTV.Shared.View;
-using INTV.LtoFlash.ViewModel;
 using INTV.LtoFlash.Model;
+using INTV.LtoFlash.ViewModel;
+using INTV.Shared.View;
+using INTV.Shared.ViewModel;
 
 namespace INTV.LtoFlash.View
 {
@@ -42,10 +43,13 @@ namespace INTV.LtoFlash.View
             DataContext = viewModel;
             viewModel.PropertyChanged += HandleViewModelPropertyChanged;
             this.Build();
+            _informationPages.Page = (int)SelectedPageIndex;
             UpdateDisplay();
         }
 
-        #region IFakeDependencyObject
+        private static uint SelectedPageIndex { get; set; }
+
+        #region IFakeDependencyObject Properties
 
         /// <inheritdoc/>
         public object DataContext
@@ -53,6 +57,26 @@ namespace INTV.LtoFlash.View
             get { return this.GetDataContext(); }
             set { this.SetDataContext(value); }
         }
+
+        #endregion // IFakeDependencyObject Properties
+
+        private LtoFlashViewModel ViewModel
+        {
+            get { return DataContext as LtoFlashViewModel; }
+        }
+
+        /// <summary>
+        /// Creates a new instance of DeviceInformation.
+        /// </summary>
+        /// <param name="viewModel">The ViewModel to monitor for device information.</param>
+        /// <returns>A new instance of the dialog.</returns>
+        public static DeviceInformation Create(LtoFlashViewModel viewModel)
+        {
+            var dialog = new DeviceInformation(viewModel);
+            return dialog;
+        }
+
+        #region IFakeDependencyObject
 
         /// <inheritdoc/>
         public object GetValue(string propertyName)
@@ -67,22 +91,6 @@ namespace INTV.LtoFlash.View
         }
 
         #endregion // IFakeDependencyObject
-
-        private LtoFlashViewModel ViewModel
-        {
-            get { return DataContext as LtoFlashViewModel; }
-        }
-
-        /// <summary>
-        /// Creates a new instance of DeviceInformation.
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        public static DeviceInformation Create(LtoFlashViewModel viewModel)
-        {
-            var dialog = new DeviceInformation(viewModel);
-            return dialog;
-        }
 
         /// <summary>
         /// Show the dialog.
@@ -99,7 +107,6 @@ namespace INTV.LtoFlash.View
             {
                 _device.PropertyChanged -= HandleDevicePropertyChanged;
             }
-//            CommandManager.RequerySuggested -= HandleRequerySuggested;
             ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
             base.Dispose();
         }
@@ -112,9 +119,14 @@ namespace INTV.LtoFlash.View
             Dispose();
         }
 
+        protected void HandleSwitchPage(object o, Gtk.SwitchPageArgs args)
+        {
+            SelectedPageIndex = args.PageNum;
+        }
+
         private void HandleViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-//            this.HandleEventOnMainThread(sender, e, HandleViewModelPropertyChangedCore);
+            ////this.HandleEventOnMainThread(sender, e, HandleViewModelPropertyChangedCore);
             HandleViewModelPropertyChangedCore(sender, e);
         }
 
@@ -132,7 +144,7 @@ namespace INTV.LtoFlash.View
 
         private void HandleDevicePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-//            this.HandleEventOnMainThread(sender, e, HandleDevicePropertyChangedCore);
+            ////this.HandleEventOnMainThread(sender, e, HandleDevicePropertyChangedCore);
             HandleDevicePropertyChangedCore(sender, e);
         }
 
@@ -202,9 +214,9 @@ namespace INTV.LtoFlash.View
             }
             _deviceConnection.Text = connectionName;
 
-//            DeviceOwner = new NSString(ViewModel.ActiveLtoFlashDevice.Owner.SafeString());
-//            DeviceName = new NSString(ViewModel.ActiveLtoFlashDevice.Name.SafeString());
-//            DeviceId = new NSString(ViewModel.ActiveLtoFlashDevice.UniqueId.SafeString());
+            _infoPage.SetDeviceName(ViewModel.ActiveLtoFlashDevice.Name.SafeString());
+            _infoPage.SetDeviceOwner(ViewModel.ActiveLtoFlashDevice.Owner.SafeString());
+            _infoPage.SetUniqueId(ViewModel.ActiveLtoFlashDevice.UniqueId.SafeString());
         }
 
         private void UpdateFirmwareInfo()
@@ -215,7 +227,8 @@ namespace INTV.LtoFlash.View
         }
 
         private void UpdateFileSystemInfo()
-        {/*
+        {
+            /*
             PhysBlocksAvail = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksAvailable);
             PhysBlocksInUse = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksInUse);
             PhysCleanBlocks = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksClean);
@@ -229,6 +242,7 @@ namespace INTV.LtoFlash.View
             PBlockErasures = new NSString(ViewModel.FileSystemStatistics.PercentFlashLifetimeUsedByPhysicalBlockErasures);
             VtoPLogWraps = new NSString(ViewModel.FileSystemStatistics.PercentageFlashLifetimeUsedByVirtualToPhysicalMap);
             LifeRemaining = new NSString(ViewModel.FileSystemStatistics.PercentageLifetimeRemaining);
-*/        }
+            */
+        }
     }
 }

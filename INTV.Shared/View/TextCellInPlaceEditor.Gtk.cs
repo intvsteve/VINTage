@@ -52,6 +52,7 @@ namespace INTV.Shared.View
             Editor.TextInserted += HandleTextInserted;
             owner.KeyPressEvent += HandleEditorKeyPressEvent;
             owner.Activated += HandleEditorValueCommit;
+            owner.FocusOutEvent += HandleEditorFocusOutEvent;
         }
 
         /// <summary>
@@ -59,8 +60,8 @@ namespace INTV.Shared.View
         /// </summary>
         /// <param name="owner">The visual owning the element being edited.</param>
         /// <param name="column">The column in the Gtk.TreeView being edited.</param>
-        /// <param name="initialValue">The initial value of the edited item.</param>
-        /// <param name="editingObject">The entity being edited.</param>
+        /// <param name="cell">The text cell renderer to use.</param>
+        /// <param name="maxLength">The maximum length of the string to allow.</param>
         public TextCellInPlaceEditor(Gtk.TreeView owner, Gtk.TreeViewColumn column, Gtk.CellRendererText cell, int maxLength)
             : this(owner, maxLength, null)
         {
@@ -99,7 +100,10 @@ namespace INTV.Shared.View
 
         private Gtk.CellRendererText Renderer { get; set; }
 
-        private Gtk.Entry Editor { get { return EditedElement as Gtk.Entry; } }
+        private Gtk.Entry Editor
+        {
+            get { return EditedElement as Gtk.Entry; }
+        }
 
         #endregion // Properties
 
@@ -159,6 +163,7 @@ namespace INTV.Shared.View
                     Editor.TextInserted -= HandleTextInserted;
                     owner.KeyPressEvent -= HandleEditorKeyPressEvent;
                     owner.Activated -= HandleEditorValueCommit;
+                    owner.FocusOutEvent -= HandleEditorFocusOutEvent;
                 }
                 if (Renderer != null)
                 {
@@ -171,7 +176,7 @@ namespace INTV.Shared.View
             }
         }
 
-        private void CellEditingCanceled (object sender, EventArgs e)
+        private void CellEditingCanceled(object sender, EventArgs e)
         {
             DebugOutput("!$!$!$!$ CellEditingCanceled");
             CellEditingEnded(null, null, false);
@@ -218,7 +223,7 @@ namespace INTV.Shared.View
         private void HandleTextInserted(object o, Gtk.TextInsertedArgs args)
         {
             var entry = o as Gtk.Entry;
-            System.Diagnostics.Debug.Assert(object.ReferenceEquals(entry, Editor));
+            System.Diagnostics.Debug.Assert(object.ReferenceEquals(entry, Editor), "Did not receive text inserted message from the expected Gtk.Entry.");
             entry.TextInserted -= HandleTextInserted; // disconnect so we don't reenter if restricting characters
             var position = args.Position;
             var currentText = entry.Text;
@@ -229,7 +234,7 @@ namespace INTV.Shared.View
                     var index = currentText.IndexOf(character);
                     while (index >= 0)
                     {
-                        entry.DeleteText(index,index + 1);
+                        entry.DeleteText(index, index + 1);
                         args.Position = args.Position - 1;
                         currentText = entry.Text;
                         index = currentText.IndexOf(character);
@@ -245,10 +250,10 @@ namespace INTV.Shared.View
             if (args.Event.Key == Gdk.Key.Escape)
             {
                 // Pushes focus out to default and cancels editing.
+                CancelEditCore();
                 var entry = (Gtk.Entry)o;
                 entry.GetParent<Gtk.Window>().Focus = null;
                 args.RetVal = true;
-                CancelEditCore();
             }
         }
 
@@ -257,6 +262,14 @@ namespace INTV.Shared.View
             CommitEditCore();
             var entry = (Gtk.Entry)sender;
             entry.Parent.ChildFocus(Gtk.DirectionType.TabForward);
+        }
+
+        private void HandleEditorFocusOutEvent(object o, Gtk.FocusOutEventArgs args)
+        {
+            if (!args.Event.In)
+            {
+                CommitEditCore();
+            }
         }
 
         private void CancelEditCore()
@@ -276,47 +289,5 @@ namespace INTV.Shared.View
                 editorClosed(this, new InPlaceEditorClosedEventArgs(true, EditingObject));
             }
         }
-    }
-
-    /// <summary>
-    /// Text cell in place editor object data.
-    /// </summary>
-    public class TextCellInPlaceEditorObjectData : System.Tuple<Gtk.TreePath, Gtk.TreeViewColumn, object>
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.View.TextCellInPlaceEditorObjectData"/> class.
-        /// </summary>
-        /// <param name="itemPath">The path to the item being edited.</param>
-        /// <param name="column">The column being edited.</param>
-        public TextCellInPlaceEditorObjectData(Gtk.TreePath itemPath, Gtk.TreeViewColumn column)
-            : this(itemPath, column, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.View.TextCellInPlaceEditorObjectData"/> class.
-        /// </summary>
-        /// <param name="itemPath">The path to the item being edited.</param>
-        /// <param name="column">The column being edited.</param>
-        /// <param name="data">The data in the column being edited.</param>
-        public TextCellInPlaceEditorObjectData(Gtk.TreePath itemPath, Gtk.TreeViewColumn column, object data)
-            : base(itemPath, column, data)
-        {
-        }
-
-        /// <summary>
-        /// Gets the path to the item being edited.
-        /// </summary>
-        public Gtk.TreePath Path { get { return Item1; } }
-
-        /// <summary>
-        /// Gets the column of the edited item.
-        /// </summary>
-        public Gtk.TreeViewColumn Column { get { return Item2; } }
-
-        /// <summary>
-        /// Gets the data.
-        /// </summary>
-        public object Data { get { return Item3; } }
     }
 }

@@ -244,6 +244,7 @@
     <Compile Include="View\SplashScreen.Gtk.cs" />
     <Compile Include="View\SystemCompatibilityConfigurationPage.Gtk.cs" />
     <Compile Include="View\TextCellInPlaceEditor.Gtk.cs" />
+    <Compile Include="View\TextCellInPlaceEditorObjectData.Gtk.cs" />
     <Compile Include="View\VisualHelpers.cs" />
     <Compile Include="View\VisualHelpers.Gtk.cs" />
     <Compile Include="ViewModel\BackupInfoViewModel.cs" />

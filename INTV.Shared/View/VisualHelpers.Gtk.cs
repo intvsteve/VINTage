@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Generic;
 using System.Linq;
 
 namespace INTV.Shared.View
@@ -99,7 +100,7 @@ namespace INTV.Shared.View
                 result = (Gtk.ResponseType)dialog.Run();
                 if (result != Gtk.ResponseType.None)
                 {
-                    switch(result)
+                    switch (result)
                     {
                         case Gtk.ResponseType.Reject:
                         case Gtk.ResponseType.Cancel:
@@ -118,7 +119,8 @@ namespace INTV.Shared.View
                             break;
                     }
                 }
-            } while (!alwaysClose && ((closeForResponses == null) || !closeForResponses.Contains(result)));
+            }
+            while (!alwaysClose && ((closeForResponses == null) || !closeForResponses.Contains(result)));
             VisualHelpers.Close(dialog);
             return accepted;
         }
@@ -145,6 +147,12 @@ namespace INTV.Shared.View
         public static void CellTextColumnRenderer<T>(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter, System.Func<T, string> textGetter) where T : class
         {
             CellTextRenderer<T>((Gtk.CellLayout)column, cell, model, iter, textGetter);
+        }
+
+        public static void CellEnumRenderer<T>(Gtk.CellLayout cellLayout, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter, System.Func<T, string> textGetter)
+        {
+            var data = (T)model.GetValue(iter, 0);
+            ((Gtk.CellRendererText)cell).Text = textGetter(data);
         }
 
         /// <summary>
@@ -190,6 +198,95 @@ namespace INTV.Shared.View
             var data = model.GetValue(iter, 0) as T;
             ((Gtk.CellRendererPixbuf)cell).Pixbuf = imageGetter(data);
         }
+
+        #region ComboBox Helpers
+
+        /// <summary>
+        /// A simple helper method that gets the values stored in a ListStore model in a Gtk.ComboBox.
+        /// </summary>
+        /// <typeparam name="T">The data type of the values in column zero of the ComboBox's model data.</typeparam>
+        /// <param name="comboBox">The <see cref="Gtk.ComboBox"/> whose values are desired.</param>
+        /// <returns>IList of values in the model.</returns>
+        /// <remarks>Assumes only the data in column zero of the model's data is of interest.</remarks>
+        public static IList<T> GetValues<T>(this Gtk.ComboBox comboBox)
+        {
+            return comboBox.GetValues<T>(0);
+        }
+
+        /// <summary>
+        /// A simple helper method that gets the values stored in a ListStore model in a Gtk.ComboBox.
+        /// </summary>
+        /// <typeparam name="T">The data type of the values in a column of the ComboBox's model data.</typeparam>
+        /// <param name="comboBox">The <see cref="Gtk.ComboBox"/> whose values are desired.</param>
+        /// <param name="columnIndex">Index of the column of the data in the model.</param>
+        /// <returns>IList of values in the model.</returns>
+        public static IList<T> GetValues<T>(this Gtk.ComboBox comboBox, int columnIndex)
+        {
+            var model = (Gtk.ListStore)comboBox.Model;
+            var values = model.Cast<object[]>().Select(v => v[columnIndex]).Cast<T>().ToList();
+            return values;
+        }
+
+        /// <summary>
+        /// A simple helper method to get the index of the given value using the data in the ComboBox's model.
+        /// </summary>
+        /// <typeparam name="T">The data type of the values in column zero of the ComboBox's model data.</typeparam>
+        /// <param name="comboBox">The <see cref="Gtk.ComboBox"/> whose values are desired.</param>
+        /// <param name="value">The value whose index is desired.</param>
+        /// <returns>The index of value, or -1 if not found.</returns>
+        public static int GetIndexOfValue<T>(this Gtk.ComboBox comboBox, T value)
+        {
+            var index = GetValues<T>(comboBox).IndexOf(value);
+            return index;
+        }
+
+        /// <summary>
+        /// A simple helper method to get the index of the given value using the data in the ComboBox's model.
+        /// </summary>
+        /// <typeparam name="T">The data type of the values in column zero of the ComboBox's model data.</typeparam>
+        /// <param name="comboBox">The <see cref="Gtk.ComboBox"/> whose values are desired.</param>
+        /// <param name="columnIndex">Index of the column of the data in the model.</param>
+        /// <param name="value">The value whose index is desired.</param>
+        /// <returns>The index of value, or -1 if not found.</returns>
+        public static int GetIndexOfValue<T>(this Gtk.ComboBox comboBox, int columnIndex, T value)
+        {
+            var index = GetValues<T>(comboBox, columnIndex).IndexOf(value);
+            return index;
+        }
+
+        /// <summary>
+        /// Gets the active value from a combo box in column zero.
+        /// </summary>
+        /// <typeparam name="T">Data type of the data in column zero.</typeparam>
+        /// <param name="comboBox">Combo box whose active value is desired.</param>
+        /// <param name="value">Receives the active value.</param>
+        /// <returns><c>true</c>, if active value was gotten, <c>false</c> otherwise.</returns>
+        public static bool GetActiveValue<T>(this Gtk.ComboBox comboBox, out T value)
+        {
+            return comboBox.GetActiveValue<T>(0, out value);
+        }
+
+        /// <summary>
+        /// Gets the active value from a combo box at the given column index.
+        /// </summary>
+        /// <typeparam name="T">Data type of the data in column zero.</typeparam>
+        /// <param name="comboBox">Combo box whose active value is desired.</param>
+        /// <param name="columnIndex">The column index from which to retrieve the value.</param>
+        /// <param name="value">Receives the active value.</param>
+        /// <returns><c>true</c>, if active value was gotten, <c>false</c> otherwise.</returns>
+        public static bool GetActiveValue<T>(this Gtk.ComboBox comboBox, int columnIndex, out T value)
+        {
+            value = default(T);
+            Gtk.TreeIter iter;
+            var gotValue = comboBox.GetActiveIter(out iter);
+            if (gotValue)
+            {
+                value = (T)comboBox.Model.GetValue(iter, columnIndex);
+            }
+            return gotValue;
+        }
+
+        #endregion // ComboBox Helpers
 
         private static System.Tuple<int, int, int> OSGetPrimaryDisplayInfo()
         {

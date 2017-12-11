@@ -20,11 +20,14 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.View;
+using INTV.Shared.ViewModel;
 
 namespace INTV.LtoFlash.View
 {
@@ -34,6 +37,9 @@ namespace INTV.LtoFlash.View
     [System.ComponentModel.ToolboxItem(true)]
     public partial class DeviceInformationPage : Gtk.Bin, IFakeDependencyObject
     {
+        private Dictionary<RelayCommand, bool> _blockWhenBusy = new Dictionary<RelayCommand, bool>();
+        private bool _updating;
+        private bool _committing;
         private TextCellInPlaceEditor _nameEditor;
         private TextCellInPlaceEditor _ownerEditor;
 
@@ -42,10 +48,18 @@ namespace INTV.LtoFlash.View
         /// </summary>
         public DeviceInformationPage()
         {
+            // Don't want to block this due to the dialog being up, which is the default behavior
+            // for dialogs. Save the value and then restore when destroyed.
+            _blockWhenBusy[DeviceCommandGroup.SetDeviceNameCommand] = DeviceCommandGroup.SetDeviceNameCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetDeviceOwnerCommand] = DeviceCommandGroup.SetDeviceOwnerCommand.BlockWhenAppIsBusy;
+            foreach (var blockWhenBusy in _blockWhenBusy)
+            {
+                blockWhenBusy.Key.BlockWhenAppIsBusy = false;
+            }
             this.Build();
-            _nameEditor = new TextCellInPlaceEditor(_deviceName, FileSystemConstants.MaxShortNameLength);
+            _nameEditor = new TextCellInPlaceEditor(_deviceName, FileSystemConstants.MaxShortNameLength) { IsValidCharacter = INTV.Core.Model.Grom.Characters.Contains };
             _nameEditor.EditorClosed += DeviceNameEditorClosed;
-            _ownerEditor = new TextCellInPlaceEditor(_deviceOwner, FileSystemConstants.MaxLongNameLength);
+            _ownerEditor = new TextCellInPlaceEditor(_deviceOwner, FileSystemConstants.MaxLongNameLength) { IsValidCharacter = INTV.Core.Model.Grom.Characters.Contains };
             _ownerEditor.EditorClosed += DeviceOwnerEditorClosed;
             CommandManager.RequerySuggested += HandleRequerySuggested;
         }
@@ -82,35 +96,33 @@ namespace INTV.LtoFlash.View
         #endregion // IFakeDependencyObject
 
         /// <summary>
-        /// Sets the device name Gtk.Entry text.
+        /// Update the data on the page.
         /// </summary>
-        /// <param name="name">Name of the device.</param>
-        public void SetDeviceName(string name)
+        internal void Update()
         {
-            _deviceName.Text = name;
-        }
-
-        /// <summary>
-        /// Sets the device owner Gtk.Entry text.
-        /// </summary>
-        /// <param name="owner">Owner of the device.</param>
-        public void SetDeviceOwner(string owner)
-        {
-            _deviceOwner.Text = owner;
-        }
-
-        /// <summary>
-        /// Sets the device unique identifier text.
-        /// </summary>
-        /// <param name="uniqueId">Unique identifier of the device.</param>
-        public void SetUniqueId(string uniqueId)
-        {
-            _deviceUniqueId.Text = uniqueId;
+            if (!_committing)
+            {
+                try
+                {
+                    _updating = true;
+                    _deviceName.Text = ViewModel.ActiveLtoFlashDevice.Name.SafeString();
+                    _deviceOwner.Text = ViewModel.ActiveLtoFlashDevice.Owner.SafeString();
+                    _deviceUniqueId.Text = ViewModel.ActiveLtoFlashDevice.UniqueId.SafeString();
+                }
+                finally
+                {
+                    _updating = false;
+                }
+            }
         }
 
         /// <inheritdoc/>
         protected override void OnDestroyed()
         {
+            foreach (var blockWhenBusy in _blockWhenBusy)
+            {
+                blockWhenBusy.Key.BlockWhenAppIsBusy = blockWhenBusy.Value;
+            }
             CommandManager.RequerySuggested -= HandleRequerySuggested;
             _nameEditor.EditorClosed -= DeviceNameEditorClosed;
             _nameEditor.Dispose();
@@ -123,27 +135,49 @@ namespace INTV.LtoFlash.View
 
         private void DeviceNameEditorClosed(object sender, INTV.Shared.Behavior.InPlaceEditorClosedEventArgs e)
         {
-            if (e.CommitedChanges)
+            if (!_updating)
             {
-                ViewModel.ActiveLtoFlashDevice.Name = _deviceName.Text;
-                DeviceCommandGroup.SetDeviceNameCommand.Execute(ViewModel);
-            }
-            else
-            {
-                _deviceName.Text = ViewModel.ActiveLtoFlashDevice.Name;
+                if (e.CommitedChanges)
+                {
+                    try
+                    {
+                        _committing = true;
+                        ViewModel.ActiveLtoFlashDevice.Name = _deviceName.Text;
+                        DeviceCommandGroup.SetDeviceNameCommand.Execute(ViewModel);
+                    }
+                    finally
+                    {
+                        _committing = false;
+                    }
+                }
+                else
+                {
+                    _deviceName.Text = ViewModel.ActiveLtoFlashDevice.Name;
+                }
             }
         }
 
         private void DeviceOwnerEditorClosed(object sender, INTV.Shared.Behavior.InPlaceEditorClosedEventArgs e)
         {
-            if (e.CommitedChanges)
+            if (!_updating)
             {
-                ViewModel.ActiveLtoFlashDevice.Owner = _deviceOwner.Text;
-                DeviceCommandGroup.SetDeviceOwnerCommand.Execute(ViewModel);
-            }
-            else
-            {
-                _deviceOwner.Text = ViewModel.ActiveLtoFlashDevice.Owner;
+                if (e.CommitedChanges)
+                {
+                    try
+                    {
+                        _committing = true;
+                        ViewModel.ActiveLtoFlashDevice.Owner = _deviceOwner.Text;
+                        DeviceCommandGroup.SetDeviceOwnerCommand.Execute(ViewModel);
+                    }
+                    finally
+                    {
+                        _committing = false;
+                    }
+                }
+                else
+                {
+                    _deviceOwner.Text = ViewModel.ActiveLtoFlashDevice.Owner;
+                }
             }
         }
 

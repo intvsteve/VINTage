@@ -10,6 +10,8 @@ namespace INTV.LtoFlash.View
 		
 		private global::Gtk.Label _infoPageName;
 		
+		private global::INTV.LtoFlash.View.DeviceSettingsPage _settingsPage;
+		
 		private global::Gtk.Label _settingsPageName;
 		
 		private global::Gtk.Label _firmwarePageName;
@@ -18,7 +20,7 @@ namespace INTV.LtoFlash.View
 		
 		private global::Gtk.HBox hbox2;
 		
-		private global::Gtk.Label label1;
+		private global::Gtk.Label label4;
 		
 		private global::Gtk.Label _deviceConnection;
 		
@@ -39,7 +41,7 @@ namespace INTV.LtoFlash.View
 			this._informationPages = new global::Gtk.Notebook ();
 			this._informationPages.CanFocus = true;
 			this._informationPages.Name = "_informationPages";
-			this._informationPages.CurrentPage = 0;
+			this._informationPages.CurrentPage = 1;
 			// Container child _informationPages.Gtk.Notebook+NotebookChild
 			this._infoPage = new global::INTV.LtoFlash.View.DeviceInformationPage ();
 			this._infoPage.Events = ((global::Gdk.EventMask)(256));
@@ -51,14 +53,18 @@ namespace INTV.LtoFlash.View
 			this._infoPageName.LabelProp = global::Mono.Unix.Catalog.GetString ("Information");
 			this._informationPages.SetTabLabel (this._infoPage, this._infoPageName);
 			this._infoPageName.ShowAll ();
+			// Container child _informationPages.Gtk.Notebook+NotebookChild
+			this._settingsPage = new global::INTV.LtoFlash.View.DeviceSettingsPage ();
+			this._settingsPage.Events = ((global::Gdk.EventMask)(256));
+			this._settingsPage.Name = "_settingsPage";
+			this._informationPages.Add (this._settingsPage);
+			global::Gtk.Notebook.NotebookChild w3 = ((global::Gtk.Notebook.NotebookChild)(this._informationPages [this._settingsPage]));
+			w3.Position = 1;
 			// Notebook tab
-			global::Gtk.Label w3 = new global::Gtk.Label ();
-			w3.Visible = true;
-			this._informationPages.Add (w3);
 			this._settingsPageName = new global::Gtk.Label ();
 			this._settingsPageName.Name = "_settingsPageName";
 			this._settingsPageName.LabelProp = global::Mono.Unix.Catalog.GetString ("Settings");
-			this._informationPages.SetTabLabel (w3, this._settingsPageName);
+			this._informationPages.SetTabLabel (this._settingsPage, this._settingsPageName);
 			this._settingsPageName.ShowAll ();
 			// Notebook tab
 			global::Gtk.Label w4 = new global::Gtk.Label ();
@@ -87,11 +93,11 @@ namespace INTV.LtoFlash.View
 			this.hbox2.Name = "hbox2";
 			this.hbox2.Spacing = 6;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.label1 = new global::Gtk.Label ();
-			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Connection:");
-			this.hbox2.Add (this.label1);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label1]));
+			this.label4 = new global::Gtk.Label ();
+			this.label4.Name = "label4";
+			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Connection:");
+			this.hbox2.Add (this.label4);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label4]));
 			w7.Position = 0;
 			w7.Expand = false;
 			w7.Fill = false;

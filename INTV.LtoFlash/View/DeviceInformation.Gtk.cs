@@ -23,7 +23,6 @@ using System;
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.View;
-using INTV.Shared.ViewModel;
 
 namespace INTV.LtoFlash.View
 {
@@ -40,6 +39,8 @@ namespace INTV.LtoFlash.View
         /// <param name="viewModel">The view model to use.</param>
         private DeviceInformation(LtoFlashViewModel viewModel)
         {
+//            _blockWhenBusy[FirmwareCommandGroup.UpdateFirmwareCommand] = FirmwareCommandGroup.UpdateFirmwareCommand.BlockWhenAppIsBusy;
+
             DataContext = viewModel;
             viewModel.PropertyChanged += HandleViewModelPropertyChanged;
             this.Build();
@@ -156,7 +157,7 @@ namespace INTV.LtoFlash.View
                 case Device.NamePropertyName:
                 case Device.OwnerPropertyName:
                 case Device.UniqueIdPropertyName:
-                    UpdateInfo();
+                    UpdateInfoPage();
                     break;
                 case Device.FirmwareRevisionsPropertyName:
                     UpdateFirmwareInfo();
@@ -165,22 +166,12 @@ namespace INTV.LtoFlash.View
                     UpdateFileSystemInfo();
                     break;
                 case Device.EcsCompatibilityPropertyName:
-//                    ECSCompatibilityButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.EcsCompatibility);
-                    break;
                 case Device.IntvIICompatibilityPropertyName:
-//                    IntellivisionIICompatibilityButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.IntvIICompatibility);
-                    break;
                 case Device.ShowTitleScreenPropertyName:
-//                    ShowTitleScreenButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.ShowTitleScreen);
-                    break;
                 case Device.SaveMenuPositionPropertyName:
-//                    SaveMenuPositionButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
-                    break;
                 case Device.BackgroundGCPropertyName:
-//                    BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
-                    break;
                 case Device.KeyclicksPropertyName:
-//                    Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
+                    UpdateSettingsPage();
                     break;
                 default:
                     break;
@@ -199,12 +190,13 @@ namespace INTV.LtoFlash.View
                 _device.PropertyChanged += HandleDevicePropertyChanged;
             }
 
-            UpdateInfo();
+            UpdateInfoPage();
+            UpdateSettingsPage();
             UpdateFirmwareInfo();
             UpdateFileSystemInfo();
         }
 
-        private void UpdateInfo()
+        private void UpdateInfoPage()
         {
             var connectionName = Resources.Strings.NoDevice;
             if (ViewModel.ActiveLtoFlashDevice.IsValid)
@@ -214,9 +206,12 @@ namespace INTV.LtoFlash.View
             }
             _deviceConnection.Text = connectionName;
 
-            _infoPage.SetDeviceName(ViewModel.ActiveLtoFlashDevice.Name.SafeString());
-            _infoPage.SetDeviceOwner(ViewModel.ActiveLtoFlashDevice.Owner.SafeString());
-            _infoPage.SetUniqueId(ViewModel.ActiveLtoFlashDevice.UniqueId.SafeString());
+            _infoPage.Update();
+        }
+
+        private void UpdateSettingsPage()
+        {
+            _settingsPage.Update();
         }
 
         private void UpdateFirmwareInfo()

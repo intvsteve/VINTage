@@ -14,13 +14,15 @@ namespace INTV.LtoFlash.View
 		
 		private global::Gtk.Label _settingsPageName;
 		
+		private global::INTV.LtoFlash.View.DeviceFirmwarePage _firmwarePage;
+		
 		private global::Gtk.Label _firmwarePageName;
 		
 		private global::Gtk.Label _fileSystemPageName;
 		
 		private global::Gtk.HBox hbox2;
 		
-		private global::Gtk.Label label4;
+		private global::Gtk.Label label8;
 		
 		private global::Gtk.Label _deviceConnection;
 		
@@ -41,7 +43,7 @@ namespace INTV.LtoFlash.View
 			this._informationPages = new global::Gtk.Notebook ();
 			this._informationPages.CanFocus = true;
 			this._informationPages.Name = "_informationPages";
-			this._informationPages.CurrentPage = 1;
+			this._informationPages.CurrentPage = 2;
 			// Container child _informationPages.Gtk.Notebook+NotebookChild
 			this._infoPage = new global::INTV.LtoFlash.View.DeviceInformationPage ();
 			this._infoPage.Events = ((global::Gdk.EventMask)(256));
@@ -66,14 +68,18 @@ namespace INTV.LtoFlash.View
 			this._settingsPageName.LabelProp = global::Mono.Unix.Catalog.GetString ("Settings");
 			this._informationPages.SetTabLabel (this._settingsPage, this._settingsPageName);
 			this._settingsPageName.ShowAll ();
+			// Container child _informationPages.Gtk.Notebook+NotebookChild
+			this._firmwarePage = new global::INTV.LtoFlash.View.DeviceFirmwarePage ();
+			this._firmwarePage.Events = ((global::Gdk.EventMask)(256));
+			this._firmwarePage.Name = "_firmwarePage";
+			this._informationPages.Add (this._firmwarePage);
+			global::Gtk.Notebook.NotebookChild w4 = ((global::Gtk.Notebook.NotebookChild)(this._informationPages [this._firmwarePage]));
+			w4.Position = 2;
 			// Notebook tab
-			global::Gtk.Label w4 = new global::Gtk.Label ();
-			w4.Visible = true;
-			this._informationPages.Add (w4);
 			this._firmwarePageName = new global::Gtk.Label ();
 			this._firmwarePageName.Name = "_firmwarePageName";
 			this._firmwarePageName.LabelProp = global::Mono.Unix.Catalog.GetString ("Firmware");
-			this._informationPages.SetTabLabel (w4, this._firmwarePageName);
+			this._informationPages.SetTabLabel (this._firmwarePage, this._firmwarePageName);
 			this._firmwarePageName.ShowAll ();
 			// Notebook tab
 			global::Gtk.Label w5 = new global::Gtk.Label ();
@@ -93,11 +99,11 @@ namespace INTV.LtoFlash.View
 			this.hbox2.Name = "hbox2";
 			this.hbox2.Spacing = 6;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.label4 = new global::Gtk.Label ();
-			this.label4.Name = "label4";
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Connection:");
-			this.hbox2.Add (this.label4);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label4]));
+			this.label8 = new global::Gtk.Label ();
+			this.label8.Name = "label8";
+			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("Connection:");
+			this.hbox2.Add (this.label8);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label8]));
 			w7.Position = 0;
 			w7.Expand = false;
 			w7.Fill = false;
@@ -135,7 +141,7 @@ namespace INTV.LtoFlash.View
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 568;
-			this.DefaultHeight = 300;
+			this.DefaultHeight = 309;
 			this.Show ();
 			this._informationPages.SwitchPage += new global::Gtk.SwitchPageHandler (this.HandleSwitchPage);
 		}

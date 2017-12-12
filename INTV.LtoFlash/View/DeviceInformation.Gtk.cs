@@ -39,8 +39,6 @@ namespace INTV.LtoFlash.View
         /// <param name="viewModel">The view model to use.</param>
         private DeviceInformation(LtoFlashViewModel viewModel)
         {
-//            _blockWhenBusy[FirmwareCommandGroup.UpdateFirmwareCommand] = FirmwareCommandGroup.UpdateFirmwareCommand.BlockWhenAppIsBusy;
-
             DataContext = viewModel;
             viewModel.PropertyChanged += HandleViewModelPropertyChanged;
             this.Build();
@@ -216,9 +214,7 @@ namespace INTV.LtoFlash.View
 
         private void UpdateFirmwareInfo()
         {
-//            FactoryFirmwareVersion = new NSString(ViewModel.FirmwareRevisions.Primary.SafeString());
-//            SecondaryFirmwareVersion = new NSString(ViewModel.FirmwareRevisions.Secondary.SafeString());
-//            CurrentFirmwareVersion = new NSString(ViewModel.FirmwareRevisions.Current.SafeString());
+            _firmwarePage.Update();
         }
 
         private void UpdateFileSystemInfo()

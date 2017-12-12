@@ -44,6 +44,7 @@ namespace INTV.Shared.Properties
         {
             OSInitialize();
             InitializeDefaults();
+
             // TODO: Consider adding support for exposing things via SettingsProperty / SettingsCollection?
             // This could lead down a rabbit hole of re-implementing provider, et. al.
         }
@@ -52,6 +53,7 @@ namespace INTV.Shared.Properties
         /// Gets or sets the value of the specified settings property using the specified key.
         /// </summary>
         /// <param name="key">The name of the setting.</param>
+        /// <returns>The setting value corresponding to <paramref name="key"/>.</returns>
         /// <remarks>The base implementation presumes that accessing the setting as type System.Object works.
         /// Implementations that provide type-specific get / set operations must override this method to
         /// properly work with those types.</remarks>
@@ -123,7 +125,7 @@ namespace INTV.Shared.Properties
         {
             if (typeof(T).IsClass)
             {
-                System.Diagnostics.Debug.Assert((object)value != null);
+                System.Diagnostics.Debug.Assert((object)value != null, "A value of <null> is not permitted!");
             }
             OSSetSetting(key, value);
         }

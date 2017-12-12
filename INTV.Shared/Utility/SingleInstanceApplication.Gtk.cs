@@ -31,16 +31,19 @@ namespace INTV.Shared.Utility
     {
         private const Gdk.WindowState SupportedRestoreStates = Gdk.WindowState.Maximized | Gdk.WindowState.Fullscreen;
 
-        private static readonly SingleInstanceApplication _instance = new SingleInstanceApplication();
+        private static readonly SingleInstanceApplication GtkInstance = new SingleInstanceApplication();
 
         private static bool _initiatedExit;
 
         #region Properties
 
         /// <summary>
-        /// Strongly typed version of the application instance.
+        /// Gets the strongly typed version of the application instance.
         /// </summary>
-        public static SingleInstanceApplication Current { get { return _instance; } }
+        public static SingleInstanceApplication Current
+        {
+            get { return GtkInstance; }
+        }
 
         internal static string SplashScreenResource
         {
@@ -52,7 +55,9 @@ namespace INTV.Shared.Utility
             get { return _mainWindowType; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the main window.
+        /// </summary>
         public Gtk.Window MainWindow
         {
             get
@@ -105,11 +110,11 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Runs the application.
         /// </summary>
+        /// <typeparam name="T">The type for the main window class.</typeparam>
         /// <param name="uniqueInstance">Unique instance string.</param>
-        /// <param name="settings">Settings.</param>
+        /// <param name="settings">The application settings.</param>
         /// <param name="args">Command line arguments.</param>
         /// <param name="splashScreenImage">Splash screen image.</param>
-        /// <typeparam name="T">The type for the main window class.</typeparam>
         public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : Gtk.Window, IMainWindow, new()
         {
             // TODO: Single instance check / activate
@@ -137,7 +142,9 @@ namespace INTV.Shared.Utility
 
         #region IPartImportsSatisfiedNotification Members
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Called when MEF has finished getting all of the imported parts.
+        /// </summary>
         public void OnImportsSatisfied()
         {
             try
@@ -161,7 +168,7 @@ namespace INTV.Shared.Utility
 
         #endregion //  IPartImportsSatisfiedNotification Members
 
-        static bool FinishInitialization()
+        private static bool FinishInitialization()
         {
             Instance.Initialize(null);
             var window = Instance.MainWindow;
@@ -251,7 +258,7 @@ namespace INTV.Shared.Utility
         /// borderline bad practice. OTOH, the frequency of ConfigureEvent could have performance implications, so
         /// perhaps the thinking was that you need to work at it to get into trouble, instead of making it too easy.</remarks>
         [GLib.ConnectBefore]
-        private static void HandleConfigureEvent (object o, Gtk.ConfigureEventArgs args)
+        private static void HandleConfigureEvent(object o, Gtk.ConfigureEventArgs args)
         {
             // HACK Haven't found another way to get both position and size update information to
             // try to retain the 'restored' window size, so we do this hacky thing. The hacky thing
@@ -266,7 +273,9 @@ namespace INTV.Shared.Utility
             window.Shown -= HandleWindowShown;
             var splashScreen = window.Data["SplashScreen"] as Gtk.Window;
             window.Data.Remove("SplashScreen");
-            GLib.Timeout.Add(1000, () =>
+            GLib.Timeout.Add(
+                1000,
+                () =>
                 {
                     splashScreen.Hide();
                     splashScreen.Destroy();
@@ -381,7 +390,7 @@ namespace INTV.Shared.Utility
             GLib.ExceptionManager.UnhandledException += HandleGLibUnhandledException;
             _initiatedExit = false;
             _programDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-            //_settings.Add(INTV.Shared.Properties.Settings.Default);
+            ////_settings.Add(INTV.Shared.Properties.Settings.Default);
         }
 
         /// <summary>
@@ -419,6 +428,7 @@ namespace INTV.Shared.Utility
             /// <summary>
             /// Update window size and position stashed for preferences.
             /// </summary>
+            /// <returns><c>true</c> if this timer function should continue to be executed.</returns>
             /// <remarks>This is a HACK. Since we get ConfigureEvent updates of intermediate
             /// values during window state transitions to maximize, iconify, etc. we cannot
             /// rely upon those values. We also don't get notifications for simple movement

@@ -37,25 +37,33 @@ namespace INTV.Shared.Commands
         public const string AttachedCommandPropertyName = "Command";
 
         /// <summary>
-        /// General data context (parameter data) used for command execution for commands in the group.
+        /// Gets the general data context (parameter data) used for command execution for commands in the group.
         /// </summary>
         public abstract object Context { get; }
 
         #region ICommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates the visual for a command, if applicable.
+        /// </summary>
+        /// <param name="command">The command for which a visual must be created.</param>
+        /// <returns>The visual for the command.</returns>
         public virtual OSCommandVisual CreateVisualForCommand(ICommand command)
         {
             Gtk.Widget visual = null;
             var visualCommand = command as VisualRelayCommand;
-            if ((visualCommand != null) && (visualCommand.Visual.IsEmpty))
+            if ((visualCommand != null) && visualCommand.Visual.IsEmpty)
             {
                 visual = visualCommand.CreateVisualForCommand(visualCommand.VisualParent != null);
             }
             return visual;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates a menu item for a command.
+        /// </summary>
+        /// <param name="command">The command for which a menu item must be created.</param>
+        /// <returns>The menu item.</returns>
         public virtual OSMenuItem CreateMenuItemForCommand(ICommand command)
         {
             Gtk.MenuItem menuItem = null;
@@ -139,6 +147,7 @@ namespace INTV.Shared.Commands
         /// Gets a Boolean value indicating of the given command is allowed to execute.
         /// </summary>
         /// <param name="command">The command of interest.</param>
+        /// <param name="visual">The visual with which the command is associated</param>
         /// <returns><c>true</c> if the command should be allowed to execute, <c>false</c> otherwise.</returns>
         protected virtual bool HandleCanExecuteChangedForCommand(VisualRelayCommand command, OSVisual visual)
         {
@@ -164,9 +173,9 @@ namespace INTV.Shared.Commands
         protected virtual void InitializeMenuItem(VisualRelayCommand command, object target, object context)
         {
             throw new NotImplementedException("InitializeMenuItem");
-            //command.SetValue("DataContext", target ?? context);
-            //AttachActivateHandler(command, command.MenuItem);
-            //AttachCanExecuteChangeHandler(command);
+            ////command.SetValue("DataContext", target ?? context);
+            ////AttachActivateHandler(command, command.MenuItem);
+            ////AttachCanExecuteChangeHandler(command);
         }
 
         private object OSGetContextForCommand(object target, ICommand command, object context)

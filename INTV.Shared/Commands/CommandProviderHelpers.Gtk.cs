@@ -32,6 +32,11 @@ namespace INTV.Shared.Commands
     public static partial class CommandProviderHelpers
     {
         /// <summary>
+        /// Backspace character.
+        /// </summary>
+        public const char GtkBackspaceCharacter = (char)Gdk.Key.BackSpace;
+
+        /// <summary>
         /// Delete character.
         /// </summary>
         public const char GtkDeleteCharacter = (char)Gdk.Key.Delete;
@@ -40,11 +45,6 @@ namespace INTV.Shared.Commands
         /// GtkDeleteCharacter as a string.
         /// </summary>
         public static readonly string GtkDeleteCharacterString = new string(GtkDeleteCharacter, 1);
-
-        /// <summary>
-        /// Backspace character.
-        /// </summary>
-        public const char GtkBackspaceCharacter = (char)Gdk.Key.BackSpace;
 
         /// <summary>
         /// GtkBackspaceCharacter as a string.
@@ -139,10 +139,10 @@ namespace INTV.Shared.Commands
                 if (command.SmallIcon != null)
                 {
                     throw new System.NotImplementedException("CreateContextMenuItemCommand with Image");
-                    //menuItem.Icon = new Image() { Source = command.SmallIcon };
+                    ////menuItem.Icon = new Image() { Source = command.SmallIcon };
                 }
                 throw new System.NotImplementedException("CreateContextMenuItemCommand wire up command to MenuItem");
-//                menuItem.Command = command;
+                ////menuItem.Command = command;
                 contextCommand.MenuItem = menuItem;
             }
             else
@@ -169,11 +169,12 @@ namespace INTV.Shared.Commands
                 if (parentVisual is Gtk.MenuBar)
                 {
                     throw new System.InvalidOperationException("This should be done by CreateMenuItem!");
+
                     // Make a submenu for the command, and add the menu item to the menubar.
-                    //var menu = new Gtk.Menu() { Name = command.UniqueId };
-                    //var menuItem = new Gtk.MenuItem(command.MenuItemName) { Name = command.UniqueId, Submenu = menu };
-                    //((Gtk.MenuBar)parentVisual).Add(menuItem);
-                    //visual = menuItem;
+                    ////var menu = new Gtk.Menu() { Name = command.UniqueId };
+                    ////var menuItem = new Gtk.MenuItem(command.MenuItemName) { Name = command.UniqueId, Submenu = menu };
+                    ////((Gtk.MenuBar)parentVisual).Add(menuItem);
+                    ////visual = menuItem;
                 }
                 if (parentVisual is Gtk.Toolbar)
                 {
@@ -203,7 +204,7 @@ namespace INTV.Shared.Commands
                     }
                 }
 
-                ErrorReporting.ReportErrorIf(requiresParentCommand && (parentCommand.Visual.IsEmpty), "Failed to create parent visual for command: " + command.Name + "(" + command.UniqueId + ")");
+                ErrorReporting.ReportErrorIf(requiresParentCommand && parentCommand.Visual.IsEmpty, "Failed to create parent visual for command: " + command.Name + "(" + command.UniqueId + ")");
                 parentVisual = parentCommand.Visual;
             }
 
@@ -309,6 +310,7 @@ namespace INTV.Shared.Commands
         /// <param name="stockItem">If non-Zero, defines the stock item to use for the command.</param>
         /// <param name="requiresParentCommand">If <c>true</c>, this command requires a parent menu item.</param>
         /// <param name="menuItemType">A specific type of menu item to use.</param>
+        /// <param name="stateData">If not <c>null</c>, state data for the menu item being created.</param>
         /// <returns>The menu item for the command.</returns>
         public static Gtk.MenuItem CreateMenuItemForCommand(this VisualRelayCommand command, Gtk.StockItem stockItem, bool requiresParentCommand, System.Type menuItemType = null, object stateData = null)
         {
@@ -354,8 +356,8 @@ namespace INTV.Shared.Commands
         /// <param name="parentMenu">The menu to put the menu item into.</param>
         /// <param name="parentCommand">Parent command for the given command.</param>
         /// <param name="stockItem">If non-Zero, defines the stock item to use for the command.</param>
-        /// <param name="requiresParentCommand">If <c>true</c>, this command requires a parent menu item.</param>
         /// <param name="menuItemType">A specific type of menu item to use.</param>
+        /// <param name="stateData">If not <c>null</c>, state data for the menu item being created.</param>
         /// <returns>The menu item for the command.</returns>
         public static OSMenuItem CreateMenuItem(this VisualRelayCommand command, Gtk.MenuShell parentMenu, VisualRelayCommand parentCommand, Gtk.StockItem stockItem, System.Type menuItemType = null, object stateData = null)
         {
@@ -424,9 +426,9 @@ namespace INTV.Shared.Commands
                 command.AddAccelerator(menuItemVisual, command.GetAcceleratorKey());
             }
             menuItemVisual.ShowAll(); // because programmatically created, need to show
-            //DebugOutputIf(requiresParentCommand && (parentCommand.MenuItem.IsEmpty) && (parentCommand.Visual.IsEmpty), "Failed to create parent menu item for command: " + command.Name + "(" + command.UniqueId + ")");
+            ////DebugOutputIf(requiresParentCommand && (parentCommand.MenuItem.IsEmpty) && (parentCommand.Visual.IsEmpty), "Failed to create parent menu item for command: " + command.Name + "(" + command.UniqueId + ")");
 
-            //DebugOutputIf(requiresParentCommand && (parentCommand == null) && (parentCommand.Visual.IsEmpty), "No parent menu item for command: " + command.Name + "(" + command.UniqueId + ")");
+            ////DebugOutputIf(requiresParentCommand && (parentCommand == null) && (parentCommand.Visual.IsEmpty), "No parent menu item for command: " + command.Name + "(" + command.UniqueId + ")");
             if (menuItemVisual != null)
             {
                 var group = command.GetCommandGroup() as CommandGroup;
@@ -447,7 +449,7 @@ namespace INTV.Shared.Commands
         /// <param name="args">The event arguments.</param>
         /// <remarks>GOOD LUCK TRYING TO DEBUG THIS! Every time you hit a breakoint in MonoDevelop in
         /// this function (at least in a VMware image), it seems the entire Window Manager hangs!</remarks>
-        private static void ImageMenuItemHackExposeEvent (object o, Gtk.ExposeEventArgs args)
+        private static void ImageMenuItemHackExposeEvent(object o, Gtk.ExposeEventArgs args)
         {
             var imageMenuItem = o as Gtk.ImageMenuItem;
             var image = imageMenuItem == null ? null : imageMenuItem.Image as Gtk.Image;
@@ -471,7 +473,7 @@ namespace INTV.Shared.Commands
 
         private static IList GetItemVisuals(Gtk.Widget visual)
         {
-            var itemsControl = false ? visual : null; //visual as ItemsControl;
+            var itemsControl = false ? visual : null;
             IList items = null;
             if (itemsControl != null)
             {
@@ -500,7 +502,6 @@ namespace INTV.Shared.Commands
             int insertLocation = -1; // default to unknown
             if (parentCommand != null)
             {
-//                var parentVisual = useMenuItem ? parentCommand.MenuItem.NativeMenuItem.Submenu : parentCommand.Visual.NativeVisual;
                 var parentVisual = useMenuItem ? parentCommand.Visual : parentCommand.Visual;
                 var items = GetItemVisuals(parentVisual);
                 if (items != null)

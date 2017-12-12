@@ -1,4 +1,4 @@
-﻿// <copyright file="OSDispatcherPrioerity.Mono.cs" company="INTV Funhouse">
+﻿// <copyright file="OSDispatcherPriority.Mono.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2015 All Rights Reserved
 // <author>Steven A. Orth</author>
 //

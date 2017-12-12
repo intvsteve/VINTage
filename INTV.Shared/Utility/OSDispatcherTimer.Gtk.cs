@@ -90,7 +90,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Raised when the timer 'ticks'.
         /// </summary>
-        public System.EventHandler Tick;
+        public event System.EventHandler Tick;
 
         /// <summary>
         /// Gets or sets the timer interval.
@@ -191,14 +191,14 @@ namespace INTV.Shared.Utility
                     DebugOutput("@@@@@@@@@@@@@@@@@@TIMER TICK FINISHED from thread: " + System.Threading.Thread.CurrentThread.ManagedThreadId + ", MAIN: " + OSDispatcher.IsMainThread);
                 }
             }
-            catch(System.Exception exception)
+            catch (System.Exception exception)
             {
                 INTV.Shared.Utility.ErrorReporting.ReportError(ReportMechanism.Console, exception.Message);
             }
         }
 
         [System.Diagnostics.Conditional("ENABLE_DEBUG_OUTPUT")]
-        private static void DebugOutput(object message)
+        private void DebugOutput(object message)
         {
             System.Diagnostics.Debug.WriteLine(message);
         }

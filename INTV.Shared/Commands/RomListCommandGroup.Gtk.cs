@@ -24,6 +24,9 @@ using INTV.Shared.View;
 
 namespace INTV.Shared.Commands
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class RomListCommandGroup
     {
         #region RunProgramToolbarCommand
@@ -47,9 +50,9 @@ namespace INTV.Shared.Commands
         private static void OnEditRomFeatures(object parameter)
         {
             throw new System.NotImplementedException("RomListCommandGroup.OnEditRomFeatures");
-//            var viewModel = parameter as RomListViewModel;
-//            var featureEditor = ProgramFeaturesEditorDialog.Create(RomListView.SelectedItem as ProgramDescriptionViewModel);
-//            featureEditor.BeginEdit();
+            ////var viewModel = parameter as RomListViewModel;
+            ////var featureEditor = ProgramFeaturesEditorDialog.Create(RomListView.SelectedItem as ProgramDescriptionViewModel);
+            ////featureEditor.BeginEdit();
         }
 
         #endregion // EditRomFeaturesCommand
@@ -59,9 +62,9 @@ namespace INTV.Shared.Commands
         private static void OnEditProgramName(object parameter)
         {
             throw new System.NotImplementedException("RomListCommandGroup.OnEditProgramName");
-//            var viewModel = parameter as RomListViewModel;
-//            RomListView.EditSelectedItemColumn(RomListColumn.Title);
-//            viewModel.IsEditing = true;
+            ////var viewModel = parameter as RomListViewModel;
+            ////RomListView.EditSelectedItemColumn(RomListColumn.Title);
+            ////viewModel.IsEditing = true;
         }
 
         #endregion // EditProgramNameCommand
@@ -78,7 +81,9 @@ namespace INTV.Shared.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the general data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return RomListViewModel; }
@@ -88,7 +93,11 @@ namespace INTV.Shared.Commands
 
         #region ICommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates the toolbar item for command.
+        /// </summary>
+        /// <param name="command">The command whose toolbar visual is created.</param>
+        /// <returns>The toolbar visual for the given command.</returns>
         public override OSVisual CreateToolbarItemForCommand(ICommand command)
         {
             OSVisual visual;
@@ -125,7 +134,12 @@ namespace INTV.Shared.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets a Boolean value indicating of the given command is allowed to execute.
+        /// </summary>
+        /// <param name="command">The command of interest.</param>
+        /// <param name="visual">The visual with which the command is associated</param>
+        /// <returns><c>true</c> if the command should be allowed to execute, <c>false</c> otherwise.</returns>
         protected override bool HandleCanExecuteChangedForCommand(VisualRelayCommand command, OSVisual visual)
         {
             var canExecute = true;
@@ -137,7 +151,9 @@ namespace INTV.Shared.Commands
             return canExecute && base.HandleCanExecuteChangedForCommand(command, visual);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Add GTK-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             // TODO: Fix up command weights, add dividers!
@@ -146,13 +162,13 @@ namespace INTV.Shared.Commands
             RomListGroupCommand.MenuParent = RootCommandGroup.EditMenuCommand;
 
             AddRomFilesCommand.VisualParent = RootCommandGroup.RootCommand; // add to toolbar
-            //AddRomFilesCommand.SmallIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/add_file_16xLG.png");
+            ////AddRomFilesCommand.SmallIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/add_file_16xLG.png");
             AddRomFilesCommand.MenuParent = RootCommandGroup.FileMenuCommand;
 
-            AddRomFoldersCommand.VisualParent =  RootCommandGroup.RootCommand;
+            AddRomFoldersCommand.VisualParent = RootCommandGroup.RootCommand;
             AddRomFoldersCommand.MenuParent = RootCommandGroup.FileMenuCommand;
 
-            //RemoveRomsCommand.VisualParent = RomsRibbonGroupCommand;
+            ////RemoveRomsCommand.VisualParent = RomsRibbonGroupCommand;
             RemoveRomsCommand.MenuParent = RootCommandGroup.EditMenuCommand;
             RemoveRomsCommand.KeyboardShortcutKey = CommandProviderHelpers.GtkDeleteCharacterString;
 

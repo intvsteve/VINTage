@@ -50,7 +50,7 @@ namespace INTV.Shared.ViewModel
                 }
             }
         }
-        bool _listHasFocus;
+        private bool _listHasFocus;
 
         private void FilesDropped(object dragEventArgs)
         {
@@ -68,8 +68,8 @@ namespace INTV.Shared.ViewModel
         /// </summary>
         partial void OSInitialize()
         {
-            //_sortColumn = RomListColumn.None;
-            //_sortDirection = ListSortDirection.Ascending;
+            ////_sortColumn = RomListColumn.None;
+            ////_sortDirection = ListSortDirection.Ascending;
             var configuration = SingleInstanceApplication.Instance.GetConfiguration<RomListConfiguration>();
             var romListFilePath = configuration.RomFilesPath;
             _filePath = romListFilePath;

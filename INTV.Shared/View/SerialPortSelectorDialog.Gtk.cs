@@ -31,6 +31,7 @@ namespace INTV.Shared.View
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.View.SerialPortSelectorDialog"/> class.
         /// </summary>
+        /// <param name="viewModel">The data context for the dialog.</param>
         private SerialPortSelectorDialog(SerialPortSelectorDialogViewModel viewModel)
             : base(string.Empty, INTV.Shared.Utility.SingleInstanceApplication.Instance.MainWindow, Gtk.DialogFlags.Modal)
         {

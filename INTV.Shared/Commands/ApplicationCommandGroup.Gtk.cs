@@ -19,12 +19,12 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
-using System.Collections.Generic;
 
 namespace INTV.Shared.Commands
 {
@@ -131,7 +131,9 @@ namespace INTV.Shared.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the general data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return null; }
@@ -141,7 +143,11 @@ namespace INTV.Shared.Commands
 
         #region ICommandGroup
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Creates a menu item for a command.
+        /// </summary>
+        /// <param name="command">The command for which a menu item must be created.</param>
+        /// <returns>The menu item.</returns>
         public override OSMenuItem CreateMenuItemForCommand(ICommand command)
         {
             var menuItem = OSMenuItem.Empty;

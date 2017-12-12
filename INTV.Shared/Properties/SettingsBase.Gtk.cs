@@ -19,8 +19,8 @@
 // </copyright>
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 using Converters = System.Tuple<System.Func<string, object>, System.Action<string, object>>;
 
@@ -38,7 +38,7 @@ namespace INTV.Shared.Properties
         private Dictionary<Type, Converters> _converters;
 
         /// <summary>
-        /// Get the GConf client for accessing settings.
+        /// Gets the GConf client for accessing settings.
         /// </summary>
         protected GConf.Client Client
         {
@@ -211,7 +211,7 @@ namespace INTV.Shared.Properties
         private void HandleSettingChanged(object sender, GConf.NotifyEventArgs args)
         {
             // We just need the last part of the key.
-            var key = args.Key.Split(new [] {'/'}).Last();
+            var key = args.Key.Split(new[] { '/' }).Last();
             this.RaisePropertyChanged(key);
         }
     }

@@ -30,7 +30,7 @@ namespace INTV.Shared.Properties
         #region Properties
 
         /// <summary>
-        /// Gets the setting indicating whether to validate the ROMs at startup.
+        /// Gets or sets a value indicating whether to validate the ROMs at startup.
         /// </summary>
         public bool RomListValidateAtStartup
         {
@@ -39,7 +39,7 @@ namespace INTV.Shared.Properties
         }
 
         /// <summary>
-        /// Gets the setting indicating whether or not to search for new ROMs when launching the application.
+        /// Gets or sets a value indicating whether or not to search for new ROMs when launching the application.
         /// </summary>
         public bool RomListSearchForRomsAtStartup
         {
@@ -48,7 +48,7 @@ namespace INTV.Shared.Properties
         }
 
         /// <summary>
-        /// Gets the list of ROM search directories.
+        /// Gets or sets the list of ROM search directories.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if you attempt to assign the property.</exception>
         public INTV.Shared.Model.SearchDirectories RomListSearchDirectories
@@ -66,12 +66,15 @@ namespace INTV.Shared.Properties
                 return _romListSearchDirectories;
 #endif
             }
-            set { SetSetting(RomListSearchDirectoriesSettingName, value); }
+            set
+            {
+                SetSetting(RomListSearchDirectoriesSettingName, value);
+            }
         }
         private INTV.Shared.Model.SearchDirectories _romListSearchDirectories;
 
         /// <summary>
-        /// Gets the setting indicating whether or not to show detailed ROM information in the RomListView.
+        /// Gets or sets a value indicating whether or not to show detailed ROM information in the RomListView.
         /// </summary>
         public bool ShowRomDetails
         {
@@ -80,7 +83,7 @@ namespace INTV.Shared.Properties
         }
 
         /// <summary>
-        /// Gets the setting indicating whether or not ROMs are displayed using file name or database name.
+        /// Gets or sets a value indicating whether or not ROMs are displayed using file name or database name.
         /// </summary>
         public bool DisplayRomFileNameForTitle
         {
@@ -89,7 +92,7 @@ namespace INTV.Shared.Properties
         }
 
         /// <summary>
-        /// Gets the setting controlling whether to check for app updates at launch.
+        /// Gets or sets a value indicating whether to check for app updates at launch.
         /// </summary>
         public bool CheckForAppUpdatesAtLaunch
         {
@@ -98,7 +101,7 @@ namespace INTV.Shared.Properties
         }
 
         /// <summary>
-        /// Gets the setting controlling whether to show detailed errors.
+        /// Gets or sets a value indicating whether to show detailed errors.
         /// </summary>
         public bool ShowDetailedErrors
         {
@@ -125,6 +128,9 @@ namespace INTV.Shared.Properties
 
         #endregion // ISettings
 
+        /// <summary>
+        /// Operating system-specific initialization code is implemented in this method.
+        /// </summary>
         partial void OSInitializeDefaults();
     }
 }

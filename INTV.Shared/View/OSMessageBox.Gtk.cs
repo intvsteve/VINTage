@@ -18,7 +18,6 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-//using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,8 +31,6 @@ namespace INTV.Shared.View
         private static OSMessageBoxResult PlatformShowCore(string message, string title, System.Exception exception, OSMessageBoxButton buttons, Dictionary<OSMessageBoxButton, string> customButtonLabels, OSMessageBoxIcon icon, OSMessageBoxResult defaultResult, System.Action<OSMessageBoxResult> onComplete)
         {
             var result = OSMessageBoxResult.None;
-            // need to ensure called on proper thread?
-
             if (onComplete == null)
             {
                 INTV.Shared.Utility.OSDispatcher.Current.InvokeOnMainDispatcher(() =>
@@ -58,8 +55,6 @@ namespace INTV.Shared.View
 
                         using (var messageBox = new Gtk.MessageDialog(parent, Gtk.DialogFlags.Modal, (Gtk.MessageType)icon, nativeButtons, "{0}", message))
                         {
-                            //new Gtk.MessageDialog(Window parent_window, DialogFlags flags, MessageType type, ButtonsType bt, bool use_markup, string format, params object[] args)
-                            //messageBox.ParentWindow = parent.GdkWindow;
                             messageBox.Title = title;
                             messageBox.MessageType = (Gtk.MessageType)icon;
                             messageBox.DefaultResponse = (Gtk.ResponseType)defaultResult;

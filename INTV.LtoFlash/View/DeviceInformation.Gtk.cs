@@ -126,8 +126,7 @@ namespace INTV.LtoFlash.View
 
         private void HandleViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            ////this.HandleEventOnMainThread(sender, e, HandleViewModelPropertyChangedCore);
-            HandleViewModelPropertyChangedCore(sender, e);
+            this.HandleEventOnMainThread(sender, e, HandleViewModelPropertyChangedCore);
         }
 
         private void HandleViewModelPropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -144,8 +143,7 @@ namespace INTV.LtoFlash.View
 
         private void HandleDevicePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            ////this.HandleEventOnMainThread(sender, e, HandleDevicePropertyChangedCore);
-            HandleDevicePropertyChangedCore(sender, e);
+            this.HandleEventOnMainThread(sender, e, HandleDevicePropertyChangedCore);
         }
 
         private void HandleDevicePropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)

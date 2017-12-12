@@ -28,6 +28,30 @@ namespace INTV.LtoFlash.Commands
 {
     public partial class DeviceCommandGroup
     {
+        #region DeviceInformationCommand
+
+        /// <summary>
+        /// Command to act as grouper for various other, specific device commands.
+        /// </summary>
+        public static readonly VisualDeviceCommand DeviceInformationCommand = new VisualDeviceCommand(OnDeviceInformation)
+            {
+                UniqueId = UniqueNameBase + ".DeviceInformationCommand",
+                Name = Resources.Strings.DeviceInformationCommand_Name,
+                PreferredParameterType = typeof(LtoFlashViewModel),
+                Weight = 0.015,
+                KeyboardShortcutKey = "i",
+                KeyboardShortcutModifiers = OSModifierKeys.Menu
+            };
+
+        private static void OnDeviceInformation(object parameter)
+        {
+            var viewModel = parameter as LtoFlashViewModel;
+            var dialog = INTV.LtoFlash.View.DeviceInformation.Create(viewModel);
+            dialog.ShowWindow();
+        }
+
+        #endregion // DeviceInformationCommand
+
         #region SearchForDevicesToolbarCommand
 
         /// <summary>
@@ -176,6 +200,10 @@ namespace INTV.LtoFlash.Commands
             DisconnectDeviceCommand.KeyboardShortcutKey = "d";
             DisconnectDeviceCommand.KeyboardShortcutModifiers = OSModifierKeys.Menu;
             DisconnectDeviceCommand.VisualParent = RootCommandGroup.RootCommand;
+
+            DeviceInformationCommand.Weight = 0.123;
+            DeviceInformationCommand.MenuParent = RootCommandGroup.ToolsMenuCommand;
+            CommandList.Add(DeviceInformationCommand);
 
 #if false
             SetShowTitleScreenCommand.VisualParent = DeviceSettingsRibbonGroupCommand;

@@ -40,7 +40,7 @@ namespace Locutus.View
 			this._mainVBox.Name = "_mainVBox";
 			this._mainVBox.Spacing = 6;
 			// Container child _mainVBox.Gtk.Box+BoxChild
-			this.UIManager.AddUiFromString ("<ui><menubar name='_menubar'/></ui>");
+			this.UIManager.AddUiFromString ("<ui><menubar name=\'_menubar\'/></ui>");
 			this._menubar = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/_menubar")));
 			this._menubar.Name = "_menubar";
 			this._mainVBox.Add (this._menubar);
@@ -49,7 +49,7 @@ namespace Locutus.View
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child _mainVBox.Gtk.Box+BoxChild
-			this.UIManager.AddUiFromString ("<ui><toolbar name='_toolbar'/></ui>");
+			this.UIManager.AddUiFromString ("<ui><toolbar name=\'_toolbar\'/></ui>");
 			this._toolbar = ((global::Gtk.Toolbar)(this.UIManager.GetWidget ("/_toolbar")));
 			this._toolbar.Name = "_toolbar";
 			this._toolbar.ShowArrow = false;

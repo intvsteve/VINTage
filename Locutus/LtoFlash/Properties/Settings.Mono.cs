@@ -42,7 +42,7 @@ namespace LtoFlash.Properties
         #region Properties
 
         /// <summary>
-        /// Gets the setting indicating whether to validate the ROMs at startup.
+        /// Gets or sets the setting indicating whether to validate the ROMs at startup.
         /// </summary>
         /// <exception cref="System.InvalidOperationException">Thrown if you attempt to assign the property.</exception>
         public SplitterPosition PrimarySplitterPosition
@@ -64,6 +64,9 @@ namespace LtoFlash.Properties
 
         #endregion // ISettings
 
+        /// <summary>
+        /// Operating system-specific default setting initialization goes here.
+        /// </summary>
         partial void OSInitializeDefaults();
     }
 }

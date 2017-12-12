@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
 {
@@ -67,6 +68,19 @@ namespace INTV.Shared.View
                 typedChild = container.Children[index] as T;
             }
             return typedChild;
+        }
+
+        /// <summary>
+        /// Ensures that an event handler is invoked on main the thread.
+        /// </summary>
+        /// <typeparam name="TEventArgs">The data type of the event handler's data.</typeparam>
+        /// <param name="instance">Typically a Gtk.Widget that must handle an event from a ViewModel.</param>
+        /// <param name="sender">Sender of the orginal event.</param>
+        /// <param name="args">Event data.</param>
+        /// <param name="handler">The event handler to ensure is executed on the main thread.</param>
+        public static void HandleEventOnMainThread<TEventArgs>(this Gtk.Widget instance, object sender, TEventArgs args, System.Action<object, TEventArgs> handler) where TEventArgs : System.EventArgs
+        {
+            OSDispatcher.Current.InvokeOnMainDispatcher(() => handler(sender, args));
         }
 
         /// <summary>

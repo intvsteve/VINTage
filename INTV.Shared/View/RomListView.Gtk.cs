@@ -38,11 +38,11 @@ namespace INTV.Shared.View
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.View.RomListView"/> class.
         /// </summary>
+        /// <param name="viewModel">The data context for this visual.</param>
         public RomListView(RomListViewModel viewModel)
         {
             // TODO: Set up sorting!
             // TODO: DragDrop!
-
             DataContext = viewModel;
             this.Build();
             var treeView = _romListView;
@@ -52,7 +52,7 @@ namespace INTV.Shared.View
             var column = new Gtk.TreeViewColumn();
             Gtk.CellRenderer cellRenderer = new Gtk.CellRendererPixbuf();
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellImageColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.RomFileStatusIcon));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellImageColumnRenderer<ProgramDescriptionViewModel>(l, c, m, i, p => p.RomFileStatusIcon));
             column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             column.FixedWidth = 20;
             treeView.AppendColumn(column);
@@ -60,7 +60,7 @@ namespace INTV.Shared.View
             column = new Gtk.TreeViewColumn() { Title = RomListViewModel.TitleHeader };
             cellRenderer = new Gtk.CellRendererText();
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Name));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l, c, m, i, p => p.Name));
             column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             column.FixedWidth = Properties.Settings.Default.RomListNameColWidth;
             column.Resizable = true;
@@ -69,7 +69,7 @@ namespace INTV.Shared.View
             column = new Gtk.TreeViewColumn() { Title = RomListViewModel.CompanyHeader };
             cellRenderer = new Gtk.CellRendererText();
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Vendor));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l, c, m, i, p => p.Vendor));
             column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             column.FixedWidth = Properties.Settings.Default.RomListVendorColWidth;
             column.Resizable = true;
@@ -78,7 +78,7 @@ namespace INTV.Shared.View
             column = new Gtk.TreeViewColumn() { Title = RomListViewModel.YearHeader };
             cellRenderer = new Gtk.CellRendererText();
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Year));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l, c, m, i, p => p.Year));
             column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             column.FixedWidth = Properties.Settings.Default.RomListYearColWidth;
             column.Resizable = true;
@@ -88,16 +88,16 @@ namespace INTV.Shared.View
             cellRenderer = new Gtk.CellRendererPixbuf();
             cellRenderer.Xalign = 0;
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellImageColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => INTV.Shared.Converter.ProgramFeaturesToPixbufConverter.ConvertToPixbuf(p)));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellImageColumnRenderer<ProgramDescriptionViewModel>(l, c, m, i, p => INTV.Shared.Converter.ProgramFeaturesToPixbufConverter.ConvertToPixbuf(p)));
             column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             column.FixedWidth = Properties.Settings.Default.RomListFeaturesColWidth;
             column.Resizable = true;
             treeView.AppendColumn(column);
 
-            column = new Gtk.TreeViewColumn() { Title = RomListViewModel.RomFileHeader};
+            column = new Gtk.TreeViewColumn() { Title = RomListViewModel.RomFileHeader };
             cellRenderer = new Gtk.CellRendererText();
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) =>VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Rom.RomPath));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l, c, m, i, p => p.Rom.RomPath));
             ////column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             ////column.FixedWidth = Properties.Settings.Default.RomListPathColWidth;
             column.Resizable = true;
@@ -271,6 +271,11 @@ namespace INTV.Shared.View
 
         private void HandleSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            this.HandleEventOnMainThread(sender, e, HandleSettingsChangedCore);
+        }
+
+        private void HandleSettingsChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
             var show = Properties.Settings.Default.ShowRomDetails;
             switch (e.PropertyName)
             {
@@ -287,10 +292,20 @@ namespace INTV.Shared.View
 
         private void HandleProgramsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            this.HandleEventOnMainThread(sender, e, HandleProgramsChangedCore);
+        }
+
+        private void HandleProgramsChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
             _romListView.Model.SynchronizeCollection<ProgramDescriptionViewModel>(e);
         }
 
         private void HandleProgramStatusChanged(object sender, INTV.Shared.Model.Program.ProgramFeaturesChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleProgramStatusChangedCore);
+        }
+
+        private void HandleProgramStatusChangedCore(object sender, INTV.Shared.Model.Program.ProgramFeaturesChangedEventArgs e)
         {
             // Need to goose the TreeView to re-draw the status icons.
             _romListView.QueueDraw();

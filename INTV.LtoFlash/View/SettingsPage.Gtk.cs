@@ -138,6 +138,11 @@ namespace INTV.LtoFlash.View
 
         private void HandleSettingChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            this.HandleEventOnMainThread(sender, e, HandleSettingChangedCore);
+        }
+
+        private void HandleSettingChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
             Gtk.CheckButton settingControl = null;
             switch (e.PropertyName)
             {

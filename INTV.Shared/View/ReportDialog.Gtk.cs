@@ -48,7 +48,8 @@ namespace INTV.Shared.View
             {
                 viewModel.Message = message;
             }
-            var propertiesToUpdate = new[] {
+            var propertiesToUpdate = new[]
+                {
                 ReportDialogViewModel.TitlePropertyName,
                 ReportDialogViewModel.MessagePropertyName,
                 ReportDialogViewModel.CloseDialogButtonTextPropertyName,
@@ -59,7 +60,7 @@ namespace INTV.Shared.View
                 ReportDialogViewModel.SendEmailButtonLabelTextPropertyName,
                 ReportDialogViewModel.ShowSendEmailButtonPropertyName,
                 ReportDialogViewModel.SendEmailEnabledPropertyName,
-                //ReportDialogViewModel.EmailSenderPropertyName,
+                ////ReportDialogViewModel.EmailSenderPropertyName,
                 ReportDialogViewModel.HasAttachmentsPropertyName,
             };
             foreach (var propertyName in propertiesToUpdate)
@@ -91,6 +92,18 @@ namespace INTV.Shared.View
                 }
                 return viewModel;
             }
+        }
+
+        /// <summary>
+        /// Creates a new instance of the ReportDialog.
+        /// </summary>
+        /// <param name="title">The title for the dialog.</param>
+        /// <param name="message">The message to display in the dialog.</param>
+        /// <returns>The dialog instance.</returns>
+        public static ReportDialog Create(string title, string message)
+        {
+            var dialog = new ReportDialog(title, message);
+            return dialog;
         }
 
         #region IFakeDependencyObject Methods
@@ -126,18 +139,6 @@ namespace INTV.Shared.View
         }
 
         /// <summary>
-        /// Creates a new instance of the ReportDialog.
-        /// </summary>
-        /// <param name="title">The title for the dialog.</param>
-        /// <param name="message">The message to display in the dialog.</param>
-        /// <returns>The dialog instance.</returns>
-        public static ReportDialog Create(string title, string message)
-        {
-            var dialog = new ReportDialog(title, message);
-            return dialog;
-        }
-
-        /// <summary>
         /// Shows the dialog.
         /// </summary>
         /// <returns>A nullable value; if <c>true</c> the OK or equivalent was clicked; if <c>false</c>,
@@ -167,7 +168,12 @@ namespace INTV.Shared.View
             return result;
         }
 
-        private void HandlePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandlePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandlePropertyChangedCore);
+        }
+
+        private void HandlePropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -216,12 +222,12 @@ namespace INTV.Shared.View
             }
         }
 
-        protected void HandleShowAttachedFiles (object sender, System.EventArgs e)
+        protected void HandleShowAttachedFiles(object sender, System.EventArgs e)
         {
             ReportDialogViewModel.ShowAttachmentsInFileSystemCommand.Execute(ViewModel);
         }
 
-        protected void HandleSendErrorReport (object sender, System.EventArgs e)
+        protected void HandleSendErrorReport(object sender, System.EventArgs e)
         {
 #if false // COPIED FROM MonoMac)
             if (ViewModel.ShowEmailSender)
@@ -245,7 +251,7 @@ namespace INTV.Shared.View
             ReportDialogViewModel.SendErrorReportEmailCommand.Execute(ViewModel);
         }
 
-        protected void HandleCopyToClipboard (object sender, System.EventArgs e)
+        protected void HandleCopyToClipboard(object sender, System.EventArgs e)
         {
             ReportDialogViewModel.CopyToClipboardCommand.Execute(ViewModel);
         }

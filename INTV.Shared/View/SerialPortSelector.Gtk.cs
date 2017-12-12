@@ -71,6 +71,7 @@ namespace INTV.Shared.View
         internal void Initialize(SerialPortSelectorViewModel viewModel)
         {
             DataContext = viewModel;
+
             // TODO: CollectionChanged handler -- see Synchronize calls
             // TODO: PropertyChanged handler
             // TODO: Handle item disabled / enabled in list -- see ShouldSelect
@@ -86,10 +87,10 @@ namespace INTV.Shared.View
             var column = new Gtk.TreeViewColumn() { Title = SerialPortSelectorViewModel.PortColumnTitle };
             var cellRenderer = new Gtk.CellRendererText();
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<SerialPortViewModel>(l,c,m,i, p => p.PortName));
-//            column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
-//            column.FixedWidth = Properties.Settings.Default.MenuLayoutLongNameColWidth;
-//            column.Resizable = true;
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<SerialPortViewModel>(l, c, m, i, p => p.PortName));
+            ////column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            ////column.FixedWidth = Properties.Settings.Default.MenuLayoutLongNameColWidth;
+            ////column.Resizable = true;
             portsList.AppendColumn(column);
 
             portsList.Selection.Changed += HandleSelectedPortChanged;
@@ -97,6 +98,7 @@ namespace INTV.Shared.View
 
             var serialPortsModel = new Gtk.ListStore(typeof(SerialPortViewModel));
             serialPortsModel.SynchronizeCollection(viewModel.AvailableSerialPorts);
+
             // TODO: Disable ports appropriately -- see ShouldSelect
             // TODO: Customize renderer somehow for disabled items to draw differently --
             // Tinkering with CellRendererText.Foreground does not work as desired.
@@ -113,8 +115,8 @@ namespace INTV.Shared.View
 
             Gtk.CellRenderer cellRenderer = new Gtk.CellRendererCombo(); // { Xalign = 0, Xpad = 4 };
             baudRates.PackStart(cellRenderer, false);
-            //            baudRates.PackEnd(cellRenderer, true);
-            baudRates.SetCellDataFunc(cellRenderer, (l,e,m,i) => VisualHelpers.CellTextRenderer<BaudRateViewModel>(l,e,m,i, c => c.BaudRate.ToString()));
+            ////baudRates.PackEnd(cellRenderer, true);
+            baudRates.SetCellDataFunc(cellRenderer, (l, e, m, i) => VisualHelpers.CellTextRenderer<BaudRateViewModel>(l, e, m, i, c => c.BaudRate.ToString()));
 
             var baudRatesModel = new Gtk.ListStore(typeof(BaudRateViewModel));
             baudRatesModel.SynchronizeCollection(viewModel.BaudRates);
@@ -157,6 +159,11 @@ namespace INTV.Shared.View
         }
 
         private void HandleAvailablePortsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleAvailablePortsChangedCore);
+        }
+
+        private void HandleAvailablePortsChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             _ports.Model.SynchronizeCollection<SerialPortViewModel>(e);
         }

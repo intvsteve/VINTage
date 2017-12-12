@@ -31,6 +31,9 @@ using INTV.Shared.ViewModel;
 
 namespace Locutus.View
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class MainWindow : Gtk.Window
     {
         private Dictionary<string, Gdk.Pixbuf> _cachedImages = new Dictionary<string, Gdk.Pixbuf>();
@@ -85,7 +88,6 @@ namespace Locutus.View
                     viewModel.CollectionChanged += HandleRomListCollectionChanged;
                     viewModel.CurrentSelection.CollectionChanged += HandleRomListSelectionChanged;
                     HandleRomListCollectionChanged(viewModel, null);
-
                 }
                 else if (visual.UniqueId == MenuLayoutView.Id)
                 {
@@ -109,6 +111,11 @@ namespace Locutus.View
         }
 
         private void HandleLtoFlashPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleLtoFlashPropertyChangedCore);
+        }
+
+        private void HandleLtoFlashPropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var viewModel = sender as LtoFlashViewModel;
             switch (e.PropertyName)
@@ -148,18 +155,20 @@ namespace Locutus.View
 
         private void HandleActiveDevicePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            OSDispatcher.Current.InvokeOnMainDispatcher(() =>
-                {
-                    var device = sender as DeviceViewModel;
-                    switch (e.PropertyName)
-                    {
-                        case DeviceViewModel.DisplayNamePropertyName:
-                            UpdateActiveDeviceName(device);
-                            break;
-                        default:
-                            break;
-                    }
-                });
+            this.HandleEventOnMainThread(sender, e, HandleActiveDevicePropertyChangedCore);
+        }
+
+        private void HandleActiveDevicePropertyChangedCore(object sender, PropertyChangedEventArgs e)
+        {
+            var device = sender as DeviceViewModel;
+            switch (e.PropertyName)
+            {
+                case DeviceViewModel.DisplayNamePropertyName:
+                    UpdateActiveDeviceName(device);
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void UpdateActiveDeviceName(DeviceViewModel device)
@@ -174,16 +183,26 @@ namespace Locutus.View
 
         private void HandleRomListSelectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            this.HandleEventOnMainThread(sender, e, HandleRomListSelectionChangedCore);
+        }
+        
+        private void HandleRomListSelectionChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
             var selection = sender as ObservableCollection<ProgramDescriptionViewModel>;
             _selectionCount = selection.Count;
             UpdateStatusBar();
 
-            var menuLayout =_layoutsNotebook.Children.OfType<MenuLayoutView>().FirstOrDefault();
+            var menuLayout = _layoutsNotebook.Children.OfType<MenuLayoutView>().FirstOrDefault();
             var ltoFlashViewModel = menuLayout.DataContext as LtoFlashViewModel;
             ltoFlashViewModel.CurrentSelection = selection;
         }
 
         private void HandleRomListCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleRomListCollectionChangedCore);
+        }
+        
+        private void HandleRomListCollectionChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var viewModel = sender as RomListViewModel;
             _itemCount = viewModel.Programs.Count;

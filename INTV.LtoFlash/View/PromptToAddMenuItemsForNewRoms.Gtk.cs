@@ -20,9 +20,13 @@
 
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.Utility;
+using INTV.Shared.View;
 
 namespace INTV.LtoFlash.View
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class PromptToAddMenuItemsForNewRoms : Gtk.Dialog
     {
         private PromptToAddMenuItemsForNewRoms()
@@ -64,7 +68,12 @@ namespace INTV.LtoFlash.View
             }
         }
 
-        private void HandleSettingsChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleSettingsChangedCore);
+        }
+
+        private void HandleSettingsChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

@@ -24,11 +24,10 @@ using System.ComponentModel;
 using System.Linq;
 using INTV.Core.Model.Stic;
 using INTV.LtoFlash.Commands;
+using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
-using INTV.Shared.Commands;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
-using INTV.LtoFlash.Model;
 using INTV.Shared.ViewModel;
 
 namespace INTV.LtoFlash.View
@@ -41,9 +40,9 @@ namespace INTV.LtoFlash.View
     [Gtk.Binding(Gdk.Key.BackSpace, "HandleDeleteSelectedItems")]
     public partial class MenuLayoutView : Gtk.Bin, IFakeDependencyObject
     {
-        private static readonly OSImage _powerIconImage = typeof(INTV.Shared.Utility.ResourceHelpers).LoadImageResource("ViewModel/Resources/Images/console_16xLG.png");
-        private static readonly OSImage _dirtyIconImage = typeof(MenuLayoutView).LoadImageResource("Resources/Images/lto_flash_contents_not_in_sync_16xLG.png");
-        private static readonly Dictionary<Color, Gdk.Pixbuf> _colorPixbufs = new Dictionary<Color, Gdk.Pixbuf>();
+        private static readonly OSImage PowerIconImage = typeof(INTV.Shared.Utility.ResourceHelpers).LoadImageResource("ViewModel/Resources/Images/console_16xLG.png");
+        private static readonly OSImage DirtyIconImage = typeof(MenuLayoutView).LoadImageResource("Resources/Images/lto_flash_contents_not_in_sync_16xLG.png");
+        private static readonly Dictionary<Color, Gdk.Pixbuf> ColorPixbufs = new Dictionary<Color, Gdk.Pixbuf>();
         ////private static readonly Dictionary<string, Gdk.Pixbuf> _deleteButtonIcons = new Dictionary<string, Gdk.Pixbuf>();
 
         private DeviceViewModel _activeDevice;
@@ -61,9 +60,9 @@ namespace INTV.LtoFlash.View
 
             _dirtyIcon.NoShowAll = true;
             _dirtyIcon.Visible = viewModel.ShowFileSystemsDifferIcon;
-            _dirtyIcon.Pixbuf = _dirtyIconImage;
+            _dirtyIcon.Pixbuf = DirtyIconImage;
             _dirtyIcon.TooltipText = LtoFlashViewModel.ContentsNotInSyncToolTip;
-            _powerIcon.Pixbuf = _powerIconImage.CreateNewWithOpacity(0.5); // initialize to the "power off" image
+            _powerIcon.Pixbuf = PowerIconImage.CreateNewWithOpacity(0.5); // initialize to the "power off" image
             _powerIcon.TooltipText = Resources.Strings.ConsolePowerState_Unknown;
 
             ((Gtk.Image)_newFolder.Image).Pixbuf = MenuLayoutCommandGroup.NewDirectoryCommand.SmallIcon;
@@ -224,6 +223,7 @@ namespace INTV.LtoFlash.View
             if ((comboBox.Active != currentItemColorIndex) && (comboBox.Active >= 0))
             {
                 var newColor = viewModel.AvailableColors[comboBox.Active];
+
                 // TODO: Verify behavior for multi-select
                 foreach (var file in viewModel.SelectedItems)
                 {
@@ -257,16 +257,16 @@ namespace INTV.LtoFlash.View
                 var pixbuf = new Gdk.Pixbuf(Gdk.Colorspace.Rgb, true, 8, 16, 16);
                 pixbuf.Fill(0xFF); // black background
                 pixbufColor.CopyArea(0, 0, 14, 14, pixbuf, 1, 1);
-                _colorPixbufs[color.IntvColor] = pixbuf;
+                ColorPixbufs[color.IntvColor] = pixbuf;
             }
 
             Gtk.CellRenderer cellRenderer = new Gtk.CellRendererPixbuf() { Xalign = 0 };
             colorChooser.PackStart(cellRenderer, false);
-            colorChooser.SetCellDataFunc(cellRenderer, (l,e,m,i) => VisualHelpers.CellImageRenderer<FileNodeColorViewModel>(l,e,m,i, c => _colorPixbufs[c.IntvColor]));
+            colorChooser.SetCellDataFunc(cellRenderer, (l, e, m, i) => VisualHelpers.CellImageRenderer<FileNodeColorViewModel>(l, e, m, i, c => ColorPixbufs[c.IntvColor]));
 
             cellRenderer = new Gtk.CellRendererCombo() { Xalign = 0, Xpad = 4 };
             colorChooser.PackEnd(cellRenderer, true);
-            colorChooser.SetCellDataFunc(cellRenderer, (l,e,m,i) => VisualHelpers.CellTextRenderer<FileNodeColorViewModel>(l,e,m,i, c=> c.Name));
+            colorChooser.SetCellDataFunc(cellRenderer, (l, e, m, i) => VisualHelpers.CellTextRenderer<FileNodeColorViewModel>(l, e, m, i, c => c.Name));
 
             var colorListStore = new Gtk.ListStore(typeof(FileNodeColorViewModel));
             colorListStore.SynchronizeCollection(colors);
@@ -289,9 +289,9 @@ namespace INTV.LtoFlash.View
 
             Gtk.CellRenderer cellRenderer = new Gtk.CellRendererPixbuf();
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellImageColumnRenderer<FileNodeViewModel>(l,c,m,i, p => p.Icon));
-            //column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
-            //column.FixedWidth = 20;
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellImageColumnRenderer<FileNodeViewModel>(l, c, m, i, p => p.Icon));
+            ////column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            ////column.FixedWidth = 20;
             menuLayout.AppendColumn(column);
 
             column = new Gtk.TreeViewColumn() { Title = MenuLayoutViewModel.LongNameHeader };
@@ -299,7 +299,7 @@ namespace INTV.LtoFlash.View
             _longNameEditor = new TextCellInPlaceEditor(menuLayout, column, cellRenderer as Gtk.CellRendererText, FileSystemConstants.MaxLongNameLength) { IsValidCharacter = INTV.Core.Model.Grom.Characters.Contains };
             _longNameEditor.EditorClosed += HandleInPlaceEditorClosed;
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<FileNodeViewModel>(l,c,m,i, p => p.LongName.SafeString()));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<FileNodeViewModel>(l, c, m, i, p => p.LongName.SafeString()));
             column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             column.FixedWidth = Properties.Settings.Default.MenuLayoutLongNameColWidth;
             column.Resizable = true;
@@ -310,7 +310,7 @@ namespace INTV.LtoFlash.View
             _shortNameEditor = new TextCellInPlaceEditor(menuLayout, column, cellRenderer as Gtk.CellRendererText, FileSystemConstants.MaxShortNameLength) { IsValidCharacter = INTV.Core.Model.Grom.Characters.Contains };
             _shortNameEditor.EditorClosed += HandleInPlaceEditorClosed;
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<FileNodeViewModel>(l,c,m,i, p => p.ShortName.SafeString()));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<FileNodeViewModel>(l, c, m, i, p => p.ShortName.SafeString()));
             column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             column.FixedWidth = Properties.Settings.Default.MenuLayoutShortNameColWidth;
             column.Resizable = true;
@@ -319,7 +319,7 @@ namespace INTV.LtoFlash.View
             column = new Gtk.TreeViewColumn() { Title = MenuLayoutViewModel.ManualHeader };
             cellRenderer = new Gtk.CellRendererText();
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<FileNodeViewModel>(l,c,m,i, GetManualColumnStringValue));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<FileNodeViewModel>(l, c, m, i, GetManualColumnStringValue));
             column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             column.FixedWidth = Properties.Settings.Default.MenuLayoutManualColWidth;
             column.Resizable = true;
@@ -328,9 +328,9 @@ namespace INTV.LtoFlash.View
             column = new Gtk.TreeViewColumn() { Title = MenuLayoutViewModel.SaveDataHeader };
             cellRenderer = new Gtk.CellRendererText();
             column.PackStart(cellRenderer, true);
-            //column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Name));
-            //column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
-            //column.FixedWidth = Properties.Settings.Default.MenuLayoutSaveDataColWidth;
+            ////column.SetCellDataFunc(cellRenderer, (l,c,m,i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l,c,m,i, p => p.Name));
+            ////column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
+            ////column.FixedWidth = Properties.Settings.Default.MenuLayoutSaveDataColWidth;
             column.Resizable = true;
             column.Visible = Properties.Settings.Default.ShowAdvancedFeatures;
             menuLayout.AppendColumn(column);
@@ -347,7 +347,7 @@ namespace INTV.LtoFlash.View
             dataContext.PropertyChanged += HandleMenuLayoutPropertyChanged;
         }
 
-        private static string GetManualColumnStringValue(FileNodeViewModel node)
+        private string GetManualColumnStringValue(FileNodeViewModel node)
         {
             if (node is FolderViewModel)
             {
@@ -452,94 +452,100 @@ namespace INTV.LtoFlash.View
 
         private void HandleMenuLayoutPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            OSDispatcher.Current.InvokeOnMainDispatcher(() =>
-                {
-                    var menuLayout = sender as MenuLayoutViewModel;
-                    switch (e.PropertyName)
-                    {
-                        case MenuLayoutViewModel.StatusPropertyName:
-                            _rootDirectoryUsage.Text = menuLayout.Status;
-                            break;
-                        case MenuLayoutViewModel.CurrentSelectionPropertyName:
+            this.HandleEventOnMainThread(sender, e, HandleMenuLayoutPropertyChangedCore);
+        }
+
+        private void HandleMenuLayoutPropertyChangedCore(object sender, PropertyChangedEventArgs e)
+        {
+            var menuLayout = sender as MenuLayoutViewModel;
+            switch (e.PropertyName)
+            {
+                case MenuLayoutViewModel.StatusPropertyName:
+                    _rootDirectoryUsage.Text = menuLayout.Status;
+                    break;
+                case MenuLayoutViewModel.CurrentSelectionPropertyName:
                     // Push from ViewModel's notion of selected item to the tree's selection.
                     // TODO: what happens when multiselect is enabled?
-                            Gtk.TreeIter selectionIter;
-                            if (_menuLayout.Selection.GetSelected(out selectionIter))
+                    Gtk.TreeIter selectionIter;
+                    if (_menuLayout.Selection.GetSelected(out selectionIter))
+                    {
+                        var currentSelectedItem = menuLayout.CurrentSelection;
+                        var modelSelection = _menuLayout.Model.GetValue(selectionIter, 0);
+                        if (modelSelection != currentSelectedItem)
+                        {
+                            Gtk.TreeIter iter;
+                            if (currentSelectedItem.GetIterForItem(out iter, _menuLayout.Model as Gtk.TreeStore))
                             {
-                                var currentSelectedItem = menuLayout.CurrentSelection;
-                                var modelSelection = _menuLayout.Model.GetValue(selectionIter, 0);
-                                if (modelSelection != currentSelectedItem)
-                                {
-                                    Gtk.TreeIter iter;
-                                    if (currentSelectedItem.GetIterForItem(out iter, _menuLayout.Model as Gtk.TreeStore))
-                                    {
-                                        _menuLayout.Selection.SelectIter(iter);
-                                    }
-                                }
+                                _menuLayout.Selection.SelectIter(iter);
                             }
-                            else if (menuLayout.CurrentSelection != null)
-                            {
-                                // Don't have a selection, so find and select item from ViewModel.
-                                var currentSelectedItem = menuLayout.CurrentSelection;
-                                Gtk.TreeIter iter;
-                                if (currentSelectedItem.GetIterForItem(out iter, _menuLayout.Model as Gtk.TreeStore))
-                                {
-                                    _menuLayout.Selection.SelectIter(iter);
-                                }
-                            }
-                            INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
-                            break;
-                        case "DeleteSelectedItemTip":
-                            _deleteSelectedItems.TooltipText = menuLayout.DeleteSelectedItemTip;
-                            break;
-                        case MenuLayoutViewModel.OverallUsageDetailsPropertyName:
-                            _storageUsed.Fraction = menuLayout.OverallInUseRatio;
-                            _storageUsed.Text = string.Format("{0:P2}", _storageUsed.Fraction);
-                            _storageUsed.TooltipText = menuLayout.OverallUsageDetails;
-                            break;
-                        default:
-                            break;
+                        }
                     }
-                });
+                    else if (menuLayout.CurrentSelection != null)
+                    {
+                        // Don't have a selection, so find and select item from ViewModel.
+                        var currentSelectedItem = menuLayout.CurrentSelection;
+                        Gtk.TreeIter iter;
+                        if (currentSelectedItem.GetIterForItem(out iter, _menuLayout.Model as Gtk.TreeStore))
+                        {
+                            _menuLayout.Selection.SelectIter(iter);
+                        }
+                    }
+                    INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+                    break;
+                case "DeleteSelectedItemTip":
+                    _deleteSelectedItems.TooltipText = menuLayout.DeleteSelectedItemTip;
+                    break;
+                case MenuLayoutViewModel.OverallUsageDetailsPropertyName:
+                    _storageUsed.Fraction = menuLayout.OverallInUseRatio;
+                    _storageUsed.Text = string.Format("{0:P2}", _storageUsed.Fraction);
+                    _storageUsed.TooltipText = menuLayout.OverallUsageDetails;
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void HandleLtoFlashPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            OSDispatcher.Current.InvokeOnMainDispatcher(() =>
-                {
-                    var viewModel = sender as LtoFlashViewModel;
-                    switch (e.PropertyName)
-                    {
-                        case LtoFlashViewModel.ActiveLtoFlashDevicePropertyName:
-                            _activeDevice.PropertyChanged -= HandleActiveDevicePropertyChanged;
-                            _activeDevice = viewModel.ActiveLtoFlashDevice;
-                            _activeDevice.PropertyChanged += HandleActiveDevicePropertyChanged;
-                            UpdateActiveDeviceViewModelInfo(viewModel.ActiveLtoFlashDevice);
-                            break;
-                        case LtoFlashViewModel.ShowFileSystemsDifferIconPropertyName:
-                            _dirtyIcon.Visible = viewModel.ShowFileSystemsDifferIcon;
-                            break;
-                        default:
-                            break;
-                    }
-                });
+            this.HandleEventOnMainThread(sender, e, HandleLtoFlashPropertyChangedCore);
+        }
+
+        private void HandleLtoFlashPropertyChangedCore(object sender, PropertyChangedEventArgs e)
+        {
+            var viewModel = sender as LtoFlashViewModel;
+            switch (e.PropertyName)
+            {
+                case LtoFlashViewModel.ActiveLtoFlashDevicePropertyName:
+                    _activeDevice.PropertyChanged -= HandleActiveDevicePropertyChanged;
+                    _activeDevice = viewModel.ActiveLtoFlashDevice;
+                    _activeDevice.PropertyChanged += HandleActiveDevicePropertyChanged;
+                    UpdateActiveDeviceViewModelInfo(viewModel.ActiveLtoFlashDevice);
+                    break;
+                case LtoFlashViewModel.ShowFileSystemsDifferIconPropertyName:
+                    _dirtyIcon.Visible = viewModel.ShowFileSystemsDifferIcon;
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void HandleActiveDevicePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            OSDispatcher.Current.InvokeOnMainDispatcher(() =>
-                {
-                    var device = sender as DeviceViewModel;
-                    switch (e.PropertyName)
-                    {
-                        case DeviceViewModel.IsConfigurablePropertyName:
-                        case Device.IsValidPropertyName:
-                            UpdateActiveDeviceViewModelInfo(device);
-                            break;
-                        default:
-                            break;
-                    }
-                });
+            this.HandleEventOnMainThread(sender, e, HandleActiveDevicePropertyChangedCore);
+        }
+
+        private void HandleActiveDevicePropertyChangedCore(object sender, PropertyChangedEventArgs e)
+        {
+            var device = sender as DeviceViewModel;
+            switch (e.PropertyName)
+            {
+                case DeviceViewModel.IsConfigurablePropertyName:
+                case Device.IsValidPropertyName:
+                    UpdateActiveDeviceViewModelInfo(device);
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void UpdateActiveDeviceViewModelInfo(DeviceViewModel device)

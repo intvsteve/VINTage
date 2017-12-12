@@ -44,6 +44,8 @@ namespace INTV.Shared.View
         private ProgressIndicatorOverlay _overlay;
 #endif // ENABLE_OVERLAY
 
+        #region Constructors
+
         private ProgressIndicator(ProgressIndicatorViewModel viewModel, Gtk.Window owner)
             : base(Gtk.WindowType.Toplevel)
         {
@@ -58,6 +60,19 @@ namespace INTV.Shared.View
             this.Build();
             this.DefaultHeight = -1;
             _cancel.Label = ProgressIndicatorViewModel.Cancel;
+        }
+
+        #endregion // Constructors
+
+        /// <summary>
+        /// Initialize the progress indicator visual using the specified viewModel.
+        /// </summary>
+        /// <param name="viewModel">View model.</param>
+        public static void Initialize(ProgressIndicatorViewModel viewModel)
+        {
+            var owner = SingleInstanceApplication.Current.MainWindow;
+            var progressIndicator = new ProgressIndicator(viewModel, owner);
+            owner.SetValue(ProgressIndicatorVisualPropertyName, progressIndicator);
         }
 
         #region IFakeDependencyObject
@@ -84,24 +99,13 @@ namespace INTV.Shared.View
         #endregion // IFakeDependencyObject
 
         /// <summary>
-        /// Initialize the progress indicator visual using the specified viewModel.
-        /// </summary>
-        /// <param name="viewModel">View model.</param>
-        public static void Initialize(ProgressIndicatorViewModel viewModel)
-        {
-            var owner = SingleInstanceApplication.Current.MainWindow;
-            var progressIndicator = new ProgressIndicator(viewModel, owner);
-            owner.SetValue(ProgressIndicatorVisualPropertyName, progressIndicator);
-        }
-
-        /// <summary>
         /// Executed when the user clicks the 'Cancel' button on the progress indicator.
         /// </summary>
         /// <param name="sender">The button.</param>
         /// <param name="e">Event argument - which is nothing.</param>
         protected void HandleCancelClicked(object sender, System.EventArgs e)
         {
-            var viewModel = ((ProgressIndicatorViewModel)DataContext);
+            var viewModel = (ProgressIndicatorViewModel)DataContext;
             if (viewModel.CancelCommand.CanExecute(viewModel))
             {
                 viewModel.CancelCommand.Execute(viewModel);
@@ -115,7 +119,12 @@ namespace INTV.Shared.View
 
         private void HandlePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var viewModel = ((ProgressIndicatorViewModel)DataContext);
+            this.HandleEventOnMainThread(sender, e, HandlePropertyChangedCore);
+        }
+
+        private void HandlePropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var viewModel = (ProgressIndicatorViewModel)DataContext;
             switch (e.PropertyName)
             {
                 case ProgressIndicatorViewModel.AllowsCancelPropertyName:
@@ -185,7 +194,7 @@ namespace INTV.Shared.View
         /// <param name="e">A little slice of nothing.</param>
         private void Pulse(object s, System.EventArgs e)
         {
-            _progressBar.Pulse();
+            OSDispatcher.Current.InvokeOnMainDispatcher(() => _progressBar.Pulse());
         }
     }
 }

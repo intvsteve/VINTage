@@ -78,7 +78,7 @@ namespace INTV.Shared.View
 
         #endregion // IFakeDependencyObject
 
-        protected void HandleValidateAtLaunchToggled (object sender, System.EventArgs e)
+        protected void HandleValidateAtLaunchToggled(object sender, System.EventArgs e)
         {
             if (Properties.Settings.Default.RomListValidateAtStartup != _validateAtLaunch.Active)
             {
@@ -86,7 +86,7 @@ namespace INTV.Shared.View
             }
         }
 
-        protected void HandleSearchForRomsAtLaunchToggled (object sender, System.EventArgs e)
+        protected void HandleSearchForRomsAtLaunchToggled(object sender, System.EventArgs e)
         {
             if (Properties.Settings.Default.RomListSearchForRomsAtStartup != _searchForRomsAtLaunch.Active)
             {
@@ -94,15 +94,15 @@ namespace INTV.Shared.View
             }
         }
 
-        protected void HandleDisplayRomFileNameForTitleToggled (object sender, System.EventArgs e)
+        protected void HandleDisplayRomFileNameForTitleToggled(object sender, System.EventArgs e)
         {
-            if (Properties.Settings.Default.DisplayRomFileNameForTitle !=_displayRomFileNameForTitle.Active)
+            if (Properties.Settings.Default.DisplayRomFileNameForTitle != _displayRomFileNameForTitle.Active)
             {
-                Properties.Settings.Default.DisplayRomFileNameForTitle =_displayRomFileNameForTitle.Active;
+                Properties.Settings.Default.DisplayRomFileNameForTitle = _displayRomFileNameForTitle.Active;
             }
         }
 
-        protected void HandleShowRomDetailsToggled (object sender, System.EventArgs e)
+        protected void HandleShowRomDetailsToggled(object sender, System.EventArgs e)
         {
             if (Properties.Settings.Default.ShowRomDetails != _showRomDetails.Active)
             {
@@ -110,7 +110,12 @@ namespace INTV.Shared.View
             }
         }
 
-        private void HandleSettingChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleSettingChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.HandleEventOnMainThread(sender, e, HandleSettingChangedCore);
+        }
+
+        private void HandleSettingChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {

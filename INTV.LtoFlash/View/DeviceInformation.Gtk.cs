@@ -100,6 +100,7 @@ namespace INTV.LtoFlash.View
             this.ShowDialog();
         }
 
+        /// <inheritdoc/>
         public override void Dispose()
         {
             if (_device != null)
@@ -219,21 +220,7 @@ namespace INTV.LtoFlash.View
 
         private void UpdateFileSystemInfo()
         {
-            /*
-            PhysBlocksAvail = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksAvailable);
-            PhysBlocksInUse = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksInUse);
-            PhysCleanBlocks = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksClean);
-            PhysTotalBlocks = new NSString(ViewModel.FileSystemStatistics.PhysicalBlocksTotal);
-            VirtBlocksAvail = new NSString(ViewModel.FileSystemStatistics.VirtualBlocksAvailable);
-            VirtBlocksInUse = new NSString(ViewModel.FileSystemStatistics.VirtualBlocksInUse);
-            VirtTotalBlocks = new NSString(ViewModel.FileSystemStatistics.VirtualBlocksTotal);
-            PhysSectorErasures = new NSString(ViewModel.FileSystemStatistics.PhysicalSectorErasures);
-            MetadataSectorErasures = new NSString(ViewModel.FileSystemStatistics.MetadataSectorErasures);
-            VirtToPhysMapVer = new NSString(ViewModel.FileSystemStatistics.VirtualToPhysicalMapVersion);
-            PBlockErasures = new NSString(ViewModel.FileSystemStatistics.PercentFlashLifetimeUsedByPhysicalBlockErasures);
-            VtoPLogWraps = new NSString(ViewModel.FileSystemStatistics.PercentageFlashLifetimeUsedByVirtualToPhysicalMap);
-            LifeRemaining = new NSString(ViewModel.FileSystemStatistics.PercentageLifetimeRemaining);
-            */
+            _fileSystemPage.Update();
         }
     }
 }

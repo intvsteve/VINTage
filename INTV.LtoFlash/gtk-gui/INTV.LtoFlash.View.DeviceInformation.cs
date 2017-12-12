@@ -18,11 +18,13 @@ namespace INTV.LtoFlash.View
 		
 		private global::Gtk.Label _firmwarePageName;
 		
+		private global::INTV.LtoFlash.View.DeviceFileSystemPage _fileSystemPage;
+		
 		private global::Gtk.Label _fileSystemPageName;
 		
 		private global::Gtk.HBox hbox2;
 		
-		private global::Gtk.Label label8;
+		private global::Gtk.Label label11;
 		
 		private global::Gtk.Label _deviceConnection;
 		
@@ -43,7 +45,7 @@ namespace INTV.LtoFlash.View
 			this._informationPages = new global::Gtk.Notebook ();
 			this._informationPages.CanFocus = true;
 			this._informationPages.Name = "_informationPages";
-			this._informationPages.CurrentPage = 2;
+			this._informationPages.CurrentPage = 0;
 			// Container child _informationPages.Gtk.Notebook+NotebookChild
 			this._infoPage = new global::INTV.LtoFlash.View.DeviceInformationPage ();
 			this._infoPage.Events = ((global::Gdk.EventMask)(256));
@@ -81,29 +83,35 @@ namespace INTV.LtoFlash.View
 			this._firmwarePageName.LabelProp = global::Mono.Unix.Catalog.GetString ("Firmware");
 			this._informationPages.SetTabLabel (this._firmwarePage, this._firmwarePageName);
 			this._firmwarePageName.ShowAll ();
+			// Container child _informationPages.Gtk.Notebook+NotebookChild
+			this._fileSystemPage = new global::INTV.LtoFlash.View.DeviceFileSystemPage ();
+			this._fileSystemPage.Events = ((global::Gdk.EventMask)(256));
+			this._fileSystemPage.Name = "_fileSystemPage";
+			this._informationPages.Add (this._fileSystemPage);
+			global::Gtk.Notebook.NotebookChild w5 = ((global::Gtk.Notebook.NotebookChild)(this._informationPages [this._fileSystemPage]));
+			w5.Position = 3;
 			// Notebook tab
-			global::Gtk.Label w5 = new global::Gtk.Label ();
-			w5.Visible = true;
-			this._informationPages.Add (w5);
 			this._fileSystemPageName = new global::Gtk.Label ();
 			this._fileSystemPageName.Name = "_fileSystemPageName";
 			this._fileSystemPageName.LabelProp = global::Mono.Unix.Catalog.GetString ("File System");
-			this._informationPages.SetTabLabel (w5, this._fileSystemPageName);
+			this._informationPages.SetTabLabel (this._fileSystemPage, this._fileSystemPageName);
 			this._fileSystemPageName.ShowAll ();
 			w1.Add (this._informationPages);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(w1 [this._informationPages]));
 			w6.Position = 0;
+			w6.Expand = false;
+			w6.Fill = false;
 			w6.Padding = ((uint)(1));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
 			this.hbox2 = new global::Gtk.HBox ();
 			this.hbox2.Name = "hbox2";
 			this.hbox2.Spacing = 6;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.label8 = new global::Gtk.Label ();
-			this.label8.Name = "label8";
-			this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("Connection:");
-			this.hbox2.Add (this.label8);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label8]));
+			this.label11 = new global::Gtk.Label ();
+			this.label11.Name = "label11";
+			this.label11.LabelProp = global::Mono.Unix.Catalog.GetString ("Connection:");
+			this.hbox2.Add (this.label11);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label11]));
 			w7.Position = 0;
 			w7.Expand = false;
 			w7.Fill = false;

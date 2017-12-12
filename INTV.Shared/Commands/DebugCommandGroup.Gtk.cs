@@ -23,11 +23,16 @@ using INTV.Shared.View;
 
 namespace INTV.Shared.Commands
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class DebugCommandGroup
     {
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the general data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return null; }

@@ -23,7 +23,7 @@ namespace INTV.Shared.ViewModel
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
-    public abstract class OSViewModelBase : System.Object
+    public abstract class OSViewModelBase : object
     {
     }
 }

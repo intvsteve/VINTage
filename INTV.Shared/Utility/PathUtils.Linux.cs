@@ -1,4 +1,4 @@
-﻿// <copyright file="PathUtils.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="PathUtils.Linux.cs" company="INTV Funhouse">
 // Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -79,11 +79,13 @@ namespace INTV.Shared.Utility
                 var ephemeralPath = System.IO.Path.GetTempPath(); // treat temp dir as ephemeral
                 isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
             }
+#if false
             if (!isRemovable)
-//            {
-//                var ephemeralPath = NativeMethods.GetDownloadsPath(); // treat downloads path as ephemeral
-//                isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
-//            }
+            {
+                var ephemeralPath = NativeMethods.GetDownloadsPath(); // treat downloads path as ephemeral
+                isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+            }
+#endif // false
             if (!isRemovable)
             {
                 var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.History);

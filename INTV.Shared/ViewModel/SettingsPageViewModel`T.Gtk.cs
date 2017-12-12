@@ -25,11 +25,15 @@ namespace INTV.Shared.ViewModel
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
+    /// <typeparam name="T">The data type of the visual for which this class acts as a ViewModel.</typeparam>
     public abstract partial class SettingsPageViewModel<T>
     {
         #region ISettingsPage
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Create the visual for the settings page.
+        /// </summary>
+        /// <returns>The visual for the settings page.</returns>
         public OSVisual CreateVisual()
         {
             var visual = new T();

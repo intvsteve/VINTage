@@ -25,7 +25,7 @@ namespace Locutus
     /// <summary>
     /// Provides the Main entry point for the program.
     /// </summary>
-    class MainClass
+    public class MainClass
     {
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.

@@ -55,7 +55,9 @@ namespace INTV.Shared.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the general data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return null; }
@@ -107,9 +109,9 @@ namespace INTV.Shared.Commands
         }
         #endif
 
-        //#endregion // CommandGroup
-
-        /// <inheritdoc />
+        /// <summary>
+        /// Add GTK-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             CommandList.Add(FileMenuCommand);

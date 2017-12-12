@@ -23,6 +23,9 @@ using INTV.Shared.ComponentModel;
 
 namespace INTV.LtoFlash.Commands
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class DownloadCommandGroup
     {
         #region SyncToDeviceSubmenuCommand

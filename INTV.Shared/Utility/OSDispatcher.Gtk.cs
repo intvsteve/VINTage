@@ -29,7 +29,7 @@ namespace INTV.Shared.Utility
     /// </summary>
     public partial struct OSDispatcher
     {
-        private static readonly int _mainThreadId = Thread.CurrentThread.ManagedThreadId;
+        private static readonly int MainThreadId = Thread.CurrentThread.ManagedThreadId;
 
         /// <summary>
         /// Gets the thread's dispatcher.
@@ -43,13 +43,13 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
-        /// Gets whether the caller is on the main thread of the application.
+        /// Gets a value indicating whether the caller is on the main thread of the application.
         /// </summary>
         public static bool IsMainThread
         {
             get
             {
-                return Thread.CurrentThread.ManagedThreadId == _mainThreadId;
+                return Thread.CurrentThread.ManagedThreadId == MainThreadId;
             }
         }
 
@@ -60,8 +60,9 @@ namespace INTV.Shared.Utility
         public void BeginInvoke(System.Action action)
         {
             // NOTE: This essentially ALWAYS puts on main thread!
-            DebugOutput("*$*$*$ INVOKING from thread: " + Thread.CurrentThread.ManagedThreadId + ", MAIN: " + _mainThreadId);
+            DebugOutput("*$*$*$ INVOKING from thread: " + Thread.CurrentThread.ManagedThreadId + ", MAIN: " + MainThreadId);
             GLib.Idle.Add(() => BeginInvokeHandler(action));
+
             // Alternative: Gtk.Application.Invoke(). Also on main thread.
         }
 
@@ -72,7 +73,7 @@ namespace INTV.Shared.Utility
         /// <param name="priority">The importance of the action to execute.</param>
         public void Invoke(System.Action action, OSDispatcherPriority priority)
         {
-            if (NativeDispatcher.ManagedThreadId == _mainThreadId)
+            if (NativeDispatcher.ManagedThreadId == MainThreadId)
             {
                 // We're the main thread dispatcher -- but if not called from main thread dispatcher,
                 // we need to properly direct the call.

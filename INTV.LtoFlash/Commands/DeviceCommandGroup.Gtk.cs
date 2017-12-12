@@ -26,6 +26,9 @@ using INTV.Shared.View;
 
 namespace INTV.LtoFlash.Commands
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class DeviceCommandGroup
     {
         #region DeviceInformationCommand
@@ -91,13 +94,19 @@ namespace INTV.LtoFlash.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the general data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return LtoFlashCommandGroup.Group.Context; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates the toolbar item for command.
+        /// </summary>
+        /// <param name="command">The command whose toolbar visual is created.</param>
+        /// <returns>The toolbar visual for the given command.</returns>
         public override OSVisual CreateToolbarItemForCommand(ICommand command)
         {
             OSVisual visual;
@@ -114,8 +123,12 @@ namespace INTV.LtoFlash.Commands
             return visual;
         }
 
-        /// <inheritdoc/>
-        public override INTV.Shared.View.OSMenuItem CreateMenuItemForCommand(ICommand command)
+        /// <summary>
+        /// Creates a menu item for a command.
+        /// </summary>
+        /// <param name="command">The command for which a menu item must be created.</param>
+        /// <returns>The menu item.</returns>
+        public override OSMenuItem CreateMenuItemForCommand(ICommand command)
         {
             var menuItem = base.CreateMenuItemForCommand(command);
             var visualCommand = command as VisualRelayCommand;
@@ -138,6 +151,7 @@ namespace INTV.LtoFlash.Commands
         /// Initializes the menu.
         /// </summary>
         /// <param name="menu">The menu whose items are to be set.</param>
+        /// <param name="addShortcuts">If <c>true</c>, add menu item shortcuts to the items.</param>
         private static void InitializeAvailableDevicesMenu(Gtk.Menu menu, bool addShortcuts)
         {
             var items = menu.Children;
@@ -184,7 +198,9 @@ namespace INTV.LtoFlash.Commands
             InitializeAvailableDevicesMenu(submenu, true);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             CommandList.Add(SearchForDevicesToolbarCommand);

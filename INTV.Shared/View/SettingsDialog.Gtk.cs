@@ -79,7 +79,6 @@ namespace INTV.Shared.View
             var x = _pages.AppendPage(pageWidget, pageLabel);
         }
 
-
         /// <inheritdoc/>
         /// <remarks>GTK-specific implementation</remarks>
         partial void AllTabsAdded()

@@ -20,6 +20,9 @@
 
 namespace INTV.Shared.View
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class RomFeaturesConfiguration : Gtk.Dialog
     {
         public RomFeaturesConfiguration()

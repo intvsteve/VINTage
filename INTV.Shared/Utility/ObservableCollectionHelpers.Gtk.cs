@@ -27,6 +27,9 @@ using System.Linq;
 
 namespace INTV.Shared.Utility
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public static partial class ObservableCollectionHelpers
     {
         /// <summary>
@@ -50,7 +53,7 @@ namespace INTV.Shared.Utility
             switch (collectionChangedArgs.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    //var newItems = collectionChangedArgs.NewItems.Cast<T>();
+                    ////var newItems = collectionChangedArgs.NewItems.Cast<T>();
                     foreach (T item in collectionChangedArgs.NewItems)
                     {
                         listStore.AppendValues(item);

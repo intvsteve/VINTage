@@ -26,6 +26,9 @@ using INTV.Shared.View;
 
 namespace INTV.LtoFlash.Commands
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class MenuLayoutCommandGroup
     {
         private static readonly string UIReadmeFilename = "README.Linux.txt";
@@ -76,11 +79,15 @@ namespace INTV.LtoFlash.Commands
 
         #region CommandGroup
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             var addToMenuClone = AddRomsToMenuCommand.Clone(); // for toolbar
             AddRomsToMenuCommand.Weight = NewDirectoryCommand.Weight + 0.001;
             AddRomsToMenuCommand.MenuParent = RootCommandGroup.EditMenuCommand;
+
             // Don't use arrow keys - they are snatched up by the control
             ////AddRomsToMenuCommand.KeyboardShortcutKey = new string((char)Gdk.Key.rightarrow, 1); // right arrow
             AddRomsToMenuCommand.KeyboardShortcutKey = "M";
@@ -98,11 +105,11 @@ namespace INTV.LtoFlash.Commands
 
             DeleteItemsCommand.MenuParent = RootCommandGroup.EditMenuCommand;
             DeleteItemsCommand.VisualParent = RootCommandGroup.RootCommand;
-            //MenuLayoutGroupCommand.Weight = DeleteItemsCommand.Weight + RootCommandGroup.MenuSeparatorDelta;
+            ////MenuLayoutGroupCommand.Weight = DeleteItemsCommand.Weight + RootCommandGroup.MenuSeparatorDelta;
 
             MenuLayoutGroupCommand.MenuParent = RootCommandGroup.EditMenuCommand;
             MenuLayoutGroupCommand.Weight = DeleteItemsCommand.Weight + RootCommandGroup.MenuSeparatorDelta;
-            //CommandList.Add(MenuLayoutGroupCommand.CreateSeparator(CommandLocation.After));
+            ////CommandList.Add(MenuLayoutGroupCommand.CreateSeparator(CommandLocation.After));
 
             EditLongNameCommand.MenuParent = RootCommandGroup.EditMenuCommand;
             CommandList.Add(EditLongNameCommand);

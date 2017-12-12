@@ -22,6 +22,9 @@ using INTV.Shared.Commands;
 
 namespace INTV.LtoFlash.Commands
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class FirmwareCommandGroup
     {
         #region CommandGroup
@@ -32,6 +35,9 @@ namespace INTV.LtoFlash.Commands
             get { return null; }
         }
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             FirmwareGroupCommand.MenuParent = LtoFlashCommandGroup.LtoFlashGroupCommand;

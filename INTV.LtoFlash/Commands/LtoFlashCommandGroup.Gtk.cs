@@ -22,6 +22,9 @@ using INTV.Shared.Commands;
 
 namespace INTV.LtoFlash.Commands
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class LtoFlashCommandGroup
     {
         #region LaunchFtdiDriverInstallerCommand

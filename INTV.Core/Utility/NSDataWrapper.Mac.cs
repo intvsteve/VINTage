@@ -1,4 +1,4 @@
-﻿// <copyright file="NSDataWrapper.cs" company="INTV Funhouse">
+﻿// <copyright file="NSDataWrapper.Mac.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -39,11 +39,10 @@ namespace INTV.Core.Utility
     /// </summary>
     public class NSDataWrapper : NSData
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.Utility.SingleInstanceApplication"/> class.
         /// </summary>
-        /// <param name="handle">Handle.</param>
+        /// <param name="handle">Native object handle.</param>
         /// <remarks>Called when created from unmanaged code.
         /// NOTE: Added this in an attempt to address apparently random crashes that are
         /// happening in extremely rare circumstances on application launch.</remarks>

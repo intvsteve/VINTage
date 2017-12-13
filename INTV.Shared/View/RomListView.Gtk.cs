@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+#define ENABLE_DRAGDROP_TRACE
+
 using System.Collections.Generic;
 using System.Linq;
 using INTV.Shared.Commands;
@@ -48,6 +50,7 @@ namespace INTV.Shared.View
             var treeView = _romListView;
             treeView.Selection.Mode = Gtk.SelectionMode.Multiple;
             treeView.HasTooltip = true;
+            treeView.EnableModelDragDest(RomListViewModel.DragDropTargetEntries, Gdk.DragAction.Private);
 
             var column = new Gtk.TreeViewColumn();
             Gtk.CellRenderer cellRenderer = new Gtk.CellRendererPixbuf();
@@ -208,6 +211,93 @@ namespace INTV.Shared.View
         {
             var viewModel = DataContext as RomListViewModel;
             viewModel.ListHasFocus = false;
+        }
+
+        /// <summary>
+        /// Handles the drag begin event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragBegin(object o, Gtk.DragBeginArgs args)
+        {
+            DebugDragDrop("HandleDragBegin");
+        }
+
+        /// <summary>
+        /// Handles the drag data delete event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDataDelete(object o, Gtk.DragDataDeleteArgs args)
+        {
+            DebugDragDrop("HandleDragDataDelete");
+        }
+
+        /// <summary>
+        /// Handles the drag data get event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDataGet(object o, Gtk.DragDataGetArgs args)
+        {
+            DebugDragDrop("HandleDragDataGet");
+        }
+
+        /// <summary>
+        /// Handles the drag data received event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDataReceived(object o, Gtk.DragDataReceivedArgs args)
+        {
+            DebugDragDrop("HandleDragDataReceived");
+            ((RomListViewModel)DataContext).DropFilesCommand.Execute(args);
+        }
+
+        /// <summary>
+        /// Handles the drag drop event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDrop(object o, Gtk.DragDropArgs args)
+        {
+            DebugDragDrop("HandleDragDrop");
+        }
+
+        /// <summary>
+        /// Handles the drag end event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragEnd(object o, Gtk.DragEndArgs args)
+        {
+            DebugDragDrop("HandleDragEnd");
+        }
+
+        /// <summary>
+        /// Handles the drag leave event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragLeave(object o, Gtk.DragLeaveArgs args)
+        {
+            DebugDragDrop("HandleDragLeave");
+        }
+
+        /// <summary>
+        /// Handles the DragMotion event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragMotion(object o, Gtk.DragMotionArgs args)
+        {
+            DebugDragDrop("HandleDragMotion");
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DRAGDROP_TRACE")]
+        private static void DebugDragDrop(object message)
+        {
+            System.Diagnostics.Debug.WriteLine("DRAG_DROP: RomsList: " + message);
         }
 
         private void HandleDeleteSelectedItems()

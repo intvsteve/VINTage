@@ -18,7 +18,10 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using INTV.Shared.Model;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
@@ -31,6 +34,19 @@ namespace INTV.Shared.ViewModel
     [System.ComponentModel.Composition.Export(typeof(INTV.Shared.ComponentModel.IPrimaryComponent))]
     public partial class RomListViewModel
     {
+        internal static readonly Gtk.TargetEntry[] DragDropTargetEntries = new[]
+        {
+                new Gtk.TargetEntry("UTF8_STRING", Gtk.TargetFlags.OtherApp, (uint)DragDropDataType.Utf8String),
+        };
+
+        private enum DragDropDataType : uint
+        {
+            /// <summary>
+            /// The custom value we use to register UTF8 string drag/drop data type Gtk.TargetEntry.
+            /// </summary>
+            Utf8String,
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether the <see cref="INTV.Shared.View.RomListView"/> Gtk.TreeView has focus.
         /// </summary>
@@ -52,9 +68,51 @@ namespace INTV.Shared.ViewModel
         }
         private bool _listHasFocus;
 
-        private void FilesDropped(object dragEventArgs)
+        /// <summary>
+        /// Gets the files dropped from OS-specific drag/drop event data.
+        /// </summary>
+        /// <param name="osDropArgs">OS-specific drag drop arguments.</param>
+        /// <param name="droppedFiles">Recieves the dropped files retrieved from <paramref name="osDropArgs"/>.</param>
+        partial void GetFilesDropped(object osDropArgs, List<string> droppedFiles)
         {
-            throw new System.NotImplementedException("RomListViewModel.FilesDropped");
+            var dropArgs = osDropArgs as Gtk.DragDataReceivedArgs;
+            if ((DragDropDataType)dropArgs.Info == DragDropDataType.Utf8String)
+            {
+                var droppedFileUris = dropArgs.SelectionData.Text.Split('\r', '\n').Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p));
+                foreach (var droppedFileUri in droppedFileUris)
+                {
+                    Uri fileUri;
+                    if (Uri.TryCreate(droppedFileUri, UriKind.Absolute, out fileUri))
+                    {
+                        var file = fileUri.AbsolutePath;
+                        droppedFiles.Add(file);
+                    }
+                }
+            }
+        }
+
+        private void FilesDropped(object dropEventArgs)
+        {
+            List<string> files = new List<string>();
+            GetFilesDropped(dropEventArgs, files);
+            if (files.Any())
+            {
+                var options = RomDiscoveryOptions.AddNewRoms | RomDiscoveryOptions.AccumulateRejectedRoms;
+                var args = new RomDiscoveryData(files, Programs.ModelCollection, Resources.Strings.RomListViewModel_Progress_Title, options);
+                AddPrograms(args);
+                bool updatedSearchDirectories = false;
+                foreach (var file in files)
+                {
+                    if (System.IO.Directory.Exists(file))
+                    {
+                        updatedSearchDirectories |= _searchDirectories.Add(file);
+                    }
+                }
+                if (updatedSearchDirectories)
+                {
+                    INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+                }
+            }
         }
 
         private OSVisual OSInitializeVisual()

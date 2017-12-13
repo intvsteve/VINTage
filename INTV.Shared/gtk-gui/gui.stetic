@@ -270,6 +270,14 @@
             <property name="ShowScrollbars">True</property>
             <signal name="FocusInEvent" handler="HandleRomListFocusIn" />
             <signal name="FocusOutEvent" handler="HandleRomListFocusOut" />
+            <signal name="DragDataDelete" handler="HandleDragDataDelete" />
+            <signal name="DragBegin" handler="HandleDragBegin" />
+            <signal name="DragDataReceived" handler="HandleDragDataReceived" />
+            <signal name="DragDataGet" handler="HandleDragDataGet" />
+            <signal name="DragDrop" handler="HandleDragDrop" />
+            <signal name="DragEnd" handler="HandleDragEnd" />
+            <signal name="DragLeave" handler="HandleDragLeave" />
+            <signal name="DragMotion" handler="HandleDragMotion" />
           </widget>
         </child>
       </widget>

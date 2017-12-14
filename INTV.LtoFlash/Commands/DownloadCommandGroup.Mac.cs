@@ -19,6 +19,10 @@
 // </copyright>
 
 using System.Collections.Generic;
+using INTV.Shared.Commands;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -26,10 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Commands;
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 namespace INTV.LtoFlash.Commands
 {
@@ -70,7 +70,9 @@ namespace INTV.LtoFlash.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return LtoFlashCommandGroup.Group.Context; }
@@ -80,6 +82,9 @@ namespace INTV.LtoFlash.Commands
 
         #region CommandGroup
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             DownloadAndPlayCommand.VisualParent = INTV.Shared.Commands.RootCommandGroup.RootCommand; // put into toolbar

@@ -60,7 +60,7 @@ namespace INTV.LtoFlash.Converter
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.LtoFlash.Converter.LtoFlashFormatter"/> class.
         /// </summary>
-        /// <param name="f">Flags used by MonoMac.</param>
+        /// <param name="t">Flags used by MonoMac.</param>
         /// <remarks>Constructor to call on derived classes when the derived class has an [Export] constructor.</remarks>
         public LtoFlashFormatter(NSObjectFlag t)
             : base(t)
@@ -123,7 +123,7 @@ namespace INTV.LtoFlash.Converter
         /// <param name="forString">String to parse to convert to an object.</param>
         /// <param name="errorDescription">Receives a descriptive error string.</param>
         /// <remarks>From a proposed (rejected) pull: https://github.com/mono/maccore/pull/25/files</remarks>
-        [Export ("getObjectValue:forString:errorDescription:")]
+        [Export("getObjectValue:forString:errorDescription:")]
         private bool ObjectFor(System.IntPtr objectFor, string forString, System.IntPtr errorDescription)
         {
             string errorDescriptionString = null;
@@ -135,10 +135,10 @@ namespace INTV.LtoFlash.Converter
             {
                 System.Runtime.InteropServices.Marshal.WriteIntPtr(objectFor, outObjectFor.Handle);
             }
-            if (errorDescription != System.IntPtr.Zero && string.IsNullOrEmpty (errorDescriptionString) == false)
+            if (errorDescription != System.IntPtr.Zero && string.IsNullOrEmpty(errorDescriptionString) == false)
             {
-                NSString errorDescriptionObj = new NSString (errorDescriptionString);
-                System.Runtime.InteropServices.Marshal.WriteIntPtr (errorDescription, errorDescriptionObj.Handle);
+                NSString errorDescriptionObj = new NSString(errorDescriptionString);
+                System.Runtime.InteropServices.Marshal.WriteIntPtr(errorDescription, errorDescriptionObj.Handle);
             }
             return ret;
         }

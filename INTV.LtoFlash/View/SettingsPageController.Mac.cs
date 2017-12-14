@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,7 +28,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.View;
 
 namespace INTV.LtoFlash.View
 {
@@ -52,7 +52,7 @@ namespace INTV.LtoFlash.View
         /// Called when created directly from a XIB file.
         /// </summary>
         /// <param name="coder">Used to deserialize from a XIB.</param>
-        [Export ("initWithCoder:")]
+        [Export("initWithCoder:")]
         public SettingsPageController(NSCoder coder)
             : base(coder)
         {
@@ -78,7 +78,10 @@ namespace INTV.LtoFlash.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new SettingsPage View { get { return (SettingsPage)base.View; } }
+        public new SettingsPage View
+        {
+            get { return (SettingsPage)base.View; }
+        }
 
         #region IFakeDependencyObject
 

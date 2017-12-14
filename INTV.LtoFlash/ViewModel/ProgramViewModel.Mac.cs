@@ -22,6 +22,9 @@ using System;
 
 namespace INTV.LtoFlash.ViewModel
 {
+    /// <summary>
+    /// Mac-specific implementation.
+    /// </summary>
     public partial class ProgramViewModel
     {
         /// <summary>
@@ -41,7 +44,7 @@ namespace INTV.LtoFlash.ViewModel
         }
 
         /// <summary>
-        /// Overload meaning of the Status Interface Builder binding to also mean other info... like program manual.
+        /// Gets the overloaded meaning of the Status Interface Builder binding to also mean other info... like program manual.
         /// </summary>
         [INTV.Shared.Utility.OSExport("Status")]
         public string Status

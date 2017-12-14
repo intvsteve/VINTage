@@ -19,6 +19,12 @@
 // </copyright>
 
 using System.Collections.Generic;
+using INTV.LtoFlash.View;
+using INTV.LtoFlash.ViewModel;
+using INTV.Shared.Commands;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -26,12 +32,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.LtoFlash.View;
-using INTV.LtoFlash.ViewModel;
-using INTV.Shared.Commands;
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.View;
 
 namespace INTV.LtoFlash.Commands
 {
@@ -43,8 +43,9 @@ namespace INTV.LtoFlash.Commands
         private static readonly string UIReadmeFilename = "Readme.Mac.txt";
 
         /// <summary>
-        /// Is there a better way to do this?
+        /// Gets the menu layout view model to use for commands.
         /// </summary>
+        /// <remarks>Is there a better way to do this?</remarks>
         private MenuLayoutViewModel MenuLayoutViewModel
         {
             get
@@ -102,6 +103,10 @@ namespace INTV.LtoFlash.Commands
 
         #region SetColorCommand
 
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
+        /// <param name="parameter">Parameter for the command.</param>
         static partial void OSSetColor(object parameter)
         {
             // NOTE: This operates on the current selection in the menu layout.
@@ -113,6 +118,10 @@ namespace INTV.LtoFlash.Commands
 
         #region RestoreMenuLayoutCommand
 
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
+        /// <param name="viewModel">View model.</param>
         static partial void RestoreMenuLayoutComplete(LtoFlashViewModel viewModel)
         {
             RomListCommandGroup.SortRoms();
@@ -122,13 +131,19 @@ namespace INTV.LtoFlash.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return MenuLayoutViewModel; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets a Boolean value indicating of the given command is allowed to execute.
+        /// </summary>
+        /// <param name="command">The command of interest.</param>
+        /// <returns><c>true</c> if the command should be allowed to execute, <c>false</c> otherwise.</returns>
         protected override bool HandleCanExecuteChangedForCommand(VisualRelayCommand command)
         {
             var canExecute = base.HandleCanExecuteChangedForCommand(command);
@@ -150,7 +165,13 @@ namespace INTV.LtoFlash.Commands
             return canExecute;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Perform platform- and group-specific initialization for a command's menu item.
+        /// </summary>
+        /// <param name="command">The command whose menu item may need additional setup.</param>
+        /// <param name="target">The target of the command.</param>
+        /// <param name="context">The general command context.</param>
+        /// <remarks>This should probably be renamed -- it's only used specifically for context menus.</remarks>
         protected override void InitializeMenuItem(VisualRelayCommand command, object target, object context)
         {
             base.InitializeMenuItem(command, null, context); // we don't use target on Mac -- just context
@@ -160,7 +181,11 @@ namespace INTV.LtoFlash.Commands
 
         #region // ICommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates the visual for a command, if applicable.
+        /// </summary>
+        /// <param name="command">The command for which a visual must be created.</param>
+        /// <returns>The visual for the command.</returns>
         public override NSObject CreateVisualForCommand(ICommand command)
         {
             var visual = base.CreateVisualForCommand(command);
@@ -172,6 +197,23 @@ namespace INTV.LtoFlash.Commands
             return visual;
         }
 
+        private static void AddSetColorSubmenuItem(NSMenuItem parentMenuItem, VisualRelayCommand submenuItemCommand, System.Tuple<MenuLayoutViewModel, FileNodeViewModel, INTV.Core.Model.Stic.Color> context)
+        {
+            var submenuItem = submenuItemCommand.MenuItem;
+            var parentMenu = parentMenuItem.Submenu;
+            if (parentMenu == null)
+            {
+                parentMenu = new NSMenu("Colors");
+                parentMenuItem.Submenu = parentMenu;
+            }
+            submenuItemCommand.SetValue("DataContext", context);
+            submenuItemCommand.MenuItem.NativeMenuItem.Image = submenuItemCommand.SmallIcon;
+            parentMenu.AddItem(submenuItemCommand.MenuItem);
+        }
+
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             EditLongNameCommand.MenuParent = RootCommandGroup.EditMenuCommand;
@@ -205,19 +247,5 @@ namespace INTV.LtoFlash.Commands
         }
 
         #endregion // ICommandGroup
-
-        private static void AddSetColorSubmenuItem(NSMenuItem parentMenuItem, VisualRelayCommand submenuItemCommand, System.Tuple<MenuLayoutViewModel, FileNodeViewModel, INTV.Core.Model.Stic.Color> context)
-        {
-            var submenuItem = submenuItemCommand.MenuItem;
-            var parentMenu = parentMenuItem.Submenu;
-            if (parentMenu == null)
-            {
-                parentMenu = new NSMenu("Colors");
-                parentMenuItem.Submenu = parentMenu;
-            }
-            submenuItemCommand.SetValue("DataContext", context);
-            submenuItemCommand.MenuItem.NativeMenuItem.Image = submenuItemCommand.SmallIcon;
-            parentMenu.AddItem(submenuItemCommand.MenuItem);
-        }
     }
 }

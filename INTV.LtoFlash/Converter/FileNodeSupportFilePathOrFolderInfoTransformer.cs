@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.LtoFlash.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,7 +26,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.LtoFlash.ViewModel;
 
 #if __UNIFIED__
 using nfloat = System.nfloat;
@@ -75,7 +75,7 @@ namespace INTV.LtoFlash
         /// <param name="coder">Used to deserialize from a XIB.</param>
         /// <remarks>Called when created directly from a XIB file.
         /// NOTE: Xamarin.Mac propery does not provide this constructor, as NSValueTransformer does not conform to NSCoding.</remarks>
-        [Export ("initWithCoder:")]
+        [Export("initWithCoder:")]
         public FileNodeSupportFilePathOrFolderInfoTransformer(NSCoder coder)
             : base(coder)
         {
@@ -84,19 +84,17 @@ namespace INTV.LtoFlash
 #endif // !__UNIFIED__
 
         /// <inheritdoc />
-        public override NSObject TransformedValue (NSObject value)
+        public override NSObject TransformedValue(NSObject value)
         {
-            // var viewModel = value as FileNodeViewModel;
-
+            ////var viewModel = value as FileNodeViewModel;
             return null;
         }
 
         /// <inheritdoc />
-        public override NSObject ReverseTransformedValue (NSObject value)
+        public override NSObject ReverseTransformedValue(NSObject value)
         {
             var osColor = value as NSColor;
             FileNodeColorViewModel colorViewModel = null;
-            // var intvColor = INTV.Core.Model.Stic.Color.NotAColor;
             foreach (var color in INTV.LtoFlash.ViewModel.MenuLayoutViewModel.Colors)
             {
                 var viewModelColor = FileNodeColorViewModel.GetColor(color);

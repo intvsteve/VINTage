@@ -1,4 +1,4 @@
-// <copyright file="MenuLayoutViewController.Mac.cs" company="INTV Funhouse">
+// <copyright file="MenuLayoutViewController.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -25,27 +25,25 @@
 
 using System.Collections.Generic;
 using System.Linq;
-#if __UNIFIED__
-using AppKit;
-using Foundation;
-using ObjCRuntime;
-#else
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
-#endif // __UNIFIED__
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
 using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
+using INTV.Shared.Behavior;
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 using INTV.Shared.ViewModel;
-using INTV.Shared.Behavior;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif // __UNIFIED__
 
 #if __UNIFIED__
 using CGPoint = CoreGraphics.CGPoint;
@@ -82,6 +80,9 @@ namespace INTV.LtoFlash.View
         ShortName,
     }
 
+    /// <summary>
+    /// Menu layout view controller.
+    /// </summary>
     public partial class MenuLayoutViewController : NSViewController
     {
         private const string EnableMultiSelectEnvironmentVariableName = "LUI_ENABLE_MENU_LAYOUT_MULTISELECT";
@@ -118,11 +119,6 @@ namespace INTV.LtoFlash.View
             Initialize();
         }
 
-        /// <summary>Shared initialization code.</summary>
-        private void Initialize()
-        {
-        }
-
         #endregion // Constructors
 
         #region Properties
@@ -132,7 +128,10 @@ namespace INTV.LtoFlash.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new MenuLayoutView View { get { return (MenuLayoutView)base.View; } }
+        public new MenuLayoutView View
+        {
+            get { return (MenuLayoutView)base.View; }
+        }
 
         #endregion // NSViewController
 
@@ -146,31 +145,46 @@ namespace INTV.LtoFlash.View
         /// Gets a string showing overall usage as a percentage.
         /// </summary>
         [OSExport(MenuLayoutViewModel.OverallInUseRatioPropertyName)]
-        public string OverallInUseRatio { get { return string.Format("{0} {1:P2}", Resources.Strings.MenuLayout_StorageUsed, LtoFlashViewModel.HostPCMenuLayout.OverallInUseRatio); } }
+        public string OverallInUseRatio
+        {
+            get { return string.Format("{0} {1:P2}", Resources.Strings.MenuLayout_StorageUsed, LtoFlashViewModel.HostPCMenuLayout.OverallInUseRatio); }
+        }
 
         /// <summary>
         /// Gets a string indicating the overall usage in detail.
         /// </summary>
         [OSExport(MenuLayoutViewModel.OverallUsageDetailsPropertyName)]
-        public string OverallUsageDetails { get { return LtoFlashViewModel.HostPCMenuLayout.OverallUsageDetails; } }
+        public string OverallUsageDetails
+        {
+            get { return LtoFlashViewModel.HostPCMenuLayout.OverallUsageDetails; }
+        }
 
         /// <summary>
         /// Gets a value representing the overall space usage on the device.
         /// </summary>
         [OSExport("OverallInUsePercent")]
-        public double OverallInUsePercent { get { return LtoFlashViewModel.HostPCMenuLayout.OverallInUseRatio * 100; } }
+        public double OverallInUsePercent
+        {
+            get { return LtoFlashViewModel.HostPCMenuLayout.OverallInUseRatio * 100; }
+        }
 
         /// <summary>
         /// Gets whether to show the hint text.
         /// </summary>
         [INTV.Shared.Utility.OSExport("DropProgramsHereHintText")]
-        public string DropProgramsHereHintText { get { return LtoFlashViewModel.HostPCMenuLayout.OverlayText; } }
+        public string DropProgramsHereHintText
+        {
+            get { return LtoFlashViewModel.HostPCMenuLayout.OverlayText; }
+        }
 
         /// <summary>
-        /// Gets whether to show the update-in-progress overlay text.
+        /// Gets a value indicating whether to show the update-in-progress overlay text.
         /// </summary>
         [INTV.Shared.Utility.OSExport(MenuLayoutViewModel.ShowOverlayPropertyName)]
-        public bool ShowOverlay { get { return LtoFlashViewModel.HostPCMenuLayout.ShowOverlay; } }
+        public bool ShowOverlay
+        {
+            get { return LtoFlashViewModel.HostPCMenuLayout.ShowOverlay; }
+        }
 
         /// <summary>
         /// Gets or sets the LtoFlashViewModel needed by the implementation.
@@ -233,7 +247,7 @@ namespace INTV.LtoFlash.View
         /// <param name="toolbarItem">The toolbar item to validate.</param>
         /// <returns><c>true</c> if the item is valid, and should be enabled.</returns>
         /// <remarks>TODO: Unsure why this is here... is it needed, or leftover from some experiment?</remarks>
-        [Export ("validateToolbarItem:")]
+        [Export("validateToolbarItem:")]
         public bool ValidateToolbarItem(NSToolbarItem toolbarItem)
         {
             return false;
@@ -254,6 +268,17 @@ namespace INTV.LtoFlash.View
             {
                 outlineView.EditColumn((nint)(int)column, row);
             }
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DRAGDROP_TRACE")]
+        private static void DebugDragDropPrint(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        /// <summary>Shared initialization code.</summary>
+        private void Initialize()
+        {
         }
 
         private void HandleDataContextChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -378,6 +403,7 @@ namespace INTV.LtoFlash.View
                             currentSelection = parent;
                             parent = parent.Parent;
                         }
+
                         // add the root
                         indexPath.Add(0);
                         indexPath.Reverse();
@@ -424,6 +450,10 @@ namespace INTV.LtoFlash.View
             }
         }
 
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
+        /// <param name="sender">Sender of the event.</param>
         partial void OnDoubleClick(NSObject sender)
         {
             var selectedItemPaths = sender as NSArray;
@@ -445,6 +475,7 @@ namespace INTV.LtoFlash.View
                         {
                             DownloadCommandGroup.DownloadAndPlay(LtoFlashViewModel.ActiveLtoFlashDevice.Device, program.ProgramDescription);
                         }
+
                         // (steveno) IIRC the intent here may be to go to the more generic code from INTV.Shared that tries to cope with multiple
                         // possible actions being available on a double-click. For example, what if you have Intellicart, CC3 and LTO Flash! all
                         // available at the same time?
@@ -468,16 +499,10 @@ namespace INTV.LtoFlash.View
             }
         }
 
-        [System.Diagnostics.Conditional("ENABLE_DRAGDROP_TRACE")]
-        private static void DebugDragDropPrint(object message)
-        {
-            System.Diagnostics.Debug.WriteLine(message);
-        }
-
         /// <summary>
         /// Sublcass NSOutlineView to get context menus and other desired features.
         /// </summary>
-        [Register ("MenuOutlineView")]
+        [Register("MenuOutlineView")]
         public class MenuOutlineView : NSOutlineView
         {
             #region Constructors
@@ -535,7 +560,7 @@ namespace INTV.LtoFlash.View
             #endregion // Constructors
 
             /// <summary>
-            /// Access to our controller. Too bad this isn't more like the iOS APIs where the responder chain is more clearly defined. This wouldn't be necessary then.
+            /// Gets or sets the controller. Too bad this isn't more like the iOS APIs where the responder chain is more clearly defined. This wouldn't be necessary then.
             /// </summary>
             internal MenuLayoutViewController Controller { get; set; }
 
@@ -569,6 +594,7 @@ namespace INTV.LtoFlash.View
                 return [self menu];
 #endif // false
                 Window.MakeFirstResponder(this);
+
                 // Select the clicked item when we get context menu click.
                 var menuPoint = ConvertPointFromView(theEvent.LocationInWindow, null);
                 var row = GetRow(menuPoint);
@@ -664,7 +690,7 @@ namespace INTV.LtoFlash.View
             /// <summary>
             /// Called when ESC or Cmd+. pressed. Overridden to get rid of annoying beep.
             /// </summary>
-            /// <param name="sender">Sender.</param>
+            /// <param name="sender">Unsure who the sender is - the application?.</param>
             [Export("cancelOperation:")]
             public void CancelOperation(NSObject sender)
             {
@@ -689,8 +715,8 @@ namespace INTV.LtoFlash.View
             /// <summary>
             /// Initializes a new instance of the type OutlineViewDelegate.
             /// </summary>
-            /// <param name="treeData"></param>
-            /// <param name="viewModel"></param>
+            /// <param name="treeData">The tree data.</param>
+            /// <param name="viewModel">The view model for the menu layout.</param>
             internal OutlineViewDelegate(NSTreeController treeData, LtoFlashViewModel viewModel)
             {
                 TreeData = treeData;
@@ -717,7 +743,7 @@ namespace INTV.LtoFlash.View
             }
 
             /// <inheritdoc />
-            public override bool SelectionShouldChange (NSOutlineView outlineView)
+            public override bool SelectionShouldChange(NSOutlineView outlineView)
             {
                 var shouldChange = !SingleInstanceApplication.Instance.IsBusy;
                 DebugDelegatePrint("OutlineViewDelegate: selectionShouldChange: " + shouldChange);
@@ -768,7 +794,6 @@ namespace INTV.LtoFlash.View
                 {
                     var treeNode = item as NSTreeNode;
                     EditingColumn = (EditableOutlineViewColumn)outlineView.TableColumns().ToList().IndexOf(tableColumn);
-                    // EditingObject = treeNode.RepresentedObject as FileNodeViewModel;
                     var editingObject = treeNode.RepresentedObject as FileNodeViewModel;
                     string initialValue = null;
                     int maxLength = -1;
@@ -795,7 +820,7 @@ namespace INTV.LtoFlash.View
                     InPlaceEditor.EditingObject = editingObject;
                     InPlaceEditor.InitialValue = initialValue;
                     InPlaceEditor.MaxLength = maxLength;
-                    InPlaceEditor.IsValidCharacter = (c) => INTV.Core.Model.Grom.Characters.Contains(c); //.RestrictToGromCharacters = true;
+                    InPlaceEditor.IsValidCharacter = (c) => INTV.Core.Model.Grom.Characters.Contains(c);
                     InPlaceEditor.EditorClosed += InPlaceEditor_EditorClosed;
                     InPlaceEditor.BeginEdit();
                 }
@@ -860,16 +885,16 @@ namespace INTV.LtoFlash.View
                 return toolTip;
             }
 
-            private void InPlaceEditor_EditorClosed (object sender, InPlaceEditorClosedEventArgs e)
-            {
-                InPlaceEditor.EditorClosed -= InPlaceEditor_EditorClosed;
-                // InPlaceEditor = null;
-            }
-
             [System.Diagnostics.Conditional("ENABLE_DELEGATE_TRACE")]
             private static void DebugDelegatePrint(object message)
             {
                 System.Diagnostics.Debug.WriteLine(message);
+            }
+
+            private void InPlaceEditor_EditorClosed(object sender, InPlaceEditorClosedEventArgs e)
+            {
+                InPlaceEditor.EditorClosed -= InPlaceEditor_EditorClosed;
+                ////InPlaceEditor = null;
             }
         }
 
@@ -989,7 +1014,6 @@ namespace INTV.LtoFlash.View
                     {
                         viewModel.CurrentSelection = draggedItems.FirstOrDefault(i => i.Model != null);
                     }
-
                 }
                 return acceptedDrop;
             }
@@ -1055,87 +1079,6 @@ namespace INTV.LtoFlash.View
                 }
                 return shouldAcceptProposedIndex;
             }
-        }
-    }
-
-    /// <summary>
-    /// Bindings for methods that are either missing, or done incorrectly, for NSTableView.
-    /// </summary>
-    /// <remarks>TODO: Put into INTV.Shared to be generally available.</remarks>
-    internal static class NSTableViewHelpers
-    {
-#if __UNIFIED__
-        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
-        private static extern void void_objc_msgSend_nint_nint_IntPtr_bool(System.IntPtr receiver, System.IntPtr selector, nint arg1, nint arg2, System.IntPtr arg3, bool arg4);
-#endif // __UNIFIED__
-
-        private static System.IntPtr selEditColumnRowWithEventSelect_Handle = Selector.GetHandle("editColumn:row:withEvent:select:");
-
-        /// <summary>
-        /// Edits the cell at the specified column and row using the specified event and selection behavior.
-        /// </summary>
-        /// <param name="table">The <see cref="NSTableView"/> in which the cell exists.</param>
-        /// <param name="column">The index of the column of the cell to edit.</param>
-        /// <param name="row">The index of the row of the cell to edit.</param>
-        /// <remarks>This doesn't seem to have a proper binding in MonoMac at this time. Perhaps newer versions of Xamarin.Mac have this binding. Either that, or the
-        /// method fails because it won't allow passing <c>null</c> for the native method's <see cref="NSEvent"/> argument. The bindings seem to choke on that often.</remarks>
-        internal static void EditColumn(this NSTableView table, nint column, nint row)
-        {
-            NSApplication.EnsureUIThread();
-#if __UNIFIED__
-            void_objc_msgSend_nint_nint_IntPtr_bool(table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
-#else
-            Messaging.void_objc_msgSend_int_int_IntPtr_bool (table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
-#endif // __UNIFIED__
-        }
-    }
-
-    /// <summary>
-    /// Bindings for methods that are either missing, or done incorrectly, for NSTreeNode and NSTreeController.
-    /// </summary>
-    /// <remarks>TODO: Put into INTV.Shared to be generally available.</remarks>
-    internal static class NSTreeNodeHelpers
-    {
-#if __UNIFIED__
-        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
-        private static extern System.IntPtr IntPtr_objc_msgSend(System.IntPtr receiver, System.IntPtr selector);
-        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
-        private static extern void void_objc_msgSend_IntPtr(System.IntPtr receiver, System.IntPtr selector, System.IntPtr arg1);
-#endif // __UNIFIED__
-
-        private static System.IntPtr selRepresentedObjectHandle = Selector.GetHandle("representedObject");
-
-        /// <summary>
-        /// Gets the represented object in the <see cref="NSTreeNode"/>.
-        /// </summary>
-        /// <param name="node">The node whose represented object is desired.</param>
-        /// <returns>The represented object, which must be a <see cref="NSObject"/>.</returns>
-        /// <remarks>The MonoMac binding for this uses the incorrect return type.</remarks>
-        internal static NSObject GetRepresentedObject(this NSTreeNode node)
-        {
-#if __UNIFIED__
-            var representedObject = node.RepresentedObject;
-#else
-            var representedObject = Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend(node.Handle, selRepresentedObjectHandle));
-#endif // __UNIFIED__
-            return representedObject;
-        }
-
-        static System.IntPtr selSetContentObjectHandle = Selector.GetHandle("setContent:");
-
-        /// <summary>
-        /// Sets the content of the tree controller.
-        /// </summary>
-        /// <param name="treeController">The tree controller whose content is to be set.</param>
-        /// <param name="content">The content of the tree controller.</param>
-        /// <remarks>The MonoMac binding uses the incorrect type for the <paramref name="content"/> argument.</remarks>
-        internal static void SetContent(this NSTreeController treeController, NSObject content)
-        {
-#if __UNIFIED__
-            treeController.Content = content;
-#else
-            Messaging.void_objc_msgSend_IntPtr(treeController.Handle, selSetContentObjectHandle, content.Handle);
-#endif // __UNIFIED__
         }
     }
 }

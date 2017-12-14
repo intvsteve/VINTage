@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,7 +28,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.View;
 
 namespace INTV.LtoFlash.View
 {
@@ -78,8 +78,15 @@ namespace INTV.LtoFlash.View
         /// <summary>
         /// Gets the window as a strongly typed value.
         /// </summary>
-        public new PromptToAddMenuItemsForNewRoms Window { get { return (PromptToAddMenuItemsForNewRoms)base.Window; } }
+        public new PromptToAddMenuItemsForNewRoms Window
+        {
+            get { return (PromptToAddMenuItemsForNewRoms)base.Window; }
+        }
 
+        /// <summary>
+        /// Handles the OK button click.
+        /// </summary>
+        /// <param name="sender">The OK button.</param>
         partial void OnOK(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Stopped);

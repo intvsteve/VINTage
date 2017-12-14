@@ -30,7 +30,9 @@ namespace INTV.LtoFlash.Commands
     {
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return LtoFlashCommandGroup.Group.Context; }
@@ -40,6 +42,9 @@ namespace INTV.LtoFlash.Commands
 
         #region ICommandGroup
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             FirmwareGroupCommand.MenuParent = LtoFlashCommandGroup.LtoFlashGroupCommand;

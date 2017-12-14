@@ -19,6 +19,10 @@
 // </copyright>
 
 using System.Collections.Generic;
+using INTV.LtoFlash.Model;
+using INTV.LtoFlash.ViewModel;
+using INTV.Shared.Commands;
+using INTV.Shared.ComponentModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -26,10 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.LtoFlash.Model;
-using INTV.LtoFlash.ViewModel;
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Commands;
 
 #if __UNIFIED__
 using CGSize = CoreGraphics.CGSize;
@@ -89,17 +89,20 @@ namespace INTV.LtoFlash.Commands
         /// <param name="button">The button to populate.</param>
         public static void PopulateIntellivisionIICompatibilityMenu(NSPopUpButton button)
         {
-            var intyIIItems = new[] {
+            var intyIIItems = new[]
+            {
                 Resources.Strings.IntellivisionIICompatibilityMode_Disabled,
                 Resources.Strings.IntellivisionIICompatibilityMode_Limited,
                 Resources.Strings.IntellivisionIICompatibilityMode_Full
             };
-            var intyIIItemTags = new[] {
+            var intyIIItemTags = new[]
+            {
                 (int)IntellivisionIIStatusFlags.None,
                 (int)IntellivisionIIStatusFlags.Conservative,
                 (int)IntellivisionIIStatusFlags.Aggressive
             };
-            var intyIIItemTips = new[] {
+            var intyIIItemTips = new[]
+            {
                 Resources.Strings.IntellivisionIICompatibilityMode_Disabled_ToolTipDescription,
                 Resources.Strings.IntellivisionIICompatibilityMode_Limited_ToolTipDescription,
                 Resources.Strings.IntellivisionIICompatibilityMode_Full_ToolTipDescription
@@ -113,19 +116,22 @@ namespace INTV.LtoFlash.Commands
         /// <param name="button">The button to populate.</param>
         public static void PopulateEcsCompatibilityMenu(NSPopUpButton button)
         {
-            var ecsItems = new[] {
+            var ecsItems = new[]
+            {
                 Resources.Strings.EcsCompatibilityMode_Enabled,
                 Resources.Strings.EcsCompatibilityMode_Limited,
                 Resources.Strings.EcsCompatibilityMode_Strict,
                 Resources.Strings.EcsCompatibilityMode_Disabled
             };
-            var ecsItemTags = new[] {
+            var ecsItemTags = new[]
+            {
                 (int)EcsStatusFlags.None,
                 (int)EcsStatusFlags.EnabledForRequiredAndOptional,
                 (int)EcsStatusFlags.EnabledForRequired,
                 (int)EcsStatusFlags.Disabled
             };
-            var ecsItemTips = new[] {
+            var ecsItemTips = new[]
+            {
                 Resources.Strings.EcsCompatibilityMode_Enabled_ToolTipDescription,
                 Resources.Strings.EcsCompatibilityMode_Limited_ToolTipDescription,
                 Resources.Strings.EcsCompatibilityMode_Strict_ToolTipDescription,
@@ -140,17 +146,20 @@ namespace INTV.LtoFlash.Commands
         /// <param name="button">The button to populate.</param>
         public static void PopulateShowTitleMenu(NSPopUpButton button)
         {
-            var showTitleItems = new[] {
+            var showTitleItems = new[]
+            {
                 SetShowTitleScreenCommandChoiceAlways.MenuItemName, // Resources.Strings.ShowTitleScreen_Always,
                 SetShowTitleScreenCommandChoiceOnPowerUp.MenuItemName, // Resources.Strings.ShowTitleScreen_OnPowerUp,
                 SetShowTitleScreenCommandChoiceNever.MenuItemName, // Resources.Strings.ShowTitleScreen_Never
             };
-            var showTitleTags = new[] {
+            var showTitleTags = new[]
+            {
                 (int)ShowTitleScreenFlags.Always,
                 (int)ShowTitleScreenFlags.OnPowerUp,
                 (int)ShowTitleScreenFlags.Never
             };
-            var showTitleTips = new[] {
+            var showTitleTips = new[]
+            {
                 SetShowTitleScreenCommandChoiceAlways.ToolTip, // Resources.Strings.ShowTitleScreen_Always_ToolTipDescription,
                 SetShowTitleScreenCommandChoiceOnPowerUp.ToolTip, // Resources.Strings.ShowTitleScreen_OnPowerUp_ToolTipDescription,
                 SetShowTitleScreenCommandChoiceNever.ToolTip // Resources.Strings.ShowTitleScreen_Never_ToolTipDescription
@@ -164,17 +173,20 @@ namespace INTV.LtoFlash.Commands
         /// <param name="button">The button to populate.</param>
         public static void PopulateSaveMenuPositionMenu(NSPopUpButton button)
         {
-            var showTitleItems = new[] {
+            var showTitleItems = new[]
+            {
                 SetSaveMenuPositionCommandChoiceAlways.MenuItemName, // Resources.Strings.ShowTitleScreen_Always,
                 SetSaveMenuPositionCommandChoiceDuringSession.MenuItemName, // Resources.Strings.ShowTitleScreen_OnPowerUp,
                 SetSaveMenuPositionCommandChoiceNever.MenuItemName,
             };
-            var showTitleTags = new[] {
+            var showTitleTags = new[]
+            {
                 (int)SaveMenuPositionFlags.Always,
                 (int)SaveMenuPositionFlags.DuringSessionOnly,
                 (int)SaveMenuPositionFlags.Never
             };
-            var showTitleTips = new[] {
+            var showTitleTips = new[]
+            {
                 SetSaveMenuPositionCommandChoiceAlways.ToolTip,
                 SetSaveMenuPositionCommandChoiceDuringSession.ToolTip,
                 SetSaveMenuPositionCommandChoiceNever.ToolTip
@@ -187,7 +199,7 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// Populates the submenu used to select a serial port that may be connected to LTO Flash! hardware.
         /// </summary>
-        /// <param name="viewModel"></param>
+        /// <param name="viewModel">Data context for the menu.</param>
         public void InitializeConnectionMenu(LtoFlashViewModel viewModel)
         {
             var menuItem = ConnectToDeviceSubmenuCommand.MenuItem;
@@ -233,7 +245,9 @@ namespace INTV.LtoFlash.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return LtoFlashCommandGroup.Group.Context; }
@@ -243,7 +257,11 @@ namespace INTV.LtoFlash.Commands
 
         #region ICommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates the visual for a command, if applicable.
+        /// </summary>
+        /// <param name="command">The command for which a visual must be created.</param>
+        /// <returns>The visual for the command.</returns>
         public override NSObject CreateVisualForCommand(ICommand command)
         {
             var visual = base.CreateVisualForCommand(command);
@@ -270,6 +288,9 @@ namespace INTV.LtoFlash.Commands
             return visual;
         }
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
 #if DEBUG
@@ -304,6 +325,9 @@ namespace INTV.LtoFlash.Commands
 
         #endregion // ICommandGroup
 
+        /// <summary>
+        /// This menu delegate is for the submenu containing the available serial ports to connect to.
+        /// </summary>
         /// <remarks>See https://bugzilla.xamarin.com/show_bug.cgi?id=39507 for notes about
         /// a hard crash due to bad binding defined for HasKeyEquivalentForEvent().</remarks>
         private class ConnectionMenuDelegate : NSMenuDelegate
@@ -320,7 +344,7 @@ namespace INTV.LtoFlash.Commands
             }
 
             /// <inheritdoc/>
-            public override void MenuWillHighlightItem (NSMenu menu, NSMenuItem item)
+            public override void MenuWillHighlightItem(NSMenu menu, NSMenuItem item)
             {
             }
 

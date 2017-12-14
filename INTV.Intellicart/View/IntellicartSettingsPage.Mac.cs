@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,7 +26,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.View;
 
 namespace INTV.Intellicart.View
 {
@@ -65,7 +65,7 @@ namespace INTV.Intellicart.View
         #endregion // Constructors
 
         /// <summary>
-        /// Controller for the view.
+        /// Gets or sets the controller for the view.
         /// </summary>
         internal IntellicartSettingsPageController Controller { get; set; }
 

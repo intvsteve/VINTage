@@ -20,13 +20,12 @@
 
 using System;
 using System.Collections.Generic;
-
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using Foundation;
 #else
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
 
 #if __UNIFIED__
 using Converters = System.Tuple<System.Func<string, object>, System.Action<string, object>, System.Func<object, Foundation.NSObject>>;
@@ -206,7 +205,6 @@ namespace INTV.Shared.Properties
         /// <param name="defaultValue">The default value for the setting.</param>
         partial void OSAddSetting(string key, object defaultValue)
         {
-            //var type = defaultValue.GetType();
             NSUserDefaultsObserver.AddPreferenceChangedNotification(key, RaisePropertyChanged);
         }
 

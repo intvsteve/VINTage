@@ -31,7 +31,6 @@
     <UseRefCounting>false</UseRefCounting>
     <HttpClientHandler>HttpClientHandler</HttpClientHandler>
     <TlsProvider>Default</TlsProvider>
-    <LinkMode>None</LinkMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -291,14 +290,8 @@
     <Compile Include="View\GeneralFeaturesConfigurationPageController.Mac.cs" />
     <Compile Include="View\SystemCompatibilityConfigurationPage.Mac.cs" />
     <Compile Include="View\SystemCompatibilityConfigurationPageController.Mac.cs" />
-    <Compile Include="View\SystemCompatibilityConfigurationPage.designer.Mac.cs">
-      <DependentUpon>SystemCompatibilityConfigurationPage.Mac.cs</DependentUpon>
-    </Compile>
     <Compile Include="View\EcsFeaturesConfigurationPageController.Mac.cs" />
     <Compile Include="View\EcsFeaturesConfigurationPage.Mac.cs" />
-    <Compile Include="View\EcsFeaturesConfigurationPage.designer.Mac.cs">
-      <DependentUpon>EcsFeaturesConfigurationPage.Mac.cs</DependentUpon>
-    </Compile>
     <Compile Include="View\JlpFeaturesConfigurationPageController.Mac.cs" />
     <Compile Include="View\JlpFeaturesConfigurationPage.Mac.cs" />
     <Compile Include="View\JlpFeaturesConfigurationPage.Mac.designer.cs">
@@ -376,6 +369,14 @@
     <Compile Include="Properties\SettingsBase`T.cs" />
     <Compile Include="Commands\RootCommandGroup.Mono.cs" />
     <Compile Include="View\RomListView.cs" />
+    <Compile Include="View\SystemCompatibilityConfigurationPage.Mac.designer.cs">
+      <DependentUpon>SystemCompatibilityConfigurationPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\EcsFeaturesConfigurationPage.Mac.designer.cs">
+      <DependentUpon>EcsFeaturesConfigurationPage.Mac.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\ROMsTableView.Mac.cs" />
+    <Compile Include="View\NSTableViewHelpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />

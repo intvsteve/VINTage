@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,7 +26,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
 {
@@ -76,49 +76,73 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new GeneralSettingsPage View { get { return (GeneralSettingsPage)base.View; } }
+        public new GeneralSettingsPage View
+        {
+            get { return (GeneralSettingsPage)base.View; }
+        }
 
         /// <summary>
         /// Gets the ROMs directory.
         /// </summary>
         [OSExport("RomsDirectory")]
-        public string RomsDirectory { get { return INTV.Shared.Model.RomListConfiguration.Instance.RomsDirectory; } }
+        public string RomsDirectory
+        {
+            get { return INTV.Shared.Model.RomListConfiguration.Instance.RomsDirectory; }
+        }
 
         /// <summary>
         /// Gets the manuals directory.
         /// </summary>
         [OSExport("ManualsDirectory")]
-        public string ManualsDirectory { get { return INTV.Shared.Model.RomListConfiguration.Instance.ManualsDirectory; } }
+        public string ManualsDirectory
+        {
+            get { return INTV.Shared.Model.RomListConfiguration.Instance.ManualsDirectory; }
+        }
 
         /// <summary>
         /// Gets the overlays directory.
         /// </summary>
         [OSExport("OverlaysDirectory")]
-        public string OverlaysDirectory { get { return INTV.Shared.Model.RomListConfiguration.Instance.OverlaysDirectory; } }
+        public string OverlaysDirectory
+        {
+            get { return INTV.Shared.Model.RomListConfiguration.Instance.OverlaysDirectory; }
+        }
 
         /// <summary>
         /// Gets the boxes directory.
         /// </summary>
         [OSExport("BoxesDirectory")]
-        public string BoxesDirectory { get { return INTV.Shared.Model.RomListConfiguration.Instance.BoxesDirectory; } }
+        public string BoxesDirectory
+        {
+            get { return INTV.Shared.Model.RomListConfiguration.Instance.BoxesDirectory; }
+        }
 
         /// <summary>
         /// Gets the labels directory.
         /// </summary>
         [OSExport("LabelsDirectory")]
-        public string LabelsDirectory { get { return INTV.Shared.Model.RomListConfiguration.Instance.LabelsDirectory; } }
+        public string LabelsDirectory
+        {
+            get { return INTV.Shared.Model.RomListConfiguration.Instance.LabelsDirectory; }
+        }
 
         /// <summary>
         /// Gets the backup directory.
         /// </summary>
         [OSExport("BackupDataDirectory")]
-        public string BackupDataDirectory { get { return INTV.Shared.Model.RomListConfiguration.Instance.BackupDataDirectory; } }
+        public string BackupDataDirectory
+        {
+            get { return INTV.Shared.Model.RomListConfiguration.Instance.BackupDataDirectory; }
+        }
 
         /// <summary>
         /// Gets the error log directory.
         /// </summary>
         [OSExport("ErrorLogDirectory")]
-        public string ErrorLogDirectory { get { return INTV.Shared.Model.RomListConfiguration.Instance.ErrorLogDirectory; } }
+        public string ErrorLogDirectory
+        {
+            get { return INTV.Shared.Model.RomListConfiguration.Instance.ErrorLogDirectory; }
+        }
 
         #region IFakeDependencyObject
 
@@ -143,36 +167,64 @@ namespace INTV.Shared.View
 
         #endregion // IFakeDependencyObject
 
+        /// <summary>
+        /// Shows the backup directory.
+        /// </summary>
+        /// <param name="sender">The show backup directory button.</param>
         partial void ShowBackupDirectory(NSObject sender)
         {
             BackupDataDirectory.RevealInFileSystem();
         }
 
+        /// <summary>
+        /// Shows the boxes directory.
+        /// </summary>
+        /// <param name="sender">The show boxes directory button.</param>
         partial void ShowBoxesDirectory(NSObject sender)
         {
             BoxesDirectory.RevealInFileSystem();
         }
 
+        /// <summary>
+        /// Shows the error logs directory.
+        /// </summary>
+        /// <param name="sender">The show error logs directory button.</param>
         partial void ShowErrorLogsDirectory(NSObject sender)
         {
             ErrorLogDirectory.RevealInFileSystem();
         }
 
+        /// <summary>
+        /// Shows the labels directory.
+        /// </summary>
+        /// <param name="sender">The show labels directory button.</param>
         partial void ShowLabelsDirectory(NSObject sender)
         {
             LabelsDirectory.RevealInFileSystem();
         }
 
+        /// <summary>
+        /// Shows the manuals directory.
+        /// </summary>
+        /// <param name="sender">The show manuals directory button.</param>
         partial void ShowManualsDirectory(NSObject sender)
         {
             ManualsDirectory.RevealInFileSystem();
         }
 
+        /// <summary>
+        /// Shows the overlays directory.
+        /// </summary>
+        /// <param name="sender">The show overlays directory button.</param>
         partial void ShowOverlaysDirectory(NSObject sender)
         {
             OverlaysDirectory.RevealInFileSystem();
         }
 
+        /// <summary>
+        /// Shows the roms directory.
+        /// </summary>
+        /// <param name="sender">The show ROMs directory button.</param>
         partial void ShowRomsDirectory(NSObject sender)
         {
             RomsDirectory.RevealInFileSystem();

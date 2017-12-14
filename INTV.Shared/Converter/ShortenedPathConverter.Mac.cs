@@ -56,7 +56,7 @@ namespace INTV.Shared.Converter
         /// </summary>
         /// <param name="handle">Native object pointer.</param>
         /// <remarks>Called when created from unmanaged code.</remarks>
-        public ShortenedPathConverter (System.IntPtr handle)
+        public ShortenedPathConverter(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -69,7 +69,7 @@ namespace INTV.Shared.Converter
         /// <param name="coder">The unarchiver.</param>
         /// <remarks>Called when created directly from a XIB file.
         /// NOTE: Xamarin.Mac propery does not provide this constructor, as NSValueTransformer does not conform to NSCoding.</remarks>
-        [Export ("initWithCoder:")]
+        [Export("initWithCoder:")]
         public ShortenedPathConverter(NSCoder coder)
             : base(coder)
         {
@@ -78,14 +78,14 @@ namespace INTV.Shared.Converter
 #endif // !__UNIFIED__
 
         /// <inheritdoc />
-        public override NSObject TransformedValue (NSObject value)
+        public override NSObject TransformedValue(NSObject value)
         {
             var path = value as NSString;
             return new NSString(GetShortenedPath(path));
         }
 
         /// <inheritdoc />
-        public override NSObject ReverseTransformedValue (NSObject value)
+        public override NSObject ReverseTransformedValue(NSObject value)
         {
             return null;
         }

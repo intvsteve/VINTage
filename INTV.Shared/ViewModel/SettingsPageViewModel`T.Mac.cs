@@ -29,7 +29,7 @@ namespace INTV.Shared.ViewModel
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The concrete settings page view model implementation.</typeparam>
     public abstract partial class SettingsPageViewModel<T>
     {
         #region ISettingsPage

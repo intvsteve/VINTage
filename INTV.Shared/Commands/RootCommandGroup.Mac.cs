@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,9 +28,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.View;
 
 namespace INTV.Shared.Commands
 {
@@ -46,13 +46,19 @@ namespace INTV.Shared.Commands
             MenuParent = RootMenuCommand
         };
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return null; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates the visual for a command, if applicable.
+        /// </summary>
+        /// <param name="command">The command for which a visual must be created.</param>
+        /// <returns>The visual for the command.</returns>
         public override NSObject CreateVisualForCommand(ICommand command)
         {
             var window = INTV.Shared.Utility.SingleInstanceApplication.Current.MainWindow;
@@ -62,7 +68,7 @@ namespace INTV.Shared.Commands
             NSMenuItem menuItem = null;
             switch (visualCommand.UniqueId)
             {
-                case UniqueNameBase +  ".Root":
+                case UniqueNameBase + ".Root":
                     if (window != null)
                     {
                         visual = window.Toolbar;
@@ -122,7 +128,11 @@ namespace INTV.Shared.Commands
 
         #region ICommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates a menu item for a command.
+        /// </summary>
+        /// <param name="command">The command for which a menu item must be created.</param>
+        /// <returns>The menu item.</returns>
         public override OSMenuItem CreateMenuItemForCommand(ICommand command)
         {
             var visualCommand = (VisualRelayCommand)command;
@@ -135,13 +145,22 @@ namespace INTV.Shared.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Attaches an event handler for a visual's 'Activated' event.
+        /// </summary>
+        /// <param name="command">The command whose <see cref=">ICommand.Execute"/> method should be called from the visual's 'Activated' event handler.</param>
+        /// <param name="visual">The visual that will execute the given <paramref name="command"/>.</param>
+        /// <remarks>In most cases, the MonoMac bindings to controls and other visual entities have added convenience 'Activated' events. These are simpler
+        /// to use in C# than the traditional Cocoa 'Action' callbacks. This stock implementation handles NSControl, NSMenuItem, and NSToolbarItem.</remarks>
         protected override void AttachActivateHandler(RelayCommand command, NSObject visual)
         {
             // we do not need to attach handlers to these commands.
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Attaches an event handler for the <see cref="ICommand.CanExecuteChanged"/> event.
+        /// </summary>
+        /// <param name="command">The command for which a 'CanExecute' event handler should be attached.</param>
         internal override void AttachCanExecuteChangeHandler(RelayCommand command)
         {
             // we do not need to attach can execute handlers to these
@@ -149,7 +168,9 @@ namespace INTV.Shared.Commands
 
         #endregion // CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             CommandList.Add(FileMenuCommand);

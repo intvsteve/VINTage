@@ -21,6 +21,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using INTV.Shared.Model;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -28,8 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Model;
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.ViewModel
 {
@@ -87,6 +87,11 @@ namespace INTV.Shared.ViewModel
             return effects;
         }
 
+        /// <summary>
+        /// Gets the files dropped.
+        /// </summary>
+        /// <param name="osDropArgs">Platform-specific drop arguments.</param>
+        /// <param name="droppedFiles">Dropped files.</param>
         partial void GetFilesDropped(object osDropArgs, List<string> droppedFiles)
         {
             var dropArgs = osDropArgs as NSDraggingInfo;

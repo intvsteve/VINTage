@@ -56,14 +56,6 @@ namespace INTV.Shared.View
             Initialize();
         }
 
-        /// <summary>Shared initialization code.</summary>
-        void Initialize()
-        {
-            Title = "SplashScreen";
-            Restorable = false;
-            DisableSnapshotRestoration();
-        }
-
         #endregion // Constructors
 
         #region Properties
@@ -110,6 +102,14 @@ namespace INTV.Shared.View
         public void UpdateImage(NSImage image)
         {
             Controller.UpdateImage(image);
+        }
+
+        /// <summary>Shared initialization code.</summary>
+        private void Initialize()
+        {
+            Title = "SplashScreen";
+            Restorable = false;
+            DisableSnapshotRestoration();
         }
     }
 }

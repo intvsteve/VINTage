@@ -24,16 +24,6 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-
-#if __UNIFIED__
-using AppKit;
-using Foundation;
-using ObjCRuntime;
-#else
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
-#endif // __UNIFIED__
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
@@ -42,19 +32,26 @@ using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+#else
+using MonoMac.AppKit;
+using MonoMac.Foundation;
+#endif // __UNIFIED__
 
 #if __UNIFIED__
-using nint = System.nint;
-using nfloat = System.nfloat;
-using INSPasteboardWriting = AppKit.INSPasteboardWriting;
 using CGPoint = CoreGraphics.CGPoint;
 using CGRect = CoreGraphics.CGRect;
+using INSPasteboardWriting = AppKit.INSPasteboardWriting;
+using nfloat = System.nfloat;
+using nint = System.nint;
 #else
-using nint = System.Int32;
-using nfloat = System.Single;
-using INSPasteboardWriting = MonoMac.AppKit.NSPasteboardWriting;
 using CGPoint = System.Drawing.PointF;
 using CGRect = System.Drawing.RectangleF;
+using INSPasteboardWriting = MonoMac.AppKit.NSPasteboardWriting;
+using nfloat = System.Single;
+using nint = System.Int32;
 #endif // __UNIFIED__
 
 namespace INTV.Shared.View
@@ -97,28 +94,32 @@ namespace INTV.Shared.View
             Initialize();
         }
 
-        /// <summary>Shared initialization code.</summary>
-        private void Initialize()
-        {
-        }
-
         #endregion // Constructors
 
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new RomListView View { get { return (RomListView)base.View; } }
+        public new RomListView View
+        {
+            get { return (RomListView)base.View; }
+        }
 
         /// <summary>
         /// Gets the text to display showing the prompt to drop files in the ROM list area.
         /// </summary>
         [Export("DropFilesHereText")]
-        public string DropFilesHereText { get { return RomListViewModel.DropFilesHere; } }
+        public string DropFilesHereText
+        {
+            get { return RomListViewModel.DropFilesHere; }
+        }
 
         /// <summary>
         /// Gets the array data controller used for the Mac-specific UI-facing data used by the ROMs NSTableView control.
         /// </summary>
-        public NSArrayController DataController { get { return RomsArrayController; } }
+        public NSArrayController DataController
+        {
+            get { return RomsArrayController; }
+        }
 
         private RomListTableViewDelegate TheDelegate { get; set; }
 
@@ -167,8 +168,8 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the ViewModel of the ROM at a specific row in the ROMs table.
         /// </summary>
-        /// <param name="row"></param>
-        /// <returns></returns>
+        /// <param name="row">The row number for which to get the viewmodel object.</param>
+        /// <returns>The program viewmodel at the given row.</returns>
         internal ProgramDescriptionViewModel GetObjectAtRow(int row)
         {
             var programViewModel = RomsArrayController.ArrangedObjects().ToList()[row] as ProgramDescriptionViewModel;
@@ -220,6 +221,23 @@ namespace INTV.Shared.View
             base.Dispose(disposing);
         }
 
+        [System.Diagnostics.Conditional("ENABLE_ITEMCHANGE_TRACE")]
+        private static void DebugItemChange(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DRAGDROP_TRACE")]
+        private static void DebugDragDrop(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        /// <summary>Shared initialization code.</summary>
+        private void Initialize()
+        {
+        }
+
         private void HandlePeripheralArrivalOrDeparture(object sender, INTV.Core.Model.Device.PeripheralEventArgs e)
         {
             this.HandleEventOnMainThread(sender, e, HandlePeripheralArrivalOrDepartureCore);
@@ -241,7 +259,8 @@ namespace INTV.Shared.View
             {
                 case RomListSettingsPageViewModel.ShowRomDetailsPropertyName:
                     var showColumns = INTV.Shared.Properties.Settings.Default.ShowRomDetails;
-                    var columnsToHide = (new[] {
+                    var columnsToHide = (new[]
+                    {
                         RomListColumn.Vendor,
                         RomListColumn.Year,
                         RomListColumn.Features,
@@ -402,22 +421,10 @@ namespace INTV.Shared.View
             }
         }
 
-        [System.Diagnostics.Conditional("ENABLE_ITEMCHANGE_TRACE")]
-        private static void DebugItemChange(object message)
-        {
-            System.Diagnostics.Debug.WriteLine(message);
-        }
-
-        [System.Diagnostics.Conditional("ENABLE_DRAGDROP_TRACE")]
-        private static void DebugDragDrop(object message)
-        {
-            System.Diagnostics.Debug.WriteLine(message);
-        }
-
         /// <summary>
         /// Called when an element in the ROM list is double-clicked.
         /// </summary>
-        /// <param name="sender">Sender.</param>
+        /// <param name="sender">The array of objects.</param>
         partial void OnDoubleClick(NSObject sender)
         {
             var arrangedObjectsArray = sender as NSArray;
@@ -484,7 +491,7 @@ namespace INTV.Shared.View
             /// <summary>
             /// Initializes a new instance of the RomListDataSource type.
             /// </summary>
-            /// <param name="romListArrayController"></param>
+            /// <param name="romListArrayController">The array controller for the list of ROMs</param>
             public RomListDataSource(NSArrayController romListArrayController)
             {
                 RomListData = romListArrayController;
@@ -498,7 +505,8 @@ namespace INTV.Shared.View
                 DebugDragDrop("**** ROMLIST GetPBWriterForRow CALLED");
                 var programDescriptionViewModel = RomListData.ArrangedObjects()[row] as ProgramDescriptionViewModel;
                 var pasteBoardWriting = new ProgramInformationPasteboardWriting(programDescriptionViewModel);
-                // look to see where we're already using NSData
+
+                // TODO: look to see where we're already using NSData
                 return pasteBoardWriting;
             }
 
@@ -506,7 +514,7 @@ namespace INTV.Shared.View
             public override void DraggingSessionWillBegin(NSTableView tableView, NSDraggingSession draggingSession, CGPoint willBeginAtScreenPoint, NSIndexSet rowIndexes)
             {
                 DebugDragDrop("**** ROMLIST DRAG WILL BEGIN");
-                //var viewModel = tableView.GetInheritedValue(IFakeDependencyObjectHelpers.DataContextPropertyName) as RomListViewModel;
+                ////var viewModel = tableView.GetInheritedValue(IFakeDependencyObjectHelpers.DataContextPropertyName) as RomListViewModel;
                 var draggedItems = new List<ProgramDescriptionViewModel>();
                 var items = RomListData.ArrangedObjects();
                 foreach (var index in rowIndexes)
@@ -519,7 +527,6 @@ namespace INTV.Shared.View
                     DragDropHelpers.PreparePasteboard(pasteboard, ProgramDescriptionViewModel.DragDataFormat, new NSDataWrapper(draggedItems));
                 }
             }
-
 
             /// <inheritdoc/>
             public override void DraggingSessionEnded(NSTableView tableView, NSDraggingSession draggingSession, CGPoint endedAtScreenPoint, NSDragOperation operation)
@@ -542,7 +549,7 @@ namespace INTV.Shared.View
             }
         }
 
-        ///<summary>
+        /// <summary>
         /// This is necessary to work around a bug in the delegate implementation from Xamarin.
         /// See: https://bugzilla.xamarin.com/show_bug.cgi?id=12467
         /// </summary>
@@ -551,8 +558,8 @@ namespace INTV.Shared.View
             /// <summary>
             /// Initializes a new instance of the RomListTableViewDelegate type.
             /// </summary>
-            /// <param name="programs"></param>
-            /// <param name="viewModel"></param>
+            /// <param name="programs">Array controller for the program list.</param>
+            /// <param name="viewModel">The data context to use.</param>
             internal RomListTableViewDelegate(NSArrayController programs, RomListViewModel viewModel)
             {
                 Programs = programs;
@@ -567,7 +574,7 @@ namespace INTV.Shared.View
 
             private double ReturnKeyTimestamp { get; set; }
 
-            ///<inheritdoc/>
+            /// <inheritdoc/>
             public override void SelectionDidChange(NSNotification notification)
             {
                 var romsTable = notification.Object as NSTableView;
@@ -578,17 +585,17 @@ namespace INTV.Shared.View
                 var itemsToAdd = updatedSelection.Except(currentSelection).ToList();
                 foreach (var item in itemsToRemove)
                 {
-                    var programDescription = ((ProgramDescriptionViewModel)item);
+                    var programDescription = (ProgramDescriptionViewModel)item;
                     currentSelection.Remove(programDescription);
                 }
                 foreach (var item in itemsToAdd)
                 {
-                    var programDescription = ((ProgramDescriptionViewModel)item);
+                    var programDescription = (ProgramDescriptionViewModel)item;
                     currentSelection.Add(programDescription);
                 }
             }
 
-            ///<inheritdoc/>
+            /// <inheritdoc/>
             public override bool SelectionShouldChange(NSTableView tableView)
             {
                 return !SingleInstanceApplication.Current.IsBusy;
@@ -727,9 +734,9 @@ namespace INTV.Shared.View
                         }
                     }
                 }
+#if false
                 // By leaving the string as empty, we get default behavior for tool tip, which is preferred.
                 // It will display the full text only when it's too long to show in the cell.
-#if false
                 else if (tableColumn.Identifier == "name")
                 {
                     toolTip = programDescription.Name;
@@ -749,154 +756,8 @@ namespace INTV.Shared.View
             private void InPlaceEditor_EditorClosed(object sender, InPlaceEditorClosedEventArgs e)
             {
                 InPlaceEditor.EditorClosed -= InPlaceEditor_EditorClosed;
-                // InPlaceEditor = null;
+                ////InPlaceEditor = null;
             }
-        }
-    }
-
-    /// <summary>
-    /// Subclass NSTableView to get context menus to work the way we want.
-    /// </summary>
-    [Register("ROMsTableView")]
-    public class ROMsTableView : NSTableView
-    {
-        #region Constructors
-
-        /// <summary>
-        /// Called when created from unmanaged code.
-        /// </summary>
-        /// <param name="handle">Native pointer to NSView.</param>
-        public ROMsTableView(System.IntPtr handle)
-            : base(handle)
-        {
-            Initialize();
-        }
-
-        /// <summary>
-        /// Called when created directly from a XIB file.
-        /// </summary>
-        /// <param name="coder">Used to deserialize from a XIB.</param>
-        [Export("initWithCoder:")]
-        public ROMsTableView(NSCoder coder)
-            : base(coder)
-        {
-            Initialize();
-        }
-
-        /// <summary>Shared initialization code.</summary>
-        private void Initialize()
-        {
-        }
-
-        #endregion // Constructors
-
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the controller of the table.
-        /// </summary>
-        internal RomListViewController Controller { get; set; }
-
-        #endregion // Properties
-
-        /// <inheritdoc/>
-        public override NSMenu MenuForEvent(NSEvent theEvent)
-        {
-            // Handy advice found here:
-            // http://forums.macrumors.com/threads/right-clicks-control-clicks-and-contextual-menus.166469/
-#if false
-            //Find which row is under the cursor
-            [[self window] makeFirstResponder:self];
-            NSPoint menuPoint = [self convertPoint:[event locationInWindow] fromView:nil];
-            int row = [self rowAtPoint:menuPoint];
-
-            /* Update the table selection before showing menu
-               Preserves the selection if the row under the mouse is selected (to allow for
-               multiple items to be selected), otherwise selects the row under the mouse */
-            BOOL currentRowIsSelected = [[self selectedRowIndexes] containsIndex:row];
-            if (!currentRowIsSelected)
-                [self selectRow:row byExtendingSelection:NO];
-
-            if ([self numberOfSelectedRows] <=0)
-            {
-                //No rows are selected, so the table should be displayed with all items disabled
-                NSMenu* tableViewMenu = [[self menu] copy];
-                int i;
-                for (i=0;i<[tableViewMenu numberOfItems];i++)
-                    [[tableViewMenu itemAtIndex:i] setEnabled:NO];
-                return [tableViewMenu autorelease];
-            }
-            else
-                return [self menu];
-#endif // false
-            // Select the row we got context click for.
-            Window.MakeFirstResponder(this);
-            var menuPoint = ConvertPointFromView(theEvent.LocationInWindow, null);
-            var row = GetRow(menuPoint);
-            if (row >= 0)
-            {
-                var rowAlreadySelected = SelectedRows.Contains((uint)row);
-                if (!rowAlreadySelected)
-                {
-                    SelectRow(row, false);
-                }
-            }
-
-            // Build the context menu.
-            var target = (row < 0) ? null : Controller.GetObjectAtRow((int)row);
-            var context = Controller.View.ViewModel;
-            Menu = target.CreateContextMenu("ROMListContextMenu", context);
-            return base.MenuForEvent(theEvent);
-        }
-
-        /// <inheritdoc/>
-        public override bool PerformKeyEquivalent(NSEvent theEvent)
-        {
-            var didIt = base.PerformKeyEquivalent(theEvent);
-            if (!didIt)
-            {
-                var deleteCommand = RomListCommandGroup.RemoveRomsCommand;
-                var context = RomListCommandGroup.Group.Context;
-                didIt = this.PerformKeyEquivalentForDelete(theEvent, deleteCommand, context);
-            }
-            return didIt;
-        }
-
-        /// <summary>
-        /// Called when ESC or Cmd+. pressed. Overridden to get rid of annoying beep.
-        /// </summary>
-        /// <param name="sender">Sender.</param>
-        [Export("cancelOperation:")]
-        public void CancelOperation(NSObject sender)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Work around limitations in the MonoMac NSTableView bindings.
-    /// </summary>
-    internal static class NSTableViewHelpers
-    {
-        private static System.IntPtr selEditColumnRowWithEventSelect_Handle = Selector.GetHandle("editColumn:row:withEvent:select:");
-#if __UNIFIED__
-        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
-        private static extern void void_objc_msgSend_nint_nint_IntPtr_bool(System.IntPtr receiver, System.IntPtr selector, nint arg1, nint arg2, System.IntPtr arg3, bool arg4);
-#endif // __UNIFIED__
-
-        /// <summary>
-        /// Start editing a cell in a given row and column. Yeah, the name is a little off.
-        /// </summary>
-        /// <param name="table">The <see cref=">NSTable"/> in which the edit operation is to occur.</param>
-        /// <param name="column">The column number of the cell to edit.</param>
-        /// <param name="row">The row number of the cell to edit.</param>
-        internal static void EditColumn(this NSTableView table, nint column, nint row)
-        {
-            NSApplication.EnsureUIThread();
-#if __UNIFIED__
-            void_objc_msgSend_nint_nint_IntPtr_bool(table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
-#else
-            Messaging.void_objc_msgSend_int_int_IntPtr_bool(table.Handle, selEditColumnRowWithEventSelect_Handle, column, row, System.IntPtr.Zero, true);
-#endif // __UNIFIED__
         }
     }
 }

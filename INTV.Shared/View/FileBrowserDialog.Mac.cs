@@ -18,14 +18,14 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 #else
 using MonoMac.AppKit;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
 {
@@ -45,7 +45,10 @@ namespace INTV.Shared.View
         }
 
         /// <inheritdoc />
-        public override IEnumerable<string> FileNames { get { return _files; } }
+        public override IEnumerable<string> FileNames
+        {
+            get { return _files; }
+        }
         
         /// <inheritdoc />
         public override void AddFilter(string filterName, IEnumerable<string> fileExtensions)
@@ -60,7 +63,7 @@ namespace INTV.Shared.View
                 allowedTypes = new List<string>();
             }
             var macFormatExtensions = fileExtensions.Select(e => e.Substring(1));
-            foreach(var fileExtension in macFormatExtensions)
+            foreach (var fileExtension in macFormatExtensions)
             {
                 if (!allowedTypes.Contains(fileExtension, System.StringComparer.InvariantCultureIgnoreCase))
                 {

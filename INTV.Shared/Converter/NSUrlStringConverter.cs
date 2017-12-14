@@ -18,12 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using Foundation;
 #else
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.Converter
 {
@@ -58,7 +58,7 @@ namespace INTV.Shared.Converter
         /// </summary>
         /// <param name="handle">Native object pointer.</param>
         /// <remarks>Called when created from unmanaged code.</remarks>
-        public NSUrlStringConverter (System.IntPtr handle)
+        public NSUrlStringConverter(System.IntPtr handle)
             : base(handle)
         {
             Initialize();
@@ -71,7 +71,7 @@ namespace INTV.Shared.Converter
         /// <param name="coder">The unarchiver.</param>
         /// <remarks>Called when created directly from a XIB file.
         /// NOTE: Xamarin.Mac propery does not provide this constructor, as NSValueTransformer does not conform to NSCoding.</remarks>
-        [Export ("initWithCoder:")]
+        [Export("initWithCoder:")]
         public NSUrlStringConverter(NSCoder coder)
             : base(coder)
         {

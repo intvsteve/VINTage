@@ -24,6 +24,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using INTV.Shared.Interop.DeviceManagement;
 #if __UNIFIED__
 using CoreFoundation;
 using Foundation;
@@ -33,7 +34,6 @@ using MonoMac.CoreFoundation;
 using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
-using INTV.Shared.Interop.DeviceManagement;
 
 #if __UNIFIED__
 using CFRunLoopString = Foundation.NSString;
@@ -50,11 +50,11 @@ namespace INTV.Shared.Interop.IOKit
     {
         #region IOService notification types
 
-        public static readonly string kIOPublishNotification = "IOServicePublish";
-        public static readonly string kIOFirstPublishNotification = "IOServiceFirstPublish";
-        public static readonly string kIOMatchedNotification = "IOServiceMatched";
-        public static readonly string kIOFirstMatchNotification = "IOServiceFirstMatch";
-        public static readonly string kIOTerminatedNotification = "IOServiceTerminate";
+        public static readonly string KIOPublishNotification = "IOServicePublish";
+        public static readonly string KIOFirstPublishNotification = "IOServiceFirstPublish";
+        public static readonly string KIOMatchedNotification = "IOServiceMatched";
+        public static readonly string KIOFirstMatchNotification = "IOServiceFirstMatch";
+        public static readonly string KIOTerminatedNotification = "IOServiceTerminate";
 
         #endregion // IOService notification types
 
@@ -226,7 +226,7 @@ namespace INTV.Shared.Interop.IOKit
                 // blocking fasion -- specifically:
                 // fd = open (fullPathNoLastSlash, O_EVTONLY, 0)
                 // Wonder if adding O_NONBLOCK would help?
-                System.Environment.SetEnvironmentVariable ("MONO_MANAGED_WATCHER", "1");
+                System.Environment.SetEnvironmentVariable("MONO_MANAGED_WATCHER", "1");
                 DevWatcher = new System.IO.FileSystemWatcher("/dev", "cu.*");
                 DevWatcher.IncludeSubdirectories = false;
                 DevWatcher.Created += DevTtyCreated;
@@ -251,13 +251,13 @@ namespace INTV.Shared.Interop.IOKit
                 CFRLSource = null;
             }
 
-            private void DevTtyCreated (object sender, System.IO.FileSystemEventArgs e)
+            private void DevTtyCreated(object sender, System.IO.FileSystemEventArgs e)
             {
                 DebugOutput("IOService.FileSystemNotifcationPort: DevTtyCreated: " + e.FullPath);
                 ReportPortArrival(e.FullPath);
             }
 
-            private void DevTtyDeleted (object sender, System.IO.FileSystemEventArgs e)
+            private void DevTtyDeleted(object sender, System.IO.FileSystemEventArgs e)
             {
                 DebugOutput("IOService.FileSystemNotifcationPort: DevTtyDeleted: " + e.FullPath);
                 ReportPortDeparture(e.FullPath);
@@ -318,7 +318,7 @@ namespace INTV.Shared.Interop.IOKit
                 var callback = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(publishDelegate);
 
                 System.IntPtr iterator;
-                var result = NativeMethods.IOServiceAddMatchingNotification(NotificationPort.Handle, kIOFirstMatchNotification, servicesDictionary.Handle, callback, System.IntPtr.Zero, out iterator);
+                var result = NativeMethods.IOServiceAddMatchingNotification(NotificationPort.Handle, KIOFirstMatchNotification, servicesDictionary.Handle, callback, System.IntPtr.Zero, out iterator);
                 System.Diagnostics.Debug.Assert(result == NativeMethods.Success, "Failed to add notification.");
 
                 if (result == NativeMethods.Success)
@@ -327,7 +327,7 @@ namespace INTV.Shared.Interop.IOKit
 
                     var terminateDelegate = new IONotificationPortCallback(TerminateNotification);
                     callback = System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate(terminateDelegate);
-                    result = NativeMethods.IOServiceAddMatchingNotification(NotificationPort.Handle, kIOTerminatedNotification, servicesDictionary.Handle, callback, System.IntPtr.Zero, out iterator);
+                    result = NativeMethods.IOServiceAddMatchingNotification(NotificationPort.Handle, KIOTerminatedNotification, servicesDictionary.Handle, callback, System.IntPtr.Zero, out iterator);
                     TerminateNotificationIterator = new IOIterator(iterator);
 
                     // The iterators returned when adding the matching notifications must be iterated to
@@ -351,12 +351,6 @@ namespace INTV.Shared.Interop.IOKit
                 NotificationPort = null;
             }
 
-            [Export("StopPortMonitor:")]
-            private void StopPortMonitor(NSObject data)
-            {
-                StopInThread();
-            }
-
             private static void FirstMatchNotification(System.IntPtr refcon, System.IntPtr iteratorPtr)
             {
                 DebugOutput("IOService.IOKitNotificationPort: FirstMatchNotification");
@@ -377,6 +371,12 @@ namespace INTV.Shared.Interop.IOKit
                 {
                     ReportPortDeparture(port);
                 }
+            }
+
+            [Export("StopPortMonitor:")]
+            private void StopPortMonitor(NSObject data)
+            {
+                StopInThread();
             }
         }
 

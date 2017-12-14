@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,7 +26,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
 {
@@ -76,11 +76,6 @@ namespace INTV.Shared.View
             SplashScreenImage = splashImage.LoadImageFromDisk();
         }
 
-        /// <summary>Shared initialization code.</summary>
-        void Initialize()
-        {
-        }
-
         #endregion // Constructors
 
         #region Properties
@@ -116,6 +111,11 @@ namespace INTV.Shared.View
             SplashScreenImageView.Image = image;
             SplashScreenImageView.NeedsDisplay = true;
             SplashScreenImageView.Display();
+        }
+
+        /// <summary>Shared initialization code.</summary>
+        private void Initialize()
+        {
         }
     }
 }

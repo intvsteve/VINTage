@@ -22,6 +22,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using INTV.Core.Model;
+using INTV.Core.Model.Program;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -29,10 +33,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.Model;
-using INTV.Core.Model.Program;
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 #if __UNIFIED__
 using CGPoint = CoreGraphics.CGPoint;
@@ -103,8 +103,8 @@ namespace INTV.Shared.Converter
         /// <summary>
         /// Converts feature flags into an image containing glyphs.
         /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
+        /// <param name="viewModel">The view model.</param>
+        /// <returns>An image that represents feature flags.</returns>
         public static NSImage TransformToImage(ProgramDescriptionViewModel viewModel)
         {
             var features = viewModel.Features;
@@ -120,7 +120,7 @@ namespace INTV.Shared.Converter
             var x = 0.0f;
             foreach (var f in features)
             {
-                f.Image.Draw(new CGPoint(x,0), CGRect.Empty, NSCompositingOperation.Copy, 1);
+                f.Image.Draw(new CGPoint(x, 0), CGRect.Empty, NSCompositingOperation.Copy, 1);
                 x += (float)Padding + (float)f.Image.Size.Width;
             }
             image.UnlockFocus();
@@ -128,7 +128,7 @@ namespace INTV.Shared.Converter
         }
 
         /// <inheritdoc />
-        public override NSObject TransformedValue (NSObject value)
+        public override NSObject TransformedValue(NSObject value)
         {
             NSImage image = null;
             var viewModel = value as ProgramDescriptionViewModel;

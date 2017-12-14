@@ -56,7 +56,7 @@ namespace INTV.Shared.Interop
         }
 
         [DllImport("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")]
-        private extern static void CFRunLoopAddSource (System.IntPtr loop, System.IntPtr source, System.IntPtr mode);
+        private static extern void CFRunLoopAddSource(System.IntPtr loop, System.IntPtr source, System.IntPtr mode);
 
         /// <summary>
         /// Removes a CFRunLoopSource. Necessary because we can't directly construct CFRunLoopSource from native IntPtr values in MonoMac.
@@ -68,12 +68,13 @@ namespace INTV.Shared.Interop
         public static bool CFRunLoopRemoveSource(CFRunLoop loop, System.IntPtr source, NSString mode)
         {
             if (mode == null)
-                throw new System.ArgumentNullException ("mode");
-
+            {
+                throw new System.ArgumentNullException("mode");
+            }
             return CFRunLoopRemoveSource(loop.Handle, source, mode.Handle);
         }
 
         [DllImport("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")]
-        private extern static bool CFRunLoopRemoveSource(System.IntPtr loop, System.IntPtr source, System.IntPtr mode);
+        private static extern bool CFRunLoopRemoveSource(System.IntPtr loop, System.IntPtr source, System.IntPtr mode);
    }
 }

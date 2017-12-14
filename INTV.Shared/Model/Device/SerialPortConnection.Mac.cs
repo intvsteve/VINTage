@@ -22,13 +22,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.Interop.DeviceManagement;
+using INTV.Shared.Interop.IOKit;
 #if __UNIFIED__
 using Foundation;
 #else
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Interop.IOKit;
-using INTV.Shared.Interop.DeviceManagement;
 
 namespace INTV.Shared.Model.Device
 {
@@ -37,10 +37,13 @@ namespace INTV.Shared.Model.Device
     /// </summary>
     public partial class SerialPortConnection
     {
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
         static partial void UpdateAvailablePorts()
         {
             var ports = Enumerable.Empty<string>();
-            switch(DeviceManagementInterfaceKindHelpers.GetKind())
+            switch (DeviceManagementInterfaceKindHelpers.GetKind())
             {
                 case DeviceManagementInterfaceKind.IOKit:
                     // Need to set up an Autorelease pool here since we may be doing
@@ -84,6 +87,7 @@ namespace INTV.Shared.Model.Device
                 Port.BaudRate = 9600;
                 Port.Open();
                 var stream = Port.BaseStream;
+
                 // This HORRIBLE HACK is needed because we need to get the file descriptor in order to use ioctl to set
                 // the baud rate to what we want. If this ever stops working, we're boned.
                 System.Reflection.FieldInfo fi = stream.GetType().GetField("fd", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);

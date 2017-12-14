@@ -29,7 +29,6 @@ namespace INTV.JzIntvUI.Properties
     /// these enums were handled on Mac when code was originally written.</remarks>
     internal sealed partial class Settings : INTV.Shared.Properties.SettingsBase<Settings>
     {
-
         /// <summary>
         /// Gets or sets the absolute path to the emulator executable.
         /// </summary>
@@ -109,7 +108,7 @@ namespace INTV.JzIntvUI.Properties
         }
 
         /// <summary>
-        /// Get whether to mute sound in the emulator.
+        /// Gets or sets a value indicating whether to mute sound in the emulator.
         /// </summary>
         public bool MuteAudio
         {
@@ -118,7 +117,7 @@ namespace INTV.JzIntvUI.Properties
         }
 
         /// <summary>
-        /// Get whether to enable mouse in the emulator.
+        /// Gets or sets a value indicating whether to enable mouse in the emulator.
         /// </summary>
         public bool EnableMouse
         {
@@ -154,7 +153,7 @@ namespace INTV.JzIntvUI.Properties
         }
 
         /// <summary>
-        /// Get whether to allow multiple instances of the emulator to run.
+        /// Gets or sets a value indicating whether to allow multiple instances of the emulator to run.
         /// </summary>
         public bool AllowMultipleInstances
         {
@@ -298,7 +297,7 @@ namespace INTV.JzIntvUI.Properties
         }
 
         /// <summary>
-        /// Get whether to override game-defined settings when using a custom command line to launch jzIntv.
+        /// Gets or sets a value indicating whether to override game-defined settings when using a custom command line to launch jzIntv.
         /// </summary>
         public bool UseROMFeatureSettingsWithCustomCommandLine
         {

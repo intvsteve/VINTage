@@ -21,6 +21,11 @@
 ////#define ENABLE_DEBUG_SPAM
 
 using System.Linq;
+using INTV.LtoFlash.Commands;
+using INTV.LtoFlash.View;
+using INTV.Shared.Commands;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -28,11 +33,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.LtoFlash.Commands;
-using INTV.LtoFlash.View;
-using INTV.Shared.Commands;
-using INTV.Shared.Utility;
-using INTV.Shared.View;
 
 namespace Locutus.View
 {
@@ -83,7 +83,10 @@ namespace Locutus.View
         /// <summary>
         /// Gets the window as a strongly typed value.
         /// </summary>
-        public new MainWindow Window { get { return (MainWindow)base.Window; } }
+        public new MainWindow Window
+        {
+            get { return (MainWindow)base.Window; }
+        }
 
         internal NSApplicationDelegate AppDelegate { get; set; }
 
@@ -96,7 +99,7 @@ namespace Locutus.View
         /// </summary>
         /// <param name="toolbarItem">The toolbar item whose status is desired.</param>
         /// <returns>Whether to enable the item or not.</returns>
-        [Export ("validateToolbarItem:")]
+        [Export("validateToolbarItem:")]
         public bool ValidateToolbarItem(NSToolbarItem toolbarItem)
         {
             return false;
@@ -108,7 +111,8 @@ namespace Locutus.View
             var commandProviders = SingleInstanceApplication.Instance.CommandProviders;
             Window.AddCommandsToMainWindow(commandProviders.Select(c => c.Value));
 
-            string[] desiredToolbarOrder = {
+            string[] desiredToolbarOrder =
+            {
                 DownloadCommandGroup.DownloadAndPlayCommand.UniqueId,
                 "_0",
                 RomListCommandGroup.AddRomFilesCommand.UniqueId,
@@ -125,7 +129,7 @@ namespace Locutus.View
 
             var toolbar = RootCommandGroup.RootCommand.Visual as NSToolbar;
 
-            foreach(var toolbarItemId in desiredToolbarOrder.Reverse())
+            foreach (var toolbarItemId in desiredToolbarOrder.Reverse())
             {
                 var items = toolbar.Items.ToList();
                 var index = items.FindIndex(i => i.Identifier == toolbarItemId);
@@ -160,7 +164,7 @@ namespace Locutus.View
             ((MenuLayoutViewController)viewController).LtoFlashViewModel = Window.ViewModel.LtoFlash;
             var menuLayoutView = (MenuLayoutView)viewController.View;
             menuLayoutView.DataContext = Window.ViewModel.MenuLayout;
-            Window.ViewModel.MenuLayout.PropertyChanged += HandleMenuLayoutPropertyChanged;;
+            Window.ViewModel.MenuLayout.PropertyChanged += HandleMenuLayoutPropertyChanged;
             menuLayoutView.Frame = MenuLayoutSplitView.Frame;
             SplitView.ReplaceSubviewWith(MenuLayoutSplitView, menuLayoutView);
             MenuLayoutSplitView = menuLayoutView;

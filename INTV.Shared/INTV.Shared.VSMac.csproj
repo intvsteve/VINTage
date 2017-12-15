@@ -373,6 +373,8 @@
     <Compile Include="Utility\PathComparer.Default.cs" />
     <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
     <Compile Include="View\IMainWindow.cs" />
+    <Compile Include="View\NSTableViewHelpers.cs" />
+    <Compile Include="View\ROMsTableView.Mac.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.VSMac.csproj">

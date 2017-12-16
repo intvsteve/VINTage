@@ -21,6 +21,7 @@
 ////#define ENABLE_DRAGDROP_TRACE
 
 using System.Linq;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -30,7 +31,6 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -114,13 +114,13 @@ namespace INTV.Shared.View
         #region IFakeDependencyObject Methods
 
         /// <inheritdoc />
-        public object GetValue (string propertyName)
+        public object GetValue(string propertyName)
         {
             return this.GetPropertyValue(propertyName);
         }
 
         /// <inheritdoc />
-        public void SetValue (string propertyName, object value)
+        public void SetValue(string propertyName, object value)
         {
             this.SetPropertyValue(propertyName, value);
         }
@@ -128,7 +128,7 @@ namespace INTV.Shared.View
         #endregion // IFakeDependencyObject Methods
 
         /// <inheritdoc />
-        public override NSDragOperation DraggingEntered (NSDraggingInfo sender)
+        public override NSDragOperation DraggingEntered(NSDraggingInfo sender)
         {
 #if ENABLE_DRAGDROP_TRACE
             System.Diagnostics.Debug.WriteLine("ROMLISTVIEW: string for type: " + sender.DraggingPasteboard.GetStringForType(NSPasteboard.NSFilenamesType));
@@ -146,7 +146,7 @@ namespace INTV.Shared.View
                 System.Diagnostics.Debug.WriteLine("ROMLISTVIEW: drag enter: formation: " + item.GetStringForType("public.file-url"));
             }
 #endif // ENABLE_DRAGDROP_TRACE
-            var result = base.DraggingEntered (sender);
+            var result = base.DraggingEntered(sender);
             result = ViewModel.GetDragEnterEffects(sender);
             return result;
         }
@@ -162,6 +162,7 @@ namespace INTV.Shared.View
         public override void ConcludeDragOperation(NSDraggingInfo sender)
         {
             base.ConcludeDragOperation(sender);
+
             // Defer the "heavy lifting" so the drag-drop operation does not time out.
             PerformSelector(new Selector("FinishDrop:"), sender, 0.1);
         }

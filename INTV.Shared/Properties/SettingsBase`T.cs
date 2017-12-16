@@ -25,10 +25,11 @@ namespace INTV.Shared.Properties
     /// implementation. Most crucially, it replicates the static 'Default' property
     /// that is widely used throughout this codebase to access settings.
     /// </summary>
+    /// <typeparam name="T">The concrete Settings implementation type.</typeparam>
     public abstract class SettingsBase<T> : SettingsBase where T : SettingsBase, new()
     {
         /// <summary>
-        /// Get the default instance of the settings.
+        /// Gets the default instance of the settings.
         /// </summary>
         /// <value>The default.</value>
         public static T Default

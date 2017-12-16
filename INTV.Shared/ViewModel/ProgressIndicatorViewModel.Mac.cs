@@ -20,6 +20,8 @@
 
 ////#define ENABLE_DEBUG_OUTPUT
 
+using INTV.Shared.Utility;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -29,8 +31,6 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
-using INTV.Shared.View;
 
 namespace INTV.Shared.ViewModel
 {
@@ -42,6 +42,20 @@ namespace INTV.Shared.ViewModel
         private static readonly string ProgressIndicatorViewModelDataContextProperty = ProgressIndicatorViewModelDataContextPropertyName;
 
         private NSObjectPredicate _previousShouldClosePredicate;
+
+        /// <summary>
+        /// Initializes the progress indicator if necessary.
+        /// </summary>
+        /// <param name="ready">If set to <c>true</c> ready.</param>
+        static partial void InitializeProgressIndicatorIfNecessary(bool ready)
+        {
+            if (ready && (SingleInstanceApplication.Current.MainWindow.GetValue(ProgressIndicatorViewModelDataContextProperty) == null))
+            {
+                // Lazy-initialize the progress indicator.
+                var controller = SingleInstanceApplication.Current.MainWindow.WindowController as NSWindowController;
+                controller.TryToPerformwith(new Selector("finishInitialization:"), SingleInstanceApplication.Current.MainWindow);
+            }
+        }
 
         private void PlatformOnShow(SingleInstanceApplication application)
         {
@@ -70,16 +84,6 @@ namespace INTV.Shared.ViewModel
         private bool MainWindowShouldClose(NSObject sender)
         {
             return !IsVisible && (_timer == null);
-        }
-
-        static partial void InitializeProgressIndicatorIfNecessary(bool ready)
-        {
-            if (ready && (SingleInstanceApplication.Current.MainWindow.GetValue(ProgressIndicatorViewModelDataContextProperty) == null))
-            {
-                // Lazy-initialize the progress indicator.
-                var controller = SingleInstanceApplication.Current.MainWindow.WindowController as NSWindowController;
-                controller.TryToPerformwith(new Selector("finishInitialization:"), SingleInstanceApplication.Current.MainWindow);
-            }
         }
     }
 }

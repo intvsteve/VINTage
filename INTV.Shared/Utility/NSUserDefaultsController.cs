@@ -27,10 +27,10 @@ namespace INTV.Shared.Utility
     /// <summary>
     /// Implement bindings to the NSUserDefaultsController class in Cocoa. This isn't done yet in MonoMac, AFIAK.
     /// </summary>
-    [Register ("NSUserDefaultsController")]
+    [Register("NSUserDefaultsController")]
     public class NSUserDefaultsController : NSController
     {
-        private static System.IntPtr class_ptr;
+        private static System.IntPtr classPtr;
         private static Selector selSharedUserDefaultsController;
         private static Selector selInitWithDefaults;
         private static Selector selDefaults;
@@ -64,7 +64,7 @@ namespace INTV.Shared.Utility
             NSUserDefaultsController.selRevert = new Selector("revert:");
             NSUserDefaultsController.selRevertToInitialValues = new Selector("revertToInitialValues:");
             NSUserDefaultsController.selSave = new Selector("save:");
-            NSUserDefaultsController.class_ptr = Class.GetHandle("NSUserDefaultsController");
+            NSUserDefaultsController.classPtr = Class.GetHandle("NSUserDefaultsController");
         }
 
         /// <summary>
@@ -83,15 +83,15 @@ namespace INTV.Shared.Utility
             }
             if (initialValues == null)
             {
-                throw new System.ArgumentNullException ("initialValues");
+                throw new System.ArgumentNullException("initialValues");
             }
             if (this.IsDirectBinding)
             {
-                base.Handle = Messaging.IntPtr_objc_msgSend_IntPtr_IntPtr(base.Handle, NSUserDefaultsController.selInitWithDefaults.Handle, defaultsHandle, initialValues.Handle);
+                Handle = Messaging.IntPtr_objc_msgSend_IntPtr_IntPtr(Handle, NSUserDefaultsController.selInitWithDefaults.Handle, defaultsHandle, initialValues.Handle);
             }
             else
             {
-                base.Handle = Messaging.IntPtr_objc_msgSendSuper_IntPtr_IntPtr(base.SuperHandle, NSUserDefaultsController.selInitWithDefaults.Handle, defaultsHandle, initialValues.Handle);
+                Handle = Messaging.IntPtr_objc_msgSendSuper_IntPtr_IntPtr(SuperHandle, NSUserDefaultsController.selInitWithDefaults.Handle, defaultsHandle, initialValues.Handle);
             }
         }
 
@@ -105,14 +105,14 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
-        /// The shared user defaults controller instance.
+        /// Gets the shared user defaults controller instance.
         /// </summary>
         public static NSUserDefaultsController SharedUserDefaultsController
         {
             [Export("sharedUserDefaultsController")]
             get
             {
-                NSUserDefaultsController nsUserDefaultsController = (NSUserDefaultsController)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend (NSUserDefaultsController.class_ptr, NSUserDefaultsController.selSharedUserDefaultsController.Handle));
+                NSUserDefaultsController nsUserDefaultsController = (NSUserDefaultsController)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend(NSUserDefaultsController.classPtr, NSUserDefaultsController.selSharedUserDefaultsController.Handle));
                 NSUserDefaultsController._sharedUserDefaultsController = nsUserDefaultsController;
                 return _sharedUserDefaultsController;
             }
@@ -125,7 +125,7 @@ namespace INTV.Shared.Utility
         {
             get
             {
-                return NSUserDefaultsController.class_ptr;
+                return NSUserDefaultsController.classPtr;
             }
         }
 
@@ -140,11 +140,11 @@ namespace INTV.Shared.Utility
                 NSUserDefaults defaults;
                 if (this.IsDirectBinding)
                 {
-                    defaults = (NSUserDefaults)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend(base.Handle, NSUserDefaultsController.selDefaults.Handle));
+                    defaults = (NSUserDefaults)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend(Handle, NSUserDefaultsController.selDefaults.Handle));
                 }
                 else
                 {
-                    defaults = (NSUserDefaults)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSendSuper(base.SuperHandle, NSUserDefaultsController.selDefaults.Handle));
+                    defaults = (NSUserDefaults)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSendSuper(SuperHandle, NSUserDefaultsController.selDefaults.Handle));
                 }
                 _defaults = defaults;
                 return _defaults;
@@ -162,11 +162,11 @@ namespace INTV.Shared.Utility
                 NSObject values;
                 if (this.IsDirectBinding)
                 {
-                    values = (NSObject)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend(base.Handle, NSUserDefaultsController.selValues.Handle));
+                    values = (NSObject)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend(Handle, NSUserDefaultsController.selValues.Handle));
                 }
                 else
                 {
-                    values = (NSObject)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSendSuper(base.SuperHandle, NSUserDefaultsController.selValues.Handle));
+                    values = (NSObject)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSendSuper(SuperHandle, NSUserDefaultsController.selValues.Handle));
                 }
                 _values = values;
                 return _values;
@@ -174,7 +174,7 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
-        /// Gets or sets whether the changes should immediately take effect.
+        /// Gets or sets a value indicating whether the changes should immediately take effect.
         /// </summary>
         public bool AppliesImmediately
         {
@@ -184,11 +184,11 @@ namespace INTV.Shared.Utility
                 bool result;
                 if (this.IsDirectBinding)
                 {
-                    result = Messaging.bool_objc_msgSend(base.Handle, NSUserDefaultsController.selAppliesImmediately.Handle);
+                    result = Messaging.bool_objc_msgSend(Handle, NSUserDefaultsController.selAppliesImmediately.Handle);
                 }
                 else
                 {
-                    result = Messaging.bool_objc_msgSendSuper(base.SuperHandle, NSUserDefaultsController.selAppliesImmediately.Handle);
+                    result = Messaging.bool_objc_msgSendSuper(SuperHandle, NSUserDefaultsController.selAppliesImmediately.Handle);
                 }
                 return result;
             }
@@ -197,17 +197,17 @@ namespace INTV.Shared.Utility
             {
                 if (this.IsDirectBinding)
                 {
-                    Messaging.void_objc_msgSend_bool(base.Handle, NSUserDefaultsController.selSetAppliesImmediately.Handle, value);
+                    Messaging.void_objc_msgSend_bool(Handle, NSUserDefaultsController.selSetAppliesImmediately.Handle, value);
                 }
                 else
                 {
-                    Messaging.void_objc_msgSendSuper_bool(base.SuperHandle, NSUserDefaultsController.selSetAppliesImmediately.Handle, value);
+                    Messaging.void_objc_msgSendSuper_bool(SuperHandle, NSUserDefaultsController.selSetAppliesImmediately.Handle, value);
                 }
             }
         }
 
         /// <summary>
-        /// Gets whether or not there are unapplied changes to the settings.
+        /// Gets a value indicating whether or not there are unapplied changes to the settings.
         /// </summary>
         public bool HasUnappliedChanges
         {
@@ -217,11 +217,11 @@ namespace INTV.Shared.Utility
                 bool result;
                 if (this.IsDirectBinding)
                 {
-                    result = Messaging.bool_objc_msgSend(base.Handle, NSUserDefaultsController.selHasUnappliedChanges.Handle);
+                    result = Messaging.bool_objc_msgSend(Handle, NSUserDefaultsController.selHasUnappliedChanges.Handle);
                 }
                 else
                 {
-                    result = Messaging.bool_objc_msgSendSuper(base.SuperHandle, NSUserDefaultsController.selHasUnappliedChanges.Handle);
+                    result = Messaging.bool_objc_msgSendSuper(SuperHandle, NSUserDefaultsController.selHasUnappliedChanges.Handle);
                 }
                 return result;
             }
@@ -238,11 +238,11 @@ namespace INTV.Shared.Utility
                 NSDictionary initialValues;
                 if (this.IsDirectBinding)
                 {
-                    initialValues = (NSDictionary)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend (base.Handle, NSUserDefaultsController.selInitialValues.Handle));
+                    initialValues = (NSDictionary)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSend(Handle, NSUserDefaultsController.selInitialValues.Handle));
                 }
                 else
                 {
-                    initialValues = (NSDictionary)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSendSuper (base.SuperHandle, NSUserDefaultsController.selInitialValues.Handle));
+                    initialValues = (NSDictionary)Runtime.GetNSObject(Messaging.IntPtr_objc_msgSendSuper(SuperHandle, NSUserDefaultsController.selInitialValues.Handle));
                 }
                 _initialValues = initialValues;
                 return _initialValues;
@@ -252,11 +252,11 @@ namespace INTV.Shared.Utility
             {
                 if (this.IsDirectBinding)
                 {
-                    Messaging.void_objc_msgSend_IntPtr (base.Handle, NSUserDefaultsController.selSetInitialValues.Handle, value.Handle);
+                    Messaging.void_objc_msgSend_IntPtr(Handle, NSUserDefaultsController.selSetInitialValues.Handle, value.Handle);
                 }
                 else
                 {
-                    Messaging.void_objc_msgSendSuper_IntPtr (base.SuperHandle, NSUserDefaultsController.selSetInitialValues.Handle, value.Handle);
+                    Messaging.void_objc_msgSendSuper_IntPtr(SuperHandle, NSUserDefaultsController.selSetInitialValues.Handle, value.Handle);
                 }
                 _initialValues = value;
             }
@@ -271,7 +271,7 @@ namespace INTV.Shared.Utility
         {
             if (sender == null)
             {
-                throw new System.ArgumentNullException ("sender");
+                throw new System.ArgumentNullException("sender");
             }
             if (this.IsDirectBinding)
             {
@@ -292,7 +292,7 @@ namespace INTV.Shared.Utility
         {
             if (sender == null)
             {
-                throw new System.ArgumentNullException ("sender");
+                throw new System.ArgumentNullException("sender");
             }
             if (this.IsDirectBinding)
             {
@@ -313,7 +313,7 @@ namespace INTV.Shared.Utility
         {
             if (sender == null)
             {
-                throw new System.ArgumentNullException ("sender");
+                throw new System.ArgumentNullException("sender");
             }
             if (this.IsDirectBinding)
             {

@@ -22,6 +22,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -29,8 +31,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.Commands
 {
@@ -40,6 +40,11 @@ namespace INTV.Shared.Commands
     public static partial class CommandProviderHelpers
     {
         /// <summary>
+        /// Backspace character (see NSText.h from the AppKit).
+        /// </summary>
+        public const char NSBackspaceCharacter = (char)0x0008;
+
+        /// <summary>
         /// Delete character (see NSText.h from the AppKit).
         /// </summary>
         public const char NSDeleteCharacter = (char)0x007f;
@@ -48,11 +53,6 @@ namespace INTV.Shared.Commands
         /// NSDeleteCharacter as a string.
         /// </summary>
         public static readonly string NSDeleteCharacterString = new string(NSDeleteCharacter, 1);
-
-        /// <summary>
-        /// Backspace character (see NSText.h from the AppKit).
-        /// </summary>
-        public const char NSBackspaceCharacter = (char)0x0008;
 
         /// <summary>
         /// NSBackspaceCharacter as a string.
@@ -157,6 +157,7 @@ namespace INTV.Shared.Commands
             {
                 var toolbarItem = parentCommand.Visual as NSToolbarItem;
                 var segmentedControl = (NSSegmentedControl)parentVisual;
+
                 // We don't actually try to insert at correct location, since segmented control
                 // will always add new cells at the end and it's just a PITA to deal w/ generally
                 // solving the shuffling of cell data at this time. Instead, always stick the new
@@ -269,6 +270,7 @@ namespace INTV.Shared.Commands
         /// <param name="command">The command for which a menu item is to be created.</param>
         /// <param name="group">The group to which the command belongs.</param>
         /// <param name="requiresParentMenu">If <c>true</c>, must be placed in a submenu.</param>
+        /// <param name="itemName">The name of the menu item.</param>
         /// <returns>The menu item for the command.</returns>
         public static NSMenuItem CreateMenuItemForCommand(this VisualRelayCommand command, ICommandGroup group, bool requiresParentMenu, string itemName)
         {
@@ -426,6 +428,11 @@ namespace INTV.Shared.Commands
 
         /// <summary>If the standard PerformKeyEquivalent doesn't work, then use this
         /// to try to execute the given command directly. Used as a workaround.</summary>
+        /// <param name="responder">The recipient of the event.</param>
+        /// <param name="theEvent">The event to handle</param>
+        /// <param name="command">The command.</param>
+        /// <param name="context">Data context for the command.</param>
+        /// <returns><c>true</c> if the command using the delete key was executed, otherwise <c>false</c>.</returns>
         /// <remarks>This is to work around an as-yet unsuccessfully diagnosed problem with the
         /// 'delete' key shortcut that arises when cancelling cell edits in the NSOutlineView / NSTableView.
         /// It seems that other shortcuts aside from delete will work. It may be that when the
@@ -453,11 +460,14 @@ namespace INTV.Shared.Commands
             return didIt;
         }
 
+        /// <summary>
+        /// Menu delegate for our commands.
+        /// </summary>
         /// <remarks>See https://bugzilla.xamarin.com/show_bug.cgi?id=39507 for notes about
         /// a hard crash due to bad binding defined for HasKeyEquivalentForEvent().</remarks>
         private class MenuDelegate : NSMenuDelegate
         {
-            private static readonly MenuDelegate _instance = new MenuDelegate();
+            private static readonly MenuDelegate DelegateInstance = new MenuDelegate();
 
             private MenuDelegate()
             {
@@ -466,7 +476,10 @@ namespace INTV.Shared.Commands
             /// <summary>
             /// Gets the instance of this stateless delegate.
             /// </summary>
-            public static MenuDelegate Instance { get { return _instance; } }
+            public static MenuDelegate Instance
+            {
+                get { return DelegateInstance; }
+            }
 
             /// <inheritdoc/>
             public override void MenuWillOpen(NSMenu menu)

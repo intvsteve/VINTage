@@ -23,13 +23,13 @@ namespace Locutus.View
     /// <summary>
     /// This type just wraps the traditional main() method for the Mono application.
     /// </summary>
-    class MainClass
+    public class MainClass
     {
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
         /// </summary>
         /// <param name="args">The command-line arguments.</param>
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var dummySettings = new DummySettings();
             dummySettings.JzIntvHack = INTV.JzIntv.Model.DisplayMode.Fullscreen;
@@ -91,10 +91,12 @@ namespace Locutus.View
             /// <inheritdoc />
             public override object this[string index]
             {
-                get {
-                    return null;// base[index];
+                get
+                {
+                    return null; // base[index];
                 }
-                set {
+                set
+                {
                     // base[index] = value;
                 }
             }

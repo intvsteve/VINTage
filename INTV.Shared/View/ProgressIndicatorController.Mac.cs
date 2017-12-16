@@ -20,6 +20,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Commands;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using CoreGraphics;
@@ -29,9 +32,6 @@ using MonoMac.AppKit;
 using MonoMac.CoreGraphics;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.ComponentModel;
-using INTV.Shared.Commands;
-using INTV.Shared.ViewModel;
 
 #if __UNIFIED__
 using CGRect = CoreGraphics.CGRect;
@@ -92,7 +92,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new ProgressIndicator View { get { return (ProgressIndicator)base.View; } }
+        public new ProgressIndicator View
+        {
+            get { return (ProgressIndicator)base.View; }
+        }
 
         internal ProgressIndicatorViewModel ViewModel { get; set; }
 
@@ -105,7 +108,9 @@ namespace INTV.Shared.View
             get
             {
                 var title = string.Empty;
-                if (_loadedFromNib) // FIXME this is wrong
+
+                // FIXME this is wrong
+                if (_loadedFromNib)
                 {
                     var viewModel = View.DataContext as ProgressIndicatorViewModel;
                     title = viewModel == null ? string.Empty : viewModel.Title;
@@ -144,6 +149,7 @@ namespace INTV.Shared.View
             ViewModel = new INTV.Shared.ViewModel.ProgressIndicatorViewModel(window);
             View.Frame = frame;
             var progressViewModel = ViewModel;
+
             // FIXME This is wrong! We should put the data context here, on the controller!
             View.DataContext = progressViewModel;
             RomListCommandGroup.CancelRomsImportCommand.CanExecute(progressViewModel); // EEEK TOTAL HACK
@@ -158,7 +164,7 @@ namespace INTV.Shared.View
 
         private void HandlePropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var viewModel = ((ProgressIndicatorViewModel)View.DataContext);
+            var viewModel = (ProgressIndicatorViewModel)View.DataContext;
             switch (e.PropertyName)
             {
                 case ProgressIndicatorViewModel.AllowsCancelPropertyName:
@@ -199,7 +205,7 @@ namespace INTV.Shared.View
 
         private void HandleActivated(object sender, System.EventArgs e)
         {
-            var viewModel = ((ProgressIndicatorViewModel)View.DataContext);
+            var viewModel = (ProgressIndicatorViewModel)View.DataContext;
             if (viewModel.CancelCommand.CanExecute(viewModel))
             {
                 viewModel.CancelCommand.Execute(viewModel);

@@ -19,6 +19,10 @@
 // </copyright>
 
 using System.Collections.Generic;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
+using Locutus.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -26,10 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.View;
-using Locutus.ViewModel;
 
 namespace Locutus.View
 {
@@ -55,7 +55,7 @@ namespace Locutus.View
         /// </summary>
         /// <param name="coder">Used to deserialize from a XIB.</param>
         [Export("initWithCoder:")]
-        public MainWindow (NSCoder coder)
+        public MainWindow(NSCoder coder)
             : base(coder)
         {
             Initialize();
@@ -126,7 +126,7 @@ namespace Locutus.View
         /// </summary>
         /// <param name="toolbarItem">The toolbar item to enable or disable. Not used.</param>
         /// <returns><c>false</c> -- the command system is responsible for this.</returns>
-        [Export ("validateToolbarItem:")]
+        [Export("validateToolbarItem:")]
         public bool ValidateToolbarItem(NSToolbarItem toolbarItem)
         {
             return false;
@@ -142,7 +142,7 @@ namespace Locutus.View
         #region IFakeDependencyObject Methods
 
         /// <inheritdoc />
-        public object GetValue (string propertyName)
+        public object GetValue(string propertyName)
         {
             return this.GetPropertyValue(propertyName);
         }

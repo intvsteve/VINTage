@@ -47,21 +47,6 @@ namespace INTV.Shared.Interop.IOKit
         }
 
         /// <summary>
-        /// Gets an iterator to enumerate RS-232 serial services.
-        /// </summary>
-        /// <returns>The RS-232 serial services iterator.</returns>
-        public IOIterator GetRS232SerialServicesIterator()
-        {
-            IOIterator iterator = null;
-            var servicesDictionary = GetRS232SerialMatchDictionary();
-            if (servicesDictionary != null)
-            {
-                iterator = new IOIterator(this, servicesDictionary);
-            }
-            return iterator;
-        }
-
-        /// <summary>
         /// Gets the RS-232 serial match dictionary.
         /// </summary>
         /// <returns>The RS-232 serial match dictionary.</returns>
@@ -74,23 +59,6 @@ namespace INTV.Shared.Interop.IOKit
                 servicesDictionary.SetValueForKey((NSString)NativeMethods.kIOSerialBSDTypeKey, (NSString)NativeMethods.kIOSerialBSDRS232Type);
             }
             return servicesDictionary;
-        }
-
-        /// <summary>
-        /// Gets the USB device services iterator.
-        /// </summary>
-        /// <param name="vendorId">The numeric value of the vendor ID to match. If zero, this is ignored.</param>
-        /// <param name="productId">The numeric value of the product ID to match. If zero, this is ignored.</param>
-        /// <returns>The USB device services iterator.</returns>
-        public IOIterator GetUSBServicesIterator(int vendorId, int productId)
-        {
-            IOIterator iterator = null;
-            var servicesDictionary = GetUSBMatchDictionary(vendorId, productId);
-            if (servicesDictionary != null)
-            {
-                iterator = new IOIterator(this, servicesDictionary);
-            }
-            return iterator;
         }
 
         /// <summary>
@@ -117,6 +85,38 @@ namespace INTV.Shared.Interop.IOKit
                 }
             }
             return servicesDictionary;
+        }
+
+        /// <summary>
+        /// Gets an iterator to enumerate RS-232 serial services.
+        /// </summary>
+        /// <returns>The RS-232 serial services iterator.</returns>
+        public IOIterator GetRS232SerialServicesIterator()
+        {
+            IOIterator iterator = null;
+            var servicesDictionary = GetRS232SerialMatchDictionary();
+            if (servicesDictionary != null)
+            {
+                iterator = new IOIterator(this, servicesDictionary);
+            }
+            return iterator;
+        }
+
+        /// <summary>
+        /// Gets the USB device services iterator.
+        /// </summary>
+        /// <param name="vendorId">The numeric value of the vendor ID to match. If zero, this is ignored.</param>
+        /// <param name="productId">The numeric value of the product ID to match. If zero, this is ignored.</param>
+        /// <returns>The USB device services iterator.</returns>
+        public IOIterator GetUSBServicesIterator(int vendorId, int productId)
+        {
+            IOIterator iterator = null;
+            var servicesDictionary = GetUSBMatchDictionary(vendorId, productId);
+            if (servicesDictionary != null)
+            {
+                iterator = new IOIterator(this, servicesDictionary);
+            }
+            return iterator;
         }
 
         private static System.IntPtr Initialize()

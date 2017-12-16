@@ -35,13 +35,23 @@ using MonoMac.Foundation;
 
 namespace INTV.JzIntvUI.Commands
 {
+    /// <summary>
+    /// Mac-specific implementation
+    /// </summary>
     public partial class JzIntvLauncherCommandGroup
     {
         #region LaunchInJzIntvCommand
 
         private const int SDLNotLoadedError = 133;
-        private const int SDLNotLoadedError_Sierra = 134;
+        private const int SDLNotLoadedErrorSierra = 134;
 
+        /// <summary>
+        /// Mac-specific error handler.
+        /// </summary>
+        /// <param name="emulator">The emulator instance that was running.</param>
+        /// <param name="message">The error message.</param>
+        /// <param name="exitCode">The exit code of the emulator.</param>
+        /// <param name="exception">The exception that occurred.</param>
         static partial void OSErrorHandler(Emulator emulator, string message, int exitCode, Exception exception)
         {
             if (IsSDLMissingError(exitCode))
@@ -62,7 +72,7 @@ namespace INTV.JzIntvUI.Commands
             var isSDLMissingError = false;
             if (macOSVersion.Minor >= 12)
             {
-                isSDLMissingError = exitCode == SDLNotLoadedError_Sierra;
+                isSDLMissingError = exitCode == SDLNotLoadedErrorSierra;
             }
             else
             {
@@ -213,7 +223,9 @@ namespace INTV.JzIntvUI.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return null; }
@@ -221,6 +233,9 @@ namespace INTV.JzIntvUI.Commands
 
         #endregion // CommandGroup
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             JzIntvToolsMenuCommand.MenuParent = RootCommandGroup.ToolsMenuCommand;
@@ -243,7 +258,7 @@ namespace INTV.JzIntvUI.Commands
             var toolsBrowseAndLaunchInJzIntvCommand = BrowseAndLaunchInJzIntvCommand.Clone();
             toolsBrowseAndLaunchInJzIntvCommand.Weight = 0.21;
             toolsBrowseAndLaunchInJzIntvCommand.MenuItemName = Resources.Strings.BrowseAndLaunchInJzIntvCommand_Name; // BrowseAndLaunchInJzIntvCommand.ContextMenuItemName;
-            toolsBrowseAndLaunchInJzIntvCommand.MenuParent = JzIntvToolsMenuCommand; //RootCommandGroup.FileMenuCommand;
+            toolsBrowseAndLaunchInJzIntvCommand.MenuParent = JzIntvToolsMenuCommand; // RootCommandGroup.FileMenuCommand;
 
             var toolsShowJzIntvCommandLineCommand = ShowJzIntvCommandLineCommand.Clone();
             toolsShowJzIntvCommandLineCommand.Weight = 0.22;

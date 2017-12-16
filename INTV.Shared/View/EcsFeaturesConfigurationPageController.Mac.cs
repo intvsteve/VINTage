@@ -21,6 +21,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -28,9 +31,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -81,7 +81,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new EcsFeaturesConfigurationPage View { get { return (EcsFeaturesConfigurationPage)base.View; } }
+        public new EcsFeaturesConfigurationPage View
+        {
+            get { return (EcsFeaturesConfigurationPage)base.View; }
+        }
 
         #region IFakeDependencyObject
 
@@ -148,7 +151,7 @@ namespace INTV.Shared.View
                 _usesCassette = value;
             }
         }
-        NSNumber _usesCassette;
+        private NSNumber _usesCassette;
 
         [OSExport(EcsFeaturesConfigurationPageViewModel.UsesSynthesizerPropertyName)]
         private NSNumber UsesSynthesizer
@@ -167,7 +170,7 @@ namespace INTV.Shared.View
                 _usesSynthesizer = value;
             }
         }
-        NSNumber _usesSynthesizer;
+        private NSNumber _usesSynthesizer;
 
         [OSExport(EcsFeaturesConfigurationPageViewModel.UsesPrinterPropertyName)]
         private NSNumber UsesPrinter
@@ -186,7 +189,7 @@ namespace INTV.Shared.View
                 _usesPrinter = value;
             }
         }
-        NSNumber _usesPrinter;
+        private NSNumber _usesPrinter;
 
         [OSExport(EcsFeaturesConfigurationPageViewModel.UsesSerialPortPropertyName)]
         private NSNumber UsesSerialPort
@@ -205,7 +208,7 @@ namespace INTV.Shared.View
                 _usesSerialPort = value;
             }
         }
-        NSNumber _usesSerialPort;
+        private NSNumber _usesSerialPort;
 
         [OSExport(EcsFeaturesConfigurationPageViewModel.SerialPortPropertyName)]
         private NSNumber SerialPort
@@ -226,12 +229,16 @@ namespace INTV.Shared.View
         }
         private NSNumber _serialPort;
 
-        private EcsFeaturesConfigurationPageViewModel ViewModel { get { return DataContext as EcsFeaturesConfigurationPageViewModel; } }
+        private EcsFeaturesConfigurationPageViewModel ViewModel
+        {
+            get { return DataContext as EcsFeaturesConfigurationPageViewModel; }
+        }
 
         /// <inheritdoc />
         public override void AwakeFromNib()
         {
-            var initializationData = new[] {
+            var initializationData = new[]
+            {
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(EcsCompatibilityPopUpButton, ViewModel.EcsOptions, ViewModel.Ecs),
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(SerialPortUsagePopUpButton, ViewModel.SerialPortOptions, ViewModel.SerialPort)
             };
@@ -241,7 +248,7 @@ namespace INTV.Shared.View
 
         private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            switch(e.PropertyName)
+            switch (e.PropertyName)
             {
                 case EcsFeaturesConfigurationPageViewModel.EcsPropertyName:
                     _ecs = ViewModel.EcsOptions.SelectionToNSNumber(ViewModel.Ecs);

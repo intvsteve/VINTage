@@ -19,14 +19,14 @@
 // </copyright>
 
 using System.Collections.Generic;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
 #if __UNIFIED__
 using Foundation;
 #else
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.View;
 
 namespace INTV.Shared.Commands
 {
@@ -52,7 +52,8 @@ namespace INTV.Shared.Commands
                     var recommendedVersion = SingleInstanceApplication.Instance.AppInfo.RecommendedOSVersion;
                     if ((OSVersion.Current < recommendedVersion) && Properties.Settings.Default.ShowFTDIWarning)
                     {
-                        var buttonLabels = new Dictionary<OSMessageBoxButton, string> {
+                        var buttonLabels = new Dictionary<OSMessageBoxButton, string>
+                        {
                             { OSMessageBoxButton.OK, Resources.Strings.OKButton_Text },
                             { OSMessageBoxButton.YesNo, Resources.Strings.OKDoNotShowAgainButton_Text }
                         };
@@ -66,19 +67,28 @@ namespace INTV.Shared.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return null; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Attaches an event handler for a visual's 'Activated' event.
+        /// </summary>
+        /// <param name="command">The command whose <see cref=">ICommand.Execute"/> method should be called from the visual's 'Activated' event handler.</param>
+        /// <param name="visual">The visual that will execute the given <paramref name="command"/>.</param>
+        /// <remarks>In most cases, the MonoMac bindings to controls and other visual entities have added convenience 'Activated' events. These are simpler
+        /// to use in C# than the traditional Cocoa 'Action' callbacks. This stock implementation handles NSControl, NSMenuItem, and NSToolbarItem.</remarks>
         protected override void AttachActivateHandler(RelayCommand command, NSObject visual)
         {
             if (command.UniqueId == CheckForUpdatesCommand.UniqueId)
             {
                 base.AttachActivateHandler(command, visual);
             }
+
             // no-op for others
         }
 
@@ -86,7 +96,11 @@ namespace INTV.Shared.Commands
 
         #region ICommandGroup
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Creates the visual for a command, if applicable.
+        /// </summary>
+        /// <param name="command">The command for which a visual must be created.</param>
+        /// <returns>The visual for the command.</returns>
         public override NSObject CreateVisualForCommand(ICommand command)
         {
             NSObject visual = null;
@@ -107,7 +121,7 @@ namespace INTV.Shared.Commands
 
         #endregion // ICommandGroup
 
-        private void HandleActivated (object sender, System.EventArgs e)
+        private void HandleActivated(object sender, System.EventArgs e)
         {
             OnShowSettingsDialog(null);
         }

@@ -19,6 +19,10 @@
 // </copyright>
 
 using System.Linq;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -26,10 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.View;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.Commands
 {
@@ -81,6 +81,9 @@ namespace INTV.Shared.Commands
 
         #region CheckRomsCommand
 
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
         static partial void ValidateRomsComplete()
         {
             Group.RomListView.NeedsDisplay = true;
@@ -126,6 +129,10 @@ namespace INTV.Shared.Commands
             Group.RomListView.Controller.SortRoms();
         }
 
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
+        /// <param name="viewModel">View model.</param>
         static partial void RestoreRomListComplete(RomListViewModel viewModel)
         {
             SortRoms();
@@ -147,20 +154,30 @@ namespace INTV.Shared.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return RomListViewModel; }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Creates the visual for a command, if applicable.
+        /// </summary>
+        /// <param name="command">The command for which a visual must be created.</param>
+        /// <returns>The visual for the command.</returns>
         public override NSObject CreateVisualForCommand(ICommand command)
         {
             var visual = base.CreateVisualForCommand(command);
             return visual;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Creates a menu item for a command.
+        /// </summary>
+        /// <param name="command">The command for which a menu item must be created.</param>
+        /// <returns>The menu item.</returns>
         public override OSMenuItem CreateMenuItemForCommand(ICommand command)
         {
             var menuItem = base.CreateMenuItemForCommand(command);
@@ -173,7 +190,11 @@ namespace INTV.Shared.Commands
             return menuItem;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Executes a command.
+        /// </summary>
+        /// <param name="sender">A visual object associated with an <c>VisualRelayCommand</c>.</param>
+        /// <param name="e">Unused argument.</param>
         protected override void HandleCommandActivated(object sender, System.EventArgs e)
         {
             var command = GetCommand(sender);
@@ -190,7 +211,11 @@ namespace INTV.Shared.Commands
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets a Boolean value indicating of the given command is allowed to execute.
+        /// </summary>
+        /// <param name="command">The command of interest.</param>
+        /// <returns><c>true</c> if the command should be allowed to execute, <c>false</c> otherwise.</returns>
         protected override bool HandleCanExecuteChangedForCommand(VisualRelayCommand command)
         {
             var context = Context;
@@ -220,15 +245,18 @@ namespace INTV.Shared.Commands
             return canExecute;
         }
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
-            //CommandList.Add(RemoveAndRefreshCommandsSegmentCommand);
+            ////CommandList.Add(RemoveAndRefreshCommandsSegmentCommand);
             AddRomFilesCommand.VisualParent = RootCommandGroup.RootCommand; // add to toolbar
             AddRomFilesCommand.MenuParent = RootCommandGroup.FileMenuCommand;
 
             AddRomFoldersCommand.VisualParent = RootCommandGroup.RootCommand; // add to toolbar
             AddRomFoldersCommand.MenuParent = RootCommandGroup.FileMenuCommand;
-            //RemoveRomsCommand.VisualParent = RemoveAndRefreshCommandsSegmentCommand;
+            ////RemoveRomsCommand.VisualParent = RemoveAndRefreshCommandsSegmentCommand;
 
             EditRomFeaturesCommand.MenuParent = RootCommandGroup.EditMenuCommand;
             EditProgramNameCommand.MenuParent = RootCommandGroup.EditMenuCommand;
@@ -242,7 +270,7 @@ namespace INTV.Shared.Commands
             ValidateRomsCommand.KeyboardShortcutKey = "r";
             ValidateRomsCommand.KeyboardShortcutModifiers = OSModifierKeys.Menu;
             ValidateRomsCommand.MenuParent = RootCommandGroup.ViewMenuCommand;
-            //RefreshRomsCommand.VisualParent = RemoveAndRefreshCommandsSegmentCommand;
+            ////RefreshRomsCommand.VisualParent = RemoveAndRefreshCommandsSegmentCommand;
             RefreshRomsCommand.MenuParent = RootCommandGroup.ViewMenuCommand;
             RefreshRomsCommand.SmallIcon = NSImage.ImageNamed("NSRefreshTemplate");
             CommandList.Add(RefreshRomsCommand.CreateSeparator(CommandLocation.After));

@@ -20,6 +20,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,9 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -81,25 +81,37 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the window as a strongly typed value.
         /// </summary>
-        public new SelectBackupDialog Window { get { return (SelectBackupDialog)base.Window; } }
+        public new SelectBackupDialog Window
+        {
+            get { return (SelectBackupDialog)base.Window; }
+        }
 
         /// <summary>
         /// Gets the title.
         /// </summary>
         [OSExport("Title")]
-        public string Title { get { return DialogDataContext.Title; } }
+        public string Title
+        {
+            get { return DialogDataContext.Title; }
+        }
 
         /// <summary>
         /// Gets the prompt.
         /// </summary>
         [OSExport("Prompt")]
-        public string Prompt { get { return DialogDataContext.Prompt; } }
+        public string Prompt
+        {
+            get { return DialogDataContext.Prompt; }
+        }
 
         /// <summary>
-        /// Gets whether to enable the Restore button.
+        /// Gets a value indicating whether to enable the Restore button.
         /// </summary>
         [OSExport("CanRestore")]
-        public bool CanRestore { get { return DialogDataContext.SelectedBackupDirectory != null; } }
+        public bool CanRestore
+        {
+            get { return DialogDataContext.SelectedBackupDirectory != null; }
+        }
 
         private SelectBackupDialogViewModel DialogDataContext { get; set; }
 
@@ -143,17 +155,27 @@ namespace INTV.Shared.View
         /// Initialize the dialog for use.
         /// </summary>
         /// <param name="backupsDirectory">The directory in which to look for backup data.</param>
+        /// <param name="backupFileName">The name of the backup file.</param>
+        /// <param name="fileExtensions">The file extensions to filter the file list.</param>
         /// <param name="showItemsCount">If <c>true</c>, show items count in backup to restore selection dialog; otherwise hide that column.</param>
         internal void Initialize(string backupsDirectory, string backupFileName, IEnumerable<string> fileExtensions, bool showItemsCount)
         {
             DialogDataContext.Initialize(backupsDirectory, backupFileName, fileExtensions, showItemsCount);
         }
 
+        /// <summary>
+        /// Handle the cancel button click.
+        /// </summary>
+        /// <param name="sender">The cancel button.</param>
         partial void OnCancel(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Aborted);
         }
 
+        /// <summary>
+        /// Handle restore button clicked.
+        /// </summary>
+        /// <param name="sender">The restore button..</param>
         partial void OnRestore(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Stopped);

@@ -21,6 +21,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -28,9 +31,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.ComponentModel;
-using INTV.Shared.ViewModel;
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
 {
@@ -81,7 +81,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new GeneralFeaturesConfigurationPage View { get { return (GeneralFeaturesConfigurationPage)base.View; } }
+        public new GeneralFeaturesConfigurationPage View
+        {
+            get { return (GeneralFeaturesConfigurationPage)base.View; }
+        }
 
         /// <summary>
         /// Gets or sets Intellivoice compatibility.
@@ -172,12 +175,16 @@ namespace INTV.Shared.View
 
         #endregion // IFakeDependencyObject
 
-        private GeneralFeaturesConfigurationPageViewModel ViewModel { get { return DataContext as GeneralFeaturesConfigurationPageViewModel; } }
+        private GeneralFeaturesConfigurationPageViewModel ViewModel
+        {
+            get { return DataContext as GeneralFeaturesConfigurationPageViewModel; }
+        }
 
         /// <inheritdoc />
         public override void AwakeFromNib()
         {
-            var initializationData = new[] {
+            var initializationData = new[]
+            {
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(IntellivoicePopUpButton, ViewModel.IntellivoiceOptions, ViewModel.Intellivoice),
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(NtscPopUpButton, ViewModel.NtscOptions, ViewModel.Ntsc),
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(PalPopUpButton, ViewModel.PalOptions, ViewModel.Pal)
@@ -188,7 +195,7 @@ namespace INTV.Shared.View
 
         private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            switch(e.PropertyName)
+            switch (e.PropertyName)
             {
                 case GeneralFeaturesConfigurationPageViewModel.IntellivoicePropertyName:
                     _intellivoice = new NSNumber(ViewModel.IntellivoiceOptions.IndexOf(ViewModel.Intellivoice));

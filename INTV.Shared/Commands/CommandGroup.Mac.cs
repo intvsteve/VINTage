@@ -20,6 +20,10 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,10 +31,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.View;
-using INTV.Shared.ViewModel;
 
 #if __UNIFIED__
 using OSCommandVisual = Foundation.NSObject;
@@ -56,13 +56,17 @@ namespace INTV.Shared.Commands
         protected static readonly string AdditionalVisualsPropertyName = "AdditionalVisuals";
 
         /// <summary>
-        /// General data context (parameter data) used for command execution for commands in the group.
+        /// Gets the general data context (parameter data) used for command execution for commands in the group.
         /// </summary>
         public abstract object Context { get; }
 
         #region ICommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates the visual for a command, if applicable.
+        /// </summary>
+        /// <param name="command">The command for which a visual must be created.</param>
+        /// <returns>The visual for the command.</returns>
         public virtual OSCommandVisual CreateVisualForCommand(ICommand command)
         {
             var visualCommand = (VisualRelayCommand)command;
@@ -72,7 +76,11 @@ namespace INTV.Shared.Commands
             return visual;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates a menu item for a command.
+        /// </summary>
+        /// <param name="command">The command for which a menu item must be created.</param>
+        /// <returns>The menu item.</returns>
         public virtual OSMenuItem CreateMenuItemForCommand(ICommand command)
         {
             var visualCommand = (VisualRelayCommand)command;
@@ -83,7 +91,10 @@ namespace INTV.Shared.Commands
 
         #endregion // ICommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Called when this is being created via XIB/NIB.
+        /// </summary>
+        /// <param name="controller">The controller for the view.</param>
         public virtual void AwakeFromNib(NSViewController controller)
         {
             foreach (var command in CommandList.OfType<VisualRelayCommand>())
@@ -246,7 +257,7 @@ namespace INTV.Shared.Commands
                 var additionalVisuals = command.GetValue(AdditionalVisualsPropertyName) as IList<object>;
                 if (additionalVisuals != null)
                 {
-                    foreach(var additionalControl in additionalVisuals.OfType<NSControl>())
+                    foreach (var additionalControl in additionalVisuals.OfType<NSControl>())
                     {
                         additionalControl.Enabled = canExecute;
                     }

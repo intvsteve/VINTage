@@ -20,6 +20,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Behavior;
+using INTV.Shared.Commands;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,11 +32,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.ComponentModel;
-using INTV.Shared.Behavior;
-using INTV.Shared.Commands;
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -84,7 +84,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the window as a strongly typed value.
         /// </summary>
-        public new RomFeaturesConfiguration Window { get { return (RomFeaturesConfiguration)base.Window; } }
+        public new RomFeaturesConfiguration Window
+        {
+            get { return (RomFeaturesConfiguration)base.Window; }
+        }
 
         /// <summary>
         /// Gets or sets the index of the currently selected feature page.
@@ -109,22 +112,40 @@ namespace INTV.Shared.View
         private NSIndexSet _currentFeaturePageIndex;
 
         [OSExport("RevertChangesImage")]
-        private NSImage RevertChangesImage { get { return RomListCommandGroup.RevertProgramFeaturesCommand.SmallIcon; } }
+        private NSImage RevertChangesImage
+        {
+            get { return RomListCommandGroup.RevertProgramFeaturesCommand.SmallIcon; }
+        }
 
         [OSExport("RevertToDatabaseImage")]
-        private NSImage RevertToDatabaseImage { get { return RomListCommandGroup.RevertToDatabaseFeaturesCommand.SmallIcon; } }
+        private NSImage RevertToDatabaseImage
+        {
+            get { return RomListCommandGroup.RevertToDatabaseFeaturesCommand.SmallIcon; }
+        }
 
         [OSExport("CommitImage")]
-        private NSImage CommitImage { get { return RomListCommandGroup.UpdateProgramFeaturesCommand.SmallIcon; } }
+        private NSImage CommitImage
+        {
+            get { return RomListCommandGroup.UpdateProgramFeaturesCommand.SmallIcon; }
+        }
 
         [OSExport("CancelImage")]
-        private NSImage CancelImage { get { return RomListCommandGroup.CancelUpdateProgramFeaturesCommand.SmallIcon; } }
+        private NSImage CancelImage
+        {
+            get { return RomListCommandGroup.CancelUpdateProgramFeaturesCommand.SmallIcon; }
+        }
 
         [OSExport("EnableRevertToDefault")]
-        private NSNumber EnableRevertToDefault { get { return new NSNumber(RomListCommandGroup.RevertProgramFeaturesCommand.CanExecute(RomListCommandGroup.Group.Context)); } }
+        private NSNumber EnableRevertToDefault
+        {
+            get { return new NSNumber(RomListCommandGroup.RevertProgramFeaturesCommand.CanExecute(RomListCommandGroup.Group.Context)); }
+        }
 
         [OSExport("Name")]
-        private string Name { get { return ViewModel.Description.Name; } }
+        private string Name
+        {
+            get { return ViewModel.Description.Name; }
+        }
 
         private RomFeaturesConfigurationViewModel ViewModel { get; set; }
 
@@ -159,7 +180,10 @@ namespace INTV.Shared.View
         public event System.EventHandler<InPlaceEditorClosedEventArgs> EditorClosed;
 
         /// <inheritdoc />
-        public NSView EditedElement { get { return null; } }
+        public NSView EditedElement
+        {
+            get { return null; }
+        }
 
         /// <inheritdoc />
         public NSView ElementOwner { get; set; }
@@ -222,6 +246,7 @@ namespace INTV.Shared.View
         protected override void Dispose(bool disposing)
         {
             ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(
@@ -281,6 +306,10 @@ namespace INTV.Shared.View
             FeaturePagesTabView.Select(selectedPage);
         }
 
+        /// <summary>
+        /// Reverts the ROMs features to those in the internal ROM database.
+        /// </summary>
+        /// <param name="sender">The revert to internal database button.</param>
         partial void OnRevertToInternalDatabase(NSObject sender)
         {
             if (RomListCommandGroup.RevertToDatabaseFeaturesCommand.CanExecute(ViewModel))
@@ -289,16 +318,28 @@ namespace INTV.Shared.View
             }
         }
 
+        /// <summary>
+        /// Reverts the changes to the ROM's features.
+        /// </summary>
+        /// <param name="sender">The revert button.</param>
         partial void OnRevertChanges(NSObject sender)
         {
             RomListCommandGroup.RevertProgramFeaturesCommand.Execute(ViewModel);
         }
 
+        /// <summary>
+        /// Updates the ROM's features.
+        /// </summary>
+        /// <param name="sender">The update ROM features button.</param>
         partial void OnUpdateFeatures(NSObject sender)
         {
             RomListCommandGroup.UpdateProgramFeaturesCommand.Execute(ViewModel);
         }
 
+        /// <summary>
+        /// Cancels changes to the ROM's configuration.
+        /// </summary>
+        /// <param name="sender">The cancel button.</param>
         partial void OnCancelChanges(NSObject sender)
         {
             RomListCommandGroup.CancelUpdateProgramFeaturesCommand.Execute(ViewModel);

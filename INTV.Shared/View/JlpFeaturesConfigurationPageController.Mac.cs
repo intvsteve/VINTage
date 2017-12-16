@@ -20,6 +20,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,9 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -119,7 +119,7 @@ namespace INTV.Shared.View
                 _enableAcceleratorsAtStartup = value;
             }
         }
-        NSNumber _enableAcceleratorsAtStartup;
+        private NSNumber _enableAcceleratorsAtStartup;
 
         [OSExport(JlpFeaturesConfigurationPageViewModel.UsesFlashStoragePropertyName)]
         private NSNumber UsesFlashStorage
@@ -138,7 +138,7 @@ namespace INTV.Shared.View
                 _usesFlashStorage = value;
             }
         }
-        NSNumber _usesFlashStorage;
+        private NSNumber _usesFlashStorage;
 
         [OSExport(JlpFeaturesConfigurationPageViewModel.MinimumFlashSectorsPropertyName)]
         private NSNumber MinimumFlashSectors
@@ -163,7 +163,10 @@ namespace INTV.Shared.View
         private NSColor FlashSectorsTextColor { get; set; }
 
         [OSExport(JlpFeaturesConfigurationPageViewModel.FlashSizeInBytesTipPropertyName)]
-        private string FlashSizeInBytesTip { get { return ViewModel.FlashSizeInBytesTip.SafeString(); } }
+        private string FlashSizeInBytesTip
+        {
+            get { return ViewModel.FlashSizeInBytesTip.SafeString(); }
+        }
 
         [OSExport(JlpFeaturesConfigurationPageViewModel.CanConfigureFlashStoragePropertyName)]
         private NSNumber CanConfigureFlashStorage
@@ -188,7 +191,7 @@ namespace INTV.Shared.View
                 _usesSerialPort = value;
             }
         }
-        NSNumber _usesSerialPort;
+        private NSNumber _usesSerialPort;
 
         [OSExport(JlpFeaturesConfigurationPageViewModel.SerialPortPropertyName)]
         private NSNumber SerialPort
@@ -238,7 +241,7 @@ namespace INTV.Shared.View
                 _usesLEDs = value;
             }
         }
-        NSNumber _usesLEDs;
+        private NSNumber _usesLEDs;
 
         [OSExport(JlpFeaturesConfigurationPageViewModel.CanConfigureLEDFeaturePropertyName)]
         private NSNumber CanConfigureLEDFeature
@@ -249,7 +252,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new JlpFeaturesConfigurationPage View { get { return (JlpFeaturesConfigurationPage)base.View; } }
+        public new JlpFeaturesConfigurationPage View
+        {
+            get { return (JlpFeaturesConfigurationPage)base.View; }
+        }
 
         #region IFakeDependencyObject
 
@@ -274,14 +280,18 @@ namespace INTV.Shared.View
 
         #endregion // IFakeDependencyObject
 
-        private JlpFeaturesConfigurationPageViewModel ViewModel { get { return DataContext as JlpFeaturesConfigurationPageViewModel; } }
+        private JlpFeaturesConfigurationPageViewModel ViewModel
+        {
+            get { return DataContext as JlpFeaturesConfigurationPageViewModel; }
+        }
 
         /// <inheritdoc />
         public override void AwakeFromNib()
         {
             FlashSectorsFormatter.Minimum = 0;
             FlashSectorsFormatter.Maximum = INTV.Core.Model.Program.LtoFlashFeaturesHelpers.MaxFlashSaveDataSectorsCount;
-            var initializationData = new[] {
+            var initializationData = new[]
+            {
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(JlpVersionPopUpButton, ViewModel.JlpVersions, ViewModel.JlpVersion),
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(SerialPortPopUpButton, ViewModel.SerialPortOptions, ViewModel.SerialPort)
             };
@@ -291,7 +301,7 @@ namespace INTV.Shared.View
 
         private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            switch(e.PropertyName)
+            switch (e.PropertyName)
             {
                 case JlpFeaturesConfigurationPageViewModel.JlpVersionPropertyName:
                     _jlpVersion = ViewModel.JlpVersions.SelectionToNSNumber(ViewModel.JlpVersion);

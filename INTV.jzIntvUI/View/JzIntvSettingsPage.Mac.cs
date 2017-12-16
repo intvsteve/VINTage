@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,10 +28,12 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.View;
 
 namespace INTV.JzIntvUI.View
 {
+    /// <summary>
+    /// Mac-specific implementation.
+    /// </summary>
     public partial class JzIntvSettingsPage : NSView, IFakeDependencyObject
     {
         #region Constructors
@@ -57,14 +60,14 @@ namespace INTV.JzIntvUI.View
         }
         
         /// <summary>Shared initialization code.</summary>
-        void Initialize()
+        private void Initialize()
         {
         }
 
         #endregion // Constructors
 
         /// <summary>
-        /// Controller for the view.
+        /// Gets or sets the controller for the view.
         /// </summary>
         internal JzIntvSettingsPageController Controller { get; set; }
 

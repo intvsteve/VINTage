@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.Commands;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,9 +28,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Commands;
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
 {
@@ -156,6 +156,11 @@ namespace INTV.Shared.View
             return new System.Tuple<int, int, int>(width, height, depth);
         }
 
+        /// <summary>
+        /// Platform-specific method to attach a command's CanExecute handler.
+        /// </summary>
+        /// <param name="commandGroup">Command group.</param>
+        /// <param name="command">Command to attach handler to.</param>
         static partial void AttachCanExecuteHandler(CommandGroup commandGroup, RelayCommand command)
         {
             if (commandGroup != null)

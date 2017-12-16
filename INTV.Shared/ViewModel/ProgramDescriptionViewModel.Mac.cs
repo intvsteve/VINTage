@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Linq;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -26,7 +27,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.ViewModel
 {

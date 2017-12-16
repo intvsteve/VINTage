@@ -111,13 +111,13 @@ namespace INTV.Shared.View
         #region IFakeDependencyObject Methods
 
         /// <inheritdoc/>
-        public object GetValue (string propertyName)
+        public object GetValue(string propertyName)
         {
             return this.GetPropertyValue(propertyName);
         }
 
         /// <inheritdoc/>
-        public void SetValue (string propertyName, object value)
+        public void SetValue(string propertyName, object value)
         {
             this.SetPropertyValue(propertyName, value);
         }
@@ -132,6 +132,7 @@ namespace INTV.Shared.View
                 Controller.Dispose();
                 Controller = null;
             }
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(

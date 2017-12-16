@@ -93,6 +93,7 @@ namespace INTV.Shared.Utility
         {
             NSImage image = null;
             var data = NSData.FromStream(stream);
+
             // Stupid Mac won't let us create images from non-UI thread.
             if (OSDispatcher.IsMainThread)
             {
@@ -120,6 +121,7 @@ namespace INTV.Shared.Utility
                     var representation = representations[0];
                     var verticalScale = representation.Size.Height / representation.PixelsHigh;
                     var horizontalScale = representation.Size.Width / representation.PixelsWide;
+
                     // On Mac, assumption is 72 DPI. If the scales computed here are <> 1, that means we're
                     // loading something at a different DPI, so let's "scale" the NSImage. Ugh.
                     if ((verticalScale < 1) || (horizontalScale < 1) || (verticalScale > 1) || (horizontalScale > 1))
@@ -141,7 +143,7 @@ namespace INTV.Shared.Utility
         /// Gets a value stored in a NSBundle's info.pplist (InfoDictionary).
         /// </summary>
         /// <param name="bundle">The bundle containing the info.plist.</param>
-        /// <param name="infoPListKey">The key identifying the info.plist value to get.</param>
+        /// <param name="infoPlistKey">The key identifying the info.plist value to get.</param>
         /// <returns>The value stored in the info.plist, or <c>null</c> if not found, or an error occurs.</returns>
         public static NSObject GetPListValue(this NSBundle bundle, string infoPlistKey)
         {
@@ -194,7 +196,7 @@ namespace INTV.Shared.Utility
             object value = null;
             try
             {
-                //var info = bundle.InfoDictionary;
+                ////var info = bundle.InfoDictionary;
                 NSObject environmentData = GetPListValue(bundle, "LSEnvironment");
                 if (environmentData != null/*info.TryGetValue(new NSString("LSEnvironment"), out environmentData)*/)
                 {
@@ -229,7 +231,7 @@ namespace INTV.Shared.Utility
             {
                 // Boolean environment variables in plist may show up as char type NSNumbers. However,
                 // NSNumber doesn't have a 'char' return value - it uses SByte.
-                if (((System.Type.GetTypeCode(typeof(T)) == System.TypeCode.Boolean)) && (System.Type.GetTypeCode(rawValue.GetType()) == System.TypeCode.SByte))
+                if ((System.Type.GetTypeCode(typeof(T)) == System.TypeCode.Boolean) && (System.Type.GetTypeCode(rawValue.GetType()) == System.TypeCode.SByte))
                 {
                     rawValue = (sbyte)rawValue != 0;
                 }

@@ -21,9 +21,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.ComponentModel;
-using INTV.Shared.Utility;
 using INTV.JzIntv.Model;
+using INTV.JzIntvUI.Commands;
+using INTV.JzIntvUI.Model;
+using INTV.JzIntvUI.ViewModel;
 using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -31,10 +35,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.JzIntvUI.Model;
-using INTV.JzIntvUI.ViewModel;
-using INTV.Shared.View;
-using INTV.JzIntvUI.Commands;
 
 #if __UNIFIED__
 using SelIndexType = System.UInt64;
@@ -44,6 +44,9 @@ using SelIndexType = System.Int32;
 
 namespace INTV.JzIntvUI.View
 {
+    /// <summary>
+    /// Mac-specific implementation.
+    /// </summary>
     public partial class JzIntvSettingsPageController : NSViewController, IFakeDependencyObject
     {
         #region Constructors
@@ -228,7 +231,10 @@ namespace INTV.JzIntvUI.View
 
         private static SelectedTab LastSelectedTab { get; set; }
 
-        private JzIntvSettingsPageViewModel ViewModel { get { return DataContext as JzIntvSettingsPageViewModel; } } 
+        private JzIntvSettingsPageViewModel ViewModel
+        {
+            get { return DataContext as JzIntvSettingsPageViewModel; }
+        } 
 
         #endregion // Properties
 
@@ -362,6 +368,10 @@ namespace INTV.JzIntvUI.View
             LastSelectedTab = selectedTab;
         }
 
+        /// <summary>
+        /// Called when command line option behavior is changed.
+        /// </summary>
+        /// <param name="sender">Radio button control.</param>
         partial void CommandLineOptionSelected(NSObject sender)
         {
             var button = sender as NSButton;
@@ -369,6 +379,10 @@ namespace INTV.JzIntvUI.View
             ViewModel.CommandLineMode = (CommandLineMode)(int)button.Tag;
         }
 
+        /// <summary>
+        /// Clears the configuration path.
+        /// </summary>
+        /// <param name="sender">The control that was clicked.</param>
         partial void ClearConfigurationPath(NSObject sender)
         {
             var control = sender as NSControl;
@@ -410,6 +424,10 @@ namespace INTV.JzIntvUI.View
             }
         }
 
+        /// <summary>
+        /// Sets the configuration path.
+        /// </summary>
+        /// <param name="sender">The button that was clicked.</param>
         partial void SetConfigurationPath(NSObject sender)
         {
             var control = sender as NSControl;
@@ -451,6 +469,10 @@ namespace INTV.JzIntvUI.View
             }
         }
 
+        /// <summary>
+        /// Resets the display resolution to default.
+        /// </summary>
+        /// <param name="sender">The button that was clicked.</param>
         partial void ResetResolutionToDefault(NSObject sender)
         {
             var selectedResolution = JzIntvSettingsPageViewModel.DefaultResolution;
@@ -469,33 +491,46 @@ namespace INTV.JzIntvUI.View
 
         private enum SelectedTab
         {
+            /// <summary>No tab is selected.</summary>
             None = 0,
 
+            /// <summary>General settings tab is selected.</summary>
             General,
 
+            /// <summary>Path settings tab is selected.</summary>
             Paths,
 
+            /// <summary>Display settings tab is selected.</summary>
             Display,
 
+            /// <summary>Input settings tab is selected.</summary>
             Input,
 
+            /// <summary>Advanced settings tab is selected.</summary>
             Advanced
         }
 
         private enum TextFieldId
         {
+            /// <summary>No text field applies.</summary>
             None = 0,
 
+            /// <summary>The first joystick configuration text field.</summary>
             Joystick0,
 
+            /// <summary>The second joystick configuration text field.</summary>
             Joystick1,
 
+            /// <summary>The third joystick configuration text field.</summary>
             Joystick2,
 
+            /// <summary>The fourth joystick configuration text field.</summary>
             Joystick3,
 
+            /// <summary>The additional command line text field.</summary>
             AdditionalCommandLine,
 
+            /// <summary>The custom command line text field.</summary>
             CustomCommandLine
         }
 
@@ -533,7 +568,7 @@ namespace INTV.JzIntvUI.View
 #endif // __UNIFIED__
 
             /// <summary>Shared initialization code.</summary>
-            void Initialize()
+            private void Initialize()
             {
             }
 

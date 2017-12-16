@@ -20,6 +20,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,8 +29,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -198,6 +198,7 @@ namespace INTV.Shared.View
                 Controller.Dispose();
                 Controller = null;
             }
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(

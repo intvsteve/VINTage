@@ -49,7 +49,7 @@ namespace INTV.Shared.View
         /// Called when created directly from a XIB file.
         /// </summary>
         /// <param name="coder">Used to deserialize from a XIB.</param>
-        [Export ("initWithCoder:")]
+        [Export("initWithCoder:")]
         public ProgressIndicator(NSCoder coder)
             : base(coder)
         {
@@ -73,13 +73,13 @@ namespace INTV.Shared.View
         }
 
         /// <inheritdoc />
-        public object GetValue (string propertyName)
+        public object GetValue(string propertyName)
         {
             return this.GetPropertyValue(propertyName);
         }
 
         /// <inheritdoc />
-        public void SetValue (string propertyName, object value)
+        public void SetValue(string propertyName, object value)
         {
             this.SetPropertyValue(propertyName, value);
         }
@@ -87,9 +87,9 @@ namespace INTV.Shared.View
         #endregion // IFakeDependencyObject
 
         /// <inheritdoc />
-        public override void AwakeFromNib ()
+        public override void AwakeFromNib()
         {
-            base.AwakeFromNib ();
+            base.AwakeFromNib();
         }
     }
 }

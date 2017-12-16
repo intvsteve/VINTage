@@ -288,12 +288,12 @@
     <Compile Include="View\GeneralFeaturesConfigurationPageController.Mac.cs" />
     <Compile Include="View\SystemCompatibilityConfigurationPage.Mac.cs" />
     <Compile Include="View\SystemCompatibilityConfigurationPageController.Mac.cs" />
-    <Compile Include="View\SystemCompatibilityConfigurationPage.designer.Mac.cs">
+    <Compile Include="View\SystemCompatibilityConfigurationPage.Mac.designer.cs">
       <DependentUpon>SystemCompatibilityConfigurationPage.Mac.cs</DependentUpon>
     </Compile>
     <Compile Include="View\EcsFeaturesConfigurationPageController.Mac.cs" />
     <Compile Include="View\EcsFeaturesConfigurationPage.Mac.cs" />
-    <Compile Include="View\EcsFeaturesConfigurationPage.designer.Mac.cs">
+    <Compile Include="View\EcsFeaturesConfigurationPage.Mac.designer.cs">
       <DependentUpon>EcsFeaturesConfigurationPage.Mac.cs</DependentUpon>
     </Compile>
     <Compile Include="View\JlpFeaturesConfigurationPageController.Mac.cs" />
@@ -373,6 +373,8 @@
     <Compile Include="Utility\PathComparer.Default.cs" />
     <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
     <Compile Include="View\IMainWindow.cs" />
+    <Compile Include="View\ROMsTableView.Mac.cs" />
+    <Compile Include="View\NSTableViewHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj">

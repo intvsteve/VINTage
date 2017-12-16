@@ -20,6 +20,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,11 +29,12 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
-using INTV.Shared.View;
 
 namespace INTV.LtoFlash.View
 {
+    /// <summary>
+    /// Mac-specific implementation.
+    /// </summary>
     [System.ComponentModel.Composition.Export(typeof(IFakeDependencyObject))]
     [System.ComponentModel.Composition.ExportMetadata("Type", typeof(MenuLayoutView))]
     public partial class MenuLayoutView : NSView, System.ComponentModel.INotifyPropertyChanged, IFakeDependencyObject
@@ -75,7 +78,7 @@ namespace INTV.LtoFlash.View
             if (!System.IO.File.Exists(colorsPath))
             {
                 // We haven't stashed the color list, so make one.
-                colorList =  new NSColorList(MenuColorPaletteName);
+                colorList = new NSColorList(MenuColorPaletteName);
                 var colors = INTV.LtoFlash.ViewModel.MenuLayoutViewModel.Colors;
                 int i = 0;
                 foreach (var color in colors)
@@ -98,8 +101,9 @@ namespace INTV.LtoFlash.View
                 attributes |= System.IO.FileAttributes.ReadOnly;
                 System.IO.File.SetAttributes(colorsPath, attributes);
             }
+
             // Load from read-only color list
-            colorList =  new NSColorList(MenuColorPaletteName, colorsPath);
+            colorList = new NSColorList(MenuColorPaletteName, colorsPath);
             NSColorPanel.SetPickerStyle(NSColorPanelFlags.ColorList);
             NSColorPanel.SetPickerMode(NSColorPanelMode.ColorList);
             var panel = NSColorPanel.SharedColorPanel;
@@ -153,13 +157,13 @@ namespace INTV.LtoFlash.View
         }
 
         /// <inheritdoc />
-        public object GetValue (string propertyName)
+        public object GetValue(string propertyName)
         {
             return this.GetPropertyValue(propertyName);
         }
 
         /// <inheritdoc />
-        public void SetValue (string propertyName, object value)
+        public void SetValue(string propertyName, object value)
         {
             this.SetPropertyValue(propertyName, value);
         }

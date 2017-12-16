@@ -20,6 +20,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,9 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 #if __UNIFIED__
 using nfloat = System.nfloat;
@@ -90,43 +90,64 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the window as a strongly typed value.
         /// </summary>
-        public new ReportDialog Window { get { return (ReportDialog)base.Window; } }
+        public new ReportDialog Window
+        {
+            get { return (ReportDialog)base.Window; }
+        }
 
         /// <summary>
         /// Gets the message to display.
         /// </summary>
         [OSExport(ReportDialogViewModel.MessagePropertyName)]
-        public string Message { get { return DialogDataContext.Message; } }
+        public string Message
+        {
+            get { return DialogDataContext.Message; }
+        }
 
         /// <summary>
         /// Gets the text to show on the cancel / close dialog button.
         /// </summary>
         [OSExport(ReportDialogViewModel.CloseDialogButtonTextPropertyName)]
-        public string CloseDialogButtonText { get { return DialogDataContext.CloseDialogButtonText; } }
+        public string CloseDialogButtonText
+        {
+            get { return DialogDataContext.CloseDialogButtonText; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the close dialog button should be enabled.
         /// </summary>
         [OSExport(ReportDialogViewModel.CloseDialogButtonEnabledPropertyName)]
-        public bool CloseDialogButtonEnabled { get { return DialogDataContext.CloseDialogButtonEnabled; } }
+        public bool CloseDialogButtonEnabled
+        {
+            get { return DialogDataContext.CloseDialogButtonEnabled; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether to show the 'do not show again' checkbox.
         /// </summary>
         [OSExport(ReportDialogViewModel.ShowDoNotShowAgainPropertyName)]
-        public bool ShowDoNotShowAgain { get { return DialogDataContext.ShowDoNotShowAgain; } }
+        public bool ShowDoNotShowAgain
+        {
+            get { return DialogDataContext.ShowDoNotShowAgain; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether to show the Copy to Clipboard button.
         /// </summary>
         [OSExport(ReportDialogViewModel.ShowCopyToClipboardButtonPropertyName)]
-        public bool ShowCopyToClipboardButton { get { return DialogDataContext.ShowCopyToClipboardButton; } }
+        public bool ShowCopyToClipboardButton
+        {
+            get { return DialogDataContext.ShowCopyToClipboardButton; }
+        }
 
         /// <summary>
         /// Gets the text to show on the 'Send Email' button.
         /// </summary>
         [OSExport(ReportDialogViewModel.SendEmailButtonLabelTextPropertyName)]
-        public string SendEmailButtonLabelText { get { return DialogDataContext.SendEmailButtonLabelText; } }
+        public string SendEmailButtonLabelText
+        {
+            get { return DialogDataContext.SendEmailButtonLabelText; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether to enable the send email button.
@@ -168,10 +189,13 @@ namespace INTV.Shared.View
         private NSColor _emailTextColor = NSColor.ControlText;
 
         /// <summary>
-        /// Gets whether there should be email attachments.
+        /// Gets a value indicating whether there should be email attachments.
         /// </summary>
         [OSExport(ReportDialogViewModel.HasAttachmentsPropertyName)]
-        public bool HasAttachments { get { return DialogDataContext.HasAttachments; } }
+        public bool HasAttachments
+        {
+            get { return DialogDataContext.HasAttachments; }
+        }
 
         private ReportDialogViewModel DialogDataContext { get; set; }
 
@@ -182,7 +206,8 @@ namespace INTV.Shared.View
             Window.DataContext = DialogDataContext;
             Window.WindowShouldClose = ShouldClose;
 
-            var propertiesToUpdate = new[] {
+            var propertiesToUpdate = new[]
+            {
                 ReportDialogViewModel.TitlePropertyName,
                 ReportDialogViewModel.MessagePropertyName,
                 ReportDialogViewModel.CloseDialogButtonTextPropertyName,
@@ -193,7 +218,7 @@ namespace INTV.Shared.View
                 ReportDialogViewModel.SendEmailButtonLabelTextPropertyName,
                 ReportDialogViewModel.ShowSendEmailButtonPropertyName,
                 ReportDialogViewModel.SendEmailEnabledPropertyName,
-                //ReportDialogViewModel.EmailSenderPropertyName,
+                ////ReportDialogViewModel.EmailSenderPropertyName,
                 ReportDialogViewModel.HasAttachmentsPropertyName,
             };
             foreach (var propertyName in propertiesToUpdate)
@@ -224,6 +249,7 @@ namespace INTV.Shared.View
             {
                 DialogDataContext.PropertyChanged -= HandlePropertyChanged;
             }
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(
@@ -277,11 +303,19 @@ namespace INTV.Shared.View
             return DialogDataContext.CloseDialogButtonEnabled;
         }
 
+        /// <summary>
+        /// Show attachments button click handler.
+        /// </summary>
+        /// <param name="sender">The show attachments button.</param>
         partial void OnShowAttachments(NSObject sender)
         {
             ReportDialogViewModel.ShowAttachmentsInFileSystemCommand.Execute(DialogDataContext);
         }
 
+        /// <summary>
+        /// The send error report button click handler.
+        /// </summary>
+        /// <param name="sender">The send error report button.</param>
         partial void OnSendErrorReport(NSObject sender)
         {
             if (DialogDataContext.ShowEmailSender)
@@ -298,17 +332,25 @@ namespace INTV.Shared.View
                 // thing as is done for editing table cells. It may be that trying to use
                 // a custom NSFormatter in MonoMac is just a lost cause.
                 var emailEntry = Window.ContentView.FindChild<NSTextField>(t => t.Tag == 1);
-                // emailEntry.StringValue = DialogDataContext.EmailSender;
+                ////emailEntry.StringValue = DialogDataContext.EmailSender;
                 emailEntry.ValidateEditing();
             }
             ReportDialogViewModel.SendErrorReportEmailCommand.Execute(DialogDataContext);
         }
 
+        /// <summary>
+        /// The copy to clipboard button click handler.
+        /// </summary>
+        /// <param name="sender">The copy to clipboard button.</param>
         partial void OnCopyToClipboard(NSObject sender)
         {
             ReportDialogViewModel.CopyToClipboardCommand.Execute(DialogDataContext);
         }
 
+        /// <summary>
+        /// The exit button click handler.
+        /// </summary>
+        /// <param name="sender">The exit button.</param>
         partial void OnExit(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Stopped);
@@ -316,15 +358,20 @@ namespace INTV.Shared.View
 
         private enum Parts
         {
+            /// <summary>The text area.</summary>
             TextArea = 0,
+
+            /// <summary>The do not show again checkbox.</summary>
             DoNotShowAgainCheckbox,
+
+            /// <summary>The email address area.</summary>
             EmailAddressArea
         }
 
         /// <summary>
         /// Subclass of SplitView to get desired behaviors.
         /// </summary>
-        [Register ("MySplitView")]
+        [Register("MySplitView")]
         public class MySplitView : NSSplitView
         {
             #region Constructors
@@ -334,7 +381,7 @@ namespace INTV.Shared.View
             /// </summary>
             /// <param name="handle">Native pointer to NSView.</param>
             public MySplitView(System.IntPtr handle)
-                : base (handle)
+                : base(handle)
             {
                 Initialize();
             }
@@ -343,9 +390,9 @@ namespace INTV.Shared.View
             /// Called when created directly from a XIB file.
             /// </summary>
             /// <param name="coder">Used to deserialize from a XIB.</param>
-            [Export ("initWithCoder:")]
+            [Export("initWithCoder:")]
             public MySplitView(NSCoder coder)
-                : base (coder)
+                : base(coder)
             {
                 Initialize();
             }

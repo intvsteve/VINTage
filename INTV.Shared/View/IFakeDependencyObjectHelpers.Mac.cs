@@ -106,7 +106,7 @@ namespace INTV.Shared.View
 
         private static IDictionary<string, object> GetAttachedProperties(this object o)
         {
-            System.Diagnostics.Debug.Assert(o.GetType().IsClass);
+            System.Diagnostics.Debug.Assert(o.GetType().IsClass, "The given type must be a class.");
             var properties = AttachedProperties.GetEntry(o);
             if (properties == null)
             {

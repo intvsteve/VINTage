@@ -116,7 +116,7 @@ namespace INTV.Shared.ViewModel
             if (files.Any())
             {
                 var options = RomDiscoveryOptions.AddNewRoms | RomDiscoveryOptions.AccumulateRejectedRoms;
-                var args = new RomDiscoveryData(files, Programs.ModelCollection, insertLocation, Resources.Strings.RomListViewModel_Progress_Title, options);
+                var args = new RomDiscoveryData(files, Programs.ModelCollection, insertLocation, Resources.Strings.RomListViewModel_Progress_Title, options) { SelectNewRoms = true };
                 AddPrograms(args);
                 bool updatedSearchDirectories = false;
                 foreach (var file in files)

@@ -482,6 +482,16 @@ namespace INTV.Shared.ViewModel
                 {
                     collectionChanged(this, new System.Collections.Specialized.NotifyCollectionChangedEventArgs(System.Collections.Specialized.NotifyCollectionChangedAction.Add, addedRoms as System.Collections.IList));
                 }
+                if (args.SelectNewRoms)
+                {
+                    CurrentSelection.Clear();
+                    var addedItemIndexes = addedRoms.Select(r => Programs.ModelCollection.IndexOf(r));
+                    foreach (var addedRomIndex in addedItemIndexes)
+                    {
+                        var programViewModel = Programs[addedRomIndex];
+                        CurrentSelection.Add(programViewModel);
+                    }
+                }
                 SaveRomList(true);
             }
             Model.EndAddRomsFromFiles(args.DuplicateRomPaths);
@@ -543,7 +553,8 @@ namespace INTV.Shared.ViewModel
                     }
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
-                    throw new System.NotImplementedException();
+                    Model.SelectionIndexes.Clear();
+                    break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
                     break;
             }

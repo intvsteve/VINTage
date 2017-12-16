@@ -106,5 +106,10 @@ namespace INTV.Shared.ViewModel
         /// Gets or sets a value indicating whether this operation is adding the "starter" ROMs.
         /// </summary>
         public bool AddingStarterRoms { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to highlight (select) newly added ROMs in the UI.
+        /// </summary>
+        public bool SelectNewRoms { get; set; }
     }
 }

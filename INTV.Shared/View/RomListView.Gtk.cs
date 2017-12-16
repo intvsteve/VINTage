@@ -37,6 +37,8 @@ namespace INTV.Shared.View
     [Gtk.Binding(Gdk.Key.BackSpace, "HandleDeleteSelectedItems")]
     public partial class RomListView : Gtk.Bin, IFakeDependencyObject
     {
+        private bool _updatingSelection;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.View.RomListView"/> class.
         /// </summary>
@@ -128,6 +130,7 @@ namespace INTV.Shared.View
             viewModel.Model.ProgramStatusChanged += HandleProgramStatusChanged;
 
             treeView.Selection.Changed += HandleSelectionChanged;
+            ViewModel.CurrentSelection.CollectionChanged += HandleViewModelSelectionChanged;
         }
 
         #region IFakeDependencyObject
@@ -152,6 +155,11 @@ namespace INTV.Shared.View
         }
 
         #endregion // IFakeDependencyObject
+
+        private RomListViewModel ViewModel
+        {
+            get { return (RomListViewModel)DataContext; }
+        }
 
         /// <inheritdoc/>
         protected override void OnDestroyed()
@@ -198,8 +206,7 @@ namespace INTV.Shared.View
         /// <param name="args">The event data.</param>
         protected void HandleRomListFocusIn(object o, Gtk.FocusInEventArgs args)
         {
-            var viewModel = DataContext as RomListViewModel;
-            viewModel.ListHasFocus = true;
+            ViewModel.ListHasFocus = true;
         }
 
         /// <summary>
@@ -209,8 +216,7 @@ namespace INTV.Shared.View
         /// <param name="args">The event data.</param>
         protected void HandleRomListFocusOut(object o, Gtk.FocusOutEventArgs args)
         {
-            var viewModel = DataContext as RomListViewModel;
-            viewModel.ListHasFocus = false;
+            ViewModel.ListHasFocus = false;
         }
 
         /// <summary>
@@ -259,7 +265,7 @@ namespace INTV.Shared.View
                 DebugDragDrop("HandleDragDataReceived: path: " + path + " pos: " + pos);
             }
             var dragDataArgs = new System.Tuple<Gtk.DragDataReceivedArgs, Gtk.TreePath, Gtk.TreeViewDropPosition>(args, path, pos);
-            ((RomListViewModel)DataContext).DropFilesCommand.Execute(dragDataArgs);
+            ViewModel.DropFilesCommand.Execute(dragDataArgs);
         }
 
         /// <summary>
@@ -411,30 +417,94 @@ namespace INTV.Shared.View
 
         private void HandleSelectionChanged(object sender, System.EventArgs e)
         {
-            var viewModelSelection = ((RomListViewModel)DataContext).CurrentSelection;
-            var selectedItems = new List<ProgramDescriptionViewModel>();
-            var selection = sender as Gtk.TreeSelection;
-            var selectedItemPaths = selection.GetSelectedRows();
-            foreach (var path in selectedItemPaths)
+            if (!_updatingSelection)
             {
-                Gtk.TreeIter iter;
-                if (selection.TreeView.Model.GetIter(out iter, path))
+                _updatingSelection = true;
+                try
                 {
-                    var item = selection.TreeView.Model.GetValue(iter, 0) as ProgramDescriptionViewModel;
-                    selectedItems.Add(item);
+                    var viewModelSelection = ViewModel.CurrentSelection;
+                    var selectedItems = new List<ProgramDescriptionViewModel>();
+                    var selection = sender as Gtk.TreeSelection;
+                    var selectedItemPaths = selection.GetSelectedRows();
+                    foreach (var path in selectedItemPaths)
+                    {
+                        Gtk.TreeIter iter;
+                        if (selection.TreeView.Model.GetIter(out iter, path))
+                        {
+                            var item = selection.TreeView.Model.GetValue(iter, 0) as ProgramDescriptionViewModel;
+                            selectedItems.Add(item);
+                        }
+                    }
+                    var itemsToRemove = viewModelSelection.Except(selectedItems).ToList();
+                    foreach (var itemToRemove in itemsToRemove)
+                    {
+                        viewModelSelection.Remove(itemToRemove);
+                    }
+                    foreach (var selectedItem in selectedItems.Except(viewModelSelection).ToList())
+                    {
+                        viewModelSelection.Add(selectedItem);
+                    }
+
+                    INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+                }
+                finally
+                {
+                    _updatingSelection = false;
                 }
             }
-            var itemsToRemove = viewModelSelection.Except(selectedItems).ToList();
-            foreach (var itemToRemove in itemsToRemove)
-            {
-                viewModelSelection.Remove(itemToRemove);
-            }
-            foreach (var selectedItem in selectedItems.Except(viewModelSelection).ToList())
-            {
-                viewModelSelection.Add(selectedItem);
-            }
+        }
 
-            INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+        private void HandleViewModelSelectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (!_updatingSelection)
+            {
+                this.HandleEventOnMainThread(sender, e, HandleViewModelSelectionChangedCore);
+            }
+        }
+
+        private void HandleViewModelSelectionChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            _updatingSelection = true;
+            try
+            {
+                var selection = _romListView.Selection;
+                switch (e.Action)
+                {
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
+                        if (e.NewItems != null)
+                        {
+                            foreach (ProgramDescriptionViewModel item in e.NewItems)
+                            {
+                                var index = ViewModel.Programs.IndexOf(item);
+                                var path = new Gtk.TreePath();
+                                path.AppendIndex(index);
+                                selection.SelectPath(path);
+                            }
+                        }
+                        if (e.OldItems != null)
+                        {
+                            foreach (ProgramDescriptionViewModel item in e.OldItems)
+                            {
+                                var index = ViewModel.Programs.IndexOf(item);
+                                var path = new Gtk.TreePath();
+                                path.AppendIndex(index);
+                                selection.UnselectPath(path);
+                            }
+                        }
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                        selection.UnselectAll();
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
+                        break;
+                }
+            }
+            finally
+            {
+                _updatingSelection = false;
+            }
         }
     }
 }

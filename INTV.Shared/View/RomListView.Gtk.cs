@@ -251,7 +251,15 @@ namespace INTV.Shared.View
         protected void HandleDragDataReceived(object o, Gtk.DragDataReceivedArgs args)
         {
             DebugDragDrop("HandleDragDataReceived");
-            ((RomListViewModel)DataContext).DropFilesCommand.Execute(args);
+            var treeView = o as Gtk.TreeView;
+            Gtk.TreePath path;
+            Gtk.TreeViewDropPosition pos;
+            if (treeView.GetDestRowAtPos(args.X, args.Y, out path, out pos))
+            {
+                DebugDragDrop("HandleDragDataReceived: path: " + path + " pos: " + pos);
+            }
+            var dragDataArgs = new System.Tuple<Gtk.DragDataReceivedArgs, Gtk.TreePath, Gtk.TreeViewDropPosition>(args, path, pos);
+            ((RomListViewModel)DataContext).DropFilesCommand.Execute(dragDataArgs);
         }
 
         /// <summary>

@@ -73,9 +73,12 @@ namespace INTV.Shared.ViewModel
         /// </summary>
         /// <param name="osDropArgs">OS-specific drag drop arguments.</param>
         /// <param name="droppedFiles">Recieves the dropped files retrieved from <paramref name="osDropArgs"/>.</param>
-        partial void GetFilesDropped(object osDropArgs, List<string> droppedFiles)
+        /// <returns>The insert location of the new items.</returns>
+        private int GetFilesDropped(object osDropArgs, List<string> droppedFiles)
         {
-            var dropArgs = osDropArgs as Gtk.DragDataReceivedArgs;
+            var insertLocation = -1;
+            var dropData = osDropArgs as System.Tuple<Gtk.DragDataReceivedArgs, Gtk.TreePath, Gtk.TreeViewDropPosition>;
+            var dropArgs = dropData.Item1;
             if ((DragDropDataType)dropArgs.Info == DragDropDataType.Utf8String)
             {
                 var droppedFileUris = dropArgs.SelectionData.Text.Split('\r', '\n').Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p));
@@ -88,17 +91,32 @@ namespace INTV.Shared.ViewModel
                         droppedFiles.Add(file);
                     }
                 }
+
+                // A value of null for the Gtk.TreePath indicates after the end of the last item - so append.
+                if (dropData.Item2 != null)
+                {
+                    insertLocation = dropData.Item2.Indices[0];
+                    if ((dropData.Item3 & Gtk.TreeViewDropPosition.After) == Gtk.TreeViewDropPosition.After)
+                    {
+                        ++insertLocation;
+                        if (insertLocation >= Programs.ModelCollection.Count)
+                        {
+                            insertLocation = -1;
+                        }
+                    }
+                }
             }
+            return insertLocation;
         }
 
         private void FilesDropped(object dropEventArgs)
         {
             List<string> files = new List<string>();
-            GetFilesDropped(dropEventArgs, files);
+            var insertLocation = GetFilesDropped(dropEventArgs, files);
             if (files.Any())
             {
                 var options = RomDiscoveryOptions.AddNewRoms | RomDiscoveryOptions.AccumulateRejectedRoms;
-                var args = new RomDiscoveryData(files, Programs.ModelCollection, Resources.Strings.RomListViewModel_Progress_Title, options);
+                var args = new RomDiscoveryData(files, Programs.ModelCollection, insertLocation, Resources.Strings.RomListViewModel_Progress_Title, options);
                 AddPrograms(args);
                 bool updatedSearchDirectories = false;
                 foreach (var file in files)
@@ -147,7 +165,7 @@ namespace INTV.Shared.ViewModel
                 {
                     options |= RomDiscoveryOptions.DetectChanges | RomDiscoveryOptions.DetectMissingRoms | RomDiscoveryOptions.DetectNewRoms;
                 }
-                var taskData = new RomDiscoveryData(Properties.Settings.Default.RomListSearchDirectories, _programs.ModelCollection, Resources.Strings.RomListViewModel_ScanningForRoms_Title, options);
+                var taskData = new RomDiscoveryData(Properties.Settings.Default.RomListSearchDirectories, _programs.ModelCollection, -1, Resources.Strings.RomListViewModel_ScanningForRoms_Title, options);
                 SingleInstanceApplication.Instance.AddStartupAction("ScanForRoms", () => RefreshRoms(taskData), StartupTaskPriority.HighestAsyncTaskPriority);
             }
 

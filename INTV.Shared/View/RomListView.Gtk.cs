@@ -37,6 +37,9 @@ namespace INTV.Shared.View
     [Gtk.Binding(Gdk.Key.BackSpace, "HandleDeleteSelectedItems")]
     public partial class RomListView : Gtk.Bin, IFakeDependencyObject
     {
+        private static readonly Gdk.Pixbuf DragOneRomImage = typeof(RomListView).LoadImageResource("Resources/Images/rom_16xSM.png");
+        private static readonly Gdk.Pixbuf DragMultipleRomsImage = typeof(RomListView).LoadImageResource("Resources/Images/roms_16xSM.png");
+
         private bool _updatingSelection;
 
         /// <summary>
@@ -53,6 +56,7 @@ namespace INTV.Shared.View
             treeView.Selection.Mode = Gtk.SelectionMode.Multiple;
             treeView.HasTooltip = true;
             treeView.EnableModelDragDest(RomListViewModel.DragDropTargetEntries, Gdk.DragAction.Private);
+            treeView.EnableModelDragSource(Gdk.ModifierType.Button1Mask, RomListViewModel.DragDropSourceEntries, Gdk.DragAction.Link);
 
             var column = new Gtk.TreeViewColumn();
             Gtk.CellRenderer cellRenderer = new Gtk.CellRendererPixbuf();
@@ -226,7 +230,10 @@ namespace INTV.Shared.View
         /// <param name="args">The event data.</param>
         protected void HandleDragBegin(object o, Gtk.DragBeginArgs args)
         {
-            DebugDragDrop("HandleDragBegin");
+            var numItemsSelected = ViewModel.CurrentSelection.Count;
+            DebugDragDrop("HandleDragBegin: numItemsSelected: " + numItemsSelected);
+            var dragImage = numItemsSelected > 1 ? DragMultipleRomsImage : DragOneRomImage;
+            Gtk.Drag.SetIconPixbuf(args.Context, dragImage, 0, 0);
         }
 
         /// <summary>
@@ -247,6 +254,13 @@ namespace INTV.Shared.View
         protected void HandleDragDataGet(object o, Gtk.DragDataGetArgs args)
         {
             DebugDragDrop("HandleDragDataGet");
+            if (args.Info == RomListViewModel.DragDropSourceDataIdentifier)
+            {
+                var romList = o as Gtk.TreeView;
+                var paths = romList.Selection.GetSelectedRows();
+                var data = string.Join("\n", paths.Select(p => p.ToString()));
+                args.SelectionData.Set(args.SelectionData.Target, 8, System.Text.Encoding.UTF8.GetBytes(data));
+            }
         }
 
         /// <summary>

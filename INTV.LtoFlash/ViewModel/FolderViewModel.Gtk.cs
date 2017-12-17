@@ -63,6 +63,7 @@ namespace INTV.LtoFlash.ViewModel
                             case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                                 var newItems = new List<FileNodeViewModel>();
                                 Gtk.TreeIter insertIter;
+                                bool putAtFront = e.NewStartingIndex == 0;
                                 var insertIterValid = GetTreeIterForItem(out insertIter, treeIter, treeStore, null, e.NewStartingIndex - 1);
                                 for (int i = 0; i < e.NewItems.Count; ++i)
                                 {
@@ -76,7 +77,15 @@ namespace INTV.LtoFlash.ViewModel
                                     // TODO: Make sure this works for multi-adds.
                                     if (insertIterValid)
                                     {
-                                        insertIter = treeStore.InsertNodeAfter(insertIter);
+                                        if (putAtFront)
+                                        {
+                                            insertIter = treeStore.InsertNodeBefore(insertIter);
+                                            putAtFront = false;
+                                        }
+                                        else
+                                        {
+                                            insertIter = treeStore.InsertNodeAfter(insertIter);
+                                        }
                                         treeStore.SetValue(insertIter, 0, item);
                                     }
                                     else if (treeIter.Equals(Gtk.TreeIter.Zero))

@@ -51,9 +51,7 @@
               </widget>
               <packing>
                 <property name="Position">2</property>
-                <property name="AutoSize">True</property>
-                <property name="Expand">False</property>
-                <property name="Fill">False</property>
+                <property name="AutoSize">False</property>
               </packing>
             </child>
             <child>
@@ -157,6 +155,7 @@
                     <property name="ShowScrollbars">True</property>
                     <signal name="RowExpanded" handler="HandleRowExpanded" />
                     <signal name="RowCollapsed" handler="HandleRowCollapsed" />
+                    <signal name="DragDataReceived" handler="HandleDragDataReceived" />
                   </widget>
                 </child>
               </widget>

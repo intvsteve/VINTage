@@ -75,8 +75,6 @@ namespace INTV.LtoFlash.View
 			this.hbox1.Add (this._rootDirectoryUsage);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this._rootDirectoryUsage]));
 			w3.Position = 2;
-			w3.Expand = false;
-			w3.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this._dirtyIcon = new global::Gtk.Image ();
 			this._dirtyIcon.Name = "_dirtyIcon";
@@ -187,6 +185,7 @@ namespace INTV.LtoFlash.View
 			this._colorChooser.Changed += new global::System.EventHandler (this.HandleColorSelected);
 			this._menuLayout.RowExpanded += new global::Gtk.RowExpandedHandler (this.HandleRowExpanded);
 			this._menuLayout.RowCollapsed += new global::Gtk.RowCollapsedHandler (this.HandleRowCollapsed);
+			this._menuLayout.DragDataReceived += new global::Gtk.DragDataReceivedHandler (this.HandleDragDataReceived);
 		}
 	}
 }

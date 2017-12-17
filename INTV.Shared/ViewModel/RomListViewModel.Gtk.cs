@@ -34,9 +34,25 @@ namespace INTV.Shared.ViewModel
     [System.ComponentModel.Composition.Export(typeof(INTV.Shared.ComponentModel.IPrimaryComponent))]
     public partial class RomListViewModel
     {
+        /// <summary>
+        /// The drag drop source data identifier.
+        /// </summary>
+        public static readonly uint DragDropSourceDataIdentifier = Convert.ToUInt32(ProgramDescriptionViewModel.DragDataFormat.GetHashCode());
+
+        /// <summary>
+        /// The drag drop target entries.
+        /// </summary>
         internal static readonly Gtk.TargetEntry[] DragDropTargetEntries = new[]
         {
-                new Gtk.TargetEntry("UTF8_STRING", Gtk.TargetFlags.OtherApp, (uint)DragDropDataType.Utf8String),
+            new Gtk.TargetEntry("UTF8_STRING", Gtk.TargetFlags.OtherApp, (uint)DragDropDataType.Utf8String),
+        };
+
+        /// <summary>
+        /// The drag drop source entries.
+        /// </summary>
+        internal static readonly Gtk.TargetEntry[] DragDropSourceEntries = new[]
+        {
+                new Gtk.TargetEntry(ProgramDescriptionViewModel.DragDataFormat, Gtk.TargetFlags.App, DragDropSourceDataIdentifier)
         };
 
         private enum DragDropDataType : uint

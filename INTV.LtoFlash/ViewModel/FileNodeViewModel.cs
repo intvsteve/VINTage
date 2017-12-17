@@ -332,6 +332,20 @@ namespace INTV.LtoFlash.ViewModel
         #endregion // object Overrides
 
         /// <summary>
+        /// Add items to a specific destination folder.
+        /// </summary>
+        /// <param name="menuLayout">The menu layout to add items to.</param>
+        /// <param name="destination">The folder to which items are to be added.</param>
+        /// <param name="items">The items to add.</param>
+        /// <param name="insertIndex">The location at which to insert the new items.</param>
+        internal static void AddItems(MenuLayoutViewModel menuLayout, IFileContainer destination, IEnumerable<ProgramDescription> items, int insertIndex)
+        {
+            var taskData = new AddRomsToMenuData(menuLayout, destination, items, insertIndex);
+            var addRomsTask = new AsyncTaskWithProgress(Resources.Strings.AddItems_ProgressTitle, true, false);
+            addRomsTask.RunTask(taskData, AddItems, AddItemsComplete);
+        }
+
+        /// <summary>
         /// Adds items to the given menu layout in which each items specifies its own destination directory.
         /// </summary>
         /// <param name="menuLayout">The menu layout to which items are to be added.</param>
@@ -549,20 +563,6 @@ namespace INTV.LtoFlash.ViewModel
             {
                 return new ProgramViewModel() { Model = file };
             }
-        }
-
-        /// <summary>
-        /// Add items to a specific destination folder.
-        /// </summary>
-        /// <param name="menuLayout">The menu layout to add items to.</param>
-        /// <param name="destination">The folder to which items are to be added.</param>
-        /// <param name="items">The items to add.</param>
-        /// <param name="insertIndex">The location at which to insert the new items.</param>
-        protected static void AddItems(MenuLayoutViewModel menuLayout, IFileContainer destination, IEnumerable<ProgramDescription> items, int insertIndex)
-        {
-            var taskData = new AddRomsToMenuData(menuLayout, destination, items, insertIndex);
-            var addRomsTask = new AsyncTaskWithProgress(Resources.Strings.AddItems_ProgressTitle, true, false);
-            addRomsTask.RunTask(taskData, AddItems, AddItemsComplete);
         }
 
         /// <summary>

@@ -19,6 +19,8 @@
 // </copyright>
 
 using System.Linq;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -26,8 +28,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ComponentModel;
-using INTV.Shared.View;
 
 #if !__UNIFIED__
 using INSApplicationDelegate = MonoMac.AppKit.NSApplicationDelegate;
@@ -54,7 +54,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.Utility.SingleInstanceApplication"/> class.
         /// </summary>
-        /// <param name="handle">Handle.</param>
+        /// <param name="handle">Native object handle.</param>
         /// <remarks>Called when created from unmanaged code.</remarks>
         public SingleInstanceApplication(System.IntPtr handle)
             : base(handle)
@@ -66,7 +66,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.Utility.SingleInstanceApplication"/> class.
         /// </summary>
-        /// <param name="coder">Coder.</param>
+        /// <param name="coder">Native NSCoder.</param>
         /// <remarks>Called when created directly from a XIB file.</remarks>
         [Export("initWithCoder:")]
         public SingleInstanceApplication(NSCoder coder)
@@ -81,9 +81,12 @@ namespace INTV.Shared.Utility
         #region Properties
 
         /// <summary>
-        /// Strongly typed version of the application instance.
+        /// Gets a strongly typed version of the application instance.
         /// </summary>
-        public static SingleInstanceApplication Current { get { return NSApplication.SharedApplication as SingleInstanceApplication; } }
+        public static SingleInstanceApplication Current
+        {
+            get { return NSApplication.SharedApplication as SingleInstanceApplication; }
+        }
 
         /// <inheritdoc />
         public override NSWindow MainWindow
@@ -100,7 +103,7 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
-        /// Gets or sets the last key pressed.
+        /// Gets the last key pressed.
         /// </summary>
         public ushort LastKeyPressed { get; private set; }
 
@@ -136,44 +139,11 @@ namespace INTV.Shared.Utility
 
         #endregion // Events
 
-        #region IFakeDependencyObject
-
-        /// <inheritdoc />
-        public object GetValue (string propertyName)
-        {
-            return this.GetPropertyValue(propertyName);
-        }
-
-        /// <inheritdoc />
-        public void SetValue(string propertyName, object value)
-        {
-            this.SetPropertyValue(propertyName, value);
-        }
-
-        #endregion // IFakeDependencyObject
-
-        #region IPartImportsSatisfiedNotification
-
-        /// <inheritdoc />
-        public void OnImportsSatisfied()
-        {
-            try
-            {
-                InitializePlugins();
-            }
-            catch (System.Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine("Error initializing plugins: " + e.Message);
-            }
-        }
-
-        #endregion // IPartImportsSatisfiedNotification
-
         /// <summary>
         /// Runs the application.
         /// </summary>
         /// <param name="uniqueInstance">Unique instance string.</param>
-        /// <param name="settings">Settings.</param>
+        /// <param name="settings">The application ettings.</param>
         /// <param name="args">Command line arguments.</param>
         /// <param name="splashScreenImage">Splash screen image.</param>
         /// <typeparam name="T">The type for the main window class.</typeparam>
@@ -216,7 +186,7 @@ namespace INTV.Shared.Utility
             catch (System.Exception)
             {
                 // If this messes up, just try to launch normally.
-                previousInstance= null;
+                previousInstance = null;
             }
 
             if (previousInstance != null)
@@ -230,12 +200,45 @@ namespace INTV.Shared.Utility
             }
         }
 
+        #region IFakeDependencyObject
+
+        /// <inheritdoc />
+        public object GetValue(string propertyName)
+        {
+            return this.GetPropertyValue(propertyName);
+        }
+
+        /// <inheritdoc />
+        public void SetValue(string propertyName, object value)
+        {
+            this.SetPropertyValue(propertyName, value);
+        }
+
+        #endregion // IFakeDependencyObject
+
+        #region IPartImportsSatisfiedNotification
+
+        /// <inheritdoc />
+        public void OnImportsSatisfied()
+        {
+            try
+            {
+                InitializePlugins();
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Error initializing plugins: " + e.Message);
+            }
+        }
+
+        #endregion // IPartImportsSatisfiedNotification
+
         #region NSApplication Overrides
 
         /// <summary>
         /// Shows the help.
         /// </summary>
-        /// <param name="sender">Sender.</param>
+        /// <param name="sender">The application.</param>
         /// <remarks>Perhaps this is not provided as a standard method because you're encouraged to
         /// buy into the Mac help system? In any case, exporting this method in this manner overrides
         /// the default Objective-C message (instance method) so the system calls it.</remarks>
@@ -326,6 +329,120 @@ namespace INTV.Shared.Utility
             HandleWillTerminate(this, System.EventArgs.Empty);
         }
 
+        private static void OnDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
+        {
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
+            if (NSThread.IsMain)
+            {
+                ReportDomainUnhandledException(e.ExceptionObject as System.Exception);
+            }
+            else
+            {
+                Current.BeginInvokeOnMainThread(() => ReportDomainUnhandledException(e.ExceptionObject as System.Exception));
+            }
+        }
+
+        private static void ReportDomainUnhandledException(System.Exception exception)
+        {
+            var crashDialog = INTV.Shared.View.ReportDialog.Create(null, null);
+            (crashDialog.DataContext as INTV.Shared.ViewModel.ReportDialogViewModel).Exception = exception;
+
+            if (!AlreadyDisplayedExceptionDialog)
+            {
+                AlreadyDisplayedExceptionDialog = true;
+                crashDialog.ShowDialog(Resources.Strings.ReportDialog_Exit);
+            }
+        }
+
+        private static string GetPluginsDirectory()
+        {
+            string appPluginsDir = null;
+            try
+            {
+                NSError error;
+                var appSupportDir = NSFileManager.DefaultManager.GetUrl(NSSearchPathDirectory.ApplicationSupportDirectory, NSSearchPathDomain.User, null, true, out error);
+                if ((appSupportDir != null) && (error == null))
+                {
+                    var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+                    var appPluginsDirName = System.IO.Path.GetFileNameWithoutExtension(entryAssembly.Location);
+                    appSupportDir = appSupportDir.Append(appPluginsDirName, true);
+                    appSupportDir = appSupportDir.Append("Plugins", true);
+                    if (NSFileManager.DefaultManager.CreateDirectory(appSupportDir, true, null, out error))
+                    {
+                        appPluginsDir = appSupportDir.Path;
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                System.Diagnostics.Debug.WriteLine("Failed to initialize plugins directory.");
+            }
+            return appPluginsDir;
+        }
+
+#if !__UNIFIED__
+        private static NSError OnWillPresentError(NSApplication application, NSError error)
+        {
+            return error;
+        }
+        private bool ApplicationShouldTerminateAfterLastWindowClosedPredicate(NSApplication sender)
+        {
+            return true;
+        }
+#endif // !__UNIFIED__
+
+        private void HandleDidFinishLaunching(object sender, System.EventArgs e)
+        {
+            if ((MainWindow != null) && MainWindow.IsVisible && !(MainWindow is NSPanel))
+            {
+                if (!_handledDidFinishLaunching)
+                {
+                    _handledDidFinishLaunching = true;
+                    if (_splashScreen != null)
+                    {
+                        BeginInvokeOnMainThread(() =>
+                        {
+                            if (_splashScreen != null)
+                            {
+                                System.Threading.Thread.Sleep(333);
+                                _splashScreen.Hide();
+                            }
+                            _splashScreen = null;
+                        });
+                    }
+
+                    // Consider putting in a delay here? I.e. instead of BeginInvokeOnMainThread(), use
+                    // PerformSelector() with a delay? Is there a race condition that even BeginInvoke() isn't
+                    // getting around w.r.t. the Objective-C initialization and the work the startup actions
+                    // may need to do? (E.g. the case of NSUserDefaults.SetBool() crashing somewhere in its guts.)
+                    BeginInvokeOnMainThread(() =>
+                    {
+                        ExecuteStartupActions();
+                        CommandManager.InvalidateRequerySuggested();
+                    });
+                }
+            }
+            else
+            {
+                BeginInvokeOnMainThread(() => HandleDidFinishLaunching(this, System.EventArgs.Empty));
+            }
+        }
+
+        private void HandleWillTerminate(object sender, System.EventArgs e)
+        {
+            var exit = Exit;
+            if (exit != null)
+            {
+                exit(this, new ExitEventArgs());
+            }
+        }
+
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
         partial void OSInitialize()
         {
             // There's an annoying mono-ism that can occur that seems innocuous.
@@ -362,115 +479,6 @@ namespace INTV.Shared.Utility
             WillPresentError = OnWillPresentError;
 #endif // !__UNIFIED__
             AddObserver(this, (NSString)MainWindowValueName, NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, this.Handle);
-        }
-
-        private static void OnDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
-        {
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                System.Diagnostics.Debugger.Break();
-            }
-            if (NSThread.IsMain)
-            {
-                ReportDomainUnhandledException(e.ExceptionObject as System.Exception);
-            }
-            else
-            {
-                Current.BeginInvokeOnMainThread (() => ReportDomainUnhandledException(e.ExceptionObject as System.Exception));
-            }
-        }
-
-        private static void ReportDomainUnhandledException(System.Exception exception)
-        {
-            var crashDialog = INTV.Shared.View.ReportDialog.Create (null, null);
-            (crashDialog.DataContext as INTV.Shared.ViewModel.ReportDialogViewModel).Exception = exception;
-
-            if (!AlreadyDisplayedExceptionDialog) {
-                AlreadyDisplayedExceptionDialog = true;
-                crashDialog.ShowDialog (Resources.Strings.ReportDialog_Exit);
-            }
-        }
-
-#if !__UNIFIED__
-        private bool ApplicationShouldTerminateAfterLastWindowClosedPredicate(NSApplication sender)
-        {
-            return true;
-        }
-
-        private static NSError OnWillPresentError(NSApplication application, NSError error)
-        {
-            return error;
-        }
-#endif // !__UNIFIED__
-
-        private void HandleDidFinishLaunching(object sender, System.EventArgs e)
-        {
-            if ((MainWindow != null) && MainWindow.IsVisible && !(MainWindow is NSPanel))
-            {
-                if (!_handledDidFinishLaunching)
-                {
-                    _handledDidFinishLaunching = true;
-                    if (_splashScreen != null)
-                    {
-                        BeginInvokeOnMainThread(() => {
-                            if (_splashScreen != null)
-                            {
-                                System.Threading.Thread.Sleep(333);
-                                _splashScreen.Hide();
-                            }
-                            _splashScreen = null;
-                        });
-                    }
-
-                    // Consider putting in a delay here? I.e. instead of BeginInvokeOnMainThread(), use
-                    // PerformSelector() with a delay? Is there a race condition that even BeginInvoke() isn't
-                    // getting around w.r.t. the Objective-C initialization and the work the startup actions
-                    // may need to do? (E.g. the case of NSUserDefaults.SetBool() crashing somewhere in its guts.)
-                    BeginInvokeOnMainThread(() => {
-                        ExecuteStartupActions();
-                        CommandManager.InvalidateRequerySuggested();
-                    });
-                }
-            }
-            else
-            {
-                BeginInvokeOnMainThread(() => HandleDidFinishLaunching(this, System.EventArgs.Empty));
-            }
-        }
-
-        private void HandleWillTerminate(object sender, System.EventArgs e)
-        {
-            var exit = Exit;
-            if (exit != null)
-            {
-                exit(this, new ExitEventArgs());
-            }
-        }
-
-        private static string GetPluginsDirectory()
-        {
-            string appPluginsDir = null;
-            try
-            {
-                NSError error;
-                var appSupportDir = NSFileManager.DefaultManager.GetUrl(NSSearchPathDirectory.ApplicationSupportDirectory, NSSearchPathDomain.User, null, true, out error);
-                if ((appSupportDir != null) && (error == null))
-                {
-                    var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-                    var appPluginsDirName = System.IO.Path.GetFileNameWithoutExtension(entryAssembly.Location);
-                    appSupportDir = appSupportDir.Append(appPluginsDirName, true);
-                    appSupportDir = appSupportDir.Append("Plugins", true);
-                    if (NSFileManager.DefaultManager.CreateDirectory(appSupportDir, true, null, out error))
-                    {
-                        appPluginsDir = appSupportDir.Path;
-                    }
-                }
-            }
-            catch (System.Exception)
-            {
-                System.Diagnostics.Debug.WriteLine("Failed to initialize plugins directory.");
-            }
-            return appPluginsDir;
         }
     }
 }

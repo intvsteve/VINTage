@@ -21,6 +21,9 @@
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 
 using System.Collections.Generic;
+using INTV.Shared.Interop.DeviceManagement;
+using INTV.Shared.Interop.IOKit;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -30,9 +33,6 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
-using INTV.Shared.Interop.DeviceManagement;
-using INTV.Shared.Interop.IOKit;
-using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.Model
 {
@@ -65,7 +65,7 @@ namespace INTV.LtoFlash.Model
             IOService.StartSerialPortMonitor();
         }
 
-        private static void ApplicationWillExit (object sender, ExitEventArgs e)
+        private static void ApplicationWillExit(object sender, ExitEventArgs e)
         {
             Stop();
         }

@@ -37,13 +37,13 @@ namespace INTV.Shared.Interop.IOKit
         #region USBSpec.h
 
         /// <summary>The key used to get the USB Vendor Name property from an instance of IOKitRegistryEntry.</summary>
-        public static readonly string kUSBVendorString = "USB Vendor Name";
+        public static readonly string KUSBVendorString = "USB Vendor Name";
 
         /// <summary>The key used to get the USB Product Name property from an instance of IOKitRegistryEntry.</summary>
-        public static readonly string kUSBProductString = "USB Product Name";
+        public static readonly string KUSBProductString = "USB Product Name";
 
         /// <summary>The key used to get the USB Serial Number property from an instance of IOKitRegistryEntry.</summary>
-        public static readonly string kUSBSerialNumberString = "USB Serial Number";
+        public static readonly string KUSBSerialNumberString = "USB Serial Number";
 
         #endregion // USBSpec.h
 
@@ -75,7 +75,8 @@ namespace INTV.Shared.Interop.IOKit
                             }
                         }
                     }
-                } while(validEntry);
+                }
+                while (validEntry);
             }
 
             return ports;

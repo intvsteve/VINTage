@@ -26,7 +26,7 @@ namespace INTV.LtoFlash.Properties
     internal sealed partial class Settings : INTV.Shared.Properties.SettingsBase<Settings>
     {
         /// <summary>
-        /// Get whether to verify that the ROMs in the menu layout are all available.
+        /// Gets or sets a value indicating whether to verify that the ROMs in the menu layout are all available.
         /// </summary>
         public bool ValidateMenuAtStartup
         {
@@ -35,7 +35,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Get whether to search for connected devices on application launch.
+        /// Gets or sets a value indicating whether to search for connected devices on application launch.
         /// </summary>
         public bool SearchForDevicesAtStartup
         {
@@ -44,7 +44,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Get whether to reconcile local and device menu on device connect.
+        /// Gets or sets a value indicating whether to reconcile local and device menu on device connect.
         /// </summary>
         public bool ReconcileDeviceMenuWithLocalMenu
         {
@@ -53,7 +53,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Get whether to show advanced features in the UI.
+        /// Gets or sets a value indicating whether to show advanced features in the UI.
         /// </summary>
         public bool ShowAdvancedFeatures
         {
@@ -62,7 +62,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Get the last serial port used to connect to a Locutus device.
+        /// Gets or sets the last serial port used to connect to a Locutus device.
         /// </summary>
         public string LastActiveDevicePort
         {
@@ -71,7 +71,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Get whether to run garbage collection on a connected Locutus device.
+        /// Gets or sets a value indicating whether to run garbage collection on a connected Locutus device.
         /// </summary>
         public bool RunGCWhenConnected
         {
@@ -80,7 +80,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Get whether to automatically connect to any detected Locutus devices.
+        /// Gets or sets a value indicating whether to automatically connect to any detected Locutus devices.
         /// </summary>
         public bool AutomaticallyConnectToDevices
         {
@@ -89,7 +89,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Get whether to automatically add newly discovered ROMs to the menu layout.
+        /// Gets or sets a value indicating whether to automatically add newly discovered ROMs to the menu layout.
         /// </summary>
         public bool AddRomsToMenu
         {
@@ -98,7 +98,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Get whether to prompt to automatically add newly discovered ROMs to the menu layout.
+        /// Gets or sets a value indicating whether to prompt to automatically add newly discovered ROMs to the menu layout.
         /// </summary>
         public bool PromptToAddRomsToMenu
         {
@@ -107,7 +107,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Get whether to log serial port traffic to disk.
+        /// Gets or sets a value indicating whether to log serial port traffic to disk.
         /// </summary>
         public bool EnablePortLogging
         {
@@ -116,7 +116,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Gets whether to prompt to install the FTDI driver.
+        /// Gets or sets a value indicating whether to prompt to install the FTDI driver.
         /// </summary>
         public bool PromptToInstallFTDIDriver
         {
@@ -125,7 +125,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Dummy setting for compatibility with other platforms.
+        /// Gets or sets a value indicating whether to show file system details.
         /// </summary>
         public bool ShowFileSystemDetails
         {
@@ -135,7 +135,7 @@ namespace INTV.LtoFlash.Properties
         private bool _showFileSystemDetails; // ^^^Why is this done in this manner???
 
         /// <summary>
-        /// Gets or sets whether to prompt to import starter ROMs.
+        /// Gets or sets a value indicating whether to prompt to import starter ROMs.
         /// </summary>
         public bool PromptToImportStarterRoms
         {
@@ -144,7 +144,7 @@ namespace INTV.LtoFlash.Properties
         }
 
         /// <summary>
-        /// Gets or sets whether to prompt to upgrade firmware on device attach that has older firmware than
+        /// Gets or sets a value indicating whether to prompt to upgrade firmware on device attach that has older firmware than
         /// the version embedded in the shipping product if such has been built in.
         /// </summary>
         public bool PromptForFirmwareUpgrade

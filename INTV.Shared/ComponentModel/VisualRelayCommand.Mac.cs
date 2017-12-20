@@ -1,4 +1,4 @@
-﻿// <copyright file="VisualRelayCommand.Mono.cs" company="INTV Funhouse">
+﻿// <copyright file="VisualRelayCommand.Mac.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -25,6 +25,9 @@ namespace INTV.Shared.ComponentModel
     /// </summary>
     public partial class VisualRelayCommand
     {
+        /// <summary>
+        /// Mac-specific initialization.
+        /// </summary>
         partial void Initialize()
         {
             CommandManager.RequerySuggested += HandleRequerySuggested;

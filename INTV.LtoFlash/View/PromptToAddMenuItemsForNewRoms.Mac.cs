@@ -87,6 +87,7 @@ namespace INTV.LtoFlash.View
                 Controller.Dispose();
                 Controller = null;
             }
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(

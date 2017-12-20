@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.ComponentModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,7 +26,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ComponentModel;
 
 namespace INTV.Shared.Commands
 {
@@ -36,7 +36,7 @@ namespace INTV.Shared.Commands
     {
         #region ToggleGCPressureCommand
 
-        private static VisualRelayCommand ToggleGCPressureCommand = new VisualRelayCommand(OnToggleGCPressure)
+        private static readonly VisualRelayCommand ToggleGCPressureCommand = new VisualRelayCommand(OnToggleGCPressure)
         {
             UniqueId = UniqueNameBase + ".ToggleGCPressure",
             Name = "Toggle GC Pressure",
@@ -71,7 +71,7 @@ namespace INTV.Shared.Commands
 
         #region DumpWindowListCommand
 
-        private static VisualRelayCommand DumpWindowListCommand = new VisualRelayCommand(OnDumpWindowList)
+        private static readonly VisualRelayCommand DumpWindowListCommand = new VisualRelayCommand(OnDumpWindowList)
         {
             UniqueId = UniqueNameBase + ".DumpWindowListCommand",
             Name = "Dump Window List",
@@ -96,13 +96,19 @@ namespace INTV.Shared.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return null; }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates the visual for a command, if applicable.
+        /// </summary>
+        /// <param name="command">The command for which a visual must be created.</param>
+        /// <returns>The visual for the command.</returns>
         public override NSObject CreateVisualForCommand(ICommand command)
         {
             var window = INTV.Shared.Utility.SingleInstanceApplication.Current.MainWindow;
@@ -125,6 +131,9 @@ namespace INTV.Shared.Commands
             return visual;
         }
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             CommandList.Add(DumpWindowListCommand);

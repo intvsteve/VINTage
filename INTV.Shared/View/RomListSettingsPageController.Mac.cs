@@ -62,7 +62,7 @@ namespace INTV.Shared.View
         /// Call to load from the XIB/NIB file.
         /// </summary>
         public RomListSettingsPageController()
-            : base ("RomListSettingsPage", NSBundle.MainBundle)
+            : base("RomListSettingsPage", NSBundle.MainBundle)
         {
             Initialize();
         }
@@ -77,7 +77,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new RomListSettingsPage View { get { return (RomListSettingsPage)base.View; } }
+        public new RomListSettingsPage View
+        {
+            get { return (RomListSettingsPage)base.View; }
+        }
 
         #region IFakeDependencyObject
 
@@ -108,6 +111,10 @@ namespace INTV.Shared.View
             View.Controller = this;
         }
 
+        /// <summary>
+        /// Removes the search directory.
+        /// </summary>
+        /// <param name="sender">The ROM list control.</param>
         partial void RemoveSearchDirectory(NSObject sender)
         {
             var table = sender as NSTableView;

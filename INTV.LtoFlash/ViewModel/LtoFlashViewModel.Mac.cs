@@ -20,17 +20,20 @@
 
 ////#define ENABLE_COLORS_PATCH
 
+using INTV.LtoFlash.Model;
+using INTV.Shared.Commands;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 #else
 using MonoMac.AppKit;
 #endif // __UNIFIED__
-using INTV.LtoFlash.Model;
-using INTV.Shared.Commands;
-using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.ViewModel
 {
+    /// <summary>
+    /// Mac-specific implementation.
+    /// </summary>
     public partial class LtoFlashViewModel
     {
         private bool _showFTDIWarning;
@@ -39,6 +42,9 @@ namespace INTV.LtoFlash.ViewModel
         private FixColorsList _fixColors;
 #endif // ENABLE_ROMS_PATCH
 
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
         partial void OSInitialize()
         {
             _showFTDIWarning = OSVersion.Current < Configuration.Instance.RecommendedOSVersion;
@@ -48,6 +54,9 @@ namespace INTV.LtoFlash.ViewModel
 #endif // ENABLE_COLORS_PATCH
         }
 
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
         partial void OSOnActiveDeviceChanged()
         {
             if (_showFTDIWarning)
@@ -57,6 +66,9 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
         partial void OSDeviceArrivalDepartureActiveChanged()
         {
             var menuItem = INTV.LtoFlash.Commands.DeviceCommandGroup.ConnectToDeviceSubmenuCommand.MenuItem;
@@ -101,4 +113,3 @@ namespace INTV.LtoFlash.ViewModel
 #endif // ENABLE_COLORS_PATCH
     }
 }
-

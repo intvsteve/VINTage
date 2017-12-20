@@ -20,6 +20,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.LtoFlash.ViewModel;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,9 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.LtoFlash.ViewModel;
-using INTV.Shared.Utility;
-using INTV.Shared.View;
 
 namespace INTV.LtoFlash.View
 {
@@ -81,22 +81,35 @@ namespace INTV.LtoFlash.View
         /// <summary>
         /// Gets the window as a strongly typed value.
         /// </summary>
-        public new PromptToInstallFtdiDriverDialog Window { get { return (PromptToInstallFtdiDriverDialog)base.Window; } }
+        public new PromptToInstallFtdiDriverDialog Window
+        {
+            get { return (PromptToInstallFtdiDriverDialog)base.Window; }
+        }
 
         /// <summary>
         /// Gets the title of the dialog.
         /// </summary>
         [OSExport("Title")]
-        public string Title { get { return DialogDataContext.Title; } }
+        public string Title
+        {
+            get { return DialogDataContext.Title; }
+        }
 
         /// <summary>
         /// Gets the message to display in the dialog.
         /// </summary>
         [OSExport("Message")]
-        public string Message { get { return DialogDataContext.Message; } }
+        public string Message
+        {
+            get { return DialogDataContext.Message; }
+        }
 
         private PromptToInstallFtdiDriverDialogViewModel DialogDataContext { get; set; }
 
+        /// <summary>
+        /// Handle do not ask again checkbox.
+        /// </summary>
+        /// <param name="sender">The checkbox that was clicked.</param>
         partial void DoNotAskAgain(NSObject sender)
         {
             Properties.Settings.Default.PromptToInstallFTDIDriver = false;
@@ -104,11 +117,19 @@ namespace INTV.LtoFlash.View
             Window.EndDialog(NSRunResponse.Aborted);
         }
 
+        /// <summary>
+        /// Handle do not install button click.
+        /// </summary>
+        /// <param name="sender">The button that was clicked.</param>
         partial void DoNotInstall(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Aborted);
         }
 
+        /// <summary>
+        /// Handle launch installer button click.
+        /// </summary>
+        /// <param name="sender">The button that was clicked.</param>
         partial void LaunchInstaller(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Stopped);

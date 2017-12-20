@@ -1,4 +1,4 @@
-﻿// <copyright file="FileNodeColorViewModelToOSColorConverter.cs" company="INTV Funhouse">
+﻿// <copyright file="FileNodeColorViewModelToOSColorConverter.Mac.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.LtoFlash.ViewModel;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,8 +27,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.LtoFlash.ViewModel;
-using INTV.Shared.Utility;
 
 #if __UNIFIED__
 using nfloat = System.nfloat;
@@ -73,7 +73,6 @@ namespace INTV.LtoFlash.Converter
             Initialize();
         }
 
-
 #if !__UNIFIED__
         /// <summary>
         /// Called when created directly from a XIB file.
@@ -90,7 +89,7 @@ namespace INTV.LtoFlash.Converter
 #endif // !__UNIFIED__
 
         /// <inheritdoc />
-        public override NSObject TransformedValue (NSObject value)
+        public override NSObject TransformedValue(NSObject value)
         {
             var newColor = INTV.Core.Model.Stic.Color.Black.ToColor();
             var viewModel = value as FileNodeColorViewModel;
@@ -106,7 +105,6 @@ namespace INTV.LtoFlash.Converter
         {
             var osColor = value as NSColor;
             FileNodeColorViewModel colorViewModel = null;
-            // var intvColor = INTV.Core.Model.Stic.Color.NotAColor;
             foreach (var color in INTV.LtoFlash.ViewModel.MenuLayoutViewModel.Colors)
             {
                 var viewModelColor = FileNodeColorViewModel.GetColor(color);

@@ -1,4 +1,4 @@
-﻿// <copyright file="OSVisual.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="OSVisual.Mac.cs" company="INTV Funhouse">
 // Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -31,11 +31,10 @@ namespace INTV.Shared.View
     /// </summary>
     public partial struct OSVisual
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.View.OSVisual"/> struct.
         /// </summary>
-        /// <param name="visual">A window.</param>
+        /// <param name="window">A window.</param>
         public OSVisual(NSWindow window)
         {
             _visual = window;
@@ -44,7 +43,7 @@ namespace INTV.Shared.View
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.View.OSVisual"/> struct.
         /// </summary>
-        /// <param name="visual">A responder.</param>
+        /// <param name="responder">A responder.</param>
         public OSVisual(NSResponder responder)
         {
             _visual = responder;
@@ -71,7 +70,7 @@ namespace INTV.Shared.View
         }
 
         /// <summary>>Wraps a NSWindow in an abstracted visual.</summary>
-        /// <param name="color">A NSWindow to wrap in the abstraction.</param>
+        /// <param name="window">A NSWindow to wrap in the abstraction.</param>
         /// <returns>The wrapped NSWindow.</returns>
         public static implicit operator OSVisual(NSWindow window)
         {
@@ -79,7 +78,7 @@ namespace INTV.Shared.View
         }
 
         /// <summary>>Wraps a NSResponder in an abstracted visual.</summary>
-        /// <param name="color">A NSResponder to wrap in the abstraction.</param>
+        /// <param name="responder">A NSResponder to wrap in the abstraction.</param>
         /// <returns>The wrapped NSResponder.</returns>
         public static implicit operator OSVisual(NSResponder responder)
         {
@@ -87,7 +86,7 @@ namespace INTV.Shared.View
         }
 
         /// <summary>>Unwraps the NSWindow from a platform-abstract visual.</summary>
-        /// <param name="color">The abstracted NSWindow to convert to a platform-specific object.</param>
+        /// <param name="visual">The abstracted NSWindow to convert to a platform-specific object.</param>
         /// <returns>The native NSWindow.</returns>
         public static implicit operator NSWindow(OSVisual visual)
         {
@@ -95,7 +94,7 @@ namespace INTV.Shared.View
         }
 
         /// <summary>>Unwraps the NSResponder from a platform-abstract visual.</summary>
-        /// <param name="color">The abstracted NSResponder to convert to a platform-specific object.</param>
+        /// <param name="visual">The abstracted NSResponder to convert to a platform-specific object.</param>
         /// <returns>The native NSResponder.</returns>
         public static implicit operator NSResponder(OSVisual visual)
         {

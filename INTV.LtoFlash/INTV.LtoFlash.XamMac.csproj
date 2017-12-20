@@ -266,6 +266,8 @@
     <Compile Include="Model\SerialConnectionPolicy.Mac.cs" />
     <Compile Include="Model\SerialConnectionPolicy.cs" />
     <Compile Include="View\MenuLayoutView.cs" />
+    <Compile Include="View\NSTableViewHelpers.cs" />
+    <Compile Include="View\NSTreeNodeHelpers.cs" />
     <Compile Include="Properties\Settings.Mono.cs" />
     <Compile Include="Properties\Settings.cs" />
   </ItemGroup>

@@ -20,14 +20,14 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.Model.Program;
+using INTV.LtoFlash.Model;
+using INTV.Shared.ComponentModel;
 #if __UNIFIED__
 using Foundation;
 #else
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.Model.Program;
-using INTV.LtoFlash.Model;
-using INTV.Shared.ComponentModel;
 
 namespace INTV.LtoFlash.ViewModel
 {
@@ -90,7 +90,7 @@ namespace INTV.LtoFlash.ViewModel
         }
 
         /// <summary>
-        /// Gets whether this is a leaf node in the data tree.
+        /// Gets a value indicating whether this is a leaf node in the data tree.
         /// </summary>
         /// <remarks>Acts as "model" for Cocoa UI for <see cref="NSOutlineView"/>.</remarks>
         [INTV.Shared.Utility.OSExport("IsLeaf")]

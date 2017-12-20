@@ -21,6 +21,9 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -28,9 +31,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
-using INTV.Shared.View;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -93,7 +93,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the window as a strongly typed value.
         /// </summary>
-        public new SerialPortSelectorDialog Window { get { return (SerialPortSelectorDialog)base.Window; } }
+        public new SerialPortSelectorDialog Window
+        {
+            get { return (SerialPortSelectorDialog)base.Window; }
+        }
 
         private SerialPortSelectorDialogViewModel DataContext { get; set; }
 
@@ -130,6 +133,7 @@ namespace INTV.Shared.View
             }
             DataContext.PortSelectorViewModel.PropertyChanged -= HandlePortSelectorPropertyChanged;
             PortSelectorController.SelectionDoubleClicked -= HandleDoubleClick;
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(
@@ -165,11 +169,19 @@ namespace INTV.Shared.View
             }
         }
 
+        /// <summary>
+        /// Select button click handler
+        /// </summary>
+        /// <param name="sender">The select button.</param>
         partial void OnSelect(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Stopped);
         }
 
+        /// <summary>
+        /// The cancel button click handler.
+        /// </summary>
+        /// <param name="sender">The cancel button.</param>
         partial void OnCancel(NSObject sender)
         {
             Window.EndDialog(NSRunResponse.Aborted);

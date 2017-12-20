@@ -20,12 +20,12 @@
 
 using System.Collections.Specialized;
 using System.Linq;
+using INTV.Shared.Model;
 #if __UNIFIED__
 using Foundation;
 #else
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Model;
 
 namespace INTV.Shared.Properties
 {
@@ -34,17 +34,17 @@ namespace INTV.Shared.Properties
     /// </summary>
     internal sealed partial class Settings
     {
-        private const string _showFTDIWarning = "ShowFTDIWarning";
+        private const string ShowFTDIWarningSettingName = "ShowFTDIWarning";
 
         #region Properties
 
         /// <summary>
-        /// Gets the setting indicating whether or not to show the FTDI warning message.
+        /// Gets or sets a value indicating whether or not to show the FTDI warning message.
         /// </summary>
         public bool ShowFTDIWarning
         {
-            get { return GetSetting<bool>(_showFTDIWarning); }
-            set { SetSetting(_showFTDIWarning, value); }
+            get { return GetSetting<bool>(ShowFTDIWarningSettingName); }
+            set { SetSetting(ShowFTDIWarningSettingName, value); }
         }
 
         #endregion // Properties
@@ -82,7 +82,7 @@ namespace INTV.Shared.Properties
         /// </summary>
         partial void OSInitializeDefaults()
         {
-            AddSetting(_showFTDIWarning, true);
+            AddSetting(ShowFTDIWarningSettingName, true);
             InitializeUserDefaults();
         }
     }

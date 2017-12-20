@@ -58,7 +58,7 @@ namespace INTV.Shared.Converter
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.Converter.ValidEmailAddressFormatter"/> class.
         /// </summary>
-        /// <param name="f">Flags used by MonoMac.</param>
+        /// <param name="t">Flags used by MonoMac.</param>
         /// <remarks>Constructor to call on derived classes when the derived class has an [Export] constructor.</remarks>
         public ValidEmailAddressFormatter(NSObjectFlag t)
             : base(t)
@@ -78,7 +78,7 @@ namespace INTV.Shared.Converter
         }
 
         /// <summary>
-        /// Callback used to validate string to have a valid email address format.
+        /// Gets or sets the callback used to validate string to have a valid email address format.
         /// </summary>
         public System.Action<string, bool> TextUpdateCallback { get; set; }
 
@@ -162,7 +162,7 @@ namespace INTV.Shared.Converter
             var x = new NSMutableAttributedString(partialString, newAttributes);
             x.SetAttributes(newAttributes, new NSRange(0, partialString.Length));
             AttributedString.SetString(x);
-            // AttributedString.AddAttribute((NSString)"NSForegroundColorAttributeName", NSColor.Red, new NSRange(0, theString.Length));
+            ////AttributedString.AddAttribute((NSString)"NSForegroundColorAttributeName", NSColor.Red, new NSRange(0, theString.Length));
             if (TextUpdateCallback != null)
             {
                 TextUpdateCallback(partialString, INTV.Shared.Behavior.ValidEmailAddressBehavior.IsValidEmailAddress(partialString));
@@ -178,7 +178,7 @@ namespace INTV.Shared.Converter
         /// <param name="forString">String to parse to convert to an object.</param>
         /// <param name="errorDescription">Receives a descriptive error string.</param>
         /// <remarks>From a proposed (rejected) pull: https://github.com/mono/maccore/pull/25/files</remarks>
-        [Export ("getObjectValue:forString:errorDescription:")]
+        [Export("getObjectValue:forString:errorDescription:")]
         private bool ObjectFor(System.IntPtr objectFor, string forString, System.IntPtr errorDescription)
         {
             string errorDescriptionString = null;
@@ -190,9 +190,9 @@ namespace INTV.Shared.Converter
             {
                 System.Runtime.InteropServices.Marshal.WriteIntPtr(objectFor, outObjectFor.Handle);
             }
-            if (errorDescription != System.IntPtr.Zero && string.IsNullOrEmpty (errorDescriptionString) == false)
+            if (errorDescription != System.IntPtr.Zero && string.IsNullOrEmpty(errorDescriptionString) == false)
             {
-                NSString errorDescriptionObj = new NSString (errorDescriptionString);
+                NSString errorDescriptionObj = new NSString(errorDescriptionString);
                 System.Runtime.InteropServices.Marshal.WriteIntPtr(errorDescription, errorDescriptionObj.Handle);
             }
             return ret;

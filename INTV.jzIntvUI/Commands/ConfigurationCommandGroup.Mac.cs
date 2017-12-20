@@ -49,7 +49,9 @@ namespace INTV.JzIntvUI.Commands
 
         #region CommandGroup
 
-        /// <inheritdoc />
+        /// <summary>
+        /// General data context (parameter data) used for command execution for commands in the group.
+        /// </summary>
         public override object Context
         {
             get { return null; }
@@ -74,6 +76,9 @@ namespace INTV.JzIntvUI.Commands
 
         #region CommandGroup
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             OpenSettingsDialogCommand.MenuParent = JzIntvLauncherCommandGroup.JzIntvToolsMenuCommand;

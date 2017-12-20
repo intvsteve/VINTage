@@ -34,6 +34,10 @@ namespace INTV.Shared.Utility
     /// </summary>
     public static partial class RunExternalProgram
     {
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
+        /// <param name="programPath">Program path.</param>
         static partial void VerifyIsExecutable(string programPath)
         {
             var unixFileInfo = new Mono.Unix.UnixFileInfo(programPath);

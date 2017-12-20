@@ -37,7 +37,7 @@ namespace INTV.Shared.Utility
             // OS X 10.10 and later. *sigh*
             var versionString = NSProcessInfo.ProcessInfo.OperatingSystemVersionString;
             int foundPartNumber = 0;
-            const int numVersionParts = 3;
+            const int NumVersionParts = 3;
             int major = 0;
             int minor = 0;
             int patch = 0;
@@ -47,7 +47,7 @@ namespace INTV.Shared.Utility
                 int versionNumber;
                 if (int.TryParse(versionPart, out versionNumber))
                 {
-                    switch(foundPartNumber)
+                    switch (foundPartNumber)
                     {
                         case 0:
                             major = versionNumber;
@@ -60,7 +60,7 @@ namespace INTV.Shared.Utility
                             break;
                     }
                     ++foundPartNumber;
-                    if (foundPartNumber >= numVersionParts)
+                    if (foundPartNumber >= NumVersionParts)
                     {
                         break;
                     }

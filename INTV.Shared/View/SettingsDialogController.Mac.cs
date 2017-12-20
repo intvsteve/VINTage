@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.ComponentModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,7 +28,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ComponentModel;
 
 namespace INTV.Shared.View
 {
@@ -78,7 +78,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the window as a strongly typed value.
         /// </summary>
-        public new SettingsDialog Window { get { return (SettingsDialog)base.Window; } }
+        public new SettingsDialog Window
+        {
+            get { return (SettingsDialog)base.Window; }
+        }
 
         /// <inheritdoc />
         public override void AwakeFromNib()

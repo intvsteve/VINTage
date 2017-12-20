@@ -38,7 +38,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Raised when the timer 'ticks'.
         /// </summary>
-        public System.EventHandler Tick;
+        public event System.EventHandler Tick;
 
         /// <summary>
         /// Gets or sets the timer interval.
@@ -71,6 +71,12 @@ namespace INTV.Shared.Utility
             _timer = null;
         }
 
+        [System.Diagnostics.Conditional("ENABLE_DEBUG_OUTPUT")]
+        private static void DebugOutput(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+
         /// <summary>
         /// Executes the timer function.
         /// </summary>
@@ -96,17 +102,10 @@ namespace INTV.Shared.Utility
                     DebugOutput("@@@@@@@@@@@@@@@@@@TIMER TICK FINISHED from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
                 }
             }
-            catch(System.Exception exception)
+            catch (System.Exception exception)
             {
                 INTV.Shared.Utility.ErrorReporting.ReportError(ReportMechanism.Console, exception.Message);
             }
         }
-
-        [System.Diagnostics.Conditional("ENABLE_DEBUG_OUTPUT")]
-        private static void DebugOutput(object message)
-        {
-            System.Diagnostics.Debug.WriteLine(message);
-        }
     }
 }
-

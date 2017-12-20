@@ -19,12 +19,12 @@
 // </copyright>
 
 using System.Collections.Generic;
+using INTV.Core.Utility;
 #if __UNIFIED__
 using AppKit;
 #else
 using MonoMac.AppKit;
 #endif // __UNIFIED__
-using INTV.Core.Utility;
 
 namespace INTV.Shared.Behavior
 {
@@ -33,7 +33,7 @@ namespace INTV.Shared.Behavior
     /// </summary>
     public static partial class DragDropHelpers
     {
-        private static Dictionary<NSPasteboard, NSDataWrapper> PasteboardHelperData = new Dictionary<NSPasteboard, NSDataWrapper>();
+        private static readonly Dictionary<NSPasteboard, NSDataWrapper> PasteboardHelperData = new Dictionary<NSPasteboard, NSDataWrapper>();
 
         /// <summary>
         /// Prepares the pasteboard.
@@ -73,7 +73,7 @@ namespace INTV.Shared.Behavior
         }
 
         /// <summary>
-        /// Inidcates that the drag & drop operation has finished using the pasteboard.
+        /// Inidcates that the drag / drop operation has finished using the pasteboard.
         /// </summary>
         /// <param name="pasteboard">The pasteboard that's no longer being used.</param>
         public static void FinishedWithPasteboard(NSPasteboard pasteboard)

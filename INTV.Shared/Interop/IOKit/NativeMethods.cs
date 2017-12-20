@@ -37,6 +37,21 @@ namespace INTV.Shared.Interop.IOKit
         /// </summary>
         public const int Success = 0;
 
+        /*
+         * Sets the input speed and output speed to a non-traditional baud rate
+         */
+        /*
+#define IOSSIOSPEED    _IOW('T', 2, speed_t)
+#define IOSSIOSPEED_32    _IOW('T', 2, user_shspeed_t)
+#define IOSSIOSPEED_64    _IOW('T', 2, user_speed_t)
+        */
+        /* from preprocessor: ((__uint32_t)0x80000000 | ((sizeof(speed_t) & 0x1fff) << 16) | ((('T')) << 8) | ((2))) */
+
+        /// <summary>
+        /// This is an expansion of the macro used to define custom baud rates for serial ports on Mac.
+        /// </summary>
+        public const uint IOSSIOSPEED = 0x80000000 | ((sizeof(uint) & 0x1fff) << 16) | ((uint)'T' << 8) | 2;
+
         #region IOSerialKeys.h
 
         /// <summary>
@@ -108,21 +123,6 @@ namespace INTV.Shared.Interop.IOKit
 
         #region ioctl
 
-        /*
-         * Sets the input speed and output speed to a non-traditional baud rate
-         */
-        /*
-        #define IOSSIOSPEED    _IOW('T', 2, speed_t)
-        #define IOSSIOSPEED_32    _IOW('T', 2, user_shspeed_t)
-        #define IOSSIOSPEED_64    _IOW('T', 2, user_speed_t)
-        */
-        /* from preprocessor: ((__uint32_t)0x80000000 | ((sizeof(speed_t) & 0x1fff) << 16) | ((('T')) << 8) | ((2))) */
-
-        /// <summary>
-        /// This is an expansion of the macro used to define custom baud rates for serial ports on Mac.
-        /// </summary>
-        public const uint IOSSIOSPEED = 0x80000000 | ((sizeof(uint) & 0x1fff) << 16) | ((uint)'T' << 8) | 2;
-
         /// <summary>
         /// C# binding to the ioctl function used to set custom baud rates on serial ports on Mac.
         /// </summary>
@@ -132,7 +132,7 @@ namespace INTV.Shared.Interop.IOKit
         /// <returns>If the function succeeds, returns zero (<c>0</c>); non-zero value indicates an error.</returns>
         /// <remarks>The C API for ioctl is actually a varargs function. Only the overload needed to specify a custom baud rate is implemented.</remarks>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static int ioctl(int fileNumber, uint request, ref int baudRate);
+        public static extern int ioctl(int fileNumber, uint request, ref int baudRate);
 
         #endregion // ioctl
 
@@ -148,7 +148,7 @@ namespace INTV.Shared.Interop.IOKit
         /// <param name="masterPort">Receives the master port.</param>
         /// <returns>If successful, returns zero. Otherwise, one of the IOKit's kern_return_t error codes.</returns>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static int IOMasterPort(System.IntPtr bootStrapPort, out System.IntPtr masterPort);
+        public static extern int IOMasterPort(System.IntPtr bootStrapPort, out System.IntPtr masterPort);
 
         /// <summary>
         /// Create a matching dictionary that specifies an IOService class match.
@@ -158,7 +158,7 @@ namespace INTV.Shared.Interop.IOKit
         /// <remarks> The dictionary is commonly passed to IOServiceGetMatchingServices or IOServiceAddNotification which will consume a reference, otherwise it should be released with CFRelease by the caller.
         /// A very common matching criteria for IOService is based on its class. IOServiceMatching will create a matching dictionary that specifies any IOService of a class, or its subclasses. The class is specified by C-string name.</remarks>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static System.IntPtr IOServiceMatching([MarshalAs(UnmanagedType.LPStr)] string name);
+        public static extern System.IntPtr IOServiceMatching([MarshalAs(UnmanagedType.LPStr)] string name);
 
         /*
         public static NSMutableDictionary IOServiceGetMatching(string name)
@@ -173,7 +173,7 @@ namespace INTV.Shared.Interop.IOKit
         }*/
 
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static int IOServiceGetMatchingServices(System.IntPtr masterPort, System.IntPtr matching, out System.IntPtr existing);
+        public static extern int IOServiceGetMatchingServices(System.IntPtr masterPort, System.IntPtr matching, out System.IntPtr existing);
         /*
          kern_return_t
         IOServiceGetMatchingServices(
@@ -196,7 +196,6 @@ namespace INTV.Shared.Interop.IOKit
         (*IOServiceMatchingCallback)(
             void *          refcon,
             io_iterator_t       iterator ); */
-
 
         /*! @function IOServiceAddMatchingNotification
             @abstract Look up registered IOService objects that match a matching dictionary, and install a notification request of new IOServices that match.
@@ -223,11 +222,12 @@ namespace INTV.Shared.Interop.IOKit
             void *          refCon,
             io_iterator_t *     notification ); */
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static int IOServiceAddMatchingNotification(System.IntPtr notifyPort, [MarshalAs(UnmanagedType.LPStr)] string notificationType, System.IntPtr matching, System.IntPtr callback, System.IntPtr refCon, out System.IntPtr iterator);
+        public static extern int IOServiceAddMatchingNotification(System.IntPtr notifyPort, [MarshalAs(UnmanagedType.LPStr)] string notificationType, System.IntPtr matching, System.IntPtr callback, System.IntPtr refCon, out System.IntPtr iterator);
 
         #region IOObject
 
         /* kern_return_t IOObjectRelease(io_object_t object );*/
+
         /// <summary>
         /// Releases an object handle previously returned by IOKitLib.
         /// </summary>
@@ -237,9 +237,10 @@ namespace INTV.Shared.Interop.IOKit
         /// no longer needed. Using the object after it has been released may or may not return an error,
         /// depending on how many references the task has to the same object in the kernel.</remarks>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static int IOObjectRelease(System.IntPtr nativeObject);
+        public static extern int IOObjectRelease(System.IntPtr nativeObject);
 
         /* kern_return_t IOObjectRetain(io_object_t object); */
+
         /// <summary>
         /// Retains an object handle previously returned by IOKitLib.
         /// </summary>
@@ -247,22 +248,24 @@ namespace INTV.Shared.Interop.IOKit
         /// <param name="nativeObject">The IOKit object to retain.</param>
         /// <remarks>Gives the caller an additional reference to an existing object handle previously returned by IOKitLib.</remarks>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static int IOObjectRetain(System.IntPtr nativeObject);
+        public static extern int IOObjectRetain(System.IntPtr nativeObject);
 
         /* uint32_t IOObjectGetUserRetainCount(io_object_t object )AVAILABLE_MAC_OS_X_VERSION_10_6_AND_LATER; */
+
         /// <summary>
         /// Returns the retain count for the current process of an IOKit object.
         /// </summary>
         /// <returns>If the object handle is valid, the objects user retain count is returned, otherwise zero is returned.</returns>
         /// <param name="nativeObject">An IOKit object.</param>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static uint IOObjectGetUserRetainCount(System.IntPtr nativeObject);
+        public static extern uint IOObjectGetUserRetainCount(System.IntPtr nativeObject);
 
         #endregion // IOObject
 
         #region IOIterator
 
         /* io_object_t IOIteratorNext(io_iterator_t iterator ); */
+
         /// <summary>
         /// Returns the next object in an iteration.
         /// </summary>
@@ -270,34 +273,37 @@ namespace INTV.Shared.Interop.IOKit
         /// <param name="iterator">An IOKit iterator handle.</param>
         /// <remarks>The element should be released by the caller when it is finished.</remarks>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static System.IntPtr IOIteratorNext(System.IntPtr iterator);
+        public static extern System.IntPtr IOIteratorNext(System.IntPtr iterator);
 
         /* void IOIteratorReset(io_iterator_t iterator); */
+
         /// <summary>
         /// Resets an iteration back to the beginning.
         /// </summary>
         /// <param name="iterator">An IOKit iterator handle.</param>
         /// <remarks>If an iterator is invalid, or if the caller wants to start over, IOIteratorReset will set the iteration back to the beginning.</remarks>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static void IOIteratorReset(System.IntPtr iterator);
+        public static extern void IOIteratorReset(System.IntPtr iterator);
 
         /* boolean_t IOIteratorIsValid(io_iterator_t iterator); */
+
         /// <summary>
         /// Checks an iterator is still valid.
         /// </summary>
         /// <returns>True if the iterator handle is valid, otherwise false is returned.</returns>
-        /// <param name="iterator">Iterator.</param>
+        /// <param name="iterator">The iterator to check.</param>
         /// <remarks>ome iterators will be made invalid if changes are made to the structure they are iterating over.
         /// This function checks the iterator is still valid and should be called when IOIteratorNext returns zero.
         /// An invalid iterator can be reset and the iteration restarted.</remarks>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static int IOIteratorIsValid(System.IntPtr iterator);
+        public static extern int IOIteratorIsValid(System.IntPtr iterator);
 
         #endregion // IOIterator
 
         #region IORegistryEntry
 
         /* CFTypeRef IORegistryEntryCreateCFProperty(io_registry_entry_t entry, CFStringRef key, CFAllocatorRef allocator, IOOptionBits options); */
+
         /// <summary>
         ///  Create a CF representation of a registry entry's property.
         /// </summary>
@@ -311,7 +317,7 @@ namespace INTV.Shared.Interop.IOKit
         /// as a CF container; currently OSDictionary, OSArray, OSSet, OSSymbol, OSString, OSData, OSNumber,
         /// OSBoolean are created as their CF counterparts.</remarks>
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static System.IntPtr IORegistryEntryCreateCFProperty(System.IntPtr entry, System.IntPtr key, System.IntPtr allocator, int options);
+        public static extern System.IntPtr IORegistryEntryCreateCFProperty(System.IntPtr entry, System.IntPtr key, System.IntPtr allocator, int options);
 
         #endregion // IORegistryEntry
 
@@ -327,7 +333,7 @@ namespace INTV.Shared.Interop.IOKit
         IONotificationPortCreate(
             mach_port_t     masterPort ); */
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static System.IntPtr IONotificationPortCreate(System.IntPtr masterPort);
+        public static extern System.IntPtr IONotificationPortCreate(System.IntPtr masterPort);
 
         /*! @function IONotificationPortDestroy
             @abstract Destroys a notification object created with IONotificationPortCreate.
@@ -341,8 +347,7 @@ namespace INTV.Shared.Interop.IOKit
             IONotificationPortRef   notify ); */
 
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static void IONotificationPortDestroy(System.IntPtr notify);
-
+        public static extern void IONotificationPortDestroy(System.IntPtr notify);
 
         /*! @function IONotificationPortGetRunLoopSource
             @abstract Returns a CFRunLoopSource to be used to listen for notifications.
@@ -359,7 +364,7 @@ namespace INTV.Shared.Interop.IOKit
         IONotificationPortGetRunLoopSource(
             IONotificationPortRef   notify ); */
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
-        extern public static System.IntPtr IONotificationPortGetRunLoopSource(System.IntPtr notify);
+        public static extern System.IntPtr IONotificationPortGetRunLoopSource(System.IntPtr notify);
 
         #endregion // IONotificationPort
 

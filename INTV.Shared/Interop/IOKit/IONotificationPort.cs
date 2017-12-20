@@ -22,11 +22,11 @@
 
 using System;
 #if __UNIFIED__
-using ObjCRuntime;
 using CoreFoundation;
+using ObjCRuntime;
 #else
-using MonoMac.ObjCRuntime;
 using MonoMac.CoreFoundation;
+using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
 
 namespace INTV.Shared.Interop.IOKit
@@ -77,7 +77,7 @@ namespace INTV.Shared.Interop.IOKit
         public void Dispose()
         {
             this.Dispose(true);
-            GC.SuppressFinalize (this);
+            GC.SuppressFinalize(this);
             DebugOutput("**** IONotificationPort.Dispose()");
         }
 
@@ -92,7 +92,7 @@ namespace INTV.Shared.Interop.IOKit
         /// Disposes native resources.
         /// </summary>
         /// <param name="disposing">If set to <c>true</c> disposing directly, otherwise called from finalizer.</param>
-        protected virtual void Dispose (bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (!Disposed)
             {

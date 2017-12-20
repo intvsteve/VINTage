@@ -20,6 +20,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,9 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif  // __UNIFIED__
-using INTV.Core.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -80,7 +80,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new KeyboardComponentFeaturesConfigurationPage View { get { return (KeyboardComponentFeaturesConfigurationPage)base.View; } }
+        public new KeyboardComponentFeaturesConfigurationPage View
+        {
+            get { return (KeyboardComponentFeaturesConfigurationPage)base.View; }
+        }
 
         #region IFakeDependencyObject
 
@@ -156,7 +159,7 @@ namespace INTV.Shared.View
                 _usesMicrophone = value;
             }
         }
-        NSNumber _usesMicrophone;
+        private NSNumber _usesMicrophone;
 
         /// <summary>
         /// Gets or sets whether the ROM uses the KC printer.
@@ -178,7 +181,7 @@ namespace INTV.Shared.View
                 _usesPrinter = value;
             }
         }
-        NSNumber _usesPrinter;
+        private NSNumber _usesPrinter;
 
         /// <summary>
         /// Gets or sets whether the ROM uses KC cassette.
@@ -200,7 +203,7 @@ namespace INTV.Shared.View
                 _usesCassette = value;
             }
         }
-        NSNumber _usesCassette;
+        private NSNumber _usesCassette;
 
         /// <summary>
         /// Gets or sets the cassette requirements - optional or required.
@@ -233,12 +236,16 @@ namespace INTV.Shared.View
             get { return new NSNumber(ViewModel.EnableCassetteOptionSelection); }
         }
 
-        private KeyboardComponentFeaturesConfigurationPageViewModel ViewModel { get { return DataContext as KeyboardComponentFeaturesConfigurationPageViewModel; } }
+        private KeyboardComponentFeaturesConfigurationPageViewModel ViewModel
+        {
+            get { return DataContext as KeyboardComponentFeaturesConfigurationPageViewModel; }
+        }
 
         /// <inheritdoc />
         public override void AwakeFromNib()
         {
-            var initializationData = new[] {
+            var initializationData = new[]
+            {
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(KeyboardComponentCompatibilityPopUpButton, ViewModel.KeyboardComponentOptions, ViewModel.KeyboardComponent),
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(CassetteRequirementPopUpButton, ViewModel.CassetteOptions, ViewModel.Cassette),
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(MicrosoftBasicCartridgeRequirementPopUpButton, ViewModel.BasicOptions, ViewModel.Basic)
@@ -271,7 +278,7 @@ namespace INTV.Shared.View
 
         private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            switch(e.PropertyName)
+            switch (e.PropertyName)
             {
                 case KeyboardComponentFeaturesConfigurationPageViewModel.KeyboardComponentPropertyName:
                     _keyboardComponent = ViewModel.KeyboardComponentOptions.SelectionToNSNumber(ViewModel.KeyboardComponent);

@@ -24,6 +24,8 @@
 ////#define ENABLE_INPLACEEDIT_TRACE
 
 using System.Linq;
+using INTV.Shared.Behavior;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -31,8 +33,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Behavior;
-using INTV.Shared.Utility;
 
 namespace INTV.Shared.View
 {
@@ -48,7 +48,7 @@ namespace INTV.Shared.View
         /// <summary>
         /// The return key code used in the event system.
         /// </summary>
-        /// <remarks>Do we need another value for enter vs. return... Fn+return on laptop keyboards (or numeric keypad key)?</remarks></remarks>
+        /// <remarks>Do we need another value for enter vs. return... Fn+return on laptop keyboards (or numeric keypad key)?</remarks>
         public const ushort ReturnKey = 0x24;
 
 #if USE_APPKIT_CONSTANTS
@@ -75,8 +75,6 @@ namespace INTV.Shared.View
         /// Initializes a new instance of the in-place editor for a text cell.
         /// </summary>
         /// <param name="owner">The visual owning the element being edited.</param>
-        /// <param name="initialValue">The initial value of the edited item.</param>
-        /// <param name="editingObject">The entity being edited.</param>
         public TextCellInPlaceEditor(NSView owner)
         {
             ElementOwner = owner;
@@ -343,6 +341,12 @@ namespace INTV.Shared.View
 
 #endif // IMPLEMENTS_IDISPOSABLE
 
+        [System.Diagnostics.Conditional("ENABLE_INPLACEEDIT_TRACE")]
+        private static void DebugOutput(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+
         private NSEvent LocalKeyEventHandler(NSEvent theEvent)
         {
             var anEvent = theEvent;
@@ -412,7 +416,7 @@ namespace INTV.Shared.View
                             }
                         }
                     }
-                    // DebugOutput("*$*$*$*$ Handler got event: " + anEvent.Type + " with characters: " + characters);
+                    ////DebugOutput("*$*$*$*$ Handler got event: " + anEvent.Type + " with characters: " + characters);
                 }
             }
             return anEvent;
@@ -546,6 +550,7 @@ namespace INTV.Shared.View
                         DebugOutput("  ^$^$^$^$ TextStorage edit: NEW STRING TOO LONG");
                         replaceStorageValue = true;
                         var editRange = textStorage.EditedRange;
+
                         // The following block is disabled because it's causing crashes. Most likely I've gotten
                         // the order of operations wrong in trying to modify the edited range, or there's another
                         // bit of state that needs to be managed. Perhaps a custon NSFormatter would be better, but
@@ -576,12 +581,6 @@ namespace INTV.Shared.View
                 }
                 DebugOutput("^^^^^^^^^^^^^^^^^^^^^^ TextStorage edit: finished editing");
             }
-        }
-
-        [System.Diagnostics.Conditional("ENABLE_INPLACEEDIT_TRACE")]
-        private static void DebugOutput(object message)
-        {
-            System.Diagnostics.Debug.WriteLine(message);
         }
     }
 }

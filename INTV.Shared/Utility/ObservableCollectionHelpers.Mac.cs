@@ -20,9 +20,9 @@
 
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 
-using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -56,7 +56,7 @@ namespace INTV.Shared.Utility
                         if (nsObject != null)
                         {
                             controller.AddObject(nsObject);
-                            DebugOutput("SynchronizeCollection: added " + collectionChangedArgs.NewItems[i] + " of type " + collectionChangedArgs.NewItems[i].GetType ().FullName);
+                            DebugOutput("SynchronizeCollection: added " + collectionChangedArgs.NewItems[i] + " of type " + collectionChangedArgs.NewItems[i].GetType().FullName);
                             DebugOutput("SynchronizeCollection: item as NSObject is " + nsObject + ", is null? " + (nsObject == null));
                         }
                     }
@@ -74,7 +74,7 @@ namespace INTV.Shared.Utility
                         if (nsObject != null)
                         {
                             controller.RemoveObject(nsObject);
-                            DebugOutput("SynchronizeCollection: removed " + collectionChangedArgs.OldItems[i] + " of type " + collectionChangedArgs.OldItems[i].GetType ().FullName);
+                            DebugOutput("SynchronizeCollection: removed " + collectionChangedArgs.OldItems[i] + " of type " + collectionChangedArgs.OldItems[i].GetType().FullName);
                         }
                     }
                     break;

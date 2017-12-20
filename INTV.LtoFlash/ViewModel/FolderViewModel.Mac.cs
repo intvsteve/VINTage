@@ -20,13 +20,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.LtoFlash.Model;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using Foundation;
 #else
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.LtoFlash.Model;
-using INTV.Shared.ViewModel;
 
 namespace INTV.LtoFlash.ViewModel
 {
@@ -40,11 +40,14 @@ namespace INTV.LtoFlash.ViewModel
         /// </summary>
         /// <param name="handle">Native pointer to NSView.</param>
         public FolderViewModel(System.IntPtr handle)
-            : base (handle)
+            : base(handle)
         {
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets or sets the number of child objects.
+        /// </summary>
+        /// <remarks>Acts as "model" for Cocoa UI for <see cref="NSOutlineView"/>.</remarks>
         public override uint ItemCount
         {
             get { return _itemCount; }
@@ -61,7 +64,7 @@ namespace INTV.LtoFlash.ViewModel
             var children = NSArray.FromArray<FileNodeViewModel>(Children).ToList();
             if ((sender != null) && (e != null))
             {
-                switch(e.Action)
+                switch (e.Action)
                 {
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                         var newItems = new List<FileNodeViewModel>();
@@ -100,6 +103,7 @@ namespace INTV.LtoFlash.ViewModel
                         {
                             var item = (FileNodeViewModel)e.NewItems[i];
                             var index = e.NewStartingIndex + i;
+
                             // TODO Is this actually possible? Is it really a bug?
                             ////if (e.NewStartingIndex > e.OldStartingIndex)
                             ////{
@@ -159,6 +163,10 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
+        /// <param name="oldItems">Old items.</param>
         partial void ReplacedItemsCollection(ObservableViewModelCollection<FileNodeViewModel, IFile> oldItems)
         {
             if (oldItems != null)

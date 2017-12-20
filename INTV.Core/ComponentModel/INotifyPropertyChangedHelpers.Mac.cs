@@ -42,6 +42,12 @@ namespace INTV.Core.ComponentModel
             PostValueUpdate(sender, key);
         }
 
+        /// <summary>
+        /// Mac-specific implemenation of work to do before a value changes.
+        /// </summary>
+        /// <param name="sender">The owner of the property that is changing.</param>
+        /// <param name="propertyName">Name of the property is changing.</param>
+        /// <remarks>This is the bookend to <see cref="PostValueUpdate"/> that ensures KVO executes as expected.</remarks>
         static partial void PreValueUpdate(object sender, string propertyName)
         {
             var nsObject = sender as NSObject;
@@ -51,6 +57,12 @@ namespace INTV.Core.ComponentModel
             }
         }
 
+        /// <summary>
+        /// Mac-specific implemenation of work to do after a value changes.
+        /// </summary>
+        /// <param name="sender">The owner of the property that has changed.</param>
+        /// <param name="propertyName">Name of the property that changed.</param>
+        /// <remarks>This is the bookend to <see cref="PreValueUpdate"/> that ensures KVO executes as expected.</remarks>
         static partial void PostValueUpdate(object sender, string propertyName)
         {
             var nsObject = sender as NSObject;

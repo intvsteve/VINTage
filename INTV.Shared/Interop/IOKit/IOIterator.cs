@@ -49,12 +49,16 @@ namespace INTV.Shared.Interop.IOKit
         /// <summary>
         /// Gets a value indicating whether this instance is valid.
         /// </summary>
-        public bool IsValid { get { return NativeMethods.IOIteratorIsValid(Handle) != 0; } }
+        public bool IsValid
+        {
+            get { return NativeMethods.IOIteratorIsValid(Handle) != 0; }
+        }
 
         /// <summary>
         /// Move the iterator to point to the next element in the colleciton.
         /// </summary>
         /// <typeparam name="T">The type of objects being iterated over.</typeparam>
+        /// <returns>The iterator to the next element, <c>null</c> if there isn't a next element.</returns>
         public T Next<T>() where T : IOKitObject, new()
         {
             T ioKitObject = null;

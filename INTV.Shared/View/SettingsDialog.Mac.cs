@@ -20,6 +20,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.Commands;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Utility;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,9 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Commands;
-using INTV.Shared.ComponentModel;
-using INTV.Shared.Utility;
 
 #if __UNIFIED__
 using CGSize = CoreGraphics.CGSize;
@@ -112,6 +112,7 @@ namespace INTV.Shared.View
         protected override void Dispose(bool disposing)
         {
             Controller = null;
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(
@@ -136,6 +137,12 @@ namespace INTV.Shared.View
             return SelectableItemIdentifiers.ToArray();
         }
 
+        /// <summary>
+        /// Mac-specific implementation
+        /// </summary>
+        /// <param name="pageName">Page name.</param>
+        /// <param name="icon">The icon for the page.</param>
+        /// <param name="page">Platform-specific page visual data.</param>
         partial void AddTab(string pageName, string icon, object page)
         {
             var pageController = page as NSViewController;
@@ -172,6 +179,9 @@ namespace INTV.Shared.View
             item.Activated += SettingsPageSelected;
         }
 
+        /// <summary>
+        /// Platform-specific implementation.
+        /// </summary>
         partial void AllTabsAdded()
         {
             Toolbar.SelectableItemIdentifiers = SelectableItems;

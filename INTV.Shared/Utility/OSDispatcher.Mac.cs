@@ -47,7 +47,7 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
-        /// Gets whether the dispatcher is on the main thread of the application.
+        /// Gets a value indicating whether the dispatcher is on the main thread of the application.
         /// </summary>
         public static bool IsMainThread
         {
@@ -64,7 +64,7 @@ namespace INTV.Shared.Utility
         public void BeginInvoke(System.Action action)
         {
             DebugOutput("*$*$*$ INVOKING from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
-          _dispatcherObject.Invoke(this, action, false);
+            DispatcherObject.Invoke(this, action, false);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace INTV.Shared.Utility
         /// <param name="priority">The importance of the action to execute.</param>
         public void Invoke(System.Action action, OSDispatcherPriority priority)
         {
-          _dispatcherObject.Invoke(this, action, true);
+            DispatcherObject.Invoke(this, action, true);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace INTV.Shared.Utility
             throw new System.NotImplementedException("InvokeOnMainThread<T>(Func<T> function, OSDispatcherPriority priority)");
         }
 
-        private static readonly ActionSelector _dispatcherObject = new ActionSelector();
+        private static readonly ActionSelector DispatcherObject = new ActionSelector();
 
         private const string ActionSelectorName = "InvokedAction:";
 
@@ -115,7 +115,7 @@ namespace INTV.Shared.Utility
                 }
                 else
                 {
-                    _dispatcherObject.PerformSelector(new Selector(OSDispatcher.ActionSelectorName), dispatcher.NativeDispatcher, new SelectorArgument(action), waitUntilDone);
+                    DispatcherObject.PerformSelector(new Selector(OSDispatcher.ActionSelectorName), dispatcher.NativeDispatcher, new SelectorArgument(action), waitUntilDone);
                 }
             }
 
@@ -127,13 +127,13 @@ namespace INTV.Shared.Utility
                     DebugOutput("++++++++++++++++++ EXECUTING ACTION from thread: " + NSThread.Current.Handle + ", MAIN: " + NSThread.MainThread.Handle);
                     ((SelectorArgument)arg).Action();
                 }
-                catch(System.Exception e)
+                catch (System.Exception e)
                 {
                     ErrorReporting.ReportError(ReportMechanism.Console, e.Message);
                 }
             }
 
-            class SelectorArgument : NSObject
+            private class SelectorArgument : NSObject
             {
                 public System.Action Action { get; private set; }
 

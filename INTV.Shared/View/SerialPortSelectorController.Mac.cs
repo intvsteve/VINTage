@@ -20,6 +20,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,8 +29,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.ViewModel;
-using INTV.Shared.Utility;
 
 #if __UNIFIED__
 using nint = System.nint;
@@ -111,7 +111,7 @@ namespace INTV.Shared.View
         #region Properties
 
         /// <summary>
-        /// Strongly-typed accessor for the View being controlled.
+        /// Gets the trongly-typed accessor for the View being controlled.
         /// </summary>
         public new SerialPortSelector View
         {
@@ -199,7 +199,7 @@ namespace INTV.Shared.View
 
         #endregion // Properties
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void AwakeFromNib()
         {
             this.SerialPortsListArrayController.SynchronizeCollection(DataContext.AvailableSerialPorts);
@@ -261,7 +261,7 @@ namespace INTV.Shared.View
         }
 
         [Export("SerialPortDoubleClick:")]
-        private void HandlePortDoubleClicked (NSArray doubleClickData)
+        private void HandlePortDoubleClicked(NSArray doubleClickData)
         {
             if (doubleClickData.Count > 0)
             {
@@ -270,7 +270,9 @@ namespace INTV.Shared.View
                 {
                     raiseEvent = !DataContext.DisabledSerialPorts.Contains(port.PortName);
                     if (!raiseEvent)
+                    {
                         break;
+                    }
                 }
                 if (raiseEvent)
                 {
@@ -283,7 +285,7 @@ namespace INTV.Shared.View
             }
         }
 
-        private  NSCell GetCell(NSTableView tableView, NSTableColumn tableColumn, int row)
+        private NSCell GetCell(NSTableView tableView, NSTableColumn tableColumn, int row)
         {
             var cell = tableColumn.DataCell as NSTextFieldCell;
             if (cell != null)
@@ -296,7 +298,7 @@ namespace INTV.Shared.View
             return cell;
         }
 
-        private  NSIndexSet GetSelectionIndexesFilter(NSTableView tableView, NSIndexSet proposedSelectionIndexes)
+        private NSIndexSet GetSelectionIndexesFilter(NSTableView tableView, NSIndexSet proposedSelectionIndexes)
         {
             var selectionIndexes = new NSMutableIndexSet(proposedSelectionIndexes);
             foreach (int index in proposedSelectionIndexes)
@@ -343,7 +345,7 @@ namespace INTV.Shared.View
             // TODO: Is there something we should implement here?
         }
 
-        ///<summary>
+        /// <summary>
         /// This is necessary to work around a bug in the delegate implementation from Xamarin.
         /// See: https://bugzilla.xamarin.com/show_bug.cgi?id=12467
         /// </summary>
@@ -366,7 +368,7 @@ namespace INTV.Shared.View
             /// </summary>
             internal SerialPortSelectorViewModel DataContext { get; private set; }
 
-            ///<inheritdoc/>
+            /// <inheritdoc/>
             public override NSCell GetDataCell(NSTableView tableView, NSTableColumn tableColumn, nint row)
             {
                 NSTextFieldCell cell = null;
@@ -388,7 +390,7 @@ namespace INTV.Shared.View
                 return cell;
             }
 
-            ///<inheritdoc/>
+            /// <inheritdoc/>
             public override void WillDisplayCell(NSTableView tableView, NSObject cell, NSTableColumn tableColumn, nint row)
             {
                 var textCell = cell as NSTextFieldCell;
@@ -397,7 +399,7 @@ namespace INTV.Shared.View
                 }
             }
 
-            ///<inheritdoc/>
+            /// <inheritdoc/>
             public override NSIndexSet GetSelectionIndexes(NSTableView tableView, NSIndexSet proposedSelectionIndexes)
             {
                 var selectionIndexes = new NSMutableIndexSet(proposedSelectionIndexes);
@@ -420,8 +422,8 @@ namespace INTV.Shared.View
 
             private NSArrayController Ports { get; set; }
 
-            ///<inheritdoc/>
-            public override void SelectionDidChange (NSNotification notification)
+            /// <inheritdoc/>
+            public override void SelectionDidChange(NSNotification notification)
             {
             }
         }

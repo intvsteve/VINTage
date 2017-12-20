@@ -37,6 +37,9 @@ namespace INTV.Intellicart.Commands
 
         #endregion // CommandGroup
 
+        /// <summary>
+        /// Adds the platform-specific commands.
+        /// </summary>
         partial void AddPlatformCommands()
         {
             IntellicartToolsMenuCommand.MenuParent = RootCommandGroup.ToolsMenuCommand;

@@ -22,15 +22,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-#if __UNIFIED__
-using AppKit;
-using Foundation;
-using ImageKit;
-#else
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-using MonoMac.ImageKit;
-#endif // __UNIFIED__
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Device;
 using INTV.LtoFlash.Commands;
@@ -41,18 +32,30 @@ using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 using INTV.Shared.ViewModel;
+#if __UNIFIED__
+using AppKit;
+using Foundation;
+using ImageKit;
+#else
+using MonoMac.AppKit;
+using MonoMac.Foundation;
+using MonoMac.ImageKit;
+#endif // __UNIFIED__
 
 #if __UNIFIED__
 using CGSize = CoreGraphics.CGSize;
 using nint = System.nint;
 #else
 using CGSize = System.Drawing.SizeF;
-using nint = System.Int32;
 using IIKImageBrowserItem = MonoMac.ImageKit.IKImageBrowserItem;
+using nint = System.Int32;
 #endif // __UNIFIED__
 
 namespace INTV.LtoFlash.View
 {
+    /// <summary>
+    /// Device information controller.
+    /// </summary>
     public partial class DeviceInformationController : NSWindowController, System.ComponentModel.INotifyPropertyChanged
     {
         private const string DeviceNamePropertyName = "DeviceName";
@@ -107,7 +110,6 @@ namespace INTV.LtoFlash.View
             Initialize();
         }
 
-
         /// <summary>
         /// Call to load from the XIB/NIB file.
         /// </summary>
@@ -138,10 +140,13 @@ namespace INTV.LtoFlash.View
         /// <summary>
         /// Gets the window as a strongly typed value.
         /// </summary>
-        public new DeviceInformation Window { get { return (DeviceInformation)base.Window; } }
+        public new DeviceInformation Window
+        {
+            get { return (DeviceInformation)base.Window; }
+        }
 
         /// <summary>
-        /// Gets the view model.
+        /// Gets or sets the view model.
         /// </summary>
         public LtoFlashViewModel ViewModel { get; set; }
 
@@ -149,19 +154,28 @@ namespace INTV.LtoFlash.View
         /// Gets the tip strip for primary firmware version.
         /// </summary>
         [OSExport("PrimaryFirmwareVersionTip")]
-        public static string PrimaryFirmwareVersionTip { get { return Resources.Strings.FactoryFirmwareCommand_TipDescription; } }
+        public static string PrimaryFirmwareVersionTip
+        {
+            get { return Resources.Strings.FactoryFirmwareCommand_TipDescription; }
+        }
 
         /// <summary>
         /// Gets the tip strip for secondary firmware version.
         /// </summary>
         [OSExport("SecondaryFirmwareVersionTip")]
-        public static string SecondaryFirmwareVersionTip { get { return Resources.Strings.SecondaryFirmwareCommand_TipDescription; } }
+        public static string SecondaryFirmwareVersionTip
+        {
+            get { return Resources.Strings.SecondaryFirmwareCommand_TipDescription; }
+        }
 
         /// <summary>
         /// Gets the tip strip for current firmware version.
         /// </summary>
         [OSExport("CurrentFirmwareVersionTip")]
-        public static string CurrentFirmwareVersionTip { get { return Resources.Strings.CurrentFirmwareCommand_TipDescription; } }
+        public static string CurrentFirmwareVersionTip
+        {
+            get { return Resources.Strings.CurrentFirmwareCommand_TipDescription; }
+        }
 
         /// <summary>
         /// Gets the device name.
@@ -221,7 +235,7 @@ namespace INTV.LtoFlash.View
         private NSString _factoryFirmwareVersion;
 
         /// <summary>
-        /// Gets the secondary firmware version.
+        /// Gets or sets the secondary firmware version.
         /// </summary>
         [INTV.Shared.Utility.OSExport(SecondaryFirmwareVersionPropertyName)]
         public NSString SecondaryFirmwareVersion
@@ -379,7 +393,7 @@ namespace INTV.LtoFlash.View
         private NSString _percentVtoPLogWraps;
 
         /// <summary>
-        /// Gets approximate percent lifetime remaining.
+        /// Gets or sets the approximate percent lifetime remaining.
         /// </summary>
         [OSExport("LifeRemaining")]
         public NSString LifeRemaining
@@ -394,7 +408,7 @@ namespace INTV.LtoFlash.View
         #region Device Settings
 
         /// <summary>
-        /// Gets or sets whether background garbage collection runs when menu displayed on console.
+        /// Gets or sets a value indicating whether background garbage collection runs when menu displayed on console.
         /// </summary>
         [INTV.Shared.Utility.OSExport(Device.BackgroundGCPropertyName)]
         public bool BackgroundGC
@@ -405,7 +419,7 @@ namespace INTV.LtoFlash.View
         private bool _backgroundGC;
 
         /// <summary>
-        /// Gets or sets whether the keyclick sound is enabled in the menu.
+        /// Gets or sets a value indicating whether the keyclick sound is enabled in the menu.
         /// </summary>
         [INTV.Shared.Utility.OSExport(Device.KeyclicksPropertyName)]
         public bool Keyclicks
@@ -555,7 +569,7 @@ namespace INTV.LtoFlash.View
             ControllerElementsArrayController.SelectsInsertedObjects = false;
             ControllerButtonsGrid.MinItemSize = new CGSize(32, 32);
             ControllerButtonsGrid.MaxItemSize = new CGSize(36, 36);
-            var buttons = new ControllerKeys[4,5]
+            var buttons = new ControllerKeys[4, 5]
             {
                 { ControllerKeys.None, ControllerKeys.Keypad1, ControllerKeys.Keypad2, ControllerKeys.Keypad3, ControllerKeys.None },
                 { ControllerKeys.ActionKeyTop, ControllerKeys.Keypad4, ControllerKeys.Keypad5, ControllerKeys.Keypad6, ControllerKeys.ActionKeyTop | ControllerKeys.NoneActive },
@@ -682,6 +696,7 @@ namespace INTV.LtoFlash.View
             }
             CommandManager.RequerySuggested -= HandleRequerySuggested;
             ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(
@@ -735,7 +750,7 @@ namespace INTV.LtoFlash.View
                 InPlaceEditor.EditedElement = fieldEditor;
                 InPlaceEditor.InitialValue = editDeviceName ? DeviceName : DeviceOwner;
                 InPlaceEditor.MaxLength = editDeviceName ? INTV.LtoFlash.Model.FileSystemConstants.MaxShortNameLength : INTV.LtoFlash.Model.FileSystemConstants.MaxLongNameLength;
-                InPlaceEditor.IsValidCharacter = (c) => INTV.Core.Model.Grom.Characters.Contains(c); //.RestrictToGromCharacters = true;
+                InPlaceEditor.IsValidCharacter = (c) => INTV.Core.Model.Grom.Characters.Contains(c);
                 InPlaceEditor.EditorClosed += InPlaceEditor_EditorClosed;
                 InPlaceEditor.BeginEdit();
             }
@@ -762,13 +777,14 @@ namespace INTV.LtoFlash.View
                     InPlaceEditor.EditorClosed -= InPlaceEditor_EditorClosed;
                 }
             }
+
             // If we don't BeginInvoke here, if we're ending edit due to Escape key, the
             // button will pick it up and close the Device Information dialog prematurely.
             OSDispatcher.Current.BeginInvoke(() => CloseButtonControl.KeyEquivalent = CloseButtonKey);
             return true;
         }
 
-        private void InPlaceEditor_EditorClosed (object sender, InPlaceEditorClosedEventArgs e)
+        private void InPlaceEditor_EditorClosed(object sender, InPlaceEditorClosedEventArgs e)
         {
             if (InPlaceEditor != null)
             {
@@ -946,11 +962,19 @@ namespace INTV.LtoFlash.View
             LifeRemaining = new NSString(ViewModel.FileSystemStatistics.PercentageLifetimeRemaining);
         }
 
+        /// <summary>
+        /// Handles the update firmware button click.
+        /// </summary>
+        /// <param name="sender">The update firmware button.</param>
         partial void OnUpdateFirmware(NSObject sender)
         {
             FirmwareCommandGroup.UpdateFirmwareCommand.Execute(ViewModel);
         }
 
+        /// <summary>
+        /// Handles close button click.
+        /// </summary>
+        /// <param name="sender">The cluse button.</param>
         partial void OnClose(NSObject sender)
         {
             if (InPlaceEditor != null)
@@ -965,8 +989,13 @@ namespace INTV.LtoFlash.View
 
         private enum DeviceInfoField
         {
+            /// <summary>No device info.</summary>
             None,
+
+            /// <summary>Device name field.</summary>
             Name,
+
+            /// <summary>Device owner field./// </summary>
             Owner
         }
 
@@ -993,21 +1022,24 @@ namespace INTV.LtoFlash.View
 
             public override string ImageUID
             {
-                get {
+                get
+                {
                     throw new System.NotImplementedException();
                 }
             }
 
             public override NSString ImageRepresentationType
             {
-                get {
+                get
+                {
                     throw new System.NotImplementedException();
                 }
             }
 
             public override NSObject ImageRepresentation
             {
-                get {
+                get
+                {
                     throw new System.NotImplementedException();
                 }
             }

@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Intellicart.Commands;
+using INTV.Intellicart.ViewModel;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -25,9 +28,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Intellicart.Commands;
-using INTV.Intellicart.ViewModel;
-using INTV.Shared.View;
 
 namespace INTV.Intellicart.View
 {
@@ -78,7 +78,10 @@ namespace INTV.Intellicart.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new IntellicartSettingsPage View { get { return (IntellicartSettingsPage)base.View; } }
+        public new IntellicartSettingsPage View
+        {
+            get { return (IntellicartSettingsPage)base.View; }
+        }
 
         #region IFakeDependencyObject
 
@@ -109,8 +112,15 @@ namespace INTV.Intellicart.View
             View.Controller = this;
         }
 
-        private SettingsPageViewModel ViewModel { get { return DataContext as SettingsPageViewModel; } } 
+        private SettingsPageViewModel ViewModel
+        {
+            get { return DataContext as SettingsPageViewModel; }
+        } 
 
+        /// <summary>
+        /// Called when the button is clicked to reset settings to default.
+        /// </summary>
+        /// <param name="sender">The button that was clicked.</param>
         partial void OnResetToDefault(NSObject sender)
         {
             if (SettingsPageViewModel.ResetToDefaultWriteTimeoutCommand.CanExecute(ViewModel))
@@ -119,6 +129,10 @@ namespace INTV.Intellicart.View
             }
         }
 
+        /// <summary>
+        /// Called when a serial port is chosen.
+        /// </summary>
+        /// <param name="sender">The button that was clicked to select the port..</param>
         partial void OnSelectSerialPort(NSObject sender)
         {
             if (DeviceCommandGroup.SelectPortCommand.CanExecute(ViewModel.Intellicart))

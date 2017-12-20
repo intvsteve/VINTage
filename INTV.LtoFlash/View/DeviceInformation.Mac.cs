@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,7 +28,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.View;
 
 namespace INTV.LtoFlash.View
 {
@@ -74,8 +74,8 @@ namespace INTV.LtoFlash.View
         /// <summary>
         /// Creates a new instance of DeviceInformation.
         /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
+        /// <param name="viewModel">The data context for the dialog.</param>
+        /// <returns>A new instance of the DeviceInformation dialog.</returns>
         public static DeviceInformation Create(INTV.LtoFlash.ViewModel.LtoFlashViewModel viewModel)
         {
             var controller = new INTV.LtoFlash.View.DeviceInformationController(viewModel);
@@ -100,6 +100,7 @@ namespace INTV.LtoFlash.View
                 Controller.Dispose();
                 Controller = null;
             }
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(

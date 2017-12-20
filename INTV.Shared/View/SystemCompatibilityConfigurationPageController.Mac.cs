@@ -21,6 +21,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Utility;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -28,9 +31,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Core.ComponentModel;
-using INTV.Shared.Utility;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -81,7 +81,10 @@ namespace INTV.Shared.View
         /// <summary>
         /// Gets the view as a strongly typed value.
         /// </summary>
-        public new SystemCompatibilityConfigurationPage View { get { return (SystemCompatibilityConfigurationPage)base.View; } }
+        public new SystemCompatibilityConfigurationPage View
+        {
+            get { return (SystemCompatibilityConfigurationPage)base.View; }
+        }
 
         /// <summary>
         /// Gets or sets the the Intellivision II compatibility.
@@ -172,12 +175,16 @@ namespace INTV.Shared.View
 
         #endregion // IFakeDependencyObject
 
-        private SystemCompatibilityConfigurationPageViewModel ViewModel { get { return DataContext as SystemCompatibilityConfigurationPageViewModel; } }
+        private SystemCompatibilityConfigurationPageViewModel ViewModel
+        {
+            get { return DataContext as SystemCompatibilityConfigurationPageViewModel; }
+        }
 
         /// <inheritdoc />
         public override void AwakeFromNib()
         {
-            var initializationData = new[] {
+            var initializationData = new[]
+            {
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(IntellivisionIIPopUpButton, ViewModel.IntellivisionIIOptions, ViewModel.IntellivisionII),
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(SuperVideoArcadePopUpButton, ViewModel.SuperVideoArcadeOptions, ViewModel.SuperVideoArcade),
                 new System.Tuple<NSPopUpButton, IList<ProgramFeatureImageViewModel>, ProgramFeatureImageViewModel>(TutorvisionPopUpButton, ViewModel.TutorvisionOptions, ViewModel.Tutorvision)
@@ -186,9 +193,9 @@ namespace INTV.Shared.View
             ViewModel.RaisePropertyChangedForVisualInit();
         }
 
-        private void ViewModelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            switch(e.PropertyName)
+            switch (e.PropertyName)
             {
                 case SystemCompatibilityConfigurationPageViewModel.IntellivisionIIPropertyName:
                     _intellivisionII = new NSNumber(ViewModel.IntellivisionIIOptions.IndexOf(ViewModel.IntellivisionII));

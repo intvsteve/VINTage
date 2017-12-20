@@ -21,12 +21,12 @@
 ////#define ENABLE_DEBUG_OUTPUT
 
 using System;
+using System.Runtime.InteropServices;
 #if __UNIFIED__
 using ObjCRuntime;
 #else
 using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
-using System.Runtime.InteropServices;
 
 namespace INTV.Shared.Interop.IOKit
 {
@@ -79,7 +79,7 @@ namespace INTV.Shared.Interop.IOKit
         /// Creates an instance of an IOKit object.
         /// </summary>
         /// <typeparam name="T">Data type of the IOKit object to create.</typeparam>
-        /// <param name="handle">Handle.</param>
+        /// <param name="handle">Native IOKit object andle.</param>
         /// <returns>The IOKit object.</returns>
         public static T CreateIOKitObject<T>(IntPtr handle) where T : IOKitObject, new()
         {
@@ -94,7 +94,7 @@ namespace INTV.Shared.Interop.IOKit
         public void Dispose()
         {
             this.Dispose(true);
-            GC.SuppressFinalize (this);
+            GC.SuppressFinalize(this);
 #if ENABLE_DEBUG_OUTPUT
             System.Diagnostics.Debug.WriteLine("**** IOKitObject.Dispose()");
 #endif // ENABLE_DEBUG_OUTPUT
@@ -111,7 +111,7 @@ namespace INTV.Shared.Interop.IOKit
         /// Disposes native resources.
         /// </summary>
         /// <param name="disposing">If set to <c>true</c> disposing directly; otherwise via finalizer.</param>
-        protected virtual void Dispose (bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (!Disposed)
             {

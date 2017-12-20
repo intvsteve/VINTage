@@ -20,6 +20,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Shared.Utility;
+using INTV.Shared.View;
+using INTV.Shared.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
@@ -27,9 +30,6 @@ using Foundation;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
-using INTV.Shared.Utility;
-using INTV.Shared.View;
-using INTV.Shared.ViewModel;
 
 namespace INTV.Shared.View
 {
@@ -59,12 +59,6 @@ namespace INTV.Shared.View
             : base(coder)
         {
             Initialize();
-        }
-
-        /// <summary>Shared initialization code.</summary>
-        private void Initialize()
-        {
-            Level = NSWindowLevel.ModalPanel;
         }
 
         #endregion // Constructors
@@ -119,13 +113,13 @@ namespace INTV.Shared.View
         #region IFakeDependencyObject Methods
 
         /// <inheritdoc/>
-        public object GetValue (string propertyName)
+        public object GetValue(string propertyName)
         {
             return this.GetPropertyValue(propertyName);
         }
 
         /// <inheritdoc/>
-        public void SetValue (string propertyName, object value)
+        public void SetValue(string propertyName, object value)
         {
             this.SetPropertyValue(propertyName, value);
         }
@@ -140,6 +134,7 @@ namespace INTV.Shared.View
                 Controller.Dispose();
                 Controller = null;
             }
+
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(
@@ -152,6 +147,12 @@ namespace INTV.Shared.View
             var dialog = dialogController.Window;
             dialog.Controller = dialogController;
             return dialog;
+        }
+
+        /// <summary>Shared initialization code.</summary>
+        private void Initialize()
+        {
+            Level = NSWindowLevel.ModalPanel;
         }
     }
 }

@@ -43,13 +43,6 @@ namespace INTV.LtoFlash.Model
         {
         }
 
-        private bool OSExclusiveAccess(IConnection connection)
-        {
-            var connectedDeviceSerialNumbers = GetConnectedDeviceSerialNumbers();
-            var exclusive = IsLtoFlashSerialPort(connection.Name, connectedDeviceSerialNumbers);
-            return exclusive;
-        }
-
         /// <summary>
         /// Determines if the given serial port is on a LTO Flash! device.
         /// </summary>
@@ -90,12 +83,12 @@ namespace INTV.LtoFlash.Model
                                 validEntry = deviceEntry != null;
                                 if (validEntry)
                                 {
-                                    var vendor = deviceEntry.GetProperty<NSString>(IOKitHelpers.kUSBVendorString);
-                                    var product = deviceEntry.GetProperty<NSString>(IOKitHelpers.kUSBProductString);
+                                    var vendor = deviceEntry.GetProperty<NSString>(IOKitHelpers.KUSBVendorString);
+                                    var product = deviceEntry.GetProperty<NSString>(IOKitHelpers.KUSBProductString);
                                     if ((vendor == Device.UsbVendorName) && (product == Device.UsbProductName))
                                     {
                                         // The serial port for the FTDI chip are named based off the USB serial number.
-                                        var deviceSerial = deviceEntry.GetProperty<NSString>(IOKitHelpers.kUSBSerialNumberString);
+                                        var deviceSerial = deviceEntry.GetProperty<NSString>(IOKitHelpers.KUSBSerialNumberString);
                                         if (!string.IsNullOrEmpty(deviceSerial))
                                         {
                                             connectedDevices.Add(deviceSerial);
@@ -103,11 +96,19 @@ namespace INTV.LtoFlash.Model
                                     }
                                 }
                             }
-                        } while(validEntry);
+                        }
+                        while (validEntry);
                     }
                 }
             }
             return connectedDevices;
+        }
+
+        private bool OSExclusiveAccess(IConnection connection)
+        {
+            var connectedDeviceSerialNumbers = GetConnectedDeviceSerialNumbers();
+            var exclusive = IsLtoFlashSerialPort(connection.Name, connectedDeviceSerialNumbers);
+            return exclusive;
         }
     }
 }

@@ -56,7 +56,7 @@ namespace INTV.Shared.View
             treeView.Selection.Mode = Gtk.SelectionMode.Multiple;
             treeView.HasTooltip = true;
             treeView.EnableModelDragDest(RomListViewModel.DragDropTargetEntries, Gdk.DragAction.Private);
-            treeView.EnableModelDragSource(Gdk.ModifierType.Button1Mask, RomListViewModel.DragDropSourceEntries, Gdk.DragAction.Link);
+            treeView.EnableModelDragSource(Gdk.ModifierType.Button1Mask, RomListViewModel.DragDropSourceEntries, Gdk.DragAction.Copy);
 
             var column = new Gtk.TreeViewColumn();
             Gtk.CellRenderer cellRenderer = new Gtk.CellRendererPixbuf();
@@ -233,7 +233,9 @@ namespace INTV.Shared.View
             var numItemsSelected = ViewModel.CurrentSelection.Count;
             DebugDragDrop("HandleDragBegin: numItemsSelected: " + numItemsSelected);
             var dragImage = numItemsSelected > 1 ? DragMultipleRomsImage : DragOneRomImage;
-            Gtk.Drag.SetIconPixbuf(args.Context, dragImage, 0, 0);
+            var dragText = numItemsSelected > 1 ? "<Multiple Items>" : ViewModel.CurrentSelection.First().Name;
+            var dragWidget = new DragDropImage(dragImage, dragText);
+            Gtk.Drag.SetIconWidget(args.Context, dragWidget, 0, 0);
         }
 
         /// <summary>

@@ -35,9 +35,10 @@ namespace INTV.Shared.ViewModel
         /// </summary>
         /// <param name="potentialRoms">An enumerable of potential ROM file paths.</param>
         /// <param name="currentRoms">The known list of ROMs.</param>
+        /// <param name="insertLocation">The insertion point for the newly added ROMs. A value if <c>-1</c> indicates to append to the existing ROMs</param>
         /// <param name="title">The title to show for the progress indicator.</param>
         /// <param name="options">ROM discovery behaviors.</param>
-        public RomDiscoveryData(IEnumerable<string> potentialRoms, IEnumerable<ProgramDescription> currentRoms, string title, RomDiscoveryOptions options)
+        public RomDiscoveryData(IEnumerable<string> potentialRoms, IEnumerable<ProgramDescription> currentRoms, int insertLocation, string title, RomDiscoveryOptions options)
             : base(null)
         {
             Options = options;
@@ -47,6 +48,7 @@ namespace INTV.Shared.ViewModel
             NewRoms = new List<ProgramDescription>();
             RejectedRoms = new List<IRom>();
             DuplicateRomPaths = new List<string>();
+            InsertLocation = insertLocation;
         }
 
         /// <summary>
@@ -95,8 +97,19 @@ namespace INTV.Shared.ViewModel
         public IList<string> DuplicateRomPaths { get; private set; }
 
         /// <summary>
+        /// Gets the insert location for the ROMs to add.
+        /// </summary>
+        /// <remarks>A value of <c>-1</c> indicates to append to the end of the list.</remarks>
+        public int InsertLocation { get; private set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this operation is adding the "starter" ROMs.
         /// </summary>
         public bool AddingStarterRoms { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to highlight (select) newly added ROMs in the UI.
+        /// </summary>
+        public bool SelectNewRoms { get; set; }
     }
 }

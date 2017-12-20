@@ -25,11 +25,11 @@ using INTV.Shared.ComponentModel;
 using INTV.Shared.Model.Program;
 using INTV.Shared.Utility;
 
-#if WIN
+#if WIN || GTK
 using EcsFeaturesVisualType = INTV.Shared.View.EcsFeaturesConfigurationPage;
 #elif MAC
 using EcsFeaturesVisualType = INTV.Shared.View.EcsFeaturesConfigurationPageController;
-#endif // WIN
+#endif // WIN || GTK
 
 namespace INTV.Shared.ViewModel
 {

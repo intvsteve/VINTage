@@ -1,0 +1,76 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Core.pcl", "..\INTV.Core\INTV.Core.pcl.csproj", "{B90D8E04-5F83-45D7-BD39-0198A7C7C325}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntv.Gtk", "..\INTV.jzIntv\INTV.jzIntv.Gtk.csproj", "{C1185AA4-E7D9-449C-97E1-D0EEEE2CB719}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Shared.Gtk", "..\INTV.Shared\INTV.Shared.Gtk.csproj", "{887F7BEA-10D4-400B-BFB8-7CAF51F310FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LtoFlash.Gtk", "LtoFlash\LtoFlash.Gtk.csproj", "{F150EA52-9705-4F27-BDEF-48FFEFBB9961}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.Gtk", "..\INTV.LtoFlash\INTV.LtoFlash.Gtk.csproj", "{C794FDC9-B7A7-4EC5-96A5-3FC90718D53D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{887F7BEA-10D4-400B-BFB8-7CAF51F310FF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{887F7BEA-10D4-400B-BFB8-7CAF51F310FF}.Debug|x86.Build.0 = Debug|Any CPU
+		{887F7BEA-10D4-400B-BFB8-7CAF51F310FF}.Release|x86.ActiveCfg = Release|Any CPU
+		{887F7BEA-10D4-400B-BFB8-7CAF51F310FF}.Release|x86.Build.0 = Release|Any CPU
+		{B90D8E04-5F83-45D7-BD39-0198A7C7C325}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B90D8E04-5F83-45D7-BD39-0198A7C7C325}.Debug|x86.Build.0 = Debug|Any CPU
+		{B90D8E04-5F83-45D7-BD39-0198A7C7C325}.Release|x86.ActiveCfg = Release|Any CPU
+		{B90D8E04-5F83-45D7-BD39-0198A7C7C325}.Release|x86.Build.0 = Release|Any CPU
+		{C1185AA4-E7D9-449C-97E1-D0EEEE2CB719}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C1185AA4-E7D9-449C-97E1-D0EEEE2CB719}.Debug|x86.Build.0 = Debug|Any CPU
+		{C1185AA4-E7D9-449C-97E1-D0EEEE2CB719}.Release|x86.ActiveCfg = Release|Any CPU
+		{C1185AA4-E7D9-449C-97E1-D0EEEE2CB719}.Release|x86.Build.0 = Release|Any CPU
+		{C794FDC9-B7A7-4EC5-96A5-3FC90718D53D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C794FDC9-B7A7-4EC5-96A5-3FC90718D53D}.Debug|x86.Build.0 = Debug|Any CPU
+		{C794FDC9-B7A7-4EC5-96A5-3FC90718D53D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C794FDC9-B7A7-4EC5-96A5-3FC90718D53D}.Release|x86.Build.0 = Release|Any CPU
+		{F150EA52-9705-4F27-BDEF-48FFEFBB9961}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F150EA52-9705-4F27-BDEF-48FFEFBB9961}.Debug|x86.Build.0 = Debug|Any CPU
+		{F150EA52-9705-4F27-BDEF-48FFEFBB9961}.Release|x86.ActiveCfg = Release|Any CPU
+		{F150EA52-9705-4F27-BDEF-48FFEFBB9961}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = VisualStudio
+		$1.inheritsScope = text/plain
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.IndentSwitchBody = True
+		$2.IndentBlocksInsideExpressions = True
+		$2.AnonymousMethodBraceStyle = NextLine
+		$2.PropertyBraceStyle = NextLine
+		$2.PropertyGetBraceStyle = NextLine
+		$2.PropertySetBraceStyle = NextLine
+		$2.EventBraceStyle = NextLine
+		$2.EventAddBraceStyle = NextLine
+		$2.EventRemoveBraceStyle = NextLine
+		$2.StatementBraceStyle = NextLine
+		$2.ElseNewLinePlacement = NewLine
+		$2.CatchNewLinePlacement = NewLine
+		$2.FinallyNewLinePlacement = NewLine
+		$2.WhileNewLinePlacement = DoNotCare
+		$2.ArrayInitializerWrapping = DoNotChange
+		$2.ArrayInitializerBraceStyle = NextLine
+		$2.BeforeMethodDeclarationParentheses = False
+		$2.BeforeMethodCallParentheses = False
+		$2.BeforeConstructorDeclarationParentheses = False
+		$2.NewLineBeforeConstructorInitializerColon = NewLine
+		$2.NewLineAfterConstructorInitializerColon = SameLine
+		$2.BeforeDelegateDeclarationParentheses = False
+		$2.NewParentheses = False
+		$2.SpacesBeforeBrackets = False
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+	EndGlobalSection
+EndGlobal

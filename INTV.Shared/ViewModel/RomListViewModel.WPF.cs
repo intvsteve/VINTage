@@ -242,7 +242,7 @@ namespace INTV.Shared.ViewModel
             {
                 var files = data.GetData(DataFormats.FileDrop) as IEnumerable<string>;
                 var options = RomDiscoveryOptions.AddNewRoms | RomDiscoveryOptions.AccumulateRejectedRoms;
-                var args = new RomDiscoveryData(files, Programs.ModelCollection, Resources.Strings.RomListViewModel_Progress_Title, options);
+                var args = new RomDiscoveryData(files, Programs.ModelCollection, -1, Resources.Strings.RomListViewModel_Progress_Title, options);
                 AddPrograms(args);
                 bool updatedSearchDirectories = false;
                 foreach (var file in files)
@@ -347,7 +347,7 @@ namespace INTV.Shared.ViewModel
                     {
                         options |= RomDiscoveryOptions.DetectChanges | RomDiscoveryOptions.DetectMissingRoms | RomDiscoveryOptions.DetectNewRoms;
                     }
-                    var taskData = new RomDiscoveryData(Properties.Settings.Default.RomListSearchDirectories, _programs.ModelCollection, Resources.Strings.RomListViewModel_ScanningForRoms_Title, options);
+                    var taskData = new RomDiscoveryData(Properties.Settings.Default.RomListSearchDirectories, _programs.ModelCollection, -1, Resources.Strings.RomListViewModel_ScanningForRoms_Title, options);
                     SingleInstanceApplication.Instance.AddStartupAction("ScanForRoms", () => RefreshRoms(taskData), StartupTaskPriority.HighestAsyncTaskPriority);
                 }
             }

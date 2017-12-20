@@ -169,3 +169,5 @@ $RECYCLE.BIN/
 # Mono/Xamarin detritus
 # =========================
 *.resources
+
+*.userprefs

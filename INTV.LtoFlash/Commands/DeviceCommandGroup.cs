@@ -33,7 +33,7 @@ using INTV.Shared.View;
 
 #if WIN
 using OSWindow = System.Windows.Window;
-#elif MAC
+#elif MAC || GTK
 using OSWindow = INTV.Shared.View.IFakeDependencyObject;
 #endif // WIN
 
@@ -666,6 +666,10 @@ namespace INTV.LtoFlash.Commands
                 if (SingleInstanceApplication.SharedSettings.ShowDetailedErrors)
                 {
                     dialog.Exception = exception;
+                }
+                else
+                {
+                    dialog.TextWrapping = OSTextWrapping.Wrap;
                 }
                 dialog.ShowDialog(Resources.Strings.OK);
             }

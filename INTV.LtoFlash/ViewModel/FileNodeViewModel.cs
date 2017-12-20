@@ -332,6 +332,20 @@ namespace INTV.LtoFlash.ViewModel
         #endregion // object Overrides
 
         /// <summary>
+        /// Add items to a specific destination folder.
+        /// </summary>
+        /// <param name="menuLayout">The menu layout to add items to.</param>
+        /// <param name="destination">The folder to which items are to be added.</param>
+        /// <param name="items">The items to add.</param>
+        /// <param name="insertIndex">The location at which to insert the new items.</param>
+        internal static void AddItems(MenuLayoutViewModel menuLayout, IFileContainer destination, IEnumerable<ProgramDescription> items, int insertIndex)
+        {
+            var taskData = new AddRomsToMenuData(menuLayout, destination, items, insertIndex);
+            var addRomsTask = new AsyncTaskWithProgress(Resources.Strings.AddItems_ProgressTitle, true, false);
+            addRomsTask.RunTask(taskData, AddItems, AddItemsComplete);
+        }
+
+        /// <summary>
         /// Adds items to the given menu layout in which each items specifies its own destination directory.
         /// </summary>
         /// <param name="menuLayout">The menu layout to which items are to be added.</param>
@@ -552,17 +566,32 @@ namespace INTV.LtoFlash.ViewModel
         }
 
         /// <summary>
-        /// Add items to a specific destination folder.
+        /// Moves items from one location in the tree to another.
         /// </summary>
-        /// <param name="menuLayout">The menu layout to add items to.</param>
-        /// <param name="destination">The folder to which items are to be added.</param>
-        /// <param name="items">The items to add.</param>
-        /// <param name="insertIndex">The location at which to insert the new items.</param>
-        protected static void AddItems(MenuLayoutViewModel menuLayout, IFileContainer destination, IEnumerable<ProgramDescription> items, int insertIndex)
+        /// <param name="menuLayout">The root of the data tree.</param>
+        /// <param name="newParent">The new parent item for the items being moved.</param>
+        /// <param name="indexInNewParent">THe location in the new parent at which to add the items.</param>
+        /// <param name="itemsToMove">The items to relocate.</param>
+        /// <returns><c>true</c> if any of the items were moved.</returns>
+        internal bool MoveItems(MenuLayoutViewModel menuLayout, FolderViewModel newParent, int indexInNewParent, IEnumerable<FileNodeViewModel> itemsToMove)
         {
-            var taskData = new AddRomsToMenuData(menuLayout, destination, items, insertIndex);
-            var addRomsTask = new AsyncTaskWithProgress(Resources.Strings.AddItems_ProgressTitle, true, false);
-            addRomsTask.RunTask(taskData, AddItems, AddItemsComplete);
+            var movedItems = itemsToMove.Any();
+            if (movedItems)
+            {
+                menuLayout.StartItemsUpdate();
+                foreach (var itemToMove in itemsToMove)
+                {
+                    // Post-increment insert location to preserve order of dropped items.
+                    movedItems = MoveItem(menuLayout, newParent, indexInNewParent++, itemToMove);
+                    if (!movedItems)
+                    {
+                        break;
+                    }
+                }
+                menuLayout.FinishItemsUpdate(true);
+                INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+            }
+            return movedItems;
         }
 
         /// <summary>
@@ -571,6 +600,17 @@ namespace INTV.LtoFlash.ViewModel
         /// <param name="color">The color of the desired icon.</param>
         /// <returns>The icon.</returns>
         internal abstract OSImage GetIconForColor(INTV.Core.Model.Stic.Color color);
+
+        /// <summary>
+        /// Determines if the item should accept a collection of dragged items.
+        /// </summary>
+        /// <param name="draggedItems">The items being dragged.</param>
+        /// <returns><c>true</c> if the items should be accepted.</returns>
+        internal bool ShouldAcceptDraggedItems(IEnumerable<IFile> draggedItems)
+        {
+            bool accept = !draggedItems.Any(draggedItem => !ShouldAcceptDraggedItem(draggedItem));
+            return accept;
+        }
 
         /// <summary>
         /// This method is called when the color of the item is being changed.
@@ -815,6 +855,32 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
+        private bool MoveItem(MenuLayoutViewModel menuLayout, FolderViewModel newParent, int indexInNewParent, FileNodeViewModel itemToMove)
+        {
+            var movedItem = true;
+            menuLayout.StartItemsUpdate();
+
+            // operate on the model
+            var parent = newParent.Model as Folder;
+            var itemToMoveModel = itemToMove.Model;
+            if (indexInNewParent >= parent.Files.Count)
+            {
+                if (!itemToMoveModel.Parent.MoveChildToNewParent(itemToMoveModel, parent, false))
+                {
+                    throw new System.InvalidOperationException("failed to move");
+                }
+            }
+            else
+            {
+                if (!itemToMoveModel.Parent.MoveChildToNewParent(itemToMoveModel, parent, indexInNewParent, false))
+                {
+                    throw new System.InvalidOperationException("failed to move");
+                }
+            }
+            menuLayout.FinishItemsUpdate(true);
+            return movedItem;
+        }
+
         private void OnModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -939,17 +1005,6 @@ namespace INTV.LtoFlash.ViewModel
 #endif // WIN
         }
 #endif // false
-
-        /// <summary>
-        /// Determines if the item should accept a collection of dragged items.
-        /// </summary>
-        /// <param name="draggedItems">The items being dragged.</param>
-        /// <returns><c>true</c> if the items should be accepted.</returns>
-        internal bool ShouldAcceptDraggedItems(IEnumerable<IFile> draggedItems)
-        {
-            bool accept = !draggedItems.Any(draggedItem => !ShouldAcceptDraggedItem(draggedItem));
-            return accept;
-        }
 
         /// <summary>
         /// Determines whether to accept a dragged item.

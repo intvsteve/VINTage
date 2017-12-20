@@ -25,11 +25,11 @@ using INTV.Shared.ComponentModel;
 using INTV.Shared.Model.Program;
 using INTV.Shared.Utility;
 
-#if WIN
+#if WIN || GTK
 using SystemCompatibilityConfigurationVisualType = INTV.Shared.View.SystemCompatibilityConfigurationPage;
 #elif MAC
 using SystemCompatibilityConfigurationVisualType = INTV.Shared.View.SystemCompatibilityConfigurationPageController;
-#endif // WIN
+#endif // WIN || GTK
 
 namespace INTV.Shared.ViewModel
 {

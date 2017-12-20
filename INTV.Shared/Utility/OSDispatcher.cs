@@ -26,6 +26,8 @@ using NativeDispatcher = Foundation.NSThread;
 #else
 using NativeDispatcher = MonoMac.Foundation.NSThread;
 #endif // __UNIFIED__
+#elif GTK
+using NativeDispatcher = System.Threading.Thread;
 #endif // WIN
 
 namespace INTV.Shared.Utility

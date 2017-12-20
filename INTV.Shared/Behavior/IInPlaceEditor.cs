@@ -28,6 +28,8 @@ using NativeVisual = AppKit.NSView;
 #else
 using NativeVisual = MonoMac.AppKit.NSView;
 #endif // __UNIFIED__
+#elif GTK
+using NativeVisual = Gtk.Widget; // switch to OSVisual?
 #endif // WIN
 
 namespace INTV.Shared.Behavior

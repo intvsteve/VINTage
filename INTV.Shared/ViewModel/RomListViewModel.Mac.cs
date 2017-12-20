@@ -67,7 +67,7 @@ namespace INTV.Shared.ViewModel
                 {
                     options |= RomDiscoveryOptions.DetectChanges | RomDiscoveryOptions.DetectMissingRoms | RomDiscoveryOptions.DetectNewRoms;
                 }
-                var taskData = new RomDiscoveryData(Properties.Settings.Default.RomListSearchDirectories, _programs.ModelCollection, Resources.Strings.RomListViewModel_ScanningForRoms_Title, options);
+                var taskData = new RomDiscoveryData(Properties.Settings.Default.RomListSearchDirectories, _programs.ModelCollection, -1, Resources.Strings.RomListViewModel_ScanningForRoms_Title, options);
                 SingleInstanceApplication.Instance.AddStartupAction("ScanForRoms", () => RefreshRoms(taskData), StartupTaskPriority.HighestAsyncTaskPriority);
             }
         }
@@ -88,7 +88,7 @@ namespace INTV.Shared.ViewModel
         }
 
         /// <summary>
-        /// Gets the files dropped.
+        /// Gets the list of files that have been dropped into the ROM list visual via a drag and drop operation in the UI.
         /// </summary>
         /// <param name="osDropArgs">Platform-specific drop arguments.</param>
         /// <param name="droppedFiles">Dropped files.</param>
@@ -113,7 +113,7 @@ namespace INTV.Shared.ViewModel
             if (files.Any())
             {
                 var options = RomDiscoveryOptions.AddNewRoms | RomDiscoveryOptions.AccumulateRejectedRoms;
-                var args = new RomDiscoveryData(files, Programs.ModelCollection, Resources.Strings.RomListViewModel_Progress_Title, options);
+                var args = new RomDiscoveryData(files, Programs.ModelCollection, -1, Resources.Strings.RomListViewModel_Progress_Title, options);
                 AddPrograms(args);
                 bool updatedSearchDirectories = false;
                 foreach (var file in files)

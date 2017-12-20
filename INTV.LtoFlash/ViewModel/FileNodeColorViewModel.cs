@@ -34,6 +34,9 @@ using OSBrush = AppKit.NSColor;
 using NodeColorBase = MonoMac.Foundation.NSObject;
 using OSBrush = MonoMac.AppKit.NSColor;
 #endif // __UNIFIED__
+#elif GTK
+using NodeColorBase = INTV.Shared.ViewModel.ViewModelBase;
+using OSBrush = Gdk.Color;
 #endif // WIN
 
 namespace INTV.LtoFlash.ViewModel
@@ -62,7 +65,9 @@ namespace INTV.LtoFlash.ViewModel
             _fill = new OSBrush(color.ToColor());
 #elif MAC
             _fill = color.ToColor();
-#endif
+#elif GTK
+            _fill = color.ToColor();
+#endif // WIN
         }
 
         #endregion // Constructors

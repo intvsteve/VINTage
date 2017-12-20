@@ -26,6 +26,8 @@ using OSVisual = AppKit.NSViewController;
 #else
 using OSVisual = MonoMac.AppKit.NSViewController;
 #endif // __UNIFIED__
+#elif GTK
+using INTV.Shared.View;
 #endif // WIN
 
 namespace INTV.Shared.ViewModel

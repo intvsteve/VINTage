@@ -46,7 +46,7 @@ using INTV.Shared.ViewModel;
 using ExitEventArgs = System.Windows.ExitEventArgs;
 using MenuLayoutView = INTV.LtoFlash.View.MenuTreeView;
 using OSWindow = System.Windows.Window;
-#elif MAC
+#elif MAC || GTK
 using ExitEventArgs = INTV.Shared.Utility.ExitEventArgs;
 using MenuLayoutView = INTV.LtoFlash.View.MenuLayoutView;
 using OSWindow = INTV.Shared.View.SerialPortSelectorDialog;

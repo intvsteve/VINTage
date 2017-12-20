@@ -239,7 +239,11 @@ namespace INTV.Shared.Utility
 
         public IEnumerable<IPeripheral> GetAttachedDevices()
         {
-            var attachedDevices = Components.SelectMany(c => c.AttachedPeripherals);
+            var attachedDevices = Enumerable.Empty<IPeripheral>();
+            if (ReadyState == AppReadyState.Ready)
+            {
+                attachedDevices = Components.SelectMany(c => c.AttachedPeripherals);
+            }
             return attachedDevices;
         }
 

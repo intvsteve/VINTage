@@ -46,151 +46,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             TreeStore = treeStore;
         }
-
-        private void ItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            OSDispatcher.Current.InvokeOnMainDispatcher(() =>
-                {
-                    var itemsToAdd = Enumerable.Empty<FileNodeViewModel>();
-                    var itemsToRemove = Enumerable.Empty<FileNodeViewModel>();
-                    if ((sender != null) && (e != null))
-                    {
-                        var treeStore = TreeStore;
-                        Gtk.TreeIter treeIter;
-                        var gotSelfIter = GetIterForItem(out treeIter, treeStore);
-                        switch (e.Action)
-                        {
-                            case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                                var newItems = new List<FileNodeViewModel>();
-                                Gtk.TreeIter insertIter;
-                                bool putAtFront = e.NewStartingIndex == 0;
-                                var insertIterValid = GetTreeIterForItem(out insertIter, treeIter, treeStore, null, e.NewStartingIndex - 1);
-                                for (int i = 0; i < e.NewItems.Count; ++i)
-                                {
-                                    var item = (FileNodeViewModel)e.NewItems[i];
-                                    var folder = item as FolderViewModel;
-                                    if (folder != null)
-                                    {
-                                        // Ensure that the tree store is properly initialized.
-                                        folder.InitializeGtkModel(treeStore);
-                                    }
-                                    // TODO: Make sure this works for multi-adds.
-                                    if (insertIterValid)
-                                    {
-                                        if (putAtFront)
-                                        {
-                                            insertIter = treeStore.InsertNodeBefore(insertIter);
-                                            putAtFront = false;
-                                        }
-                                        else
-                                        {
-                                            insertIter = treeStore.InsertNodeAfter(insertIter);
-                                        }
-                                        treeStore.SetValue(insertIter, 0, item);
-                                    }
-                                    else if (treeIter.Equals(Gtk.TreeIter.Zero))
-                                    {
-                                        treeStore.AppendValues(item);
-                                    }
-                                    else
-                                    {
-                                        treeStore.AppendValues(treeIter, item);
-                                    }
-                                    //var index = (e.NewStartingIndex < 0) ? (children.Count + i) : (e.NewStartingIndex + i);
-                                    //indexSetToAdd.Add((uint)index);
-                                    newItems.Add(item);
-                                }
-                                itemsToAdd = newItems;
-                                break;
-                            case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                                var oldItems = new List<FileNodeViewModel>();
-                                for (int i = 0; i < e.OldItems.Count; ++i)
-                                {
-                                    var item = (FileNodeViewModel)e.OldItems[i];
-                                    Gtk.TreeIter itemIter;
-                                    if (GetTreeIterForItem(out itemIter, treeIter, treeStore, item, e.OldStartingIndex + i))
-                                    {
-                                        //oldItems.Add(item);
-                                        treeStore.Remove(ref itemIter);
-                                    }
-                                }
-                                itemsToRemove = oldItems;
-                                break;
-                            case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
-                                oldItems = new List<FileNodeViewModel>();
-                                for (int i = 0; i < e.OldItems.Count; ++i)
-                                {
-                                    var item = (FileNodeViewModel)e.OldItems[i];
-                                    var index = e.OldStartingIndex + i; // children.IndexOf(item);
-                                    //indexSetToRemove.Add((uint)index);
-                                    oldItems.Add(item);
-                                }
-                                itemsToRemove = oldItems;
-                                newItems = new List<FileNodeViewModel>();
-                                for (int i = 0; i < e.NewItems.Count; ++i)
-                                {
-                                    var item = (FileNodeViewModel)e.NewItems[i];
-                                    var index = e.NewStartingIndex + i;
-                                    // TODO Is this actually possible? Is it really a bug?
-                                    ////if (e.NewStartingIndex > e.OldStartingIndex)
-                                    ////{
-                                    ////    --index; // NOTE: Probably a bug here: if we delete multiple consecutive, gotta fix it up?
-                                    ////}
-                                    //indexSetToAdd.Add((uint)index);
-                                    newItems.Add(item);
-                                }
-                                itemsToAdd = newItems;
-                                break;
-                            default:
-                                INTV.Shared.Utility.ErrorReporting.ReportNotImplementedError("Unhandled collection change: " + e.Action);
-                                break;
-                        }
-                    }
-                    else if ((sender == null) && (e == null) && (Items != null))
-                    {
-                        // Replaced model, so re-populate NSArray w/ the new one.
-                        //itemsToRemove = children.Except(Items);
-                        foreach (var item in itemsToRemove)
-                        {
-                            //for (uint idx = 0; idx < Children.Count; ++idx)
-                            {
-                                //var element = Children.ValueAt(idx);
-                                //if (element == item.Handle)
-                                {
-                                    //indexSetToRemove.Add(idx);
-                                }
-                            }
-                        }
-                        //itemsToAdd = Items.Except(children);
-                        uint i = 0;
-                        foreach (var item in itemsToAdd)
-                        {
-                            //indexSetToAdd.Add(i);
-                            ++i;
-                        }
-                    }
-
-                    if (itemsToRemove.Any())
-                    {
-                        //WillChange(NSKeyValueChange.Removal, indexSetToRemove, (NSString)ItemsPropertyName);
-                        //Children.RemoveObjectsAtIndexes(indexSetToRemove);
-                        //ItemCount = (uint)Children.Count;
-                        //DidChange(NSKeyValueChange.Removal, indexSetToRemove, (NSString)ItemsPropertyName);
-                    }
-                    if (itemsToAdd.Any())
-                    {
-                        //WillChange(NSKeyValueChange.Insertion, indexSetToAdd, (NSString)ItemsPropertyName);
-                        //Children.InsertObjects(itemsToAdd.ToArray(), indexSetToAdd);
-                        //ItemCount = (uint)Children.Count;
-                        //DidChange(NSKeyValueChange.Insertion, indexSetToAdd, (NSString)ItemsPropertyName);
-                    }
-                    if ((sender == null) && (e == null))
-                    {
-//                RaisePropertyChanged(StatusPropertyName); // addresses some lack-of-update problems (drop stuff here not going away)
-                    }
-                });
-        }
-
+        
         private static bool GetTreeIterForItem(out Gtk.TreeIter itemIter, Gtk.TreeIter parentIter, Gtk.TreeStore treeStore, FileNodeViewModel item, int index)
         {
             // if item is null, just get iterator at index
@@ -224,6 +80,126 @@ namespace INTV.LtoFlash.ViewModel
             return foundIt && !itemIter.Equals(Gtk.TreeIter.Zero);
         }
 
+        private void ItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (OSDispatcher.IsMainThread)
+            {
+                // This must be done synchronously to work for drag/drop, etc.
+                ItemsCollectionChangedCore(sender, e);
+            }
+            else
+            {
+                // NOTE: This has been known to result in the UI not syncing up correctly
+                // if invoked during a drag/drop operation - despite the implemenation being
+                // essentially the same as the body of this function.
+                OSDispatcher.Current.InvokeOnMainDispatcher(() => ItemsCollectionChangedCore(sender, e));
+            }
+        }
+
+        private void ItemsCollectionChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ((sender != null) && (e != null))
+            {
+                var treeStore = TreeStore;
+                Gtk.TreeIter treeIter;
+                var gotSelfIter = GetIterForItem(out treeIter, treeStore);
+                switch (e.Action)
+                {
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                        AddItemsToTreeStore(treeStore, e.NewItems.Cast<FileNodeViewModel>().ToList(), e.NewStartingIndex);
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                        RemoveItemsFromTreeStore(treeStore, e.OldItems.Cast<FileNodeViewModel>().ToList(), e.OldStartingIndex, -1);
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
+                        var indexForInsert = RemoveItemsFromTreeStore(treeStore, e.OldItems.Cast<FileNodeViewModel>().ToList(), e.OldStartingIndex, e.NewStartingIndex);
+                        AddItemsToTreeStore(treeStore, e.NewItems.Cast<FileNodeViewModel>().ToList(), indexForInsert);
+                        break;
+                    default:
+                        INTV.Shared.Utility.ErrorReporting.ReportNotImplementedError("Unhandled collection change: " + e.Action);
+                        break;
+                }
+            }
+            else if ((sender == null) && (e == null) && (Items != null))
+            {
+                // Replaced model, so re-populate contents w/ the new one.
+                // Invoked during initialization code.
+            }
+        }
+
+        private void AddItemsToTreeStore(Gtk.TreeStore treeStore, IList<FileNodeViewModel> itemsToAdd, int startingIndex)
+        {
+            Gtk.TreeIter treeIter;
+            var gotSelfIter = GetIterForItem(out treeIter, treeStore);
+            Gtk.TreeIter insertIter;
+            bool putAtFront = startingIndex == 0;
+            var insertIterValid = GetTreeIterForItem(out insertIter, treeIter, treeStore, null, startingIndex - 1);
+            for (int i = 0; i < itemsToAdd.Count; ++i)
+            {
+                var item = itemsToAdd[i];
+                var folder = item as FolderViewModel;
+                if (folder != null)
+                {
+                    // Ensure that the tree store is properly initialized.
+                    folder.InitializeGtkModel(treeStore);
+                }
+                if (insertIterValid)
+                {
+                    if (putAtFront)
+                    {
+                        insertIter = treeStore.InsertNodeBefore(insertIter);
+                        putAtFront = false;
+                    }
+                    else
+                    {
+                        insertIter = treeStore.InsertNodeAfter(insertIter);
+                    }
+                    treeStore.SetValue(insertIter, 0, item);
+                }
+                else if (treeIter.Equals(Gtk.TreeIter.Zero))
+                {
+                    treeStore.AppendValues(item);
+                }
+                else
+                {
+                    treeStore.AppendValues(treeIter, item);
+                }
+            }
+        }
+
+        private int RemoveItemsFromTreeStore(Gtk.TreeStore treeStore, IList<FileNodeViewModel> itemsToRemove, int startingIndex, int indexForInsert)
+        {
+            Gtk.TreeIter treeIter;
+            var gotSelfIter = GetIterForItem(out treeIter, treeStore);
+            for (int i = 0; i < itemsToRemove.Count; ++i)
+            {
+                var item = itemsToRemove[i];
+                Gtk.TreeIter itemIter;
+
+                // TODO: This seems wrong w.r.t. using the index here - probably cause trouble w/ multiselect
+                if (GetTreeIterForItem(out itemIter, treeIter, treeStore, item, startingIndex + i))
+                {
+                    if (item.Parent == Model)
+                    {
+                        // Moving something under the same parent, so adjust indexForInsert if needed.
+                        // If the item is to be moved to an index after its current index, decrement the
+                        // new location, because the item before it in the list will be removed.
+                        if ((indexForInsert > startingIndex) && (indexForInsert < (this.Items.Count - 1)))
+                        {
+                            --indexForInsert;
+                        }
+                    }
+                    var treePath = treeStore.GetPath(itemIter);
+                    treeStore.Remove(ref itemIter);
+                }
+            }
+            return indexForInsert;
+        }
+
+        /// <summary>
+        /// Replaceds the items collection.
+        /// </summary>
+        /// <param name="oldItems">Old items.</param>
         partial void ReplacedItemsCollection(ObservableViewModelCollection<FileNodeViewModel, IFile> oldItems)
         {
             if (oldItems != null)

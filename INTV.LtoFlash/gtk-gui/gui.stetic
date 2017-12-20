@@ -156,6 +156,8 @@
                     <signal name="RowExpanded" handler="HandleRowExpanded" />
                     <signal name="RowCollapsed" handler="HandleRowCollapsed" />
                     <signal name="DragDataReceived" handler="HandleDragDataReceived" />
+                    <signal name="DragBegin" handler="HandleDragBegin" />
+                    <signal name="DragDataGet" handler="HandleDragDataGet" />
                   </widget>
                 </child>
               </widget>

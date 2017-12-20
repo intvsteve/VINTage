@@ -186,6 +186,8 @@ namespace INTV.LtoFlash.View
 			this._menuLayout.RowExpanded += new global::Gtk.RowExpandedHandler (this.HandleRowExpanded);
 			this._menuLayout.RowCollapsed += new global::Gtk.RowCollapsedHandler (this.HandleRowCollapsed);
 			this._menuLayout.DragDataReceived += new global::Gtk.DragDataReceivedHandler (this.HandleDragDataReceived);
+			this._menuLayout.DragBegin += new global::Gtk.DragBeginHandler (this.HandleDragBegin);
+			this._menuLayout.DragDataGet += new global::Gtk.DragDataGetHandler (this.HandleDragDataGet);
 		}
 	}
 }

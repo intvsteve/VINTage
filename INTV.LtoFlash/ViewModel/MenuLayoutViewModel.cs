@@ -116,6 +116,11 @@ namespace INTV.LtoFlash.ViewModel
         public static readonly string DragDataFormat = "Intellivision.LTOFlashFile";
 
         /// <summary>
+        /// The drag drop source data identifier.
+        /// </summary>
+        public static readonly uint DragDataFormatIdentifier = Convert.ToUInt32(DragDataFormat.GetHashCode());
+
+        /// <summary>
         /// Identifies the data format used to track the MenuLayoutViewModel into which a ProgramDescription was dragged.
         /// </summary>
         public static readonly string DragMenuLayoutDataFormat = "Intellivision.MenuLayout";

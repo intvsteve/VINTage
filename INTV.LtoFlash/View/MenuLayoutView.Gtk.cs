@@ -43,11 +43,19 @@ namespace INTV.LtoFlash.View
     [Gtk.Binding(Gdk.Key.BackSpace, "HandleDeleteSelectedItems")]
     public partial class MenuLayoutView : Gtk.Bin, IFakeDependencyObject
     {
-        private static readonly Gtk.TargetEntry[] DragDropTargeteEntries = new[]
+        private static readonly Gtk.TargetEntry[] DragDropSourceEntries = new[]
         {
-                new Gtk.TargetEntry(ProgramDescriptionViewModel.DragDataFormat, Gtk.TargetFlags.App, RomListViewModel.DragDropSourceDataIdentifier)
+            new Gtk.TargetEntry(MenuLayoutViewModel.DragDataFormat, Gtk.TargetFlags.Widget, MenuLayoutViewModel.DragDataFormatIdentifier),
         };
 
+        private static readonly Gtk.TargetEntry[] DragDropTargetEntries = new[]
+        {
+            new Gtk.TargetEntry(ProgramDescriptionViewModel.DragDataFormat, Gtk.TargetFlags.App, RomListViewModel.DragDropSourceDataIdentifier),
+            new Gtk.TargetEntry(MenuLayoutViewModel.DragDataFormat, Gtk.TargetFlags.Widget, MenuLayoutViewModel.DragDataFormatIdentifier),
+        };
+
+        private static readonly Gdk.Pixbuf DragMultipleItemsProgramImage = typeof(MenuLayoutView).LoadImageResource("Resources/Images/document_added_White_16xLG.png");
+        private static readonly Gdk.Pixbuf DragMultipleItemsFolderImage = typeof(MenuLayoutView).LoadImageResource("Resources/Images/folder_added_Closed_White_16xLG.png");
         private static readonly OSImage PowerIconImage = typeof(INTV.Shared.Utility.ResourceHelpers).LoadImageResource("ViewModel/Resources/Images/console_16xLG.png");
         private static readonly OSImage DirtyIconImage = typeof(MenuLayoutView).LoadImageResource("Resources/Images/lto_flash_contents_not_in_sync_16xLG.png");
         private static readonly Dictionary<Color, Gdk.Pixbuf> ColorPixbufs = new Dictionary<Color, Gdk.Pixbuf>();
@@ -258,6 +266,8 @@ namespace INTV.LtoFlash.View
         protected void HandleDragBegin(object o, Gtk.DragBeginArgs args)
         {
             DebugDragDrop("HandleDragBegin");
+            var menuLayoutView = o as Gtk.TreeView;
+            SetDragImage(menuLayoutView, args);
         }
 
         /// <summary>
@@ -278,6 +288,13 @@ namespace INTV.LtoFlash.View
         protected void HandleDragDataGet(object o, Gtk.DragDataGetArgs args)
         {
             DebugDragDrop("HandleDragDataGet");
+            if (args.Info == MenuLayoutViewModel.DragDataFormatIdentifier)
+            {
+                var menuLayout = o as Gtk.TreeView;
+                var paths = menuLayout.Selection.GetSelectedRows();
+                var data = string.Join("\n", paths.Select(p => p.ToString()));
+                args.SelectionData.Set(args.SelectionData.Target, 8, System.Text.Encoding.UTF8.GetBytes(data));
+            }
         }
 
         /// <summary>
@@ -357,8 +374,10 @@ namespace INTV.LtoFlash.View
             }
             if (dropTarget != null)
             {
+                var menuLayout = ViewModel.HostPCMenuLayout;
                 if (args.Info == RomListViewModel.DragDropSourceDataIdentifier)
                 {
+                    DebugDragDrop("HandleDragDataReceived: Data from ROM list");
                     var itemsToAdd = new List<ProgramDescription>();
                     var stringIndices = System.Text.Encoding.UTF8.GetString(args.SelectionData.Data).Split('\n');
                     foreach (var stringIndex in stringIndices)
@@ -373,8 +392,26 @@ namespace INTV.LtoFlash.View
                             }
                         }
                     }
-                    var menuLayout = ViewModel.HostPCMenuLayout;
                     MenuLayoutViewModel.AddItems(menuLayout, dropTarget, itemsToAdd, insertLocation);
+                }
+                else if (args.Info == MenuLayoutViewModel.DragDataFormatIdentifier)
+                {
+                    DebugDragDrop("HandleDragDataReceived: Rearrange drop");
+                    var itemsToMove = new List<FileNodeViewModel>();
+                    var stringPaths = System.Text.Encoding.UTF8.GetString(args.SelectionData.Data).Split('\n');
+                    foreach (var stringPath in stringPaths)
+                    {
+                        var itemToMovePath = new Gtk.TreePath(stringPath);
+                        Gtk.TreeIter itemIter;
+                        if (treeView.Model.GetIter(out itemIter, itemToMovePath))
+                        {
+                            var fileNode = treeView.Model.GetValue(itemIter, 0) as FileNodeViewModel;
+                            itemsToMove.Add(fileNode);
+                            DebugDragDrop("HandleDragDataReceived: Plan to move: " + fileNode.LongName + " : " + itemToMovePath.ToString());
+                        }
+                    }
+                    var newParent = menuLayout.FindViewModelForModel(dropTarget);
+                    newParent.MoveItems(menuLayout, newParent, insertLocation, itemsToMove);
                 }
             }
         }
@@ -423,6 +460,31 @@ namespace INTV.LtoFlash.View
         private static void DebugDragDrop(object message)
         {
             System.Diagnostics.Debug.WriteLine("DRAG_DROP: MenuLayout: " + message);
+        }
+
+        private static void SetDragImage(Gtk.TreeView menuLayout, Gtk.DragBeginArgs args)
+        {
+            var selection = menuLayout.Selection;
+            var firstSelectedPath = selection.GetSelectedRows().First();
+            Gtk.TreeIter iter;
+            if (menuLayout.Model.GetIter(out iter, firstSelectedPath))
+            {
+                var firstDraggedItem = menuLayout.Model.GetValue(iter, 0) as FileNodeViewModel;
+                string text;
+                Gdk.Pixbuf icon;
+                if (selection.CountSelectedRows() > 1)
+                {
+                    text = "<Multiple Items>";
+                    icon = firstDraggedItem is FolderViewModel ? DragMultipleItemsFolderImage : DragMultipleItemsProgramImage;
+                }
+                else
+                {
+                    text = firstDraggedItem.LongName;
+                    icon = firstDraggedItem.Icon;
+                }
+                var dragWidget = new DragDropImage(icon, text);
+                Gtk.Drag.SetIconWidget(args.Context, dragWidget, 0, 0);
+            }
         }
 
         private void HandleCanExecuteDeleteItemsChanged(object sender, System.EventArgs e)
@@ -534,8 +596,8 @@ namespace INTV.LtoFlash.View
             dataContext.SynchronizeToTreeStore(menuLayoutStore);
             menuLayout.Model = menuLayoutStore;
 
-            menuLayout.EnableModelDragDest(DragDropTargeteEntries, Gdk.DragAction.Link);
-
+            menuLayout.EnableModelDragSource(Gdk.ModifierType.Button1Mask, DragDropSourceEntries, Gdk.DragAction.Move);
+            menuLayout.EnableModelDragDest(DragDropTargetEntries, Gdk.DragAction.Copy | Gdk.DragAction.Move);
             menuLayout.Selection.Changed += HandleSelectionChanged;
 
             dataContext.PropertyChanged += HandleMenuLayoutPropertyChanged;

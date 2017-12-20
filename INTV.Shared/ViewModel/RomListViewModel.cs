@@ -364,7 +364,9 @@ namespace INTV.Shared.ViewModel
                         updatedSearchDirectories |= _searchDirectories.Add(folder);
                     }
                 }
-                AddRoms(fileBrowser.FileNames, false);
+
+                // TODO: Consider using current selection index as insert location.
+                AddRoms(fileBrowser.FileNames, -1, false);
                 if (updatedSearchDirectories)
                 {
                     CommandManager.InvalidateRequerySuggested();
@@ -376,11 +378,12 @@ namespace INTV.Shared.ViewModel
         /// Add ROMs to the ROM list given a list of files or directories.
         /// </summary>
         /// <param name="fileNames">An enumerable of absolute paths to files or directories.</param>
+        /// <param name="insertLocation">Location to insert new ROMs. A value of <c>-1</c> indicates to append to the end.</param>
         /// <param name="addingStarterRoms">If set to <c>true</c>, the method is invoked to add "starter ROMs".</param>
-        internal void AddRoms(IEnumerable<string> fileNames, bool addingStarterRoms)
+        internal void AddRoms(IEnumerable<string> fileNames, int insertLocation, bool addingStarterRoms)
         {
             var options = RomDiscoveryOptions.AddNewRoms | RomDiscoveryOptions.AccumulateRejectedRoms;
-            var taskData = new RomDiscoveryData(fileNames, Programs.ModelCollection, Resources.Strings.RomListViewModel_Progress_Title, options) { AddingStarterRoms = addingStarterRoms };
+            var taskData = new RomDiscoveryData(fileNames, Programs.ModelCollection, insertLocation, Resources.Strings.RomListViewModel_Progress_Title, options) { AddingStarterRoms = addingStarterRoms };
             AddPrograms(taskData);
         }
 
@@ -422,7 +425,7 @@ namespace INTV.Shared.ViewModel
             if (taskData == null)
             {
                 var options = RomDiscoveryOptions.AddNewRoms | RomDiscoveryOptions.DetectNewRoms | RomDiscoveryOptions.DetectChanges | RomDiscoveryOptions.DetectMissingRoms;
-                taskData = new RomDiscoveryData(Properties.Settings.Default.RomListSearchDirectories, _programs.ModelCollection, Resources.Strings.RomListViewModel_ScanningForRoms_Title, options);
+                taskData = new RomDiscoveryData(Properties.Settings.Default.RomListSearchDirectories, _programs.ModelCollection, -1, Resources.Strings.RomListViewModel_ScanningForRoms_Title, options);
             }
             AddPrograms(taskData);
         }
@@ -436,13 +439,6 @@ namespace INTV.Shared.ViewModel
         {
             return (_searchDirectories != null) && _searchDirectories.Any();
         }
-
-        /// <summary>
-        /// Gets the list of files that have been dropped into the ROM list visual via a drag and drop operation in the UI.
-        /// </summary>
-        /// <param name="dropArgs">OS-specific drag and drop data.</param>
-        /// <param name="droppedFiles">The files that were dropped are added to this list.</param>
-        partial void GetFilesDropped(object dropArgs, List<string> droppedFiles);
 
         private void AddPrograms(RomDiscoveryData taskData)
         {
@@ -478,13 +474,23 @@ namespace INTV.Shared.ViewModel
         {
             var args = (RomDiscoveryData)taskData;
             var discoveredRoms = args.NewRoms;
-            var addedRoms = Model.AddNewItemsFromList(discoveredRoms);
+            var addedRoms = Model.AddNewItemsFromList(discoveredRoms, args.InsertLocation);
             if (addedRoms.Any())
             {
                 var collectionChanged = CollectionChanged;
                 if (collectionChanged != null)
                 {
                     collectionChanged(this, new System.Collections.Specialized.NotifyCollectionChangedEventArgs(System.Collections.Specialized.NotifyCollectionChangedAction.Add, addedRoms as System.Collections.IList));
+                }
+                if (args.SelectNewRoms)
+                {
+                    CurrentSelection.Clear();
+                    var addedItemIndexes = addedRoms.Select(r => Programs.ModelCollection.IndexOf(r));
+                    foreach (var addedRomIndex in addedItemIndexes)
+                    {
+                        var programViewModel = Programs[addedRomIndex];
+                        CurrentSelection.Add(programViewModel);
+                    }
                 }
                 SaveRomList(true);
             }
@@ -547,7 +553,8 @@ namespace INTV.Shared.ViewModel
                     }
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
-                    throw new System.NotImplementedException();
+                    Model.SelectionIndexes.Clear();
+                    break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
                     break;
             }

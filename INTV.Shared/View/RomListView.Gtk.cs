@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+#define ENABLE_DRAGDROP_TRACE
+
 using System.Collections.Generic;
 using System.Linq;
 using INTV.Shared.Commands;
@@ -35,6 +37,11 @@ namespace INTV.Shared.View
     [Gtk.Binding(Gdk.Key.BackSpace, "HandleDeleteSelectedItems")]
     public partial class RomListView : Gtk.Bin, IFakeDependencyObject
     {
+        private static readonly Gdk.Pixbuf DragOneRomImage = typeof(RomListView).LoadImageResource("Resources/Images/rom_16xSM.png");
+        private static readonly Gdk.Pixbuf DragMultipleRomsImage = typeof(RomListView).LoadImageResource("Resources/Images/roms_16xSM.png");
+
+        private bool _updatingSelection;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.View.RomListView"/> class.
         /// </summary>
@@ -48,6 +55,8 @@ namespace INTV.Shared.View
             var treeView = _romListView;
             treeView.Selection.Mode = Gtk.SelectionMode.Multiple;
             treeView.HasTooltip = true;
+            treeView.EnableModelDragDest(RomListViewModel.DragDropTargetEntries, Gdk.DragAction.Private);
+            treeView.EnableModelDragSource(Gdk.ModifierType.Button1Mask, RomListViewModel.DragDropSourceEntries, Gdk.DragAction.Copy);
 
             var column = new Gtk.TreeViewColumn();
             Gtk.CellRenderer cellRenderer = new Gtk.CellRendererPixbuf();
@@ -125,6 +134,7 @@ namespace INTV.Shared.View
             viewModel.Model.ProgramStatusChanged += HandleProgramStatusChanged;
 
             treeView.Selection.Changed += HandleSelectionChanged;
+            ViewModel.CurrentSelection.CollectionChanged += HandleViewModelSelectionChanged;
         }
 
         #region IFakeDependencyObject
@@ -149,6 +159,11 @@ namespace INTV.Shared.View
         }
 
         #endregion // IFakeDependencyObject
+
+        private RomListViewModel ViewModel
+        {
+            get { return (RomListViewModel)DataContext; }
+        }
 
         /// <inheritdoc/>
         protected override void OnDestroyed()
@@ -195,8 +210,7 @@ namespace INTV.Shared.View
         /// <param name="args">The event data.</param>
         protected void HandleRomListFocusIn(object o, Gtk.FocusInEventArgs args)
         {
-            var viewModel = DataContext as RomListViewModel;
-            viewModel.ListHasFocus = true;
+            ViewModel.ListHasFocus = true;
         }
 
         /// <summary>
@@ -206,8 +220,114 @@ namespace INTV.Shared.View
         /// <param name="args">The event data.</param>
         protected void HandleRomListFocusOut(object o, Gtk.FocusOutEventArgs args)
         {
-            var viewModel = DataContext as RomListViewModel;
-            viewModel.ListHasFocus = false;
+            ViewModel.ListHasFocus = false;
+        }
+
+        /// <summary>
+        /// Handles the drag begin event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragBegin(object o, Gtk.DragBeginArgs args)
+        {
+            var numItemsSelected = ViewModel.CurrentSelection.Count;
+            DebugDragDrop("HandleDragBegin: numItemsSelected: " + numItemsSelected);
+            var dragImage = numItemsSelected > 1 ? DragMultipleRomsImage : DragOneRomImage;
+            var dragText = numItemsSelected > 1 ? "<Multiple Items>" : ViewModel.CurrentSelection.First().Name;
+            var dragWidget = new DragDropImage(dragImage, dragText);
+            Gtk.Drag.SetIconWidget(args.Context, dragWidget, 0, 0);
+        }
+
+        /// <summary>
+        /// Handles the drag data delete event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDataDelete(object o, Gtk.DragDataDeleteArgs args)
+        {
+            DebugDragDrop("HandleDragDataDelete");
+        }
+
+        /// <summary>
+        /// Handles the drag data get event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDataGet(object o, Gtk.DragDataGetArgs args)
+        {
+            DebugDragDrop("HandleDragDataGet");
+            if (args.Info == RomListViewModel.DragDropSourceDataIdentifier)
+            {
+                var romList = o as Gtk.TreeView;
+                var paths = romList.Selection.GetSelectedRows();
+                var data = string.Join("\n", paths.Select(p => p.ToString()));
+                args.SelectionData.Set(args.SelectionData.Target, 8, System.Text.Encoding.UTF8.GetBytes(data));
+            }
+        }
+
+        /// <summary>
+        /// Handles the drag data received event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDataReceived(object o, Gtk.DragDataReceivedArgs args)
+        {
+            DebugDragDrop("HandleDragDataReceived");
+            var treeView = o as Gtk.TreeView;
+            Gtk.TreePath path;
+            Gtk.TreeViewDropPosition pos;
+            if (treeView.GetDestRowAtPos(args.X, args.Y, out path, out pos))
+            {
+                DebugDragDrop("HandleDragDataReceived: path: " + path + " pos: " + pos);
+            }
+            var dragDataArgs = new System.Tuple<Gtk.DragDataReceivedArgs, Gtk.TreePath, Gtk.TreeViewDropPosition>(args, path, pos);
+            ViewModel.DropFilesCommand.Execute(dragDataArgs);
+        }
+
+        /// <summary>
+        /// Handles the drag drop event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDrop(object o, Gtk.DragDropArgs args)
+        {
+            DebugDragDrop("HandleDragDrop");
+        }
+
+        /// <summary>
+        /// Handles the drag end event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragEnd(object o, Gtk.DragEndArgs args)
+        {
+            DebugDragDrop("HandleDragEnd");
+        }
+
+        /// <summary>
+        /// Handles the drag leave event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragLeave(object o, Gtk.DragLeaveArgs args)
+        {
+            DebugDragDrop("HandleDragLeave");
+        }
+
+        /// <summary>
+        /// Handles the DragMotion event.
+        /// </summary>
+        /// <param name="o">The ROM list Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragMotion(object o, Gtk.DragMotionArgs args)
+        {
+            DebugDragDrop("HandleDragMotion");
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DRAGDROP_TRACE")]
+        private static void DebugDragDrop(object message)
+        {
+            System.Diagnostics.Debug.WriteLine("DRAG_DROP: RomsList: " + message);
         }
 
         private void HandleDeleteSelectedItems()
@@ -313,30 +433,94 @@ namespace INTV.Shared.View
 
         private void HandleSelectionChanged(object sender, System.EventArgs e)
         {
-            var viewModelSelection = ((RomListViewModel)DataContext).CurrentSelection;
-            var selectedItems = new List<ProgramDescriptionViewModel>();
-            var selection = sender as Gtk.TreeSelection;
-            var selectedItemPaths = selection.GetSelectedRows();
-            foreach (var path in selectedItemPaths)
+            if (!_updatingSelection)
             {
-                Gtk.TreeIter iter;
-                if (selection.TreeView.Model.GetIter(out iter, path))
+                _updatingSelection = true;
+                try
                 {
-                    var item = selection.TreeView.Model.GetValue(iter, 0) as ProgramDescriptionViewModel;
-                    selectedItems.Add(item);
+                    var viewModelSelection = ViewModel.CurrentSelection;
+                    var selectedItems = new List<ProgramDescriptionViewModel>();
+                    var selection = sender as Gtk.TreeSelection;
+                    var selectedItemPaths = selection.GetSelectedRows();
+                    foreach (var path in selectedItemPaths)
+                    {
+                        Gtk.TreeIter iter;
+                        if (selection.TreeView.Model.GetIter(out iter, path))
+                        {
+                            var item = selection.TreeView.Model.GetValue(iter, 0) as ProgramDescriptionViewModel;
+                            selectedItems.Add(item);
+                        }
+                    }
+                    var itemsToRemove = viewModelSelection.Except(selectedItems).ToList();
+                    foreach (var itemToRemove in itemsToRemove)
+                    {
+                        viewModelSelection.Remove(itemToRemove);
+                    }
+                    foreach (var selectedItem in selectedItems.Except(viewModelSelection).ToList())
+                    {
+                        viewModelSelection.Add(selectedItem);
+                    }
+
+                    INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+                }
+                finally
+                {
+                    _updatingSelection = false;
                 }
             }
-            var itemsToRemove = viewModelSelection.Except(selectedItems).ToList();
-            foreach (var itemToRemove in itemsToRemove)
-            {
-                viewModelSelection.Remove(itemToRemove);
-            }
-            foreach (var selectedItem in selectedItems.Except(viewModelSelection).ToList())
-            {
-                viewModelSelection.Add(selectedItem);
-            }
+        }
 
-            INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+        private void HandleViewModelSelectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (!_updatingSelection)
+            {
+                this.HandleEventOnMainThread(sender, e, HandleViewModelSelectionChangedCore);
+            }
+        }
+
+        private void HandleViewModelSelectionChangedCore(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            _updatingSelection = true;
+            try
+            {
+                var selection = _romListView.Selection;
+                switch (e.Action)
+                {
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
+                        if (e.NewItems != null)
+                        {
+                            foreach (ProgramDescriptionViewModel item in e.NewItems)
+                            {
+                                var index = ViewModel.Programs.IndexOf(item);
+                                var path = new Gtk.TreePath();
+                                path.AppendIndex(index);
+                                selection.SelectPath(path);
+                            }
+                        }
+                        if (e.OldItems != null)
+                        {
+                            foreach (ProgramDescriptionViewModel item in e.OldItems)
+                            {
+                                var index = ViewModel.Programs.IndexOf(item);
+                                var path = new Gtk.TreePath();
+                                path.AppendIndex(index);
+                                selection.UnselectPath(path);
+                            }
+                        }
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                        selection.UnselectAll();
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
+                        break;
+                }
+            }
+            finally
+            {
+                _updatingSelection = false;
+            }
         }
     }
 }

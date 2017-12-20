@@ -204,6 +204,7 @@
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
+    <Compile Include="View\DragDropImage.Gtk.cs" />
     <Compile Include="View\EcsFeaturesConfigurationPage.Gtk.cs" />
     <Compile Include="View\FileBrowserDialog.Gtk.cs" />
     <Compile Include="View\FileBrowserDialogBase.cs" />
@@ -287,6 +288,7 @@
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\ViewModelHelpers.cs" />
     <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.DragDropImage.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.EcsFeaturesConfigurationPage.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.GeneralFeaturesConfigurationPage.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.GeneralSettingsPage.cs" />
@@ -476,6 +478,8 @@
     <EmbeddedResource Include="Resources\Images\restore_16xLG.png" />
     <EmbeddedResource Include="Resources\Images\restore_32xLG.png" />
     <EmbeddedResource Include="Resources\Images\rom_32xMD.png" />
+    <EmbeddedResource Include="Resources\Images\rom_16xSM.png" />
+    <EmbeddedResource Include="Resources\Images\roms_16xSM.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="license.txt" />

@@ -31,6 +31,14 @@ namespace INTV.Shared.View
 			this.Hide ();
 			this._romListView.FocusInEvent += new global::Gtk.FocusInEventHandler (this.HandleRomListFocusIn);
 			this._romListView.FocusOutEvent += new global::Gtk.FocusOutEventHandler (this.HandleRomListFocusOut);
+			this._romListView.DragDataDelete += new global::Gtk.DragDataDeleteHandler (this.HandleDragDataDelete);
+			this._romListView.DragBegin += new global::Gtk.DragBeginHandler (this.HandleDragBegin);
+			this._romListView.DragDataReceived += new global::Gtk.DragDataReceivedHandler (this.HandleDragDataReceived);
+			this._romListView.DragDataGet += new global::Gtk.DragDataGetHandler (this.HandleDragDataGet);
+			this._romListView.DragDrop += new global::Gtk.DragDropHandler (this.HandleDragDrop);
+			this._romListView.DragEnd += new global::Gtk.DragEndHandler (this.HandleDragEnd);
+			this._romListView.DragLeave += new global::Gtk.DragLeaveHandler (this.HandleDragLeave);
+			this._romListView.DragMotion += new global::Gtk.DragMotionHandler (this.HandleDragMotion);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// <copyright file="MenuLayoutView.cs" company="INTV Funhouse">
+﻿// <copyright file="DragDropImage.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -17,17 +17,21 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
+//
 
-namespace INTV.LtoFlash.View
+namespace INTV.Shared.View
 {
-    /// <summary>
-    /// Common implementation for MenuLayoutView.
-    /// </summary>
-    public partial class MenuLayoutView
+    public partial class DragDropImage : Gtk.Window
     {
-        /// <summary>
-        /// Identifier for the type.
-        /// </summary>
-        public const string Id = "INTV.LtoFlash.MenuLayoutView";
+        public DragDropImage(Gdk.Pixbuf icon, string text)
+            : base(Gtk.WindowType.Popup)
+        {
+            this.Build();
+            this.Resizable = true;
+            _dragIcon.Pixbuf = icon;
+            _dragText.Text = text;
+            this.QueueResize();
+            this.Resizable = false;
+        }
     }
 }

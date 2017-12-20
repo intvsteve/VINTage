@@ -54,9 +54,17 @@ namespace INTV.Shared.Utility
             {
                 case NotifyCollectionChangedAction.Add:
                     ////var newItems = collectionChangedArgs.NewItems.Cast<T>();
+                    var insertIndex = collectionChangedArgs.NewStartingIndex;
                     foreach (T item in collectionChangedArgs.NewItems)
                     {
-                        listStore.AppendValues(item);
+                        if (insertIndex < 0)
+                        {
+                            listStore.AppendValues(item);
+                        }
+                        else
+                        {
+                            listStore.InsertWithValues(insertIndex++, item);
+                        }
                     }
                     break;
 

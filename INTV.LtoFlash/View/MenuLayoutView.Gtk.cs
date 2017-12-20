@@ -18,10 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+#define ENABLE_DRAGDROP_TRACE
+
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using INTV.Core.Model.Program;
 using INTV.Core.Model.Stic;
 using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.Model;
@@ -40,6 +43,19 @@ namespace INTV.LtoFlash.View
     [Gtk.Binding(Gdk.Key.BackSpace, "HandleDeleteSelectedItems")]
     public partial class MenuLayoutView : Gtk.Bin, IFakeDependencyObject
     {
+        private static readonly Gtk.TargetEntry[] DragDropSourceEntries = new[]
+        {
+            new Gtk.TargetEntry(MenuLayoutViewModel.DragDataFormat, Gtk.TargetFlags.Widget, MenuLayoutViewModel.DragDataFormatIdentifier),
+        };
+
+        private static readonly Gtk.TargetEntry[] DragDropTargetEntries = new[]
+        {
+            new Gtk.TargetEntry(ProgramDescriptionViewModel.DragDataFormat, Gtk.TargetFlags.App, RomListViewModel.DragDropSourceDataIdentifier),
+            new Gtk.TargetEntry(MenuLayoutViewModel.DragDataFormat, Gtk.TargetFlags.Widget, MenuLayoutViewModel.DragDataFormatIdentifier),
+        };
+
+        private static readonly Gdk.Pixbuf DragMultipleItemsProgramImage = typeof(MenuLayoutView).LoadImageResource("Resources/Images/document_added_White_16xLG.png");
+        private static readonly Gdk.Pixbuf DragMultipleItemsFolderImage = typeof(MenuLayoutView).LoadImageResource("Resources/Images/folder_added_Closed_White_16xLG.png");
         private static readonly OSImage PowerIconImage = typeof(INTV.Shared.Utility.ResourceHelpers).LoadImageResource("ViewModel/Resources/Images/console_16xLG.png");
         private static readonly OSImage DirtyIconImage = typeof(MenuLayoutView).LoadImageResource("Resources/Images/lto_flash_contents_not_in_sync_16xLG.png");
         private static readonly Dictionary<Color, Gdk.Pixbuf> ColorPixbufs = new Dictionary<Color, Gdk.Pixbuf>();
@@ -104,7 +120,7 @@ namespace INTV.LtoFlash.View
             viewModel.PropertyChanged += HandleLtoFlashPropertyChanged;
         }
 
-        #region IFakeDependencyObject
+        #region IFakeDependencyObject Properties
 
         /// <inheritdoc/>
         public object DataContext
@@ -112,6 +128,15 @@ namespace INTV.LtoFlash.View
             get { return this.GetDataContext(); }
             set { this.SetDataContext(value); }
         }
+
+        private LtoFlashViewModel ViewModel
+        {
+            get { return DataContext as LtoFlashViewModel; }
+        }
+
+        #endregion // IFakeDependencyObject Properties
+
+        #region IFakeDependencyObject
 
         /// <inheritdoc/>
         public object GetValue(string propertyName)
@@ -166,7 +191,7 @@ namespace INTV.LtoFlash.View
         /// <param name="e">Event data.</param>
         protected void HandleNewFolderClicked(object sender, System.EventArgs e)
         {
-            var ltoFlashViewModel = DataContext as LtoFlashViewModel;
+            var ltoFlashViewModel = ViewModel;
             MenuLayoutCommandGroup.NewDirectoryCommand.Execute(ltoFlashViewModel.HostPCMenuLayout);
         }
 
@@ -233,15 +258,244 @@ namespace INTV.LtoFlash.View
             }
         }
 
+        /// <summary>
+        /// Handles the drag begin event.
+        /// </summary>
+        /// <param name="o">The menu layout Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragBegin(object o, Gtk.DragBeginArgs args)
+        {
+            DebugDragDrop("HandleDragBegin");
+            var menuLayoutView = o as Gtk.TreeView;
+            SetDragImage(menuLayoutView, args);
+        }
+
+        /// <summary>
+        /// Handles the drag data delete event.
+        /// </summary>
+        /// <param name="o">The menu layout Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDataDelete(object o, Gtk.DragDataDeleteArgs args)
+        {
+            DebugDragDrop("HandleDragDataDelete");
+        }
+
+        /// <summary>
+        /// Handles the drag data get event.
+        /// </summary>
+        /// <param name="o">The menu layout Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDataGet(object o, Gtk.DragDataGetArgs args)
+        {
+            DebugDragDrop("HandleDragDataGet");
+            if (args.Info == MenuLayoutViewModel.DragDataFormatIdentifier)
+            {
+                var menuLayout = o as Gtk.TreeView;
+                var paths = menuLayout.Selection.GetSelectedRows();
+                var data = string.Join("\n", paths.Select(p => p.ToString()));
+                args.SelectionData.Set(args.SelectionData.Target, 8, System.Text.Encoding.UTF8.GetBytes(data));
+            }
+        }
+
+        /// <summary>
+        /// Handles the drag data received event.
+        /// </summary>
+        /// <param name="o">The menu layout Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDataReceived(object o, Gtk.DragDataReceivedArgs args)
+        {
+            DebugDragDrop("HandleDragDataReceived");
+            var treeView = o as Gtk.TreeView;
+            Gtk.TreePath path;
+            Gtk.TreeViewDropPosition pos;
+            if (treeView.GetDestRowAtPos(args.X, args.Y, out path, out pos))
+            {
+                DebugDragDrop("HandleDragDataReceived: path: " + path + " pos: " + pos);
+            }
+
+            Folder dropTarget = null;
+            int insertLocation = -1;
+            Gtk.TreeIter droppedOnItemIter;
+            if (treeView.Model.GetIter(out droppedOnItemIter, path))
+            {
+                var droppedOnItem = treeView.Model.GetValue(droppedOnItemIter, 0) as FileNodeViewModel;
+                dropTarget = droppedOnItem.Model as Folder;
+                if (dropTarget == null)
+                {
+                    // Dropped on an item.
+                    dropTarget = droppedOnItem.Parent as Folder;
+                    switch (pos)
+                    {
+                        case Gtk.TreeViewDropPosition.Before:
+                        case Gtk.TreeViewDropPosition.IntoOrBefore:
+                            insertLocation = path.Indices.Last(); // insert before
+                            break;
+                        case Gtk.TreeViewDropPosition.After:
+                        case Gtk.TreeViewDropPosition.IntoOrAfter:
+                            insertLocation = path.Indices.Last() + 1; // insert after
+                            if (insertLocation >= dropTarget.Items.Count())
+                            {
+                                insertLocation = -1;
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    // Dropped on a folder.
+                    switch (pos)
+                    {
+                        case Gtk.TreeViewDropPosition.Before:
+                            dropTarget = dropTarget.Parent as Folder;
+                            insertLocation = path.Indices.Last(); // insert before folder
+                            break;
+                        case Gtk.TreeViewDropPosition.After:
+                            dropTarget = dropTarget.Parent as Folder;
+                            insertLocation = path.Indices.Last() + 1; // insert after folder
+                            if (insertLocation >= dropTarget.Items.Count())
+                            {
+                                insertLocation = -1;
+                            }
+                            break;
+                        case Gtk.TreeViewDropPosition.IntoOrBefore:
+                            insertLocation = 0; // insert at beginning of folder
+                            break;
+                        case Gtk.TreeViewDropPosition.IntoOrAfter:
+                            insertLocation = -1; // append at end of folder
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                // Append to end of root.
+                pos = Gtk.TreeViewDropPosition.After;
+                dropTarget = ViewModel.HostPCMenuLayout.Model as Folder;
+            }
+            if (dropTarget != null)
+            {
+                var menuLayout = ViewModel.HostPCMenuLayout;
+                if (args.Info == RomListViewModel.DragDropSourceDataIdentifier)
+                {
+                    DebugDragDrop("HandleDragDataReceived: Data from ROM list");
+                    var itemsToAdd = new List<ProgramDescription>();
+                    var stringIndices = System.Text.Encoding.UTF8.GetString(args.SelectionData.Data).Split('\n');
+                    foreach (var stringIndex in stringIndices)
+                    {
+                        int index;
+                        if (int.TryParse(stringIndex, out index))
+                        {
+                            var program = INTV.Shared.Model.Program.ProgramCollection.Roms[index];
+                            if (program != null)
+                            {
+                                itemsToAdd.Add(program);
+                            }
+                        }
+                    }
+                    MenuLayoutViewModel.AddItems(menuLayout, dropTarget, itemsToAdd, insertLocation);
+                }
+                else if (args.Info == MenuLayoutViewModel.DragDataFormatIdentifier)
+                {
+                    DebugDragDrop("HandleDragDataReceived: Rearrange drop");
+                    var itemsToMove = new List<FileNodeViewModel>();
+                    var stringPaths = System.Text.Encoding.UTF8.GetString(args.SelectionData.Data).Split('\n');
+                    foreach (var stringPath in stringPaths)
+                    {
+                        var itemToMovePath = new Gtk.TreePath(stringPath);
+                        Gtk.TreeIter itemIter;
+                        if (treeView.Model.GetIter(out itemIter, itemToMovePath))
+                        {
+                            var fileNode = treeView.Model.GetValue(itemIter, 0) as FileNodeViewModel;
+                            itemsToMove.Add(fileNode);
+                            DebugDragDrop("HandleDragDataReceived: Plan to move: " + fileNode.LongName + " : " + itemToMovePath.ToString());
+                        }
+                    }
+                    var newParent = menuLayout.FindViewModelForModel(dropTarget);
+                    newParent.MoveItems(menuLayout, newParent, insertLocation, itemsToMove);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the drag drop event.
+        /// </summary>
+        /// <param name="o">The menu layout Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragDrop(object o, Gtk.DragDropArgs args)
+        {
+            DebugDragDrop("HandleDragDrop");
+        }
+
+        /// <summary>
+        /// Handles the drag end event.
+        /// </summary>
+        /// <param name="o">The menu layout Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragEnd(object o, Gtk.DragEndArgs args)
+        {
+            DebugDragDrop("HandleDragEnd");
+        }
+
+        /// <summary>
+        /// Handles the drag leave event.
+        /// </summary>
+        /// <param name="o">The menu layout Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragLeave(object o, Gtk.DragLeaveArgs args)
+        {
+            DebugDragDrop("HandleDragLeave");
+        }
+
+        /// <summary>
+        /// Handles the DragMotion event.
+        /// </summary>
+        /// <param name="o">The menu layout Gtk.TreeView.</param>
+        /// <param name="args">The event data.</param>
+        protected void HandleDragMotion(object o, Gtk.DragMotionArgs args)
+        {
+            DebugDragDrop("HandleDragMotion");
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DRAGDROP_TRACE")]
+        private static void DebugDragDrop(object message)
+        {
+            System.Diagnostics.Debug.WriteLine("DRAG_DROP: MenuLayout: " + message);
+        }
+
+        private static void SetDragImage(Gtk.TreeView menuLayout, Gtk.DragBeginArgs args)
+        {
+            var selection = menuLayout.Selection;
+            var firstSelectedPath = selection.GetSelectedRows().First();
+            Gtk.TreeIter iter;
+            if (menuLayout.Model.GetIter(out iter, firstSelectedPath))
+            {
+                var firstDraggedItem = menuLayout.Model.GetValue(iter, 0) as FileNodeViewModel;
+                string text;
+                Gdk.Pixbuf icon;
+                if (selection.CountSelectedRows() > 1)
+                {
+                    text = "<Multiple Items>";
+                    icon = firstDraggedItem is FolderViewModel ? DragMultipleItemsFolderImage : DragMultipleItemsProgramImage;
+                }
+                else
+                {
+                    text = firstDraggedItem.LongName;
+                    icon = firstDraggedItem.Icon;
+                }
+                var dragWidget = new DragDropImage(icon, text);
+                Gtk.Drag.SetIconWidget(args.Context, dragWidget, 0, 0);
+            }
+        }
+
         private void HandleCanExecuteDeleteItemsChanged(object sender, System.EventArgs e)
         {
-            var ltoFlashViewModel = DataContext as LtoFlashViewModel;
+            var ltoFlashViewModel = ViewModel;
             _deleteSelectedItems.Sensitive = MenuLayoutCommandGroup.DeleteItemsCommand.CanExecute(ltoFlashViewModel.HostPCMenuLayout);
         }
 
         private void HandleCanExecuteCreateNewDirectoryChanged(object sender, System.EventArgs e)
         {
-            var ltoFlashViewModel = DataContext as LtoFlashViewModel;
+            var ltoFlashViewModel = ViewModel;
             _newFolder.Sensitive = MenuLayoutCommandGroup.NewDirectoryCommand.CanExecute(ltoFlashViewModel.HostPCMenuLayout);
         }
 
@@ -342,6 +596,8 @@ namespace INTV.LtoFlash.View
             dataContext.SynchronizeToTreeStore(menuLayoutStore);
             menuLayout.Model = menuLayoutStore;
 
+            menuLayout.EnableModelDragSource(Gdk.ModifierType.Button1Mask, DragDropSourceEntries, Gdk.DragAction.Move);
+            menuLayout.EnableModelDragDest(DragDropTargetEntries, Gdk.DragAction.Copy | Gdk.DragAction.Move);
             menuLayout.Selection.Changed += HandleSelectionChanged;
 
             dataContext.PropertyChanged += HandleMenuLayoutPropertyChanged;

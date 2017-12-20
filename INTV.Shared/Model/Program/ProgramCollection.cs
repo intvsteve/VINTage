@@ -370,12 +370,30 @@ namespace INTV.Shared.Model.Program
         /// <returns>A collection containing the ROMs that were actually added.</returns>
         public IList<ProgramDescription> AddNewItemsFromList(IEnumerable<ProgramDescription> programDescriptions)
         {
+            return AddNewItemsFromList(programDescriptions, -1);
+        }
+
+        /// <summary>
+        /// Adds ProgramDescription entries to the collection by inspecting a collection of ROM files.
+        /// </summary>
+        /// <param name="programDescriptions">The collection of ROM files to create ProgramDescription entries for.</param>
+        /// <param name="insertLocation">Location to insert new ROMs. A value of <c>-1</c> indicates to append to the end.</param>
+        /// <returns>A collection containing the ROMs that were actually added.</returns>
+        public IList<ProgramDescription> AddNewItemsFromList(IEnumerable<ProgramDescription> programDescriptions, int insertLocation)
+        {
             var addedItems = programDescriptions.Except(this).ToList();
             OSDispatcher.Current.InvokeOnMainDispatcher(() =>
                 {
                     foreach (var addedItem in addedItems)
                     {
-                        Add(addedItem);
+                        if (insertLocation < 0)
+                        {
+                            Add(addedItem);
+                        }
+                        else
+                        {
+                            Insert(insertLocation++, addedItem);
+                        }
                     }
                 });
             return addedItems;

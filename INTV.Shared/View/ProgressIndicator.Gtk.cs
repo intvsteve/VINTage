@@ -149,7 +149,7 @@ namespace INTV.Shared.View
                 case ProgressIndicatorViewModel.PercentFinishedPropertyName:
                     if (!viewModel.IsIndeterminate)
                     {
-                        _progressBar.Fraction = viewModel.PercentFinished;
+                        _progressBar.Fraction = viewModel.PercentFinished / 100;
                     }
                     break;
                 case ProgressIndicatorViewModel.IsVisiblePropertyName:

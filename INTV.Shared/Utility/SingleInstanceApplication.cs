@@ -388,6 +388,43 @@ namespace INTV.Shared.Utility
         partial void InitializePlugins();
 
         /// <summary>
+        /// Track application startup to ensure startup actions are only executed when the app is truly ready.
+        /// </summary>
+        [Flags]
+        private enum AppReadyState
+        {
+            /// <summary>
+            /// Application not ready.
+            /// </summary>
+            None,
+
+            /// <summary>
+            /// Application's main window has been marked visible.
+            /// </summary>
+            MainWindowVisible = 1 << 0,
+
+            /// <summary>
+            /// Application's main window is loaded.
+            /// </summary>
+            MainWindowLoaded = 1 << 1,
+
+            /// <summary>
+            /// Application's main window has a source (HWND).
+            /// </summary>
+            MainWindowSourced = 1 << 2,
+
+            /// <summary>
+            /// Application's MEF imports have been satisfied.
+            /// </summary>
+            ImportsStatisfied = 1 << 3,
+
+            /// <summary>
+            /// Indicates application is ready to execute startup actions.
+            /// </summary>
+            Ready = MainWindowVisible | MainWindowLoaded | MainWindowSourced | ImportsStatisfied
+        }
+
+        /// <summary>
         /// Implements an off-thread 'memo initializer' for the discovered Components.
         /// </summary>
         /// <remarks>Initial testing indicates this does not accomplish the ideal goal of 'priming' the memos as hoped. It turns

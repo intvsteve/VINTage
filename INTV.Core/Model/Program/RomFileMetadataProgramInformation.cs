@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomFileMetadataProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2017 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -56,10 +56,10 @@ namespace INTV.Core.Model.Program
                 {
                     ShortName = stringMetaData.StringValue;
                 }
-                var date = Metadata.OfType<RomMetadataPublicationDate>().FirstOrDefault();
-                if ((date != null) && (date.Date != System.DateTime.MinValue))
+                var date = Metadata.OfType<RomMetadataDate>().FirstOrDefault(d => d.Type == RomMetadataIdTag.ReleaseDate);
+                if ((date != null) && date.Date.Flags.HasFlag(MetadataDateTimeFlags.Year))
                 {
-                    _year = date.Date.Year.ToString();
+                    _year = date.Date.Date.Year.ToString();
                 }
                 var vendor = Metadata.OfType<RomMetadataPublisher>().FirstOrDefault();
                 if (vendor != null)
@@ -122,9 +122,129 @@ namespace INTV.Core.Model.Program
         #endregion IProgramInformation
 
         /// <summary>
+        /// Gets the authors.
+        /// </summary>
+        public IEnumerable<string> Authors
+        {
+            get { return Metadata.OfType<RomMetadataCredits>().SelectMany(c => c.Programming); }
+        }
+
+        /// <summary>
+        /// Gets the graphics artists.
+        /// </summary>
+        public IEnumerable<string> Graphics
+        {
+            get { return Metadata.OfType<RomMetadataCredits>().SelectMany(c => c.Graphics); }
+        }
+
+        /// <summary>
+        /// Gets the music credits.
+        /// </summary>
+        public IEnumerable<string> Music
+        {
+            get { return Metadata.OfType<RomMetadataCredits>().SelectMany(c => c.Music); }
+        }
+
+        /// <summary>
+        /// Gets the sound effects credits.
+        /// </summary>
+        public IEnumerable<string> SoundEffects
+        {
+            get { return Metadata.OfType<RomMetadataCredits>().SelectMany(c => c.SoundEffects); }
+        }
+
+        /// <summary>
+        /// Gets the voice acting credits.
+        /// </summary>
+        public IEnumerable<string> Voices
+        {
+            get { return Metadata.OfType<RomMetadataCredits>().SelectMany(c => c.VoiceActing); }
+        }
+
+        /// <summary>
+        /// Gets the documentation credits.
+        /// </summary>
+        public IEnumerable<string> Documentation
+        {
+            get { return Metadata.OfType<RomMetadataCredits>().SelectMany(c => c.Documentation); }
+        }
+
+        /// <summary>
+        /// Gets the artwork credits for boxes, et. al.
+        /// </summary>
+        public IEnumerable<string> Artwork
+        {
+            get { return Metadata.OfType<RomMetadataCredits>().SelectMany(c => c.BoxOrOtherArtwork); }
+        }
+
+        /// <summary>
+        /// Gets the program concept credits.
+        /// </summary>
+        public IEnumerable<string> Concept
+        {
+            get { return Metadata.OfType<RomMetadataCredits>().SelectMany(c => c.GameConceptDesign); }
+        }
+
+        /// <summary>
+        /// Gets the 'more info' values.
+        /// </summary>
+        public IEnumerable<string> MoreInfo
+        {
+            get { return Metadata.OfType<RomMetadataString>().Where(m => m.Type == RomMetadataIdTag.UrlContactInfo).Select(m => m.StringValue); }
+        }
+
+        /// <summary>
+        /// Gets the publishers.
+        /// </summary>
+        public IEnumerable<string> Publishers
+        {
+            get { return Metadata.OfType<RomMetadataString>().Where(m => m.Type == RomMetadataIdTag.Publisher).Select(m => m.StringValue); }
+        }
+
+        /// <summary>
+        /// Gets the release licenses.
+        /// </summary>
+        public IEnumerable<string> Licenses
+        {
+            get { return Metadata.OfType<RomMetadataString>().Where(m => m.Type == RomMetadataIdTag.License).Select(m => m.StringValue); }
+        }
+
+        /// <summary>
+        /// Gets the descriptions.
+        /// </summary>
+        public IEnumerable<string> Descriptions
+        {
+            get { return Metadata.OfType<RomMetadataString>().Where(m => m.Type == RomMetadataIdTag.Description).Select(m => m.StringValue); }
+        }
+
+        /// <summary>
+        /// Gets the release dates.
+        /// </summary>
+        public IEnumerable<MetadataDateTime> ReleaseDates
+        {
+            get { return Metadata.OfType<RomMetadataDate>().Where(m => m.Type == RomMetadataIdTag.ReleaseDate).Select(m => m.Date); }
+        }
+
+        /// <summary>
+        /// Gets the build dates.
+        /// </summary>
+        public IEnumerable<MetadataDateTime> BuildDates
+        {
+            get { return Metadata.OfType<RomMetadataDate>().Where(m => m.Type == RomMetadataIdTag.BuildDate).Select(m => m.Date); }
+        }
+
+        /// <summary>
+        /// Gets the versions.
+        /// </summary>
+        public IEnumerable<string> Versions
+        {
+            get { return Metadata.OfType<RomMetadataString>().Where(m => m.Type == RomMetadataIdTag.Version).Select(m => m.StringValue); }
+        }
+
+        /// <summary>
         /// Gets all the metadata in its originally parsed form.
         /// </summary>
-        public IEnumerable<RomMetadataBlock> Metadata { get; private set; }
+        internal IEnumerable<RomMetadataBlock> Metadata { get; private set; }
 
         #endregion Properties
 

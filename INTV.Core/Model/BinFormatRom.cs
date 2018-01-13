@@ -1,5 +1,5 @@
 ﻿// <copyright file="BinFormatRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Generic;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
 
@@ -38,7 +39,9 @@ namespace INTV.Core.Model
 
         #endregion // Constructors
 
-        #region IRom
+        #region Properties
+
+        #region IRom Properties
 
         /// <inheritdoc />
         public override RomFormat Format
@@ -76,6 +79,65 @@ namespace INTV.Core.Model
             }
         }
         private uint _cfgCrc;
+
+        #endregion // IRom Properties
+
+        /// <summary>
+        /// Gets the metadata from CFGVAR values that may be included in the .cfg file.
+        /// </summary>
+        /// <remarks>NOTE: Parsing here is EXTREMELY primitive. The code does not enforce the notion of
+        /// the 'vars' section, it just blindly scans for values with 'keys' listed in as1600.txt.
+        /// NOTE: The metadata is not cached! This means it will be parsed when requested.</remarks>
+        public IEnumerable<CfgVarMetadataBlock> Metadata
+        {
+            get
+            {
+                var metadata = new List<CfgVarMetadataBlock>();
+                try
+                {
+                    if (IsValid && ConfigPath.FileExists())
+                    {
+                        using (var file = ConfigPath.OpenFileStream())
+                        {
+                            var cfgFileSize = (int)ConfigPath.Size();
+                            var cfgFileBytes = new byte[cfgFileSize];
+                            if (file.Read(cfgFileBytes, 0, cfgFileSize) == cfgFileSize)
+                            {
+                                // PCLs only support UTF8... Spec says ASCII. Let's hope we don't run into anything *too* weird.
+                                var cfgFileContents = System.Text.Encoding.UTF8.GetString(cfgFileBytes).Trim('\0');
+                                var cfgFileLines = cfgFileContents.Split(new[] { "\n", "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+                                foreach (var cfgFileLine in cfgFileLines)
+                                {
+                                    // Square peg, meet round hole.
+                                    var cfgFileLineBytes = System.Text.Encoding.UTF8.GetBytes(cfgFileLine);
+                                    using (var cfgFileLineStream = new System.IO.MemoryStream(cfgFileLineBytes))
+                                    {
+                                        var metadataBlock = CfgVarMetadataBlock.Inflate(cfgFileLineStream);
+                                        if (metadataBlock != null)
+                                        {
+                                            metadata.Add(metadataBlock);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    // Don't bring down the app if parsing for metadata fails.
+                    System.Diagnostics.Debug.WriteLine("Getting CFGVAR metadata failed: " + e);
+#if DEBUG
+                    throw;
+#endif // DEBUG
+                }
+                return metadata;
+            }
+        }
+
+        #endregion // Properties
+
+        #region IRom
 
         /// <inheritdoc />
         public override bool Validate()

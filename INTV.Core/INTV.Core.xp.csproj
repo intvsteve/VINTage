@@ -54,7 +54,13 @@
     <Compile Include="ComponentModel\RelayCommandBase.cs" />
     <Compile Include="Model\AlternateRom.cs" />
     <Compile Include="Model\BinFormatRom.cs" />
+    <Compile Include="Model\CfgVarMetadataBlock.cs" />
+    <Compile Include="Model\CfgVarMetadataBoolean.cs" />
+    <Compile Include="Model\CfgVarMetadataDate.cs" />
+    <Compile Include="Model\CfgVarMetadataFeatureCompatibility.cs" />
     <Compile Include="Model\CfgVarMetadataIdTag.cs" />
+    <Compile Include="Model\CfgVarMetadataInteger.cs" />
+    <Compile Include="Model\CfgVarMetadataString.cs" />
     <Compile Include="Model\Device\CartridgePort.cs" />
     <Compile Include="Model\Device\Connection.cs" />
     <Compile Include="Model\Device\ConnectionType.cs" />

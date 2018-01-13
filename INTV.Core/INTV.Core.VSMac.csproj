@@ -185,6 +185,12 @@
     <Compile Include="Model\MetadataDateTimeFlags.cs" />
     <Compile Include="Model\MetadataDateTime.cs" />
     <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
+    <Compile Include="Model\CfgVarMetadataBlock.cs" />
+    <Compile Include="Model\CfgVarMetadataString.cs" />
+    <Compile Include="Model\CfgVarMetadataFeatureCompatibility.cs" />
+    <Compile Include="Model\CfgVarMetadataDate.cs" />
+    <Compile Include="Model\CfgVarMetadataInteger.cs" />
+    <Compile Include="Model\CfgVarMetadataBoolean.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />

@@ -185,6 +185,12 @@
     <Compile Include="Model\LuigiMetadataIdTag.cs" />
     <Compile Include="Model\MetadataDateTimeFlags.cs" />
     <Compile Include="Model\MetadataDateTime.cs" />
+    <Compile Include="Model\CfgVarMetadataBlock.cs" />
+    <Compile Include="Model\CfgVarMetadataString.cs" />
+    <Compile Include="Model\CfgVarMetadataFeatureCompatibility.cs" />
+    <Compile Include="Model\CfgVarMetadataDate.cs" />
+    <Compile Include="Model\CfgVarMetadataInteger.cs" />
+    <Compile Include="Model\CfgVarMetadataBoolean.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

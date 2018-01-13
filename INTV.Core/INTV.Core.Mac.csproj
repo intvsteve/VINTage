@@ -180,8 +180,11 @@
     <Compile Include="Model\RomMetadataControllerBindings.cs" />
     <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
     <Compile Include="Utility\ResourceHelpers.cs" />
+    <Compile Include="Model\MetadataHelpers.cs" />
     <Compile Include="Model\CfgVarMetadataIdTag.cs" />
     <Compile Include="Model\LuigiMetadataIdTag.cs" />
+    <Compile Include="Model\MetadataDateTimeFlags.cs" />
+    <Compile Include="Model\MetadataDateTime.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

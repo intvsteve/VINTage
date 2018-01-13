@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramInformationOrigin.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -85,5 +85,10 @@ namespace INTV.Core.Model.Program
         /// Data was collected from a metadata block in a .ROM-format ROM.
         /// </summary>
         RomMetadataBlock,
+
+        /// <summary>
+        /// Data was parsed from a .cfg file associated with a .BIN-format ROM.
+        /// </summary>
+        CfgVarMetadataBlock,
     }
 }

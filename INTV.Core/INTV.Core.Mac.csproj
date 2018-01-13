@@ -186,6 +186,7 @@
     <Compile Include="Model\MetadataDateTimeFlags.cs" />
     <Compile Include="Model\MetadataDateTime.cs" />
     <Compile Include="Model\CfgVarMetadataBlock.cs" />
+    <Compile Include="Model\Program\CfgFileMetadataProgramInformation.cs" />
     <Compile Include="Model\CfgVarMetadataString.cs" />
     <Compile Include="Model\CfgVarMetadataFeatureCompatibility.cs" />
     <Compile Include="Model\CfgVarMetadataDate.cs" />

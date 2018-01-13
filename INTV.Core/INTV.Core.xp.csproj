@@ -94,6 +94,7 @@
     <Compile Include="Model\MetadataDateTimeFlags.cs" />
     <Compile Include="Model\MetadataHelpers.cs" />
     <Compile Include="Model\Program\Bee3Features.cs" />
+    <Compile Include="Model\Program\CfgFileMetadataProgramInformation.cs" />
     <Compile Include="Model\Program\CrcData.cs" />
     <Compile Include="Model\Program\CuttleCart3Features.cs" />
     <Compile Include="Model\Program\EcsFeatures.cs" />

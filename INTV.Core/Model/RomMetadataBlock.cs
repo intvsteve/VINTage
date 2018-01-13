@@ -113,7 +113,7 @@ namespace INTV.Core.Model
                         metadataBlock = new RomMetadataString(payloadLength, metadataBlockType);
                         break;
                     case RomMetadataIdTag.ReleaseDate:
-                        metadataBlock = new RomMetadataPublicationDate(payloadLength);
+                        metadataBlock = new RomMetadataDate(payloadLength, metadataBlockType);
                         break;
                     case RomMetadataIdTag.Features:
                         metadataBlock = new RomMetadataFeatures(payloadLength);

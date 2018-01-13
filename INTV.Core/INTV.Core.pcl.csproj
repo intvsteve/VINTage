@@ -136,9 +136,9 @@
     <Compile Include="Model\RomMetadataBlock.cs" />
     <Compile Include="Model\RomMetadataControllerBindings.cs" />
     <Compile Include="Model\RomMetadataCredits.cs" />
+    <Compile Include="Model\RomMetadataDate.cs" />
     <Compile Include="Model\RomMetadataFeatures.cs" />
     <Compile Include="Model\RomMetadataIdTag.cs" />
-    <Compile Include="Model\RomMetadataPublicationDate.cs" />
     <Compile Include="Model\RomMetadataPublisher.cs" />
     <Compile Include="Model\RomMetadataString.cs" />
     <Compile Include="Model\Stic\Color.cs" />

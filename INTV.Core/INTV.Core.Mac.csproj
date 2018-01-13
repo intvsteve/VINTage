@@ -174,12 +174,12 @@
     <Compile Include="Model\RomMetadataString.cs" />
     <Compile Include="Model\Program\RomFileMetadataProgramInformation.cs" />
     <Compile Include="Model\RomMetadataPublisher.cs" />
-    <Compile Include="Model\RomMetadataPublicationDate.cs" />
     <Compile Include="Model\RomMetadataFeatures.cs" />
     <Compile Include="Model\RomMetadataCredits.cs" />
     <Compile Include="Model\RomMetadataControllerBindings.cs" />
     <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
     <Compile Include="Utility\ResourceHelpers.cs" />
+    <Compile Include="Model\RomMetadataDate.cs" />
     <Compile Include="Model\MetadataHelpers.cs" />
     <Compile Include="Model\CfgVarMetadataIdTag.cs" />
     <Compile Include="Model\LuigiMetadataIdTag.cs" />

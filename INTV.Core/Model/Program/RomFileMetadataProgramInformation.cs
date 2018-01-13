@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomFileMetadataProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2017 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -56,10 +56,10 @@ namespace INTV.Core.Model.Program
                 {
                     ShortName = stringMetaData.StringValue;
                 }
-                var date = Metadata.OfType<RomMetadataPublicationDate>().FirstOrDefault();
-                if ((date != null) && (date.Date != System.DateTime.MinValue))
+                var date = Metadata.OfType<RomMetadataDate>().FirstOrDefault(d => d.Type == RomMetadataIdTag.ReleaseDate);
+                if ((date != null) && date.Date.Flags.HasFlag(MetadataDateTimeFlags.Year))
                 {
-                    _year = date.Date.Year.ToString();
+                    _year = date.Date.Date.Year.ToString();
                 }
                 var vendor = Metadata.OfType<RomMetadataPublisher>().FirstOrDefault();
                 if (vendor != null)

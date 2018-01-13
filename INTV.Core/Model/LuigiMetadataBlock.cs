@@ -28,47 +28,47 @@ namespace INTV.Core.Model
     /// </summary>
     public class LuigiMetadataBlock : LuigiDataBlock
     {
-        private static readonly Dictionary<Tag, MetadataParser> MetadataParsers = new Dictionary<Tag, MetadataParser>()
+        private static readonly Dictionary<LuigiMetadataIdTag, MetadataParser> MetadataParsers = new Dictionary<LuigiMetadataIdTag, MetadataParser>()
         {
-            { Tag.Name, StringMetadataParser },
-            { Tag.ShortName, StringMetadataParser },
-            { Tag.Author, StringMetadataParser },
-            { Tag.Publisher, StringMetadataParser },
-            { Tag.Date, DateMetadataParser },
-            { Tag.License, StringMetadataParser },
-            { Tag.Description, StringMetadataParser },
-            { Tag.Miscellaneous, StringMetadataParser },
-            { Tag.Graphics, StringMetadataParser },
-            { Tag.Music, StringMetadataParser },
-            { Tag.SoundEffects, StringMetadataParser },
-            { Tag.VoiceActing, StringMetadataParser },
-            { Tag.Documentation, StringMetadataParser },
-            { Tag.ConceptDesign, StringMetadataParser },
-            { Tag.BoxOrOtherArtwork, StringMetadataParser },
-            { Tag.UrlContactInfo, StringMetadataParser },
-            { Tag.Unknown, DefaultMetadataParser }
+            { LuigiMetadataIdTag.Name, StringMetadataParser },
+            { LuigiMetadataIdTag.ShortName, StringMetadataParser },
+            { LuigiMetadataIdTag.Author, StringMetadataParser },
+            { LuigiMetadataIdTag.Publisher, StringMetadataParser },
+            { LuigiMetadataIdTag.Date, DateMetadataParser },
+            { LuigiMetadataIdTag.License, StringMetadataParser },
+            { LuigiMetadataIdTag.Description, StringMetadataParser },
+            { LuigiMetadataIdTag.Miscellaneous, StringMetadataParser },
+            { LuigiMetadataIdTag.Graphics, StringMetadataParser },
+            { LuigiMetadataIdTag.Music, StringMetadataParser },
+            { LuigiMetadataIdTag.SoundEffects, StringMetadataParser },
+            { LuigiMetadataIdTag.VoiceActing, StringMetadataParser },
+            { LuigiMetadataIdTag.Documentation, StringMetadataParser },
+            { LuigiMetadataIdTag.ConceptDesign, StringMetadataParser },
+            { LuigiMetadataIdTag.BoxOrOtherArtwork, StringMetadataParser },
+            { LuigiMetadataIdTag.UrlContactInfo, StringMetadataParser },
+            { LuigiMetadataIdTag.Unknown, DefaultMetadataParser }
         };
 
-        private static readonly Tag[] StringMetadataTypes =
+        private static readonly LuigiMetadataIdTag[] StringMetadataTypes =
         {
-            Tag.Name,
-            Tag.ShortName,
-            Tag.Author,
-            Tag.Publisher,
-            Tag.License,
-            Tag.Description,
-            Tag.Miscellaneous,
-            Tag.Graphics,
-            Tag.Music,
-            Tag.SoundEffects,
-            Tag.VoiceActing,
-            Tag.Documentation,
-            Tag.ConceptDesign,
-            Tag.BoxOrOtherArtwork,
-            Tag.UrlContactInfo,
+            LuigiMetadataIdTag.Name,
+            LuigiMetadataIdTag.ShortName,
+            LuigiMetadataIdTag.Author,
+            LuigiMetadataIdTag.Publisher,
+            LuigiMetadataIdTag.License,
+            LuigiMetadataIdTag.Description,
+            LuigiMetadataIdTag.Miscellaneous,
+            LuigiMetadataIdTag.Graphics,
+            LuigiMetadataIdTag.Music,
+            LuigiMetadataIdTag.SoundEffects,
+            LuigiMetadataIdTag.VoiceActing,
+            LuigiMetadataIdTag.Documentation,
+            LuigiMetadataIdTag.ConceptDesign,
+            LuigiMetadataIdTag.BoxOrOtherArtwork,
+            LuigiMetadataIdTag.UrlContactInfo,
         };
 
-        private Dictionary<Tag, List<string>> _stringMetadataEntries = new Dictionary<Tag, List<string>>();
+        private Dictionary<LuigiMetadataIdTag, List<string>> _stringMetadataEntries = new Dictionary<LuigiMetadataIdTag, List<string>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Core.Model.LuigiMetadataBlock"/> class.
@@ -88,7 +88,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> LongNames
         {
-            get { return _stringMetadataEntries[Tag.Name]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Name]; }
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> ShortNames
         {
-            get { return _stringMetadataEntries[Tag.ShortName]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.ShortName]; }
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> Authors
         {
-            get { return _stringMetadataEntries[Tag.Author]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Author]; }
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> Publishers
         {
-            get { return _stringMetadataEntries[Tag.Publisher]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Publisher]; }
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> Licenses
         {
-            get { return _stringMetadataEntries[Tag.License]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.License]; }
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> Descriptions
         {
-            get { return _stringMetadataEntries[Tag.Description]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Description]; }
         }
 
         /// <summary>
@@ -145,55 +145,55 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> AdditionalInformation
         {
-            get { return _stringMetadataEntries[Tag.Miscellaneous]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Miscellaneous]; }
         }
 
         /// <summary>Gets program graphics credits.</summary>
         public IEnumerable<string> GraphicsCredits
         {
-            get { return _stringMetadataEntries[Tag.Graphics]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Graphics]; }
         }
 
         /// <summary>Gets program music credits.</summary>
         public IEnumerable<string> MusicCredits
         {
-            get { return _stringMetadataEntries[Tag.Music]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Music]; }
         }
 
         /// <summary>Gets program sound effects credits.</summary>
         public IEnumerable<string> SoundEffectsCredits
         {
-            get { return _stringMetadataEntries[Tag.SoundEffects]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.SoundEffects]; }
         }
 
         /// <summary>Gets program voice acting credits.</summary>
         public IEnumerable<string> VoiceActingCredits
         {
-            get { return _stringMetadataEntries[Tag.VoiceActing]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.VoiceActing]; }
         }
 
         /// <summary>Gets program documentation credits.</summary>
         public IEnumerable<string> DocumentationCredits
         {
-            get { return _stringMetadataEntries[Tag.Documentation]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Documentation]; }
         }
 
         /// <summary>Gets concept and design credits.</summary>
         public IEnumerable<string> ConceptAndDesignCredits
         {
-            get { return _stringMetadataEntries[Tag.ConceptDesign]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.ConceptDesign]; }
         }
 
         /// <summary>Gets box, overlay, manual, and other artwork credits.</summary>
         public IEnumerable<string> BoxOrOtherArtworkCredits
         {
-            get { return _stringMetadataEntries[Tag.BoxOrOtherArtwork]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.BoxOrOtherArtwork]; }
         }
 
         /// <summary>Gets URL contact info data.</summary>
         public IEnumerable<string> UrlContactInfos
         {
-            get { return _stringMetadataEntries[Tag.UrlContactInfo]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.UrlContactInfo]; }
         }
 
         /// <inheritdoc/>
@@ -202,7 +202,7 @@ namespace INTV.Core.Model
             var runningBytesRead = 0;
             while (runningBytesRead < Length)
             {
-                var tag = (Tag)reader.ReadByte();
+                var tag = (LuigiMetadataIdTag)reader.ReadByte();
                 ++runningBytesRead;
                 var dataLength = reader.ReadByte();
                 ++runningBytesRead;
@@ -218,7 +218,7 @@ namespace INTV.Core.Model
 
                 switch (tag)
                 {
-                    case Tag.Date:
+                    case LuigiMetadataIdTag.Date:
                         var date = (DateTime)metadata;
                         _dates.Add(date);
                         break;
@@ -282,75 +282,5 @@ namespace INTV.Core.Model
         }
 
         private delegate object MetadataParser(Core.Utility.BinaryReader reader, byte payloadLength);
-
-        /// <summary>ID tags for LUIGI metadata sub-blocks.</summary>
-        private enum Tag : byte
-        {
-            /// <summary>Name field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Name = 0x00,
-
-            /// <summary>Short name field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            ShortName = 0x01,
-
-            /// <summary>Author field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Author = 0x02,
-
-            /// <summary>Publisher (vendor) field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Publisher = 0x03,
-
-            /// <summary>Date field.</summary>
-            Date = 0x04,
-
-            /// <summary>License field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            License = 0x05,
-
-            /// <summary>Description field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Description = 0x06,
-
-            /// <summary>Miscellaneous data field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Miscellaneous = 0x07,
-
-            /// <summary>Indicates contributions to program art / graphics.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Graphics = 0x08,
-
-            /// <summary>Indicates contributions to music.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Music = 0x09,
-
-            /// <summary>Indicates contributions to sound effects.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            SoundEffects = 0x0A,
-
-            /// <summary>Indicates contributions to voice acting.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            VoiceActing = 0x0B,
-
-            /// <summary>Indicates documentation authorship.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Documentation = 0x0C,
-
-            /// <summary>The program concept or design.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            ConceptDesign = 0x0D,
-
-            /// <summary>Indicates contributions to box, overlay, manual or other artwork.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            BoxOrOtherArtwork = 0x0E,
-
-            /// <summary>Site URL or other contact information.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            UrlContactInfo = 0x0F,
-
-            /// <summary>Unknown or unrecognized field.</summary>
-            Unknown = 0xFF
-        }
     }
 }

@@ -30,6 +30,7 @@ using INTV.Shared.ViewModel;
 
 #if WIN
 using OSColor = System.Windows.Media.Color;
+using Settings = INTV.JzIntvUI.Properties.Settings;
 using SettingsPageVisualType = INTV.JzIntvUI.View.JzIntvSettingsPage;
 #elif MAC
 #if __UNIFIED__
@@ -37,10 +38,11 @@ using OSColor = AppKit.NSColor;
 #else
 using OSColor = MonoMac.AppKit.NSColor;
 #endif // __UNIFIED__
+using Settings = INTV.JzIntvUI.Properties.Settings;
 using SettingsPageVisualType = INTV.JzIntvUI.View.JzIntvSettingsPageController;
 #elif GTK
-#endif // WIN
 using Settings = INTV.JzIntvUI.Properties.Settings;
+#endif // WIN
 
 namespace INTV.JzIntvUI.ViewModel
 {

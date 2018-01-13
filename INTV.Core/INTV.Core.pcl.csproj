@@ -57,6 +57,7 @@
     <Compile Include="ComponentModel\RelayCommandBase.cs" />
     <Compile Include="Model\AlternateRom.cs" />
     <Compile Include="Model\BinFormatRom.cs" />
+    <Compile Include="Model\CfgVarMetadataIdTag.cs" />
     <Compile Include="Model\Device\CartridgePort.cs" />
     <Compile Include="Model\Device\Connection.cs" />
     <Compile Include="Model\Device\ConnectionType.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Model\LuigiFormatRom.cs" />
     <Compile Include="Model\LuigiMemoryMapAndPermissionsTableBlock.cs" />
     <Compile Include="Model\LuigiMetadataBlock.cs" />
+    <Compile Include="Model\LuigiMetadataIdTag.cs" />
     <Compile Include="Model\LuigiScrambleKeyBlock.cs" />
     <Compile Include="Model\MessageSeverity.cs" />
     <Compile Include="Model\Program\Bee3Features.cs" />

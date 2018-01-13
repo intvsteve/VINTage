@@ -179,6 +179,8 @@
     <Compile Include="Model\RomMetadataFeatures.cs" />
     <Compile Include="Model\RomMetadataCredits.cs" />
     <Compile Include="Model\RomMetadataControllerBindings.cs" />
+    <Compile Include="Model\CfgVarMetadataIdTag.cs" />
+    <Compile Include="Model\LuigiMetadataIdTag.cs" />
     <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
   </ItemGroup>
   <ItemGroup>

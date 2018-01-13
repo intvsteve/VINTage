@@ -1,5 +1,5 @@
 ﻿// <copyright file="FeatureCategory.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -24,86 +24,76 @@ namespace INTV.Core.Model.Program
     /// Enumerates different categories of feature flags used to describe Intellivision
     /// compatibility modes for hardware and software.
     /// </summary>
+    /// <remarks>Only values less than <see cref="FeatureCategory.NumberOfCategories"/> should be used
+    /// for detailed feature descriptions. Values beyond NumberOfCategories are extensions intended to
+    /// assist with handling metadata that is retrieved from the various ROM file formats.</remarks>
     public enum FeatureCategory
     {
-        /// <summary>
-        /// NTSC video standard compatibility modes.
-        /// </summary>
+        /// <summary>NTSC video standard compatibility modes.</summary>
         Ntsc,
 
-        /// <summary>
-        /// PAL video standard compatibility modes.
-        /// </summary>
+        /// <summary>PAL video standard compatibility modes.</summary>
         Pal,
 
-        /// <summary>
-        /// General-purpose program features.
-        /// </summary>
+        /// <summary>General-purpose program features.</summary>
         General,
 
-        /// <summary>
-        /// Original Model 1149 Keyboard Component-related features and compatibility flags.
-        /// </summary>
+        /// <summary>Original Model 1149 Keyboard Component-related features and compatibility flags.</summary>
         KeyboardComponent,
 
-        /// <summary>
-        /// Compatibility descriptor for Sears Super Video Arcade.
-        /// </summary>
+        /// <summary>Compatibility descriptor for Sears Super Video Arcade.</summary>
         SuperVideoArcade,
 
-        /// <summary>
-        /// Compatibility descriptor for the Intellivoice.
-        /// </summary>
+        /// <summary>Compatibility descriptor for the Intellivoice.</summary>
         Intellivoice,
 
-        /// <summary>
-        /// Compatibility descriptor for the Intellivision II.
-        /// </summary>
+        /// <summary>Compatibility descriptor for the Intellivision II.</summary>
         IntellivisionII,
 
-        /// <summary>
-        /// Compatibility descriptor and features for the Entertainment Computer System.
-        /// </summary>
+        /// <summary>Compatibility descriptor and features for the Entertainment Computer System.</summary>
         Ecs,
 
-        /// <summary>
-        /// Compatibility descriptor for the Tutorvision.
-        /// </summary>
+        /// <summary>Compatibility descriptor for the Tutorvision.</summary>
         Tutorvision,
 
-        /// <summary>
-        /// Compatibility descriptor and features for the Intellicart.
-        /// </summary>
+        /// <summary>Compatibility descriptor and features for the Intellicart.</summary>
         Intellicart,
 
-        /// <summary>
-        /// Compatibility descriptor and features for the Cuttle Cart 3.
-        /// </summary>
+        /// <summary>Compatibility descriptor and features for the Cuttle Cart 3.</summary>
         CuttleCart3,
 
-        /// <summary>
-        /// Compatibility descriptor and features for the JLP cartridge platform.
-        /// </summary>
+        /// <summary>Compatibility descriptor and features for the JLP cartridge platform.</summary>
         Jlp,
 
-        /// <summary>
-        /// Compatibility descriptor and features for the LTO Flash! cartridge platform.
-        /// </summary>
+        /// <summary>Compatibility descriptor and features for the LTO Flash! cartridge platform.</summary>
         LtoFlash,
 
-        /// <summary>
-        /// Compatibility descriptor and features for the 'Bee3' cartridge platform.
-        /// </summary>
+        /// <summary>Compatibility descriptor and features for the 'Bee3' cartridge platform.</summary>
         Bee3,
 
-        /// <summary>
-        /// Compatibility descriptor and features for the 'Hive' cartridge platform.
-        /// </summary>
+        /// <summary>Compatibility descriptor and features for the 'Hive' cartridge platform.</summary>
         Hive,
 
-        /// <summary>
-        /// Sentinel value for number of defined categories.
-        /// </summary>
-        NumberOfCategories
+        /// <summary>Sentinel value for number of defined categories.</summary>
+        NumberOfCategories,
+
+        // Note that the following values are only used for processing metadata parsed from different
+        // ROM formats when going through a CFGVAR-style conversion process. They should not be used
+        // in any of the *Features classes, ProgramInformation, ProgramDescription, et. al.
+
+        /// <summary>Remapped values that are similar to Ecs.</summary>
+        EcsLegacy = 0x1000, 
+
+        /// <summary>Remapped values that are similar to Intellivoice.</summary>
+        IntellivoiceLegacy,
+
+        /// <summary>Remapped values that are similar to IntellivisionII.</summary>
+        IntellivisionIILegacy,
+
+        /// <summary>Specify JLP flash storage capacity in 1.5K byte blocks.</summary>
+        JlpFlashCapacity,
+
+        /// <summary>Not a valid feature.</summary>
+        None = -1
     }
 }

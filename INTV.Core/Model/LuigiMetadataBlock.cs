@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace INTV.Core.Model
 {
@@ -69,6 +70,8 @@ namespace INTV.Core.Model
         };
 
         private Dictionary<LuigiMetadataIdTag, List<string>> _stringMetadataEntries = new Dictionary<LuigiMetadataIdTag, List<string>>();
+
+        private List<CfgVarMetadataBlock> _miscellaneousCfgVarMetadata = null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Core.Model.LuigiMetadataBlock"/> class.
@@ -194,6 +197,49 @@ namespace INTV.Core.Model
         public IEnumerable<string> UrlContactInfos
         {
             get { return _stringMetadataEntries[LuigiMetadataIdTag.UrlContactInfo]; }
+        }
+
+        /// <summary>Gets the release dates.</summary>
+        public IEnumerable<MetadataDateTime> ReleaseDates
+        {
+            get { return Dates; }
+        }
+
+        /// <summary>Gets the build dates.</summary>
+        public IEnumerable<MetadataDateTime> BuildDates
+        {
+            get { return MiscellaneousCfgVarMetadata.OfType<CfgVarMetadataDate>().Where(m => m.Type == CfgVarMetadataIdTag.BuildDate).Select(m => m.Date); }
+        }
+
+        /// <summary>Gets the versions.</summary>
+        public IEnumerable<string> Versions
+        {
+            get { return MiscellaneousCfgVarMetadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Version).Select(m => m.StringValue); }
+        }
+
+        private IEnumerable<CfgVarMetadataBlock> MiscellaneousCfgVarMetadata
+        {
+            get
+            {
+                if (_miscellaneousCfgVarMetadata == null)
+                {
+                    _miscellaneousCfgVarMetadata = new List<CfgVarMetadataBlock>();
+                    foreach (var entry in AdditionalInformation)
+                    {
+                        // Square peg, meet round hole.
+                        var cfgFileLineBytes = System.Text.Encoding.UTF8.GetBytes(entry);
+                        using (var cfgFileLineStream = new System.IO.MemoryStream(cfgFileLineBytes))
+                        {
+                            var cfgVarMetadataBlock = CfgVarMetadataBlock.Inflate(cfgFileLineStream);
+                            if (cfgVarMetadataBlock != null)
+                            {
+                                _miscellaneousCfgVarMetadata.Add(cfgVarMetadataBlock);
+                            }
+                        }
+                    }
+                }
+                return _miscellaneousCfgVarMetadata;
+            }
         }
 
         /// <inheritdoc/>

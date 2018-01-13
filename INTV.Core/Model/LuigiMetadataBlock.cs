@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiMetadataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ namespace INTV.Core.Model
             {
                 _stringMetadataEntries[stringMetadataType] = new List<string>();
             }
-            _dates = new List<DateTime>();
+            _dates = new List<MetadataDateTime>();
         }
 
         /// <summary>
@@ -118,11 +118,11 @@ namespace INTV.Core.Model
         /// <summary>
         /// Gets the publication dates.
         /// </summary>
-        public IEnumerable<DateTime> Dates
+        public IEnumerable<MetadataDateTime> Dates
         {
             get { return _dates; }
         }
-        private List<DateTime> _dates;
+        private List<MetadataDateTime> _dates;
 
         /// <summary>
         /// Gets the licenses.
@@ -219,7 +219,7 @@ namespace INTV.Core.Model
                 switch (tag)
                 {
                     case LuigiMetadataIdTag.Date:
-                        var date = (DateTime)metadata;
+                        var date = (MetadataDateTime)metadata;
                         _dates.Add(date);
                         break;
                     default:
@@ -249,29 +249,7 @@ namespace INTV.Core.Model
         private static object DateMetadataParser(Core.Utility.BinaryReader reader, byte payloadLength)
         {
             System.Diagnostics.Debug.Assert(payloadLength >= 1, "LUIGI Year metadata should contain at least one byte.");
-            var year = reader.ReadByte() + 1900; // (yes, assuming Gregorian calendar :P
-
-            var month = 6; // if not present, assume "middle" month of the year (yes, assuming Gregorian calendar :P )
-            if (payloadLength > 1)
-            {
-                month = reader.ReadByte();
-                if ((month < 1) || (month > 12))
-                {
-                    month = 6;
-                }
-            }
-
-            var day = 15; // if not present, assume "middle" day of the month (yes, assuming Gregorian calendar :P )
-            if (payloadLength > 2)
-            {
-                day = reader.ReadByte();
-                if ((day < 1) || (day > DateTime.DaysInMonth(year, month)))
-                {
-                    day = 15;
-                }
-            }
-
-            var date = new DateTime(year, month, day);
+            var date = reader.ParseDateTimeFromMetadata(payloadLength);
             return date;
         }
 

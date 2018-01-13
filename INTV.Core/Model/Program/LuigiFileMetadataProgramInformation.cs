@@ -51,7 +51,7 @@ namespace INTV.Core.Model.Program
                 _vendor = metadata.Publishers.FirstOrDefault();
                 if (metadata.Dates.Any())
                 {
-                    _year = metadata.Dates.First().Year.ToString();
+                    _year = metadata.Dates.First().Date.Year.ToString();
                 }
                 ShortName = metadata.ShortNames.FirstOrDefault();
             }

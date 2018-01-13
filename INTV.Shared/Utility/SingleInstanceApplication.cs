@@ -237,6 +237,10 @@ namespace INTV.Shared.Utility
             return configuration;
         }
 
+        /// <summary>
+        /// Gets an enumerable of the devices attached to the system.
+        /// </summary>
+        /// <returns>An enumerable of the devices currently attached to the system.</returns>
         public IEnumerable<IPeripheral> GetAttachedDevices()
         {
             var attachedDevices = Enumerable.Empty<IPeripheral>();

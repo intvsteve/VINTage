@@ -1,5 +1,5 @@
 ﻿// <copyright file="INotifyPropertyChangedHelpers.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -43,11 +43,10 @@ namespace INTV.Core.ComponentModel
         }
 
         /// <summary>
-        /// Mac-specific implemenation of work to do before a value changes.
+        /// Called before the value update.
         /// </summary>
-        /// <param name="sender">The owner of the property that is changing.</param>
-        /// <param name="propertyName">Name of the property is changing.</param>
-        /// <remarks>This is the bookend to <see cref="PostValueUpdate"/> that ensures KVO executes as expected.</remarks>
+        /// <param name="sender">NSObject having a property identified by <paramref name="propertyName"/>.</param>
+        /// <param name="propertyName">The name of a property exposed via KVO on the <paramref name="sender"/>.</param>
         static partial void PreValueUpdate(object sender, string propertyName)
         {
             var nsObject = sender as NSObject;
@@ -58,11 +57,10 @@ namespace INTV.Core.ComponentModel
         }
 
         /// <summary>
-        /// Mac-specific implemenation of work to do after a value changes.
+        /// Called after the value update.
         /// </summary>
-        /// <param name="sender">The owner of the property that has changed.</param>
-        /// <param name="propertyName">Name of the property that changed.</param>
-        /// <remarks>This is the bookend to <see cref="PreValueUpdate"/> that ensures KVO executes as expected.</remarks>
+        /// <param name="sender">NSObject having a property identified by <paramref name="propertyName"/>.</param>
+        /// <param name="propertyName">The name of a property exposed via KVO on the <paramref name="sender"/>.</param>
         static partial void PostValueUpdate(object sender, string propertyName)
         {
             var nsObject = sender as NSObject;

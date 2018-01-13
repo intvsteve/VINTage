@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -138,6 +138,10 @@ namespace INTV.Core.Model
             {
                 metadataProgramInfo = rom.GetRomFileMetadata();
             }
+            if (metadataProgramInfo == null)
+            {
+                metadataProgramInfo = rom.GetBinFileMetadata();
+            }
             IProgramInformation intvNameInfo = null;
             if (programInfo == null)
             {
@@ -188,6 +192,30 @@ namespace INTV.Core.Model
         }
 
         #endregion // IProgramInformation-related Helpers
+
+        #region BIN-related Helpers
+
+        /// <summary>
+        /// Gets IProgramInformation from a .BIN-format file's metadata, if it is available.
+        /// </summary>
+        /// <param name="rom">The ROM from which metadata-based information is retrieved.</param>
+        /// <returns>IProgramInformation retrieved from the .BIN-format ROM's .cfg file.</returns>
+        public static CfgFileMetadataProgramInformation GetBinFileMetadata(this IRom rom)
+        {
+            CfgFileMetadataProgramInformation programInfo = null;
+            var binRom = Rom.AsSpecificRomType<BinFormatRom>(rom);
+            if (binRom != null)
+            {
+                programInfo = new CfgFileMetadataProgramInformation(rom);
+                if (!programInfo.Metadata.Any())
+                {
+                    programInfo = null;
+                }
+            }
+            return programInfo;
+        }
+
+        #endregion // BIN-related Helpers
 
         #region ROM-related Helpers
 

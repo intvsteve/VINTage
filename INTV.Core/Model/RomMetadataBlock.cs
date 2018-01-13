@@ -110,9 +110,12 @@ namespace INTV.Core.Model
                     case RomMetadataIdTag.ShortTitle:
                     case RomMetadataIdTag.License:
                     case RomMetadataIdTag.Description:
+                    case RomMetadataIdTag.Version:
+                    case RomMetadataIdTag.UrlContactInfo:
                         metadataBlock = new RomMetadataString(payloadLength, metadataBlockType);
                         break;
                     case RomMetadataIdTag.ReleaseDate:
+                    case RomMetadataIdTag.BuildDate:
                         metadataBlock = new RomMetadataDate(payloadLength, metadataBlockType);
                         break;
                     case RomMetadataIdTag.Features:
@@ -127,7 +130,6 @@ namespace INTV.Core.Model
                     case RomMetadataIdTag.ControllerBindings:
                         metadataBlock = new RomMetadataControllerBindings(payloadLength);
                         break;
-                    case RomMetadataIdTag.UrlContactInfo:
                     default:
                         metadataBlock = new RomMetadataBlock(payloadLength, metadataBlockType);
                         break;

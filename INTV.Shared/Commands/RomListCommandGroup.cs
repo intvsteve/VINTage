@@ -382,7 +382,7 @@ namespace INTV.Shared.Commands
             }
             else if ((RomListViewModel != null) && (parameter is IEnumerable<string>))
             {
-                // TODO: Consider using current election index as insert location.
+                // TODO: Consider using current selection index as insert location.
                 RomListViewModel.AddRoms(parameter as IEnumerable<string>, -1, true);
             }
         }

@@ -342,6 +342,10 @@ namespace INTV.LtoFlash.Model
             return serialPortLogPath;
         }
 
+        /// <summary>
+        /// Record the arrival of a device so it can be cached.
+        /// </summary>
+        /// <param name="uniqueId">The DRUID of the device that just arrived.</param>
         internal void RecordDeviceArrival(string uniqueId)
         {
             // This is the simplistic way we "remember" which LTO Flash! devices have been connected.

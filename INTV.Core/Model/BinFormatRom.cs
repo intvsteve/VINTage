@@ -104,7 +104,7 @@ namespace INTV.Core.Model
                             if (file.Read(cfgFileBytes, 0, cfgFileSize) == cfgFileSize)
                             {
                                 // PCLs only support UTF8... Spec says ASCII. Let's hope we don't run into anything *too* weird.
-                                var cfgFileContents = System.Text.Encoding.UTF8.GetString(cfgFileBytes).Trim('\0');
+                                var cfgFileContents = System.Text.Encoding.UTF8.GetString(cfgFileBytes, 0, cfgFileBytes.Length).Trim('\0');
                                 var cfgFileLines = cfgFileContents.Split(new[] { "\n", "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries);
                                 foreach (var cfgFileLine in cfgFileLines)
                                 {

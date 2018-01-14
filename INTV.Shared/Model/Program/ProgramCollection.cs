@@ -314,6 +314,14 @@ namespace INTV.Shared.Model.Program
         /// <param name="filePath">Absolute path to a file containing a ProgramCollection.</param>
         public void Initialize(string filePath)
         {
+            // On Mac, it was found that in release builds, a condition exists in which the
+            // jzIntv component's configuration has not been initialized prior to INTV.Core trying
+            // to fetch a stock .cfg file. This access attempts to ensure proper order of operations.
+            var jzIntvConfiguration = SingleInstanceApplication.Instance.GetConfiguration<INTV.JzIntv.Model.Configuration>();
+            if (!Directory.Exists(jzIntvConfiguration.ToolsDirectory))
+            {
+                throw new FileNotFoundException("Tools directory not found.", jzIntvConfiguration.ToolsDirectory);
+            }
             var programs = ProgramCollection.Load(filePath);
             Clear();
             AddNewItemsFromList(programs);

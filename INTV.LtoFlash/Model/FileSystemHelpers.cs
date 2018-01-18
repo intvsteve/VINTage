@@ -1314,7 +1314,7 @@ namespace INTV.LtoFlash.Model
             if (failedOperations.Any(op => op.Operation.HasFlag(LfsOperations.Remove)))
             {
                 // For now, fail spectacularly -- there really should not be any failed deletes. If there are, WTF?
-                throw new InvalidOperationException("Unexpected failed remove operation!");
+                throw new InvalidOperationException(Resources.Strings.Sync_FailedDeleteOperationMessage);
             }
 
             // Gather up failed fork operations.

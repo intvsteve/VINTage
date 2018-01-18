@@ -137,7 +137,7 @@ namespace INTV.LtoFlash.Model
                     operationData = new LfsOperationData(operation);
                     break;
                 case LfsOperations.Reformat:
-                    throw new System.InvalidOperationException("Reformat operations do not require an operation data.");
+                    throw new System.InvalidOperationException(Resources.Strings.Reformat_ArgError);
             }
             return operationData;
         }

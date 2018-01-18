@@ -932,6 +932,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command failed: {0}.
+        /// </summary>
+        internal static string DeviceCommandFailed_SimpleFormat {
+            get {
+                return ResourceManager.GetString("DeviceCommandFailed_SimpleFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;None Available&gt;.
         /// </summary>
         internal static string DeviceConnection_NoneAvailable {
@@ -2597,6 +2606,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not parent to child..
+        /// </summary>
+        internal static string Folder_NotParentError {
+            get {
+                return ResourceManager.GetString("Folder_NotParentError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fork.
         /// </summary>
         internal static string Fork {
@@ -3184,6 +3202,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Menu item and its program description are out of sync!.
+        /// </summary>
+        internal static string MenuLayout_DescriptionOutOfSync {
+            get {
+                return ResourceManager.GetString("MenuLayout_DescriptionOutOfSync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contents of connected LTO Flash! and the Menu Layout do not match.
         /// </summary>
         internal static string MenuLayout_Device_NotInSync {
@@ -3546,6 +3573,24 @@ namespace INTV.LtoFlash.Resources {
         internal static string MenuLayout_WillUpdateFile_Tip {
             get {
                 return ResourceManager.GetString("MenuLayout_WillUpdateFile_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to move item!.
+        /// </summary>
+        internal static string MenuLayoutDragDrop_FailedToMoveItemMessage {
+            get {
+                return ResourceManager.GetString("MenuLayoutDragDrop_FailedToMoveItemMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No {0} for command: {1}.
+        /// </summary>
+        internal static string MissingCommandIdStringFormat {
+            get {
+                return ResourceManager.GetString("MissingCommandIdStringFormat", resourceCulture);
             }
         }
         
@@ -4413,6 +4458,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reformat operations do not require an operation data..
+        /// </summary>
+        internal static string Reformat_ArgError {
+            get {
+                return ResourceManager.GetString("Reformat_ArgError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to WARNING! Reformatting the LTO Flash! file system removes all content from the device! All ROMs, manuals, saved game state, and other content will be lost!
         ///
         ///Are you certain you wish to proceed with this action?.
@@ -4893,6 +4947,24 @@ namespace INTV.LtoFlash.Resources {
         internal static string RomToLuigiFailed_Error_Description_Format {
             get {
                 return ResourceManager.GetString("RomToLuigiFailed_Error_Description_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempted to add ROM using file &apos;{0}&apos; but attempted to use file &apos;{1}&apos;.
+        /// </summary>
+        internal static string RomToLuigiFailed_FilePathsDoNotMatchFormat {
+            get {
+                return ResourceManager.GetString("RomToLuigiFailed_FilePathsDoNotMatchFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occured when attempting to finding location for ROM..
+        /// </summary>
+        internal static string RomToLuigiFailed_FilePathsDoNotMatchMessage {
+            get {
+                return ResourceManager.GetString("RomToLuigiFailed_FilePathsDoNotMatchMessage", resourceCulture);
             }
         }
         
@@ -5885,6 +5957,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected failed remove operation!.
+        /// </summary>
+        internal static string Sync_FailedDeleteOperationMessage {
+            get {
+                return ResourceManager.GetString("Sync_FailedDeleteOperationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear Preview Changes.
         /// </summary>
         internal static string SyncClearPreviewChangesCommand_Name {
@@ -6401,11 +6482,29 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device heartbeat timer may be stalled!.
+        /// </summary>
+        internal static string SyncWithTimer_Execute_ErrorMessage {
+            get {
+                return ResourceManager.GetString("SyncWithTimer_Execute_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Device.
         /// </summary>
         internal static string Toolbar_LtoFlash_Device_Header {
             get {
                 return ResourceManager.GetString("Toolbar_LtoFlash_Device_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools directory missing!.
+        /// </summary>
+        internal static string ToolsDirectoryMissingMessage {
+            get {
+                return ResourceManager.GetString("ToolsDirectoryMissingMessage", resourceCulture);
             }
         }
         

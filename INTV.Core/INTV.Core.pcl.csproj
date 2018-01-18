@@ -183,7 +183,7 @@
     <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="Utility\WeakKeyDictionary`TKey`TValue.cs" />
     <Compile Include="Utility\ResourceHelpers.cs" />
-    <Compile Include="Model\Program\IntelliCartCC3Features.cs" />
+    <Compile Include="Model\Program\IntellicartCC3Features.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="license.txt" />

@@ -710,7 +710,7 @@ namespace INTV.LtoFlash.Model
             if (_filePath != filePath)
             {
                 _filePath = filePath;
-                if ((FileSystem == null) && !Properties.Settings.Default.ValidateMenuAtStartup)
+                if ((FileSystem == null) && (Rom == null) && !Properties.Settings.Default.ValidateMenuAtStartup)
                 {
                     // Not in a file system yet - assume XML load, or that CRC and Size will be updated later as needed.
                     return;

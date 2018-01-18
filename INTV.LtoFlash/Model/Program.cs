@@ -341,6 +341,16 @@ namespace INTV.LtoFlash.Model
                     if (!string.IsNullOrWhiteSpace(filePath))
                     {
                         fork = FileSystem.Forks.AddFork(Description.GetRom());
+                        if (PathComparer.Instance.Compare(filePath, fork.FilePath) != 0)
+                        {
+                            // Hmmm.... The path changed. It's possible we got a de-dupe here. So only complain if we have zero file size or default CRC.
+                            if ((fork.Size == 0) || (fork.Crc24 == INTV.Core.Utility.Crc24.InvalidCrc))
+                            {
+                                var forkFilePath = string.IsNullOrEmpty(fork.FilePath) ? "<null>" : fork.FilePath;
+                                var description = string.Format(Resources.Strings.RomToLuigiFailed_FilePathsDoNotMatchFormat, filePath, forkFilePath);
+                                throw new LuigiFileGenerationException(Resources.Strings.RomToLuigiFailed_FilePathsDoNotMatchMessage, description);
+                            }
+                        }
                         if (!System.IO.File.Exists(fork.FilePath))
                         {
                             var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Format, Description.Rom.RomPath, fork.FilePath);
@@ -376,7 +386,7 @@ namespace INTV.LtoFlash.Model
             {
                 if (Crc32 != newDescription.Crc)
                 {
-                    throw new InvalidOperationException("Menu item and its program description are out of sync!");
+                    throw new InvalidOperationException(Resources.Strings.MenuLayout_DescriptionOutOfSync);
                 }
             }
             bool updatedLongName = false;

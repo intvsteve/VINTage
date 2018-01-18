@@ -429,7 +429,7 @@ namespace INTV.Core.Model.Device
             const short MaxDirection = (short)(ControllerKeys.DiscESE & ~ControllerKeys.DiscActive);
             if (System.Math.Abs(adjacentDistance) > 7)
             {
-                throw new System.ArgumentOutOfRangeException("adjacentDistance", adjacentDistance, "The adjacent input range for the 16 disc directions must be less than 8.");
+                throw new System.ArgumentOutOfRangeException("adjacentDistance", adjacentDistance, Resources.Strings.ControllerKeys_AdjacentDistanceTooLarge);
             }
             var discKey = ControllerKeyHardwareBits.FirstOrDefault(k => k.Value == discDirection).Key;
             var discInputMatches = new List<ControllerKeys>();

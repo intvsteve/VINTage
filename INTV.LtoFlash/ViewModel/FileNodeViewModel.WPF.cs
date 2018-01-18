@@ -422,7 +422,7 @@ namespace INTV.LtoFlash.ViewModel
                                     // drop into folder
                                     if (!droppedItem.Parent.MoveChildToNewParent(droppedItem, selfAsFileContainer, false))
                                     {
-                                        throw new System.InvalidOperationException("Failed to move item!");
+                                        throw new System.InvalidOperationException(Resources.Strings.MenuLayoutDragDrop_FailedToMoveItemMessage);
                                     }
                                     if (!((FolderViewModel)this).IsOpen)
                                     {

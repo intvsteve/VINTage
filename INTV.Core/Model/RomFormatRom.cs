@@ -285,7 +285,7 @@ namespace INTV.Core.Model
                     int segmentHigh = ((int)file.ReadByte() << 8) + MinimumSegmentWordCount; // Each segment must be at least 256 words
                     if (segmentHigh < segmentLow)
                     {
-                        throw new System.InvalidOperationException("Invalid ROM file.");
+                        throw new System.InvalidOperationException(Resources.Strings.RomFormatRom_InvalidFormat);
                     }
                     var segmentDataSize = (2 * (segmentHigh - segmentLow)) + Crc16Size; // segment size is in words, not bytes
                     file.Seek(segmentDataSize, System.IO.SeekOrigin.Current); // skip past data and the CRC

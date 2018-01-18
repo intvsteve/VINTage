@@ -359,7 +359,7 @@ namespace INTV.Shared.Behavior
             var itemsControl = control as ItemsControl;
             if (itemsControl == null)
             {
-                throw new ArgumentException("control is not an ItemsControl");
+                throw new ArgumentException(Resources.Strings.ControlMustBeItemsControlErrorMessage);
             }
 
             itemsControl.PreviewKeyDown -= PreviewKeyDown;

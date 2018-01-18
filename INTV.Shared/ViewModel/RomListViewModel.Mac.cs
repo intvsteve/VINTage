@@ -92,7 +92,7 @@ namespace INTV.Shared.ViewModel
         /// </summary>
         /// <param name="osDropArgs">Platform-specific drop arguments.</param>
         /// <param name="droppedFiles">Dropped files.</param>
-        partial void GetFilesDropped(object osDropArgs, List<string> droppedFiles)
+        private void GetFilesDropped(object osDropArgs, List<string> droppedFiles)
         {
             var dropArgs = osDropArgs as NSDraggingInfo;
             if (dropArgs.DraggingPasteboard.CanReadItemWithDataConformingToTypes(new string[] { DragDropFilesDataFormat }))

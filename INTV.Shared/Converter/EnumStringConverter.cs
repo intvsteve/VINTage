@@ -64,7 +64,7 @@ namespace INTV.Shared.Converter
         {
             if (targetType != typeof(string))
             {
-                throw new InvalidOperationException("This converter only supports converting string<->EnumString!");
+                throw new InvalidOperationException(Resources.Strings.EnumToStringConverterDataTypeErrorMessage);
             }
             EnsureConverterData(GetEnumTypeFromParameter(parameter));
             var enumString = _converterData.FirstOrDefault(e => e.Value == (value as string)).Key;
@@ -83,7 +83,7 @@ namespace INTV.Shared.Converter
             }
             if ((enumType == null) || !enumType.IsEnum)
             {
-                throw new InvalidOperationException("This converter requires the desired Enum type to be described as a string of the form: FullTypeName-AssemblyName");
+                throw new InvalidOperationException(Resources.Strings.EnumToStringConverterErrorMessage);
             }
             return enumType;
         }

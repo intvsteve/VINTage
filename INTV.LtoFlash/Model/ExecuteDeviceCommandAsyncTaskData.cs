@@ -413,7 +413,7 @@ namespace INTV.LtoFlash.Model
             stopwatch.Stop();
             if ((stopwatch.ElapsedMilliseconds > TimeoutMilliseconds) && Device.InTimer)
             {
-                throw new TimeoutException("Device heartbeat timer may be stalled!");
+                throw new TimeoutException(Resources.Strings.SyncWithTimer_Execute_ErrorMessage);
             }
             doWork(data);
         }

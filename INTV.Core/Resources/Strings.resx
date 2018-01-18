@@ -117,8 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CfgVarMetadata_ToLuigiError" xml:space="preserve">
+    <value>Unable to convert CfgVarMetadataIdTag to LuigiMetadataIdTag!</value>
+  </data>
+  <data name="CfgVarMetadata_ToRomError" xml:space="preserve">
+    <value>Unable to convert CfgVarMetadataIdTag to RomMetadataIdTag!</value>
+  </data>
+  <data name="CfgVarMetadata_TypeError" xml:space="preserve">
+    <value>CFGVAR type is not a FeatureCompatibility type: {0}</value>
+    <comment>{0}: a CfgVarMetadataIdTag</comment>
+  </data>
+  <data name="ControllerKeys_AdjacentDistanceTooLarge" xml:space="preserve">
+    <value>The adjacent input range for the 16 disc directions must be less than 8.</value>
+  </data>
   <data name="CrcData_InvalidCRC" xml:space="preserve">
     <value>The CRC value of a program may not be zero.</value>
+  </data>
+  <data name="FeatureCategoryNotSupportedByLuigiFormat" xml:space="preserve">
+    <value>Attempted to create LUIGI feature flags for unsupported FeatureCategory: {0}</value>
+    <comment>{0}: a FeatureCategory</comment>
   </data>
   <data name="JlpHardwareVersion_03" xml:space="preserve">
     <value>JLP03</value>
@@ -135,8 +152,32 @@
   <data name="JlpHardwareVersion_None" xml:space="preserve">
     <value>&lt;None&gt;</value>
   </data>
+  <data name="ProgramDescription_MIssingAlternateCfgFile" xml:space="preserve">
+    <value>Alternate ROM paths do not also provide alternate .cfg file paths!</value>
+  </data>
+  <data name="ProgramInformationTable_NoEditsToDefaultDatabase" xml:space="preserve">
+    <value>Adding entries to the default database is not permitted.</value>
+  </data>
   <data name="ProgramInformation_DefaultTitle" xml:space="preserve">
     <value>Unknown</value>
+  </data>
+  <data name="ProgramInformation_InvalidFieldFormat" xml:space="preserve">
+    <value>Unexpected ProgramInformation field: {0}</value>
+    <comment>0}: a ProgramInformationMergeFieldsFlags</comment>
+  </data>
+  <data name="RomComparer_InvalidCompareRequestedFormat" xml:space="preserve">
+    <value>Invalid ROM comparison requested: {0}</value>
+    <comment>{0}: a RomComparison</comment>
+  </data>
+  <data name="RomFormatRom_InvalidFormat" xml:space="preserve">
+    <value>Invalid ROM file - it is not .rom or .cc3 format.</value>
+  </data>
+  <data name="RomMetadataDate_InvalidMetadataIdFormat" xml:space="preserve">
+    <value>Unsupported ROM metadata type passed to RomMetadataDate: {0}</value>
+    <comment>{0}: a RomMetadataIdTag</comment>
+  </data>
+  <data name="RomMetadata_FailedToDeserializePayload" xml:space="preserve">
+    <value>Failed to deserialize ROM metadata payload!</value>
   </data>
   <data name="UnsupportedLuigiVersion_Format" xml:space="preserve">
     <value>Unexpected LUIGI version: {0}. Check for an updated version of the software.</value>

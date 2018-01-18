@@ -118,7 +118,7 @@ namespace INTV.LtoFlash.ViewModel
         /// <summary>
         /// The drag drop source data identifier.
         /// </summary>
-        public static readonly uint DragDataFormatIdentifier = Convert.ToUInt32(DragDataFormat.GetHashCode());
+        public static readonly uint DragDataFormatIdentifier = (uint)DragDataFormat.GetHashCode();
 
         /// <summary>
         /// Identifies the data format used to track the MenuLayoutViewModel into which a ProgramDescription was dragged.
@@ -176,7 +176,7 @@ namespace INTV.LtoFlash.ViewModel
                 var toolsLocation = SingleInstanceApplication.Instance.GetConfiguration<JzIntv.Model.Configuration>().ToolsDirectory;
                 if (!System.IO.Directory.Exists(toolsLocation))
                 {
-                    throw new InvalidOperationException("Tools directory missing!");
+                    throw new InvalidOperationException(Resources.Strings.ToolsDirectoryMissingMessage);
                 }
                 Initialize();
                 _availableColors = new ObservableCollection<FileNodeColorViewModel>(Colors.Select(c => FileNodeColorViewModel.GetColor(c)));

@@ -2471,4 +2471,39 @@ is too small ({1} bytes)</value>
   <data name="KeyCombination_Valid" xml:space="preserve">
     <value>Valid</value>
   </data>
+  <data name="RomToLuigiFailed_FilePathsDoNotMatchFormat" xml:space="preserve">
+    <value>Attempted to add ROM using file '{0}' but attempted to use file '{1}'</value>
+  </data>
+  <data name="RomToLuigiFailed_FilePathsDoNotMatchMessage" xml:space="preserve">
+    <value>An error occured when attempting to finding location for ROM.</value>
+  </data>
+  <data name="DeviceCommandFailed_SimpleFormat" xml:space="preserve">
+    <value>Command failed: {0}</value>
+    <comment>0: a ProtocolCommandId</comment>
+  </data>
+  <data name="Folder_NotParentError" xml:space="preserve">
+    <value>Not parent to child.</value>
+  </data>
+  <data name="MenuLayoutDragDrop_FailedToMoveItemMessage" xml:space="preserve">
+    <value>Failed to move item!</value>
+  </data>
+  <data name="MenuLayout_DescriptionOutOfSync" xml:space="preserve">
+    <value>Menu item and its program description are out of sync!</value>
+  </data>
+  <data name="MissingCommandIdStringFormat" xml:space="preserve">
+    <value>No {0} for command: {1}</value>
+    <comment>0: name of a suffix (Suffix value); 1: a ProtocolCommandId</comment>
+  </data>
+  <data name="Reformat_ArgError" xml:space="preserve">
+    <value>Reformat operations do not require an operation data.</value>
+  </data>
+  <data name="SyncWithTimer_Execute_ErrorMessage" xml:space="preserve">
+    <value>Device heartbeat timer may be stalled!</value>
+  </data>
+  <data name="Sync_FailedDeleteOperationMessage" xml:space="preserve">
+    <value>Unexpected failed remove operation!</value>
+  </data>
+  <data name="ToolsDirectoryMissingMessage" xml:space="preserve">
+    <value>Tools directory missing!</value>
+  </data>
 </root>

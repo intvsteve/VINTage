@@ -27,7 +27,7 @@ namespace INTV.Shared.Commands
     /// <summary>
     /// WPF-specific implementation.
     /// </summary>
-    public partial class RootCommandGroup
+    public partial class RootCommandGroup : CommandGroup
     {
         #region ApplicationMenuCommand
 

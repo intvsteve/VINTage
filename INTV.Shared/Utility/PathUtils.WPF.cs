@@ -53,7 +53,7 @@ namespace INTV.Shared.Utility
         {
             if (!Path.IsPathRooted(path))
             {
-                throw new System.ArgumentException("Path not rooted.", path);
+                throw new System.ArgumentException(Resources.Strings.PathNotRootedError, path);
             }
             var root = Path.GetPathRoot(path);
             var driveInfo = new DriveInfo(root);

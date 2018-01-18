@@ -77,25 +77,6 @@ namespace INTV.Shared.Utility
         }
         private Gtk.Window _mainWindow;
 
-        private AppReadyState ReadyState
-        {
-            get
-            {
-                return _readyState;
-            }
-
-            set
-            {
-                _readyState |= value;
-                if (_readyState == AppReadyState.Ready)
-                {
-                    MainThreadDispatcher.BeginInvoke(
-                        new System.Action(() => ExecuteStartupActions()));
-                }
-            }
-        }
-        private AppReadyState _readyState;
-
         #endregion // Properties
 
         #region Events
@@ -383,6 +364,14 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Spawns the startup actions.
+        /// </summary>
+        private void SpawnStartupActions()
+        {
+            MainThreadDispatcher.BeginInvoke(new System.Action(() => ExecuteStartupActions()));
+        }
+
+        /// <summary>
         /// GTK-specific implementation.
         /// </summary>
         partial void OSInitialize()
@@ -465,43 +454,6 @@ namespace INTV.Shared.Utility
                 }
                 return keepGoing;
             }
-        }
-
-        /// <summary>
-        /// Track application startup to ensure startup actions are only executed when the app is truly ready.
-        /// </summary>
-        [System.Flags]
-        private enum AppReadyState
-        {
-            /// <summary>
-            /// Application not ready.
-            /// </summary>
-            None,
-
-            /// <summary>
-            /// Application's main window has been marked visible.
-            /// </summary>
-            MainWindowVisible = 1 << 0,
-
-            /// <summary>
-            /// Application's main window is loaded.
-            /// </summary>
-            MainWindowLoaded = 1 << 1,
-
-            /// <summary>
-            /// Application's main window has a source (HWND).
-            /// </summary>
-            MainWindowSourced = 1 << 2,
-
-            /// <summary>
-            /// Application's MEF imports have been satisfied.
-            /// </summary>
-            ImportsStatisfied = 1 << 3,
-
-            /// <summary>
-            /// Indicates application is ready to execute startup actions.
-            /// </summary>
-            Ready = MainWindowVisible | MainWindowLoaded | MainWindowSourced | ImportsStatisfied
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiMetadataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace INTV.Core.Model
 {
@@ -28,47 +29,49 @@ namespace INTV.Core.Model
     /// </summary>
     public class LuigiMetadataBlock : LuigiDataBlock
     {
-        private static readonly Dictionary<Tag, MetadataParser> MetadataParsers = new Dictionary<Tag, MetadataParser>()
+        private static readonly Dictionary<LuigiMetadataIdTag, MetadataParser> MetadataParsers = new Dictionary<LuigiMetadataIdTag, MetadataParser>()
         {
-            { Tag.Name, StringMetadataParser },
-            { Tag.ShortName, StringMetadataParser },
-            { Tag.Author, StringMetadataParser },
-            { Tag.Publisher, StringMetadataParser },
-            { Tag.Date, DateMetadataParser },
-            { Tag.License, StringMetadataParser },
-            { Tag.Description, StringMetadataParser },
-            { Tag.Miscellaneous, StringMetadataParser },
-            { Tag.Graphics, StringMetadataParser },
-            { Tag.Music, StringMetadataParser },
-            { Tag.SoundEffects, StringMetadataParser },
-            { Tag.VoiceActing, StringMetadataParser },
-            { Tag.Documentation, StringMetadataParser },
-            { Tag.ConceptDesign, StringMetadataParser },
-            { Tag.BoxOrOtherArtwork, StringMetadataParser },
-            { Tag.UrlContactInfo, StringMetadataParser },
-            { Tag.Unknown, DefaultMetadataParser }
+            { LuigiMetadataIdTag.Name, StringMetadataParser },
+            { LuigiMetadataIdTag.ShortName, StringMetadataParser },
+            { LuigiMetadataIdTag.Author, StringMetadataParser },
+            { LuigiMetadataIdTag.Publisher, StringMetadataParser },
+            { LuigiMetadataIdTag.Date, DateMetadataParser },
+            { LuigiMetadataIdTag.License, StringMetadataParser },
+            { LuigiMetadataIdTag.Description, StringMetadataParser },
+            { LuigiMetadataIdTag.Miscellaneous, StringMetadataParser },
+            { LuigiMetadataIdTag.Graphics, StringMetadataParser },
+            { LuigiMetadataIdTag.Music, StringMetadataParser },
+            { LuigiMetadataIdTag.SoundEffects, StringMetadataParser },
+            { LuigiMetadataIdTag.VoiceActing, StringMetadataParser },
+            { LuigiMetadataIdTag.Documentation, StringMetadataParser },
+            { LuigiMetadataIdTag.ConceptDesign, StringMetadataParser },
+            { LuigiMetadataIdTag.BoxOrOtherArtwork, StringMetadataParser },
+            { LuigiMetadataIdTag.UrlContactInfo, StringMetadataParser },
+            { LuigiMetadataIdTag.Unknown, DefaultMetadataParser }
         };
 
-        private static readonly Tag[] StringMetadataTypes =
+        private static readonly LuigiMetadataIdTag[] StringMetadataTypes =
         {
-            Tag.Name,
-            Tag.ShortName,
-            Tag.Author,
-            Tag.Publisher,
-            Tag.License,
-            Tag.Description,
-            Tag.Miscellaneous,
-            Tag.Graphics,
-            Tag.Music,
-            Tag.SoundEffects,
-            Tag.VoiceActing,
-            Tag.Documentation,
-            Tag.ConceptDesign,
-            Tag.BoxOrOtherArtwork,
-            Tag.UrlContactInfo,
+            LuigiMetadataIdTag.Name,
+            LuigiMetadataIdTag.ShortName,
+            LuigiMetadataIdTag.Author,
+            LuigiMetadataIdTag.Publisher,
+            LuigiMetadataIdTag.License,
+            LuigiMetadataIdTag.Description,
+            LuigiMetadataIdTag.Miscellaneous,
+            LuigiMetadataIdTag.Graphics,
+            LuigiMetadataIdTag.Music,
+            LuigiMetadataIdTag.SoundEffects,
+            LuigiMetadataIdTag.VoiceActing,
+            LuigiMetadataIdTag.Documentation,
+            LuigiMetadataIdTag.ConceptDesign,
+            LuigiMetadataIdTag.BoxOrOtherArtwork,
+            LuigiMetadataIdTag.UrlContactInfo,
         };
 
-        private Dictionary<Tag, List<string>> _stringMetadataEntries = new Dictionary<Tag, List<string>>();
+        private Dictionary<LuigiMetadataIdTag, List<string>> _stringMetadataEntries = new Dictionary<LuigiMetadataIdTag, List<string>>();
+
+        private List<CfgVarMetadataBlock> _miscellaneousCfgVarMetadata = null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Core.Model.LuigiMetadataBlock"/> class.
@@ -80,7 +83,7 @@ namespace INTV.Core.Model
             {
                 _stringMetadataEntries[stringMetadataType] = new List<string>();
             }
-            _dates = new List<DateTime>();
+            _dates = new List<MetadataDateTime>();
         }
 
         /// <summary>
@@ -88,7 +91,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> LongNames
         {
-            get { return _stringMetadataEntries[Tag.Name]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Name]; }
         }
 
         /// <summary>
@@ -96,7 +99,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> ShortNames
         {
-            get { return _stringMetadataEntries[Tag.ShortName]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.ShortName]; }
         }
 
         /// <summary>
@@ -104,7 +107,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> Authors
         {
-            get { return _stringMetadataEntries[Tag.Author]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Author]; }
         }
 
         /// <summary>
@@ -112,24 +115,24 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> Publishers
         {
-            get { return _stringMetadataEntries[Tag.Publisher]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Publisher]; }
         }
 
         /// <summary>
         /// Gets the publication dates.
         /// </summary>
-        public IEnumerable<DateTime> Dates
+        public IEnumerable<MetadataDateTime> Dates
         {
             get { return _dates; }
         }
-        private List<DateTime> _dates;
+        private List<MetadataDateTime> _dates;
 
         /// <summary>
         /// Gets the licenses.
         /// </summary>
         public IEnumerable<string> Licenses
         {
-            get { return _stringMetadataEntries[Tag.License]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.License]; }
         }
 
         /// <summary>
@@ -137,7 +140,7 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> Descriptions
         {
-            get { return _stringMetadataEntries[Tag.Description]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Description]; }
         }
 
         /// <summary>
@@ -145,55 +148,98 @@ namespace INTV.Core.Model
         /// </summary>
         public IEnumerable<string> AdditionalInformation
         {
-            get { return _stringMetadataEntries[Tag.Miscellaneous]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Miscellaneous]; }
         }
 
         /// <summary>Gets program graphics credits.</summary>
         public IEnumerable<string> GraphicsCredits
         {
-            get { return _stringMetadataEntries[Tag.Graphics]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Graphics]; }
         }
 
         /// <summary>Gets program music credits.</summary>
         public IEnumerable<string> MusicCredits
         {
-            get { return _stringMetadataEntries[Tag.Music]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Music]; }
         }
 
         /// <summary>Gets program sound effects credits.</summary>
         public IEnumerable<string> SoundEffectsCredits
         {
-            get { return _stringMetadataEntries[Tag.SoundEffects]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.SoundEffects]; }
         }
 
         /// <summary>Gets program voice acting credits.</summary>
         public IEnumerable<string> VoiceActingCredits
         {
-            get { return _stringMetadataEntries[Tag.VoiceActing]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.VoiceActing]; }
         }
 
         /// <summary>Gets program documentation credits.</summary>
         public IEnumerable<string> DocumentationCredits
         {
-            get { return _stringMetadataEntries[Tag.Documentation]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.Documentation]; }
         }
 
         /// <summary>Gets concept and design credits.</summary>
         public IEnumerable<string> ConceptAndDesignCredits
         {
-            get { return _stringMetadataEntries[Tag.ConceptDesign]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.ConceptDesign]; }
         }
 
         /// <summary>Gets box, overlay, manual, and other artwork credits.</summary>
         public IEnumerable<string> BoxOrOtherArtworkCredits
         {
-            get { return _stringMetadataEntries[Tag.BoxOrOtherArtwork]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.BoxOrOtherArtwork]; }
         }
 
         /// <summary>Gets URL contact info data.</summary>
         public IEnumerable<string> UrlContactInfos
         {
-            get { return _stringMetadataEntries[Tag.UrlContactInfo]; }
+            get { return _stringMetadataEntries[LuigiMetadataIdTag.UrlContactInfo]; }
+        }
+
+        /// <summary>Gets the release dates.</summary>
+        public IEnumerable<MetadataDateTime> ReleaseDates
+        {
+            get { return Dates; }
+        }
+
+        /// <summary>Gets the build dates.</summary>
+        public IEnumerable<MetadataDateTime> BuildDates
+        {
+            get { return MiscellaneousCfgVarMetadata.OfType<CfgVarMetadataDate>().Where(m => m.Type == CfgVarMetadataIdTag.BuildDate).Select(m => m.Date); }
+        }
+
+        /// <summary>Gets the versions.</summary>
+        public IEnumerable<string> Versions
+        {
+            get { return MiscellaneousCfgVarMetadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Version).Select(m => m.StringValue); }
+        }
+
+        private IEnumerable<CfgVarMetadataBlock> MiscellaneousCfgVarMetadata
+        {
+            get
+            {
+                if (_miscellaneousCfgVarMetadata == null)
+                {
+                    _miscellaneousCfgVarMetadata = new List<CfgVarMetadataBlock>();
+                    foreach (var entry in AdditionalInformation)
+                    {
+                        // Square peg, meet round hole.
+                        var cfgFileLineBytes = System.Text.Encoding.UTF8.GetBytes(entry);
+                        using (var cfgFileLineStream = new System.IO.MemoryStream(cfgFileLineBytes))
+                        {
+                            var cfgVarMetadataBlock = CfgVarMetadataBlock.Inflate(cfgFileLineStream);
+                            if (cfgVarMetadataBlock != null)
+                            {
+                                _miscellaneousCfgVarMetadata.Add(cfgVarMetadataBlock);
+                            }
+                        }
+                    }
+                }
+                return _miscellaneousCfgVarMetadata;
+            }
         }
 
         /// <inheritdoc/>
@@ -202,7 +248,7 @@ namespace INTV.Core.Model
             var runningBytesRead = 0;
             while (runningBytesRead < Length)
             {
-                var tag = (Tag)reader.ReadByte();
+                var tag = (LuigiMetadataIdTag)reader.ReadByte();
                 ++runningBytesRead;
                 var dataLength = reader.ReadByte();
                 ++runningBytesRead;
@@ -218,8 +264,8 @@ namespace INTV.Core.Model
 
                 switch (tag)
                 {
-                    case Tag.Date:
-                        var date = (DateTime)metadata;
+                    case LuigiMetadataIdTag.Date:
+                        var date = (MetadataDateTime)metadata;
                         _dates.Add(date);
                         break;
                     default:
@@ -249,29 +295,7 @@ namespace INTV.Core.Model
         private static object DateMetadataParser(Core.Utility.BinaryReader reader, byte payloadLength)
         {
             System.Diagnostics.Debug.Assert(payloadLength >= 1, "LUIGI Year metadata should contain at least one byte.");
-            var year = reader.ReadByte() + 1900; // (yes, assuming Gregorian calendar :P
-
-            var month = 6; // if not present, assume "middle" month of the year (yes, assuming Gregorian calendar :P )
-            if (payloadLength > 1)
-            {
-                month = reader.ReadByte();
-                if ((month < 1) || (month > 12))
-                {
-                    month = 6;
-                }
-            }
-
-            var day = 15; // if not present, assume "middle" day of the month (yes, assuming Gregorian calendar :P )
-            if (payloadLength > 2)
-            {
-                day = reader.ReadByte();
-                if ((day < 1) || (day > DateTime.DaysInMonth(year, month)))
-                {
-                    day = 15;
-                }
-            }
-
-            var date = new DateTime(year, month, day);
+            var date = reader.ParseDateTimeFromMetadata(payloadLength);
             return date;
         }
 
@@ -282,75 +306,5 @@ namespace INTV.Core.Model
         }
 
         private delegate object MetadataParser(Core.Utility.BinaryReader reader, byte payloadLength);
-
-        /// <summary>ID tags for LUIGI metadata sub-blocks.</summary>
-        private enum Tag : byte
-        {
-            /// <summary>Name field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Name = 0x00,
-
-            /// <summary>Short name field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            ShortName = 0x01,
-
-            /// <summary>Author field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Author = 0x02,
-
-            /// <summary>Publisher (vendor) field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Publisher = 0x03,
-
-            /// <summary>Date field.</summary>
-            Date = 0x04,
-
-            /// <summary>License field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            License = 0x05,
-
-            /// <summary>Description field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Description = 0x06,
-
-            /// <summary>Miscellaneous data field.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Miscellaneous = 0x07,
-
-            /// <summary>Indicates contributions to program art / graphics.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Graphics = 0x08,
-
-            /// <summary>Indicates contributions to music.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Music = 0x09,
-
-            /// <summary>Indicates contributions to sound effects.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            SoundEffects = 0x0A,
-
-            /// <summary>Indicates contributions to voice acting.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            VoiceActing = 0x0B,
-
-            /// <summary>Indicates documentation authorship.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            Documentation = 0x0C,
-
-            /// <summary>The program concept or design.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            ConceptDesign = 0x0D,
-
-            /// <summary>Indicates contributions to box, overlay, manual or other artwork.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            BoxOrOtherArtwork = 0x0E,
-
-            /// <summary>Site URL or other contact information.</summary>
-            /// <remarks>Data for this field is ASCII/UTF-8 string.</remarks>
-            UrlContactInfo = 0x0F,
-
-            /// <summary>Unknown or unrecognized field.</summary>
-            Unknown = 0xFF
-        }
     }
 }

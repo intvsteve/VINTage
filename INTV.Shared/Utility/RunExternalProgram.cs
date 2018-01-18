@@ -380,7 +380,7 @@ namespace INTV.Shared.Utility
 #endif // SMTP_SEND_SYNCHRONOUSLY
             }
 #else
-            throw new NotImplementedException("SMTP email send not implemented.");
+            throw new NotImplementedException(Resources.Strings.SmtpSendNotImplemented);
 #endif // SMTP_SUPPORT
         }
 

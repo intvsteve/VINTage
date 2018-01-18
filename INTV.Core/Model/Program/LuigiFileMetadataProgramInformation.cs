@@ -51,7 +51,7 @@ namespace INTV.Core.Model.Program
                 _vendor = metadata.Publishers.FirstOrDefault();
                 if (metadata.Dates.Any())
                 {
-                    _year = metadata.Dates.First().Year.ToString();
+                    _year = metadata.Dates.First().Date.Year.ToString();
                 }
                 ShortName = metadata.ShortNames.FirstOrDefault();
             }
@@ -102,6 +102,118 @@ namespace INTV.Core.Model.Program
         }
 
         #endregion // IProgramInformation
+
+        /// <summary>
+        /// Gets the authors.
+        /// </summary>
+        public IEnumerable<string> Authors
+        {
+            get { return Metadata.Authors; }
+        }
+
+        /// <summary>
+        /// Gets the graphics artists.
+        /// </summary>
+        public IEnumerable<string> Graphics
+        {
+            get { return Metadata.GraphicsCredits; }
+        }
+
+        /// <summary>
+        /// Gets the music credits.
+        /// </summary>
+        public IEnumerable<string> Music
+        {
+            get { return Metadata.MusicCredits; }
+        }
+
+        /// <summary>
+        /// Gets the sound effects credits.
+        /// </summary>
+        public IEnumerable<string> SoundEffects
+        {
+            get { return Metadata.SoundEffectsCredits; }
+        }
+
+        /// <summary>
+        /// Gets the voice acting credits.
+        /// </summary>
+        public IEnumerable<string> Voices
+        {
+            get { return Metadata.VoiceActingCredits; }
+        }
+
+        /// <summary>
+        /// Gets the documentation credits.
+        /// </summary>
+        public IEnumerable<string> Documentation
+        {
+            get { return Metadata.DocumentationCredits; }
+        }
+
+        /// <summary>
+        /// Gets the artwork credits for boxes, et. al.
+        /// </summary>
+        public IEnumerable<string> Artwork
+        {
+            get { return Metadata.BoxOrOtherArtworkCredits; }
+        }
+
+        /// <summary>
+        /// Gets the program concept credits.
+        /// </summary>
+        public IEnumerable<string> Concept
+        {
+            get { return Metadata.ConceptAndDesignCredits; }
+        }
+
+        /// <summary>
+        /// Gets the 'more info' values.
+        /// </summary>
+        public IEnumerable<string> MoreInfo
+        {
+            get { return Metadata.UrlContactInfos; }
+        }
+
+        /// <summary>
+        /// Gets the publishers.
+        /// </summary>
+        public IEnumerable<string> Publishers
+        {
+            get { return Metadata.Publishers; }
+        }
+
+        /// <summary>
+        /// Gets the release licenses.
+        /// </summary>
+        public IEnumerable<string> Licenses
+        {
+            get { return Metadata.Licenses; }
+        }
+
+        /// <summary>
+        /// Gets the release dates.
+        /// </summary>
+        public IEnumerable<MetadataDateTime> ReleaseDates
+        {
+            get { return Metadata.Dates; }
+        }
+
+        /// <summary>
+        /// Gets the build dates.
+        /// </summary>
+        public IEnumerable<MetadataDateTime> BuildDates
+        {
+            get { return Metadata.BuildDates; }
+        }
+
+        /// <summary>
+        /// Gets the versions.
+        /// </summary>
+        public IEnumerable<string> Versions
+        {
+            get { return Metadata.Versions; }
+        }
 
         private LuigiMetadataBlock Metadata { get; set; }
 

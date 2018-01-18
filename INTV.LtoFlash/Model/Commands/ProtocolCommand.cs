@@ -372,7 +372,7 @@ namespace INTV.LtoFlash.Model.Commands
             var result = (T)Execute(target, taskData, out succeeded);
             if (!succeeded)
             {
-                throw new InvalidOperationException("Command " + Command + " failed!", taskData.Error);
+                throw new InvalidOperationException(string.Format(Resources.Strings.DeviceCommandFailed_SimpleFormat, Command), taskData.Error);
             }
             return result;
         }

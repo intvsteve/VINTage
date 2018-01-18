@@ -87,7 +87,7 @@ namespace INTV.Core.Restricted.Model.Program
         /// <returns><c>true</c> if the entry was added, otherwise <c>false</c>.</returns>
         public bool AddEntry(IProgramInformation programInfo)
         {
-            throw new System.NotImplementedException("Adding entries to the default database is not permitted.");
+            throw new System.NotImplementedException(Resources.Strings.ProgramInformationTable_NoEditsToDefaultDatabase);
         }
    }
 }

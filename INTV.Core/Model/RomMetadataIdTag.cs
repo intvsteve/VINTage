@@ -65,10 +65,16 @@ namespace INTV.Core.Model
         /// <summary>The release license for the ROM.</summary>
         License = 0x09,
 
-        /// <summary>/// A description of the game./// </summary>
+        /// <summary>A description of the game.</summary>
         Description = 0x0A,
 
-        //// IDs 0x10 - 0x1F are reserved for future use.
+        /// <summary>Date / time describing compile time of the ROM, useful during development.</summary>
+        BuildDate = 0x0B,
+
+        /// <summary>A free-form string identifying the version of the ROM.</summary>
+        Version = 0x0C,
+
+        //// IDs 0x0D - 0x1F are reserved for future use.
 
         #endregion // General Game Information (0x01 - 0x1F)
 

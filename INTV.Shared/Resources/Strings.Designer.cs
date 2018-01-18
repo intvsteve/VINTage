@@ -624,6 +624,24 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to control is not an ItemsControl.
+        /// </summary>
+        internal static string ControlMustBeItemsControlErrorMessage {
+            get {
+                return ResourceManager.GetString("ControlMustBeItemsControlErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to control is not a TextBox.
+        /// </summary>
+        internal static string ControlMustBeTextBoxErrorMessage {
+            get {
+                return ResourceManager.GetString("ControlMustBeTextBoxErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uses Intellicart-style bankswitching.
         /// </summary>
         internal static string CuttleCart3Features_Bankswitching {
@@ -1220,6 +1238,24 @@ namespace INTV.Shared.Resources {
         internal static string EmptyRomListCommand_WarningTitle {
             get {
                 return ResourceManager.GetString("EmptyRomListCommand_WarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This converter only supports converting string&lt;-&gt;EnumString!.
+        /// </summary>
+        internal static string EnumToStringConverterDataTypeErrorMessage {
+            get {
+                return ResourceManager.GetString("EnumToStringConverterDataTypeErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This converter requires the desired Enum type to be described as a string of the form: FullTypeName-AssemblyName.
+        /// </summary>
+        internal static string EnumToStringConverterErrorMessage {
+            get {
+                return ResourceManager.GetString("EnumToStringConverterErrorMessage", resourceCulture);
             }
         }
         
@@ -2903,6 +2939,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You cannot change the configuration of a NamedPipeConnection that is already in use!.
+        /// </summary>
+        internal static string NamedPipeCannotBeRenamedMessage {
+            get {
+                return ResourceManager.GetString("NamedPipeCannotBeRenamedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string NoButton_Text {
@@ -3064,6 +3109,15 @@ namespace INTV.Shared.Resources {
         internal static string PalFeatureCompatibility_Tolerates {
             get {
                 return ResourceManager.GetString("PalFeatureCompatibility_Tolerates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path not rooted..
+        /// </summary>
+        internal static string PathNotRootedError {
+            get {
+                return ResourceManager.GetString("PathNotRootedError", resourceCulture);
             }
         }
         
@@ -3962,6 +4016,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Target object has no SelectedItems property to bind..
+        /// </summary>
+        internal static string SelectionChangedBehavior_NoSelectedItemsProperty {
+            get {
+                return ResourceManager.GetString("SelectionChangedBehavior_NoSelectedItemsProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Serial Port....
         /// </summary>
         internal static string SelectSerialPortCommand_Name {
@@ -3998,11 +4061,29 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid number of bytes: {0}.
+        /// </summary>
+        internal static string SerialPortInvalidByteCountMessageFormat {
+            get {
+                return ResourceManager.GetString("SerialPortInvalidByteCountMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select a serial port.
         /// </summary>
         internal static string SerialPortSelector_Prompt {
             get {
                 return ResourceManager.GetString("SerialPortSelector_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timeout too large..
+        /// </summary>
+        internal static string SerialPortTimeoutTooLargeMessage {
+            get {
+                return ResourceManager.GetString("SerialPortTimeoutTooLargeMessage", resourceCulture);
             }
         }
         
@@ -4102,6 +4183,15 @@ namespace INTV.Shared.Resources {
         internal static string SingleApplicationCommands_SettingsTip {
             get {
                 return ResourceManager.GetString("SingleApplicationCommands_SettingsTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMTP email send not implemented..
+        /// </summary>
+        internal static string SmtpSendNotImplemented {
+            get {
+                return ResourceManager.GetString("SmtpSendNotImplemented", resourceCulture);
             }
         }
         
@@ -4246,6 +4336,15 @@ namespace INTV.Shared.Resources {
         internal static string SystemCompatibility_Name {
             get {
                 return ResourceManager.GetString("SystemCompatibility_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools directory missing!.
+        /// </summary>
+        internal static string ToolsDirectoryMissingMessage {
+            get {
+                return ResourceManager.GetString("ToolsDirectoryMissingMessage", resourceCulture);
             }
         }
         

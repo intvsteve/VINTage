@@ -247,7 +247,7 @@ namespace INTV.Shared.Model.Device
         {
             if (IsConnected)
             {
-                throw new InvalidOperationException("You cannot change the configuration of a NamedPipeConnection that is already in use!");
+                throw new InvalidOperationException(Resources.Strings.NamedPipeCannotBeRenamedMessage);
             }
 
             object configData = null;
@@ -271,7 +271,7 @@ namespace INTV.Shared.Model.Device
         {
             if ((numberOfBytes < 0) || ((ulong)numberOfBytes > ((ulong)long.MaxValue / 8)))
             {
-                throw new ArgumentOutOfRangeException("Invalid number of bytes.");
+                throw new ArgumentOutOfRangeException(string.Format(Resources.Strings.SerialPortInvalidByteCountMessageFormat, numberOfBytes));
             }
             var estimate = -1;
             if (_cachedBestGuessDataTransferSpeed < 0)
@@ -316,7 +316,7 @@ namespace INTV.Shared.Model.Device
                 var rawEstimate = Math.Max(1, numberOfBits / _cachedBestGuessDataTransferSpeed) * 1000;
                 if (rawEstimate > int.MaxValue)
                 {
-                    throw new ArgumentOutOfRangeException("Timeout too large.");
+                    throw new ArgumentOutOfRangeException(Resources.Strings.SerialPortTimeoutTooLargeMessage);
                 }
                 estimate = (int)rawEstimate;
             }

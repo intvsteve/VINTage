@@ -320,7 +320,7 @@ namespace INTV.Shared.Model.Program
             var jzIntvConfiguration = SingleInstanceApplication.Instance.GetConfiguration<INTV.JzIntv.Model.Configuration>();
             if (!Directory.Exists(jzIntvConfiguration.ToolsDirectory))
             {
-                throw new FileNotFoundException("Tools directory not found.", jzIntvConfiguration.ToolsDirectory);
+                throw new FileNotFoundException(Resources.Strings.ToolsDirectoryMissingMessage, jzIntvConfiguration.ToolsDirectory);
             }
             var programs = ProgramCollection.Load(filePath);
             Clear();

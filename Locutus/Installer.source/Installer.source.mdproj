@@ -13,7 +13,7 @@
     <CustomCommands>
       <CustomCommands>
         <Command type="BeforeBuild" command="make -f installer.source.mak clean" workingdir="${ProjectDir}" />
-        <Command type="Build" command="make -f installer.source.mak" workingdir="${ProjectDir}" />
+        <Command type="Build" command="make -f installer.source.mak GIT_REPO=../.." workingdir="${ProjectDir}" />
         <Command type="Clean" command="make -f installer.source.mak clean" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>

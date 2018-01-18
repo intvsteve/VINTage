@@ -201,6 +201,24 @@ namespace INTV.Shared.Utility
         /// </summary>
         internal string PluginsLocation { get; private set; }
 
+        private AppReadyState ReadyState
+        {
+            get
+            {
+                return _readyState;
+            }
+
+            set
+            {
+                _readyState |= value;
+                if (_readyState == AppReadyState.Ready)
+                {
+                    SpawnStartupActions();
+                }
+            }
+        }
+        private AppReadyState _readyState;
+
         #endregion // Properties
 
         /// <summary>

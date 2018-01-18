@@ -77,25 +77,6 @@ namespace INTV.Shared.Utility
         }
         private Gtk.Window _mainWindow;
 
-        private AppReadyState ReadyState
-        {
-            get
-            {
-                return _readyState;
-            }
-
-            set
-            {
-                _readyState |= value;
-                if (_readyState == AppReadyState.Ready)
-                {
-                    MainThreadDispatcher.BeginInvoke(
-                        new System.Action(() => ExecuteStartupActions()));
-                }
-            }
-        }
-        private AppReadyState _readyState;
-
         #endregion // Properties
 
         #region Events
@@ -380,6 +361,14 @@ namespace INTV.Shared.Utility
                 System.Diagnostics.Debug.WriteLine("Failed to identify plugins directory.");
             }
             return pluginsDirectory;
+        }
+
+        /// <summary>
+        /// Spawns the startup actions.
+        /// </summary>
+        private void SpawnStartupActions()
+        {
+            MainThreadDispatcher.BeginInvoke(new System.Action(() => ExecuteStartupActions()));
         }
 
         /// <summary>

@@ -67,26 +67,6 @@ namespace INTV.Shared.Utility
         /// </summary>
         private static uint ActivationMessage { get; set; }
 
-        private AppReadyState ReadyState
-        {
-            get
-            {
-                return _readyState;
-            }
-
-            set
-            {
-                _readyState |= value;
-                if (_readyState == AppReadyState.Ready)
-                {
-                    this.Dispatcher.BeginInvoke(
-                        new Action(() => ExecuteStartupActions()),
-                        System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                }
-            }
-        }
-        private AppReadyState _readyState;
-
         #endregion // Properties
 
         /// <summary>
@@ -379,6 +359,14 @@ namespace INTV.Shared.Utility
                 }
                 System.Windows.MessageBox.Show(errorShowingCrashDialogMessage, "Failed to Display Crash Report", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
+        }
+
+        /// <summary>
+        /// Spawns the startup actions.
+        /// </summary>
+        private void SpawnStartupActions()
+        {
+            MainThreadDispatcher.BeginInvoke(new System.Action(() => ExecuteStartupActions()));
         }
     }
 }

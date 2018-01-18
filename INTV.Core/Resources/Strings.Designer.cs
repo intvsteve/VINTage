@@ -61,11 +61,56 @@ namespace INTV.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to convert CfgVarMetadataIdTag to LuigiMetadataIdTag!.
+        /// </summary>
+        internal static string CfgVarMetadata_ToLuigiError {
+            get {
+                return ResourceManager.GetString("CfgVarMetadata_ToLuigiError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to convert CfgVarMetadataIdTag to RomMetadataIdTag!.
+        /// </summary>
+        internal static string CfgVarMetadata_ToRomError {
+            get {
+                return ResourceManager.GetString("CfgVarMetadata_ToRomError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CFGVAR type is not a FeatureCompatibility type: {0}.
+        /// </summary>
+        internal static string CfgVarMetadata_TypeError {
+            get {
+                return ResourceManager.GetString("CfgVarMetadata_TypeError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The adjacent input range for the 16 disc directions must be less than 8..
+        /// </summary>
+        internal static string ControllerKeys_AdjacentDistanceTooLarge {
+            get {
+                return ResourceManager.GetString("ControllerKeys_AdjacentDistanceTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The CRC value of a program may not be zero..
         /// </summary>
         internal static string CrcData_InvalidCRC {
             get {
                 return ResourceManager.GetString("CrcData_InvalidCRC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempted to create LUIGI feature flags for unsupported FeatureCategory: {0}.
+        /// </summary>
+        internal static string FeatureCategoryNotSupportedByLuigiFormat {
+            get {
+                return ResourceManager.GetString("FeatureCategoryNotSupportedByLuigiFormat", resourceCulture);
             }
         }
         
@@ -115,11 +160,74 @@ namespace INTV.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alternate ROM paths do not also provide alternate .cfg file paths!.
+        /// </summary>
+        internal static string ProgramDescription_MIssingAlternateCfgFile {
+            get {
+                return ResourceManager.GetString("ProgramDescription_MIssingAlternateCfgFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
         internal static string ProgramInformation_DefaultTitle {
             get {
                 return ResourceManager.GetString("ProgramInformation_DefaultTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected ProgramInformation field: {0}.
+        /// </summary>
+        internal static string ProgramInformation_InvalidFieldFormat {
+            get {
+                return ResourceManager.GetString("ProgramInformation_InvalidFieldFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding entries to the default database is not permitted..
+        /// </summary>
+        internal static string ProgramInformationTable_NoEditsToDefaultDatabase {
+            get {
+                return ResourceManager.GetString("ProgramInformationTable_NoEditsToDefaultDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid ROM comparison requested: {0}.
+        /// </summary>
+        internal static string RomComparer_InvalidCompareRequestedFormat {
+            get {
+                return ResourceManager.GetString("RomComparer_InvalidCompareRequestedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid ROM file - it is not .rom or .cc3 format..
+        /// </summary>
+        internal static string RomFormatRom_InvalidFormat {
+            get {
+                return ResourceManager.GetString("RomFormatRom_InvalidFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to deserialize ROM metadata payload!.
+        /// </summary>
+        internal static string RomMetadata_FailedToDeserializePayload {
+            get {
+                return ResourceManager.GetString("RomMetadata_FailedToDeserializePayload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported ROM metadata type passed to RomMetadataDate: {0}.
+        /// </summary>
+        internal static string RomMetadataDate_InvalidMetadataIdFormat {
+            get {
+                return ResourceManager.GetString("RomMetadataDate_InvalidMetadataIdFormat", resourceCulture);
             }
         }
         

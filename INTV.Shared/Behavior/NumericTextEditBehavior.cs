@@ -66,7 +66,7 @@ namespace INTV.Shared.Behavior
             var textBox = control as TextBox;
             if (textBox == null)
             {
-                throw new ArgumentException("control is not a TextBox");
+                throw new ArgumentException(Resources.Strings.ControlMustBeTextBoxErrorMessage);
             }
 
             textBox.PreviewTextInput -= PreviewTextInput;

@@ -337,7 +337,7 @@ namespace INTV.Core.Model
                 case CfgVarMetadataIdTag.Invalid:
                     break;
                 default:
-                    throw new InvalidOperationException("Unable to convert CfgVarMetadataIdTag to RomMetadataIdTag!");
+                    throw new InvalidOperationException(Resources.Strings.CfgVarMetadata_ToRomError);
             }
             return romTag;
         }
@@ -454,7 +454,7 @@ namespace INTV.Core.Model
                 case CfgVarMetadataIdTag.Invalid:
                     break;
                 default:
-                    throw new InvalidOperationException("Unable to convert CfgVarMetadataIdTag to LuigiMetadataIdTag!");
+                    throw new InvalidOperationException(Resources.Strings.CfgVarMetadata_ToLuigiError);
             }
             return luigiTag;
         }

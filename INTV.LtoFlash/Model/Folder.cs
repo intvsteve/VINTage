@@ -378,7 +378,7 @@ namespace INTV.LtoFlash.Model
             }
             else
             {
-                throw new InvalidOperationException("Not parent to child.");
+                throw new InvalidOperationException(Resources.Strings.Folder_NotParentError);
             }
 #if REPORT_PERFORMANCE
             stopwatch.Stop();

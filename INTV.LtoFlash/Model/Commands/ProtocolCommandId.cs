@@ -300,7 +300,7 @@ namespace INTV.LtoFlash.Model.Commands
             var result = typeof(ProtocolCommandId).GetResourceString(resourceKey);
             if (string.IsNullOrWhiteSpace(result))
             {
-                throw new System.ArgumentOutOfRangeException("No " + suffix + " for command " + commandId);
+                throw new System.ArgumentOutOfRangeException("commandId", string.Format(Resources.Strings.MissingCommandIdStringFormat, suffix, commandId));
             }
             return result;
         }

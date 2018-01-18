@@ -47,7 +47,7 @@ namespace INTV.Core.Model.Program
 
                 if (usesCfg && (alternateRomPaths.Count != alternateCfgPaths.Count))
                 {
-                    throw new InvalidOperationException("Alternate ROM paths do not also provide alternate .cfg file paths!");
+                    throw new InvalidOperationException(Resources.Strings.ProgramDescription_MIssingAlternateCfgFile);
                 }
 
                 var foundAlternate = false;

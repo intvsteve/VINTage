@@ -1614,4 +1614,38 @@ Click the arrow for more commands.</value>
   <data name="RibbonSplitButton_ToggleButtonToolTip" xml:space="preserve">
     <value>Click for more commands</value>
   </data>
+  <data name="ControlMustBeItemsControlErrorMessage" xml:space="preserve">
+    <value>control is not an ItemsControl</value>
+  </data>
+  <data name="ControlMustBeTextBoxErrorMessage" xml:space="preserve">
+    <value>control is not a TextBox</value>
+  </data>
+  <data name="EnumToStringConverterDataTypeErrorMessage" xml:space="preserve">
+    <value>This converter only supports converting string&lt;-&gt;EnumString!</value>
+  </data>
+  <data name="EnumToStringConverterErrorMessage" xml:space="preserve">
+    <value>This converter requires the desired Enum type to be described as a string of the form: FullTypeName-AssemblyName</value>
+  </data>
+  <data name="NamedPipeCannotBeRenamedMessage" xml:space="preserve">
+    <value>You cannot change the configuration of a NamedPipeConnection that is already in use!</value>
+  </data>
+  <data name="PathNotRootedError" xml:space="preserve">
+    <value>Path not rooted.</value>
+  </data>
+  <data name="SelectionChangedBehavior_NoSelectedItemsProperty" xml:space="preserve">
+    <value>Target object has no SelectedItems property to bind.</value>
+  </data>
+  <data name="SerialPortInvalidByteCountMessageFormat" xml:space="preserve">
+    <value>Invalid number of bytes: {0}</value>
+    <comment>{0}: a number of bytes</comment>
+  </data>
+  <data name="SerialPortTimeoutTooLargeMessage" xml:space="preserve">
+    <value>Timeout too large.</value>
+  </data>
+  <data name="SmtpSendNotImplemented" xml:space="preserve">
+    <value>SMTP email send not implemented.</value>
+  </data>
+  <data name="ToolsDirectoryMissingMessage" xml:space="preserve">
+    <value>Tools directory missing!</value>
+  </data>
 </root>

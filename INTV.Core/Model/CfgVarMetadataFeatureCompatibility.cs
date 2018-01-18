@@ -96,7 +96,7 @@ namespace INTV.Core.Model
                             }
                             break;
                         default:
-                            throw new System.InvalidOperationException("CFGVAR type is not a FeatureCompatibility type:" + Type);
+                            throw new System.InvalidOperationException(string.Format(Resources.Strings.CfgVarMetadata_TypeError, Type));
                     }
                 }
             }

@@ -83,7 +83,7 @@ namespace INTV.Shared.Behavior
             }
             else
             {
-                throw new InvalidOperationException("Target object has no SelectedItems property to bind.");
+                throw new InvalidOperationException(Resources.Strings.SelectionChangedBehavior_NoSelectedItemsProperty);
             }
         }
     }

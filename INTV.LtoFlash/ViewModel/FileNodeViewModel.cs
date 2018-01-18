@@ -867,14 +867,14 @@ namespace INTV.LtoFlash.ViewModel
             {
                 if (!itemToMoveModel.Parent.MoveChildToNewParent(itemToMoveModel, parent, false))
                 {
-                    throw new System.InvalidOperationException("failed to move");
+                    throw new System.InvalidOperationException(Resources.Strings.MenuLayoutDragDrop_FailedToMoveItemMessage);
                 }
             }
             else
             {
                 if (!itemToMoveModel.Parent.MoveChildToNewParent(itemToMoveModel, parent, indexInNewParent, false))
                 {
-                    throw new System.InvalidOperationException("failed to move");
+                    throw new System.InvalidOperationException(Resources.Strings.MenuLayoutDragDrop_FailedToMoveItemMessage);
                 }
             }
             menuLayout.FinishItemsUpdate(true);

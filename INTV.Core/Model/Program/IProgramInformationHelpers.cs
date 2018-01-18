@@ -204,7 +204,7 @@ namespace INTV.Core.Model.Program
                             case ProgramInformationMergeFieldsFlags.None:
                                 break;
                             default:
-                                throw new ArgumentException("Unexpected ProgramInformation field: " + flag);
+                                throw new ArgumentException(string.Format(Resources.Strings.ProgramInformation_InvalidFieldFormat, flag));
                         }
                     }
                 }

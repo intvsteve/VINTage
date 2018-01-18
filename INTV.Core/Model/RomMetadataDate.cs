@@ -41,7 +41,7 @@ namespace INTV.Core.Model
                 case RomMetadataIdTag.ReleaseDate:
                     break;
                 default:
-                    throw new InvalidOperationException("Unsupported ROM metadata type passed to RomMetadataDate: " + type);
+                    throw new InvalidOperationException(string.Format(Resources.Strings.RomMetadataDate_InvalidMetadataIdFormat, type));
             }
             Date = MetadataDateTime.MinValue;
         }

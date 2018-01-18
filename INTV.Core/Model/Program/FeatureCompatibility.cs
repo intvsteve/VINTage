@@ -118,7 +118,7 @@ namespace INTV.Core.Model.Program
                     // NOTE: This isn't strictly correct. There isn't really "compatibility" for LTO Flash! -- just features, which are handled separately.
                     break;
                 default:
-                    throw new System.InvalidOperationException("Attempted to create LUIGI feature flags for unsupported FeatureCategory: " + category);
+                    throw new System.InvalidOperationException(string.Format(Resources.Strings.FeatureCategoryNotSupportedByLuigiFormat, category));
             }
             if (offset >= 0)
             {

@@ -163,7 +163,7 @@ namespace INTV.Core.Model
             var deserializedPayloadLength = DeserializePayload(reader);
             if (deserializedPayloadLength != Length)
             {
-                throw new System.InvalidOperationException("Failed to deserialize ROM metadata payload!");
+                throw new System.InvalidOperationException(Resources.Strings.RomMetadata_FailedToDeserializePayload);
             }
             return (int)deserializedPayloadLength;
         }

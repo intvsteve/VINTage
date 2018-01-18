@@ -69,7 +69,7 @@ namespace INTV.Core.Model
                     break;
 #endif // CANONICAL_COMPARE_SUPPORTED
                 default:
-                    throw new ArgumentException("Invalid ROM comparison requested.", "comparison");
+                    throw new ArgumentException(string.Format(Resources.Strings.RomComparer_InvalidCompareRequestedFormat, comparison), "comparison");
             }
             return comparer;
         }
@@ -99,7 +99,7 @@ namespace INTV.Core.Model
                     break;
 #endif // CANONICAL_COMPARE_SUPPORTED
                 default:
-                    throw new ArgumentException("Invalid ROM comparison requested.", "comparison");
+                    throw new ArgumentException(string.Format(Resources.Strings.RomComparer_InvalidCompareRequestedFormat, comparison), "comparison");
             }
             return comparer;
         }

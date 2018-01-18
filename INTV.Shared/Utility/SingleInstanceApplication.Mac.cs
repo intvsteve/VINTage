@@ -229,6 +229,7 @@ namespace INTV.Shared.Utility
             {
                 System.Diagnostics.Debug.WriteLine("Error initializing plugins: " + e.Message);
             }
+            ReadyState |= AppReadyState.ImportsStatisfied;
         }
 
         #endregion // IPartImportsSatisfiedNotification
@@ -307,6 +308,7 @@ namespace INTV.Shared.Utility
                             var myMainWindow = newValue as NSWindow;
                             if ((myMainWindow != null) && !_registeredObserver)
                             {
+                                Instance.ReadyState |= AppReadyState.MainWindowSourced;
                                 _registeredObserver = true;
                                 myMainWindow.AddObserver(this, (NSString)FirstResponderValueName, NSKeyValueObservingOptions.New, this.Handle);
                                 BeginInvokeOnMainThread(() => HandleDidFinishLaunching(this, System.EventArgs.Empty));
@@ -398,6 +400,7 @@ namespace INTV.Shared.Utility
         {
             if ((MainWindow != null) && MainWindow.IsVisible && !(MainWindow is NSPanel))
             {
+                Instance.ReadyState |= AppReadyState.MainWindowLoaded;
                 if (!_handledDidFinishLaunching)
                 {
                     _handledDidFinishLaunching = true;
@@ -413,16 +416,7 @@ namespace INTV.Shared.Utility
                             _splashScreen = null;
                         });
                     }
-
-                    // Consider putting in a delay here? I.e. instead of BeginInvokeOnMainThread(), use
-                    // PerformSelector() with a delay? Is there a race condition that even BeginInvoke() isn't
-                    // getting around w.r.t. the Objective-C initialization and the work the startup actions
-                    // may need to do? (E.g. the case of NSUserDefaults.SetBool() crashing somewhere in its guts.)
-                    BeginInvokeOnMainThread(() =>
-                    {
-                        ExecuteStartupActions();
-                        CommandManager.InvalidateRequerySuggested();
-                    });
+                    Instance.ReadyState |= AppReadyState.MainWindowVisible;
                 }
             }
             else
@@ -438,6 +432,22 @@ namespace INTV.Shared.Utility
             {
                 exit(this, new ExitEventArgs());
             }
+        }
+
+        /// <summary>
+        /// Spawns the startup actions.
+        /// </summary>
+        private void SpawnStartupActions()
+        {
+            // Consider putting in a delay here? I.e. instead of BeginInvokeOnMainThread(), use
+            // PerformSelector() with a delay? Is there a race condition that even BeginInvoke() isn't
+            // getting around w.r.t. the Objective-C initialization and the work the startup actions
+            // may need to do? (E.g. the case of NSUserDefaults.SetBool() crashing somewhere in its guts.)
+            BeginInvokeOnMainThread(() =>
+                {
+                    ExecuteStartupActions();
+                    CommandManager.InvalidateRequerySuggested();
+                });
         }
 
         /// <summary>

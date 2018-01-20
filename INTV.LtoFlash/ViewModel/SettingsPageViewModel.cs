@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+#define ENABLE_PORT_LOG
+
 using INTV.Shared.ComponentModel;
 using INTV.Shared.ViewModel;
 

@@ -171,3 +171,10 @@ $RECYCLE.BIN/
 *.resources
 
 *.userprefs
+
+# =========================
+# Local config for make
+# =========================
+/custom_jzIntv.mak
+/custom.bat
+/custom.mak

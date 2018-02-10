@@ -1,5 +1,5 @@
 ﻿// <copyright file="AssemblyInfo.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("INTVFunhouse")]
 [assembly: AssemblyProduct("LTOFlash")]
-[assembly: AssemblyCopyright("Copyright © INTV Funhouse 2014-2017")]
+[assembly: AssemblyCopyright("Copyright © INTV Funhouse 2014-" + INTV.VersionInfo.CurrentCopyrightYear)]
 [assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. LTO Flash! is a product from Left Turn Only, LLC. Steve Orth and INTV Funhouse, and Joe Zbiciak and Left Turn Only, LLC are not affiliated with Intellivision Productions.")]
 //// Stupid xp... .NET 4.5 or later required for AssemblyMetadataAttribute
 #if !WIN_XP
@@ -76,5 +76,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.3020")]
-[assembly: AssemblyInformationalVersion("1.0.0 (Build 3020)")]
+[assembly: AssemblyFileVersion(INTV.VersionInfo.FullVersionString)]
+[assembly: AssemblyInformationalVersion(INTV.VersionInfo.ShortVersionString + " " + INTV.VersionInfo.BuildVersionString)]

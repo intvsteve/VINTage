@@ -307,6 +307,9 @@
     <Compile Include="gtk-gui\INTV.Shared.View.SerialPortSelector.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.SplashScreen.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.SystemCompatibilityConfigurationPage.cs" />
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

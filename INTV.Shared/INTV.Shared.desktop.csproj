@@ -194,6 +194,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="Utility\AsyncTaskData.cs" />
     <Compile Include="Utility\AsyncTaskWithProgress.cs" />
     <Compile Include="Utility\ASCIIBinaryReader.cs" />

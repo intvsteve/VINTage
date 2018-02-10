@@ -62,9 +62,9 @@ ROOT_DIR ?= .
 # NOTE: Windows builds are supported in the MSYS environment, and the
 #       VINTage tools only support builds therein.
 # ------------------------------------------------------------------------- #
-JZINTV_DIR_MAC   = ~/Projects/jzIntv
-JZINTV_DIR_WIN   = ~/jzIntv
-JZINTV_DIR_LINUX = ~/projects/svnRepos/jzIntv
+JZINTV_DIR_MAC   = 
+JZINTV_DIR_WIN   = 
+JZINTV_DIR_LINUX = 
 JZINTV_DIR       = $(JZINTV_DIR_$(TARGET_OS))
 
 # ------------------------------------------------------------------------- #
@@ -91,8 +91,8 @@ endif
 # NOTE: Windows builds are supported in the MSYS environment, and the
 #       VINTage tools only support builds therein.
 # ------------------------------------------------------------------------- #
-ADD_ENVIRONMENT_PATH_MAC   = /opt/local/bin
-ADD_ENVIRONMENT_PATH_WIN   = /mingw/bin
+ADD_ENVIRONMENT_PATH_MAC   = 
+ADD_ENVIRONMENT_PATH_WIN   = 
 ADD_ENVIRONMENT_PATH_LINUX =
 ADD_ENVIRONMENT_PATH       = $(ADD_ENVIRONMENT_PATH_$(TARGET_OS))
 

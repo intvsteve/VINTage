@@ -29,7 +29,7 @@
 # number using the SVN revision number for the value of VERSION_REVISION
 # will be defined.
 # ------------------------------------------------------------------------- #
-SVN_REPO ?= svn://svn.spatula-city.info/lto/jz/locutus/lui_src
+SVN_REPO ?= 
 
 # ------------------------------------------------------------------------- #
 # Git Repository

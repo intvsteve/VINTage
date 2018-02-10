@@ -42,13 +42,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <NMakeBuildCommandLine>$(ProjectDir)installer_zip.bat $(ProjectDir) $(SolutionName)</NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>$(ProjectDir)installer_zip.bat $(ProjectDir) $(SolutionName) clean</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>$(ProjectDir)installer_zip.bat $(ProjectDir) $(SolutionName) 0</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>$(ProjectDir)installer_zip.bat $(ProjectDir) $(SolutionName) 0 clean</NMakeCleanCommandLine>
+    <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
   </PropertyGroup>
-  <ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <BuildLog>
+      <Path>$(IntDir)\$(MSBuildProjectName)-$(SolutionName).log</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <BuildLog>
+      <Path>$(IntDir)\$(MSBuildProjectName)-$(SolutionName).log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="license.txt" />

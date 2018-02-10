@@ -23,6 +23,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Shared.desktop", "..\INTV.Shared\INTV.Shared.desktop.csproj", "{C852CAA1-ABE8-45D7-8BC5-94B61B71617A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Ribbon", "..\INTV.Ribbon\INTV.Ribbon.csproj", "{36F9511F-4B39-4320-A1AC-C11AB6297C06}"
+	ProjectSection(ProjectDependencies) = postProject
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770} = {47F7AF54-FA4E-49A7-843F-DBAE2C062770}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.desktop", "..\INTV.LtoFlash\INTV.LtoFlash.desktop.csproj", "{A1376EF6-C8CE-4A9C-A6E1-1BAF764E5E89}"
 EndProject
@@ -35,8 +38,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\cleanup.mak = ..\cleanup.mak
 		..\cleanup_bash.bat = ..\cleanup_bash.bat
 		..\common.mak = ..\common.mak
+		..\custom.bat = ..\custom.bat
+		..\custom.mak = ..\custom.mak
 		..\custom.mak.template = ..\custom.mak.template
 		..\custom_bat_rule.bat = ..\custom_bat_rule.bat
+		..\custom_jzIntv.mak = ..\custom_jzIntv.mak
 		..\custom_jzIntv.mak.template = ..\custom_jzIntv.mak.template
 		..\custom_jzIntv_mak_rule.mak = ..\custom_jzIntv_mak_rule.mak
 		..\custom_mak_rule.mak = ..\custom_mak_rule.mak

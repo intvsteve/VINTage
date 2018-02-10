@@ -1,5 +1,5 @@
 ﻿// <copyright file="AssemblyInfo.cs" company="INTV Funhouse">
-// Copyright (c) 2012-2017 All Rights Reserved
+// Copyright (c) 2012-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("INTVFunhouse")]
 [assembly: AssemblyProduct("VINTage")]
-[assembly: AssemblyCopyright("Copyright © INTV Funhouse 2012-2017")]
+[assembly: AssemblyCopyright("Copyright © INTV Funhouse 2012-" + INTV.VersionInfo.CurrentCopyrightYear)]
 [assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. Steve Orth and INTV Funhouse, and Joe Zbiciak and Left Turn Only, LLC are not affiliated with Intellivision Productions.")]
 //// Stupid xp... .NET 4.5 or later required for AssemblyMetadataAttribute
 #if !WIN
@@ -56,4 +56,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion(INTV.VersionInfo.FullVersionString)]

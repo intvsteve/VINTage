@@ -23,16 +23,8 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1</command>
-          <workingdir>${ProjectDir}</workingdir>
-        </Command>
-        <Command>
-          <type>AfterClean</type>
-          <command>make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1</command>
-          <workingdir>${ProjectDir}</workingdir>
-        </Command>
+        <Command type="AfterBuild" command="make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
+        <Command type="AfterClean" command="make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -46,16 +38,8 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command>
-          <type>AfterBuild</type>
-          <command>make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1</command>
-          <workingdir>${ProjectDir}</workingdir>
-        </Command>
-        <Command>
-          <type>AfterClean</type>
-          <command>make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1</command>
-          <workingdir>${ProjectDir}</workingdir>
-        </Command>
+        <Command type="AfterBuild" command="make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
+        <Command type="AfterClean" command="make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -81,6 +65,9 @@
     <Compile Include="Model\Intv2PcPort.cs" />
     <Compile Include="Model\KeyboardMap.cs" />
     <Compile Include="Model\PrescaleMode.cs" />
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Strings.resx">
@@ -131,6 +118,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="build_tools.mak" />
-    <None Include="custom.mak" />
+    <None Include="..\custom_jzIntv.mak">
+      <Link>custom_jzIntv.mak</Link>
+    </None>
   </ItemGroup>
 </Project>

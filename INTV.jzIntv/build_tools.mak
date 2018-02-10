@@ -1,74 +1,43 @@
 #############################################################################
-## jzIntv Tools Build
-##
-## When properly configured via custom.mak, builds the utilities used by
-## the INTV.jzIntv assembly that is part of the VINTage / LUI project.
-##
+# jzIntv Tools Build                                                        #
+# ------------------------------------------------------------------------- #
+# When properly configured via custom.mak, builds the utilities used by     #
+# the INTV.jzIntv assembly that is part of the VINTage / LUI project.       #
+# The root common.mak file determines the operating system.                 #
+#                                                                           #
 #############################################################################
 
-include custom.mak
+# ------------------------------------------------------------------------- #
+# This makefile is in a subdirectory, so set ROOT_DIR accordingly.
+# ------------------------------------------------------------------------- #
+ROOT_DIR = ..
 
-# Determine the target OS. Modified from the technique found here:
-#  http://stackoverflow.com/questions/714100/os-detecting-makefile
-ifeq ($(OS),Windows_NT)
-  TARGET_OS ?= WIN
-else
-  UNAME_S := $(shell uname -s)
-  ifeq ($(UNAME_S),Linux)
-    TARGET_OS ?= LINUX
-  endif
-  ifeq ($(UNAME_S),Darwin)
-    TARGET_OS ?= MAC
-  endif
-endif
+include $(ROOT_DIR)/common.mak
+-include $(ROOT_DIR)/custom_jzIntv.mak
 
-ifeq (,$(TARGET_OS))
-  $(error Unable to determine target operating system! Please specify TARGET_OS variable)
-endif
+# ------------------------------------------------------------------------- #
+# Define the destination directory to use for the tool executables.
+# ------------------------------------------------------------------------- #
+TOOL_OUTPUT_DIR_WIN   = tools
+TOOL_OUTPUT_DIR_MAC   = tools/Mac
+TOOL_OUTPUT_DIR_LINUX = tools/Linux
+TOOL_OUTPUT_DIR       = $(TOOL_OUTPUT_DIR_$(TARGET_OS))
 
-# Define the makefile to use.
-ifeq (WIN,$(TARGET_OS))
-  TARGET_MAKEFILE ?= Makefile.stdout
-endif
-ifeq (MAC,$(TARGET_OS))
-  TARGET_MAKEFILE ?= Makefile.osx_framework
-endif
-ifeq (LINUX,$(TARGET_OS))
-  TARGET_MAKEFILE ?= 
+# ------------------------------------------------------------------------- #
+# Validate configuration for tools build.
+# ------------------------------------------------------------------------- #
+ifeq (,$(TOOL_OUTPUT_DIR))
+  $(error Set the TOOL_OUTPUT_DIR_$(TARGET_OS) variable appropriately)
 endif
 
-ifeq (,$(TARGET_MAKEFILE))
-  $(error Unable to determine target makefile! Please specify TARGET_MAKEFILE variable)
-endif
-
-ifeq (WIN,$(TARGET_OS))
-  TOOL_OUTPUT_DIR = tools
-  EXE_SUFFIX = .exe
-endif
-ifeq (MAC,$(TARGET_OS))
-  TOOL_OUTPUT_DIR = tools/Mac
-endif
-ifeq (LINUX,$(TARGET_OS))
-  TOOL_OUTPUT_DIR = tools/Linux
-endif
-
-JZINTV_DIR = $(JZINTV_DIR_$(TARGET_OS))
-ADD_ENVIRONMENT_PATH = $(ADD_ENVIRONMENT_PATH_$(TARGET_OS))
-
-## ----------------------------- Validation ------------------------------ ##
-
-ifeq (,$(JZINTV_DIR))
-  ifneq (1,$(SKIP_IF_JZINTV_EMPTY))
-    $(error Set the JZINTV_DIR variable to the directory containing the jzIntv src directory)
-  else
-    SKIP_BUILD = 1
-  endif
-endif
-
-# Directory containing output of jzIntv builds.
+# ------------------------------------------------------------------------- #
+# Define the directory that will contain the output of jzIntv builds.
+# ------------------------------------------------------------------------- #
 TOOL_INPUT_DIR = $(JZINTV_DIR)/bin
 
-# The jzIntv utilities to be built and included in the INTV.jzIntv output.
+# ------------------------------------------------------------------------- #
+# Declare jzIntv utilities to build and include in the INTV.jzIntv output.
+# ------------------------------------------------------------------------- #
 JZINTV_UTILITIES = \
   bin2luigi \
   bin2rom \
@@ -78,21 +47,30 @@ JZINTV_UTILITIES = \
   rom2bin \
   rom2luigi
 
-# The actual executable names.
+# ------------------------------------------------------------------------- #
+# Define the actual tool executable names.
+# ------------------------------------------------------------------------- #
 JZINTV_APPS = $(addsuffix $(EXE_SUFFIX), $(JZINTV_UTILITIES))
 
-# IF SKIP_BUILD == 1, do nothing.
+# ------------------------------------------------------------------------- #
+# If SKIP_BUILD == 1, do nothing. Otherwise, carry on!
+# ------------------------------------------------------------------------- #
 ifneq (1,$(SKIP_BUILD))
 
-# If custom.mak defines an additional environment PATH data, prepend it to existing.
-ifneq (,$(ADD_ENVIRONMENT_PATH))
-  export PATH := $(ADD_ENVIRONMENT_PATH):$(PATH)
-endif
-
+# ------------------------------------------------------------------------- #
+# Rule: all
+# ------------------------------------------------------------------------- #
 # BUILD ALL THE THINGS!
+# ------------------------------------------------------------------------- #
 all: $(addprefix $(TOOL_OUTPUT_DIR)/, $(JZINTV_APPS))
 
-# This function defines a rule for a jzIntv utility to be included in the tools directory.
+# ------------------------------------------------------------------------- #
+# Function: CreateToolPrerequisiteRule
+# ------------------------------------------------------------------------- #
+# This function defines a rule for a jzIntv utility to be copied to the
+# INTV.jzIntv/tools directory. It requires the following arguments:
+#   $(1) : the tool whose copy-to-INTV.jzIntv rule is to be declared
+# ------------------------------------------------------------------------- #
 define CreateToolPrerequisiteRule
 $(addprefix $(TOOL_OUTPUT_DIR)/,$(1)): $(addprefix $(TOOL_INPUT_DIR)/,$(1))
 	@echo Updating $(1)...
@@ -102,11 +80,21 @@ $(addprefix $(TOOL_OUTPUT_DIR)/,$(1)): $(addprefix $(TOOL_INPUT_DIR)/,$(1))
 
 endef
 
-# Declare the targets for the utilities to put into the appropriate tools directory.
+# ------------------------------------------------------------------------- #
+# Declare the targets for the jzIntv utilities to be built and put into the
+# appropriate tools directory.
+# ------------------------------------------------------------------------- #
 $(foreach tool,$(JZINTV_APPS),$(eval $(call CreateToolPrerequisiteRule,$(tool))))
 
-# This function defines a rule for a specific jzIntv build target that is the
-# prerequisite for the utility to place in the appropriate INTV.jzIntv tools directory.
+# ------------------------------------------------------------------------- #
+# Function: CreateBuildToolRule
+# ------------------------------------------------------------------------- #
+# This function defines a rule for a specific jzIntv build target that acts
+# as the prerequisite for the utility to copy into the appropriate
+# INTV.jzIntv tools directory. If SYNC_JZINTV is defined, the jzIntv source
+# is synchronized first. This function requires the following arguments:
+#   $(1) : the jzIntv tool to be built
+# ------------------------------------------------------------------------- #
 define CreateBuildToolRule
 $(addprefix $(TOOL_INPUT_DIR)/,$(1)) : $(addprefix $(JZINTV_DIR)/src/,$(TARGET_MAKEFILE))
 ifneq (,$(SYNC_JZINTV))
@@ -120,23 +108,41 @@ endif
 
 endef
 
-# Declare the targets in the jzIntv build.
+# ------------------------------------------------------------------------- #
+# Declare the targets to be built by the jzIntv build.
+# ------------------------------------------------------------------------- #
 $(foreach tool,$(JZINTV_APPS),$(eval $(call CreateBuildToolRule,$(tool))))
 
+# ------------------------------------------------------------------------- #
+# Rule: clean
+# ------------------------------------------------------------------------- #
 # Clean the output of the jzIntv build. NUKE THE MOON!
+# ------------------------------------------------------------------------- #
 clean:
 	@echo Cleaning jzIntv...
 	make -C $(JZINTV_DIR)/src -f $(TARGET_MAKEFILE) clean
 	@echo
 
 else
-
+# ------------------------------------------------------------------------- #
+# Rule: all
+# ------------------------------------------------------------------------- #
 # No-op the build.
+# ------------------------------------------------------------------------- #
 all:
 	@echo build_tools.mak: Skipped jzIntv Tools build.
 
+# ------------------------------------------------------------------------- #
+# Rule: clean:
+# ------------------------------------------------------------------------- #
 # No-op the clean.
+# ------------------------------------------------------------------------- #
 clean:
 	@echo build_tools.mak: Skipped jzIntv Tools clean.
 
 endif
+
+# ------------------------------------------------------------------------- #
+# Get the rule to generate custom_jzIntv.mak if needed.
+# ------------------------------------------------------------------------- #
+include $(ROOT_DIR)/custom_jzIntv_mak_rule.mak

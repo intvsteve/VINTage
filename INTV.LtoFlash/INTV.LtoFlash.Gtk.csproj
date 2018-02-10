@@ -489,6 +489,9 @@
     <Compile Include="gtk-gui\INTV.LtoFlash.View.PromptToAddMenuItemsForNewRoms.cs" />
     <Compile Include="gtk-gui\INTV.LtoFlash.View.PromptToInstallFtdiDriverDialog.cs" />
     <Compile Include="gtk-gui\INTV.LtoFlash.View.SettingsPage.cs" />
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

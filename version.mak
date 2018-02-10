@@ -86,7 +86,7 @@ VERSION_CS_CLASS_NAMESPACE ?= INTV
 VERSION_CS_CLASS_OUTPUT_DIR ?= .
 
 # ------------------------------------------------------------------------- #
-# This file may set or initialise the value of the following variables, if
+# This file may set or initialize the value of the following variables, if
 # SVN_REPO is set in custom.mak or elsewhere, and is a valid SVN repository:
 #
 #   ALLOW_LOCAL_CHANGES : if 0, fails the build if local file changes exist
@@ -172,8 +172,23 @@ endef
       # Dirty little trick to get a space in the text.
       # ------------------------------------------------------------------- #
       SVN_MODS = 
-      SVN_MODS += ($(SVN_DIRTY) modified files)
+      ifeq ($(SVN_DIRTY),1)
+        SVN_FILE_WORD = file
+      else
+        SVN_FILE_WORD = files
+      endif
+      SVN_MODS += ($(SVN_DIRTY) modified $(SVN_FILE_WORD))
     endif
+  endif
+endif
+
+
+# ------------------------------------------------------------------------- #
+# If no repos are defined, try getting prior version from .finished file.
+# ------------------------------------------------------------------------- #
+ifeq ($(SVN_REPO)$(GIT_REPO),)
+  ifneq ($(wildcard $(ROOT_DIR)/.$(VERSION_CS_CLASS_NAMESPACE)_$(VERSION_CS_CLASS_NAME).finished),)
+    SVN_REVISION = $(firstword $(shell cat $(ROOT_DIR)/.$(VERSION_CS_CLASS_NAMESPACE)_$(VERSION_CS_CLASS_NAME).finished 2>&1))
   endif
 endif
 

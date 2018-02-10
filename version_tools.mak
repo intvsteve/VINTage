@@ -117,7 +117,7 @@ VERSION_CS_UPDATE_STATUS_FILE = $(VERSION_CS_CLASS_OUTPUT_DIR)/.$(VERSION_CS_CLA
 # (presumed to be SVN revision) with the number of dirty files and custom
 # version text. This is used to determine if an update is necessary.
 # ------------------------------------------------------------------------- #
-CURR_SVN_REVISION = $(VERSION_REVISION)$(SVN_DIRTY)$(CUSTOM_BUILD)
+CURR_SVN_REVISION = $(VERSION_REVISION) $(SVN_DIRTY) $(CUSTOM_BUILD)
 
 # ------------------------------------------------------------------------- #
 # PREV_SVN_REVISION is the contents of the VERSION_CS_UPDATE_STATUS_FILE.

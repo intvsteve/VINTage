@@ -543,7 +543,7 @@ namespace INTV.LtoFlash.Model
             if (fork.GlobalForkNumber != GlobalForkTable.InvalidForkNumber)
             {
                 var rootFile = fork.FileSystem.Files[GlobalFileTable.RootDirectoryFileNumber];
-                ignore = (rootFile.Manual != null) && ((rootFile.Manual.GlobalForkNumber == fork.GlobalForkNumber) || (rootFile.JlpFlash.GlobalForkNumber == fork.GlobalForkNumber));
+                ignore = ((rootFile.Manual != null) && (rootFile.Manual.GlobalForkNumber == fork.GlobalForkNumber)) || ((rootFile.JlpFlash != null) && (rootFile.JlpFlash.GlobalForkNumber == fork.GlobalForkNumber));
             }
             return ignore;
         }

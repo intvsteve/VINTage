@@ -1,0 +1,129 @@
+#############################################################################
+# Machine-Specific Configuration: jzIntv and SDK-1600-related Builds        #
+# ------------------------------------------------------------------------- #
+# You can define the make variables documented below to automate jzIntv-    #
+# related build activities.                                                 #
+#                                                                           #
+#############################################################################
+
+# ------------------------------------------------------------------------- #
+# This file includes common.mak, which provides some core features such
+# as operating system identification.
+# ------------------------------------------------------------------------- #
+
+# ------------------------------------------------------------------------- #
+# ROOT_DIR needs to be defined appropriately if this file is included by
+# another makefile that is in a subdirectory. This file is shared among
+# multiple projects that build different parts of jzIntv / SDK-1600.
+# ------------------------------------------------------------------------- #
+ROOT_DIR ?= .
+
+# ========================================================================= #
+# SDK-1600 and jzIntv - The Portable Intellivision Emulator Builds          #
+# ========================================================================= #
+# The INTV.jzIntv component requires the following utilities:
+#   bin2luigi
+#   bin2rom
+#   intvname
+#   luigi2bin
+#   rom_merge
+#   rom2bin
+#   rom2luigi
+#
+# Local builds of these tools from the jzIntv source can be accomplished
+# in the C# project builds in Xamarin Studio / Visual Studio if properly
+# configured. These are enabled by defining the appropriate JZINTV_DIR_*
+# variable in this file.
+#
+# It may be necessary to make other changes in order for your jzIntv build
+# to succeed. A prerequisite is that you must be able to build jzIntv on
+# your computer already.
+# ------------------------------------------------------------------------- #
+# Supported Operating Systems
+# ------------------------------------------------------------------------- #
+# The following operating systems are supported and have been tested:
+#
+#   Operating System     | Makefile TARGET_OS value
+#   -----------------------------------------------
+#   Windows xp and later | WIN
+#   macOS 10.7 or later  | MAC
+#   Linux*               | LINUX
+#
+#   * To this point, only Ubuntu 10.04.2 LTS is tested.
+#
+# ------------------------------------------------------------------------- #
+# REQUIRED VARIABLES                                                        #
+# ------------------------------------------------------------------------- #
+# Set this variable to the absolute path to the jzIntv source code.
+# The variable name must be of the form:
+#
+#   JZINTV_DIR_$(TARGET_OS)
+#
+# NOTE: Windows builds are supported in the MSYS environment, and the
+#       VINTage tools only support builds therein.
+# ------------------------------------------------------------------------- #
+JZINTV_DIR_MAC   = ~/Projects/jzIntv
+JZINTV_DIR_WIN   = ~/jzIntv
+JZINTV_DIR_LINUX = ~/projects/svnRepos/jzIntv
+JZINTV_DIR       = $(JZINTV_DIR_$(TARGET_OS))
+
+# ------------------------------------------------------------------------- #
+# Validate configuration for jzIntv.
+# ------------------------------------------------------------------------- #
+ifeq (,$(JZINTV_DIR))
+  ifneq (1,$(SKIP_IF_JZINTV_EMPTY))
+    $(error Set the JZINTV_DIR_$(TARGET_OS) variable to the directory containing the jzIntv src directory)
+  else
+    SKIP_BUILD = 1
+  endif
+endif
+
+# ------------------------------------------------------------------------- #
+# PATH Environment Changes
+# ------------------------------------------------------------------------- #
+# You may need to ensure proper version of gcc can be found by jzIntv build.
+# If you define this variable, the value will be PREPENDED to the PATH
+# environment variable during the build. The variable name must be
+# of the form:
+#
+#   ADD_ENVIRONMENT_PATH_$(TARGET_OS)
+#
+# NOTE: Windows builds are supported in the MSYS environment, and the
+#       VINTage tools only support builds therein.
+# ------------------------------------------------------------------------- #
+ADD_ENVIRONMENT_PATH_MAC   = /opt/local/bin
+ADD_ENVIRONMENT_PATH_WIN   = /mingw/bin
+ADD_ENVIRONMENT_PATH_LINUX =
+ADD_ENVIRONMENT_PATH       = $(ADD_ENVIRONMENT_PATH_$(TARGET_OS))
+
+# ----------------------------------------------------------------------- #
+# If an additional environment path is defined, prepend it to PATH.
+# ----------------------------------------------------------------------- #
+ifneq (,$(ADD_ENVIRONMENT_PATH))
+  export PATH := $(ADD_ENVIRONMENT_PATH):$(PATH)
+endif
+
+# ------------------------------------------------------------------------- #
+# Determine which makefile to use.
+# ------------------------------------------------------------------------- #
+TARGET_MAKEFILE_WIN   = Makefile.stdout
+TARGET_MAKEFILE_MAC   = Makefile.osx_framework
+TARGET_MAKEFILE_LINUX = Makefile.linux
+TARGET_MAKEFILE       = $(TARGET_MAKEFILE_$(TARGET_OS))
+
+# ------------------------------------------------------------------------- #
+# Verify that TARGET_MAKEFILE has been assigned a value.
+# ------------------------------------------------------------------------- #
+ifeq (,$(TARGET_MAKEFILE))
+  $(error Unable to determine target makefile! Please specify TARGET_MAKEFILE variable)
+endif
+
+# ------------------------------------------------------------------------- #
+# Syncing the jzIntv Sources
+# ------------------------------------------------------------------------- #
+# If you have set up access to a source control system for the jzIntv code
+# (either for your own private purposes, some public location, or otherwise)
+# you can define the 'sync' command to get the most recent sources prior to
+# building the jzIntv components.
+# ------------------------------------------------------------------------- #
+SYNC_JZINTV = svn update $(JZINTV_DIR)

@@ -9,6 +9,9 @@ rem # INTV.jzIntvUI project's build output directory if it exists.          #
 rem #                                                                       #
 rem #########################################################################
 
+@echo Cleaning jzIntv output at: %1jzIntv
 if exist %1jzIntv (
   rmdir /S /Q %1jzIntv
+) else (
+  @echo Nothing to be cleaned.
 )

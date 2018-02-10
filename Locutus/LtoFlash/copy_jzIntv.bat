@@ -11,9 +11,12 @@ rem # directory if the jzIntv.exe file exists.                              #
 rem #                                                                       #
 rem #########################################################################
 
+@echo Copying jzIntv to: %2jzIntv
 if exist %1..\..\INTV.jzIntvUI\jzIntv\Win\bin\jzIntv.exe (
   mkdir %2jzIntv\Win
   xcopy /E /Y %1..\..\INTV.jzIntvUI\jzIntv\Win %2jzIntv\Win
   del %2jzIntv\Win\bin\.readme.txt
   del %2jzIntv\Win\doc\.readme.txt
+) else (
+  @echo Nothing to be copied.
 )

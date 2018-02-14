@@ -81,6 +81,9 @@
     <None Include="build_tools.mak" />
     <None Include="license.txt" />
     <None Include="README.txt" />
+    <Content Include="..\custom_jzIntv.mak">
+      <Link>custom_jzIntv.mak</Link>
+    </Content>
     <Content Include="tools\bin2luigi.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

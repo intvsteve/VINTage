@@ -123,6 +123,9 @@
     <Compile Include="Model\JzIntvLauncherConfiguration.Mac.cs" />
     <Compile Include="Properties\Settings.cs" />
     <Compile Include="Properties\Settings.Mono.cs" />
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Strings.resx">
@@ -202,12 +205,14 @@
     <None Include="jzIntv\Mac\bin\SDL-1.2.15.dmg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\custom_jzIntv.mak">
+      <Link>custom_jzIntv.mak</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="license.txt" />
     <None Include="README.txt" />
     <None Include="build_jzIntv.mak" />
-    <None Include="custom.mak" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="jzIntv\Getting_Started.html" />

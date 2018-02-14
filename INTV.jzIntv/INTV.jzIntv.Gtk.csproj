@@ -11,14 +11,19 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\Linux</OutputPath>
     <IntermediateOutputPath>obj\Debug\Linux\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
+        <Command type="AfterClean" command="make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -28,6 +33,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
+        <Command type="AfterClean" command="make -f build_tools.mak clean SKIP_IF_JZINTV_EMPTY=1" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -36,7 +47,6 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="build_tools.mak" />
-    <None Include="custom.mak" />
     <None Include="license.txt" />
     <None Include="README.txt" />
     <None Include="tools\Linux\bin2luigi">
@@ -67,6 +77,9 @@
       <Link>tools\luigi2bin</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\custom_jzIntv.mak">
+      <Link>custom_jzIntv.mak</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -85,6 +98,9 @@
     <Compile Include="Model\ProgramFileHelpers.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -43,8 +43,23 @@ Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "Installer.xp", "Installer.x
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{65C69DDD-19C0-4912-9001-8847DA2CE687}"
 	ProjectSection(SolutionItems) = preProject
+		..\cleanup.mak = ..\cleanup.mak
+		..\cleanup_bash.bat = ..\cleanup_bash.bat
+		..\common.mak = ..\common.mak
+		..\custom.bat = ..\custom.bat
+		..\custom.mak = ..\custom.mak
+		..\custom.mak.template = ..\custom.mak.template
+		..\custom_bat_rule.bat = ..\custom_bat_rule.bat
+		..\custom_jzIntv.mak = ..\custom_jzIntv.mak
+		..\custom_jzIntv.mak.template = ..\custom_jzIntv.mak.template
+		..\custom_jzIntv_mak_rule.mak = ..\custom_jzIntv_mak_rule.mak
+		..\custom_mak_rule.mak = ..\custom_mak_rule.mak
 		license.txt = license.txt
 		README.txt = README.txt
+		..\setup_bash.bat = ..\setup_bash.bat
+		..\version.mak = ..\version.mak
+		..\version_tools.bat = ..\version_tools.bat
+		..\version_tools.mak = ..\version_tools.mak
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Installer.zip", "Installer\Installer.vcxproj", "{DAC23716-56DA-47F4-9045-A89460771098}"
@@ -53,6 +68,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Installer.zip", "Installer\
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Installer.source", "Installer.source\Installer.source.vcxproj", "{0F510E3D-C967-4D8D-B58C-09DD0654764B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DAC23716-56DA-47F4-9045-A89460771098} = {DAC23716-56DA-47F4-9045-A89460771098}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.xp", "..\INTV.jzIntvUI\INTV.jzIntvUI.xp.csproj", "{E3A74F20-E27F-42BF-9ED7-48B033B878FE}"
 EndProject

@@ -31,6 +31,11 @@
     <UseRefCounting>false</UseRefCounting>
     <HttpClientHandler>HttpClientHandler</HttpClientHandler>
     <TlsProvider>Default</TlsProvider>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="make -f version_tools.mak update_version_cs ALLOW_LOCAL_CHANGES=1" workingdir="${ProjectDir}/.." />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -48,6 +53,11 @@
     <UseRefCounting>false</UseRefCounting>
     <HttpClientHandler>HttpClientHandler</HttpClientHandler>
     <TlsProvider>Default</TlsProvider>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="make -f version_tools.mak update_version_cs ALLOW_LOCAL_CHANGES=1" workingdir="${ProjectDir}/.." />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -192,6 +202,9 @@
     <Compile Include="Model\CfgVarMetadataDate.cs" />
     <Compile Include="Model\CfgVarMetadataInteger.cs" />
     <Compile Include="Model\CfgVarMetadataBoolean.cs" />
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

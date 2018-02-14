@@ -1,0 +1,117 @@
+#############################################################################
+# Machine-Specific Configuration: VINTage and LtoFlash-related Builds       #
+# ------------------------------------------------------------------------- #
+# You can define the make variables documented below to automate version-   #
+# update-related build activities. In most cases, defaults are provided.    #
+#                                                                           #
+#############################################################################
+
+# ========================================================================= #
+# PROJECT SOURCE                                                            #
+# ========================================================================= #
+# VINTage source code is stored in multiple source repositories. The
+# publicly available source, used to build the shipping product, is on
+# Github at:
+#   https://github.com/intvsteve/VINTage
+#
+# A private SVN repository also exists, and acts as the "true" source for
+# determining the version number. (It's presently where all the crazy
+# experiments and not-ready-for-prime-time shenanigans happen.)
+#
+# These makefiles support one - or the other - but not both simultaneously.
+# ------------------------------------------------------------------------- #
+
+# ------------------------------------------------------------------------- #
+# SVN Repository                                                            #
+# ------------------------------------------------------------------------- #
+# By specifying a SVN target (repo) for the source being built, either
+# via the svn:// syntax or via an absolute path to the source, a version
+# number using the SVN revision number for the value of VERSION_REVISION
+# will be defined.
+# ------------------------------------------------------------------------- #
+SVN_REPO ?= 
+
+# ------------------------------------------------------------------------- #
+# Git Repository
+# ------------------------------------------------------------------------- #
+# By specifying a Git repo for the source being built, some features in the
+# version_tools.mak makefile may not be available.
+# ------------------------------------------------------------------------- #
+#GIT_REPO ?= https://github.com/intvsteve/VINTage/trunk
+
+# ------------------------------------------------------------------------- #
+# Remote Git repository
+# ------------------------------------------------------------------------- #
+# If the GIT_REPO value appears to be remote, set a variable indicating so.
+# ------------------------------------------------------------------------- #
+ifeq ($(findstring https://github.com/,$(GIT_REPO)),https://github.com/)
+  GIT_REPO_REMOTE ?= 1
+endif
+
+# ------------------------------------------------------------------------- #
+# Repository Validation
+# ------------------------------------------------------------------------- #
+# Only one source control repository at a time is supported. If you've
+# overlayed SVN and Git on top of each other, I'm not sure whether to bow
+# down in admiration or grimace in revulsion. :P
+# ------------------------------------------------------------------------- #
+ifneq ($(SVN_REPO),)
+  ifneq ($(GIT_REPO),)
+    $(error You have specified both SVN and Git repos. THERE CAN BE ONLY ONE)
+  endif
+endif
+
+
+# ========================================================================= #
+# PRODUCT VERSIONING                                                        #
+# ========================================================================= #
+# Version Number                                                            #
+# ------------------------------------------------------------------------- #
+# The version number consists of four parts: Major.Minor.Build.Revision.
+# This is modeled off the System.Version type used in .NET.
+# ------------------------------------------------------------------------- #
+# Major version number.
+# ------------------------------------------------------------------------- #
+VERSION_MAJOR ?= 1
+
+# ------------------------------------------------------------------------- #
+# Minor version number.
+# ------------------------------------------------------------------------- #
+VERSION_MINOR ?= 0
+
+# ------------------------------------------------------------------------- #
+# Version build number.
+# ------------------------------------------------------------------------- #
+VERSION_BUILD ?= 0
+
+# ------------------------------------------------------------------------- #
+# Revision number.
+# This may be defined using a SVN repo revision number by specifying
+# SVN_REPO using svn:// syntax or an absolute path to the repo. It may also
+# be overridden if GIT_REPO is set, and the revision number can be
+# extracted from a version class that is part of the project source. See
+# details in the version_tools.mak file.
+# ------------------------------------------------------------------------- #
+VERSION_REVISION ?= 0
+
+# ------------------------------------------------------------------------- #
+# Info.plist Path                                                           #
+# ------------------------------------------------------------------------- #
+# If set to a non-empty value, the value must be a path at which to generate
+# the Info.plist file to be used by the macOS X version of the program being
+# built. The version_tools.mak makefile's 'update_info_plist' rule will
+# regenerate the Info.plist file as needed. The path can be relative to
+# the root of the project, or absolute. A relative path is recommended.
+# ------------------------------------------------------------------------- #
+INFO_PLIST_PATH = ./Locutus/LtoFlash/Info.plist
+
+# ------------------------------------------------------------------------- #
+# Specify the base name for files such as the Mac installer DMG file and
+# the source .zip distribution.
+# ------------------------------------------------------------------------- #
+PRODUCT_NAME ?= LTOFlash
+
+# ------------------------------------------------------------------------- #
+# Specify the "friendly" name for the product.
+# ------------------------------------------------------------------------- #
+PRODUCT_NAME_FRIENDLY ?= LTO Flash!

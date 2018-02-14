@@ -37,6 +37,7 @@
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="make -f version_tools.mak update_info_plist ALLOW_LOCAL_CHANGES=1" workingdir="${ProjectDir}/../.." />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -61,6 +62,7 @@
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="make -f version_tools.mak update_info_plist ALLOW_LOCAL_CHANGES=1" workingdir="${ProjectDir}/../.." />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -118,6 +120,9 @@
     <Compile Include="Properties\Settings.Mono.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

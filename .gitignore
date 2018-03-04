@@ -147,20 +147,25 @@ ModelManifest.xml
 # Windows detritus
 # =========================
 
+# =========================
 # Windows image file caches
+# =========================
 Thumbs.db
 ehthumbs.db
 
+# =========================
 # Folder config file
+# =========================
 Desktop.ini
 
+# =========================
 # Recycle Bin used on file shares
+# =========================
 $RECYCLE.BIN/
 
 # =========================
 # Mac detritus
 # =========================
-
 # Mac desktop service store files
 .DS_Store
 /.project
@@ -169,7 +174,6 @@ $RECYCLE.BIN/
 # Mono/Xamarin detritus
 # =========================
 *.resources
-
 *.userprefs
 
 # =========================
@@ -198,3 +202,9 @@ $RECYCLE.BIN/
 # =========================
 /Locutus/Installer.desktop/*.zip
 /Locutus/Installer.xp/*.zip
+
+# =========================
+# Version Management
+# =========================
+.INTV_VersionInfo.finished
+.Info_plist_update.finished

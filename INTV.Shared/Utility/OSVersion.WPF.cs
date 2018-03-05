@@ -27,6 +27,17 @@ namespace INTV.Shared.Utility
     /// </summary>
     public partial class OSVersion
     {
+        /// <summary>
+        /// Gets the 'friendly' generic OS name.
+        /// </summary>
+        public static string Name
+        {
+            get
+            {
+                return "Windows";
+            }
+        }
+
         private Version Initialize()
         {
             var version = new Version(Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);

@@ -117,7 +117,7 @@ VERSION_CS_UPDATE_STATUS_FILE = $(VERSION_CS_CLASS_OUTPUT_DIR)/.$(VERSION_CS_CLA
 # (presumed to be SVN revision) with the number of dirty files and custom
 # version text. This is used to determine if an update is necessary.
 # ------------------------------------------------------------------------- #
-CURR_SVN_REVISION = $(VERSION_REVISION) $(SVN_DIRTY) $(CUSTOM_BUILD)
+CURR_SVN_REVISION = $(strip $(VERSION_REVISION) $(SVN_DIRTY) $(CUSTOM_BUILD))
 
 # ------------------------------------------------------------------------- #
 # PREV_SVN_REVISION is the contents of the VERSION_CS_UPDATE_STATUS_FILE.
@@ -127,7 +127,7 @@ CURR_SVN_REVISION = $(VERSION_REVISION) $(SVN_DIRTY) $(CUSTOM_BUILD)
 # number of modified files changes.
 # ------------------------------------------------------------------------- #
 ifneq ($(wildcard $(VERSION_CS_UPDATE_STATUS_FILE)),)
-  PREV_SVN_REVISION = $(shell cat $(VERSION_CS_UPDATE_STATUS_FILE) 2>&1)
+  PREV_SVN_REVISION = $(strip $(shell cat $(VERSION_CS_UPDATE_STATUS_FILE) 2>&1))
 endif
 ifeq ($(wildcard $(VERSION_CS_CLASS_OUTPUT_DIR)/$(VERSION_CS)),)
   PREV_SVN_REVISION = -undefined-
@@ -151,7 +151,7 @@ endif
 # ------------------------------------------------------------------------- #
 update_version_cs:
 ifneq ($(CURR_SVN_REVISION),$(PREV_SVN_REVISION))
-	@echo Generating '$(VERSION_CS_CLASS_OUTPUT_DIR)/$(VERSION_CS)'$(USING_GIT_NOTE) ...
+	@echo Generating for version [$(CURR_SVN_REVISION)]: $(VERSION_CS_CLASS_OUTPUT_DIR)/$(VERSION_CS) $(USING_GIT_NOTE) ...
 	@echo "$$VERSION_CS_CONTENT" > $(VERSION_CS_CLASS_OUTPUT_DIR)/$(VERSION_CS)
 	@echo $(CURR_SVN_REVISION) > $(VERSION_CS_UPDATE_STATUS_FILE)
 else

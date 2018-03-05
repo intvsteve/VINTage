@@ -378,6 +378,10 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
+    <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
+    <Compile Include="Interop\IOKit\IOConnect.cs" />
+    <Compile Include="Interop\IOKit\IOMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.VSMac.csproj">

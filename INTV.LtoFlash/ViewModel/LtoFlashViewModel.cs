@@ -1,5 +1,5 @@
 ﻿// <copyright file="LtoFlashViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -151,7 +151,7 @@ namespace INTV.LtoFlash.ViewModel
 #endif // ENABLE_DRIVER_NAG
 
             Properties.Settings.Default.PropertyChanged += HandlePreferenceChanged;
-            DeviceMonitor.Start();
+            DeviceMonitor.Start(() => _devices.ModelCollection);
             if ((SingleInstanceApplication.Instance != null) && INTV.LtoFlash.Properties.Settings.Default.SearchForDevicesAtStartup)
             {
                 var checkForDevices = new CheckForDevicesTaskData(INTV.LtoFlash.Properties.Settings.Default.LastActiveDevicePort, this);

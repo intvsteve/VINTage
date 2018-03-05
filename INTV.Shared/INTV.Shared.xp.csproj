@@ -127,6 +127,8 @@
     <Compile Include="Interop\DeviceManagement\DeviceChangeEvent.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceType.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceChange.cs" />
+    <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
+    <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
     <Compile Include="Interop\SetupDi\DeviceInformation.cs" />
     <Compile Include="Interop\SetupDi\DeviceInformation.xp.cs" />
     <Compile Include="Interop\SetupDi\NativeMethods.cs" />

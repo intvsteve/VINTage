@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceMonitor.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,6 +21,7 @@
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 
 using System;
+using System.Collections.Generic;
 
 namespace INTV.LtoFlash.Model
 {
@@ -42,11 +43,15 @@ namespace INTV.LtoFlash.Model
             Title = "VINTage Device Monitor";
         }
 
+        private static Func<IEnumerable<Device>> GetDevices { get; set; }
+
         /// <summary>
         /// Starts the device monitor window.
         /// </summary>
-        public static void Start()
+        /// <param name="getDevices">The delegate to use to get the list of Locutus devices.</param>
+        public static void Start(Func<IEnumerable<Device>> getDevices)
         {
+            GetDevices = getDevices;
             System.Windows.Application.Current.Exit += HandleApplicationExit;
             Microsoft.Win32.SystemEvents.PowerModeChanged += HandlePowerModeChanged;
             Microsoft.Win32.SystemEvents.SessionEnding += HandleSessionEnding;

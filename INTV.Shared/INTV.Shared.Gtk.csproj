@@ -310,6 +310,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
     <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
     <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
   </ItemGroup>

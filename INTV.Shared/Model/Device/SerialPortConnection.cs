@@ -1,5 +1,5 @@
 ﻿// <copyright file="SerialPortConnection.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 ////#define TRACK_PORT_LIFETIMES
+////#define ENABLE_DIAGNOSTIC_OUTPUT
 
 using System;
 using System.Collections.Concurrent;
@@ -92,6 +93,10 @@ namespace INTV.Shared.Model.Device
         private static readonly ConcurrentDictionary<string, WeakReference> _createdPorts = new ConcurrentDictionary<string, WeakReference>();
 #endif // TRACK_PORT_LIFETIMES
 
+        private static string[] _availablePorts;
+        private static bool installedCommand;
+        private readonly object _lock = new object();
+
         #region Constructors
 
         /// <summary>
@@ -106,7 +111,7 @@ namespace INTV.Shared.Model.Device
             InstallCommand();
             UpdateTracker("CREATING", portName);
             WeakReference portInstance = null;
-            System.Diagnostics.Debug.WriteLineIf(_createdPorts.TryGetValue(portName, out portInstance), "WTH? Port " + portName + " is already here?!");
+            DebugOutputIf(_createdPorts.TryGetValue(portName, out portInstance), "WTH? Port " + portName + " is already here?!");
             _createdPorts[portName] = new WeakReference(this);
             UpdateTracker("CREATED", portName);
 #endif // TRACK_PORT_LIFETIMES
@@ -136,7 +141,6 @@ namespace INTV.Shared.Model.Device
                 return _availablePorts;
             }
         }
-        private static string[] _availablePorts;
 
         /// <summary>
         /// Gets the ports in use.
@@ -164,6 +168,13 @@ namespace INTV.Shared.Model.Device
         {
             get { return IsValid && Port.IsOpen; }
         }
+
+        /// <inheritdoc />
+        public bool IsInUse
+        {
+            get { return _inUse > 0; }
+        }
+        private int _inUse;
 
         /// <inheritdoc />
         public System.IO.Stream ReadStream
@@ -272,6 +283,8 @@ namespace INTV.Shared.Model.Device
         /// </summary>
         private INTV.Shared.Utility.Logger Logger { get; set; }
 
+        private Action ExitInUseAction { get; set; }
+
         #endregion // Properties
 
         /// <summary>
@@ -345,6 +358,12 @@ namespace INTV.Shared.Model.Device
             {
                 WriteTimeout = (int)configValue;
             }
+        }
+
+        /// <inheritdoc />
+        public IDisposable SetInUse(Action inUseEnded)
+        {
+            return EnterInUse(inUseEnded);
         }
 
         /// <inheritdoc />
@@ -429,7 +448,7 @@ namespace INTV.Shared.Model.Device
             if (_createdPorts != null)
             {
                 UpdateWeakDictionary(_createdPorts);
-                System.Diagnostics.Debug.WriteLine("***** " + action + " SERIALPORTCONNECTION: " + portName + ", LiveObjects: " + _createdPorts.Count);
+                DebugOutput("***** " + action + " SERIALPORTCONNECTION: " + portName + ", LiveObjects: " + _createdPorts.Count);
             }
 #endif // TRACK_PORT_LIFETIMES
         }
@@ -483,12 +502,88 @@ namespace INTV.Shared.Model.Device
                     }));
             }
         }
-        private static bool installedCommand;
+
+        [System.Diagnostics.Conditional("TRACK_PORT_LIFETIMES")]
+        [System.Diagnostics.Conditional("ENABLE_DIAGNOSTIC_OUTPUT")]
+        private static void DebugOutput(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        [System.Diagnostics.Conditional("TRACK_PORT_LIFETIMES")]
+        [System.Diagnostics.Conditional("ENABLE_DIAGNOSTIC_OUTPUT")]
+        private static void DebugOutputIf(bool condition, object message)
+        {
+            System.Diagnostics.Debug.WriteLineIf(condition, message);
+        }
 
         /// <summary>
         /// Platform-specific setup for port lifetime tracking.
         /// </summary>
         [System.Diagnostics.Conditional("TRACK_PORT_LIFETIMES")]
         static partial void PlatformInstallCommand();
+
+        private IDisposable EnterInUse(Action inUseEnded)
+        {
+            lock (_lock)
+            {
+                if (ExitInUseAction == null)
+                {
+                    ExitInUseAction = inUseEnded;
+                }
+                else
+                {
+                    if (!ExitInUseAction.GetInvocationList().Contains(inUseEnded))
+                    {
+                        ExitInUseAction += inUseEnded;
+                    }
+                }
+                var inUse = System.Threading.Interlocked.Increment(ref _inUse);
+                DebugOutput("Port: " + ((IStreamConnection)this).Name + " entered InUse: level: " + inUse);
+                return new PortInUse(this);
+            }
+        }
+
+        private void ExitInUse()
+        {
+            lock (_lock)
+            {
+                var inUse = System.Threading.Interlocked.Decrement(ref _inUse);
+                DebugOutput("Port: " + ((IStreamConnection)this).Name + " exited InUse: level: " + inUse);
+                if (inUse == 0)
+                {
+                    if (ExitInUseAction != null)
+                    {
+                        ExitInUseAction();
+                    }
+                    ExitInUseAction = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Implements a disposable that is used to indicate a serial port is being actively
+        /// used for some sort of activity. These may be nested.
+        /// </summary>
+        private class PortInUse : IDisposable
+        {
+            private SerialPortConnection _port;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="INTV.Shared.Model.Device.SerialPortConnection+PortInUse"/> class.
+            /// </summary>
+            /// <param name="port">The serial port being marked for use.</param>
+            public PortInUse(SerialPortConnection port)
+            {
+                _port = port;
+            }
+
+            /// <inheritdoc/>
+            public void Dispose()
+            {
+                _port.ExitInUse();
+                _port = null;
+            }
+        }
     }
 }

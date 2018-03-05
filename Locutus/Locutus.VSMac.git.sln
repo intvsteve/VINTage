@@ -1,25 +1,37 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LtoFlash.VSMac", "LtoFlash\LtoFlash.VSMac.csproj", "{BFDAE622-36B2-453D-92C8-C996BAA9E848}"
+Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "INTV.Version.Mono", "..\INTV.Version\INTV.Version.Mono.mdproj", "{FABCE177-FBC7-49ED-880C-CDD3757F28FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Core.VSMac", "..\INTV.Core\INTV.Core.VSMac.csproj", "{FB5C25FD-A481-48E9-A721-24DAE07DF67A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.VSMac", "..\INTV.LtoFlash\INTV.LtoFlash.VSMac.csproj", "{C22BB800-6112-49A6-A81B-882F6355ABE7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntv.VSMac", "..\INTV.jzIntv\INTV.jzIntv.VSMac.csproj", "{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Shared.VSMac", "..\INTV.Shared\INTV.Shared.VSMac.csproj", "{245FD6EE-0B2E-4119-9211-4AA77511E23B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Intellicart.VSMac", "..\INTV.Intellicart\INTV.Intellicart.VSMac.csproj", "{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntv.VSMac", "..\INTV.jzIntv\INTV.jzIntv.VSMac.csproj", "{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.VSMac", "..\INTV.jzIntvUI\INTV.jzIntvUI.VSMac.csproj", "{A42922D4-8D80-41F0-BCAF-1416A5598D3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.VSMac", "..\INTV.LtoFlash\INTV.LtoFlash.VSMac.csproj", "{C22BB800-6112-49A6-A81B-882F6355ABE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LtoFlash.VSMac", "LtoFlash\LtoFlash.VSMac.csproj", "{BFDAE622-36B2-453D-92C8-C996BAA9E848}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6C3241D2-8326-466C-9D47-59F6FF54D1EF}"
 	ProjectSection(SolutionItems) = preProject
 		license.txt = license.txt
 		README.txt = README.txt
+		..\cleanup.mak = ..\cleanup.mak
+		..\common.mak = ..\common.mak
+		..\custom.mak = ..\custom.mak
+		..\version_tools.mak = ..\version_tools.mak
+		..\version.mak = ..\version.mak
+		..\custom_jzIntv.mak = ..\custom_jzIntv.mak
+		..\custom_jzIntv_mak_rule.mak = ..\custom_jzIntv_mak_rule.mak
+		..\custom_mak_rule.mak = ..\custom_mak_rule.mak
+		..\custom_jzIntv.mak.template = ..\custom_jzIntv.mak.template
+		..\custom.mak.template = ..\custom.mak.template
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.VSMac", "..\INTV.jzIntvUI\INTV.jzIntvUI.VSMac.csproj", "{A42922D4-8D80-41F0-BCAF-1416A5598D3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +40,7 @@ Global
 		AppStore|x86 = AppStore|x86
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Default|Any CPU = Default|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.AppStore|x86.ActiveCfg = Release|Any CPU
@@ -40,6 +53,8 @@ Global
 		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Default|Any CPU.Build.0 = Debug|Any CPU
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.AppStore|x86.ActiveCfg = Release|Any CPU
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.AppStore|x86.Build.0 = Release|Any CPU
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -50,6 +65,8 @@ Global
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Default|Any CPU.Build.0 = Debug|Any CPU
 		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.AppStore|x86.ActiveCfg = AppStore|x86
 		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.AppStore|x86.Build.0 = AppStore|x86
 		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.Debug|x86.ActiveCfg = Debug|x86
@@ -60,6 +77,8 @@ Global
 		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.Default|Any CPU.ActiveCfg = Debug|x86
+		{BFDAE622-36B2-453D-92C8-C996BAA9E848}.Default|Any CPU.Build.0 = Debug|x86
 		{C22BB800-6112-49A6-A81B-882F6355ABE7}.AppStore|x86.ActiveCfg = Release|Any CPU
 		{C22BB800-6112-49A6-A81B-882F6355ABE7}.AppStore|x86.Build.0 = Release|Any CPU
 		{C22BB800-6112-49A6-A81B-882F6355ABE7}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -70,6 +89,8 @@ Global
 		{C22BB800-6112-49A6-A81B-882F6355ABE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C22BB800-6112-49A6-A81B-882F6355ABE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C22BB800-6112-49A6-A81B-882F6355ABE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C22BB800-6112-49A6-A81B-882F6355ABE7}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{C22BB800-6112-49A6-A81B-882F6355ABE7}.Default|Any CPU.Build.0 = Debug|Any CPU
 		{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}.AppStore|x86.ActiveCfg = AppStore|Any CPU
 		{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}.AppStore|x86.Build.0 = AppStore|Any CPU
 		{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -80,6 +101,8 @@ Global
 		{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8818E02-AEEF-4973-BA87-ACA0B37EEBC1}.Default|Any CPU.Build.0 = Debug|Any CPU
 		{FB5C25FD-A481-48E9-A721-24DAE07DF67A}.AppStore|x86.ActiveCfg = Release|Any CPU
 		{FB5C25FD-A481-48E9-A721-24DAE07DF67A}.AppStore|x86.Build.0 = Release|Any CPU
 		{FB5C25FD-A481-48E9-A721-24DAE07DF67A}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -90,6 +113,8 @@ Global
 		{FB5C25FD-A481-48E9-A721-24DAE07DF67A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB5C25FD-A481-48E9-A721-24DAE07DF67A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB5C25FD-A481-48E9-A721-24DAE07DF67A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB5C25FD-A481-48E9-A721-24DAE07DF67A}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB5C25FD-A481-48E9-A721-24DAE07DF67A}.Default|Any CPU.Build.0 = Debug|Any CPU
 		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Debug|x86.Build.0 = Debug|Any CPU
 		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Release|x86.ActiveCfg = Release|Any CPU
@@ -100,6 +125,20 @@ Global
 		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{A42922D4-8D80-41F0-BCAF-1416A5598D3E}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Debug|x86.ActiveCfg = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Debug|x86.Build.0 = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Release|x86.ActiveCfg = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Release|x86.Build.0 = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.AppStore|x86.ActiveCfg = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.AppStore|x86.Build.0 = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Debug|Any CPU.ActiveCfg = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Debug|Any CPU.Build.0 = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Release|Any CPU.ActiveCfg = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Release|Any CPU.Build.0 = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Default|Any CPU.ActiveCfg = Default|Any CPU
+		{FABCE177-FBC7-49ED-880C-CDD3757F28FC}.Default|Any CPU.Build.0 = Default|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
@@ -155,7 +194,7 @@ Global
 		$3.SpaceAfterMethodCallName = False
 		$3.SpaceBeforeOpenSquareBracket = False
 		$0.StandardHeader = $4
-		$4.Text = @<copyright file=".cs" company="INTV Funhouse">\nCopyright (c) 2014-2016 All Rights Reserved\n<author>Steven A. Orth</author>\n\nThis program is free software: you can redistribute it and/or modify it\nunder the terms of the GNU General Public License as published by the\nFree Software Foundation, either version 2 of the License, or (at your\noption) any later version.\n\nThis program is distributed in the hope that it will be useful, but\nWITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\nor FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\nfor more details.\n\nYou should have received a copy of the GNU General Public License along\nwith this software. If not, see: http://www.gnu.org/licenses/.\nor write to the Free Software Foundation, Inc.,\n51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA\n</copyright>\n
+		$4.Text = @<copyright file="${FileName}" company="INTV Funhouse">\nCopyright (c) ${Year} All Rights Reserved\n<author>Steven A. Orth</author>\n\nThis program is free software: you can redistribute it and/or modify it\nunder the terms of the GNU General Public License as published by the\nFree Software Foundation, either version 2 of the License, or (at your\noption) any later version.\n\nThis program is distributed in the hope that it will be useful, but\nWITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\nor FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\nfor more details.\n\nYou should have received a copy of the GNU General Public License along\nwith this software. If not, see: http://www.gnu.org/licenses/.\nor write to the Free Software Foundation, Inc.,\n51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA\n</copyright>
 		$4.IncludeInNewFiles = True
 	EndGlobalSection
 EndGlobal

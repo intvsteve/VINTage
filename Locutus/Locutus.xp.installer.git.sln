@@ -11,6 +11,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Shared.xp", "..\INTV.Shared\INTV.Shared.xp.csproj", "{C852CAA1-ABE8-45D7-8BC5-94B61B71617A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Ribbon.xp", "..\INTV.Ribbon\INTV.Ribbon.xp.csproj", "{5C833300-A573-4F08-92E7-B02C7E8AA41D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0D1617BA-2AC7-47EE-A71E-4EDFB0140EA7} = {0D1617BA-2AC7-47EE-A71E-4EDFB0140EA7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.xp", "..\INTV.LtoFlash\INTV.LtoFlash.xp.csproj", "{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}"
 EndProject

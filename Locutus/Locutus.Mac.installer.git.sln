@@ -17,6 +17,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		license.txt = license.txt
 		README.txt = README.txt
+		..\cleanup.mak = ..\cleanup.mak
+		..\common.mak = ..\common.mak
+		..\custom.mak = ..\custom.mak
+		..\version_tools.mak = ..\version_tools.mak
+		..\version.mak = ..\version.mak
+		..\custom_jzIntv.mak = ..\custom_jzIntv.mak
+		..\custom_jzIntv_mak_rule.mak = ..\custom_jzIntv_mak_rule.mak
+		..\custom_jzIntv.mak.template = ..\custom_jzIntv.mak.template
+		..\custom_mak_rule.mak = ..\custom_mak_rule.mak
+		..\custom.mak.template = ..\custom.mak.template
 	EndProjectSection
 EndProject
 Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "Installer.Mac", "Installer.Mac\Installer.Mac.mdproj", "{490969E6-63A6-451E-B666-5ED02C15FDFD}"
@@ -144,5 +154,8 @@ Global
 		$3.inheritsSet = Mono
 		$3.inheritsScope = text/x-csharp
 		$3.scope = text/x-csharp
+		$0.StandardHeader = $4
+		$4.Text = @<copyright file="${FileName}" company="INTV Funhouse">\nCopyright (c) ${Year} All Rights Reserved\n<author>Steven A. Orth</author>\n\nThis program is free software: you can redistribute it and/or modify it\nunder the terms of the GNU General Public License as published by the\nFree Software Foundation, either version 2 of the License, or (at your\noption) any later version.\n\nThis program is distributed in the hope that it will be useful, but\nWITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY\nor FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License\nfor more details.\n\nYou should have received a copy of the GNU General Public License along\nwith this software. If not, see: http://www.gnu.org/licenses/.\nor write to the Free Software Foundation, Inc.,\n51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA\n</copyright>
+		$4.IncludeInNewFiles = True
 	EndGlobalSection
 EndGlobal

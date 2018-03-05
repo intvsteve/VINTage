@@ -1,5 +1,5 @@
 // <copyright file="SettingsPageController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.LtoFlash.ViewModel;
+using INTV.Shared.Utility;
 using INTV.Shared.View;
 #if __UNIFIED__
 using AppKit;
@@ -106,10 +108,47 @@ namespace INTV.LtoFlash.View
 
         #endregion // IFakeDependencyObject
 
+        /// <summary>
+        /// Gets or sets the serial port read chunk size.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport("SelectedReadChunkSize")]
+        public NSNumber SelectedReadChunkSize
+        {
+            get
+            {
+                if (!_initializedReadChunkSizes)
+                {
+                    var selectedChunkSizeViewModel = ViewModel.SelectedReadChunkSizeViewModel;
+                    var selectedChunkSize = selectedChunkSizeViewModel.BlockSize;
+                    var selectionIndex = ViewModel.AvailableSerialPortReadBlockSizes.IndexOf(selectedChunkSizeViewModel);
+                    if (selectionIndex < SerialPortReadChunkSizesArrayController.ArrangedObjects().Length)
+                    {
+                        _selectedReadChunkSize = selectionIndex;
+                    }
+                }
+                return _selectedReadChunkSize;
+            }
+
+            set
+            {
+                _selectedReadChunkSize = value;
+                ViewModel.SelectedReadChunkSizeViewModel = ViewModel.AvailableSerialPortReadBlockSizes[_selectedReadChunkSize.Int32Value];
+            }
+        }
+        private NSNumber _selectedReadChunkSize;
+        private bool _initializedReadChunkSizes;
+
+        private SettingsPageViewModel ViewModel
+        {
+            get { return DataContext as SettingsPageViewModel; }
+        } 
+
         /// <inheritdoc />
         public override void AwakeFromNib()
         {
             View.Controller = this;
+            SerialPortReadChunkSizesArrayController.SynchronizeCollection(ViewModel.AvailableSerialPortReadBlockSizes);
+            _initializedReadChunkSizes = true;
         }
     }
 }

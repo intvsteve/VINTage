@@ -1,5 +1,5 @@
-﻿// <copyright file="SerialConnectionPolicy.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+﻿// <copyright file="SerialConnectionPolicy.Linux.cs" company="INTV Funhouse">
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,6 +23,9 @@ using INTV.Shared.Model.Device;
 
 namespace INTV.LtoFlash.Model
 {
+    /// <summary>
+    /// Linux-specific implementation.
+    /// </summary>
     public sealed partial class SerialConnectionPolicy
     {
         private static readonly string SanitizedVendorName = Device.UsbVendorName.Replace(' ', '_');

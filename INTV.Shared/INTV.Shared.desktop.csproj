@@ -147,6 +147,8 @@
     <Compile Include="Interop\DeviceManagement\DeviceChangeEvent.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceType.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceChange.cs" />
+    <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
+    <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
     <Compile Include="Interop\SetupDi\DeviceInformation.cs" />
     <Compile Include="Interop\SetupDi\DeviceInformation.WPF.cs" />
     <Compile Include="Interop\SetupDi\NativeMethods.cs" />
@@ -193,6 +195,9 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Utility\AsyncTaskData.cs" />
     <Compile Include="Utility\AsyncTaskWithProgress.cs" />
@@ -243,6 +248,7 @@
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
     <Compile Include="ViewModel\OSViewModelBase.WPF.cs" />
+    <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
     <Compile Include="View\IMainWindow.cs" />
     <Compile Include="View\OSMenuItem.cs" />
     <Compile Include="View\OSMenuItem.WPF.cs" />

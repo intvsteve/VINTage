@@ -64,6 +64,9 @@ namespace Locutus.View
         /// <summary>Shared initialization code.</summary>
         private void Initialize()
         {
+#if __UNIFIED__
+            NSWindow.AllowsAutomaticWindowTabbing = false;
+#endif // __UNIFIED__
             var viewModel = new Locutus.ViewModel.MainWindowViewModel();
             SingleInstanceApplication.Instance.DataContext = viewModel;
             DataContext = viewModel;
@@ -85,6 +88,14 @@ namespace Locutus.View
 
         #endregion // IFakeDependencyObject Properties
 
+#if __UNIFIED__
+        /// <inheritdoc />
+        public override NSWindowTabbingMode TabbingMode
+        {
+            get { return NSWindowTabbingMode.Disallowed; }
+            set { }
+        }
+#else
         /// <summary>
         /// Gets or sets the tabbing mode.
         /// </summary>
@@ -104,7 +115,7 @@ namespace Locutus.View
         /// </summary>
         /// <remarks>The tabbing mode was introduced in macOS Sierra (10.12) and is not desired. Since we're targeting 10.7 and later,
         /// the property is not part of Xamarin.Mac (as of this writing), so just directly implement it.</remarks>
-        public bool AllowsAutomaticWindowTabbing
+        public static bool AllowsAutomaticWindowTabbing
         {
             [Export("allowsAutomaticWindowTabbing")]
             get { return false; }
@@ -112,6 +123,7 @@ namespace Locutus.View
             [Export("setAllowsAutomaticWindowTabbing:")]
             set { }
         }
+#endif // __UNIFIED__
 
         /// <summary>
         /// Gets the view model for the main window.
@@ -165,6 +177,7 @@ namespace Locutus.View
             ////base.AwakeFromNib(); // There is no need to call the base class implementation -- it is a no-op. We only need this method to be present on the type.
         }
 
+#if !__UNIFIED__
         /// <summary>
         /// Beginning in macOS Sierra (10.12) all apps get this mode "for free". We're opting out.
         /// </summary>
@@ -175,12 +188,7 @@ namespace Locutus.View
         /// NSWindowTabbingModeDisallowed // The window explicitly should not prefer to tab when shown
         /// }  NS_ENUM_AVAILABLE_MAC(10_12);
         /// </remarks>
-#if __UNIFIED__
-        [ObjCRuntime.Native]
-        public enum NSWindowTabbingMode : long
-#else
         public enum NSWindowTabbingMode
-#endif // __UNIFIED__
         {
             /// <summary>The system automatically prefers to tab this window when appropriate.</summary>
             Automatic,
@@ -191,6 +199,7 @@ namespace Locutus.View
             /// <summary>The window explicitly should not prefer to tab when shown.</summary>
             Disallowed
         }
+#endif // !__UNIFIED__
 
         private void OSAddPrimaryComponentVisuals(IPrimaryComponent primaryComponent, IEnumerable<ComponentVisual> visuals)
         {

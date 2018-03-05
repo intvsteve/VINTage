@@ -270,6 +270,9 @@
     <Compile Include="View\NSTreeNodeHelpers.cs" />
     <Compile Include="Properties\Settings.Mono.cs" />
     <Compile Include="Properties\Settings.cs" />
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <ItemGroup>

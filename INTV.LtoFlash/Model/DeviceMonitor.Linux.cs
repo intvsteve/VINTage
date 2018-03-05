@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceMonitor.Linux.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,8 @@
 
 ////#define ENABLE_DEBUG_OUTPUT
 
+using System;
+using System.Collections.Generic;
 using INTV.Shared.Interop.DeviceManagement;
 using INTV.Shared.Utility;
 
@@ -33,16 +35,20 @@ namespace INTV.LtoFlash.Model
         {
         }
 
+        private static Func<IEnumerable<Device>> GetDevices { get; set; }
+
         /// <summary>
         /// Starts the device monitor. This includes observing power state changes in the system.
         /// </summary>
-        public static void Start()
+        /// <param name="getDevices">The delegate to use to get the list of Locutus devices.</param>
+        public static void Start(Func<IEnumerable<Device>> getDevices)
         {
             // TODO: Refactor the file system watcher approach to be in INTV.Shared ... coordinate
             // with changes to Mac. This is totally generic and should not be hidden here in the
             // LTO Flash! component. The FileSystemMonitor could likely also be reworked to be shared
             // between Mac and Linux, though the Mac's IOKit implementation is holding up nicely.
             DebugOutput("!!!!!DeviceMonitor.Start()");
+            GetDevices = getDevices;
             if (_serialPortNotifier == null)
             {
                 _serialPortNotifier = new FileSystemSerialPortNotifier();
@@ -64,7 +70,7 @@ namespace INTV.LtoFlash.Model
             }
         }
 
-        private static void HandleApplicationExit (object sender, ExitEventArgs e)
+        private static void HandleApplicationExit(object sender, ExitEventArgs e)
         {
             Stop();
         }
@@ -124,7 +130,7 @@ namespace INTV.LtoFlash.Model
                 // blocking fasion -- specifically:
                 // fd = open (fullPathNoLastSlash, O_EVTONLY, 0)
                 // Wonder if adding O_NONBLOCK would help?
-                //System.Environment.SetEnvironmentVariable ("MONO_MANAGED_WATCHER", "1");
+                ////System.Environment.SetEnvironmentVariable ("MONO_MANAGED_WATCHER", "1");
                 DevWatcher = new System.IO.FileSystemWatcher("/dev", "tty*");
                 DevWatcher.IncludeSubdirectories = false;
                 DevWatcher.Created += DevTtyCreated;
@@ -147,7 +153,7 @@ namespace INTV.LtoFlash.Model
                 DevWatcher = null;
             }
 
-            private void DevTtyCreated (object sender, System.IO.FileSystemEventArgs e)
+            private void DevTtyCreated(object sender, System.IO.FileSystemEventArgs e)
             {
                 if (e.ChangeType.HasFlag(System.IO.WatcherChangeTypes.Created))
                 {
@@ -156,7 +162,7 @@ namespace INTV.LtoFlash.Model
                 }
             }
 
-            private void DevTtyDeleted (object sender, System.IO.FileSystemEventArgs e)
+            private void DevTtyDeleted(object sender, System.IO.FileSystemEventArgs e)
             {
                 if (e.ChangeType.HasFlag(System.IO.WatcherChangeTypes.Deleted))
                 {

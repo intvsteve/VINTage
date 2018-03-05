@@ -1,5 +1,5 @@
 ﻿// <copyright file="Device.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -815,13 +815,15 @@ namespace INTV.LtoFlash.Model
         {
             var device = state as Device;
             var entered = false;
+            var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
             try
             {
-                if ((SingleInstanceApplication.Current != null) && (device != null) && !device.InTimer && (!device.IsCommandInProgress || (device.ConnectionState == ConnectionState.WaitForBeacon)) && device.IsValid && (device.Port != null) && device.Port.IsOpen)
+                device.Port.LogPortMessage("<<<< TIMER PROC: alive: " + System.Threading.Thread.CurrentThread.IsAlive + " bg: " + System.Threading.Thread.CurrentThread.IsBackground + " pool: " + System.Threading.Thread.CurrentThread.IsThreadPoolThread);
+                if ((SingleInstanceApplication.Current != null) && (device != null) && !device.InTimer && (!device.IsCommandInProgress || (device.ConnectionState == ConnectionState.WaitForBeacon)) && device.IsValid && (device.Port != null) && device.Port.IsOpen && !device.Port.IsInUse)
                 {
                     device.InTimer = true;
                     entered = true;
-                    device.Port.LogPortMessage("<<<< TIMER PROC ENTERED; device in state: " + device.ConnectionState);
+                    device.Port.LogPortMessage("<<<< TIMER PROC ENTERED; device in state: " + device.ConnectionState + " on thread: " + threadId);
                     int period = System.Threading.Timeout.Infinite;
                     device.DeviceStatusUpdatePeriod = System.Threading.Timeout.Infinite; // no more timer ticks until this one is done
 
@@ -845,19 +847,21 @@ namespace INTV.LtoFlash.Model
                                 command = Ping.Instance;
                             }
 #endif // ENABLE_PING_ONLY_OPTION
-
-                            newDeviceStatus = (DeviceStatusResponse)command.Execute(device.Port, null, out success);
-                            if (success && newDeviceStatus.HardwareStatus.HasFlag(HardwareStatusFlags.NewErrorLogAvailable) && device.CommandAvailability.IsCommandAvailable(ProtocolCommandId.DownloadErrorLog, newDeviceStatus.HardwareStatus))
+                            using (device.Port.SetInUse(ProtocolCommand.UpdatePortChunkSizeConfigurations))
                             {
-                                System.Diagnostics.Debug.WriteLine("NEW ERROR LOG AVAILABLE!");
-                            }
-                            if (success && newDeviceStatus.HardwareStatus.HasFlag(HardwareStatusFlags.NewCrashLogAvailable) && device.CommandAvailability.IsCommandAvailable(ProtocolCommandId.DownloadCrashLog, newDeviceStatus.HardwareStatus))
-                            {
-                                System.Diagnostics.Debug.WriteLine("NEW CRASH LOG AVAILABLE!");
-                            }
-                            if (success)
-                            {
-                                newDeviceFileSystemStatistics = device.PollFileSystemStatistics(newDeviceStatus.HardwareStatus, out success);
+                                newDeviceStatus = (DeviceStatusResponse)command.Execute(device.Port, null, out success);
+                                if (success && newDeviceStatus.HardwareStatus.HasFlag(HardwareStatusFlags.NewErrorLogAvailable) && device.CommandAvailability.IsCommandAvailable(ProtocolCommandId.DownloadErrorLog, newDeviceStatus.HardwareStatus))
+                                {
+                                    DebugOutput("NEW ERROR LOG AVAILABLE!");
+                                }
+                                if (success && newDeviceStatus.HardwareStatus.HasFlag(HardwareStatusFlags.NewCrashLogAvailable) && device.CommandAvailability.IsCommandAvailable(ProtocolCommandId.DownloadCrashLog, newDeviceStatus.HardwareStatus))
+                                {
+                                    DebugOutput("NEW CRASH LOG AVAILABLE!");
+                                }
+                                if (success)
+                                {
+                                    newDeviceFileSystemStatistics = device.PollFileSystemStatistics(newDeviceStatus.HardwareStatus, out success);
+                                }
                             }
                             if (!success)
                             {
@@ -866,31 +870,38 @@ namespace INTV.LtoFlash.Model
                             break;
                         case ConnectionState.WaitForBeacon:
                             period = DefaultBeaconPeriod;
-                            if (device.WaitForBeacon(1200))
+                            using (device.Port.SetInUse(ProtocolCommand.UpdatePortChunkSizeConfigurations))
                             {
-                                // This transition usually occurs when connected to a powered-on Intellivision and Locutus makes the
-                                // transition from running a program back to the menu, or is turned off. In the long reset to menu
-                                // scenario, we've reestablished communication with Locutus, and want to transition back to Ping/GC mode.
-                                // The UI will also need to refresh its command availability indicators. We directly collect new state
-                                // info here to generate hardware status update *and* state change. We don't change the connection state
-                                // via the property setter because we actually *want* the "lag" in raising the value changed event used
-                                // in the UI code. If we don't do this, commands will update based on stale hardware state.
-                                // This usually manifested in the UI as a grayed out "Play" button. In Windows, it would re-enable if you
-                                // switched away from LUI, then reactivated the window. On all platforms, it would re-enable when you
-                                // selected a different ROM in the ROM list.
+                                if (device.WaitForBeacon(1200))
+                                {
+                                    // This transition usually occurs when connected to a powered-on Intellivision and Locutus makes the
+                                    // transition from running a program back to the menu, or is turned off. In the long reset to menu
+                                    // scenario, we've reestablished communication with Locutus, and want to transition back to Ping/GC mode.
+                                    // The UI will also need to refresh its command availability indicators. We directly collect new state
+                                    // info here to generate hardware status update *and* state change. We don't change the connection state
+                                    // via the property setter because we actually *want* the "lag" in raising the value changed event used
+                                    // in the UI code. If we don't do this, commands will update based on stale hardware state.
+                                    // This usually manifested in the UI as a grayed out "Play" button. In Windows, it would re-enable if you
+                                    // switched away from LUI, then reactivated the window. On all platforms, it would re-enable when you
+                                    // selected a different ROM in the ROM list.
 
-                                // Similarly, if we go from game play directly to power off mode, if we don't do this, we'll see an odd
-                                // pulse in the command states in the UI. The "Play" button would re-enable because the connection state
-                                // change fired before the hardware update - and the hardware state paradoxically reported that the
-                                // power was still ON.
-                                newDeviceStatus = (DeviceStatusResponse)Ping.Instance.Execute(device.Port, null, out success);
-                                period = DefaultGarbageCollectionPeriod;
-                                raiseConnectionStateChange = true;
-                                device._connectionState = ConnectionState.GarbageCollect;
+                                    // Similarly, if we go from game play directly to power off mode, if we don't do this, we'll see an odd
+                                    // pulse in the command states in the UI. The "Play" button would re-enable because the connection state
+                                    // change fired before the hardware update - and the hardware state paradoxically reported that the
+                                    // power was still ON.
+                                    newDeviceStatus = (DeviceStatusResponse)Ping.Instance.Execute(device.Port, null, out success);
+                                    period = DefaultGarbageCollectionPeriod;
+                                    raiseConnectionStateChange = true;
+                                    device._connectionState = ConnectionState.GarbageCollect;
 #if false
-                                period = Properties.Settings.Default.RunGCWhenConnected ? DefaultGarbageCollectionPeriod : DefaultPingPeriod;
-                                device.ConnectionState = Properties.Settings.Default.RunGCWhenConnected ? ConnectionState.GarbageCollect : ConnectionState.Ping;
+                                    period = Properties.Settings.Default.RunGCWhenConnected ? DefaultGarbageCollectionPeriod : DefaultPingPeriod;
+                                    device.ConnectionState = Properties.Settings.Default.RunGCWhenConnected ? ConnectionState.GarbageCollect : ConnectionState.Ping;
 #endif // false
+                                }
+                                else
+                                {
+                                    device.Port.LogPortMessage(":::: TIMER PROC WaitForBeacon failed; HardwareStatus: " + device.HardwareStatus + " on thread: " + threadId);
+                                }
                             }
                             break;
                         case ConnectionState.Idle:
@@ -927,7 +938,7 @@ namespace INTV.LtoFlash.Model
                 }
                 else
                 {
-                    device.Port.LogPortMessage("<<<< TIMER PROC !!!NOT!!! ENTERED; device in state: " + device.ConnectionState + ">>>>");
+                    device.Port.LogPortMessage("<<<< TIMER PROC !!!NOT!!! ENTERED; device in state: " + device.ConnectionState + " on thread: " + threadId + ">>>>");
                 }
             }
             catch (InvalidOperationException)
@@ -963,7 +974,7 @@ namespace INTV.LtoFlash.Model
                 if (entered)
                 {
                     // LogPortMessage is a null-safe extension method.
-                    device.Port.LogPortMessage(">>>> TIMER PROC EXIT");
+                    device.Port.LogPortMessage(">>>> TIMER PROC EXIT" + " on thread: " + threadId);
                 }
             }
         }
@@ -1091,7 +1102,7 @@ namespace INTV.LtoFlash.Model
             finally
             {
                 stopwatch.Stop();
-                System.Diagnostics.Debug.WriteLine(">>FileSystem.CompareTo() took: + " + stopwatch.Elapsed.ToString());
+                DebugOutput(">>FileSystem.CompareTo() took: + " + stopwatch.Elapsed.ToString());
             }
 #endif // REPORT_PERFORMANCE
         }
@@ -1291,6 +1302,7 @@ namespace INTV.LtoFlash.Model
                 RaisePropertyChanged(HardwareStatusPropertyName);
                 if (powerStateChanged)
                 {
+                    Port.LogPortMessage(":::: Console power state: " + powerStateChanged);
                     RaisePropertyChanged(IsIntellivisionConnectedPropertyName);
                     if ((FirmwareRevisions == null) && CommandAvailability.IsCommandAvailable(ProtocolCommandId.FirmwareGetRevisions, newHardwareStatus))
                     {
@@ -1312,11 +1324,13 @@ namespace INTV.LtoFlash.Model
             {
                 try
                 {
+                    DebugOutput("Device.UpdateTimerPeriod to: " + newPeriod);
                     _statusUpdateTimer.Change(newPeriod, newPeriod);
                 }
                 catch (ObjectDisposedException)
                 {
                     // This can happen if we initiated a time period change from the timer proc, but before processing it, stopped the timer.
+                    DebugOutput("Device.UpdateTimerPeriod: ObjectDisposedException!");
                 }
             }
         }

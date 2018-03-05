@@ -166,7 +166,7 @@ namespace INTV.Shared.ViewModel
                 var subject = "LTO Flash UI Crash Report";
                 var message = new System.Text.StringBuilder(subject);
                 message.AppendLine().AppendLine("-----------------------------------------------");
-                message.AppendFormat("{0} (64-bit: {1})", Environment.OSVersion, Environment.Is64BitOperatingSystem).AppendLine();
+                message.AppendFormat("{0} {1} ({2}) (64-bit app: {3})", OSVersion.Name, OSVersion.Current, Environment.OSVersion, Environment.Is64BitOperatingSystem).AppendLine();
                 message.AppendFormat("CLR Version: {0}", Environment.Version).AppendLine();
                 var attachments = new List<string>(viewModel.Attachments.Distinct(PathComparer.Instance).Where(a => System.IO.File.Exists(a)));
 

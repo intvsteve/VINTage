@@ -1,5 +1,5 @@
 ﻿// <copyright file="IOKitObject.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -39,6 +39,14 @@ namespace INTV.Shared.Interop.IOKit
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Shared.Interop.IOKit.IOKitObject"/> class.
         /// </summary>
+        public IOKitObject()
+            : this(IntPtr.Zero)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INTV.Shared.Interop.IOKit.IOKitObject"/> class.
+        /// </summary>
         /// <param name="nativeObject">The native object.</param>
         protected IOKitObject(IntPtr nativeObject)
         {
@@ -67,13 +75,11 @@ namespace INTV.Shared.Interop.IOKit
         /// <summary>
         /// Gets the native object handle.
         /// </summary>
-        public IntPtr Handle
-        {
-            get;
-            private set;
-        }
+        public IntPtr Handle { get; private set; }
 
         #endregion
+
+        private Action<IOKitObject> CustomDisposeAction { get; set; }
 
         /// <summary>
         /// Creates an instance of an IOKit object.
@@ -83,8 +89,21 @@ namespace INTV.Shared.Interop.IOKit
         /// <returns>The IOKit object.</returns>
         public static T CreateIOKitObject<T>(IntPtr handle) where T : IOKitObject, new()
         {
+            return CreateIOKitObject<T>(handle, null);
+        }
+
+        /// <summary>
+        /// Create a specific type of IOKitObject.
+        /// </summary>
+        /// <typeparam name="T">The kind of IOKitObject to create.</typeparam>
+        /// <param name="handle">The native object handle for the IOKitObject.</param>
+        /// <param name="customDisposeAction">If not <c>null</c>, provides a custom Action to execute when the returned IOKitObject is disposed.</param>
+        /// <returns>A new instance of the specific type of IOKitObject.</returns>
+        public static T CreateIOKitObject<T>(IntPtr handle, Action<IOKitObject> customDisposeAction) where T : IOKitObject, new()
+        {
             var ioKitObject = new T();
             ioKitObject.Handle = handle;
+            ioKitObject.CustomDisposeAction = customDisposeAction;
             return ioKitObject;
         }
 
@@ -95,9 +114,7 @@ namespace INTV.Shared.Interop.IOKit
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
-#if ENABLE_DEBUG_OUTPUT
-            System.Diagnostics.Debug.WriteLine("**** IOKitObject.Dispose()");
-#endif // ENABLE_DEBUG_OUTPUT
+            DebugOutput("**** IOKitObject.Dispose()");
         }
 
         #endregion
@@ -115,23 +132,41 @@ namespace INTV.Shared.Interop.IOKit
         {
             if (!Disposed)
             {
-#if ENABLE_DEBUG_OUTPUT
-                System.Diagnostics.Debug.WriteLine("**** IOKitObject.Dispose(bool) for " + GetType() + " marking disposed, RetainCount: " + RetainCount);
-#endif // ENABLE_DEBUG_OUTPUT
+                DebugOutput("**** IOKitObject.Dispose(bool) for " + GetType() + " marking disposed, RetainCount: " + RetainCount);
                 Disposed = true;
                 if (Handle != IntPtr.Zero)
                 {
                     if (disposing)
                     {
                         var handle = Handle;
-                        Handle = IntPtr.Zero;
-                        NativeMethods.IOObjectRelease(handle);
-#if ENABLE_DEBUG_OUTPUT
-                        System.Diagnostics.Debug.WriteLine("**** IOKitObject.Dispose(bool) for " + GetType() + " called IOObjectRelease, RetainCount: " + NativeMethods.IOObjectGetUserRetainCount(handle));
-#endif // ENABLE_DEBUG_OUTPUT
+                        if (CustomDisposeAction != null)
+                        {
+                            CustomDisposeAction(this);
+                            ClearHandle();
+                        }
+                        else
+                        {
+                            ClearHandle();
+                            NativeMethods.IOObjectRelease(handle);
+                        }
+                        DebugOutput("**** IOKitObject.Dispose(bool) for " + GetType() + " called IOObjectRelease, RetainCount: " + NativeMethods.IOObjectGetUserRetainCount(handle));
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Resets the native IOKitObject handle to null.
+        /// </summary>
+        protected void ClearHandle()
+        {
+            Handle = IntPtr.Zero;
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DEBUG_OUTPUT")]
+        private static void DebugOutput(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
         }
     }
 }

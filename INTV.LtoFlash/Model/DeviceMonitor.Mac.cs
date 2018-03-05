@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceMonitor.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,18 +20,16 @@
 
 ////#define ENABLE_DIAGNOSTIC_OUTPUT
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using INTV.Shared.Interop.DeviceManagement;
 using INTV.Shared.Interop.IOKit;
 using INTV.Shared.Utility;
 #if __UNIFIED__
-using AppKit;
 using Foundation;
-using ObjCRuntime;
 #else
-using MonoMac.AppKit;
 using MonoMac.Foundation;
-using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
 
 namespace INTV.LtoFlash.Model
@@ -46,23 +44,23 @@ namespace INTV.LtoFlash.Model
         }
 
         private static INTV.Shared.Interop.IOKit.IOService IOService { get; set; }
-        private static NSObject WillPowerOffObserver { get; set; }
-        private static NSObject WillSleepObserver { get; set; }
-        private static NSObject DidWakeObserver { get; set; }
+        private static Func<IEnumerable<Device>> GetDevices { get; set; }
 
         /// <summary>
         /// Starts the device monitor. This includes observing power state changes in the system.
         /// </summary>
-        public static void Start()
+        /// <param name="getDevices">The delegate to use to get the list of Locutus devices.</param>
+        public static void Start(Func<IEnumerable<Device>> getDevices)
         {
-            WillPowerOffObserver = NSWorkspace.Notifications.ObserveWillPowerOff(OnWillPowerOff);
-            WillSleepObserver = NSWorkspace.Notifications.ObserveWillSleep(OnWillSleep);
-            DidWakeObserver = NSWorkspace.Notifications.ObserveDidWake(OnDidWake);
+            GetDevices = getDevices;
+            DeviceChange.SystemWillSleep += HandleSystemWillSleep;
+            DeviceChange.SystemWillPowerOff += HandleSystemWillPowerOff;
+            DeviceChange.SystemDidPowerOn += HandleSystemDidWake;
 
             INTV.Shared.Utility.SingleInstanceApplication.Current.Exit += ApplicationWillExit;
 
             IOService = new IOService();
-            IOService.StartSerialPortMonitor();
+            IOService.StartServices(IOServices.All);
         }
 
         private static void ApplicationWillExit(object sender, ExitEventArgs e)
@@ -75,35 +73,43 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public static void Stop()
         {
-            IOService.StopSerialPortMonitor();
+            IOService.StopAllServices();
             IOService = null;
 
-            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(DidWakeObserver);
-            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(WillSleepObserver);
-            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(WillPowerOffObserver);
-            DidWakeObserver = null;
-            WillSleepObserver = null;
-            WillPowerOffObserver = null;
+            DeviceChange.SystemDidPowerOn -= HandleSystemDidWake;
+            DeviceChange.SystemWillSleep -= HandleSystemWillSleep;
+            DeviceChange.SystemWillPowerOff -= HandleSystemWillPowerOff;
         }
 
-        private static void OnWillPowerOff(object sender, NSNotificationEventArgs e)
+        private static void HandleSystemWillPowerOff(object sender, EventArgs e)
         {
-            DebugOutput("OnWillPowerOff: name: " + e.Notification.Name);
-            OnWillSleep(sender, e);
+            DebugOutput("DeviceMonitor.HandleSystemWillPowerOff");
+            HandleSystemWillSleep(sender, new SystemWillSleepEventArgs(canCancel: false));
         }
 
-        private static void OnWillSleep(object sender, NSNotificationEventArgs e)
+        private static void HandleSystemWillSleep(object sender, SystemWillSleepEventArgs e)
         {
-            DebugOutput("OnWillSleep: name: " + e.Notification.Name);
-            foreach (var port in INTV.Shared.Model.Device.SerialPortConnection.AvailablePorts)
+            DebugOutput("DeviceMonitor.HandleSystemWillSleep CanCancel: " + e.CanCancel + " PreventSystemSleepDuringDeviceCommands: " + Properties.Settings.Default.PreventSystemSleepDuringDeviceCommands);
+            var cancelSleep = false;
+            if (e.CanCancel && Properties.Settings.Default.PreventSystemSleepDuringDeviceCommands)
             {
-                DeviceChange.SystemReportsDeviceRemoved(null, port, INTV.Core.Model.Device.ConnectionType.Serial);
+                var portBeingUsed = GetDevices().FirstOrDefault(d => d.IsValid && (d.Port != null) && d.Port.IsOpen && d.Port.IsInUse);
+                cancelSleep = portBeingUsed != null;
+                e.Cancel = cancelSleep;
+                DebugOutput("DeviceMonitor.HandleSystemWillSleep will cancel: " + cancelSleep + " port being used: " + (cancelSleep ? portBeingUsed.Name : "<null>"));
+            }
+            if (!cancelSleep)
+            {
+                foreach (var port in INTV.Shared.Model.Device.SerialPortConnection.AvailablePorts)
+                {
+                    DeviceChange.SystemReportsDeviceRemoved(null, port, INTV.Core.Model.Device.ConnectionType.Serial);
+                }
             }
         }
 
-        private static void OnDidWake(object sender, NSNotificationEventArgs e)
+        private static void HandleSystemDidWake(object sender, EventArgs e)
         {
-            DebugOutput("OnDidWake: name: " + e.Notification.Name);
+            DebugOutput("DeviceMonitor.HandleSystemDidWake");
             foreach (var port in INTV.Shared.Model.Device.SerialPortConnection.AvailablePorts)
             {
                 DeviceChange.SystemReportsDeviceAdded(null, port, INTV.Core.Model.Device.ConnectionType.Serial);
@@ -114,26 +120,6 @@ namespace INTV.LtoFlash.Model
         private static void DebugOutput(object message)
         {
             System.Diagnostics.Debug.WriteLine(message);
-        }
-
-        private class PortNotifierThread : NSThread
-        {
-            public override void Main()
-            {
-                var runLoop = NSRunLoop.Current;
-                runLoop.Run();
-                DebugOutput("DeviceMonitor thread exit.");
-            }
-
-            public void Stop()
-            {
-                this.PerformSelector(new Selector("StopPortMonitor:"), this, this, true);
-            }
-
-            [Export("StopPortMonitor:")]
-            private void StopPortMonitor(NSObject data)
-            {
-            }
         }
     }
 }

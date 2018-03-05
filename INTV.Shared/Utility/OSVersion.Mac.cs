@@ -31,10 +31,38 @@ namespace INTV.Shared.Utility
     /// </summary>
     public partial class OSVersion
     {
+        /// <summary>
+        /// Gets the 'friendly' generic OS name.
+        /// </summary>
+        public static string Name
+        {
+            get
+            {
+                var osName = "OS X";
+                if (Current.Minor > 11)
+                {
+                    osName = "macOS";
+                }
+                return osName;
+            }
+        }
+
         private static System.Version Initialize()
         {
             // Don't have support for NSOperatingSystemVersion yet. It's only available in
             // OS X 10.10 and later. *sigh*
+
+            // For reference, on Mac, Environment.OSVersion effectively returns the same value as sysctl kern.osrelease.
+            // To map that to the well-known Mac releases, here's a handy dandy partial table from Stack Overflow:
+            // See: https://stackoverflow.com/questions/11072804/how-do-i-determine-the-os-version-at-runtime-in-os-x-or-ios-without-using-gesta
+            // 17.x.x. macOS 10.13.x High Sierra
+            // 16.x.x  macOS 10.12.x Sierra
+            // 15.x.x  OS X  10.11.x El Capitan
+            // 14.x.x  OS X  10.10.x Yosemite
+            // 13.x.x  OS X  10.9.x  Mavericks
+            // 12.x.x  OS X  10.8.x  Mountain Lion
+            // 11.x.x  OS X  10.7.x  Lion
+            // 10.x.x  OS X  10.6.x  Snow Leopard
             var versionString = NSProcessInfo.ProcessInfo.OperatingSystemVersionString;
             int foundPartNumber = 0;
             const int NumVersionParts = 3;

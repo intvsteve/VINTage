@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,9 @@
 
 namespace INTV.LtoFlash.Properties
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     internal sealed partial class Settings
     {
         /// <summary>
@@ -58,12 +61,25 @@ namespace INTV.LtoFlash.Properties
             set { SetSetting(MenuLayoutSaveDataColWidthSettingName, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the serial port read block size to use.
+        /// </summary>
+        public int LtoFlashSerialReadChunkSize
+        {
+            get { return GetSetting<int>(LtoFlashSerialReadChunkSizeSettingName); }
+            set { SetSetting(LtoFlashSerialReadChunkSizeSettingName, value); }
+        }
+
+        /// <summary>
+        /// GTK-specific initialization.
+        /// </summary>
         partial void OSInitializeDefaults()
         {
             AddSetting(MenuLayoutLongNameColWidthSettingName, 256);
             AddSetting(MenuLayoutShortNameColWidthSettingName, 144);
             AddSetting(MenuLayoutManualColWidthSettingName, 168);
             AddSetting(MenuLayoutSaveDataColWidthSettingName, 128);
+            AddSetting(LtoFlashSerialReadChunkSizeSettingName, 0);
         }
     }
 }

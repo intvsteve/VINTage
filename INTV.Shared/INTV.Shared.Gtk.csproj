@@ -307,6 +307,12 @@
     <Compile Include="gtk-gui\INTV.Shared.View.SerialPortSelector.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.SplashScreen.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.SystemCompatibilityConfigurationPage.cs" />
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
+    <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
+    <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

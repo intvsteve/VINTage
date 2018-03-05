@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceChange.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -58,6 +58,8 @@ namespace INTV.Shared.Interop.DeviceManagement
 
         #endregion Configuration Data Parameter Names
 
+        #region Events
+
         /// <summary>
         /// This event is raised when a device has been added to the system.
         /// </summary>
@@ -67,6 +69,25 @@ namespace INTV.Shared.Interop.DeviceManagement
         /// This event is raised when a device has been removed from the system.,
         /// </summary>
         public static event EventHandler<DeviceChangeEventArgs> DeviceRemoved;
+
+        /// <summary>
+        /// This event is raised when the system will enter low power mode, potentially
+        /// cutting power to the serial ports or other devices. See <see cref="ISystemPowerManagement"/>
+        /// for more information.
+        /// </summary>
+        public static event EventHandler<SystemWillSleepEventArgs> SystemWillSleep;
+
+        /// <summary>
+        /// This event is raised when the system's power will be low or off. This cannot be canceled.
+        /// </summary>
+        public static event EventHandler<EventArgs> SystemWillPowerOff;
+
+        /// <summary>
+        /// This event is raised when the system resumes full power state after sleep.
+        /// </summary>
+        public static event EventHandler<EventArgs> SystemDidPowerOn;
+
+        #endregion // Events
 
         /// <summary>
         /// Report that a device has been added to or detected in the system.
@@ -174,6 +195,48 @@ namespace INTV.Shared.Interop.DeviceManagement
                 isFromSystem = (int)value == 0;
             }
             return isFromSystem;
+        }
+
+        /// <summary>
+        /// Raises the system will sleep event.
+        /// </summary>
+        /// <param name="sender">The originator of the event.</param>
+        /// <param name="args">See <see cref="SystemWillSleepEventArgs"/> for details..</param>
+        internal static void RaiseSystemWillSleepEvent(object sender, SystemWillSleepEventArgs args)
+        {
+            var systemWillSleep = SystemWillSleep;
+            if (systemWillSleep != null)
+            {
+                systemWillSleep(sender, args);
+            }
+        }
+
+        /// <summary>
+        /// Raises the system will power off event.
+        /// </summary>
+        /// <param name="sender">The originator of the event.</param>
+        /// <param name="args">Event arguments are not used.</param>
+        internal static void RaiseSystemWillPowerOffEvent(object sender, EventArgs args)
+        {
+            var systemWillPowerOff = SystemWillPowerOff;
+            if (systemWillPowerOff != null)
+            {
+                systemWillPowerOff(sender, args);
+            }
+        }
+
+        /// <summary>
+        /// Raises the system did power on event.
+        /// </summary>
+        /// <param name="sender">The originator of the event.</param>
+        /// <param name="args">Event arguments are not used.</param>
+        internal static void RaiseSystemDidPowerOnEvent(object sender, EventArgs args)
+        {
+            var systemDidPowerOn = SystemDidPowerOn;
+            if (systemDidPowerOn != null)
+            {
+                systemDidPowerOn(sender, args);
+            }
         }
 
         [System.Diagnostics.Conditional("REPORT_EMPTY_DEVICE_NAMES")]

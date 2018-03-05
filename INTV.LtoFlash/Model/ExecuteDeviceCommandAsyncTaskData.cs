@@ -1,5 +1,5 @@
 ﻿// <copyright file="ExecuteDeviceCommandAsyncTaskData.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 ////#define REPORT_COMMAND_PERFORMANCE
+////#define ENABLE_DEBUG_OUTPUT
 
 using System;
 using System.Linq;
@@ -212,7 +213,7 @@ namespace INTV.LtoFlash.Model
             var executeCommandTask = new AsyncTaskWithProgress(taskName, allowsCancel, true, progressBarDelayTime);
 #if REPORT_COMMAND_PERFORMANCE
             DoWorkMethodName = doWork.Method.Name;
-            System.Diagnostics.Debug.WriteLine(Device.Port.Name + ": DEVICECOMMAND START: " + DoWorkMethodName);
+            DebugOutput(Device.Port.Name + ": DEVICECOMMAND START: " + DoWorkMethodName);
             Stopwatch = System.Diagnostics.Stopwatch.StartNew();
 #endif // REPORT_COMMAND_PERFORMANCE
             executeCommandTask.RunTask(this, (d) => SyncWithTimerThenExecute(d, doWork), OnComplete);
@@ -276,7 +277,7 @@ namespace INTV.LtoFlash.Model
                     {
                         ErrorLog errorLog = null;
                         var errorLogMessageString = string.Empty;
-                        if (exception.GetType() == typeof(DeviceCommandExecuteFailedException))
+                        if (exception is DeviceCommandExecuteFailedException)
                         {
                             try
                             {
@@ -287,7 +288,7 @@ namespace INTV.LtoFlash.Model
                                 const int MaxDownloadErrorRetryCount = 3;
                                 for (int i = 0; !gotErrorSucceeded && (errorLog == null) && (i < MaxDownloadErrorRetryCount); ++i)
                                 {
-                                    System.Diagnostics.Debug.WriteLine("Retry download error log attempt #" + i + 1);
+                                    DebugOutput("Retry download error log attempt #" + i + 1);
 
                                     // Wait for a beacon and try again.
                                     if (data.Device.WaitForBeacon(ProtocolCommand.WaitForBeaconTimeout))
@@ -377,12 +378,19 @@ namespace INTV.LtoFlash.Model
             finally
             {
                 data.Stopwatch.Stop();
-                System.Diagnostics.Debug.WriteLine(portName + ": DEVICECOMMAND FINISH: " + data.DoWorkMethodName + " DURATION: " + data.Stopwatch.Elapsed.ToString());
+                DebugOutput(portName + ": DEVICECOMMAND FINISH: " + data.DoWorkMethodName + " DURATION: " + data.Stopwatch.Elapsed.ToString());
             }
 #endif // REPORT_COMMAND_PERFORMANCE
             // I don't like doing this here -- it's too "UI-ey" for being in the Model, but
             // it fixes various problems and is easier than adding a universal 'on command complete' handler.
             INTV.Shared.ComponentModel.CommandManager.InvalidateRequerySuggested();
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DEBUG_OUTPUT")]
+        [System.Diagnostics.Conditional("REPORT_COMMAND_PERFORMANCE")]
+        private static void DebugOutput(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
         }
 
         #region IDisposable
@@ -403,19 +411,43 @@ namespace INTV.LtoFlash.Model
 
         private void SyncWithTimerThenExecute(AsyncTaskData data, Action<AsyncTaskData> doWork)
         {
-            const long TimeoutMilliseconds = 4000;
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            while (Device.InTimer && (stopwatch.ElapsedMilliseconds < TimeoutMilliseconds))
+            var timerRestore = Device.DeviceStatusUpdatePeriod;
+            if (timerRestore == System.Threading.Timeout.Infinite)
             {
-                System.Diagnostics.Debug.WriteLine("Waiting for timer!");
-                System.Threading.Thread.Sleep(68);
+                timerRestore = Device.DefaultGarbageCollectionPeriod;
             }
-            stopwatch.Stop();
-            if ((stopwatch.ElapsedMilliseconds > TimeoutMilliseconds) && Device.InTimer)
+            try
             {
-                throw new TimeoutException(Resources.Strings.SyncWithTimer_Execute_ErrorMessage);
+                const long TimeoutMilliseconds = 4000;
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                Device.DeviceStatusUpdatePeriod = System.Threading.Timeout.Infinite;
+                DebugOutput("SyncWithTimerThenExecute: Disabled timer: previous timeout: " + timerRestore);
+                Device.Port.LogPortMessage("SyncWithTimerThenExecute: Disabled timer: previous timeout: " + timerRestore);
+                while (Device.InTimer && (stopwatch.ElapsedMilliseconds < TimeoutMilliseconds))
+                {
+                    DebugOutput("SyncWithTimerThenExecute: Waiting for timer!");
+                    Device.Port.LogPortMessage("SyncWithTimerThenExecute: Disabled timer: previous timeout: " + timerRestore);
+                    System.Threading.Thread.Sleep(68);
+                }
+
+                stopwatch.Stop();
+                if ((stopwatch.ElapsedMilliseconds > TimeoutMilliseconds) && Device.InTimer)
+                {
+                    DebugOutput("SyncWithTimerThenExecute: THROWING TIMEOUT EXCEPTION");
+                    Device.Port.LogPortMessage("SyncWithTimerThenExecute: THROWING TIMEOUT EXCEPTION");
+                    throw new TimeoutException(Resources.Strings.SyncWithTimer_Execute_ErrorMessage);
+                }
+                using (Device.Port.SetInUse(ProtocolCommand.UpdatePortChunkSizeConfigurations))
+                {
+                    doWork(data);
+                }
             }
-            doWork(data);
+            finally
+            {
+                Device.DeviceStatusUpdatePeriod = timerRestore;
+                DebugOutput("SyncWithTimerThenExecute: Restoring timer to: " + timerRestore);
+                Device.Port.LogPortMessage("SyncWithTimerThenExecute: Restoring timer to: " + timerRestore);
+            }
         }
 
         private void UpdateTaskProgress()

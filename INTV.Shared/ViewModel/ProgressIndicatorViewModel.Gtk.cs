@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgressIndicatorViewModel.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,7 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-#define ENABLE_DEBUG_OUTPUT
+////#define ENABLE_DEBUG_OUTPUT
 
 using INTV.Shared.Utility;
 using INTV.Shared.View;

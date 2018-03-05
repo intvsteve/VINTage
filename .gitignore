@@ -147,20 +147,25 @@ ModelManifest.xml
 # Windows detritus
 # =========================
 
+# =========================
 # Windows image file caches
+# =========================
 Thumbs.db
 ehthumbs.db
 
+# =========================
 # Folder config file
+# =========================
 Desktop.ini
 
+# =========================
 # Recycle Bin used on file shares
+# =========================
 $RECYCLE.BIN/
 
 # =========================
 # Mac detritus
 # =========================
-
 # Mac desktop service store files
 .DS_Store
 /.project
@@ -169,5 +174,37 @@ $RECYCLE.BIN/
 # Mono/Xamarin detritus
 # =========================
 *.resources
-
 *.userprefs
+
+# =========================
+# Local config for make
+# =========================
+/custom_jzIntv.mak
+/custom.bat
+/custom.mak
+
+# =========================
+# Copied from jzIntv build
+# =========================
+/INTV.jzIntvUI/jzIntv/Win/doc/jzintv
+/INTV.jzIntvUI/jzIntv/Win/COPYING.txt
+/INTV.jzIntvUI/jzIntv/Win/README.txt
+/INTV.jzIntvUI/jzIntv/Win/Release-Notes.txt
+
+# =========================
+# Used for source ZIP
+# =========================
+/Locutus/Installer.source/src
+/Locutus/Installer.source/*.zip
+
+# =========================
+# Installer ZIPs
+# =========================
+/Locutus/Installer.desktop/*.zip
+/Locutus/Installer.xp/*.zip
+
+# =========================
+# Version Management
+# =========================
+.INTV_VersionInfo.finished
+.Info_plist_update.finished

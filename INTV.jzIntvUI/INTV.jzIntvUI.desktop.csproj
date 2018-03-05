@@ -76,6 +76,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="ViewModel\DisplayModeViewModel.cs" />
     <Compile Include="ViewModel\DisplayResolutionViewModel.cs" />
     <Compile Include="ViewModel\JzIntvSettingsPageViewModel.cs" />
@@ -167,7 +170,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="build_jzIntv.mak" />
-    <None Include="custom.mak" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Always_16xMD.png" />
@@ -202,6 +204,9 @@
     <Resource Include="Resources\Images\Information_32x.png" />
     <None Include="jzIntv\Win\bin\.readme.txt" />
     <None Include="jzIntv\Win\doc\.readme.txt" />
+    <Content Include="..\custom_jzIntv.mak">
+      <Link>custom_jzIntv.mak</Link>
+    </Content>
     <Content Include="jzIntv\Getting_Started.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

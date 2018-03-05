@@ -93,6 +93,7 @@ namespace INTV.LtoFlash.ViewModel
             _promptToUpgradeFirmware = Properties.Settings.Default.PromptForFirmwareUpgrade;
             _showFileSystemDetails = Properties.Settings.Default.ShowFileSystemDetails;
             _showAdvancedFeatures = Properties.Settings.Default.ShowAdvancedFeatures;
+            OSInitialize();
         }
 
         #region EnableAdvancedFeaturesCommand
@@ -265,5 +266,10 @@ namespace INTV.LtoFlash.ViewModel
         protected override void RaiseAllPropertiesChanged()
         {
         }
+
+        /// <summary>
+        /// Operating-system-specific initialization.
+        /// </summary>
+        partial void OSInitialize();
     }
 }

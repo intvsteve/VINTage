@@ -1,5 +1,5 @@
 ﻿// <copyright file="LtoFlashViewModel.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -29,10 +29,13 @@ namespace INTV.LtoFlash.ViewModel
     [System.ComponentModel.Composition.Export(typeof(IPrimaryComponent))]
     public partial class LtoFlashViewModel
     {
+        /// <summary>
+        /// GTK-specific implementation.
+        /// </summary>
         partial void OSCreateVisuals()
         {
             // TODO: This is wrong... ViewModel should not create the visual - it should be the other way around
-            var view = new INTV.LtoFlash.View.MenuLayoutView(this) ;
+            var view = new INTV.LtoFlash.View.MenuLayoutView(this);
             _visual = new System.WeakReference(view);
             OSInitializeVisual(view);
         }

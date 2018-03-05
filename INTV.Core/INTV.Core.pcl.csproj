@@ -184,6 +184,9 @@
     <Compile Include="Utility\WeakKeyDictionary`TKey`TValue.cs" />
     <Compile Include="Utility\ResourceHelpers.cs" />
     <Compile Include="Model\Program\IntellicartCC3Features.cs" />
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="license.txt" />

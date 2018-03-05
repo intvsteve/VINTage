@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define ENABLE_DIAGNOSTIC_OUTPUT
+
 namespace INTV.LtoFlash.Model.Commands
 {
     /// <summary>
@@ -29,6 +31,26 @@ namespace INTV.LtoFlash.Model.Commands
         /// Default timeout for reading response data in milliseconds.
         /// </summary>
         public const int DefaultResponseTimeout = 20000;
+
+        /// <summary>
+        /// The default size of the read chunk.
+        /// </summary>
+        /// <remarks>The default value of zero means to read the entire requested chunk as one large read. This can be
+        /// overridden at any time. Most specifically, on some newer versions of macOS, this needs to be changed.
+        /// Reading chunks up to 768 bytes has been confirmed working in High Sierra. Larger (1024 bytes or more)
+        /// will time out partway through the read. Users can configure the read chunk size to be smaller if needed. It turns
+        /// out the driver uses a 512 byte buffer, so we'll just happen to choose that as our default chunk size.</remarks>
+        private const int DefaultReadChunkSize = 0;
+
+        /// <summary>
+        /// Gets or sets the size of the chunk to read from the port, in bytes.
+        /// </summary>
+        internal static int ReadChunkSize
+        {
+            get { return _readChunkSize; }
+            set { _readChunkSize = value; }
+        }
+        private static int _readChunkSize = DefaultReadChunkSize;
 
         private DownloadDataBlockFromRam(uint address, int expectedDataLength)
             : base(ProtocolCommandId.LfsDownloadDataBlockFromRam, DefaultResponseTimeout, address, (uint)expectedDataLength)
@@ -61,7 +83,42 @@ namespace INTV.LtoFlash.Model.Commands
         /// <inheritdoc />
         protected override byte[] ReadResponseData(INTV.Shared.Utility.ASCIIBinaryReader reader)
         {
-            return reader.ReadBytes(ExpectedDataLength);
+            byte[] responseData = new byte[ExpectedDataLength];
+            var bytesRemaining = ExpectedDataLength;
+            var chunkSize = ReadChunkSize == 0 ? ExpectedDataLength : ReadChunkSize;
+
+            DebugOutput("----------BEGINREAD buffer, expected: " + ExpectedDataLength + ", ChunkSize: " + chunkSize);
+
+            var chunkNumber = 0;
+            using (var memory = new System.IO.MemoryStream())
+            {
+                do
+                {
+                    var bytesToRead = (bytesRemaining / chunkSize) > 0 ? chunkSize : bytesRemaining;
+
+                    DebugOutput("READING CHUNK # " + chunkNumber++ + ", numToRead: " + bytesToRead);
+
+                    var dataRead = reader.ReadBytes(bytesToRead);
+
+                    DebugOutput("WRITING to memory: " + bytesToRead + ", buff: " + dataRead.Length);
+
+                    memory.Write(dataRead, 0, bytesToRead);
+                    bytesRemaining -= bytesToRead;
+                }
+                while (bytesRemaining > 0);
+                memory.Seek(0, System.IO.SeekOrigin.Begin);
+                responseData = memory.ToArray();
+            }
+
+            DebugOutput("----------RETURNING buffer: " + responseData.Length + ", expected: " + ExpectedDataLength);
+
+            return responseData;
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DIAGNOSTIC_OUTPUT")]
+        private static void DebugOutput(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
         }
     }
 }

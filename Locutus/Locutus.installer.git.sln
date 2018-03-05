@@ -16,10 +16,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell", "..\WindowsAPICodePack\Shell\Shell.csproj", "{AA0C00CB-8699-4F37-BFAE-40CA87ACC06D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Core.pcl", "..\INTV.Core\INTV.Core.pcl.csproj", "{B90D8E04-5F83-45D7-BD39-0198A7C7C325}"
+	ProjectSection(ProjectDependencies) = postProject
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770} = {47F7AF54-FA4E-49A7-843F-DBAE2C062770}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Shared.desktop", "..\INTV.Shared\INTV.Shared.desktop.csproj", "{C852CAA1-ABE8-45D7-8BC5-94B61B71617A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Ribbon", "..\INTV.Ribbon\INTV.Ribbon.csproj", "{36F9511F-4B39-4320-A1AC-C11AB6297C06}"
+	ProjectSection(ProjectDependencies) = postProject
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770} = {47F7AF54-FA4E-49A7-843F-DBAE2C062770}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.desktop", "..\INTV.LtoFlash\INTV.LtoFlash.desktop.csproj", "{A1376EF6-C8CE-4A9C-A6E1-1BAF764E5E89}"
 EndProject
@@ -52,8 +58,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstallerSupport", "Install
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{42930A06-0568-4C5B-950D-D4DB96858633}"
 	ProjectSection(SolutionItems) = preProject
+		..\cleanup.mak = ..\cleanup.mak
+		..\cleanup_bash.bat = ..\cleanup_bash.bat
+		..\common.mak = ..\common.mak
+		..\custom.bat = ..\custom.bat
+		..\custom.mak = ..\custom.mak
+		..\custom.mak.template = ..\custom.mak.template
+		..\custom_bat_rule.bat = ..\custom_bat_rule.bat
+		..\custom_jzIntv.mak = ..\custom_jzIntv.mak
+		..\custom_jzIntv.mak.template = ..\custom_jzIntv.mak.template
+		..\custom_jzIntv_mak_rule.mak = ..\custom_jzIntv_mak_rule.mak
+		..\custom_mak_rule.mak = ..\custom_mak_rule.mak
 		license.txt = license.txt
 		README.txt = README.txt
+		..\setup_bash.bat = ..\setup_bash.bat
+		..\version.mak = ..\version.mak
+		..\version_tools.bat = ..\version_tools.bat
+		..\version_tools.mak = ..\version_tools.mak
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Installer.zip", "Installer\Installer.vcxproj", "{DAC23716-56DA-47F4-9045-A89460771098}"
@@ -62,8 +83,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Installer.zip", "Installer\
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Installer.source", "Installer.source\Installer.source.vcxproj", "{0F510E3D-C967-4D8D-B58C-09DD0654764B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DAC23716-56DA-47F4-9045-A89460771098} = {DAC23716-56DA-47F4-9045-A89460771098}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.desktop", "..\INTV.jzIntvUI\INTV.jzIntvUI.desktop.csproj", "{F5D99023-C6DE-472F-9D8F-055DEDDB0046}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "INTV.Version.Win", "..\INTV.Version\INTV.Version.Win.vcxproj", "{47F7AF54-FA4E-49A7-843F-DBAE2C062770}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -585,6 +611,42 @@ Global
 		{F5D99023-C6DE-472F-9D8F-055DEDDB0046}.SingleImage|Mixed Platforms.Build.0 = Release|Any CPU
 		{F5D99023-C6DE-472F-9D8F-055DEDDB0046}.SingleImage|Win32.ActiveCfg = Release|Any CPU
 		{F5D99023-C6DE-472F-9D8F-055DEDDB0046}.SingleImage|x64.ActiveCfg = Release|Any CPU
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CD_ROM|Any CPU.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CD_ROM|Mixed Platforms.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CD_ROM|Mixed Platforms.Build.0 = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CD_ROM|Win32.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CD_ROM|Win32.Build.0 = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CD_ROM|x64.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CodeAnalysisDebug|Mixed Platforms.Build.0 = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CodeAnalysisDebug|Win32.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CodeAnalysisDebug|Win32.Build.0 = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.CodeAnalysisDebug|x64.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Debug|Win32.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Debug|Win32.Build.0 = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Debug|x64.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.DVD-5|Any CPU.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.DVD-5|Mixed Platforms.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.DVD-5|Mixed Platforms.Build.0 = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.DVD-5|Win32.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.DVD-5|Win32.Build.0 = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.DVD-5|x64.ActiveCfg = Debug|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Release|Any CPU.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Release|Win32.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Release|Win32.Build.0 = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.Release|x64.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.SingleImage|Any CPU.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.SingleImage|Mixed Platforms.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.SingleImage|Mixed Platforms.Build.0 = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.SingleImage|Win32.ActiveCfg = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.SingleImage|Win32.Build.0 = Release|Win32
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770}.SingleImage|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -375,6 +375,14 @@
     <Compile Include="View\IMainWindow.cs" />
     <Compile Include="View\ROMsTableView.Mac.cs" />
     <Compile Include="View\NSTableViewHelpers.cs" />
+    <Compile Include="..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
+    <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
+    <Compile Include="Interop\IOKit\IOConnect.cs" />
+    <Compile Include="Interop\IOKit\IOMessage.cs" />
+    <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj">

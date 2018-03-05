@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -22,6 +22,7 @@
 
 using System;
 using System.Linq;
+using INTV.LtoFlash.Model.Commands;
 using INTV.Shared.Model;
 using INTV.Shared.Utility;
 
@@ -90,18 +91,21 @@ namespace INTV.LtoFlash.Model
             var desiredCharacterIndex = 0;
             try
             {
-                do
+                using (port.SetInUse(ProtocolCommand.UpdatePortChunkSizeConfigurations))
                 {
-                    var desiredCharacter = Device.BeaconCharacters[desiredCharacterIndex];
-                    var character = reader.ReadChar();
-                    port.LogPortMessage("WaitForBeacon received: '" + character + "'");
-                    if (character == desiredCharacter)
+                    do
                     {
-                        ++desiredCharacterIndex;
-                        detectedBeacon = character == Device.BeaconCharacters.Last();
+                        var desiredCharacter = Device.BeaconCharacters[desiredCharacterIndex];
+                        var character = reader.ReadChar();
+                        port.LogPortMessage("WaitForBeacon received: '" + character + "'");
+                        if (character == desiredCharacter)
+                        {
+                            ++desiredCharacterIndex;
+                            detectedBeacon = character == Device.BeaconCharacters.Last();
+                        }
                     }
+                    while (!detectedBeacon);
                 }
-                while (!detectedBeacon);
             }
             catch (TimeoutException)
             {

@@ -1,5 +1,5 @@
 ﻿// <copyright file="NativeMethods.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,8 +21,10 @@
 using System.Runtime.InteropServices;
 #if __UNIFIED__
 using Foundation;
+using nint = System.nint;
 #else
 using MonoMac.Foundation;
+using nint = System.Int32;
 #endif // __UNIFIED__
 
 namespace INTV.Shared.Interop.IOKit
@@ -224,6 +226,18 @@ namespace INTV.Shared.Interop.IOKit
         [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
         public static extern int IOServiceAddMatchingNotification(System.IntPtr notifyPort, [MarshalAs(UnmanagedType.LPStr)] string notificationType, System.IntPtr matching, System.IntPtr callback, System.IntPtr refCon, out System.IntPtr iterator);
 
+        /*! @function IOServiceClose
+            @abstract Close a connection to an IOService and destroy the connect handle.
+            @discussion A connection created with the IOServiceOpen should be closed when the connection is no longer to be used with IOServiceClose.
+            @param connect The connect handle created by IOServiceOpen. It will be destroyed by this function, and should not be released with IOObjectRelease.
+            @result A kern_return_t error code.
+
+        kern_return_t
+        IOServiceClose(
+            io_connect_t    connect ); */
+        [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
+        public static extern int IOServiceClose(System.IntPtr connect);
+
         #region IOObject
 
         /* kern_return_t IOObjectRelease(io_object_t object );*/
@@ -370,6 +384,20 @@ namespace INTV.Shared.Interop.IOKit
 
         #region Power State
 
+        /*! @typedef IOServiceInterestCallback
+            @abstract Callback function to be notified of changes in state of an IOService.
+            @param refcon The refcon passed when the notification was installed.
+            @param service The IOService whose state has changed.
+            @param messageType A messageType enum, defined by IOKit/IOMessage.h or by the IOService's family.
+            @param messageArgument An argument for the message, dependent on the messageType.  If the message data is larger than sizeof(void*), then messageArgument contains a pointer to the message data; otherwise, messageArgument contains the message data.
+
+        typedef void
+        (*IOServiceInterestCallback)(
+            void *          refcon,
+            io_service_t        service,
+            uint32_t        messageType,
+            void *          messageArgument ); */
+
         /*! @function       IORegisterForSystemPower
             @abstract       Connects the caller to the Root Power Domain IOService for the purpose of receiving sleep & wake notifications for the system.
                             Does not provide system shutdown and restart notifications.
@@ -424,6 +452,41 @@ namespace INTV.Shared.Interop.IOKit
 
         io_connect_t IORegisterForSystemPower ( void * refcon, IONotificationPortRef * thePortRef, IOServiceInterestCallback callback, io_object_t * notifier ) AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER;
         */
+        [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
+        public static extern System.IntPtr IORegisterForSystemPower(System.IntPtr refCon, out System.IntPtr thePortRef, System.IntPtr callback, out System.IntPtr notifier);
+
+        /*! @function           IOAllowPowerChange
+            @abstract           The caller acknowledges notification of a power state change on a device it has registered for notifications for via IORegisterForSystemPower or IORegisterApp.
+            @discussion         Must be used when handling kIOMessageCanSystemSleep and kIOMessageSystemWillSleep messages from IOPMrootDomain system power. The caller should not call IOAllowPowerChange in response to any messages 
+                                except for these two.
+            @param kernelPort   Port used to communicate to the kernel,  from IORegisterApp or IORegisterForSystemPower.
+            @param notificationID A copy of the notification ID which came as part of the power state change notification being acknowledged.
+            @result             Returns kIOReturnSuccess or an error condition if request failed.
+
+            IOReturn IOAllowPowerChange ( io_connect_t kernelPort, intptr_t notificationID )
+            AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER;
+        */
+        [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
+        public static extern int IOAllowPowerChange(System.IntPtr kernelPort, nint notificationId);
+
+        /*! @function IOCancelPowerChange
+            @abstract The caller denies an idle system sleep power state change.
+            @discussion Should only called in response to kIOMessageCanSystemSleep messages from IOPMrootDomain. IOCancelPowerChange has no meaning for responding to kIOMessageSystemWillSleep (which is non-abortable) or any other messages. 
+
+            When an app responds to a kIOMessageCanSystemSleep message by calling IOCancelPowerChange, the app
+            vetoes the idle sleep request. The system will stay awake. 
+            The idle timer will elapse again after a period of inactivity, and the system will
+            send out the same kIOMessageCanSystemSleep message, and interested applications will respond gain.
+ 
+            @param kernelPort  Port used to communicate to the kernel,  from IORegisterApp or IORegisterForSystemPower.
+            @param notificationID A copy of the notification ID which came as part of the power state change notification being acknowledged.
+            @result Returns kIOReturnSuccess or an error condition if request failed.
+     
+            IOReturn IOCancelPowerChange ( io_connect_t kernelPort, long notificationID )
+            AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER;
+        */
+        [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
+        public static extern int IOCancelPowerChange(System.IntPtr kernelPort, nint notificationId);
 
         /*! @function           IODeregisterForSystemPower
             @abstract           Disconnects the caller from the Root Power Domain IOService after receiving system power state change notifications. (Caller must also destroy the IONotificationPortRef returned from IORegisterForSystemPower.)
@@ -432,6 +495,8 @@ namespace INTV.Shared.Interop.IOKit
 
         IOReturn IODeregisterForSystemPower ( io_object_t * notifier ) AVAILABLE_MAC_OS_X_VERSION_10_0_AND_LATER;
         */
+        [DllImport("/System/Library/Frameworks/IOKit.framework/IOKit")]
+        public static extern int IODeregisterForSystemPower(ref System.IntPtr notifier);
 
         #endregion Power State
     }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="IONotificationPort.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -42,6 +42,15 @@ namespace INTV.Shared.Interop.IOKit
         public IONotificationPort()
         {
             Handle = NativeMethods.IONotificationPortCreate(IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INTV.Shared.Interop.IOKit.IONotificationPort"/> class.
+        /// </summary>
+        /// <param name="nativeObject">The native IOKit object pointer.</param>
+        public IONotificationPort(IntPtr nativeObject)
+        {
+            Handle = nativeObject;
         }
 
         #region INativeObject implementation

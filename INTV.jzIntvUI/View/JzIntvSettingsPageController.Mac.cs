@@ -257,7 +257,8 @@ namespace INTV.JzIntvUI.View
         /// <inheritdoc />
         public override void AwakeFromNib()
         {
-            JzIntv.Model.Emulator.Instances();
+            // TODO: Delete this call?
+            JzIntv.Model.Emulator.Instances(); // Why is this here? It doesn't have side effects.
             DisplayResolutionsArrayController.SynchronizeCollection(ViewModel.AvailableDisplayResolutions);
             _initializedDisplayResolutions = true;
             var selectedResolutionViewModel = ViewModel.SelectedDisplayResolutionViewModel;

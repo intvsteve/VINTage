@@ -6,8 +6,10 @@
 //
 
 #if __UNIFIED__
+using AppKit;
 using Foundation;
 #else
+using MonoMac.AppKit;
 using MonoMac.Foundation;
 #endif // __UNIFIED__
 
@@ -15,26 +17,33 @@ using System.CodeDom.Compiler;
 
 namespace INTV.LtoFlash.View
 {
-	[Register ("SettingsPage")]
-	partial class SettingsPage
-	{
-		
-		void ReleaseDesignerOutlets ()
-		{
-		}
-	}
-
 	[Register ("SettingsPageController")]
 	partial class SettingsPageController
 	{
+		[Outlet]
+		NSArrayController SerialPortReadChunkSizesArrayController { get; set; }
+
 		[Action ("_reconcileDeviceMenuToLocalMenu:")]
 		partial void _reconcileDeviceMenuToLocalMenu (NSObject sender);
 
 		[Action ("_searchAtStartupAction:")]
-		partial void _searchAtStartupAction (NSObject sender);
+        partial void _searchAtStartupAction (NSObject sender);
 
 		[Action ("_validateMenuAtStartupAction:")]
 		partial void _validateMenuAtStartupAction (NSObject sender);
+		
+		void ReleaseDesignerOutlets ()
+		{
+			if (SerialPortReadChunkSizesArrayController != null) {
+				SerialPortReadChunkSizesArrayController.Dispose ();
+				SerialPortReadChunkSizesArrayController = null;
+			}
+		}
+	}
+
+	[Register ("SettingsPage")]
+	partial class SettingsPage
+	{
 		
 		void ReleaseDesignerOutlets ()
 		{

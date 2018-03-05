@@ -262,5 +262,29 @@ namespace INTV.LtoFlash.Properties {
                 this["VerifyVIDandPIDBeforeConnecting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PreventSystemSleepDuringDeviceCommands {
+            get {
+                return ((bool)(this["PreventSystemSleepDuringDeviceCommands"]));
+            }
+            set {
+                this["PreventSystemSleepDuringDeviceCommands"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int LtoFlashSerialReadChunkSize {
+            get {
+                return ((int)(this["LtoFlashSerialReadChunkSize"]));
+            }
+            set {
+                this["LtoFlashSerialReadChunkSize"] = value;
+            }
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.Mono.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -162,6 +162,15 @@ namespace INTV.LtoFlash.Properties
             set { SetSetting(VerifyVIDandPIDBeforeConnectingSettingName, value); }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to prevent system sleep during long-running commands.
+        /// </summary>
+        public bool PreventSystemSleepDuringDeviceCommands
+        {
+            get { return GetSetting<bool>(PreventSystemSleepDuringDeviceCommandsSettingName); }
+            set { SetSetting(PreventSystemSleepDuringDeviceCommandsSettingName, value); }
+        }
+
         #region ISettings
 
         /// <inheritdoc/>
@@ -182,6 +191,7 @@ namespace INTV.LtoFlash.Properties
             AddSetting(PromptToImportStarterRomsPropertyName, true);
             AddSetting(PromptForFirmwareUpgradeSettingName, true);
             AddSetting(VerifyVIDandPIDBeforeConnectingSettingName, true);
+            AddSetting(PreventSystemSleepDuringDeviceCommandsSettingName, false);
             OSInitializeDefaults();
         }
 

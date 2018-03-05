@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProtocolCommand.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -244,6 +244,20 @@ namespace INTV.LtoFlash.Model.Commands
             }
         }
         private static bool _failNextCommand;
+
+#endif // DEBUG
+
+        /// <summary>
+        /// This method should be used with <see cref="IStreamConnection.SetInUse"/> method to ensure that, once the
+        /// port is not in use, if the user has changed the connection's chunk size settings, they'll be updated.
+        /// </summary>
+        internal static void UpdatePortChunkSizeConfigurations()
+        {
+            var updatedReadChunkSize = Properties.Settings.Default.LtoFlashSerialReadChunkSize;
+            DownloadDataBlockFromRam.ReadChunkSize = updatedReadChunkSize;
+        }
+
+#if DEBUG
 
         /// <summary>
         /// Sets up the next protocol command to fail. The approach is simplistic, in that the arguments
@@ -639,164 +653,167 @@ namespace INTV.LtoFlash.Model.Commands
             try
             {
 #endif // REPORT_COMMAND_PERFORMANCE
-                if (taskData != null)
+                using (target.SetInUse(UpdatePortChunkSizeConfigurations))
                 {
-                    taskData.CurrentlyExecutingCommand = Command;
-                }
-                lock (_lock)
-                {
-                    target.LogPortMessage("EXECUTE: " + Command);
-                    Exception exception = null;
-                    var previousWriteTimeout = -1;
-                    if (target.WriteStream.CanTimeout)
+                    if (taskData != null)
                     {
-                        previousWriteTimeout = target.WriteStream.WriteTimeout;
+                        taskData.CurrentlyExecutingCommand = Command;
                     }
-                    try
+                    lock (_lock)
                     {
-                        using (var writer = new INTV.Shared.Utility.ASCIIBinaryWriter(target.WriteStream))
+                        target.LogPortMessage("EXECUTE: " + Command);
+                        Exception exception = null;
+                        var previousWriteTimeout = -1;
+                        if (target.WriteStream.CanTimeout)
                         {
-                            _dataSent = string.Empty;
-                            var commandBytesWritten = Serialize(writer);
-                            target.LogPortMessage("EXECUTE: wrote " + commandBytesWritten + " bytes for command: " + Command + ", data sent: " + _dataSent);
+                            previousWriteTimeout = target.WriteStream.WriteTimeout;
                         }
-
-                        if (target.ReadStream.CanTimeout)
+                        try
                         {
-                            target.ReadStream.ReadTimeout = ResponseTimeout;
-                        }
-
-                        using (var reader = new INTV.Shared.Utility.ASCIIBinaryReader(target.ReadStream))
-                        {
-                            using (var resultStream = new System.IO.MemoryStream())
+                            using (var writer = new INTV.Shared.Utility.ASCIIBinaryWriter(target.WriteStream))
                             {
-                                var ack = GetCommandAcknowledgement(reader, Command, ref errorDetail, out timedOut);
+                                _dataSent = string.Empty;
+                                var commandBytesWritten = Serialize(writer);
+                                target.LogPortMessage("EXECUTE: wrote " + commandBytesWritten + " bytes for command: " + Command + ", data sent: " + _dataSent);
+                            }
 
-                                if (ack == Ack)
+                            if (target.ReadStream.CanTimeout)
+                            {
+                                target.ReadStream.ReadTimeout = ResponseTimeout;
+                            }
+
+                            using (var reader = new INTV.Shared.Utility.ASCIIBinaryReader(target.ReadStream))
+                            {
+                                using (var resultStream = new System.IO.MemoryStream())
                                 {
-                                    resultStream.WriteByte(ack);
-                                    byte[] responseData = null;
-                                    if (sourceDataStream != null)
-                                    {
-                                        SendCommandPayload(target, sourceDataStream, resultStream);
-                                    }
-                                    else if (inflate != null)
-                                    {
-                                        responseData = ReceiveResponse(reader, resultStream);
-                                    }
+                                    var ack = GetCommandAcknowledgement(reader, Command, ref errorDetail, out timedOut);
 
-                                    var success = GetCommandSuccess(reader);
-                                    resultStream.WriteByte(success);
-
-                                    var crc = GetResponseCrc(reader);
-                                    succeeded = ValidateResponse(resultStream, crc);
-
-                                    if (succeeded && (responseData != null) && (inflate != null))
+                                    if (ack == Ack)
                                     {
-                                        using (var responseStream = new MemoryStream(responseData))
+                                        resultStream.WriteByte(ack);
+                                        byte[] responseData = null;
+                                        if (sourceDataStream != null)
                                         {
-                                            response = inflate(responseStream);
+                                            SendCommandPayload(target, sourceDataStream, resultStream);
+                                        }
+                                        else if (inflate != null)
+                                        {
+                                            responseData = ReceiveResponse(reader, resultStream);
+                                        }
+
+                                        var success = GetCommandSuccess(reader);
+                                        resultStream.WriteByte(success);
+
+                                        var crc = GetResponseCrc(reader);
+                                        succeeded = ValidateResponse(resultStream, crc);
+
+                                        if (succeeded && (responseData != null) && (inflate != null))
+                                        {
+                                            using (var responseStream = new MemoryStream(responseData))
+                                            {
+                                                response = inflate(responseStream);
+                                            }
+                                        }
+                                        if (succeeded && (onSuccess != null))
+                                        {
+                                            onSuccess();
+                                        }
+                                        if (success != Success)
+                                        {
+                                            var errorMessage = "Command " + Command + " did not succeed: " + success.ToString("X2") + "(" + System.Convert.ToChar(success) + ")";
+                                            if (!string.IsNullOrEmpty(errorDetail))
+                                            {
+                                                errorDetail += Environment.NewLine;
+                                            }
+                                            errorDetail += errorMessage;
+                                            target.LogPortMessage(errorMessage);
+                                            DebugOutput(errorMessage);
+                                            timedOut = target.WaitForBeacon(WaitForBeaconTimeout); // try to drain any remaining bytes and sync back up again
+                                            succeeded = false;
+                                            exception = new DeviceCommandExecuteFailedException(Command, Arg0, Arg1, Arg2, Arg3, success);
                                         }
                                     }
-                                    if (succeeded && (onSuccess != null))
+                                    else if (ack == Nak)
                                     {
-                                        onSuccess();
-                                    }
-                                    if (success != Success)
-                                    {
-                                        var errorMessage = "Command " + Command + " did not succeed: " + success.ToString("X2") + "(" + System.Convert.ToChar(success) + ")";
+                                        var errorMessage = "Command " + Command + " returned NAK!";
+                                        target.LogPortMessage(errorMessage);
+                                        DebugOutput(errorMessage);
+                                        timedOut = !target.WaitForBeacon(WaitForBeaconTimeout);
                                         if (!string.IsNullOrEmpty(errorDetail))
                                         {
                                             errorDetail += Environment.NewLine;
                                         }
                                         errorDetail += errorMessage;
-                                        target.LogPortMessage(errorMessage);
-                                        DebugOutput(errorMessage);
-                                        timedOut = target.WaitForBeacon(WaitForBeaconTimeout); // try to drain any remaining bytes and sync back up again
-                                        succeeded = false;
-                                        exception = new DeviceCommandExecuteFailedException(Command, Arg0, Arg1, Arg2, Arg3, success);
                                     }
-                                }
-                                else if (ack == Nak)
-                                {
-                                    var errorMessage = "Command " + Command + " returned NAK!";
-                                    target.LogPortMessage(errorMessage);
-                                    DebugOutput(errorMessage);
-                                    timedOut = !target.WaitForBeacon(WaitForBeaconTimeout);
-                                    if (!string.IsNullOrEmpty(errorDetail))
-                                    {
-                                        errorDetail += Environment.NewLine;
-                                    }
-                                    errorDetail += errorMessage;
                                 }
                             }
                         }
-                    }
-                    catch (TimeoutException e)
-                    {
-                        timedOut = true;
-                        var errorMessage = "Timed out executing command: " + Command;
-                        target.LogPortMessage(errorMessage);
-                        DebugOutput(errorMessage);
-                        if (!string.IsNullOrEmpty(errorDetail))
+                        catch (TimeoutException e)
                         {
-                            errorDetail += Environment.NewLine;
-                        }
-                        errorDetail += errorMessage;
-                        exception = e;
-
-                        // TODO: Report specific failure message back to user.
-                    }
-                    catch (System.IO.IOException e)
-                    {
-                        var errorMessage = "IO Exception executing command: " + Command;
-                        target.LogPortMessage(errorMessage);
-                        DebugOutput(errorMessage);
-                        if (!string.IsNullOrEmpty(errorDetail))
-                        {
-                            errorDetail += Environment.NewLine;
-                        }
-                        errorDetail += errorMessage;
-                        exception = e;
-
-                        // TODO: Report specific failure message back to user.
-                        // One circumstance in which this occurs, and which we do not wish to report, is when killing the simulator application.
-                    }
-                    catch (UnauthorizedAccessException e)
-                    {
-                        var errorMessage = "UnauthorizedAccess Exception executing command: " + Command;
-                        target.LogPortMessage(errorMessage);
-                        DebugOutput(errorMessage);
-                        if (!string.IsNullOrEmpty(errorDetail))
-                        {
-                            errorDetail += Environment.NewLine;
-                        }
-                        errorDetail += errorMessage;
-                        exception = e;
-
-                        // TODO: Report specific failure message back to user.
-                        // One circumstance in which this occurs, was after unplugging the device, which we may not want to report.
-                    }
-                    finally
-                    {
-                        // target.WriteStream may go to null if cord is pulled during communication w/ the device.
-                        if ((target.WriteStream != null) && target.WriteStream.CanTimeout)
-                        {
-                            target.WriteStream.WriteTimeout = previousWriteTimeout;
-                        }
-                        if (!succeeded)
-                        {
-                            RecordErrorResult(Command, exception, taskData, errorDetail);
-                            if (exception != null)
+                            timedOut = true;
+                            var errorMessage = "Timed out executing command: " + Command;
+                            target.LogPortMessage(errorMessage);
+                            DebugOutput(errorMessage);
+                            if (!string.IsNullOrEmpty(errorDetail))
                             {
-                                throw exception;
+                                errorDetail += Environment.NewLine;
+                            }
+                            errorDetail += errorMessage;
+                            exception = e;
+
+                            // TODO: Report specific failure message back to user.
+                        }
+                        catch (System.IO.IOException e)
+                        {
+                            var errorMessage = "IO Exception executing command: " + Command;
+                            target.LogPortMessage(errorMessage);
+                            DebugOutput(errorMessage);
+                            if (!string.IsNullOrEmpty(errorDetail))
+                            {
+                                errorDetail += Environment.NewLine;
+                            }
+                            errorDetail += errorMessage;
+                            exception = e;
+
+                            // TODO: Report specific failure message back to user.
+                            // One circumstance in which this occurs, and which we do not wish to report, is when killing the simulator application.
+                        }
+                        catch (UnauthorizedAccessException e)
+                        {
+                            var errorMessage = "UnauthorizedAccess Exception executing command: " + Command;
+                            target.LogPortMessage(errorMessage);
+                            DebugOutput(errorMessage);
+                            if (!string.IsNullOrEmpty(errorDetail))
+                            {
+                                errorDetail += Environment.NewLine;
+                            }
+                            errorDetail += errorMessage;
+                            exception = e;
+
+                            // TODO: Report specific failure message back to user.
+                            // One circumstance in which this occurs, was after unplugging the device, which we may not want to report.
+                        }
+                        finally
+                        {
+                            // target.WriteStream may go to null if cord is pulled during communication w/ the device.
+                            if ((target.WriteStream != null) && target.WriteStream.CanTimeout)
+                            {
+                                target.WriteStream.WriteTimeout = previousWriteTimeout;
+                            }
+                            if (!succeeded)
+                            {
+                                RecordErrorResult(Command, exception, taskData, errorDetail);
+                                if (exception != null)
+                                {
+                                    throw exception;
+                                }
                             }
                         }
                     }
-                }
-                if (taskData != null)
-                {
-                    taskData.Succeeded = succeeded;
+                    if (taskData != null)
+                    {
+                        taskData.Succeeded = succeeded;
+                    }
                 }
 #if REPORT_COMMAND_PERFORMANCE
             }

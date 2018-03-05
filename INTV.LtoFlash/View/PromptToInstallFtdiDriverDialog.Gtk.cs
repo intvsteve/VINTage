@@ -1,5 +1,5 @@
 ﻿// <copyright file="PromptToInstallFtdiDriverDialog.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,9 @@
 
 namespace INTV.LtoFlash.View
 {
+    /// <summary>
+    /// GTK-specific implementation.
+    /// </summary>
     public partial class PromptToInstallFtdiDriverDialog : Gtk.Dialog
     {
         private PromptToInstallFtdiDriverDialog()

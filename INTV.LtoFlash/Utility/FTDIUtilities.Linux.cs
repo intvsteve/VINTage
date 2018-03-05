@@ -1,5 +1,5 @@
 ﻿// <copyright file="FTDIUtilities.Linux.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -27,7 +27,6 @@ namespace INTV.LtoFlash.Utility
     /// </summary>
     public static partial class FTDIUtilities
     {
-
         /// <summary>
         /// Gets the FTDI driver version as a string.
         /// </summary>

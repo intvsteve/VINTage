@@ -1,5 +1,5 @@
 ﻿// <copyright file="LtoFlashViewModel.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -48,6 +48,8 @@ namespace INTV.LtoFlash.ViewModel
         partial void OSInitialize()
         {
             _showFTDIWarning = OSVersion.Current < Configuration.Instance.RecommendedOSVersion;
+            var readChunkSize = Properties.Settings.Default.LtoFlashSerialReadChunkSize;
+            INTV.LtoFlash.Model.Commands.DownloadDataBlockFromRam.ReadChunkSize = readChunkSize;
 #if ENABLE_COLORS_PATCH
             _fixColors = new FixColorsList();
             _fixColors.Register();

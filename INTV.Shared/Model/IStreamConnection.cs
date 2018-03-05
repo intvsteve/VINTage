@@ -1,5 +1,5 @@
 ﻿// <copyright file="IStreamConnection.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -37,6 +38,11 @@ namespace INTV.Shared.Model
         /// Gets a value indicating whether the port is open for communication.
         /// </summary>
         bool IsOpen { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is actively in use.
+        /// </summary>
+        bool IsInUse { get; }
 
         /// <summary>
         /// Gets the stream to use for read operations on the connection.
@@ -73,6 +79,13 @@ namespace INTV.Shared.Model
         /// </summary>
         /// <param name="configurationData">Configuration data for the connection. The expected format is in name-value pairs.</param>
         void Configure(IDictionary<string, object> configurationData);
+
+        /// <summary>
+        /// Sets the stream connection as being in use until the returned value is disposed.
+        /// </summary>
+        /// <param name="inUseEnded">Called when the port is no longer in use. May be <c>null</c>.</param>
+        /// <returns>An instance of an IDisposable that marks the connection as being in active use until disposed.</returns>
+        IDisposable SetInUse(Action inUseEnded);
 
         /// <summary>
         /// Estimates the amount of time it will take to transfer the given number of bytes, in milliseconds.

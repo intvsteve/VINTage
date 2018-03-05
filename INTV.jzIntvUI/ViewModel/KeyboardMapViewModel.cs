@@ -1,5 +1,5 @@
 ﻿// <copyright file="KeyboardMapViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2017 All Rights Reserved
+// Copyright (c) 2015-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,23 +23,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using INTV.JzIntv.Model;
-
-#if WIN
-using BaseClass = System.Object;
-#elif MAC
-#if __UNIFIED__
-using BaseClass = Foundation.NSObject;
-#else
-using BaseClass = MonoMac.Foundation.NSObject;
-#endif // __UNIFIED__
-#endif // WIN
+using INTV.Shared.ViewModel;
 
 namespace INTV.JzIntvUI.ViewModel
 {
     /// <summary>
     /// ViewModel for KeyboardMap.
     /// </summary>
-    public class KeyboardMapViewModel : BaseClass
+    public class KeyboardMapViewModel : OSViewModelBase
     {
         /// <summary>
         /// Initializes a new instance of the type.

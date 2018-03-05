@@ -380,6 +380,8 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Interop\IOKit\IOConnect.cs" />
+    <Compile Include="Interop\IOKit\IOMessage.cs" />
     <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
     <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
   </ItemGroup>

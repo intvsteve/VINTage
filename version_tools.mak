@@ -141,7 +141,7 @@ ifneq ($(GIT_REPO),)
   # Additional message to display if using Git.
   # ----------------------------------------------------------------------- #
   USING_GIT_NOTE =
-  USING_GIT_NOTE += (using Git repo does not update version)
+  USING_GIT_NOTE += [using Git repo does not update version]
 endif
 
 # ------------------------------------------------------------------------- #

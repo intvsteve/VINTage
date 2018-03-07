@@ -125,8 +125,7 @@ endif
 ifneq ($(GIT_REPO),)
   VERSION = $(shell grep -o '[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+' $(VERSION_CS_CLASS_OUTPUT_DIR)/$(VERSION_CS))
   SVN_REVISION = $(subst .,,$(suffix $(VERSION)))
-  SVN_DIRTY =
-$(error Git dirty file count not implemented! -$(VERSION)-$(SVN_REVISION)-$(SVN_DIRTY))
+  SVN_DIRTY = $(shell echo `(git status -s || :) | grep -v '^?' | wc -l`)
 endif
 
 # ------------------------------------------------------------------------- #
@@ -135,15 +134,16 @@ endif
 ifneq ($(SVN_REPO),)
   SVN_REVISION := $(shell (svn info -R  $(SVN_LOCAL_REPO_PATH) || :) | grep "Last Changed Rev:" | cut -d' ' -f4 | sort -n | tail -1)
   SVN_DIRTY := $(shell echo `(svn status $(SVN_LOCAL_REPO_PATH) || :) | grep -v '^?' | wc -l`)
+endif
 
-  # ----------------------------------------------------------------------- #
-  # If there are dirty files, check the ALLOW_LOCAL_CHANGES setting.
-  # Depending on that value, the build will either fail, or define SVN_MODS.
-  # ----------------------------------------------------------------------- #
-  ifneq ($(SVN_DIRTY),0)
-    ifeq ($(ALLOW_LOCAL_CHANGES),0)
-      # If there are dirty files, and allowing an update if there are dirty
-      # dirty files is not enabled, then fail.
+# ----------------------------------------------------------------------- #
+# If there are dirty files, check the ALLOW_LOCAL_CHANGES setting.
+# Depending on that value, the build will either fail, or define SVN_MODS.
+# ----------------------------------------------------------------------- #
+ifneq ($(SVN_DIRTY),0)
+  ifeq ($(ALLOW_LOCAL_CHANGES),0)
+    # If there are dirty files, and allowing an update if there are dirty
+    # dirty files is not enabled, then fail.
 
 # ------------------------------------------------------------------------- #
 # Definition: DIRTY_FILES_ERROR
@@ -161,24 +161,23 @@ Skipping version update.
 To allow version updates, set ALLOW_LOCAL_CHANGES=1
 endef
 
-      # ------------------------------------------------------------------- #
-      # Do not report the error for clean.
-      # ------------------------------------------------------------------- #
-      ifneq ($(MAKECMDGOALS),clean)
-        $(error $(DIRTY_FILES_ERROR))
-      endif
-    else
-      # ------------------------------------------------------------------- #
-      # Dirty little trick to get a space in the text.
-      # ------------------------------------------------------------------- #
-      SVN_MODS = 
-      ifeq ($(SVN_DIRTY),1)
-        SVN_FILE_WORD = file
-      else
-        SVN_FILE_WORD = files
-      endif
-      SVN_MODS += ($(SVN_DIRTY) modified $(SVN_FILE_WORD))
+    # ------------------------------------------------------------------- #
+    # Do not report the error for clean.
+    # ------------------------------------------------------------------- #
+    ifneq ($(MAKECMDGOALS),clean)
+      $(error $(DIRTY_FILES_ERROR))
     endif
+  else
+    # ------------------------------------------------------------------- #
+    # Dirty little trick to get a space in the text.
+    # ------------------------------------------------------------------- #
+    SVN_MODS = 
+    ifeq ($(SVN_DIRTY),1)
+      SVN_FILE_WORD = file
+    else
+      SVN_FILE_WORD = files
+    endif
+    SVN_MODS += ($(SVN_DIRTY) modified $(SVN_FILE_WORD))
   endif
 endif
 
@@ -217,4 +216,3 @@ VERSION ?= $(VERSION_SHORT).$(VERSION_REVISION)
 # Set the copyright date to the current year if it's not already set.
 # ------------------------------------------------------------------------- #
 COPYRIGHT_DATE ?= $(shell date "+%Y")
-

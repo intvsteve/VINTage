@@ -36,7 +36,7 @@
       <CustomCommands>
         <Command>
           <type>BeforeBuild</type>
-          <command>make -f version_tools.mak update_version_cs ALLOW_LOCAL_CHANGES?=1</command>
+          <command>make -f version_tools.mak all ALLOW_LOCAL_CHANGES?=1</command>
           <workingdir>${ProjectDir}/..</workingdir>
         </Command>
       </CustomCommands>

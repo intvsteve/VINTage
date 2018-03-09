@@ -10,7 +10,7 @@
     <OutputPath>.</OutputPath>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Build" command="make -f version_tools.mak update_version_cs ALLOW_LOCAL_CHANGES=1" workingdir="${ProjectDir}/.." />
+        <Command type="Build" command="make -f version_tools.mak all ALLOW_LOCAL_CHANGES=1" workingdir="${ProjectDir}/.." />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

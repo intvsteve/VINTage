@@ -19,6 +19,7 @@
 # This makefile is in a subdirectory, so set ROOT_DIR accordingly.
 # ------------------------------------------------------------------------- #
 ROOT_DIR = ../..
+VERSION_CS_CLASS_OUTPUT_DIR = $(ROOT_DIR)
 
 include $(ROOT_DIR)/version.mak
 

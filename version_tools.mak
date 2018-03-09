@@ -141,7 +141,7 @@ ifneq ($(GIT_REPO),)
   # Additional message to display if using Git.
   # ----------------------------------------------------------------------- #
   USING_GIT_NOTE =
-  USING_GIT_NOTE += (using Git repo does not update version)
+  USING_GIT_NOTE += [using Git repo does not update version]
 endif
 
 # ------------------------------------------------------------------------- #
@@ -263,6 +263,23 @@ else
 endif
 
   endif
+
+# ------------------------------------------------------------------------- #
+# Rule: all
+# ------------------------------------------------------------------------- #
+# Everything in one convenient place.
+# ------------------------------------------------------------------------- #
+all: update_version_cs update_info_plist
+
+else
+
+# ------------------------------------------------------------------------- #
+# Rule: all
+# ------------------------------------------------------------------------- #
+# Everything in one convenient place.
+# ------------------------------------------------------------------------- #
+all: update_version_cs
+
 endif
 
 endif

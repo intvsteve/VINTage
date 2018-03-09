@@ -125,7 +125,7 @@ endif
 ifneq ($(GIT_REPO),)
   VERSION = $(shell grep -o '[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+' $(VERSION_CS_CLASS_OUTPUT_DIR)/$(VERSION_CS))
   SVN_REVISION = $(subst .,,$(suffix $(VERSION)))
-  SVN_DIRTY = $(shell echo `(git status -s || :) | grep -v '^?' | wc -l`)
+  SVN_DIRTY := $(shell echo `(git status -s || :) | grep -v '^?' | wc -l`)
 endif
 
 # ------------------------------------------------------------------------- #
@@ -134,6 +134,20 @@ endif
 ifneq ($(SVN_REPO),)
   SVN_REVISION := $(shell (svn info -R  $(SVN_LOCAL_REPO_PATH) || :) | grep "Last Changed Rev:" | cut -d' ' -f4 | sort -n | tail -1)
   SVN_DIRTY := $(shell echo `(svn status $(SVN_LOCAL_REPO_PATH) || :) | grep -v '^?' | wc -l`)
+endif
+
+# ------------------------------------------------------------------------- #
+# If no source control repository is defined, complain and set to zero.
+# If we messed up and failed to get anything... Pretend one thing changed.
+# ------------------------------------------------------------------------- #
+ifeq ($(SVN_DIRTY),)
+  ifeq (,$(GIT_REPO)$(SVN_REPO))
+    $(warning No source control repo set. Unable to determine dirty file count. Using 0.)
+    SVN_DIRTY := 0
+  else
+    $(warning Dirty file count is empty instead of a number. Assuming 1. Good luck.)
+    SVN_DIRTY := 1
+  endif
 endif
 
 # ----------------------------------------------------------------------- #

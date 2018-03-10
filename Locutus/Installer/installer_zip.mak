@@ -32,7 +32,7 @@ PRODUCT_NAME ?= LTOFlash
 # ------------------------------------------------------------------------- #
 # If there are modified files, indicate this in the file name.
 # ------------------------------------------------------------------------- #
-ifneq ($(SVN_DIRTY),)
+ifneq ($(SVN_DIRTY),0)
   # ----------------------------------------------------------------------- #
   # Set this variable to modify the output file name indicating it's not
   # from pristine sources.

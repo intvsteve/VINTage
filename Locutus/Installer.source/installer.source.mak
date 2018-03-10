@@ -24,6 +24,8 @@ include $(ROOT_DIR)/version.mak
 #                     and retrieve source code
 #   GIT_REPO        : if specified, used to retrieve source code
 #   GIT_REPO_REMOTE : OPTIONAL indicate support for 'svn export' using Git
+#   GIT_USERNAME    : OPTIONAL used for svn export when GIT_REPO_REMOTE is 1
+#   GIT_PASSPHRASE  : OPTIONAL used for svn export when GIT_REPO_REMOTE is 1
 # ------------------------------------------------------------------------- #
 
 # ------------------------------------------------------------------------- #
@@ -64,6 +66,13 @@ ifneq (,$(GIT_REPO))
     SVN_REPO := $(GIT_REPO)
     SOURCE_DIR := $(SVN_REPO)
     GIT_REPO := 
+    SVN_CREDENTIALS := 
+    ifneq ($(GIT_USERNAME),)
+      SVN_CREDENTIALS += --username $(GIT_USERNAME)
+    endif
+    ifneq ($(GIT_PASSPHRASE),)
+      SVN_CREDENTIALS += --password $(GIT_PASSPHRASE)
+    endif
   else
     # --------------------------------------------------------------------- #
     # It's assumed $(CURDIR) is the directory containing this makefile, and that
@@ -177,7 +186,7 @@ $(TARGET_DIR):
 	@echo
 	@echo --------------------- Exporting Source From Repo ---------------------
 	@echo ... Exporting from $(SOURCE_DIR) ...
-	svn export $(SOURCE_DIR) $(TARGET_DIR)
+	svn export $(SVN_CREDENTIALS) $(SOURCE_DIR) $(TARGET_DIR)
 	@rm -f $(TARGET_DIR)/.gitattributes
 	@rm -f $(TARGET_DIR)/.gitignore
 

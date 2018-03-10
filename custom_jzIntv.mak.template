@@ -146,4 +146,4 @@ endif
 # you can define the 'sync' command to get the most recent sources prior to
 # building the jzIntv components.
 # ------------------------------------------------------------------------- #
-SYNC_JZINTV = svn update $(JZINTV_DIR)
+SYNC_JZINTV = svn $(SVN_CREDENTIALS) update $(JZINTV_DIR)

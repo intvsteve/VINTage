@@ -31,7 +31,7 @@ namespace INTV
         /// <summary>
         /// The full version string.
         /// </summary>
-        public const string FullVersionString = "1.0.0.3857";
+        public const string FullVersionString = "1.0.0.3865";
 
         /// <summary>
         /// The short version string.
@@ -41,7 +41,7 @@ namespace INTV
         /// <summary>
         /// The build version string.
         /// </summary>
-        public const string BuildVersionString = "Build 3857";
+        public const string BuildVersionString = "Build 3865";
 
         /// <summary>
         /// The current copyright year string.

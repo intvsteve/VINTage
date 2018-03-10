@@ -119,6 +119,26 @@ ifeq (,$(TARGET_MAKEFILE))
 endif
 
 # ------------------------------------------------------------------------- #
+# SVN Authentication
+# ------------------------------------------------------------------------- #
+# You may need a svn user name for sync operations. This is more likely
+# if you've got SVN set up for your jzIntv source and Git for VINTage.
+# ------------------------------------------------------------------------- #
+SVN_USERNAME ?= 
+SVN_PASSPHRASE ?= 
+
+# ------------------------------------------------------------------------- #
+# Set up the arguments needed for SVN access.
+# ------------------------------------------------------------------------- #
+SVN_CREDENTIALS := 
+ifneq ($(SVN_USERNAME),)
+  SVN_CREDENTIALS += --username $(SVN_USERNAME)
+endif
+ifneq ($(SVN_PASSPHRASE),)
+  SVN_CREDENTIALS += --password $(SVN_PASSPHRASE)
+endif
+
+# ------------------------------------------------------------------------- #
 # Syncing the jzIntv Sources
 # ------------------------------------------------------------------------- #
 # If you have set up access to a source control system for the jzIntv code
@@ -126,4 +146,4 @@ endif
 # you can define the 'sync' command to get the most recent sources prior to
 # building the jzIntv components.
 # ------------------------------------------------------------------------- #
-SYNC_JZINTV = svn update $(JZINTV_DIR)
+SYNC_JZINTV = svn $(SVN_CREDENTIALS) update $(JZINTV_DIR)

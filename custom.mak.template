@@ -49,6 +49,15 @@ ifeq ($(findstring https://github.com/,$(GIT_REPO)),https://github.com/)
 endif
 
 # ------------------------------------------------------------------------- #
+# Git Authentication
+# ------------------------------------------------------------------------- #
+# You may need a git user name for some operations, such as creating the
+# source installer, which uses svn commands.
+# ------------------------------------------------------------------------- #
+GIT_USERNAME ?= 
+GIT_PASSPHRASE ?=
+
+# ------------------------------------------------------------------------- #
 # Repository Validation
 # ------------------------------------------------------------------------- #
 # Only one source control repository at a time is supported. If you've

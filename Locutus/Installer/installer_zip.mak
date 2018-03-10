@@ -11,6 +11,7 @@
 # This makefile is in a subdirectory, so set ROOT_DIR accordingly.
 # ------------------------------------------------------------------------- #
 ROOT_DIR = ../..
+VERSION_CS_CLASS_OUTPUT_DIR = $(ROOT_DIR)
 
 include $(ROOT_DIR)/version.mak
 
@@ -31,7 +32,7 @@ PRODUCT_NAME ?= LTOFlash
 # ------------------------------------------------------------------------- #
 # If there are modified files, indicate this in the file name.
 # ------------------------------------------------------------------------- #
-ifneq ($(SVN_DIRTY),)
+ifneq ($(SVN_DIRTY),0)
   # ----------------------------------------------------------------------- #
   # Set this variable to modify the output file name indicating it's not
   # from pristine sources.

@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -423,8 +423,9 @@ namespace INTV.Shared.Model
             var extension = System.IO.Path.GetExtension(cachedPath);
             if (includeOriginalFormat)
             {
-                var suffix = rom.Format.FileExtension().Replace('.', '_');
-                cachedPath = System.IO.Path.ChangeExtension(cachedPath, null) + suffix;
+                var originalExtension = rom.Format.FileExtension();
+                var suffix = originalExtension.Replace('.', '_');
+                cachedPath = cachedPath + suffix + originalExtension;
             }
             cachedPath = System.IO.Path.ChangeExtension(cachedPath, extension);
             var path = System.IO.Path.ChangeExtension(cachedPath, programFileKind.FileExtension());

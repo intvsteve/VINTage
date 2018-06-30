@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathUtils.Linux.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -149,6 +149,17 @@ namespace INTV.Shared.Utility
                     System.Diagnostics.Process.Start(path.AbsoluteUri);
                 }
             }
+        }
+
+        /// <summary>
+        /// Resolves the path for settings.
+        /// </summary>
+        /// <returns>The path for settings.</returns>
+        /// <param name="path">Path.</param>
+        public static string ResolvePathForSettings(string path)
+        {
+            // TODO: Consider supporting Url syntax.
+            return path;
         }
 
         private static string OSFixUpSeparators(string path)

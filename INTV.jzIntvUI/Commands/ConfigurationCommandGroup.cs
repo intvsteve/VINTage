@@ -481,7 +481,15 @@ namespace INTV.JzIntvUI.Commands
         /// <remarks>The EXEC and GROM ROMs MUST be locatable. The ECS ROM will only be strictly required if so indicated.</remarks>
         internal static bool AreRequiredEmulatorPathsValid(bool includeEcsCheck)
         {
-            return IsEmulatorPathValid() && IsExecRomPathvalid(Properties.Settings.Default.ExecRomPath) && IsGromRomPathValid(Properties.Settings.Default.GromRomPath) && (!includeEcsCheck || IsEcsRomPathValid());
+            var emulatorPathIsValid = IsEmulatorPathValid();
+            var execRomPathIsValid = IsExecRomPathvalid(Properties.Settings.Default.ExecRomPath);
+            var gromPathIsValid = IsGromRomPathValid(Properties.Settings.Default.GromRomPath);
+            var ecsPathIsValid = !includeEcsCheck;
+            if (includeEcsCheck)
+            {
+                ecsPathIsValid = IsEcsRomPathValid();
+            }
+            return emulatorPathIsValid && execRomPathIsValid && gromPathIsValid && ecsPathIsValid;
         }
 
         /// <summary>

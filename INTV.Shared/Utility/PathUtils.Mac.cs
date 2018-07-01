@@ -154,7 +154,7 @@ namespace INTV.Shared.Utility
         /// Resolves the path for settings.
         /// </summary>
         /// <returns>The path for settings.</returns>
-        /// <param name="path">Path.</param>
+        /// <param name="path">A path in Uri syntax.</param>
         public static string ResolvePathForSettings(string path)
         {
             var url = NSUrl.FromFilename(path);

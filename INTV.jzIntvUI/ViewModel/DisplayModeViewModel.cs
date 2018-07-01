@@ -27,7 +27,7 @@ namespace INTV.JzIntvUI.ViewModel
     /// <summary>
     /// ViewModel for DisplayMode.
     /// </summary>
-	public class DisplayModeViewModel : OSViewModelBase
+    public class DisplayModeViewModel : OSViewModelBase
     {
         /// <summary>
         /// Initializes a new instance of the type.

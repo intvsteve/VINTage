@@ -1,5 +1,5 @@
 ﻿// <copyright file="JzIntvSettingsPageViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2017 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -612,7 +612,7 @@ namespace INTV.JzIntvUI.ViewModel
             {
                 color = INTV.Core.Model.Stic.Color.Red.ToColor();
             }
-            else if (!ConfigurationCommandGroup.IsEcsRomPathValid())
+            else if (!ConfigurationCommandGroup.IsEcsRomPathValid(EcsRomPath))
             {
                 color = INTV.Core.Model.Stic.Color.Orange.ToColor();
             }

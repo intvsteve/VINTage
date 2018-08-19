@@ -27,7 +27,7 @@ namespace INTV.JzIntvUI.ViewModel
     /// <summary>
     /// ViewModel for DisplayResolution.
     /// </summary>
-	public class DisplayResolutionViewModel : OSViewModelBase
+    public class DisplayResolutionViewModel : OSViewModelBase
     {
         /// <summary>
         /// Initializes a new instance of the type.

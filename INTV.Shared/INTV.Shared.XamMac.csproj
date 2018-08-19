@@ -383,6 +383,8 @@
     <Compile Include="Interop\IOKit\IOConnect.cs" />
     <Compile Include="Interop\IOKit\IOMessage.cs" />
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
+    <Compile Include="ComponentModel\IVINTagePlugin.cs" />
+    <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj">

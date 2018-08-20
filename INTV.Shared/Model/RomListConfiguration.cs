@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListConfiguration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -35,6 +35,7 @@ namespace INTV.Shared.Model
     /// </summary>
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", "ROMs")]
+    [System.ComponentModel.Composition.ExportMetadata("Weight", 0.1)]
     public class RomListConfiguration : INTV.Core.ComponentModel.ModelBase, IConfiguration, System.ComponentModel.Composition.IPartImportsSatisfiedNotification
     {
         private const string BackupDataArea = "BackupData";
@@ -146,6 +147,11 @@ namespace INTV.Shared.Model
         #endregion // Properties
 
         #region IPartImportsSatisfiedNotification
+
+        /// <inheritdoc />
+        public void Initialize()
+        {
+        }
 
         /// <inheritdoc />
         public void OnImportsSatisfied()

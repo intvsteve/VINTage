@@ -1,5 +1,5 @@
 ﻿// <copyright file="IConfiguration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -37,5 +37,10 @@ namespace INTV.Core.ComponentModel
         /// Gets the peripherals that have been historically connected to the system, regardless of whether currently connected.
         /// </summary>
         IEnumerable<IPeripheral> ConnectedPeripheralsHistory { get; }
+
+        /// <summary>
+        /// Perform final initialization before use.
+        /// </summary>
+        void Initialize();
     }
 }

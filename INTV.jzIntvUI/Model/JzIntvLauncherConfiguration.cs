@@ -1,5 +1,5 @@
 ﻿// <copyright file="JzIntvLauncherConfiguration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -31,6 +31,7 @@ namespace INTV.JzIntvUI.Model
     /// </summary>
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", FeatureName)]
+    [System.ComponentModel.Composition.ExportMetadata("Weight", 0.6)]
     public partial class JzIntvLauncherConfiguration : ModelBase, IConfiguration
     {
         /// <summary>
@@ -75,8 +76,6 @@ namespace INTV.JzIntvUI.Model
 
         #endregion // IConfiguration
 
-        #endregion // Properties
-
         /// <summary>
         /// Gets or sets the configured emulator path, or, if not set, the path to the included emulator.
         /// </summary>
@@ -105,6 +104,13 @@ namespace INTV.JzIntvUI.Model
             {
                 return System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "jzIntv", OSEmulatorDirectory, "bin", ProgramFile.Emulator.ProgramNameWithSuffix());
             }
+        }
+
+        #endregion // Properties
+
+        /// <inheritdoc />
+        public void Initialize()
+        {
         }
     }
 }

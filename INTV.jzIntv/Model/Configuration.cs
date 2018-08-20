@@ -62,8 +62,8 @@ namespace INTV.JzIntv.Model
         {
             _programPaths = new Dictionary<ProgramFile, string>();
             var toolsPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, ToolsDirectoryName);
-            ToolsDirectory = toolsPath;
-            IRomHelpers.AddConfigurationEntry(IRomHelpers.ToolsDirectoryKey, ToolsDirectory + System.IO.Path.DirectorySeparatorChar);
+            DefaultToolsDirectory = toolsPath;
+            IRomHelpers.SetConfigurationEntry(IRomHelpers.DefaultToolsDirectoryKey, DefaultToolsDirectory + System.IO.Path.DirectorySeparatorChar);
             ProgramFile[] toolApps =
                 {
                     INTV.JzIntv.Model.ProgramFile.Bin2Rom,
@@ -93,9 +93,9 @@ namespace INTV.JzIntv.Model
         }
 
         /// <summary>
-        /// Gets the directory in which tools are located.
+        /// Gets the directory in which tools are located by default.
         /// </summary>
-        public string ToolsDirectory { get; private set; }
+        public string DefaultToolsDirectory { get; private set; }
 
         /// <summary>
         /// Gets or sets the display mode to use.
@@ -178,7 +178,7 @@ namespace INTV.JzIntv.Model
             if (_programPaths.TryGetValue(program, out programPath))
             {
                 programPath = System.IO.Path.Combine(programPath, program.ProgramName()) + ProgramSuffix;
-                IRomHelpers.AddConfigurationEntry(program.ToString(), programPath); // ensure it's registered w/ INTV.Core
+                IRomHelpers.SetConfigurationEntry(program.ToString(), programPath); // ensure it's registered w/ INTV.Core
             }
             return programPath;
         }

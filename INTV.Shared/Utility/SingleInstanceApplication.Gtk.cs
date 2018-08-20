@@ -121,34 +121,6 @@ namespace INTV.Shared.Utility
             Gtk.Application.Run();
         }
 
-        #region IPartImportsSatisfiedNotification Members
-
-        /// <summary>
-        /// Called when MEF has finished getting all of the imported parts.
-        /// </summary>
-        public void OnImportsSatisfied()
-        {
-            try
-            {
-                InitializePlugins();
-            }
-            catch (System.Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine("Error initializing plugins: " + e.Message);
-            }
-            foreach (var configuration in Configurations)
-            {
-                var settings = configuration.Value.Settings as System.Configuration.ApplicationSettingsBase;
-                if (settings != null)
-                {
-                    AddSettings(settings);
-                }
-            }
-            ReadyState |= AppReadyState.ImportsStatisfied;
-        }
-
-        #endregion //  IPartImportsSatisfiedNotification Members
-
         private static bool FinishInitialization()
         {
             Instance.Initialize(null);
@@ -380,6 +352,22 @@ namespace INTV.Shared.Utility
             _initiatedExit = false;
             _programDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             ////_settings.Add(INTV.Shared.Properties.Settings.Default);
+        }
+
+        /// <summary>
+        /// GTK-specific implementation.
+        /// </summary>
+        partial void OSOnImportsSatisfied()
+        {
+            // TODO: Determine if these are useless in GTK.
+            foreach (var configuration in Configurations.OrderBy(c => c.Metadata.Weight))
+            {
+                var settings = configuration.Value.Settings as System.Configuration.ApplicationSettingsBase;
+                if (settings != null)
+                {
+                    AddSettings(settings);
+                }
+            }
         }
 
         /// <summary>

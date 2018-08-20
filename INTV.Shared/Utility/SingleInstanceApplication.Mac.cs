@@ -1,5 +1,5 @@
 // <copyright file="SingleInstanceApplication.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,17 +21,16 @@
 using System.Linq;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.View;
+
 #if __UNIFIED__
 using AppKit;
 using Foundation;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
-#endif // __UNIFIED__
 
-#if !__UNIFIED__
 using INSApplicationDelegate = MonoMac.AppKit.NSApplicationDelegate;
-#endif // !__UNIFIED__
+#endif // __UNIFIED__
 
 namespace INTV.Shared.Utility
 {
@@ -45,7 +44,6 @@ namespace INTV.Shared.Utility
         private const string MainWindowValueName = "mainWindow";
         private const string FirstResponderValueName = "firstResponder";
         private static System.Configuration.ApplicationSettingsBase _launchSettings;
-        private SplashScreen _splashScreen;
         private bool _registeredObserver;
         private bool _handledDidFinishLaunching;
 
@@ -111,6 +109,11 @@ namespace INTV.Shared.Utility
         /// Gets the timestamp of the last key pressed event.
         /// </summary>
         public double LastKeyPressedTimestamp { get; private set; }
+
+        /// <summary>
+        /// Gets the splash screen.
+        /// </summary>
+        public SplashScreen SplashScreen { get; private set; }
 
         #region IFakeDependencyObject Properties
 
@@ -215,24 +218,6 @@ namespace INTV.Shared.Utility
         }
 
         #endregion // IFakeDependencyObject
-
-        #region IPartImportsSatisfiedNotification
-
-        /// <inheritdoc />
-        public void OnImportsSatisfied()
-        {
-            try
-            {
-                InitializePlugins();
-            }
-            catch (System.Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine("Error initializing plugins: " + e.Message);
-            }
-            ReadyState |= AppReadyState.ImportsStatisfied;
-        }
-
-        #endregion // IPartImportsSatisfiedNotification
 
         #region NSApplication Overrides
 
@@ -390,6 +375,7 @@ namespace INTV.Shared.Utility
         {
             return error;
         }
+
         private bool ApplicationShouldTerminateAfterLastWindowClosedPredicate(NSApplication sender)
         {
             return true;
@@ -404,16 +390,16 @@ namespace INTV.Shared.Utility
                 if (!_handledDidFinishLaunching)
                 {
                     _handledDidFinishLaunching = true;
-                    if (_splashScreen != null)
+                    if (SplashScreen != null)
                     {
                         BeginInvokeOnMainThread(() =>
                         {
-                            if (_splashScreen != null)
+                            if (SplashScreen != null)
                             {
                                 System.Threading.Thread.Sleep(333);
-                                _splashScreen.Hide();
+                                SplashScreen.Hide();
                             }
-                            _splashScreen = null;
+                            SplashScreen = null;
                         });
                     }
                     Instance.ReadyState |= AppReadyState.MainWindowVisible;
@@ -480,7 +466,7 @@ namespace INTV.Shared.Utility
 
             if (shouldShowSplashScreen)
             {
-                _splashScreen = SplashScreen.Show(_splashScreenResource);
+                SplashScreen = SplashScreen.Show(_splashScreenResource);
             }
             _programDirectory = System.IO.Path.GetDirectoryName(mainBundle.BundlePath);
 #if !__UNIFIED__

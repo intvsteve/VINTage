@@ -214,7 +214,7 @@ namespace INTV.Shared.Model
             if (!string.IsNullOrEmpty(rom.ConfigPath) && (PathComparer.Instance.Compare(Path.GetDirectoryName(rom.RomPath), Path.GetDirectoryName(rom.ConfigPath)) != 0))
             {
                 var jzIntv = INTV.Shared.Utility.SingleInstanceApplication.Instance.GetConfiguration<JzIntv.Model.Configuration>();
-                isStockCfgFilePath = PathComparer.Instance.Compare(Path.GetDirectoryName(rom.ConfigPath), jzIntv.ToolsDirectory) == 0;
+                isStockCfgFilePath = PathComparer.Instance.Compare(Path.GetDirectoryName(rom.ConfigPath), jzIntv.DefaultToolsDirectory) == 0;
             }
             return isStockCfgFilePath;
         }

@@ -385,6 +385,7 @@
     <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
     <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
+    <Compile Include="ComponentModel\CompositionHelpers.Mac.cs" />
     <Compile Include="ComponentModel\IVINTagePlugin.cs" />
     <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
   </ItemGroup>

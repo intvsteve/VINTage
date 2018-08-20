@@ -1,5 +1,5 @@
 ﻿// <copyright file="ApplicationCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -167,19 +167,27 @@ namespace INTV.Shared.Commands
             var webRequest = System.Net.WebRequest.Create(versionCheckUrl);
             webRequest.Proxy = null;
             webRequest.Timeout = 30000;
-            var response = webRequest.GetResponse().GetResponseStream();
-            var versionStringBuffer = new char[48];
-            using (var reader = new System.IO.StreamReader(response))
+            try
             {
-                if (reader.BaseStream.CanTimeout)
+                var response = webRequest.GetResponse().GetResponseStream();
+                var versionStringBuffer = new char[48];
+                using (var reader = new System.IO.StreamReader(response))
                 {
-                    reader.BaseStream.ReadTimeout = 20000;
+                    if (reader.BaseStream.CanTimeout)
+                    {
+                        reader.BaseStream.ReadTimeout = 20000;
+                    }
+                    reader.ReadBlock(versionStringBuffer, 0, versionStringBuffer.Length);
+                    data.UpdateVersionString = new string(versionStringBuffer);
                 }
-                reader.ReadBlock(versionStringBuffer, 0, versionStringBuffer.Length);
-                data.UpdateVersionString = new string(versionStringBuffer);
+                var downloadableVersion = new System.Version(data.UpdateVersionString);
+                data.UpdateAvailable = downloadableVersion > data.Version;
             }
-            var downloadableVersion = new System.Version(data.UpdateVersionString);
-            data.UpdateAvailable = downloadableVersion > data.Version;
+            catch (System.Net.WebException)
+            {
+                // Most likely don't have an internet connection or some other web-related
+                // problem occurred. Just try again on next launch.
+            }
         }
 
         private static void CheckForUpdatesComplete(AsyncTaskData taskData)

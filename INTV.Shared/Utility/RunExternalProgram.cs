@@ -176,7 +176,7 @@ namespace INTV.Shared.Utility
         #region Synchronous Call Methods
 
         /// <summary>
-        /// Launches a program and waits for it to finish, returning any output sent do stdout.
+        /// Launches a program and waits for it to finish, returning any output sent to stdout.
         /// </summary>
         /// <param name="programPath">Fully qualified path to the program to launch.</param>
         /// <param name="commandLineArguments">Command line argument string to send to the program.</param>
@@ -184,16 +184,29 @@ namespace INTV.Shared.Utility
         /// <returns>All output sent to stdout during the execution of the program.</returns>
         public static string CallAndReturnStdOut(string programPath, string commandLineArguments, string workingDirectory)
         {
+            return CallAndReturnStdOutAndErrorOut(programPath, commandLineArguments, workingDirectory).First();
+        }
+
+        /// <summary>
+        /// Launches a program and waits for it to finish, returning output sent to stdout in the first entry, and output sent to stderr in the second entry.
+        /// </summary>
+        /// <param name="programPath">Fully qualified path to the program to launch.</param>
+        /// <param name="commandLineArguments">Command line argument string to send to the program.</param>
+        /// <param name="workingDirectory">The working directory for the program.</param>
+        /// <returns>An enumerable containing two entries. The first contains all output sent to stdout during the execution of the program
+        /// and the second contains output sent to stderr during program execution.</returns>
+        public static IEnumerable<string> CallAndReturnStdOutAndErrorOut(string programPath, string commandLineArguments, string workingDirectory)
+        {
             VerifyIsExecutable(programPath);
             var processStartInfo = CreateStartInfo(programPath, commandLineArguments, workingDirectory, false, false, false, true);
             var process = Process.Start(processStartInfo);
             var output = process.StandardOutput.ReadToEnd();
-#if ENABLE_DEBUG_SPAM
             var errorOutput = process.StandardError.ReadToEnd();
+#if ENABLE_DEBUG_SPAM
             System.Diagnostics.Debug.WriteLine("stderr for " + System.IO.Path.GetFileName(programPath) + ": " + errorOutput);
 #endif // ENABLE_DEBUG_SPAM
             process.WaitForExit();
-            return output;
+            return new[] { output, errorOutput };
         }
 
         /// <summary>

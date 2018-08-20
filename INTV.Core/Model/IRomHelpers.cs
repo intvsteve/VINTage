@@ -43,24 +43,24 @@ namespace INTV.Core.Model
         /// <summary>
         /// Key for the tools directory configuration value.
         /// </summary>
-        public static readonly string ToolsDirectoryKey = "ToolsDirectoryKey";
+        public static readonly string DefaultToolsDirectoryKey = "DefaultToolsDirectoryKey";
 
         private static readonly Dictionary<string, object> Configuration = new Dictionary<string, object>();
 
         /// <summary>
         /// Gets the directory containing tools.
         /// </summary>
-        public static string ToolsDirectory
+        public static string DefaultToolsDirectory
         {
-            get { return GetConfigurationEntry<string>(ToolsDirectoryKey); }
+            get { return GetConfigurationEntry<string>(DefaultToolsDirectoryKey); }
         }
 
         /// <summary>
-        /// Adds a configuration-based data value to the general set of configurable values.
+        /// Sets or adds a configuration-based data value to the general set of configurable values.
         /// </summary>
         /// <param name="entryName">The name of the configuration entry, used to retrieve the value.</param>
         /// <param name="value">The value of the configuration entry.</param>
-        public static void AddConfigurationEntry(string entryName, object value)
+        public static void SetConfigurationEntry(string entryName, object value)
         {
             Configuration[entryName] = value;
         }
@@ -407,7 +407,7 @@ namespace INTV.Core.Model
                 }
             }
             var stockCfgFileName = stockConfigFileNumber.ToString() + ProgramFileKind.CfgFile.FileExtension();
-            var stockCfgUri = new Uri(ToolsDirectory + stockCfgFileName);
+            var stockCfgUri = new Uri(DefaultToolsDirectory + stockCfgFileName);
             stockCfgFilePath = Uri.UnescapeDataString(stockCfgUri.AbsolutePath); // Need to unescape spaces.
 #if WIN
             stockCfgFilePath = stockCfgFilePath.Replace('/', System.IO.Path.DirectorySeparatorChar);

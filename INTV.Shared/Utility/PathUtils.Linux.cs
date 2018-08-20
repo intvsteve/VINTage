@@ -154,8 +154,8 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Resolves the path for settings.
         /// </summary>
+        /// <param name="path">The file path to resolve into settings-friendly format.</param>
         /// <returns>The path for settings.</returns>
-        /// <param name="path">A path in Uri syntax.</param>
         public static string ResolvePathForSettings(string path)
         {
             // TODO: Consider supporting Url syntax.

@@ -246,8 +246,20 @@ namespace INTV.Shared.Utility
         /// <inheritdoc />
         public void OnImportsSatisfied()
         {
-            InitializePlugins();
+            foreach (var configuration in Configurations.OrderBy(c => c.Metadata.Weight))
+            {
+                try
+                {
+                    configuration.Value.Initialize();
+                }
+                catch (Exception e)
+                {
+                    // Should we complain loudly about this?
+                    System.Diagnostics.Debug.WriteLine("Error initializing IConfiguration: " + configuration.Metadata.FeatureName + ": \n" + e);
+                }
+            }
             OSOnImportsSatisfied();
+            InitializePlugins();
             ReadyState |= AppReadyState.ImportsStatisfied;
         }
 

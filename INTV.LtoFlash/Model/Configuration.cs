@@ -1,5 +1,5 @@
 ﻿// <copyright file="Configuration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -35,6 +35,7 @@ namespace INTV.LtoFlash.Model
     [System.ComponentModel.Composition.Export(typeof(IApplicationInfo))]
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", FeatureName)]
+    [System.ComponentModel.Composition.ExportMetadata("Weight", 0.8)]
     public partial class Configuration : IApplicationInfo, IConfiguration
     {
         /// <summary>File extension to use for a generic LFS fork when stored as a file on disk.</summary>
@@ -275,6 +276,11 @@ namespace INTV.LtoFlash.Model
         #endregion // IApplicationInfo
 
         #endregion // Properties;
+
+        /// <inheritdoc />
+        public void Initialize()
+        {
+        }
 
         /// <summary>
         /// Gets a Locutus device-specific file path for storing a menu layout.

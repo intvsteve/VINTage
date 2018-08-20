@@ -1,5 +1,5 @@
 ﻿// <copyright file="Configuration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -32,6 +32,7 @@ namespace INTV.JzIntv.Model
     /// </summary>
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", FeatureName)]
+    [System.ComponentModel.Composition.ExportMetadata("Weight", 0.0)]
     public class Configuration : ModelBase, IConfiguration
     {
         /// <summary>
@@ -149,6 +150,11 @@ namespace INTV.JzIntv.Model
         #endregion // IConfiguration
 
         #endregion // Properties
+
+        /// <inheritdoc />
+        public void Initialize()
+        {
+        }
 
         /// <summary>
         /// Sets the directory that should contain the specified program.

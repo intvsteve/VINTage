@@ -1,5 +1,5 @@
 ﻿// <copyright file="Configuration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -31,6 +31,7 @@ namespace INTV.Intellicart.Model
     /// </summary>
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", "Intellicart")]
+    [System.ComponentModel.Composition.ExportMetadata("Weight", 0.7)]
     public class Configuration : IConfiguration, System.ComponentModel.Composition.IPartImportsSatisfiedNotification
     {
         private const string FeatureName = "Intellicart";
@@ -87,6 +88,11 @@ namespace INTV.Intellicart.Model
         #endregion // Imports
 
         #endregion // Properties;
+
+        /// <inheritdoc />
+        public void Initialize()
+        {
+        }
 
         #region IPartImportsSatisfiedNotification
 

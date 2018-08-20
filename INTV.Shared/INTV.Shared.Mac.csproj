@@ -62,6 +62,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Posix" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Utility\SerialPortDetector.cs" />
     <Compile Include="Utility\SingleInstanceApplication.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
+    <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="View\VisualHelpers.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>

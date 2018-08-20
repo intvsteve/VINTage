@@ -43,6 +43,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -249,6 +250,7 @@
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
+    <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="ViewModel\OSViewModelBase.WPF.cs" />
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
     <Compile Include="View\IMainWindow.cs" />

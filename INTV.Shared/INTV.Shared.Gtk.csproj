@@ -60,6 +60,7 @@
       <Package>gconf-sharp-2.0</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.Web" />
   </ItemGroup>
   <!--  <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -206,6 +207,7 @@
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
+    <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="View\DragDropImage.Gtk.cs" />
     <Compile Include="View\EcsFeaturesConfigurationPage.Gtk.cs" />
     <Compile Include="View\FileBrowserDialog.Gtk.cs" />

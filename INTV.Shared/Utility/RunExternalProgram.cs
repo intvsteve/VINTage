@@ -1,5 +1,5 @@
 ﻿// <copyright file="RunExternalProgram.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -122,6 +122,25 @@ namespace INTV.Shared.Utility
         {
             var process = Process.Start(CreateStartInfo(programPath, commandLineArguments, workingDirectory, showWindow, useShellExecute, requiresElevation, false));
             return process;
+        }
+
+        /// <summary>
+        /// Verifies the given program is executable.
+        /// </summary>
+        /// <param name="programPath">Absolute path to the program to start.</param>
+        /// <returns><c>true</c>, if file at path is considered an executable, <c>false</c> otherwise.</returns>
+        public static bool IsFileAtPathExecutable(string programPath)
+        {
+            var isExecutable = false;
+            try
+            {
+                VerifyIsExecutable(programPath);
+                isExecutable = true;
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            return isExecutable;
         }
 
         private static ProcessStartInfo CreateStartInfo(string programPath, string commandLineArguments, string workingDirectory, bool showWindow, bool useShellExecute, bool requiresElevation, bool redirectstdOutAndErr)

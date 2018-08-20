@@ -195,7 +195,7 @@ namespace INTV.Shared.Utility
             // TODO: The following loop seems irrelevant - at least on Mac and likely GTK as well. The settings
             // classes don't derive from ApplicationSettingsBase. It also would appear that _settings is not
             // used anywhere. Perhaps in Windows these are referenced via bindings in the main UI via the Settings property...
-            foreach (var configuration in Configurations.OrderBy(c => c.Metadata.Weight))
+            foreach (var configuration in Configurations)
             {
                 var settings = configuration.Value.Settings as System.Configuration.ApplicationSettingsBase;
                 if (settings != null)

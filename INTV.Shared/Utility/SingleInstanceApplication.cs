@@ -1,5 +1,5 @@
 ﻿// <copyright file="SingleInstanceApplication.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 ////#define REPORT_PERFORMANCE
+////#define REPORT_PLUGIN_INITIALIZATION
 
 using System;
 using System.Collections.Concurrent;
@@ -197,9 +198,16 @@ namespace INTV.Shared.Utility
         public IEnumerable<Lazy<ICommandProvider>> CommandProviders { get; set; }
 
         /// <summary>
+        /// Gets or sets simple VINTage plugins.
+        /// </summary>
+        /// <value>The plugins.</value>
+        [System.ComponentModel.Composition.ImportMany]
+        public IEnumerable<Lazy<IVINTagePlugin, IVINTagePluginMetadata>> Plugins { get; set; }
+
+        /// <summary>
         /// Gets the plugins location.
         /// </summary>
-        internal string PluginsLocation { get; private set; }
+        public string PluginsLocation { get; private set; }
 
         private AppReadyState ReadyState
         {
@@ -220,6 +228,30 @@ namespace INTV.Shared.Utility
         private AppReadyState _readyState;
 
         #endregion // Properties
+
+        /// <summary>
+        /// Sets the version string.
+        /// </summary>
+        /// <param name="newVersionString">The new version string.</param>
+        public static void SetVersionString(string newVersionString)
+        {
+            if (!string.IsNullOrEmpty(newVersionString) && (newVersionString != _versionString))
+            {
+                _versionString = newVersionString;
+            }
+        }
+
+        #region IPartImportsSatisfiedNotification Members
+
+        /// <inheritdoc />
+        public void OnImportsSatisfied()
+        {
+            InitializePlugins();
+            OSOnImportsSatisfied();
+            ReadyState |= AppReadyState.ImportsStatisfied;
+        }
+
+        #endregion //  IPartImportsSatisfiedNotification Members
 
         /// <summary>
         /// Add settings to the application which will be saved at shutdown.
@@ -396,14 +428,47 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Initialize the plugins.
+        /// </summary>
+        private void InitializePlugins()
+        {
+            var plugins = Plugins;
+            if (plugins != null)
+            {
+                foreach (var plugin in plugins.OrderBy(p => p.Metadata.Weight))
+                {
+                    try
+                    {
+                        var pluginInstance = plugin.Value;
+                        ReportPluginStatus("Initializing plugin: " + plugin.Metadata.Name + ": " + pluginInstance.GetType().Assembly.Location + " " + pluginInstance.GetType().Assembly.FullName);
+                        pluginInstance.Initialize();
+                    }
+                    catch (Exception e)
+                    {
+                        // Plugins are deemed 'expendable' and we don't really care if any fail to
+                        // load. We will quietly report anything that happens, though.
+                        ReportPluginStatus("Error while initializing plugin: " + plugin.Metadata.Name + ":\n");
+                        ReportPluginStatus(e.ToString());
+                    }
+                }
+            }
+        }
+
+        [System.Diagnostics.Conditional("REPORT_PLUGIN_INITIALIZATION")]
+        private void ReportPluginStatus(string message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        /// <summary>
         /// Operating system-specific initialization.
         /// </summary>
         partial void OSInitialize();
 
         /// <summary>
-        /// Custom plugin initialization during OnImportsSatisfied().
+        /// Operating system-specific MEF imports satisfied initialization.
         /// </summary>
-        partial void InitializePlugins();
+        partial void OSOnImportsSatisfied();
 
         /// <summary>
         /// Track application startup to ensure startup actions are only executed when the app is truly ready.

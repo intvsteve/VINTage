@@ -98,6 +98,8 @@
     <Compile Include="ComponentModel\ICommand.Mono.cs" />
     <Compile Include="ComponentModel\IconAttribute.cs" />
     <Compile Include="ComponentModel\IPrimaryComponent.cs" />
+    <Compile Include="ComponentModel\IVINTagePlugin.cs" />
+    <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
     <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifierHelpers.cs" />
     <Compile Include="ComponentModel\RelayCommand.cs" />

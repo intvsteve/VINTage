@@ -118,6 +118,8 @@
     <Compile Include="ComponentModel\ICommand.WPF.cs" />
     <Compile Include="ComponentModel\IconAttribute.cs" />
     <Compile Include="ComponentModel\IPrimaryComponent.cs" />
+    <Compile Include="ComponentModel\IVINTagePlugin.cs" />
+    <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
     <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
     <Compile Include="ComponentModel\RelayCommand.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifierHelpers.cs" />

@@ -1,5 +1,5 @@
-﻿// <copyright file="CompositionHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// <copyright file="CompositionHelpers.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -110,6 +110,10 @@ namespace INTV.Shared.ComponentModel
                 catch (System.Reflection.ReflectionTypeLoadException e)
                 {
                     System.Diagnostics.Debug.WriteLine("Bad assembly: " + e);
+                }
+                catch (System.Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error checking assembly: " + e);
                 }
             }
         }

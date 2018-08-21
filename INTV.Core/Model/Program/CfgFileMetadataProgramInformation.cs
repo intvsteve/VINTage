@@ -17,8 +17,7 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
-    
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,12 +28,6 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public class CfgFileMetadataProgramInformation : ProgramInformation
     {
-        private string _title;
-        private string _vendor;
-        private string _year;
-        private CrcData _crc;
-        private ProgramFeatures _features;
-
         #region Constructors
 
         public CfgFileMetadataProgramInformation(IRom rom)
@@ -150,6 +143,7 @@ namespace INTV.Core.Model.Program
             get { return _title; }
             set { _title = value; }
         }
+        private string _title;
 
         /// <inheritdoc />
         public override string Vendor
@@ -157,6 +151,7 @@ namespace INTV.Core.Model.Program
             get { return _vendor; }
             set { _vendor = value; }
         }
+        private string _vendor;
 
         /// <inheritdoc />
         public override string Year
@@ -164,6 +159,7 @@ namespace INTV.Core.Model.Program
             get { return _year; }
             set { _year = value; }
         }
+        private string _year;
 
         /// <inheritdoc />
         public override ProgramFeatures Features
@@ -171,134 +167,128 @@ namespace INTV.Core.Model.Program
             get { return _features; }
             set { _features = value; }
         }
+        private ProgramFeatures _features;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs
         {
             get { yield return _crc; }
         }
+        private CrcData _crc;
 
         #endregion IProgramInformation
 
-        /// <summary>
-        /// Gets the authors.
-        /// </summary>
-        public IEnumerable<string> Authors
+        #region IProgramMetadata
+
+        /// <inheritdoc />
+        public override IEnumerable<string> LongNames
         {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Author).Select(m => m.StringValue); }
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Name).Select(m => m.StringValue); }
         }
 
-        /// <summary>
-        /// Gets the graphics artists.
-        /// </summary>
-        public IEnumerable<string> Graphics
+        /// <inheritdoc />
+        public override IEnumerable<string> ShortNames
         {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.GameArt).Select(m => m.StringValue); }
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.ShortName).Select(m => m.StringValue); }
         }
 
-        /// <summary>
-        /// Gets the music credits.
-        /// </summary>
-        public IEnumerable<string> Music
-        {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Music).Select(m => m.StringValue); }
-        }
-
-        /// <summary>
-        /// Gets the sound effects credits.
-        /// </summary>
-        public IEnumerable<string> SoundEffects
-        {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.SoundEffects).Select(m => m.StringValue); }
-        }
-
-        /// <summary>
-        /// Gets the voice acting credits.
-        /// </summary>
-        public IEnumerable<string> Voices
-        {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.VoiceActing).Select(m => m.StringValue); }
-        }
-
-        /// <summary>
-        /// Gets the documentation credits.
-        /// </summary>
-        public IEnumerable<string> Documentation
-        {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Documentation).Select(m => m.StringValue); }
-        }
-
-        /// <summary>
-        /// Gets the artwork credits for boxes, et. al.
-        /// </summary>
-        public IEnumerable<string> Artwork
-        {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.BoxOrOtherArtwork).Select(m => m.StringValue); }
-        }
-
-        /// <summary>
-        /// Gets the program concept credits.
-        /// </summary>
-        public IEnumerable<string> Concept
-        {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.ConceptDesign).Select(m => m.StringValue); }
-        }
-
-        /// <summary>
-        /// Gets the 'more info' values.
-        /// </summary>
-        public IEnumerable<string> MoreInfo
-        {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.MoreInfo).Select(m => m.StringValue); }
-        }
-
-        /// <summary>
-        /// Gets the publishers.
-        /// </summary>
-        public IEnumerable<string> Publishers
-        {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Publisher).Select(m => m.StringValue); }
-        }
-
-        /// <summary>
-        /// Gets the release licenses.
-        /// </summary>
-        public IEnumerable<string> Licenses
-        {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.License).Select(m => m.StringValue); }
-        }
-
-        /// <summary>
-        /// Gets the descriptions.
-        /// </summary>
-        public IEnumerable<string> Descriptions
+        /// <inheritdoc />
+        public override IEnumerable<string> Descriptions
         {
             get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Description).Select(m => m.StringValue); }
         }
 
-        /// <summary>
-        /// Gets the release dates.
-        /// </summary>
-        public IEnumerable<MetadataDateTime> ReleaseDates
+        /// <inheritdoc />
+        public override IEnumerable<string> Publishers
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Publisher).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Programmers
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Author).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Designers
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.ConceptDesign).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Graphics
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.GameArt).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Music
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Music).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> SoundEffects
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.SoundEffects).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Voices
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.VoiceActing).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Documentation
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Documentation).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Artwork
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.BoxOrOtherArtwork).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> ReleaseDates
         {
             get { return Metadata.OfType<CfgVarMetadataDate>().Where(m => m.Type == CfgVarMetadataIdTag.ReleaseDate).Select(m => m.Date); }
         }
 
-        /// <summary>
-        /// Gets the build dates.
-        /// </summary>
-        public IEnumerable<MetadataDateTime> BuildDates
+        /// <inheritdoc />
+        public override IEnumerable<string> Licenses
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.License).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> ContactInformation
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.MoreInfo).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Versions
+        {
+            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Version).Select(m => m.StringValue); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> BuildDates
         {
             get { return Metadata.OfType<CfgVarMetadataDate>().Where(m => m.Type == CfgVarMetadataIdTag.BuildDate).Select(m => m.Date); }
         }
 
-        /// <summary>
-        /// Gets the versions.
-        /// </summary>
-        public IEnumerable<string> Versions
+        /// <inheritdoc />
+        public override IEnumerable<string> AdditionalInformation
         {
-            get { return Metadata.OfType<CfgVarMetadataString>().Where(m => m.Type == CfgVarMetadataIdTag.Version).Select(m => m.StringValue); }
+            get { yield break; }
         }
+
+        #endregion // IProgramMetadata
 
         /// <summary>
         /// Gets all the metadata in its originally parsed form.

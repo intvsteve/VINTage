@@ -157,6 +157,10 @@ namespace INTV.Shared.Model
         public void OnImportsSatisfied()
         {
             var initializedCoreStreamUtils = INTV.Core.Utility.StreamUtilities.Initialize(new StorageAccess());
+            if (initializedCoreStreamUtils)
+            {
+                INTV.Core.Utility.StringUtilities.RegisterHtmlDecoder(StringUtilities.HtmlDecode);
+            }
             System.Diagnostics.Debug.Assert(initializedCoreStreamUtils, "Failed to initialize stream utilities!");
             Core.Model.IRomHelpers.InitializeCallbacks(GetIntvNameData);
             _applicationDocumentsPath = Path.Combine(PathUtils.GetDocumentsDirectory(), AppInfo.DocumentFolderName);

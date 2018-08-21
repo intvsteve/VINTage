@@ -1,5 +1,5 @@
 ﻿// <copyright file="UnmergedProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -28,12 +28,6 @@ namespace INTV.Core.Model.Program
     /// </summary>
     internal class UnmergedProgramInformation : ProgramInformation
     {
-        private string _title;
-        private string _vendor;
-        private string _year;
-        private List<CrcData> _crc;
-        private ProgramFeatures _features;
-
         /// <summary>
         /// Creates a new instance of the UnmergedProgramInformation class.
         /// </summary>
@@ -62,9 +56,9 @@ namespace INTV.Core.Model.Program
             _features = features;
         }
 
-        #region IProgramInformation
-
         #region Properties
+
+        #region IProgramInformation
 
         /// <inheritdoc />
         public override ProgramInformationOrigin DataOrigin
@@ -78,6 +72,7 @@ namespace INTV.Core.Model.Program
             get { return _title; }
             set { _title = value; }
         }
+        private string _title;
 
         /// <inheritdoc />
         public override ProgramFeatures Features
@@ -85,12 +80,14 @@ namespace INTV.Core.Model.Program
             get { return _features; }
             set { _features = value; }
         }
+        private ProgramFeatures _features;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs
         {
             get { return _crc; }
         }
+        private List<CrcData> _crc;
 
         /// <inheritdoc />
         public override string Vendor
@@ -98,6 +95,7 @@ namespace INTV.Core.Model.Program
             get { return _vendor; }
             set { _vendor = value; }
         }
+        private string _vendor;
 
         /// <inheritdoc />
         public override string Year
@@ -105,8 +103,125 @@ namespace INTV.Core.Model.Program
             get { return _year; }
             set { _year = value; }
         }
+        private string _year;
+
+        #endregion // IProgramInformation
+
+        #region IProgramMetadata
+
+        /// <inheritdoc />
+        public override IEnumerable<string> LongNames
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> ShortNames
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Descriptions
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Publishers
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Programmers
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Designers
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Graphics
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Music
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> SoundEffects
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Voices
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Documentation
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Artwork
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> ReleaseDates
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Licenses
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> ContactInformation
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Versions
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> BuildDates
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> AdditionalInformation
+        {
+            get { yield break; }
+        }
+
+        #endregion // IProgramMetadata
 
         #endregion // Properties
+
+        #region IProgramInformation Methods
 
         /// <inheritdoc />
         public override bool AddCrc(uint newCrc, string crcDescription, IncompatibilityFlags incompatibilities)
@@ -114,6 +229,6 @@ namespace INTV.Core.Model.Program
             throw new NotImplementedException();
         }
 
-        #endregion IProgramInformation
+        #endregion // IProgramInformation Methods
     }
 }

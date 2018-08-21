@@ -1,5 +1,5 @@
 ﻿// <copyright file="UserSpecifiedProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using INTV.Core.ComponentModel;
 
@@ -33,14 +34,7 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public class UserSpecifiedProgramInformation : ProgramInformation, INotifyPropertyChanged
     {
-        private bool _isDirty;
-        private string _title;
-        private string _vendor;
-        private string _year;
-        private ProgramFeatures _features;
-        private Dictionary<uint, KeyValuePair<string, IncompatibilityFlags>> _crcs = new Dictionary<uint, KeyValuePair<string, IncompatibilityFlags>>();
         private bool _initialized;
-        private ProgramInformationOrigin _origin;
 
         #region Constructors
 
@@ -125,7 +119,7 @@ namespace INTV.Core.Model.Program
             _features = features;
             _crcs[crc] = new KeyValuePair<string, IncompatibilityFlags>(crcDescription, incompatibilities);
             _origin = ProgramInformationOrigin.UserDefined;
-            _initialized = true;
+            FinishInitialization();
         }
 
         /// <summary>
@@ -154,7 +148,7 @@ namespace INTV.Core.Model.Program
             {
                 _crcs = programInformation.Crcs.ToDictionary(c => c.Crc, d => new KeyValuePair<string, IncompatibilityFlags>(d.Description, d.Incompatibilities));
             }
-            _initialized = true;
+            FinishInitialization();
         }
 
         private UserSpecifiedProgramInformation()
@@ -172,13 +166,14 @@ namespace INTV.Core.Model.Program
 
         #region Properties
 
-        #region IProgramInformation Properties
+        #region IProgramInformation
 
         /// <inheritdoc />
         public override ProgramInformationOrigin DataOrigin
         {
             get { return _origin; }
         }
+        private ProgramInformationOrigin _origin;
 
         /// <inheritdoc />
         public override string Title
@@ -196,6 +191,7 @@ namespace INTV.Core.Model.Program
                 }
             }
         }
+        private string _title;
 
         /// <inheritdoc />
         public override string Vendor
@@ -203,6 +199,7 @@ namespace INTV.Core.Model.Program
             get { return _vendor; }
             set { this.AssignAndUpdateProperty(PropertyChanged, "Vendor", value, ref _vendor, MarkDirty); }
         }
+        private string _vendor;
 
         /// <inheritdoc />
         public override string Year
@@ -210,6 +207,7 @@ namespace INTV.Core.Model.Program
             get { return _year; }
             set { this.AssignAndUpdateProperty(PropertyChanged, "Year", value, ref _year, MarkDirty); }
         }
+        private string _year;
 
         /// <inheritdoc />
         public override ProgramFeatures Features
@@ -217,14 +215,147 @@ namespace INTV.Core.Model.Program
             get { return _features; }
             set { this.AssignAndUpdateProperty(PropertyChanged, "Features", value, ref _features, MarkDirty); }
         }
+        private ProgramFeatures _features;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs
         {
             get { return _crcs.Select(crc => new CrcData(crc.Key, crc.Value)); }
         }
+        private Dictionary<uint, KeyValuePair<string, IncompatibilityFlags>> _crcs = new Dictionary<uint, KeyValuePair<string, IncompatibilityFlags>>();
 
-        #endregion // IProgramInformation Properties
+        #endregion // IProgramInformation
+
+        #region IProgramMetadata
+
+        /// <inheritdoc />
+        public override IEnumerable<string> LongNames
+        {
+            get { return _longNames; }
+        }
+        private HashSet<string> _longNames;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> ShortNames
+        {
+            get { return _shortNames; }
+        }
+        private HashSet<string> _shortNames;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Descriptions
+        {
+            get { return _descriptions; }
+        }
+        private HashSet<string> _descriptions;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Publishers
+        {
+            get { return _publishers; }
+        }
+        private HashSet<string> _publishers;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Programmers
+        {
+            get { return _programmers; }
+        }
+        private HashSet<string> _programmers;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Designers
+        {
+            get { return _designers; }
+        }
+        private HashSet<string> _designers;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Graphics
+        {
+            get { return _graphics; }
+        }
+        private HashSet<string> _graphics;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Music
+        {
+            get { return _music; }
+        }
+        private HashSet<string> _music;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> SoundEffects
+        {
+            get { return _soundEffects; }
+        }
+        private HashSet<string> _soundEffects;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Voices
+        {
+            get { return _voices; }
+        }
+        private HashSet<string> _voices;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Documentation
+        {
+            get { return _documentation; }
+        }
+        private HashSet<string> _documentation;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Artwork
+        {
+            get { return _artwork; }
+        }
+        private HashSet<string> _artwork;
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> ReleaseDates
+        {
+            get { return _releaseDates; }
+        }
+        private SortedSet<MetadataDateTime> _releaseDates;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Licenses
+        {
+            get { return _licenses; }
+        }
+        private HashSet<string> _licenses;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> ContactInformation
+        {
+            get { return _contactInformation; }
+        }
+        private HashSet<string> _contactInformation;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Versions
+        {
+            get { return _versions; }
+        }
+        private HashSet<string> _versions;
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> BuildDates
+        {
+            get { return _buildDates; }
+        }
+        private SortedSet<MetadataDateTime> _buildDates;
+
+        /// <inheritdoc />
+        public override IEnumerable<string> AdditionalInformation
+        {
+            get { return GetAdditionalInformationString(); }
+        }
+
+        private Dictionary<string, string> _additionalInformation;
+
+        #endregion // IProgramMetadata
 
         /// <summary>
         /// Gets a value indicating whether the information has been modified or not.
@@ -234,6 +365,7 @@ namespace INTV.Core.Model.Program
             get { return _isDirty; }
             private set { this.AssignAndUpdateProperty(PropertyChanged, "IsModified", value, ref _isDirty); }
         }
+        private bool _isDirty;
 
         private IProgramInformation SourceInformation { get; set; }
 
@@ -256,9 +388,272 @@ namespace INTV.Core.Model.Program
 
         #endregion // IProgramInformation
 
+        /// <summary>
+        /// Adds a long name to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="longName">The long name to add.</param>
+        /// <returns><c>true</c> if the long name was added, <c>false</c> if the value was already in the long names list.</returns>
+        public bool AddLongName(string longName)
+        {
+            var added = _longNames.Add(longName);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a short name to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="shortName">The short name to add.</param>
+        /// <returns><c>true</c> if the short name was added, <c>false</c> if the value was already in the short names list.</returns>
+        public bool AddShortName(string shortName)
+        {
+            var added = _shortNames.Add(shortName);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a description to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="description">The description to add.</param>
+        /// <returns><c>true</c> if the description was added, <c>false</c> if the value was already in the description list.</returns>
+        public bool AddDescription(string description)
+        {
+            var added = _descriptions.Add(description);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a publisher credit to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="publisher">The publisher credit to add.</param>
+        /// <returns><c>true</c> if the publisher credit was added, <c>false</c> if the value was already in the publisher credits list.</returns>
+        public bool AddPublisher(string publisher)
+        {
+            var added = _publishers.Add(publisher);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a programmer credit to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="programmer">The programmer credit to add.</param>
+        /// <returns><c>true</c> if the programmer credit was added, <c>false</c> if the value was already in the programmer credits list.</returns>
+        public bool AddProgrammer(string programmer)
+        {
+            var added = _programmers.Add(programmer);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a designer credit to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="designer">The designer credit to add.</param>
+        /// <returns><c>true</c> if the designer credit was added, <c>false</c> if the value was already in the designer credits list.</returns>
+        public bool AddDesigner(string designer)
+        {
+            var added = _designers.Add(designer);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a graphics credit to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="graphics">The graphics credit to add.</param>
+        /// <returns><c>true</c> if the graphics credit was added, <c>false</c> if the value was already in the graphics credits list.</returns>
+        public bool AddGraphics(string graphics)
+        {
+            var added = _graphics.Add(graphics);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a music credit to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="music">The music credit to add.</param>
+        /// <returns><c>true</c> if the music credit was added, <c>false</c> if the value was already in the music credits list.</returns>
+        public bool AddMusic(string music)
+        {
+            var added = _music.Add(music);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a sound effects credit to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="soundEffects">The sound effects credit to add.</param>
+        /// <returns><c>true</c> if the sound effects credit was added, <c>false</c> if the value was already in the sound effects credits list.</returns>
+        public bool AddSoundEffects(string soundEffects)
+        {
+            var added = _soundEffects.Add(soundEffects);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a voice credit to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="voice">The voice credit to add.</param>
+        /// <returns><c>true</c> if the voice credit was added, <c>false</c> if the value was already in the voice credits list.</returns>
+        public bool AddVoice(string voice)
+        {
+            var added = _voices.Add(voice);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a documentation credit to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="documentation">The documentation credit to add.</param>
+        /// <returns><c>true</c> if the documentation credit was added, <c>false</c> if the value was already in the documentation credits list.</returns>
+        public bool AddDocumentation(string documentation)
+        {
+            var added = _documentation.Add(documentation);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds an artwork credit to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="artwork">The artwork credit to add.</param>
+        /// <returns><c>true</c> if the artwork credit was added, <c>false</c> if the value was already in the artwork credits list.</returns>
+        public bool AddArtwork(string artwork)
+        {
+            var added = _artwork.Add(artwork);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a release date to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="releaseDate">The release date to add.</param>
+        /// <returns><c>true</c> if the release date was added, <c>false</c> if the value was already in the release dates list.</returns>
+        public bool AddReleaseDate(MetadataDateTime releaseDate)
+        {
+            var added = _releaseDates.Add(releaseDate);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a license to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="license">The license to add.</param>
+        /// <returns><c>true</c> if the license was added, <c>false</c> if the value was already in the licenses list.</returns>
+        public bool AddLicense(string license)
+        {
+            var added = _licenses.Add(license);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds contact information to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="contactInformation">The contact information to add.</param>
+        /// <returns><c>true</c> if the contact information was added, <c>false</c> if the value was already in the contact information list.</returns>
+        public bool AddContactInformation(string contactInformation)
+        {
+            var added = _contactInformation.Add(contactInformation);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a version to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="version">The version to add.</param>
+        /// <returns><c>true</c> if the version was added, <c>false</c> if the value was already in the versions list.</returns>
+        public bool AddVersion(string version)
+        {
+            var added = _versions.Add(version);
+            return added;
+        }
+
+        /// <summary>
+        /// Adds a build date to the metadata. Duplicate values are rejected.
+        /// </summary>
+        /// <param name="buildDate">The build date to add.</param>
+        /// <returns><c>true</c> if the build date was added, <c>false</c> if the value was already in the build dates list.</returns>
+        public bool AddBuildDate(MetadataDateTime buildDate)
+        {
+            var added = _buildDates.Add(buildDate);
+            return added;
+        }
+
+        /// <summary>
+        /// Provide more supplemental information about the program to the metadata.
+        /// </summary>
+        /// <param name="key">An identifier for the additional information.</param>
+        /// <param name="value">The additional information.</param>
+        /// <remarks>If data is already present for the identifier described by <paramref name="key"/>, then <paramref name="value"/> is appended to the existing data.</remarks>
+        public void AddAdditionalInformation(string key, string value)
+        {
+            string existingInfo;
+            if (_additionalInformation.TryGetValue(key, out existingInfo))
+            {
+                existingInfo += ", " + value;
+            }
+            else
+            {
+                existingInfo = value;
+            }
+            _additionalInformation[key] = existingInfo;
+        }
+
+        private void FinishInitialization()
+        {
+            _longNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _shortNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _descriptions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _publishers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _programmers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _designers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _graphics = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _music = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _soundEffects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _voices = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _documentation = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _artwork = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _releaseDates = new SortedSet<MetadataDateTime>();
+            _licenses = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _contactInformation = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _versions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _buildDates = new SortedSet<MetadataDateTime>();
+            _additionalInformation = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            if (!string.IsNullOrEmpty(_title))
+            {
+                _longNames.Add(_title);
+            }
+
+            if (!string.IsNullOrEmpty(ShortName))
+            {
+                _shortNames.Add(ShortName);
+            }
+
+            if (!string.IsNullOrEmpty(_vendor))
+            {
+                AddPublisher(_vendor);
+            }
+
+            if (!string.IsNullOrEmpty(_year))
+            {
+                int releaseYear;
+                if (int.TryParse(_year, out releaseYear))
+                {
+                    var dateTime = new DateTime(releaseYear, MetadataDateTime.DefaultMonth, MetadataDateTime.DefaultDay);
+                    var releaseDate = new MetadataDateTime(dateTime, MetadataDateTimeFlags.Year);
+                    AddReleaseDate(releaseDate);
+                }
+            }
+
+            _initialized = true;
+        }
+
         private void MarkDirty<T>(string modifiedPropertyName, T newValue)
         {
             IsModified = _initialized;
+        }
+
+        private IEnumerable<string> GetAdditionalInformationString()
+        {
+            var additionalInfos = _additionalInformation.Select(i => string.Format(CultureInfo.CurrentCulture, "{0}: {1}", i.Key, i.Value));
+            return additionalInfos;
         }
     }
 }

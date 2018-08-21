@@ -1,5 +1,5 @@
 ﻿// <copyright file="StringUtilities.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -30,6 +30,8 @@ namespace INTV.Core.Utility
     /// </summary>
     public static class StringUtilities
     {
+        private static Func<string, string> _htmlDecoder;
+
         /// <summary>
         /// The replacement character to use for characters not in the GROM character set.
         /// </summary>
@@ -66,6 +68,30 @@ namespace INTV.Core.Utility
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// Registers a delegate to decode a string that was HTML-encoded.
+        /// </summary>
+        /// <param name="decoder">The HTML decoder delegate to use.</param>
+        public static void RegisterHtmlDecoder(Func<string, string> decoder)
+        {
+            _htmlDecoder = decoder;
+        }
+
+        /// <summary>
+        /// Decodes a string that was HTML-encoded.
+        /// </summary>
+        /// <param name="encodedHtmlString">A string that was HTML-encoded.</param>
+        /// <returns>The decoded string.</returns>
+        public static string DecodeHtmlString(this string encodedHtmlString)
+        {
+            var decodedHtmlString = encodedHtmlString;
+            if (_htmlDecoder != null)
+            {
+                decodedHtmlString = _htmlDecoder(encodedHtmlString);
+            }
+            return decodedHtmlString;
         }
 
         #region C-style Format Specifier Support

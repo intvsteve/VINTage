@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.IO;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
 
@@ -74,10 +75,20 @@ namespace INTV.Core.Restricted.Model.Program
         {
             using (var resourceStream = typeof(IRom).Assembly.GetManifestResourceStream(typeof(IRom).Namespace + ".Resources.intvfunhouse_gameinfo.xml"))
             {
-                var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(IntvFunhouseXmlProgramInformationTable));
-                var programInfoTable = xmlSerializer.Deserialize(resourceStream) as IntvFunhouseXmlProgramInformationTable;
-                return programInfoTable;
+                return LoadFromStream(resourceStream);
             }
+        }
+
+        /// <summary>
+        /// Initialize a program information table from the given data stream.
+        /// </summary>
+        /// <param name="stream">The data stream that contains the XML game database to load.</param>
+        /// <returns>A program information table.</returns>
+        public static IntvFunhouseXmlProgramInformationTable LoadFromStream(Stream stream)
+        {
+            var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(IntvFunhouseXmlProgramInformationTable));
+            var programInfoTable = xmlSerializer.Deserialize(stream) as IntvFunhouseXmlProgramInformationTable;
+            return programInfoTable;
         }
  
         /// <summary>

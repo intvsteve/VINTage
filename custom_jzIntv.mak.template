@@ -68,6 +68,12 @@ JZINTV_DIR_LINUX =
 JZINTV_DIR       = $(JZINTV_DIR_$(TARGET_OS))
 
 # ------------------------------------------------------------------------- #
+# This value defaults to 1 to skip the local jzIntv build when the path to
+# the jzIntv source is not specified.
+# ------------------------------------------------------------------------- #
+SKIP_IF_JZINTV_EMPTY ?= 1
+
+# ------------------------------------------------------------------------- #
 # Validate configuration for jzIntv.
 # ------------------------------------------------------------------------- #
 ifeq (,$(JZINTV_DIR))

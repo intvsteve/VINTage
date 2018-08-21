@@ -40,7 +40,7 @@ namespace INTV.Core.Utility
     public class NSDataWrapper : NSData
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.Utility.SingleInstanceApplication"/> class.
+        /// Initializes a new instance of the <see cref="NSDataWrapper"/> class.
         /// </summary>
         /// <param name="handle">Native object handle.</param>
         /// <remarks>Called when created from unmanaged code.
@@ -52,7 +52,7 @@ namespace INTV.Core.Utility
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Core.Utility.NSDataWrapper"/> class.
+        /// Initializes a new instance of the <see cref="NSDataWrapper"/> class.
         /// </summary>
         /// <param name="wrappedObject">The standard C# object to wrap inside the NSObject.</param>
         public NSDataWrapper(object wrappedObject)

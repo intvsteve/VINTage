@@ -28,7 +28,7 @@ namespace INTV.Core.Model
     /// <summary>
     /// Metadata ID values for 'CFGVAR' entries supported in jzIntv.
     /// </summary>
-    /// <remarks>The authoratative list of these is in the jzIntv source, in
+    /// <remarks>The authoritative list of these is in the jzIntv source, in
     /// doc/utilities/as1600.txt.</remarks>
     public enum CfgVarMetadataIdTag : byte
     {
@@ -108,7 +108,7 @@ namespace INTV.Core.Model
         /// <summary>Compatibility value: Compatibility level with ECS.</summary>
         EcsCompatibility,
 
-        /// <summary>Compatiblity value: Compatibility level with Intellivoice.</summary>
+        /// <summary>Compatibility value: Compatibility level with Intellivoice.</summary>
         IntellivoiceCompatibility,
 
         /// <summary>Compatibility value: Compatibility with Intellivision II.</summary>
@@ -117,7 +117,7 @@ namespace INTV.Core.Model
         /// <summary>Compatibility value: Compatibility with Keyboard Component.</summary>
         KeyboardComponentCompatibility,
 
-        /// <summary>Compat value: Compatibility with TutorVision/INTV88</summary>
+        /// <summary>Compatibility value: Compatibility with TutorVision/INTV88</summary>
         TutorvisionCompatibility,
 
         /// <summary>Remapped values that are similar to EcsCompatibility.</summary>
@@ -142,7 +142,7 @@ namespace INTV.Core.Model
         /// <summary>Synonym for JlpAccelerators.</summary>
         Jlp,
 
-        /// <summary>Specify JLP flash storage copacity in 1.5K byte blocks.</summary>
+        /// <summary>Specify JLP flash storage capacity in 1.5K byte blocks.</summary>
         JlpFlash,
     }
 

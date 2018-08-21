@@ -65,7 +65,7 @@ namespace INTV.Core.Model.Program
         /// <param name="videoStandardCompatiblity">The video standard compatibility to coerce.</param>
         /// <returns>The coerced value.</returns>
         /// <remarks>The ProgramFeatures.Combine() method had a bug that would result in combining the 'Tolerates' and 'Enhances' modes,
-        /// which resulted in a value of <see cref="FeatureCompatibility.Required"/>. This method is used internally to correct for the problem.
+        /// which resulted in a value of <see cref="FeatureCompatibility.Requires"/>. This method is used internally to correct for the problem.
         /// To do so, it will strip the FeatureCompatibility.Tolerates bit. Recall that for video standards, FeatureCompatibility.Enhanced
         /// indicates that video standard compatibility is unknown.</remarks>
         public static FeatureCompatibility CoerceVideoStandardCompatibility(this FeatureCompatibility videoStandardCompatiblity)

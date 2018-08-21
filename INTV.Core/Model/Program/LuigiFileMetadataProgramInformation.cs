@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFileMetadataProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -29,12 +29,6 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public class LuigiFileMetadataProgramInformation : ProgramInformation
     {
-        private string _title;
-        private string _vendor;
-        private string _year;
-        private CrcData _crc;
-        private ProgramFeatures _features;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Core.Model.Program.LuigiFileMetadataProgramInformation"/> class.
         /// </summary>
@@ -73,6 +67,7 @@ namespace INTV.Core.Model.Program
             get { return _title; }
             set { _title = value; }
         }
+        private string _title;
 
         /// <inheritdoc />
         public override string Vendor
@@ -80,6 +75,7 @@ namespace INTV.Core.Model.Program
             get { return _vendor; }
             set { _vendor = value; }
         }
+        private string _vendor;
 
         /// <inheritdoc />
         public override string Year
@@ -87,6 +83,7 @@ namespace INTV.Core.Model.Program
             get { return _year; }
             set { _year = value; }
         }
+        private string _year;
 
         /// <inheritdoc />
         public override ProgramFeatures Features
@@ -94,126 +91,128 @@ namespace INTV.Core.Model.Program
             get { return _features; }
             set { _features = value; }
         }
+        private ProgramFeatures _features;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs
         {
             get { yield return _crc; }
         }
+        private CrcData _crc;
 
         #endregion // IProgramInformation
 
-        /// <summary>
-        /// Gets the authors.
-        /// </summary>
-        public IEnumerable<string> Authors
+        #region IProgramMetadata
+
+        /// <inheritdoc />
+        public override IEnumerable<string> LongNames
         {
-            get { return Metadata.Authors; }
+            get { return Metadata.LongNames; }
         }
 
-        /// <summary>
-        /// Gets the graphics artists.
-        /// </summary>
-        public IEnumerable<string> Graphics
+        /// <inheritdoc />
+        public override IEnumerable<string> ShortNames
         {
-            get { return Metadata.GraphicsCredits; }
+            get { return Metadata.ShortNames; }
         }
 
-        /// <summary>
-        /// Gets the music credits.
-        /// </summary>
-        public IEnumerable<string> Music
+        /// <inheritdoc />
+        public override IEnumerable<string> Descriptions
         {
-            get { return Metadata.MusicCredits; }
+            get { return Metadata.Descriptions; }
         }
 
-        /// <summary>
-        /// Gets the sound effects credits.
-        /// </summary>
-        public IEnumerable<string> SoundEffects
-        {
-            get { return Metadata.SoundEffectsCredits; }
-        }
-
-        /// <summary>
-        /// Gets the voice acting credits.
-        /// </summary>
-        public IEnumerable<string> Voices
-        {
-            get { return Metadata.VoiceActingCredits; }
-        }
-
-        /// <summary>
-        /// Gets the documentation credits.
-        /// </summary>
-        public IEnumerable<string> Documentation
-        {
-            get { return Metadata.DocumentationCredits; }
-        }
-
-        /// <summary>
-        /// Gets the artwork credits for boxes, et. al.
-        /// </summary>
-        public IEnumerable<string> Artwork
-        {
-            get { return Metadata.BoxOrOtherArtworkCredits; }
-        }
-
-        /// <summary>
-        /// Gets the program concept credits.
-        /// </summary>
-        public IEnumerable<string> Concept
-        {
-            get { return Metadata.ConceptAndDesignCredits; }
-        }
-
-        /// <summary>
-        /// Gets the 'more info' values.
-        /// </summary>
-        public IEnumerable<string> MoreInfo
-        {
-            get { return Metadata.UrlContactInfos; }
-        }
-
-        /// <summary>
-        /// Gets the publishers.
-        /// </summary>
-        public IEnumerable<string> Publishers
+        /// <inheritdoc />
+        public override IEnumerable<string> Publishers
         {
             get { return Metadata.Publishers; }
         }
 
-        /// <summary>
-        /// Gets the release licenses.
-        /// </summary>
-        public IEnumerable<string> Licenses
+        /// <inheritdoc />
+        public override IEnumerable<string> Programmers
         {
-            get { return Metadata.Licenses; }
+            get { return Metadata.Authors; }
         }
 
-        /// <summary>
-        /// Gets the release dates.
-        /// </summary>
-        public IEnumerable<MetadataDateTime> ReleaseDates
+        /// <inheritdoc />
+        public override IEnumerable<string> Designers
+        {
+            get { return Metadata.ConceptAndDesignCredits; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Graphics
+        {
+            get { return Metadata.GraphicsCredits; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Music
+        {
+            get { return Metadata.MusicCredits; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> SoundEffects
+        {
+            get { return Metadata.SoundEffectsCredits; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Voices
+        {
+            get { return Metadata.VoiceActingCredits; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Documentation
+        {
+            get { return Metadata.DocumentationCredits; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Artwork
+        {
+            get { return Metadata.BoxOrOtherArtworkCredits; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> ReleaseDates
         {
             get { return Metadata.Dates; }
         }
 
-        /// <summary>
-        /// Gets the build dates.
-        /// </summary>
-        public IEnumerable<MetadataDateTime> BuildDates
+        /// <inheritdoc />
+        public override IEnumerable<string> Licenses
+        {
+            get { return Metadata.Licenses; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> ContactInformation
+        {
+            get { return Metadata.UrlContactInfos; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Versions
+        {
+            get { return Metadata.Versions; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> BuildDates
         {
             get { return Metadata.BuildDates; }
         }
 
-        /// <summary>
-        /// Gets the versions.
-        /// </summary>
-        public IEnumerable<string> Versions
+        /// <inheritdoc />
+        public override IEnumerable<string> AdditionalInformation
         {
-            get { return Metadata.Versions; }
+            get { yield break; }
         }
+
+        #endregion // IProgramMetadata
 
         private LuigiMetadataBlock Metadata { get; set; }
 

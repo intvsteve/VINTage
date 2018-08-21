@@ -46,6 +46,7 @@ namespace INTV.Shared.View
                             messageBox.AlertStyle = (NSAlertStyle)icon;
                             messageBox.AddButton(GetCustomTextForButton(OSMessageBoxButton.OK, customButtonLabels, buttons));
                             var defaultButton = messageBox.Buttons[0];
+                            var defaultButtonIndex = 0;
                             NSButton buttonTwo = null;
                             NSButton buttonThree = null;
                             switch (buttons)
@@ -53,9 +54,17 @@ namespace INTV.Shared.View
                                 case OSMessageBoxButton.OK:
                                     break;
                                 case OSMessageBoxButton.YesNo:
+                                    if (defaultResult == OSMessageBoxResult.No)
+                                    {
+                                        defaultButtonIndex = 1;
+                                    }
                                     buttonTwo = messageBox.AddButton(GetCustomTextForButton(OSMessageBoxButton.YesNo, customButtonLabels, buttons));
                                     break;
                                 case OSMessageBoxButton.YesNoCancel:
+                                    if (defaultResult == OSMessageBoxResult.Cancel)
+                                    {
+                                        defaultButtonIndex = 2;
+                                    }
                                     buttonTwo = messageBox.AddButton(GetCustomTextForButton(OSMessageBoxButton.YesNo, customButtonLabels, buttons));
                                     buttonThree = messageBox.AddButton(GetCustomTextForButton(OSMessageBoxButton.YesNoCancel, customButtonLabels, buttons));
                                     break;
@@ -66,6 +75,11 @@ namespace INTV.Shared.View
                                 System.Diagnostics.Debug.WriteLineIf((defaultButton != null) && customButtonLabels.TryGetValue(OSMessageBoxButton.OK, out buttonText) && (buttonText != GetCustomTextForButton(OSMessageBoxButton.OK, customButtonLabels, buttons)), "Custom button1 text not used.");
                                 System.Diagnostics.Debug.WriteLineIf((buttonTwo != null) && customButtonLabels.TryGetValue(OSMessageBoxButton.YesNo, out buttonText) && (buttonText != GetCustomTextForButton(OSMessageBoxButton.YesNo, customButtonLabels, buttons)), "Custom button2 text not used.");
                                 System.Diagnostics.Debug.WriteLineIf((buttonThree != null) && customButtonLabels.TryGetValue(OSMessageBoxButton.YesNoCancel, out buttonText) && (buttonText != GetCustomTextForButton(OSMessageBoxButton.YesNoCancel, customButtonLabels, buttons)), "Custom button3 text not used.");
+                            }
+                            if (defaultButtonIndex != 0)
+                            {
+                                defaultButton.KeyEquivalent = string.Empty;
+                                messageBox.Buttons[defaultButtonIndex].KeyEquivalent = "\r";
                             }
                             result = (OSMessageBoxResult)(int)messageBox.RunModal();
                         }

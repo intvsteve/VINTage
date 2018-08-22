@@ -1,6 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4A23F4BC-E695-411E-9939-6519A4C11C86}"
+	ProjectSection(SolutionItems) = preProject
+		cleanup.mak = cleanup.mak
+		cleanup_bash.bat = cleanup_bash.bat
+		common.mak = common.mak
+		custom.bat = custom.bat
+		custom.mak = custom.mak
+		custom.mak.template = custom.mak.template
+		custom_bat_rule.bat = custom_bat_rule.bat
+		custom_jzIntv.mak = custom_jzIntv.mak
+		custom_jzIntv.mak.template = custom_jzIntv.mak.template
+		custom_jzIntv_mak_rule.mak = custom_jzIntv_mak_rule.mak
+		custom_mak_rule.mak = custom_mak_rule.mak
+		setup_bash.bat = setup_bash.bat
+		version.mak = version.mak
+		version_tools.bat = version_tools.bat
+		version_tools.mak = version_tools.mak
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -69,7 +69,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\INTV.Core\INTV.Core.pcl.csproj">
+    <ProjectReference Include="..\..\INTV.Core\INTV.Core.pcl.csproj">
       <Project>{b90d8e04-5f83-45d7-bd39-0198a7c7c325}</Project>
       <Name>INTV.Core.pcl</Name>
     </ProjectReference>

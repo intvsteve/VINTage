@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Shared.desktop", "INTV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.desktop", "INTV.jzIntvUI\INTV.jzIntvUI.desktop.csproj", "{F5D99023-C6DE-472F-9D8F-055DEDDB0046}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Intellicart.desktop", "INTV.Intellicart\INTV.Intellicart.desktop.csproj", "{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,16 @@ Global
 		{F5D99023-C6DE-472F-9D8F-055DEDDB0046}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F5D99023-C6DE-472F-9D8F-055DEDDB0046}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F5D99023-C6DE-472F-9D8F-055DEDDB0046}.Release|Win32.ActiveCfg = Release|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{58CAF3A2-B2B8-4C59-9AEA-3E63DE5CBF0C}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

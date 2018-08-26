@@ -37,6 +37,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Intellicart.xp", "INTV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.xp", "INTV.LtoFlash\INTV.LtoFlash.xp.csproj", "{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Ribbon.xp", "INTV.Ribbon\INTV.Ribbon.xp.csproj", "{5C833300-A573-4F08-92E7-B02C7E8AA41D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{47F7AF54-FA4E-49A7-843F-DBAE2C062770} = {47F7AF54-FA4E-49A7-843F-DBAE2C062770}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +122,16 @@ Global
 		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Release|Win32.ActiveCfg = Release|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5C833300-A573-4F08-92E7-B02C7E8AA41D}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntvUI.xp", "INTV.jz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Intellicart.xp", "INTV.Intellicart\INTV.Intellicart.xp.csproj", "{5D607C5A-F89E-4EB3-B03E-194E65E0918B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.LtoFlash.xp", "INTV.LtoFlash\INTV.LtoFlash.xp.csproj", "{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,16 @@ Global
 		{5D607C5A-F89E-4EB3-B03E-194E65E0918B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{5D607C5A-F89E-4EB3-B03E-194E65E0918B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{5D607C5A-F89E-4EB3-B03E-194E65E0918B}.Release|Win32.ActiveCfg = Release|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{01112EF8-65A5-44D5-B2C3-5A2AAE35AE57}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

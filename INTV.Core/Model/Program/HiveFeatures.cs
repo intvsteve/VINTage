@@ -74,8 +74,13 @@ namespace INTV.Core.Model.Program
         public const HiveFeatures Default = HiveFeatures.Incompatible;
 
         /// <summary>
+        /// Mask to use to retrieve basic feature mask from larger flag sets.
+        /// </summary>
+        public const uint FeaturesMask = 0x1F;
+
+        /// <summary>
         /// Valid flags.
         /// </summary>
-        public const HiveFeatures ValidFeaturesMask = (HiveFeatures)0x1F;
+        public const HiveFeatures ValidFeaturesMask = (HiveFeatures)FeaturesMask;
     }
 }

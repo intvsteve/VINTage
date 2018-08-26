@@ -156,6 +156,11 @@ namespace INTV.Core.Model.Program
             LtoFlashFeatures.SixteenBitRAM | LtoFlashFeatures.UsbPortEnhanced | LtoFlashFeatures.UsbPortRequired | LtoFlashFeatures.LtoFlashMemoryMapped;
 
         /// <summary>
+        /// Mask to use to retrieve basic feature mask from larger flag sets.
+        /// </summary>
+        public const uint FeaturesMask = (uint)ValidFeaturesMask;
+
+        /// <summary>
         /// Converts LtoFlashFeatures to LuigiFeatureFlags.
         /// </summary>
         /// <param name="features">The LTO Flash! features to convert.</param>

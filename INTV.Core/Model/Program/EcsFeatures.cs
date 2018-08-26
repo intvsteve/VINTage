@@ -94,9 +94,14 @@ namespace INTV.Core.Model.Program
         public const EcsFeatures SerialPortMask = (EcsFeatures)(FeatureCompatibilityHelpers.CompatibilityMask << SerialPortOffset);
 
         /// <summary>
+        /// Mask to use to retrieve basic feature mask from larger flag sets.
+        /// </summary>
+        public const uint FeaturesMask = 0x7F;
+
+        /// <summary>
         /// Valid flags.
         /// </summary>
-        public const EcsFeatures ValidFeaturesMask = (EcsFeatures)0x7F;
+        public const EcsFeatures ValidFeaturesMask = (EcsFeatures)FeaturesMask;
 
         /// <summary>
         /// Converts EcsFeatures to LuigiFeatureFlags.

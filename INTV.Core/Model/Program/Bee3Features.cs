@@ -74,8 +74,13 @@ namespace INTV.Core.Model.Program
         public const Bee3Features Default = Bee3Features.Incompatible;
 
         /// <summary>
+        /// Mask to use to retrieve basic feature mask from larger flag sets.
+        /// </summary>
+        public const uint FeaturesMask = 0x1F;
+
+        /// <summary>
         /// Valid flags.
         /// </summary>
-        public const Bee3Features ValidFeaturesMask = (Bee3Features)0x1F;
+        public const Bee3Features ValidFeaturesMask = (Bee3Features)FeaturesMask;
     }
 }

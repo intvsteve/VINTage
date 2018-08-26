@@ -3,6 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "INTV.Version.Mono", "INTV.Version\INTV.Version.Mono.mdproj", "{FABCE177-FBC7-49ED-880C-CDD3757F28FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03713519-465F-471D-ABBB-1764CD5F1E60}"
+	ProjectSection(SolutionItems) = preProject
+		cleanup.mak = cleanup.mak
+		common.mak = common.mak
+		custom_jzIntv_mak_rule.mak = custom_jzIntv_mak_rule.mak
+		custom_jzIntv.mak = custom_jzIntv.mak
+		custom_jzIntv.mak.template = custom_jzIntv.mak.template
+		custom_mak_rule.mak = custom_mak_rule.mak
+		custom.mak = custom.mak
+		custom.mak.template = custom.mak.template
+		version_tools.mak = version_tools.mak
+		version.mak = version.mak
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Any CPU = Default|Any CPU

@@ -129,9 +129,14 @@ namespace INTV.Core.Model.Program
         public const int PrinterOffset = BasicOffset + BasicFeatureBitCount;
 
         /// <summary>
+        /// Mask to use to retrieve basic feature mask from larger flag sets.
+        /// </summary>
+        public const uint FeaturesMask = 0x1FF;
+
+        /// <summary>
         /// Valid flags.
         /// </summary>
-        public const KeyboardComponentFeatures ValidFeaturesMask = (KeyboardComponentFeatures)0x1FF;
+        public const KeyboardComponentFeatures ValidFeaturesMask = (KeyboardComponentFeatures)FeaturesMask;
 
         /// <summary>
         /// Mask for extracting Microsoft Basic cartridge compatibility.

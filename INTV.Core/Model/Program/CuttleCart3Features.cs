@@ -113,8 +113,13 @@ namespace INTV.Core.Model.Program
         public const CuttleCart3Features SerialPortMask = (CuttleCart3Features)(FeatureCompatibilityHelpers.CompatibilityMask << SerialPortOffset);
 
         /// <summary>
+        /// Mask to use to retrieve basic feature mask from larger flag sets.
+        /// </summary>
+        public const uint FeaturesMask = 0xFF;
+
+        /// <summary>
         /// Valid flags.
         /// </summary>
-        public const CuttleCart3Features ValidFeaturesMask = (CuttleCart3Features)0xFF;
+        public const CuttleCart3Features ValidFeaturesMask = (CuttleCart3Features)FeaturesMask;
     }
 }

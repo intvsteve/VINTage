@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Core.VSMac", "INTV.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.jzIntv.VSMac", "INTV.jzIntv\INTV.jzIntv.VSMac.csproj", "{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Shared.VSMac", "INTV.Shared\INTV.Shared.VSMac.csproj", "{245FD6EE-0B2E-4119-9211-4AA77511E23B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Any CPU = Default|Any CPU
@@ -46,6 +48,12 @@ Global
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AED5EDF-87C4-4852-881D-E18DDCC8CB97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{245FD6EE-0B2E-4119-9211-4AA77511E23B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

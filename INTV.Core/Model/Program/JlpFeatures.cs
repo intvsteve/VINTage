@@ -204,9 +204,14 @@ namespace INTV.Core.Model.Program
         public const JlpFeatures SerialPortMask = (JlpFeatures)(FeatureCompatibilityHelpers.CompatibilityMask << SerialPortOffset);
 
         /// <summary>
+        /// Mask to use to retrieve basic feature mask from larger flag sets.
+        /// </summary>
+        public const uint FeaturesMask = 0x1FF;
+
+        /// <summary>
         /// Valid flags.
         /// </summary>
-        public const JlpFeatures ValidFeaturesMask = (JlpFeatures)0x1FF;
+        public const JlpFeatures ValidFeaturesMask = (JlpFeatures)FeaturesMask;
 
         /// <summary>
         /// This mask can be used to recover the number of sectors a program using JLP Flash is using.

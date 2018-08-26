@@ -61,6 +61,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Posix" />
     <Reference Include="Xamarin.Mac" />
+    <Reference Include="System.Web.Services" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Utility\SerialPortDetector.cs" />
     <Compile Include="Utility\SingleInstanceApplication.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
+    <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="View\VisualHelpers.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>
@@ -383,6 +385,9 @@
     <Compile Include="Interop\IOKit\IOConnect.cs" />
     <Compile Include="Interop\IOKit\IOMessage.cs" />
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
+    <Compile Include="ComponentModel\CompositionHelpers.Mac.cs" />
+    <Compile Include="ComponentModel\IVINTagePlugin.cs" />
+    <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.VSMac.csproj">

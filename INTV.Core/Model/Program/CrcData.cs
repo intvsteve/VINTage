@@ -33,7 +33,7 @@ namespace INTV.Core.Model.Program
         /// Initializes a new instance of the CrcData class.
         /// </summary>
         /// <param name="crc">CRC of the ROM file.</param>
-        /// <exception cref="ArgumentException">Thrown if crc is zero.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if crc is zero.</exception>
         public CrcData(uint crc)
             : this(crc, string.Empty)
         {
@@ -44,7 +44,7 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <param name="crc">CRC of the ROM file.</param>
         /// <param name="description">A brief description of the ROM variant.</param>
-        /// <exception cref="ArgumentException">Thrown if crc is zero.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if crc is zero.</exception>
         public CrcData(uint crc, string description)
             : this(crc, description, IncompatibilityFlags.None)
         {
@@ -56,7 +56,7 @@ namespace INTV.Core.Model.Program
         /// <param name="crc">CRC of the ROM file.</param>
         /// <param name="description">A brief description of the ROM variant.</param>
         /// <param name="incompatibilities">Describes known hardware incompatibilities associated with the ROM.</param>
-        /// <exception cref="ArgumentException">Thrown if crc is zero.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if crc is zero.</exception>
         public CrcData(uint crc, string description, IncompatibilityFlags incompatibilities)
             : this(crc, description, incompatibilities, 0)
         {
@@ -82,7 +82,7 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <param name="crc">CRC of the ROM file.</param>
         /// <param name="data">A Key/Value pair of the ROMs description and known incompatibilities.</param>
-        /// <exception cref="ArgumentException">Thrown if crc is zero.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if crc is zero.</exception>
         public CrcData(uint crc, KeyValuePair<string, IncompatibilityFlags> data)
             : this(crc, data.Key, data.Value)
         {

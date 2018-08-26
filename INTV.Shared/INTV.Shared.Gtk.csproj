@@ -60,6 +60,7 @@
       <Package>gconf-sharp-2.0</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.Web" />
   </ItemGroup>
   <!--  <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -98,6 +99,8 @@
     <Compile Include="ComponentModel\ICommand.Mono.cs" />
     <Compile Include="ComponentModel\IconAttribute.cs" />
     <Compile Include="ComponentModel\IPrimaryComponent.cs" />
+    <Compile Include="ComponentModel\IVINTagePlugin.cs" />
+    <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
     <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifierHelpers.cs" />
     <Compile Include="ComponentModel\RelayCommand.cs" />
@@ -204,6 +207,7 @@
     <Compile Include="Utility\StartupTaskPriority.cs" />
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
+    <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="View\DragDropImage.Gtk.cs" />
     <Compile Include="View\EcsFeaturesConfigurationPage.Gtk.cs" />
     <Compile Include="View\FileBrowserDialog.Gtk.cs" />

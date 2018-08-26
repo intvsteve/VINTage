@@ -1,5 +1,5 @@
 ﻿// <copyright file="IConfigurationMetadata.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -29,5 +29,10 @@ namespace INTV.Core.ComponentModel
         /// Gets the name of the feature providing an IConfiguration interface.
         /// </summary>
         string FeatureName { get; }
+
+        /// <summary>
+        /// Gets the weight used to order IConfiguration instances.
+        /// </summary>
+        double Weight { get; }
     }
 }

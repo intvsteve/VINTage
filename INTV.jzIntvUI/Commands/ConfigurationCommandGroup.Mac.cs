@@ -67,13 +67,6 @@ namespace INTV.JzIntvUI.Commands
             return resolvedPath;
         }
 
-        private static string ResolvePathForSettings(string path)
-        {
-            var url = NSUrl.FromFilename(path);
-            path = url.AbsoluteString;
-            return path;
-        }
-
         #region CommandGroup
 
         /// <summary>

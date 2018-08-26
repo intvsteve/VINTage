@@ -110,6 +110,8 @@
     <Compile Include="Model\Program\IProgramInformation.cs" />
     <Compile Include="Model\Program\IProgramInformationHelpers.cs" />
     <Compile Include="Model\Program\IProgramInformationTable.cs" />
+    <Compile Include="Model\Program\IProgramMetadata.cs" />
+    <Compile Include="Model\Program\IProgramMetadataHelpers.cs" />
     <Compile Include="Model\Program\JlpFeatures.cs" />
     <Compile Include="Model\Program\KeyboardComponentFeatures.cs" />
     <Compile Include="Model\Program\LtoFlashFeatures.cs" />

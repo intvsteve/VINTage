@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathUtils.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -148,6 +148,18 @@ namespace INTV.Shared.Utility
         public static void RevealInFileSystem(this IEnumerable<string> files)
         {
             NSWorkspace.SharedWorkspace.ActivateFileViewer(files.Select(f => NSUrl.FromFilename(f)).ToArray());
+        }
+
+        /// <summary>
+        /// Resolves the path for settings.
+        /// </summary>
+        /// <param name="path">The file path to resolve into settings-friendly format.</param>
+        /// <returns>The path for settings.</returns>
+        public static string ResolvePathForSettings(string path)
+        {
+            var url = NSUrl.FromFilename(path);
+            path = url.AbsoluteString;
+            return path;
         }
 
         private static string OSFixUpSeparators(string path)

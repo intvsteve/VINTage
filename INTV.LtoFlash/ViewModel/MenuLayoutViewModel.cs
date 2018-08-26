@@ -1,5 +1,5 @@
 ﻿// <copyright file="MenuLayoutViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -173,7 +173,7 @@ namespace INTV.LtoFlash.ViewModel
                 _filePath = savedMenuPath;
                 Model = LoadMenuLayout(savedMenuPath);
                 MenuLayout.MenuLayoutSaved += HandleMenuLayoutSaved;
-                var toolsLocation = SingleInstanceApplication.Instance.GetConfiguration<JzIntv.Model.Configuration>().ToolsDirectory;
+                var toolsLocation = SingleInstanceApplication.Instance.GetConfiguration<JzIntv.Model.Configuration>().DefaultToolsDirectory;
                 if (!System.IO.Directory.Exists(toolsLocation))
                 {
                     throw new InvalidOperationException(Resources.Strings.ToolsDirectoryMissingMessage);

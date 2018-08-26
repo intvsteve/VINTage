@@ -1,5 +1,5 @@
 ﻿// <copyright file="ConfigurationCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2017 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -433,11 +433,12 @@ namespace INTV.JzIntvUI.Commands
         /// <summary>
         /// Determines whether the path to the ECS ROM is valid.
         /// </summary>
+        /// <param name="path">Absolute path to the ECS ROM.</param>
         /// <returns><c>true</c>, if ECS rom path appears to be valid, <c>false</c> otherwise.</returns>
         /// <remarks>This checks only that the file exists, and appears to be a ROM. Note that for .bin format ROMs, that check is not very reliable.</remarks>
-        internal static bool IsEcsRomPathValid()
+        internal static bool IsEcsRomPathValid(string path)
         {
-            var ecsRomPath = ResolvePathSetting(Properties.Settings.Default.EcsRomPath);
+            var ecsRomPath = ResolvePathSetting(path);
             if (string.IsNullOrEmpty(ecsRomPath) && IsEmulatorPathValid())
             {
                 var emulatorPath = SingleInstanceApplication.Instance.GetConfiguration<JzIntvLauncherConfiguration>().EmulatorPath;
@@ -447,12 +448,7 @@ namespace INTV.JzIntvUI.Commands
                     ecsRomPath = System.IO.Path.Combine(emulatorDirectory, "ECS.bin");
                 }
             }
-            var isValid = IsPathValid(ecsRomPath);
-            if (isValid)
-            {
-                // Ensure that this at least appears to be a valid ROM.
-                isValid = Rom.CheckRomFormat(ecsRomPath) == RomFormat.Bin;
-            }
+            var isValid = IsRomPathValid(ecsRomPath);
             return isValid;
         }
 
@@ -481,7 +477,15 @@ namespace INTV.JzIntvUI.Commands
         /// <remarks>The EXEC and GROM ROMs MUST be locatable. The ECS ROM will only be strictly required if so indicated.</remarks>
         internal static bool AreRequiredEmulatorPathsValid(bool includeEcsCheck)
         {
-            return IsEmulatorPathValid() && IsExecRomPathvalid(Properties.Settings.Default.ExecRomPath) && IsGromRomPathValid(Properties.Settings.Default.GromRomPath) && (!includeEcsCheck || IsEcsRomPathValid());
+            var emulatorPathIsValid = IsEmulatorPathValid();
+            var execRomPathIsValid = IsExecRomPathvalid(Properties.Settings.Default.ExecRomPath);
+            var gromPathIsValid = IsGromRomPathValid(Properties.Settings.Default.GromRomPath);
+            var ecsPathIsValid = !includeEcsCheck;
+            if (includeEcsCheck)
+            {
+                ecsPathIsValid = IsEcsRomPathValid(Properties.Settings.Default.ExecRomPath);
+            }
+            return emulatorPathIsValid && execRomPathIsValid && gromPathIsValid && ecsPathIsValid;
         }
 
         /// <summary>
@@ -510,7 +514,7 @@ namespace INTV.JzIntvUI.Commands
                 {
                     missingFiles.Add("GROM.bin");
                 }
-                if (includeEcsCheck && !IsEcsRomPathValid())
+                if (includeEcsCheck && !IsEcsRomPathValid(Properties.Settings.Default.EcsRomPath))
                 {
                     missingFiles.Add("ECS.bin");
                 }
@@ -570,7 +574,7 @@ namespace INTV.JzIntvUI.Commands
                 var result = browser.ShowDialog();
                 if (result == FileBrowserDialogResult.Ok)
                 {
-                    var path = ResolvePathForSettings(browser.FileNames.First());
+                    var path = PathUtils.ResolvePathForSettings(browser.FileNames.First());
                     switch (whichFile)
                     {
                         case EmulatorFile.JzIntv:

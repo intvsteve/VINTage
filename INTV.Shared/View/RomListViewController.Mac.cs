@@ -449,6 +449,13 @@ namespace INTV.Shared.View
         /// <summary>
         /// Implements the <see cref="NSPasteboardWriting"/> protocol methods necessary for drag and drop on the ROM list.
         /// </summary>
+        /// <remarks>At least the MonoMac version will report this when dragging, but it doesn't seem to be fatal:
+        /// Instances of class INTV.Shared.View.RomListViewController+ProgramInformationPasteboardWriting not valid for
+        /// NSPasteboard -writeObjects:.  The class INTV.Shared.View.RomListViewController+ProgramInformationPasteboardWriting
+        /// does not implement the NSPasteboardWriting protocol.
+        /// This may be addressed in newer Xamarin based on this:
+        /// https://forums.xamarin.com/discussion/26421/nsdraggingsession-enumeratedraggingitems
+        /// Need to check if this error still happens in the 64-bit builds using Xamarin.Mac.</remarks>
         private class ProgramInformationPasteboardWriting : NSPasteboardWriting
         {
             /// <summary>

@@ -62,6 +62,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Posix" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Utility\SerialPortDetector.cs" />
     <Compile Include="Utility\SingleInstanceApplication.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
+    <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="View\VisualHelpers.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>
@@ -385,6 +387,9 @@
     <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
     <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
+    <Compile Include="ComponentModel\CompositionHelpers.Mac.cs" />
+    <Compile Include="ComponentModel\IVINTagePlugin.cs" />
+    <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />

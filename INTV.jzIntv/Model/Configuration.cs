@@ -1,5 +1,5 @@
 ﻿// <copyright file="Configuration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -32,6 +32,7 @@ namespace INTV.JzIntv.Model
     /// </summary>
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", FeatureName)]
+    [System.ComponentModel.Composition.ExportMetadata("Weight", 0.0)]
     public class Configuration : ModelBase, IConfiguration
     {
         /// <summary>
@@ -61,8 +62,8 @@ namespace INTV.JzIntv.Model
         {
             _programPaths = new Dictionary<ProgramFile, string>();
             var toolsPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, ToolsDirectoryName);
-            ToolsDirectory = toolsPath;
-            IRomHelpers.AddConfigurationEntry(IRomHelpers.ToolsDirectoryKey, ToolsDirectory + System.IO.Path.DirectorySeparatorChar);
+            DefaultToolsDirectory = toolsPath;
+            IRomHelpers.SetConfigurationEntry(IRomHelpers.DefaultToolsDirectoryKey, DefaultToolsDirectory + System.IO.Path.DirectorySeparatorChar);
             ProgramFile[] toolApps =
                 {
                     INTV.JzIntv.Model.ProgramFile.Bin2Rom,
@@ -92,9 +93,9 @@ namespace INTV.JzIntv.Model
         }
 
         /// <summary>
-        /// Gets the directory in which tools are located.
+        /// Gets the directory in which tools are located by default.
         /// </summary>
-        public string ToolsDirectory { get; private set; }
+        public string DefaultToolsDirectory { get; private set; }
 
         /// <summary>
         /// Gets or sets the display mode to use.
@@ -150,6 +151,11 @@ namespace INTV.JzIntv.Model
 
         #endregion // Properties
 
+        /// <inheritdoc />
+        public void Initialize()
+        {
+        }
+
         /// <summary>
         /// Sets the directory that should contain the specified program.
         /// </summary>
@@ -172,7 +178,7 @@ namespace INTV.JzIntv.Model
             if (_programPaths.TryGetValue(program, out programPath))
             {
                 programPath = System.IO.Path.Combine(programPath, program.ProgramName()) + ProgramSuffix;
-                IRomHelpers.AddConfigurationEntry(program.ToString(), programPath); // ensure it's registered w/ INTV.Core
+                IRomHelpers.SetConfigurationEntry(program.ToString(), programPath); // ensure it's registered w/ INTV.Core
             }
             return programPath;
         }

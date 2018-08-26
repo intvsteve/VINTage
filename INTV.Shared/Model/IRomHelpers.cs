@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -214,7 +214,7 @@ namespace INTV.Shared.Model
             if (!string.IsNullOrEmpty(rom.ConfigPath) && (PathComparer.Instance.Compare(Path.GetDirectoryName(rom.RomPath), Path.GetDirectoryName(rom.ConfigPath)) != 0))
             {
                 var jzIntv = INTV.Shared.Utility.SingleInstanceApplication.Instance.GetConfiguration<JzIntv.Model.Configuration>();
-                isStockCfgFilePath = PathComparer.Instance.Compare(Path.GetDirectoryName(rom.ConfigPath), jzIntv.ToolsDirectory) == 0;
+                isStockCfgFilePath = PathComparer.Instance.Compare(Path.GetDirectoryName(rom.ConfigPath), jzIntv.DefaultToolsDirectory) == 0;
             }
             return isStockCfgFilePath;
         }
@@ -423,8 +423,9 @@ namespace INTV.Shared.Model
             var extension = System.IO.Path.GetExtension(cachedPath);
             if (includeOriginalFormat)
             {
-                var suffix = rom.Format.FileExtension().Replace('.', '_');
-                cachedPath = System.IO.Path.ChangeExtension(cachedPath, null) + suffix;
+                var originalExtension = rom.Format.FileExtension();
+                var suffix = originalExtension.Replace('.', '_');
+                cachedPath = cachedPath + suffix + originalExtension;
             }
             cachedPath = System.IO.Path.ChangeExtension(cachedPath, extension);
             var path = System.IO.Path.ChangeExtension(cachedPath, programFileKind.FileExtension());

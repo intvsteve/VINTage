@@ -148,18 +148,25 @@ namespace INTV.JzIntvUI.Commands
                 options[CommandLineArgument.Custom] = Properties.Settings.Default.CustomCommandLine;
             }
 
-            // EXEC argument
+            // EXEC ROM argument
             if (!customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.ExecRomPath) && ConfigurationCommandGroup.IsExecRomPathvalid(Properties.Settings.Default.ExecRomPath))
             {
                 var execPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ExecRomPath);
                 options[CommandLineArgument.ExecPath] = execPath;
             }
 
-            // GROM argument
+            // GROM ROM argument
             if (!customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.GromRomPath) && ConfigurationCommandGroup.IsGromRomPathValid(Properties.Settings.Default.GromRomPath))
             {
                 var gromPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.GromRomPath);
                 options[CommandLineArgument.GromPath] = gromPath;
+            }
+
+            // ECS ROM argument
+            if (!customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.EcsRomPath) && ConfigurationCommandGroup.IsEcsRomPathValid(Properties.Settings.Default.EcsRomPath))
+            {
+                var ecsPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.EcsRomPath);
+                options[CommandLineArgument.EcsPath] = ecsPath;
             }
 
             // ECS argument
@@ -191,14 +198,6 @@ namespace INTV.JzIntvUI.Commands
             }
             if (enableEcs || forceSetting)
             {
-                if (enableEcs)
-                {
-                    if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.EcsRomPath) && ConfigurationCommandGroup.IsEcsRomPathValid())
-                    {
-                        var ecsPath = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.EcsRomPath);
-                        options[CommandLineArgument.EcsPath] = ecsPath;
-                    }
-                }
                 options[CommandLineArgument.EnableEcs] = enableEcs;
             }
 
@@ -305,10 +304,13 @@ namespace INTV.JzIntvUI.Commands
             }
 
             // Keyboard hackfile argument
-            if (!customCommandLine && ConfigurationCommandGroup.IsPathValid(Properties.Settings.Default.DefaultKeyboardConfigPath))
+            if (!customCommandLine && !string.IsNullOrWhiteSpace(Properties.Settings.Default.DefaultKeyboardConfigPath))
             {
                 var hackfile = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.DefaultKeyboardConfigPath);
-                options[CommandLineArgument.KeyboardHackFile] = hackfile;
+                if (ConfigurationCommandGroup.IsPathValid(hackfile))
+                {
+                    options[CommandLineArgument.KeyboardHackFile] = hackfile;
+                }
             }
 
             // Keyboard map argument
@@ -355,15 +357,15 @@ namespace INTV.JzIntvUI.Commands
             // Classic Game Controller configuration arguments
             if (!customCommandLine)
             {
-                if (ConfigurationCommandGroup.IsPathValid(Properties.Settings.Default.ClassicGameController0ConfigPath))
+                var cgcPath = string.IsNullOrWhiteSpace(Properties.Settings.Default.ClassicGameController0ConfigPath) ? string.Empty : ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ClassicGameController0ConfigPath);
+                if (ConfigurationCommandGroup.IsPathValid(cgcPath))
                 {
-                    var configfile = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ClassicGameController0ConfigPath);
-                    options[CommandLineArgument.ClassicGameControllerMaster] = configfile;
+                    options[CommandLineArgument.ClassicGameControllerMaster] = cgcPath;
                 }
-                if (ConfigurationCommandGroup.IsPathValid(Properties.Settings.Default.ClassicGameController1ConfigPath))
+                cgcPath = string.IsNullOrWhiteSpace(Properties.Settings.Default.ClassicGameController1ConfigPath) ? string.Empty : ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ClassicGameController1ConfigPath);
+                if (ConfigurationCommandGroup.IsPathValid(cgcPath))
                 {
-                    var configfile = ConfigurationCommandGroup.ResolvePathSetting(Properties.Settings.Default.ClassicGameController1ConfigPath);
-                    options[CommandLineArgument.ClassicGameControllerEcs] = configfile;
+                    options[CommandLineArgument.ClassicGameControllerEcs] = cgcPath;
                 }
             }
 

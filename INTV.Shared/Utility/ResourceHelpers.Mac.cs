@@ -1,5 +1,5 @@
 ﻿// <copyright file="ResourceHelpers.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -234,6 +234,10 @@ namespace INTV.Shared.Utility
                 if ((System.Type.GetTypeCode(typeof(T)) == System.TypeCode.Boolean) && (System.Type.GetTypeCode(rawValue.GetType()) == System.TypeCode.SByte))
                 {
                     rawValue = (sbyte)rawValue != 0;
+                }
+                if ((System.Type.GetTypeCode(typeof(T)) == System.TypeCode.Boolean) && (System.Type.GetTypeCode(rawValue.GetType()) == System.TypeCode.String))
+                {
+                    rawValue = string.Compare((string)rawValue, "Yes", true) == 0;
                 }
                 value = (T)rawValue;
             }

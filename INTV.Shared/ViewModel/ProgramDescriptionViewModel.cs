@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescriptionViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ namespace INTV.Shared.ViewModel
     /// <summary>
     /// ViewModel for a ProgramDescription.
     /// </summary>
-    public partial class ProgramDescriptionViewModel : System.ComponentModel.INotifyPropertyChanged
+    public partial class ProgramDescriptionViewModel : OSViewModelBase, System.ComponentModel.INotifyPropertyChanged
     {
         private static readonly Dictionary<ProgramSupportFileState, OSImage> StatusIcons;
         private static readonly Dictionary<ProgramSupportFileState, string> StatusMessages;

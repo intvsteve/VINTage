@@ -1,5 +1,5 @@
 ﻿// <copyright file="RunExternalProgram.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -124,6 +124,25 @@ namespace INTV.Shared.Utility
             return process;
         }
 
+        /// <summary>
+        /// Verifies the given program is executable.
+        /// </summary>
+        /// <param name="programPath">Absolute path to the program to start.</param>
+        /// <returns><c>true</c>, if file at path is considered an executable, <c>false</c> otherwise.</returns>
+        public static bool IsFileAtPathExecutable(string programPath)
+        {
+            var isExecutable = false;
+            try
+            {
+                VerifyIsExecutable(programPath);
+                isExecutable = true;
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            return isExecutable;
+        }
+
         private static ProcessStartInfo CreateStartInfo(string programPath, string commandLineArguments, string workingDirectory, bool showWindow, bool useShellExecute, bool requiresElevation, bool redirectstdOutAndErr)
         {
             VerifyIsExecutable(programPath);
@@ -157,7 +176,7 @@ namespace INTV.Shared.Utility
         #region Synchronous Call Methods
 
         /// <summary>
-        /// Launches a program and waits for it to finish, returning any output sent do stdout.
+        /// Launches a program and waits for it to finish, returning any output sent to stdout.
         /// </summary>
         /// <param name="programPath">Fully qualified path to the program to launch.</param>
         /// <param name="commandLineArguments">Command line argument string to send to the program.</param>
@@ -165,16 +184,29 @@ namespace INTV.Shared.Utility
         /// <returns>All output sent to stdout during the execution of the program.</returns>
         public static string CallAndReturnStdOut(string programPath, string commandLineArguments, string workingDirectory)
         {
+            return CallAndReturnStdOutAndErrorOut(programPath, commandLineArguments, workingDirectory).First();
+        }
+
+        /// <summary>
+        /// Launches a program and waits for it to finish, returning output sent to stdout in the first entry, and output sent to stderr in the second entry.
+        /// </summary>
+        /// <param name="programPath">Fully qualified path to the program to launch.</param>
+        /// <param name="commandLineArguments">Command line argument string to send to the program.</param>
+        /// <param name="workingDirectory">The working directory for the program.</param>
+        /// <returns>An enumerable containing two entries. The first contains all output sent to stdout during the execution of the program
+        /// and the second contains output sent to stderr during program execution.</returns>
+        public static IEnumerable<string> CallAndReturnStdOutAndErrorOut(string programPath, string commandLineArguments, string workingDirectory)
+        {
             VerifyIsExecutable(programPath);
             var processStartInfo = CreateStartInfo(programPath, commandLineArguments, workingDirectory, false, false, false, true);
             var process = Process.Start(processStartInfo);
             var output = process.StandardOutput.ReadToEnd();
-#if ENABLE_DEBUG_SPAM
             var errorOutput = process.StandardError.ReadToEnd();
+#if ENABLE_DEBUG_SPAM
             System.Diagnostics.Debug.WriteLine("stderr for " + System.IO.Path.GetFileName(programPath) + ": " + errorOutput);
 #endif // ENABLE_DEBUG_SPAM
             process.WaitForExit();
-            return output;
+            return new[] { output, errorOutput };
         }
 
         /// <summary>

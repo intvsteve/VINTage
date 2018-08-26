@@ -1,5 +1,5 @@
 ﻿// <copyright file="IntvFunhouseXmlProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,7 +20,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Restricted.Model.Program
 {
@@ -43,33 +45,37 @@ namespace INTV.Core.Restricted.Model.Program
         /// </summary>
         public const int MaxVendorNameLength = 32;
 
-        private string _code;
-        private string _title;
-        private string _vendor;
-        private string _orig_vendor;
-        private string _year;
-        private int _ntsc;
-        private int _pal;
-        private int _generalFeatures;
-        private int _keyboardComponent;
-        private int _sva;
-        private int _intellivoice;
-        private int _intyii;
-        private int _ecs;
-        private int _tutorvision;
-        private int _icart;
-        private int _cc3;
-        private int _jlp;
-        private string _jlp_savedata;
-        private int _ltoFlash;
-        private int _bee3;
-        private int _hive;
-        private string _crcString;
-        private string _crcNotesString;
-        private string _crcIncompatibilitiesString;
-        private List<CrcData> _crc = new List<CrcData>();
-        private ProgramFeatures _features;
-        private string _externalInfo;
+        /// <summary>
+        /// Basic vendor information.
+        /// </summary>
+        /// <remarks>NOTE: This information is manually copied from the INTV Funhouse vendors database. In some cases, it may have diverged.</remarks>
+        private static readonly Dictionary<string, VendorUrls> VendorInfo = new Dictionary<string, VendorUrls>(System.StringComparer.OrdinalIgnoreCase)
+            {
+                { "Activision", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/activision.shtml", "http://intellivisionlives.com/bluesky/games/") },
+                { "Atarisoft", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/atarisoft.shtml", "http://intellivisionlives.com/bluesky/games/") },
+                { "Coleco", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/colecoint.shtml", "http://intellivisionlives.com/bluesky/games/") },
+                { "Dextell Ltd.", new VendorUrls(null, "http://intellivisionlives.com/bluesky/games/") },
+                { "Imagic", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/imagic.shtml", "http://intellivisionlives.com/bluesky/games/") },
+                { "Intellivision Inc.", new VendorUrls(null, "http://intellivisionlives.com/bluesky/games/") },
+                { "CollectorVision", new VendorUrls("http://collectorvision.com/", "https://collectorvision.com/shop/intellivision") },
+                { "Interphase", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/interphase.shtml", "http://intellivisionlives.com/bluesky/games/") },
+                { "INTV Corporation", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/intv.shtml", "http://intellivisionlives.com/bluesky/games/") },
+                { "Mattel Electronics", new VendorUrls("http://intellivisionlives.com/bluesky/games/", "http://intellivisionlives.com/bluesky/games/") },
+                { "Parker Brothers", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/parkerbros.shtml", "http://intellivisionlives.com/bluesky/games/") },
+                { "Sears", new VendorUrls(null, "http://intellivisionlives.com/bluesky/games/") },
+                { "Sega", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/sega.shtml", "http://intellivisionlives.com/bluesky/games/") },
+                { "Elektronite", new VendorUrls("http://elektronite.net", "http://elektronite.net/gallery") },
+                { "Left Turn Only", new VendorUrls("http://www.leftturnonly.info/") },
+                { "Intelligentvision", new VendorUrls("http://intellivision.us", "http://intellivision.us/intvgames") },
+                { "INTV Funhouse", new VendorUrls("http://www.intvfunhouse.com/", "http://www.intvfunhouse.com/intvfunhouse.com/games/") },
+                { "Intellivision Revolution", new VendorUrls("http://www.intellivisionrevolution.com/") },
+                { "Blah Blah Woof Woof", new VendorUrls("http://www.blahblahwoofwoof.com/") },
+                { "Homebrew, Inc.", new VendorUrls("http://fwgames.ca/", "http://fwgames.ca/") },
+                { "2600 Connection", new VendorUrls("http://www.2600connection.com/") },
+                { "Team Pixelboy", new VendorUrls("http://teampixelboy.com/", "http://teampixelboy.com/") },
+            };
+
+        #region Properties
 
         #region XML-Populated Properties
 
@@ -85,6 +91,7 @@ namespace INTV.Core.Restricted.Model.Program
             get { return _ntsc; }
             set { _ntsc = (int)((FeatureCompatibility)value).CoerceVideoStandardCompatibility(); }
         }
+        private int _ntsc;
 
         /// <summary>
         /// Gets or sets the PAL compatibility bits.
@@ -95,146 +102,91 @@ namespace INTV.Core.Restricted.Model.Program
             get { return _pal; }
             set { _pal = (int)((FeatureCompatibility)value).CoerceVideoStandardCompatibility(); }
         }
+        private int _pal;
 
         /// <summary>
         /// Gets or sets the general ROM features.
         /// </summary>
         [System.Xml.Serialization.XmlElement("general_features")]
-        public int GeneralFeatures
-        {
-            get { return _generalFeatures; }
-            set { _generalFeatures = value; }
-        }
+        public int GeneralFeatures { get; set; }
 
         /// <summary>
         /// Gets or sets the Model 1149 Keyboard Component feature bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("kc")]
-        public int KeyboardComponentFeatures
-        {
-            get { return _keyboardComponent; }
-            set { _keyboardComponent = value; }
-        }
+        public int KeyboardComponentFeatures { get; set; }
 
         /// <summary>
         /// Gets or sets the Super Video Arcade compatibility bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("sva")]
-        public int SuperVideoArcadeCompatibility
-        {
-            get { return _sva; }
-            set { _sva = value; }
-        }
+        public int SuperVideoArcadeCompatibility { get; set; }
 
         /// <summary>
         /// Gets or sets the Intellivoice compatibility bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("ivoice")]
-        public int IntellivoiceCompatibility
-        {
-            get { return _intellivoice; }
-            set { _intellivoice = value; }
-        }
+        public int IntellivoiceCompatibility { get; set; }
 
         /// <summary>
         /// Gets or sets the Intellivision II compatibility bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("intyii")]
-        public int IntellivisionIICompatibility
-        {
-            get { return _intyii; }
-            set { _intyii = value; }
-        }
+        public int IntellivisionIICompatibility { get; set; }
 
         /// <summary>
         /// Gets or sets the ECS feature bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("ecs")]
-        public int EcsFeatures
-        {
-            get { return _ecs; }
-            set { _ecs = value; }
-        }
+        public int EcsFeatures { get; set; }
 
         /// <summary>
         /// Gets or sets the Tutorvision compatibility bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("tutor")]
-        public int TutorVision
-        {
-            get { return _tutorvision; }
-            set { _tutorvision = value; }
-        }
+        public int TutorVision { get; set; }
 
         /// <summary>
         /// Gets or sets the Intellicart feature bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("icart")]
-        public int IntellicartFeatures
-        {
-            get { return _icart; }
-            set { _icart = value; }
-        }
+        public int IntellicartFeatures { get; set; }
 
         /// <summary>
         /// Gets or sets the Cuttle Cart 3 feature bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("cc3")]
-        public int CuttleCart3Features
-        {
-            get { return _cc3; }
-            set { _cc3 = value; }
-        }
+        public int CuttleCart3Features { get; set; }
 
         /// <summary>
         /// Gets or sets the JLP feature bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("jlp")]
-        public int JLPFeatures
-        {
-            get { return _jlp; }
-            set { _jlp = value; }
-        }
+        public int JLPFeatures { get; set; }
 
         /// <summary>
         /// Gets or sets a default name for JLP saved data files. Is this irrelevant?
         /// </summary>
         [System.Xml.Serialization.XmlElement("jlp_savegame")]
-        public string JLPSaveData
-        {
-            get { return _jlp_savedata; }
-            set { _jlp_savedata = value; }
-        }
+        public string JLPSaveData { get; set; }
 
         /// <summary>
         /// Gets or sets the LTO Flash! feature bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("lto_flash")]
-        public int LtoFlashFeatures
-        {
-            get { return _ltoFlash; }
-            set { _ltoFlash = value; }
-        }
+        public int LtoFlashFeatures { get; set; }
 
         /// <summary>
         /// Gets or sets the Bee3 feature bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("bee3")]
-        public int Bee3Features
-        {
-            get { return _bee3; }
-            set { _bee3 = value; }
-        }
+        public int Bee3Features { get; set; }
 
         /// <summary>
         /// Gets or sets the Hive multicart feature bits.
         /// </summary>
         [System.Xml.Serialization.XmlElement("hive")]
-        public int HiveFeatures
-        {
-            get { return _hive; }
-            set { _hive = value; }
-        }
+        public int HiveFeatures { get; set; }
 
         #endregion // Features
 
@@ -242,11 +194,7 @@ namespace INTV.Core.Restricted.Model.Program
         /// Gets or sets the INTV Funhouse program code.
         /// </summary>
         [System.Xml.Serialization.XmlElement("code")]
-        public string Code
-        {
-            get { return _code; }
-            set { _code = value; }
-        }
+        public string Code { get; set; }
 
         /// <summary>
         /// Gets or sets the program title.
@@ -255,68 +203,45 @@ namespace INTV.Core.Restricted.Model.Program
         public string ProgramTitle
         {
             get { return _title; }
-            set { _title = value; }
+            set { _title = value.DecodeHtmlString(); }
         }
+        private string _title;
 
         /// <summary>
         /// Gets or sets the game publisher / vendor.
         /// </summary>
         [System.Xml.Serialization.XmlElement("vendor")]
-        public string ProgramVendor
-        {
-            get { return _vendor; }
-            set { _vendor = value; }
-        }
+        public string ProgramVendor { get; set; }
 
         /// <summary>
         /// Gets or sets the game's original publisher / vendor.
         /// </summary>
         [System.Xml.Serialization.XmlElement("orig_vendor")]
-        public string OriginalProgramVendor
-        {
-            get { return _orig_vendor; }
-            set { _orig_vendor = value; }
-        }
+        public string OriginalProgramVendor { get; set; }
 
         /// <summary>
         /// Gets or sets the copyright year of the game.
         /// </summary>
         [System.Xml.Serialization.XmlElement("year")]
-        public string YearString
-        {
-            get { return _year; }
-            set { _year = value; }
-        }
+        public string YearString { get; set; }
 
         /// <summary>
         /// Gets or sets the ROM CRC string from the database.
         /// </summary>
         [System.Xml.Serialization.XmlElement("crc")]
-        public string CrcString
-        {
-            get { return _crcString; }
-            set { _crcString = value; }
-        }
+        public string CrcString { get; set; }
 
         /// <summary>
         /// Gets or sets the CRC notes string from the database.
         /// </summary>
         [System.Xml.Serialization.XmlElement("crc_notes")]
-        public string CrcNotesString
-        {
-            get { return _crcNotesString; }
-            set { _crcNotesString = value; }
-        }
+        public string CrcNotesString { get; set; }
 
         /// <summary>
         /// Gets or sets the CRC incompatibility information from the database.
         /// </summary>
         [System.Xml.Serialization.XmlElement("crc_incompatibilities")]
-        public string CrcIncompatibilitiesString
-        {
-            get { return _crcIncompatibilitiesString; }
-            set { _crcIncompatibilitiesString = value; }
-        }
+        public string CrcIncompatibilitiesString { get; set; }
 
         /// <summary>
         /// Gets or sets the configuration files to use per ROM CRC.
@@ -330,20 +255,81 @@ namespace INTV.Core.Restricted.Model.Program
         private string _binCfgs;
 
         /// <summary>
-        /// Gets or sets the external info (partial) URL for a program.
+        /// Gets or sets the external information (partial) URL for a program.
         /// </summary>
         [System.Xml.Serialization.XmlElement("externalinfo")]
-        public string ExternalInfo
-        {
-            get { return _externalInfo; }
-            set { _externalInfo = value; }
-        }
+        public string ExternalInfo { get; set; }
+
+        /// <summary>
+        /// Gets or sets the release date of the program. Expected to be in standard format YYYY-MM-DD or whatever else is supported by the standard parser.
+        /// </summary>
+        /// <remarks>NOTE: The value 0000-00-00 will throw!</remarks>
+        [System.Xml.Serialization.XmlElement("release_date")]
+        public System.DateTime ReleaseDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the description of the program. This is often from a game catalog.
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("description")]
+        public string ProgramDescription { get; set; }
+
+        /// <summary>
+        /// Gets or sets raw information regarding the developers (programmers) of the program. String is vertical-bar-delimited (|).
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("program")]
+        public string ProgramDevelopers { get; set; }
+
+        /// <summary>
+        /// Gets or sets raw information regarding the concept (design) of the program. String is vertical-bar-delimited (|).
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("concept")]
+        public string ProgramConcept { get; set; }
+
+        /// <summary>
+        /// Gets or sets raw information regarding graphics in the program. String is vertical-bar-delimited (|).
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("game_graphics")]
+        public string ProgramGraphics { get; set; }
+
+        /// <summary>
+        /// Gets or sets raw information regarding sound effects used in the program. String is vertical-bar-delimited (|).
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("soundfx")]
+        public string ProgramSoundEffects { get; set; }
+
+        /// <summary>
+        /// Gets or sets raw information regarding music used in the program. String is vertical-bar-delimited (|).
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("music")]
+        public string ProgramMusic { get; set; }
+
+        /// <summary>
+        /// Gets or sets raw information regarding voice talent used in the program. String is vertical-bar-delimited (|).
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("voices")]
+        public string ProgramVoices { get; set; }
+
+        /// <summary>
+        /// Gets or sets raw information regarding program documentation. String is vertical-bar-delimited (|).
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("game_docs")]
+        public string ProgramDocumentation { get; set; }
+
+        /// <summary>
+        /// Gets or sets information regarding program packaging artwork. String is vertical-bar-delimited (|).
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("box_art")]
+        public string BoxArt { get; set; }
+
+        /// <summary>
+        /// Gets or sets the additional information for a program. String is new-line-delimited.
+        /// </summary>
+        [System.Xml.Serialization.XmlElement("other")]
+        public string OtherInfo { get; set; }
 
         #endregion // XML-Populated Properties
 
         #region IProgramInformation
-
-        #region Properties
 
         /// <inheritdoc />
         public override ProgramInformationOrigin DataOrigin
@@ -381,14 +367,14 @@ namespace INTV.Core.Restricted.Model.Program
         {
             get
             {
-                string yearString = _year.Trim();
-                var copyrightParts = _year.Split(' ');
+                string yearString = YearString.Trim();
+                var copyrightParts = YearString.Split(' ');
                 if (copyrightParts.Length >= 1)
                 {
                     yearString = copyrightParts[0].Trim();
                 }
                 int year;
-                if (int.TryParse(_year, out year))
+                if (int.TryParse(YearString, out year))
                 {
                     yearString = year.ToString();
                 }
@@ -397,7 +383,7 @@ namespace INTV.Core.Restricted.Model.Program
 
             set
             {
-                _year = value;
+                YearString = value;
             }
         }
 
@@ -433,6 +419,7 @@ namespace INTV.Core.Restricted.Model.Program
                 _features = value;
             }
         }
+        private ProgramFeatures _features;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs
@@ -468,8 +455,132 @@ namespace INTV.Core.Restricted.Model.Program
                 return _crc;
             }
         }
+        private List<CrcData> _crc = new List<CrcData>();
+
+        #endregion // IProgramInformation
+
+        #region IProgramMetadata
+
+        /// <inheritdoc />
+        public override IEnumerable<string> LongNames
+        {
+            get { yield return Title; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> ShortNames
+        {
+            get { yield return Title.EnforceNameLength(RomInfoIndexHelpers.MaxShortNameLength, restrictToGromCharacters: false); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Descriptions
+        {
+            get { yield return ProgramDescription; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Publishers
+        {
+            get
+            {
+                yield return ProgramVendor;
+                if (!string.IsNullOrEmpty(OriginalProgramVendor))
+                {
+                    yield return OriginalProgramVendor;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Programmers
+        {
+            get { return SplitMultipleEntryString(ProgramDevelopers, removeEmptyEntries: true, separator: "|"); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Designers
+        {
+            get { return SplitMultipleEntryString(ProgramConcept, removeEmptyEntries: true, separator: "|"); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Graphics
+        {
+            get { return SplitMultipleEntryString(ProgramGraphics, removeEmptyEntries: true, separator: "|"); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Music
+        {
+            get { return SplitMultipleEntryString(ProgramMusic, removeEmptyEntries: true, separator: "|"); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> SoundEffects
+        {
+            get { return SplitMultipleEntryString(ProgramSoundEffects, removeEmptyEntries: true, separator: "|"); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Voices
+        {
+            get { return SplitMultipleEntryString(ProgramVoices, removeEmptyEntries: true, separator: "|"); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Documentation
+        {
+            get { return SplitMultipleEntryString(ProgramDocumentation, removeEmptyEntries: true, separator: "|"); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Artwork
+        {
+            get { return SplitMultipleEntryString(BoxArt, removeEmptyEntries: true, separator: "|"); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> ReleaseDates
+        {
+            get { yield return new MetadataDateTime(new System.DateTimeOffset(ReleaseDate), MetadataDateTimeFlags.Year | MetadataDateTimeFlags.Month | MetadataDateTimeFlags.Day); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Licenses
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> ContactInformation
+        {
+            get { return GetContactInformation(ProgramVendor, OriginalProgramVendor, ExternalInfo); }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> Versions
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<MetadataDateTime> BuildDates
+        {
+            get { yield break; }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<string> AdditionalInformation
+        {
+            get { return SplitMultipleEntryString(OtherInfo, removeEmptyEntries: true); }
+        }
+
+        #endregion // IProgramMetadata
 
         #endregion // Properties
+
+        #region IProgramInformation
 
         /// <inheritdoc />
         public override bool AddCrc(uint newCrc, string crcDescription, IncompatibilityFlags incompatibilities)
@@ -483,6 +594,115 @@ namespace INTV.Core.Restricted.Model.Program
         public override string ToString()
         {
             return Title;
+        }
+
+        private static IEnumerable<string> GetContactInformation(string programVendor, string originalProgramVendor, string externalInfo)
+        {
+            var contactInformation = new List<string>();
+            var externalInfoUrls = SplitMultipleEntryString(externalInfo, removeEmptyEntries: false);
+            var useOriginalProgramVendorBaseUrl = true;
+            foreach (var externalInfoUrl in externalInfoUrls)
+            {
+                if (!string.IsNullOrEmpty(externalInfoUrl))
+                {
+                    // EXTREMELY simplistic checking here. We're not going the full Uri inspection route.
+                    if (externalInfoUrl.StartsWith("http"))
+                    {
+                        contactInformation.Add(externalInfoUrl);
+                    }
+                    else
+                    {
+                        var vendorBaseUrl = GetContactInfoBaseUrl(programVendor, originalProgramVendor, useOriginalProgramVendorBaseUrl);
+                        if (!string.IsNullOrEmpty(vendorBaseUrl))
+                        {
+                            var contactInfoUrl = vendorBaseUrl;
+                            var needsSlash = !vendorBaseUrl.EndsWith("/") && !externalInfoUrl.StartsWith("/");
+                            if (needsSlash)
+                            {
+                                contactInfoUrl += "/";
+                            }
+                            contactInfoUrl += externalInfoUrl;
+                            contactInformation.Add(contactInfoUrl);
+                        }
+                    }
+                }
+                useOriginalProgramVendorBaseUrl = false;
+            }
+            return contactInformation;
+        }
+
+        private static string GetContactInfoBaseUrl(string programVendor, string originalProgramVendor, bool useOriginalProgramVendor)
+        {
+            var vendor = useOriginalProgramVendor && !string.IsNullOrEmpty(originalProgramVendor) ? originalProgramVendor : programVendor;
+            string contactUrlBase = null;
+            VendorUrls urls;
+            if (!string.IsNullOrEmpty(vendor) && VendorInfo.TryGetValue(vendor, out urls))
+            {
+                contactUrlBase = urls.GameInfoBaseUrl;
+            }
+            return contactUrlBase;
+        }
+
+        /// <summary>
+        /// Splits the given string into multiple entries.
+        /// </summary>
+        /// <param name="rawData">The raw string value to split.</param>
+        /// <param name="removeEmptyEntries">If <c>true</c>, exclude empty strings from the returned values.</param>
+        /// <param name="separator">Specifies separators to use when splitting the string. If none are specified, newline (and combinations of it and carriage return) are used.</param>
+        /// <returns>An enumerable of the values in <paramref name="rawData"/>, which are also HTML decoded, with HTML tags stripped.</returns>
+        private static IEnumerable<string> SplitMultipleEntryString(string rawData, bool removeEmptyEntries, params string[] separator)
+        {
+            var values = Enumerable.Empty<string>();
+            if (!string.IsNullOrEmpty(rawData))
+            {
+                if ((separator == null) || !separator.Any())
+                {
+                    separator  = new[] { "\n", "\r", "\r\n", "\n\r" };
+                }
+                values = rawData.Split(separator, removeEmptyEntries ? System.StringSplitOptions.RemoveEmptyEntries : System.StringSplitOptions.None).Select(s => s.DecodeHtmlString().Trim());
+            }
+            return values;
+        }
+
+        /// <summary>
+        /// Helper class for vendor URL information.
+        /// </summary>
+        private class VendorUrls : System.Tuple<string, string>
+        {
+            /// <summary>
+            /// Initializes an instance of <see cref="VendorUrls"/>.
+            /// </summary>
+            /// <param name="websiteUrl">URL to a vendor's main web page.</param>
+            internal VendorUrls(string websiteUrl)
+                : this(websiteUrl, null)
+            {
+            }
+
+            /// <summary>
+            /// Initializes an instance of <see cref="VendorUrls"/>.
+            /// </summary>
+            /// <param name="websiteUrl">URL to a vendor's main web page.</param>
+            /// <param name="gameInfoBaseUrl">URL to a vendor's root game information page.</param>
+            internal VendorUrls(string websiteUrl, string gameInfoBaseUrl)
+                : base(websiteUrl, gameInfoBaseUrl)
+            {
+            }
+
+            /// <summary>
+            /// Gets the URL for a vendor's main website page.
+            /// </summary>
+            internal string WebsiteUrl
+            {
+                get { return Item1; }
+            }
+
+            /// <summary>
+            /// Gets the base URL to use for game information.
+            /// </summary>
+            internal string GameInfoBaseUrl
+            {
+                get { return Item2; }
+            }
         }
     }
 }

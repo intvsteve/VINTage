@@ -120,7 +120,7 @@ namespace INTV.Core.Utility
         /// Compute a CRC value for a file.
         /// </summary>
         /// <param name="file">The absolute path to the file for which to compute a 32-bit CRC.</param>
-        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the <paramref name="data"/> array, to exclude from the checksum.</param>
+        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="file"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
         public static uint OfFile(string file, IEnumerable<Range<int>> ignoreRanges)
         {
@@ -145,7 +145,7 @@ namespace INTV.Core.Utility
         /// <param name="file">The absolute path to the file for which to compute a 32-bit CRC.</param>
         /// <param name="replaceFirstByte">If <c>true</c>, replaces the first byte in the calculation with the value in alternateFirstByte.</param>
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
-        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the <paramref name="data"/> array, to exclude from the checksum.</param>
+        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="file"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
         public static uint OfFile(string file, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
         {
@@ -167,7 +167,7 @@ namespace INTV.Core.Utility
         /// Compute a CRC value for a stream.
         /// </summary>
         /// <param name="dataStream">The data stream upon which to compute a CRC.</param>
-        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the <paramref name="data"/> array, to exclude from the checksum.</param>
+        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="dataStream"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
         private static uint OfStream(Stream dataStream, IEnumerable<Range<int>> ignoreRanges)
         {
@@ -192,7 +192,7 @@ namespace INTV.Core.Utility
         /// <param name="dataStream">The data stream upon which to compute a CRC.</param>
         /// <param name="replaceFirstByte">If <c>true</c>, replaces the first byte in the calculation with the value in alternateFirstByte.</param>
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
-        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the <paramref name="data"/> array, to exclude from the checksum.</param>
+        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="dataStream"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
         private static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
         {

@@ -1,5 +1,5 @@
-﻿// <copyright file="IConfiguration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+﻿// <copyright file="IProgramMetadataHelpers.cs" company="INTV Funhouse">
+// Copyright (c) 2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,29 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System.Collections.Generic;
-using INTV.Core.Model.Device;
-
-namespace INTV.Core.ComponentModel
+namespace INTV.Core.Model.Program
 {
     /// <summary>
-    /// Component-specific configuration implements this interface.
+    /// Extension methods to help when working with <see cref="IProgramMetadata"/>.
     /// </summary>
-    public interface IConfiguration
+    public static class IProgramMetadataHelpers
     {
-        /// <summary>
-        /// Gets persistent settings.
-        /// </summary>
-        object Settings { get; }
-
-        /// <summary>
-        /// Gets the peripherals that have been historically connected to the system, regardless of whether currently connected.
-        /// </summary>
-        IEnumerable<IPeripheral> ConnectedPeripheralsHistory { get; }
-
-        /// <summary>
-        /// Perform final initialization before use.
-        /// </summary>
-        void Initialize();
     }
 }

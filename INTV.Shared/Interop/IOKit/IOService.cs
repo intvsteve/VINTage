@@ -19,7 +19,7 @@
 // </copyright>
 
 #define USE_IOKIT_NOTIFICATIONS
-#define ENABLE_DEBUG_OUTPUT
+////#define ENABLE_DEBUG_OUTPUT
 
 using System;
 using System.Collections.Generic;

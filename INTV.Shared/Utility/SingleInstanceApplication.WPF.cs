@@ -130,32 +130,6 @@ namespace INTV.Shared.Utility
             }
         }
 
-        #region IPartImportsSatisfiedNotification Members
-
-        /// <inheritdoc />
-        public void OnImportsSatisfied()
-        {
-            try
-            {
-                InitializePlugins();
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine("Error initializing plugins: " + e.Message);
-            }
-            foreach (var configuration in Configurations)
-            {
-                var settings = configuration.Value.Settings as System.Configuration.ApplicationSettingsBase;
-                if (settings != null)
-                {
-                    AddSettings(settings);
-                }
-            }
-            ReadyState |= AppReadyState.ImportsStatisfied;
-        }
-
-        #endregion //  IPartImportsSatisfiedNotification Members
-
         /// <inheritdoc />
         protected override void OnStartup(System.Windows.StartupEventArgs e)
         {
@@ -211,6 +185,24 @@ namespace INTV.Shared.Utility
             _programDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
             _settings.Add(INTV.Shared.Properties.Settings.Default);
             DispatcherUnhandledException += OnDispatcherUnhandledException;
+        }
+
+        /// <summary>
+        /// WPF-specific implementation.
+        /// </summary>
+        partial void OSOnImportsSatisfied()
+        {
+            // TODO: The following loop seems irrelevant - at least on Mac and likely GTK as well. The settings
+            // classes don't derive from ApplicationSettingsBase. It also would appear that _settings is not
+            // used anywhere. Perhaps in Windows these are referenced via bindings in the main UI via the Settings property...
+            foreach (var configuration in Configurations.OrderBy(c => c.Metadata.Weight))
+            {
+                var settings = configuration.Value.Settings as System.Configuration.ApplicationSettingsBase;
+                if (settings != null)
+                {
+                    AddSettings(settings);
+                }
+            }
         }
 
         private void HandleMainWindowLoaded(object sender, System.Windows.RoutedEventArgs e)

@@ -1,5 +1,5 @@
-﻿// <copyright file="IConfiguration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+﻿// <copyright file="IVINTagePluginMetadata.cs" company="INTV Funhouse">
+// Copyright (c) 2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,29 +18,24 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System.Collections.Generic;
-using INTV.Core.Model.Device;
-
-namespace INTV.Core.ComponentModel
+namespace INTV.Shared.ComponentModel
 {
     /// <summary>
-    /// Component-specific configuration implements this interface.
+    /// Metadata for an implementation of <see cref="IVINTagePlugin"/>.
     /// </summary>
-    public interface IConfiguration
+    public interface IVINTagePluginMetadata
     {
         /// <summary>
-        /// Gets persistent settings.
+        /// Gets a human-readable name for the plugin.
         /// </summary>
-        object Settings { get; }
+        string Name { get; }
 
         /// <summary>
-        /// Gets the peripherals that have been historically connected to the system, regardless of whether currently connected.
+        /// Gets the relative importance of the plugin. During application initialization, the
+        /// discovered plugins are ordered by this metadata value and then initialized. Thus, the
+        /// lower the value, the sooner the plugin is initialized. The recommended range for this
+        /// value is [0.0,1.0].
         /// </summary>
-        IEnumerable<IPeripheral> ConnectedPeripheralsHistory { get; }
-
-        /// <summary>
-        /// Perform final initialization before use.
-        /// </summary>
-        void Initialize();
+        double Weight { get; }
     }
 }

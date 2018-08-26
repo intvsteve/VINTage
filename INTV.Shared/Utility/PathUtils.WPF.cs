@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathUtils.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2015 All Rights Reserved
+// Copyright (c) 2015-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -148,6 +148,17 @@ namespace INTV.Shared.Utility
                 NativeMethods.ReleaseComObject(directory);
                 NativeMethods.ReleaseComObject(filesToSelectIntPtrs);
             }
+        }
+
+        /// <summary>
+        /// Resolves the path for settings.
+        /// </summary>
+        /// <param name="path">The file path to resolve into settings-friendly format.</param>
+        /// <returns>The path for settings.</returns>
+        public static string ResolvePathForSettings(string path)
+        {
+            // TODO: Consider supporting Url syntax.
+            return path;
         }
 
         private static string OSFixUpSeparators(string path)

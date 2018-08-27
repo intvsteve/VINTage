@@ -266,5 +266,32 @@ namespace INTV.Core.Resources {
                 return ResourceManager.GetString("UserSpecifiedProgramInformation_CreatedWithInvalidSource", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The converter for column &apos;{0}&apos; expected data type &apos;{1}&apos; but received a result of type &apos;{2}&apos;..
+        /// </summary>
+        internal static string XmlRomInformationColumnConverter_IncompatibleConverterFormat {
+            get {
+                return ResourceManager.GetString("XmlRomInformationColumnConverter_IncompatibleConverterFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The column named &apos;{0}&apos; is not supported..
+        /// </summary>
+        internal static string XmlRomInformationColumnConverter_InvalidColumnFormat {
+            get {
+                return ResourceManager.GetString("XmlRomInformationColumnConverter_InvalidColumnFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to locate data converter for column &apos;{0}&apos;..
+        /// </summary>
+        internal static string XmlRomInformationColumnConverter_InvalidConverterFormat {
+            get {
+                return ResourceManager.GetString("XmlRomInformationColumnConverter_InvalidConverterFormat", resourceCulture);
+            }
+        }
     }
 }

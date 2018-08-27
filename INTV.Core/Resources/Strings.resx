@@ -191,4 +191,16 @@
   <data name="UserSpecifiedProgramInformation_CreatedWithInvalidSource" xml:space="preserve">
     <value>Attempted to modify an invalid Program Information entry.</value>
   </data>
+  <data name="XmlRomInformationColumnConverter_IncompatibleConverterFormat" xml:space="preserve">
+    <value>The converter for column '{0}' expected data type '{1}' but received a result of type '{2}'.</value>
+    <comment>{0}: name of the column; {1} exepected data type; {2} actual data type</comment>
+  </data>
+  <data name="XmlRomInformationColumnConverter_InvalidColumnFormat" xml:space="preserve">
+    <value>The column named '{0}' is not supported.</value>
+    <comment>{0}: name of the column in the rominfo database</comment>
+  </data>
+  <data name="XmlRomInformationColumnConverter_InvalidConverterFormat" xml:space="preserve">
+    <value>Unable to locate data converter for column '{0}'.</value>
+    <comment>{0}: name of the column in the rominfo database</comment>
+  </data>
 </root>

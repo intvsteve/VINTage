@@ -113,7 +113,7 @@ namespace INTV.Core.Model.Program
             var column = Name.ToRomInfoDatabaseColumnName();
             if (column == XmlRomInformationDatabaseColumnName.Invalid)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.RomInfoColumnConverter_InvalidColumnFormat, Name));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.XmlRomInformationColumnConverter_InvalidColumnFormat, Name));
             }
 
             var converter = GetRomInfoColumnConverter(column);
@@ -133,7 +133,7 @@ namespace INTV.Core.Model.Program
         {
             if (!expectedType.IsAssignableFrom(valueType))
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.RomInfoColumnConverter_IncompatibleConverterFormat, column, expectedType, valueType));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.XmlRomInformationColumnConverter_IncompatibleConverterFormat, column, expectedType, valueType));
             }
         }
 
@@ -142,7 +142,7 @@ namespace INTV.Core.Model.Program
             RomInfoColumnConverter converter;
             if (!ColumnValueConverters.TryGetValue(column, out converter))
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.RomInfoColumnConverter_InvalidConverterFormat, column));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.XmlRomInformationColumnConverter_InvalidConverterFormat, column));
             }
             return converter;
         }

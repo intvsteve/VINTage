@@ -47,12 +47,17 @@ namespace INTV.Core.Model.Program
         UserDefined,
 
         /// <summary>
+        /// Data was provided via email submission, then exposed via INTV Funhouse.
+        /// </summary>
+        UserEmail,
+
+        /// <summary>
         /// Data was found from the INTV Funhouse web site / web service.
         /// </summary>
         IntvFunhouse,
 
         /// <summary>
-        /// Data was adapted from the jzIntv source or SDK.
+        /// Data was adapted from the jzIntv source or SDK (e.g. intvname - which may mean ROM metadata).
         /// </summary>
         JzIntv,
 
@@ -75,6 +80,16 @@ namespace INTV.Core.Model.Program
         /// Data was adapted from information supplied by CollectorVision.
         /// </summary>
         CollectorVision,
+
+        /// <summary>
+        /// Data was adapted from information at the Intellivision Lives (Blue Sky Rangers / Intellivision Productions) website.
+        /// </summary>
+        IntellivisionProductions,
+
+        /// <summary>
+        /// Data was adapted from a game catalog.
+        /// </summary>
+        GameCatalog,
 
         /// <summary>
         /// Data was collected from a metadata block in a LUIGI-format ROM.

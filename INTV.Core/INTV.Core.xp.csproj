@@ -132,6 +132,10 @@
     <Compile Include="Model\Program\ProgramSupportFilesHelpers.cs" />
     <Compile Include="Model\Program\ProgramSupportFileState.cs" />
     <Compile Include="Model\Program\RomFileMetadataProgramInformation.cs" />
+    <Compile Include="Model\Program\RomInformation.cs" />
+    <Compile Include="Model\Program\RomInformationDatabase.cs" />
+    <Compile Include="Model\Program\RomInformationDatabaseColumn.cs" />
+    <Compile Include="Model\Program\RomInformationDatabaseColumnName.cs" />
     <Compile Include="Model\Program\UnmergedProgramInformation.cs" />
     <Compile Include="Model\Program\UnmergedProgramInformationTable.cs" />
     <Compile Include="Model\Program\UserSpecifiedProgramInformation.cs" />

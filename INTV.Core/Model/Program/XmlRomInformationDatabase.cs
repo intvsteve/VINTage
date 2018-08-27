@@ -27,28 +27,28 @@ namespace INTV.Core.Model.Program
     /// </summary>
     /// <remarks>NOTE: This may be fragile, depending on the version of MySQL and phpMyAdmin used at the website.</remarks>
     [System.Xml.Serialization.XmlRoot(DatabaseRootName)]
-    public class RomInformationDatabase
+    public class XmlRomInformationDatabase
     {
         private const string DatabaseRootName = "pma_xml_export";
         private const string DatabaseName = "database";
         private const string RomInfoEntryXmlName = "table";
 
         /// <summary>
-        /// Initializes a new instance of <see cref="RomInformationDatabase"/>.
+        /// Initializes a new instance of <see cref="XmlRomInformationDatabase"/>.
         /// </summary>
-        public RomInformationDatabase()
+        public XmlRomInformationDatabase()
         {
-            RomInfos = Enumerable.Empty<RomInformation>().ToArray();
+            RomInfos = Enumerable.Empty<XmlRomInformation>().ToArray();
         }
 
         #region Properties
 
         /// <summary>
-        /// Gets or sets the collection of <see cref="RomInformation"/> objects in the database.
+        /// Gets or sets the collection of <see cref="XmlRomInformation"/> objects in the database.
         /// </summary>
         [System.Xml.Serialization.XmlArray(DatabaseName)]
-        [System.Xml.Serialization.XmlArrayItem(RomInfoEntryXmlName, typeof(RomInformation))]
-        public RomInformation[] RomInfos { get; set; }
+        [System.Xml.Serialization.XmlArrayItem(RomInfoEntryXmlName, typeof(XmlRomInformation))]
+        public XmlRomInformation[] RomInfos { get; set; }
 
         #endregion // Properties
     }

@@ -26,7 +26,7 @@ namespace INTV.Core.Model.Program
     /// This class represents an entry from the rominfo database at INTV Funhouse.
     /// </summary>
     [System.Xml.Serialization.XmlType("table")]
-    public class RomInformation
+    public class XmlRomInformation
     {
         /// <summary>
         /// Expected name of each "table" entry in the database. phpMyAdmin imports / exports the MySQL database as a
@@ -37,11 +37,11 @@ namespace INTV.Core.Model.Program
         private const string RomInfoNameAttributeName = "name";
 
         /// <summary>
-        /// Initializes a new instance of <see cref="RomInformation"/>.
+        /// Initializes a new instance of <see cref="XmlRomInformation"/>.
         /// </summary>
-        public RomInformation()
+        public XmlRomInformation()
         {
-            RomInfoDatabaseColumns = Enumerable.Empty<RomInformationDatabaseColumn>().ToArray();
+            RomInfoDatabaseColumns = Enumerable.Empty<XmlRomInformationDatabaseColumn>().ToArray();
         }
 
         #region Properties
@@ -57,8 +57,8 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Gets or sets the ROM info database columns array.
         /// </summary>
-        [System.Xml.Serialization.XmlElement(RomInformationDatabaseColumn.RomInfoColumnXmlTypeName, typeof(RomInformationDatabaseColumn))]
-        public RomInformationDatabaseColumn[] RomInfoDatabaseColumns { get; set; }
+        [System.Xml.Serialization.XmlElement(XmlRomInformationDatabaseColumn.RomInfoColumnXmlTypeName, typeof(XmlRomInformationDatabaseColumn))]
+        public XmlRomInformationDatabaseColumn[] RomInfoDatabaseColumns { get; set; }
 
         #endregion // XML Properties
 

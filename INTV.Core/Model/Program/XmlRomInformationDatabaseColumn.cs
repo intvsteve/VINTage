@@ -28,7 +28,7 @@ using INTV.Core.Utility;
 namespace INTV.Core.Model.Program
 {
     [System.Xml.Serialization.XmlType(RomInfoColumnXmlTypeName)]
-    public class RomInformationDatabaseColumn
+    public class XmlRomInformationDatabaseColumn
     {
         /// <summary>
         /// The XML element name of a rominfo property in the MySql database as exported by phpMyAdmin.
@@ -36,58 +36,58 @@ namespace INTV.Core.Model.Program
         internal const string RomInfoColumnXmlTypeName = "column";
 
         private const string RomInfoColumnNameAttributeName = "name";
-        private static readonly Dictionary<RomInformationDatabaseColumnName, RomInfoColumnConverter> ColumnValueConverters = new Dictionary<RomInformationDatabaseColumnName, RomInfoColumnConverter>()
+        private static readonly Dictionary<XmlRomInformationDatabaseColumnName, RomInfoColumnConverter> ColumnValueConverters = new Dictionary<XmlRomInformationDatabaseColumnName, RomInfoColumnConverter>()
         {
-            { RomInformationDatabaseColumnName.Invalid, new RomInfoColumnConverter(typeof(void), InvalidFromString, InvalidToString) },
-            { RomInformationDatabaseColumnName.crc, new RomInfoColumnConverter(typeof(uint), UnsignedIntFromString, UnsignedIntToString) },
-            { RomInformationDatabaseColumnName.crc_2, new RomInfoColumnConverter(typeof(uint), UnsignedIntFromString, UnsignedIntToString) },
-            { RomInformationDatabaseColumnName.code, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
-            { RomInformationDatabaseColumnName.title, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
-            { RomInformationDatabaseColumnName.name, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
-            { RomInformationDatabaseColumnName.variant, new RomInfoColumnConverter(typeof(sbyte), SignedByteFromString, SignedByteToString) },
-            { RomInformationDatabaseColumnName.platform, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) }, // enum('Intellivision')
-            { RomInformationDatabaseColumnName.format, new RomInfoColumnConverter(typeof(RomFormat), RomFormatFromString, RomFormatToString) }, // enum('BIN+CFG','ROM','LUIGI','')
-            { RomInformationDatabaseColumnName.type, new RomInfoColumnConverter(typeof(GeneralFeatures), GeneralFeaturesRomTypeFromString, GeneralFeaturesRomTypeToString) }, // enum('BIOS','Program') NOT NULL DEFAULT 'Program'
-            { RomInformationDatabaseColumnName.origin, new RomInfoColumnConverter(typeof(IEnumerable<ProgramInformationOrigin>), DataOriginFromString, DataOriginToString) }, // set('INTV Funhouse','Intellivision Lives','manual entry','e-mail','intvname','ROM','CFG','LUIGI','Catalog','other')
-            { RomInformationDatabaseColumnName.description, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
-            { RomInformationDatabaseColumnName.release_date, new RomInfoColumnConverter(typeof(MetadataDateTime), MetadataDateTimeFromString, MetadataDateTimeToString) },
-            { RomInformationDatabaseColumnName.source, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
-            { RomInformationDatabaseColumnName.ntsc, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
-            { RomInformationDatabaseColumnName.pal, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
-            { RomInformationDatabaseColumnName.general_features, new RomInfoColumnConverter(typeof(GeneralFeatures), GeneralFeaturesFromString, GeneralFeaturesToString) },
-            { RomInformationDatabaseColumnName.kc, new RomInfoColumnConverter(typeof(KeyboardComponentFeatures), KeyboardComponentFeaturesFromString, KeyboardComponentFeaturesToString) },
-            { RomInformationDatabaseColumnName.sva, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
-            { RomInformationDatabaseColumnName.ivoice, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
-            { RomInformationDatabaseColumnName.intyii, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
-            { RomInformationDatabaseColumnName.ecs, new RomInfoColumnConverter(typeof(EcsFeatures), EcsFeaturesFromString, EcsFeaturesToString) },
-            { RomInformationDatabaseColumnName.tutor, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
-            { RomInformationDatabaseColumnName.icart, new RomInfoColumnConverter(typeof(IntellicartCC3Features), IntellicartCC3FeaturesFromString, IntellicartCC3FeaturesToString) },
-            { RomInformationDatabaseColumnName.cc3, new RomInfoColumnConverter(typeof(CuttleCart3Features), CuttleCart3FeaturesFromString, CuttleCart3FeaturesToString) },
-            { RomInformationDatabaseColumnName.jlp, new RomInfoColumnConverter(typeof(JlpFeatures), JlpFeaturesFromString, JlpFeaturesToString) },
-            { RomInformationDatabaseColumnName.jlp_savegame, new RomInfoColumnConverter(typeof(ushort), UnsignedShortFromString, UnsignedShortToString) },
-            { RomInformationDatabaseColumnName.lto_flash, new RomInfoColumnConverter(typeof(LtoFlashFeatures), LtoFlashFeaturesFromString, LtoFlashFeaturesToString) },
-            { RomInformationDatabaseColumnName.bee3, new RomInfoColumnConverter(typeof(Bee3Features), Bee3FeaturesFromString, Bee3FeaturesToString) },
-            { RomInformationDatabaseColumnName.hive, new RomInfoColumnConverter(typeof(HiveFeatures), HiveFeaturesFromString, HiveFeaturesToString) },
-            { RomInformationDatabaseColumnName.program, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
-            { RomInformationDatabaseColumnName.concept, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
-            { RomInformationDatabaseColumnName.game_graphics, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
-            { RomInformationDatabaseColumnName.soundfx, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
-            { RomInformationDatabaseColumnName.music, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
-            { RomInformationDatabaseColumnName.voices, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
-            { RomInformationDatabaseColumnName.game_docs, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
-            { RomInformationDatabaseColumnName.box_art, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
-            { RomInformationDatabaseColumnName.other, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
-            { RomInformationDatabaseColumnName.bin_cfg, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
-            { RomInformationDatabaseColumnName.box_variant, new RomInfoColumnConverter(typeof(sbyte), SignedByteFromString, SignedByteToString) },
-            { RomInformationDatabaseColumnName.screenshot, new RomInfoColumnConverter(typeof(sbyte), SignedByteFromString, SignedByteToString) },
-            { RomInformationDatabaseColumnName.preview, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
-            { RomInformationDatabaseColumnName.get_rom, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
+            { XmlRomInformationDatabaseColumnName.Invalid, new RomInfoColumnConverter(typeof(void), InvalidFromString, InvalidToString) },
+            { XmlRomInformationDatabaseColumnName.crc, new RomInfoColumnConverter(typeof(uint), UnsignedIntFromString, UnsignedIntToString) },
+            { XmlRomInformationDatabaseColumnName.crc_2, new RomInfoColumnConverter(typeof(uint), UnsignedIntFromString, UnsignedIntToString) },
+            { XmlRomInformationDatabaseColumnName.code, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
+            { XmlRomInformationDatabaseColumnName.title, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
+            { XmlRomInformationDatabaseColumnName.name, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
+            { XmlRomInformationDatabaseColumnName.variant, new RomInfoColumnConverter(typeof(sbyte), SignedByteFromString, SignedByteToString) },
+            { XmlRomInformationDatabaseColumnName.platform, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) }, // enum('Intellivision')
+            { XmlRomInformationDatabaseColumnName.format, new RomInfoColumnConverter(typeof(RomFormat), RomFormatFromString, RomFormatToString) }, // enum('BIN+CFG','ROM','LUIGI','')
+            { XmlRomInformationDatabaseColumnName.type, new RomInfoColumnConverter(typeof(GeneralFeatures), GeneralFeaturesRomTypeFromString, GeneralFeaturesRomTypeToString) }, // enum('BIOS','Program') NOT NULL DEFAULT 'Program'
+            { XmlRomInformationDatabaseColumnName.origin, new RomInfoColumnConverter(typeof(IEnumerable<ProgramInformationOrigin>), DataOriginFromString, DataOriginToString) }, // set('INTV Funhouse','Intellivision Lives','manual entry','e-mail','intvname','ROM','CFG','LUIGI','Catalog','other')
+            { XmlRomInformationDatabaseColumnName.description, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
+            { XmlRomInformationDatabaseColumnName.release_date, new RomInfoColumnConverter(typeof(MetadataDateTime), MetadataDateTimeFromString, MetadataDateTimeToString) },
+            { XmlRomInformationDatabaseColumnName.source, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
+            { XmlRomInformationDatabaseColumnName.ntsc, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
+            { XmlRomInformationDatabaseColumnName.pal, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
+            { XmlRomInformationDatabaseColumnName.general_features, new RomInfoColumnConverter(typeof(GeneralFeatures), GeneralFeaturesFromString, GeneralFeaturesToString) },
+            { XmlRomInformationDatabaseColumnName.kc, new RomInfoColumnConverter(typeof(KeyboardComponentFeatures), KeyboardComponentFeaturesFromString, KeyboardComponentFeaturesToString) },
+            { XmlRomInformationDatabaseColumnName.sva, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
+            { XmlRomInformationDatabaseColumnName.ivoice, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
+            { XmlRomInformationDatabaseColumnName.intyii, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
+            { XmlRomInformationDatabaseColumnName.ecs, new RomInfoColumnConverter(typeof(EcsFeatures), EcsFeaturesFromString, EcsFeaturesToString) },
+            { XmlRomInformationDatabaseColumnName.tutor, new RomInfoColumnConverter(typeof(FeatureCompatibility), FeatureCompatibilityFromString, FeatureCompatibilityToString) },
+            { XmlRomInformationDatabaseColumnName.icart, new RomInfoColumnConverter(typeof(IntellicartCC3Features), IntellicartCC3FeaturesFromString, IntellicartCC3FeaturesToString) },
+            { XmlRomInformationDatabaseColumnName.cc3, new RomInfoColumnConverter(typeof(CuttleCart3Features), CuttleCart3FeaturesFromString, CuttleCart3FeaturesToString) },
+            { XmlRomInformationDatabaseColumnName.jlp, new RomInfoColumnConverter(typeof(JlpFeatures), JlpFeaturesFromString, JlpFeaturesToString) },
+            { XmlRomInformationDatabaseColumnName.jlp_savegame, new RomInfoColumnConverter(typeof(ushort), UnsignedShortFromString, UnsignedShortToString) },
+            { XmlRomInformationDatabaseColumnName.lto_flash, new RomInfoColumnConverter(typeof(LtoFlashFeatures), LtoFlashFeaturesFromString, LtoFlashFeaturesToString) },
+            { XmlRomInformationDatabaseColumnName.bee3, new RomInfoColumnConverter(typeof(Bee3Features), Bee3FeaturesFromString, Bee3FeaturesToString) },
+            { XmlRomInformationDatabaseColumnName.hive, new RomInfoColumnConverter(typeof(HiveFeatures), HiveFeaturesFromString, HiveFeaturesToString) },
+            { XmlRomInformationDatabaseColumnName.program, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
+            { XmlRomInformationDatabaseColumnName.concept, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
+            { XmlRomInformationDatabaseColumnName.game_graphics, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
+            { XmlRomInformationDatabaseColumnName.soundfx, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
+            { XmlRomInformationDatabaseColumnName.music, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
+            { XmlRomInformationDatabaseColumnName.voices, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
+            { XmlRomInformationDatabaseColumnName.game_docs, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
+            { XmlRomInformationDatabaseColumnName.box_art, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
+            { XmlRomInformationDatabaseColumnName.other, new RomInfoColumnConverter(typeof(IEnumerable<string>), StringEnumerableFromString, StringEnumerableToString) },
+            { XmlRomInformationDatabaseColumnName.bin_cfg, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
+            { XmlRomInformationDatabaseColumnName.box_variant, new RomInfoColumnConverter(typeof(sbyte), SignedByteFromString, SignedByteToString) },
+            { XmlRomInformationDatabaseColumnName.screenshot, new RomInfoColumnConverter(typeof(sbyte), SignedByteFromString, SignedByteToString) },
+            { XmlRomInformationDatabaseColumnName.preview, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
+            { XmlRomInformationDatabaseColumnName.get_rom, new RomInfoColumnConverter(typeof(string), StringFromString, StringToString) },
         };
 
         /// <summary>
-        /// Initialize a new instance of <see cref="RomInformationDatabaseColumn"/>.
+        /// Initialize a new instance of <see cref="XmlRomInformationDatabaseColumn"/>.
         /// </summary>
-        public RomInformationDatabaseColumn()
+        public XmlRomInformationDatabaseColumn()
         {
         }
 
@@ -111,7 +111,7 @@ namespace INTV.Core.Model.Program
         public T GetTypedValue<T>()
         {
             var column = Name.ToRomInfoDatabaseColumnName();
-            if (column == RomInformationDatabaseColumnName.Invalid)
+            if (column == XmlRomInformationDatabaseColumnName.Invalid)
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.RomInfoColumnConverter_InvalidColumnFormat, Name));
             }
@@ -129,7 +129,7 @@ namespace INTV.Core.Model.Program
         {
         }
 
-        private static void ValidateData(RomInformationDatabaseColumnName column, Type expectedType, Type valueType)
+        private static void ValidateData(XmlRomInformationDatabaseColumnName column, Type expectedType, Type valueType)
         {
             if (!expectedType.IsAssignableFrom(valueType))
             {
@@ -137,7 +137,7 @@ namespace INTV.Core.Model.Program
             }
         }
 
-        private static RomInfoColumnConverter GetRomInfoColumnConverter(RomInformationDatabaseColumnName column)
+        private static RomInfoColumnConverter GetRomInfoColumnConverter(XmlRomInformationDatabaseColumnName column)
         {
             RomInfoColumnConverter converter;
             if (!ColumnValueConverters.TryGetValue(column, out converter))

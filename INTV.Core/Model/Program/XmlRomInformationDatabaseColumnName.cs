@@ -26,9 +26,9 @@ using System.Text;
 namespace INTV.Core.Model.Program
 {
     /// <summary>
-    /// The supported column name values for a <see cref="RomInformationDatabaseColumn"/> represented as an enum.
+    /// The supported column name values for a <see cref="XmlRomInformationDatabaseColumn"/> represented as an enum.
     /// </summary>
-    public enum RomInformationDatabaseColumnName
+    public enum XmlRomInformationDatabaseColumnName
     {
         /// <summary>
         /// Sentinel value representing an invalid column name.
@@ -263,22 +263,22 @@ namespace INTV.Core.Model.Program
     }
 
     /// <summary>
-    /// Helper methods for <see cref="RomInformationDatabaseColumnName"/>.
+    /// Helper methods for <see cref="XmlRomInformationDatabaseColumnName"/>.
     /// </summary>
     public static class RomInformationDatabaseColumnNameHelpers
     {
         /// <summary>
-        /// Converts a string to a <see cref="RomInformationDatabaseColumnName"/>
+        /// Converts a string to a <see cref="XmlRomInformationDatabaseColumnName"/>
         /// </summary>
-        /// <param name="romInfoDatdabaseColumnName">The string to convert to a <see cref="RomInformationDatabaseColumnName"/>.</param>
-        /// <returns>A <see cref="RomInformationDatabaseColumnName"/> value, <see cref="RomInformationDatabaseColumnName.Invalid"/> if <paramref name="romInfoDatdabaseColumnName"/>
-        /// is not a valid string representation of a <see cref="RomInformationDatabaseColumnName"/>.</returns>
-        public static RomInformationDatabaseColumnName ToRomInfoDatabaseColumnName(this string romInfoDatdabaseColumnName)
+        /// <param name="romInfoDatdabaseColumnName">The string to convert to a <see cref="XmlRomInformationDatabaseColumnName"/>.</param>
+        /// <returns>A <see cref="XmlRomInformationDatabaseColumnName"/> value, <see cref="XmlRomInformationDatabaseColumnName.Invalid"/> if <paramref name="romInfoDatdabaseColumnName"/>
+        /// is not a valid string representation of a <see cref="XmlRomInformationDatabaseColumnName"/>.</returns>
+        public static XmlRomInformationDatabaseColumnName ToRomInfoDatabaseColumnName(this string romInfoDatdabaseColumnName)
         {
-            var column = RomInformationDatabaseColumnName.Invalid;
-            if (string.IsNullOrEmpty(romInfoDatdabaseColumnName) || !Enum.TryParse<RomInformationDatabaseColumnName>(romInfoDatdabaseColumnName, out column))
+            var column = XmlRomInformationDatabaseColumnName.Invalid;
+            if (string.IsNullOrEmpty(romInfoDatdabaseColumnName) || !Enum.TryParse<XmlRomInformationDatabaseColumnName>(romInfoDatdabaseColumnName, out column))
             {
-                column = RomInformationDatabaseColumnName.Invalid;
+                column = XmlRomInformationDatabaseColumnName.Invalid;
             }
             return column;
         }

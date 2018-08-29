@@ -21,17 +21,17 @@
 namespace INTV.Core.Utility
 {
     /// <summary>
-    /// Basic interface used to implement conversions between data types.
+    /// Basic interface used to implement a conversion from one data type to another.
     /// </summary>
     /// <typeparam name="TSource">Data type of the object to be converted.</typeparam>
     /// <typeparam name="TDestination">Data type of the object being convert to.</typeparam>
     public interface IConverter<TSource, TDestination>
     {
         /// <summary>
-        /// Converts an instance of an object of type TSource to an instance of object TDestination.
+        /// Converts an instance of type TSource to an instance of TDestination.
         /// </summary>
-        /// <param name="source">The object to be converted.</param>
-        /// <returns>The newly converted object.</returns>
+        /// <param name="source">The instance to be converted.</param>
+        /// <returns>The newly converted instance.</returns>
         TDestination Convert(TSource source);
     }
 }

@@ -107,6 +107,7 @@
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformation.cs" />
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTable.cs" />
     <Compile Include="Model\Program\IProgramDescription.cs" />
+    <Compile Include="Model\Program\IProgramFeatures.cs" />
     <Compile Include="Model\Program\IProgramInformation.cs" />
     <Compile Include="Model\Program\IProgramInformationHelpers.cs" />
     <Compile Include="Model\Program\IProgramInformationTable.cs" />

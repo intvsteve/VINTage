@@ -107,6 +107,7 @@
     <Compile Include="Model\Program\HiveFeatures.cs" />
     <Compile Include="Model\Program\IncompatibilityFlags.cs" />
     <Compile Include="Model\Program\IProgramDescription.cs" />
+    <Compile Include="Model\Program\IProgramFeatures.cs" />
     <Compile Include="Model\Program\IProgramInformation.cs" />
     <Compile Include="Model\Program\IProgramInformationTable.cs" />
     <Compile Include="Model\Program\IProgramMetadata.cs" />

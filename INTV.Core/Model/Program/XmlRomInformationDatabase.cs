@@ -1,4 +1,4 @@
-﻿// <copyright file="RomInformationDatabase.cs" company="INTV Funhouse">
+﻿// <copyright file="XmlRomInformationDatabase.cs" company="INTV Funhouse">
 // Copyright (c) 2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //

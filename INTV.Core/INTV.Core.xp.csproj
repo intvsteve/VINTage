@@ -112,6 +112,7 @@
     <Compile Include="Model\Program\IProgramInformationTable.cs" />
     <Compile Include="Model\Program\IProgramMetadata.cs" />
     <Compile Include="Model\Program\IProgramMetadataHelpers.cs" />
+    <Compile Include="Model\Program\IProgramRomInformation.cs" />
     <Compile Include="Model\Program\JlpFeatures.cs" />
     <Compile Include="Model\Program\KeyboardComponentFeatures.cs" />
     <Compile Include="Model\Program\LtoFlashFeatures.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Model\Program\ProgramFeaturesHelpers.cs" />
     <Compile Include="Model\Program\ProgramFileKind.cs" />
     <Compile Include="Model\Program\ProgramFileKindHelpers.cs" />
+    <Compile Include="Model\Program\ProgramIdentifier.cs" />
     <Compile Include="Model\Program\ProgramInformation.cs" />
     <Compile Include="Model\Program\ProgramInformationMergeFieldsFlags.cs" />
     <Compile Include="Model\Program\ProgramInformationOrigin.cs" />

@@ -128,6 +128,7 @@
     <Compile Include="Model\Program\ProgramFileKind.cs" />
     <Compile Include="Model\Program\ProgramInformationMergeFieldsFlags.cs" />
     <Compile Include="Model\Program\ProgramInformationOrigin.cs" />
+    <Compile Include="Model\Program\ProgramRomInformation.cs" />
     <Compile Include="Model\Program\ProgramSupportFilesHelpers.cs" />
     <Compile Include="Model\Program\ProgramSupportFileState.cs" />
     <Compile Include="Model\Program\RomFileMetadataProgramInformation.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="Utility\Crc32.cs" />
     <Compile Include="Utility\Crc8.cs" />
     <Compile Include="Utility\FileMemo`T.cs" />
+    <Compile Include="Utility\IConverter`TSource`TDestination.cs" />
     <Compile Include="Utility\IStorageAccess.cs" />
     <Compile Include="Utility\RandomUtilities.cs" />
     <Compile Include="Utility\Range.cs" />

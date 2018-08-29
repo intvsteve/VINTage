@@ -186,6 +186,7 @@
     <Compile Include="Utility\Crc8.cs" />
     <Compile Include="Utility\FileMemo`T.cs" />
     <Compile Include="Utility\IConverter`TSource`TDestination.cs" />
+    <Compile Include="Utility\IConvertToMultiple`TSource`TDestination.cs" />
     <Compile Include="Utility\IStorageAccess.cs" />
     <Compile Include="Utility\RandomUtilities.cs" />
     <Compile Include="Utility\Range.cs" />

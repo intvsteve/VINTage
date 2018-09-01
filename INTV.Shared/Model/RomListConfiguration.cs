@@ -185,7 +185,7 @@ namespace INTV.Shared.Model
             {
                 new ProgramInformationTableDescriptor(Path.Combine(_applicationDocumentsPath, LocalRomDefintions), UserSpecifiedProgramInformationTable.Initialize)
             };
-            ProgramInfoTable = ProgramInformationTable.Initialize(System.Net.WebUtility.HtmlDecode, localInfoTables);
+            ProgramInfoTable = ProgramInformationTable.Initialize(localInfoTables);
         }
 
         #endregion // IPartImportsSatisfiedNotification

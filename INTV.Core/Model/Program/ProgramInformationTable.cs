@@ -30,7 +30,6 @@ namespace INTV.Core.Model.Program
     public abstract class ProgramInformationTable : IProgramInformationTable
     {
         private static MergedProgramInformationTable _default = new MergedProgramInformationTable();
-        private static Func<string, string> _stringDecoder = new Func<string, string>(s => s);
 
         #region Properties
 
@@ -40,14 +39,6 @@ namespace INTV.Core.Model.Program
         public static IProgramInformationTable Default
         {
             get { return _default; }
-        }
-
-        /// <summary>
-        /// Gets the string decoder function to be used by database in case they are based upon strings such as HTML.
-        /// </summary>
-        public static Func<string, string> StringDecoder
-        {
-            get { return _stringDecoder; }
         }
 
         #region IProgramInformationTable
@@ -62,12 +53,10 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Initializes the general program information database system with a specific string decoder and program information table descriptions.
         /// </summary>
-        /// <param name="stringDecoder">The string decoder to use when expanding a database's contents. E.g. some database may use HTML encoding for descriptive data.</param>
         /// <param name="localInfoTables">Descriptions of how to access database tables.</param>
         /// <returns>The initialized program information table.</returns>
-        public static IProgramInformationTable Initialize(Func<string, string> stringDecoder, ProgramInformationTableDescriptor[] localInfoTables)
+        public static IProgramInformationTable Initialize(ProgramInformationTableDescriptor[] localInfoTables)
         {
-            _stringDecoder = stringDecoder;
             List<IProgramInformationTable> localTables = new List<IProgramInformationTable>();
             var conflicts = new List<KeyValuePair<IProgramInformation, IProgramInformation>>();
             foreach (var localInfoTable in localInfoTables)

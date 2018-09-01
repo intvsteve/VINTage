@@ -18,7 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
@@ -49,7 +51,7 @@ namespace INTV.Core.Restricted.Model.Program
         /// Basic vendor information.
         /// </summary>
         /// <remarks>NOTE: This information is manually copied from the INTV Funhouse vendors database. In some cases, it may have diverged.</remarks>
-        private static readonly Dictionary<string, VendorUrls> VendorInfo = new Dictionary<string, VendorUrls>(System.StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, VendorUrls> VendorInfo = new Dictionary<string, VendorUrls>(StringComparer.OrdinalIgnoreCase)
             {
                 { "Activision", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/activision.shtml", "http://intellivisionlives.com/bluesky/games/") },
                 { "Atarisoft", new VendorUrls("http://intellivisionlives.com/bluesky/games/credits/atarisoft.shtml", "http://intellivisionlives.com/bluesky/games/") },
@@ -165,8 +167,9 @@ namespace INTV.Core.Restricted.Model.Program
         public int JLPFeatures { get; set; }
 
         /// <summary>
-        /// Gets or sets a default name for JLP saved data files. Is this irrelevant?
+        /// Gets or sets a default name for JLP saved data sectors.
         /// </summary>
+        /// <remarks>For legacy reasons, this is a string. It should be parsed as an integer value.</remarks>
         [System.Xml.Serialization.XmlElement("jlp_savegame")]
         public string JLPSaveData { get; set; }
 
@@ -340,7 +343,7 @@ namespace INTV.Core.Restricted.Model.Program
         /// <inheritdoc />
         public override string Title
         {
-            get { return ProgramInformationTable.StringDecoder(ProgramTitle); }
+            get { return ProgramTitle.DecodeHtmlString(); }
             set { }
         }
 
@@ -352,7 +355,7 @@ namespace INTV.Core.Restricted.Model.Program
                 var vendor = ProgramVendor;
                 if (!string.IsNullOrEmpty(OriginalProgramVendor))
                 {
-                    vendor = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", OriginalProgramVendor);
+                    vendor = string.Format(CultureInfo.InvariantCulture, "{0}", OriginalProgramVendor);
                 }
                 return vendor;
             }
@@ -410,6 +413,25 @@ namespace INTV.Core.Restricted.Model.Program
                     _features.LtoFlash = (LtoFlashFeatures)LtoFlashFeatures & Core.Model.Program.LtoFlashFeaturesHelpers.ValidFeaturesMask;
                     _features.Bee3 = (Bee3Features)Bee3Features & Core.Model.Program.Bee3FeaturesHelpers.ValidFeaturesMask;
                     _features.Hive = (HiveFeatures)HiveFeatures & Core.Model.Program.HiveFeaturesHelpers.ValidFeaturesMask;
+
+                    if (!string.IsNullOrEmpty(JLPSaveData))
+                    {
+                        int jlpRawFlashSectors;
+                        if (int.TryParse(JLPSaveData, NumberStyles.Integer, CultureInfo.InvariantCulture, out jlpRawFlashSectors))
+                        {
+                            try
+                            {
+                                var jlpFlashSectors = Convert.ToUInt16(jlpRawFlashSectors);
+                                if ((jlpFlashSectors > 0) && (jlpRawFlashSectors <= JlpFeaturesHelpers.JlpFlashBaseSaveDataSectorsCountMask))
+                                {
+                                    _features.JlpFlashMinimumSaveSectors = jlpFlashSectors;
+                                }
+                            }
+                            catch (OverflowException)
+                            {
+                            }
+                        }
+                    }
                 }
                 return _features;
             }
@@ -428,13 +450,13 @@ namespace INTV.Core.Restricted.Model.Program
             {
                 if (_crc.Count == 0)
                 {
-                    var crcs = CrcString.Split(',').Where(s => s.Length >= 10).Select(crc => uint.Parse(crc.Substring(2), System.Globalization.NumberStyles.HexNumber)).ToArray();
+                    var crcs = CrcString.Split(',').Where(s => s.Length >= 10).Select(crc => uint.Parse(crc.Substring(2), NumberStyles.HexNumber)).ToArray();
                     var crcNotes = CrcNotesString.Split(',');
                     var crcIncompatibilities = CrcIncompatibilitiesString.Split(',');
                     var crcBinCfgs = CfgFiles.Split(',');
                     if ((crcBinCfgs.Length != 1) && (crcBinCfgs.Length != crcs.Length))
                     {
-                        throw new System.InvalidOperationException();
+                        throw new InvalidOperationException();
                     }
                     var firstValue = int.Parse(crcBinCfgs.First());
                     var crcBinCfgNumbers = Enumerable.Repeat(firstValue, crcs.Length).ToArray();
@@ -448,7 +470,7 @@ namespace INTV.Core.Restricted.Model.Program
                     for (int i = 0; i < crcs.Length; ++i)
                     {
                         var note = (i < crcNotes.Length) ? crcNotes[i] : string.Empty;
-                        var incompatibilities = (i < CrcIncompatibilitiesString.Length) ? (IncompatibilityFlags)uint.Parse(crcIncompatibilities[i], System.Globalization.NumberStyles.HexNumber) : IncompatibilityFlags.None;
+                        var incompatibilities = (i < CrcIncompatibilitiesString.Length) ? (IncompatibilityFlags)uint.Parse(crcIncompatibilities[i], NumberStyles.HexNumber) : IncompatibilityFlags.None;
                         _crc.Add(new CrcData(crcs[i], note, incompatibilities, crcBinCfgNumbers[i]));
                     }
                 }
@@ -543,7 +565,7 @@ namespace INTV.Core.Restricted.Model.Program
         /// <inheritdoc />
         public override IEnumerable<MetadataDateTime> ReleaseDates
         {
-            get { yield return new MetadataDateTime(new System.DateTimeOffset(ReleaseDate), MetadataDateTimeFlags.Year | MetadataDateTimeFlags.Month | MetadataDateTimeFlags.Day); }
+            get { yield return new MetadataDateTime(new DateTimeOffset(ReleaseDate), MetadataDateTimeFlags.Year | MetadataDateTimeFlags.Month | MetadataDateTimeFlags.Day); }
         }
 
         /// <inheritdoc />
@@ -585,7 +607,7 @@ namespace INTV.Core.Restricted.Model.Program
         /// <inheritdoc />
         public override bool AddCrc(uint newCrc, string crcDescription, IncompatibilityFlags incompatibilities)
         {
-            throw new System.NotImplementedException("INTV Funhouse XML program info AddCrc not implemented.");
+            throw new NotImplementedException("INTV Funhouse XML program info AddCrc not implemented.");
         }
 
         #endregion // IProgramInformation
@@ -659,7 +681,7 @@ namespace INTV.Core.Restricted.Model.Program
                 {
                     separator  = new[] { "\n", "\r", "\r\n", "\n\r" };
                 }
-                values = rawData.Split(separator, removeEmptyEntries ? System.StringSplitOptions.RemoveEmptyEntries : System.StringSplitOptions.None).Select(s => s.DecodeHtmlString().Trim());
+                values = rawData.Split(separator, removeEmptyEntries ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None).Select(s => s.DecodeHtmlString().Trim());
             }
             return values;
         }
@@ -667,7 +689,7 @@ namespace INTV.Core.Restricted.Model.Program
         /// <summary>
         /// Helper class for vendor URL information.
         /// </summary>
-        private class VendorUrls : System.Tuple<string, string>
+        private class VendorUrls : Tuple<string, string>
         {
             /// <summary>
             /// Initializes an instance of <see cref="VendorUrls"/>.

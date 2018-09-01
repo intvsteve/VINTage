@@ -406,9 +406,21 @@ namespace INTV.Core.Model
                     stockConfigFileNumber = crcData.BinConfigTemplate;
                 }
             }
+            stockCfgFilePath = GetStockCfgFilePath(stockConfigFileNumber);
+            return stockCfgFilePath;
+        }
+
+        /// <summary>
+        /// Gets a path to an existing stock config file path given its canonical CFG identifier.
+        /// </summary>
+        /// <param name="stockConfigFileNumber">A positive integer value indicating which canonical configuration file whose disk location is desired.</param>
+        /// <returns>The absolute path to the file, or <c>null</c> if a file for the given canonical configuration file does not exist.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="stockConfigFileNumber"/> is less than zero.</exception>
+        public static string GetStockCfgFilePath(int stockConfigFileNumber)
+        {
             var stockCfgFileName = stockConfigFileNumber.ToString() + ProgramFileKind.CfgFile.FileExtension();
             var stockCfgUri = new Uri(DefaultToolsDirectory + stockCfgFileName);
-            stockCfgFilePath = Uri.UnescapeDataString(stockCfgUri.AbsolutePath); // Need to unescape spaces.
+            var stockCfgFilePath = Uri.UnescapeDataString(stockCfgUri.AbsolutePath); // Need to unescape spaces.
 #if WIN
             stockCfgFilePath = stockCfgFilePath.Replace('/', System.IO.Path.DirectorySeparatorChar);
 #elif PCL

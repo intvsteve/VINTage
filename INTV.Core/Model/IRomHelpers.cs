@@ -497,5 +497,68 @@ namespace INTV.Core.Model
             }
             return originalRom;
         }
+
+        /// <summary>
+        /// Checks if the given ROM's CRC data matches the given program identifier with selectable strictness. See remarks.
+        /// </summary>
+        /// <param name="rom">The ROM to check for a match.</param>
+        /// <param name="programIdentifier">The program identifier to match.</param>
+        /// <param name="cfgCrcMustMatch">If <c>true</c> and a .BIN format ROM is being checked, determines whether the CRC of the config file must match as well.</param>
+        /// <returns><c>true</c> if <paramref name="rom"/>'s CRC data matches the given <paramref name="programIdentifier"/>, <c>false</c> otherwise.</returns>
+        /// <remarks><para>For .BIN format ROMs, there is the possibility, depending on the value if <paramref name="cfgCrcMustMatch"/>, that a match is reported, even though
+        /// the .CFG file could have a profound impact on the actual ROM being used. The .CFG file can actually cause modifications to the ROM itself, or describe different
+        /// features in the ROM (e.g. different compatibility or metadata). While metadata and compatibility differences could be considered cosmetic only, they can affect
+        /// how the ROM is handled by hardware in the case of LTO Flash! for example. Most important of course is the matter of the memory map, RAM mappings, or actual
+        /// code modification (e.g. the patch for Dreadnaught Factor for PAL systems). That said, until .CFG CRC values are computed on a 'canonicalized' form of the .CFG
+        /// file, it is important to note that mere whitespace changes will cause .CFG mismatches, making it fragile to do full compares when working with database.</para>
+        /// <para>Similarly, when working with the .ROM format, it is important to note that at this time, the CRC is computed for the entire file, including metadata that
+        /// may be provided. This means that mismatches can occur because a documentation credit was modified in the metadata of one version of the file, even though
+        /// the executable ROM itself was not changed.</para>
+        /// <para>Finally, for the LUIGI format, there is an additional challenge. To this point, this ROM format is only used as the destination format for ROMs copied to
+        /// the LTO Flash! hardware, though the jzIntv emulator supports it as well. As such, it is more than a container format for .BIN or .ROM formats, as it is different
+        /// in several important ways. However, it has not yet (and possibly will never become) a target ROM format. It addresses some deficiencies in the original .ROM format
+        /// that parallel the limitations of the original Intellicart and CuttleCart 3 hardware. That said, in theory the LUIGI header's UID entry poses a challenge. If the
+        /// LUIGI file was created from a .ROM-format ROM, it is unambiguous. However, thereafter it is not clear if the file was created directly from the assembler, in which
+        /// case the UID contains an as-yet-to-be-defined strong hash of something, or wither it contains a pair of 32-bit CRC values, one from the .BIN file, the other from
+        /// the corresponding .CFG file. Given the nature of more modern Intellivision programs to commonly stray from the standard set of common .CFG files (and memory maps),
+        /// it will be an interesting challenge to distinguish a LUIGI created via bin2luigi from one created directly by the assembler. In such a case, most likely we'd want
+        /// to bump the version number of the LUIGI header and at least set a flag somewhere in the sea of bits that we swim through to figure out all these intricacies.</para></remarks>
+        public static bool MatchesProgramIdentifier(this IRom rom, ProgramIdentifier programIdentifier, bool cfgCrcMustMatch)
+        {
+            var match = false;
+            if (rom != null)
+            {
+                switch (rom.Format)
+                {
+                    case RomFormat.Bin:
+                        match = (programIdentifier.DataCrc == rom.Crc) && (!cfgCrcMustMatch || (programIdentifier.OtherData == rom.CfgCrc));
+                        break;
+                    case RomFormat.Rom:
+                    case RomFormat.CuttleCart3:
+                    case RomFormat.CuttleCart3Advanced:
+                        match = programIdentifier.DataCrc == rom.Crc;
+                        break;
+                    case RomFormat.Luigi:
+                        var luigiHeader = rom.GetLuigiHeader();
+                        switch (luigiHeader.OriginalRomFormat)
+                        {
+                            case RomFormat.Bin:
+                                match = (programIdentifier.DataCrc == luigiHeader.OriginalRomCrc32) && (!cfgCrcMustMatch || (programIdentifier.OtherData == luigiHeader.OriginalCfgCrc32));
+                                break;
+                            case RomFormat.Rom:
+                                match = programIdentifier.DataCrc == luigiHeader.OriginalRomCrc32;
+                                break;
+                            default:
+                                // Should we throw here? This situation (as of 2. Sept. 2018) cannot exist.
+                                match = programIdentifier.Id == luigiHeader.Uid;
+                                break;
+                        }
+                        break;
+                    default:
+                        throw new InvalidOperationException();
+                }
+            }
+            return match;
+        }
     }
 }

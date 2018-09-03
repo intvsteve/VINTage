@@ -70,7 +70,7 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Gets the features specific to the program.
         /// </summary>
-        ProgramFeatures Features { get; }
+        IProgramFeatures Features { get; }
 
         /// <summary>
         /// Gets the metadata about the program.

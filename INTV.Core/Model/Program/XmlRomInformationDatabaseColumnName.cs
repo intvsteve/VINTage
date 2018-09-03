@@ -55,6 +55,16 @@ namespace INTV.Core.Model.Program
         title,
 
         /// <summary>
+        /// Short name for the ROM.
+        /// </summary>
+        short_name,
+
+        /// <summary>
+        /// Name of the publisher of the program ROM.
+        /// </summary>
+        vendor,
+
+        /// <summary>
         /// Name of a column containing the short name for a ROM variant. If the column's value is not empty, it overrides the short name in the gameinfo database.
         /// As a practical matter, this name should be limited to 18 characters.
         /// </summary>
@@ -228,9 +238,24 @@ namespace INTV.Core.Model.Program
         box_art,
 
         /// <summary>
+        /// Build date of the ROM; format YYYY-MM-DD.
+        /// </summary>
+        build_date,
+
+        /// <summary>
         /// Name of a column containing other contributors, e.g. technical advisors, Q.A. team, separated by '|'.
         /// </summary>
         other,
+
+        /// <summary>
+        /// The license under which the ROM was released.
+        /// </summary>
+        license,
+
+        /// <summary>
+        /// Contact information, separated by '|'.
+        /// </summary>
+        contact_info,
 
         /// <summary>
         /// Name of a column containing canonical CFG file, or contents of CFG.

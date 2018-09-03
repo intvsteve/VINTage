@@ -87,7 +87,7 @@ namespace INTV.Core.Utility
         public static string DecodeHtmlString(this string encodedHtmlString)
         {
             var decodedHtmlString = encodedHtmlString;
-            if (_htmlDecoder != null)
+            if ((_htmlDecoder != null) && !string.IsNullOrEmpty(encodedHtmlString))
             {
                 decodedHtmlString = _htmlDecoder(encodedHtmlString);
             }

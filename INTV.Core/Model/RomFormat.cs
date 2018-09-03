@@ -92,5 +92,41 @@ namespace INTV.Core.Model
             }
             return fileExtension;
         }
+
+        /// <summary>
+        /// Determines if two ROM formats should be considered compatible.
+        /// </summary>
+        /// <param name="romFormat">One ROM format to check.</param>
+        /// <param name="otherRomFormat">The other ROM format to check.</param>
+        /// <returns><c>true</c> if the two ROM formats should be considered compatible.</returns>
+        /// <remarks>There are technically three variations of the .ROM format, though the differences are minor. This method will consider all
+        /// three of the .ROM formats as compatible.</remarks>
+        public static bool IsCompatibleWithRomFormat(this RomFormat romFormat, RomFormat otherRomFormat)
+        {
+            var match = romFormat == otherRomFormat;
+            if (!match)
+            {
+                switch (romFormat)
+                {
+                    case RomFormat.CuttleCart3:
+                    case RomFormat.CuttleCart3Advanced:
+                    case RomFormat.Intellicart:
+                        switch (otherRomFormat)
+                        {
+                            case RomFormat.CuttleCart3:
+                            case RomFormat.CuttleCart3Advanced:
+                            case RomFormat.Intellicart:
+                                match = true;
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return match;
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public abstract class ProgramInformationTable : IProgramInformationTable
     {
-        private static MergedProgramInformationTable _default = new MergedProgramInformationTable();
+        private static readonly Lazy<MergedProgramInformationTable> Instance = new Lazy<MergedProgramInformationTable>(() => new MergedProgramInformationTable());
 
         #region Properties
 
@@ -38,7 +38,7 @@ namespace INTV.Core.Model.Program
         /// </summary>
         public static IProgramInformationTable Default
         {
-            get { return _default; }
+            get { return Instance.Value; }
         }
 
         #region IProgramInformationTable
@@ -59,23 +59,24 @@ namespace INTV.Core.Model.Program
         {
             List<IProgramInformationTable> localTables = new List<IProgramInformationTable>();
             var conflicts = new List<KeyValuePair<IProgramInformation, IProgramInformation>>();
+            var instance = Instance.Value;
             foreach (var localInfoTable in localInfoTables)
             {
                 var localTable = localInfoTable.Factory(localInfoTable.FilePath);
-                conflicts.AddRange(_default.MergeTable(localTable));
+                conflicts.AddRange(instance.MergeTable(localTable));
                 localTables.Add(localTable);
             }
-            var confilictingWithIntvFunhouse = _default.MergeTable(INTV.Core.Restricted.Model.Program.IntvFunhouseXmlProgramInformationTable.Instance);
+            var confilictingWithIntvFunhouse = instance.MergeTable(INTV.Core.Restricted.Model.Program.IntvFunhouseXmlProgramInformationTable.Instance);
             if (confilictingWithIntvFunhouse.Any())
             {
                 System.Diagnostics.Debug.WriteLine("Found conflicts with INTV Funhouse database.");
             }
-            var conflictingWithJzIntv = _default.MergeTable(UnmergedProgramInformationTable.Instance);
+            var conflictingWithJzIntv = instance.MergeTable(UnmergedProgramInformationTable.Instance);
             if (conflictingWithJzIntv.Any())
             {
                 System.Diagnostics.Debug.WriteLine("Found conflicts with jzIntv / Unmerged ROMs database.");
             }
-            return _default;
+            return instance;
         }
 
         #region IProgramInformationTable
@@ -84,7 +85,14 @@ namespace INTV.Core.Model.Program
         /// <remarks>The default implementation simply looks in the default database for a program entry.</remarks>
         public virtual IProgramInformation FindProgram(uint crc)
         {
-            return _default.FindProgram(crc);
+            return Default.FindProgram(crc);
+        }
+
+        /// <inheritdoc />
+        /// <remarks>The default implementation simply looks in the default database for a program entry.</remarks>
+        public virtual IProgramInformation FindProgram(ProgramIdentifier programIdentifier)
+        {
+            return Default.FindProgram(programIdentifier);
         }
 
         #endregion // IProgramInformationTable

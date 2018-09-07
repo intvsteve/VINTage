@@ -46,6 +46,14 @@ namespace INTV.Core.Model.Program
             return programInfo;
         }
 
+        /// <inheritdoc />
+        public override IProgramInformation FindProgram(ProgramIdentifier programIdentifier)
+        {
+            var programInformation = FindProgram(programIdentifier.DataCrc);
+            System.Diagnostics.Debug.WriteLineIf((programIdentifier.OtherData != 0) && (programInformation != null), "Support for ProgramIdentifier lookups not implemented.");
+            return programInformation;
+        }
+
         /// <summary>
         /// Merges another IProgramInformationTable into an existing one, based on the CRC entries of each table.
         /// </summary>

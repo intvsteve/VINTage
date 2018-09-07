@@ -18,78 +18,46 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace INTV.Core.Model.Program
 {
-    public class ProgramRomInformation : IProgramRomInformation
+    /// <summary>
+    /// Implements <see cref="IProgramRomInformation"/>.
+    /// </summary>
+    internal class ProgramRomInformation : IProgramRomInformation
     {
         #region Properties
 
         #region IProgramRomInformation
 
         /// <inheritdoc />
-        public string Title
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public string Title { get; internal set; }
 
         /// <inheritdoc />
-        public string Vendor
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public string Vendor { get; internal set; }
 
         /// <inheritdoc />
-        public string Year
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public string Year { get; internal set; }
 
         /// <inheritdoc />
-        public string LongName
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public string LongName { get; internal set; }
 
         /// <inheritdoc />
-        public string ShortName
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public string ShortName { get; internal set; }
 
         /// <inheritdoc />
-        public string VariantName
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public string VariantName { get; internal set; }
 
         /// <inheritdoc />
-        public RomFormat Format
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public RomFormat Format { get; internal set; }
 
         /// <inheritdoc />
-        public ProgramIdentifier Id
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public ProgramIdentifier Id { get; internal set; }
 
         /// <inheritdoc />
-        public ProgramFeatures Features
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public IProgramFeatures Features { get; internal set; }
 
         /// <inheritdoc />
-        public IProgramMetadata Metadata
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public IProgramMetadata Metadata { get; internal set; }
 
         /// <inheritdoc />
         #endregion // IProgramRomInformation

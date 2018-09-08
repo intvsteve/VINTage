@@ -196,6 +196,15 @@ namespace INTV.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid program ROM information. The following fields are not valid:.
+        /// </summary>
+        internal static string ProgramRomValidationFailed_Message {
+            get {
+                return ResourceManager.GetString("ProgramRomValidationFailed_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid ROM comparison requested: {0}.
         /// </summary>
         internal static string RomComparer_InvalidCompareRequestedFormat {

@@ -165,6 +165,9 @@
     <value>Unexpected ProgramInformation field: {0}</value>
     <comment>0}: a ProgramInformationMergeFieldsFlags</comment>
   </data>
+  <data name="ProgramRomValidationFailed_Message" xml:space="preserve">
+    <value>Invalid program ROM information. The following fields are not valid:</value>
+  </data>
   <data name="RomComparer_InvalidCompareRequestedFormat" xml:space="preserve">
     <value>Invalid ROM comparison requested: {0}</value>
     <comment>{0}: a RomComparison</comment>

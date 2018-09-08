@@ -583,5 +583,33 @@ namespace INTV.Core.Model
             }
             return match;
         }
+
+        /// <summary>
+        /// Gets program metadata given a ROM.
+        /// </summary>
+        /// <param name="rom">The ROM whose metadata is desired.</param>
+        /// <returns>The <see cref="IProgramMetadata"/> for the ROM, or <c>null</c> if it cannot be determined.</returns>
+        public static IProgramMetadata GetProgramMetadata(this IRom rom)
+        {
+            IProgramMetadata programMetadata = null;
+            if (rom != null)
+            {
+                switch (rom.Format)
+                {
+                    case RomFormat.Bin:
+                        programMetadata = rom.GetBinFileMetadata();
+                        break;
+                    case RomFormat.Intellicart:
+                    case RomFormat.CuttleCart3:
+                    case RomFormat.CuttleCart3Advanced:
+                        rom.GetRomFileMetadata();
+                        break;
+                    case RomFormat.Luigi:
+                        programMetadata = programMetadata = rom.GetLuigiFileMetadata();
+                        break;
+                }
+            }
+            return programMetadata;
+        }
     }
 }

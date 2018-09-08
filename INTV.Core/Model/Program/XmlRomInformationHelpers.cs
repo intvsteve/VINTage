@@ -113,7 +113,7 @@ namespace INTV.Core.Model.Program
         }
 
         /// <summary>
-        /// Strategy to extract a ROM's format from an entry from a rominfo database entry.
+        /// Strategy to extract a ROM's format from a rominfo database entry.
         /// </summary>
         /// <param name="xmlRomInformation">A database entry from the INTV Funhouse rominfo database.</param>
         /// <returns>The ROM format of the database entry.</returns>
@@ -125,6 +125,22 @@ namespace INTV.Core.Model.Program
             var dataColumn = xmlRomInformation.RomInfoDatabaseColumns.First(c => c.Name == XmlRomInformationDatabaseColumnName.format.ToString());
             var romFormat = StringToRomFormatConverter.Instance.Convert(dataColumn.Value);
             return romFormat;
+        }
+
+        /// <summary>
+        /// Strategy to extract the INTV Funhouse database code from a rominfo database entry.
+        /// </summary>
+        /// <param name="xmlRomInformation">A database entry from the INTV Funhouse rominfo database.</param>
+        /// <returns>The value of the 'code' column. Only non-<c>null</c>, non-empty values should be considered valid.</returns>
+        public static string GetDatabaseCode(this XmlRomInformation xmlRomInformation)
+        {
+            var code = string.Empty;
+            var dataColumn = xmlRomInformation.RomInfoDatabaseColumns.FirstOrDefault(c => c.Name == XmlRomInformationDatabaseColumnName.code.ToString());
+            if (dataColumn != null)
+            {
+                code = dataColumn.Value.Trim();
+            }
+            return code;
         }
 
         /// <summary>

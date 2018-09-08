@@ -1,5 +1,5 @@
 ﻿// <copyright file="IProgramInformationHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,8 +19,8 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.Restricted.Model.Program;
 
 namespace INTV.Core.Model.Program
 {
@@ -210,6 +210,30 @@ namespace INTV.Core.Model.Program
                 }
             }
             return mergedProgramInformation;
+        }
+
+        /// <summary>
+        /// Gets the INTV Funhouse database code for a program if it is available.
+        /// </summary>
+        /// <param name="programInformation">An instance of <see cref="IProgramInformation"/>.</param>
+        /// <returns>The INTV Funhouse database code; values of <c>null</c> or empty string are to be considered invalid.</returns>
+        internal static string GetDatabaseCode(this IProgramInformation programInformation)
+        {
+            string code = null;
+            var intvFunhouseInformation = programInformation as IntvFunhouseXmlProgramInformation;
+            if (intvFunhouseInformation != null)
+            {
+                code = intvFunhouseInformation.Code.Trim();
+            }
+            if (string.IsNullOrEmpty(code))
+            {
+                var unmergedInformation = programInformation as UnmergedProgramInformation;
+                if (unmergedInformation != null)
+                {
+                    code = unmergedInformation.Code.Trim();
+                }
+            }
+            return code;
         }
     }
 }

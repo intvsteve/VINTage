@@ -360,10 +360,14 @@ namespace INTV.Core.Model.Program
                 switch (source)
                 {
                     case "BIN+CFG":
+                        romFormat = RomFormat.Bin;
                         break;
                     case "ROM":
+                        // NOTE: This is a catch-all for .ROM and its sub-types (CC3 and CC3-Advanced).
+                        romFormat = RomFormat.Rom;
                         break;
                     case "LUIGI":
+                        romFormat = RomFormat.Luigi;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("source");

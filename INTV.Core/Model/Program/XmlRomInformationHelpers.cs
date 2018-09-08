@@ -45,7 +45,7 @@ namespace INTV.Core.Model.Program
         public static ProgramIdentifier GetProgramIdentifier(this XmlRomInformation xmlRomInformation)
         {
             // There must always be a non-zero value for the primary CRC.
-            var dataColumn = xmlRomInformation.RomInfoDatabaseColumns.First(c => c.Name == XmlRomInformationDatabaseColumnName.crc.ToString());
+            var dataColumn = xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.crc, requiredColumn: true);
             var crc = uint.Parse(dataColumn.Value, CultureInfo.InvariantCulture);
             if (crc == 0)
             {
@@ -60,7 +60,7 @@ namespace INTV.Core.Model.Program
             // 2.c: If stock .cfg file exists, use its CRC as otherCRC, else zero
             // 2.d: If bin_cfg is not an integer, treat text as something to compute CRC of as if it were a 'canonical' config file
             var otherCrc = 0u;
-            dataColumn = xmlRomInformation.RomInfoDatabaseColumns.FirstOrDefault(c => c.Name == XmlRomInformationDatabaseColumnName.crc_2.ToString());
+            dataColumn = xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.crc_2);
             if ((dataColumn != null) && !string.IsNullOrEmpty(dataColumn.Value))
             {
                 if (!uint.TryParse(dataColumn.Value, NumberStyles.None, CultureInfo.InvariantCulture, out otherCrc))
@@ -72,11 +72,11 @@ namespace INTV.Core.Model.Program
             // The second part of the CRC does not appear to have been defined, or is malformed. If ROM is BIN format, keep checking.
             if (otherCrc == 0)
             {
-                dataColumn = xmlRomInformation.RomInfoDatabaseColumns.First(c => c.Name == XmlRomInformationDatabaseColumnName.format.ToString());
+                dataColumn = xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.format, requiredColumn: true);
                 var romFormat = StringToRomFormatConverter.Instance.Convert(dataColumn.Value);
                 if (romFormat == RomFormat.Bin)
                 {
-                    dataColumn = xmlRomInformation.RomInfoDatabaseColumns.FirstOrDefault(c => c.Name == XmlRomInformationDatabaseColumnName.bin_cfg.ToString());
+                    dataColumn = xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.bin_cfg);
                     if ((dataColumn != null) && !string.IsNullOrEmpty(dataColumn.Value))
                     {
                         // If bin_cfg parses does not parse as a number, treat it as canonical config file and compute its CRC.
@@ -122,7 +122,7 @@ namespace INTV.Core.Model.Program
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if an unrecognized ROM format is specified.</exception>
         public static RomFormat GetRomFormat(this XmlRomInformation xmlRomInformation)
         {
-            var dataColumn = xmlRomInformation.RomInfoDatabaseColumns.First(c => c.Name == XmlRomInformationDatabaseColumnName.format.ToString());
+            var dataColumn = xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.format, requiredColumn: true);
             var romFormat = StringToRomFormatConverter.Instance.Convert(dataColumn.Value);
             return romFormat;
         }
@@ -135,7 +135,7 @@ namespace INTV.Core.Model.Program
         public static string GetDatabaseCode(this XmlRomInformation xmlRomInformation)
         {
             var code = string.Empty;
-            var dataColumn = xmlRomInformation.RomInfoDatabaseColumns.FirstOrDefault(c => c.Name == XmlRomInformationDatabaseColumnName.code.ToString());
+            var dataColumn = xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.code);
             if (dataColumn != null)
             {
                 code = dataColumn.Value.Trim();
@@ -199,6 +199,7 @@ namespace INTV.Core.Model.Program
                             break;
                         case XmlRomInformationDatabaseColumnName.jlp:
                             programFeaturesBuilder.WithJlpFeatures(StringToJlpFeaturesConverter.Instance.Convert(column.Value));
+                            programFeaturesBuilder.WithJlpHardwareVersion(StringToJlpFeaturesConverter.Instance.GetJlpHardwareVersion(column.Value));
                             break;
                         case XmlRomInformationDatabaseColumnName.jlp_savegame:
                             programFeaturesBuilder.WithMinimumFlashSectors(StringToMinimumFlashSectorsConverter.Instance.Convert(column.Value));
@@ -249,6 +250,31 @@ namespace INTV.Core.Model.Program
                 programFeaturesBuilder.WithGeneralFeatures(newGeneralFeatures);
             }
             return programFeaturesBuilder.Build();
+        }
+
+        /// <summary>
+        /// Sets the ROM features-related columns given an existing set of <see cref="IProgramFeatures"/>.
+        /// </summary>
+        /// <param name="xmlRomInformation">The instance of <see cref="XmlRomInformation"/> whose features-related column values are to be set.</param>
+        /// <param name="features">The features to use to set the column values.</param>
+        public static void SetProgramFeatures(this XmlRomInformation xmlRomInformation, IProgramFeatures features)
+        {
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.ntsc).Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Ntsc);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.pal).Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Pal);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.general_features).Value = GeneralFeaturesToStringConverter.Instance.Convert(features.GeneralFeatures);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.kc).Value = KeyboardComponentFeaturesToStringConverter.Instance.Convert(features.KeyboardComponent);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.sva).Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.SuperVideoArcade);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.ivoice).Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Intellivoice);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.intyii).Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.IntellivisionII);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.ecs).Value = EcsFeaturesToStringConverter.Instance.Convert(features.Ecs);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.tutor).Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Tutorvision);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.icart).Value = IntellicartCC3FeaturesToStringConverter.Instance.Convert(features.Intellicart);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.cc3).Value = CuttleCart3FeaturesToStringConverter.Instance.Convert(features.CuttleCart3);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.jlp).Value = JlpFeaturesToStringConverter.Instance.Convert(features.Jlp, features.JlpHardwareVersion);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.jlp_savegame).Value = MinimumFlashSectorsToStringConverter.Instance.Convert(features.JlpFlashMinimumSaveSectors);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.lto_flash).Value = LtoFlashFeaturesToStringConverter.Instance.Convert(features.LtoFlash);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.bee3).Value = Bee3FeaturesToStringConverter.Instance.Convert(features.Bee3);
+            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.hive).Value = HiveFeaturesToStringConverter.Instance.Convert(features.Hive);
         }
 
         /// <summary>
@@ -365,6 +391,10 @@ namespace INTV.Core.Model.Program
             return metadata;
         }
 
+        private static void SetProgramMetadata(this XmlRomInformation xmlRomInformation, IProgramMetadata metadata)
+        {
+        }
+
         #region Converters
 
         private class StringToRomFormatConverter : Converter<StringToRomFormatConverter, string, RomFormat>
@@ -413,6 +443,8 @@ namespace INTV.Core.Model.Program
             }
         }
 
+        #region String to Features Converters
+
         private class StringToRawFeatureBitsConverter : Converter<StringToRawFeatureBitsConverter, string, short>
         {
             /// <inheritdoc />
@@ -432,7 +464,12 @@ namespace INTV.Core.Model.Program
 
         private abstract class StringToFeatureBitsConverter<T, TFeatureBits> : Converter<T, string, TFeatureBits> where T : IConverter<string, TFeatureBits>, new()
         {
-            /// <inheritdoc />
+            /// <summary>
+            /// Performs the core conversion of a string to raw bits, applying the given bit mask.
+            /// </summary>
+            /// <param name="source">The string to convert.</param>
+            /// <param name="mask">The mask to apply to the bits parsed from the string.</param>
+            /// <returns>The raw feature bits.</returns>
             protected uint ConvertCore(string source, uint mask)
             {
                 var rawFeatureBits = StringToRawFeatureBitsConverter.Instance.Convert(source);
@@ -509,6 +546,26 @@ namespace INTV.Core.Model.Program
                 var jlpFeatures = (JlpFeatures)ConvertCore(source, JlpFeaturesHelpers.FeaturesMask);
                 return jlpFeatures;
             }
+
+            /// <summary>
+            /// Extracts JLP hardware revision that may have been encoded into a numeric string.
+            /// </summary>
+            /// <param name="source">The string that contains encoded JLP feature bits and possibly hardware revision.</param>
+            /// <returns>The hardware revision.</returns>
+            /// <exception cref="System.ArgumentException">Thrown if the string describes a raw bits value that is invalid.</exception>
+            /// <exception cref="System.FormatException">Thrown if the string cannot be parsed.</exception>
+            /// <exception cref="System.OverflowException">Thrown if the raw bits are out of range.</exception>
+            public JlpHardwareVersion GetJlpHardwareVersion(string source)
+            {
+                var rawFeatureBits = StringToRawFeatureBitsConverter.Instance.Convert(source);
+                var jlpFeatureBits = System.Convert.ToUInt32(rawFeatureBits);
+                var jlpHardwareVersionBits = jlpFeatureBits >> JlpFeaturesHelpers.FlashSaveDataSectorsOffset;
+                if ((jlpHardwareVersionBits >= (uint)JlpHardwareVersion.Jlp03) && (jlpHardwareVersionBits <= (uint)JlpHardwareVersion.Jlp05))
+                {
+                    return (JlpHardwareVersion)jlpHardwareVersionBits;
+                }
+                throw new ArgumentOutOfRangeException();
+            }
         }
 
         private class StringToMinimumFlashSectorsConverter : Converter<StringToMinimumFlashSectorsConverter, string, ushort>
@@ -554,6 +611,176 @@ namespace INTV.Core.Model.Program
                 return hiveFeatures;
             }
         }
+
+        #endregion // String to Features Converters
+
+        #region Features to String Converters
+
+        private class RawFeatureBitsToStringConverter : Converter<RawFeatureBitsToStringConverter, short, string>
+        {
+            /// <inheritdoc />
+            public override string Convert(short source)
+            {
+                var stringValue = source.ToString(CultureInfo.InvariantCulture);
+                return stringValue;
+            }
+        }
+
+        private abstract class FeatureBitsToStringConverter<T, TFeatureBits> : Converter<T, TFeatureBits, string> where T : IConverter<TFeatureBits, string>, new()
+        {
+            /// <inheritdoc />
+            public override string Convert(TFeatureBits source)
+            {
+                var rawFeatureBits = GetRawFeatureBits(source);
+                var featureBitsToConvert = System.Convert.ToInt16(rawFeatureBits);
+                var featureBitsString = RawFeatureBitsToStringConverter.Instance.Convert(featureBitsToConvert);
+                return featureBitsString;
+            }
+
+            /// <summary>
+            /// Gets the raw feature bits to convert to a string.
+            /// </summary>
+            /// <param name="source">The feature bits to convert to a string.</param>
+            /// <returns>The feature bits.</returns>
+            protected abstract uint GetRawFeatureBits(TFeatureBits source);
+        }
+
+        private class FeatureCompatibilityToStringConverter : FeatureBitsToStringConverter<FeatureCompatibilityToStringConverter, FeatureCompatibility>
+        {
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(FeatureCompatibility source)
+            {
+                var rawFeatureBits = source & FeatureCompatibilityHelpers.ValidFeaturesMask;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        private class GeneralFeaturesToStringConverter : FeatureBitsToStringConverter<GeneralFeaturesToStringConverter, GeneralFeatures>
+        {
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(GeneralFeatures source)
+            {
+                // System ROM is handled in a separate conversion.
+                var rawFeatureBits = (source & GeneralFeaturesHelpers.ValidFeaturesMask) & ~GeneralFeatures.SystemRom;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        private class KeyboardComponentFeaturesToStringConverter : FeatureBitsToStringConverter<KeyboardComponentFeaturesToStringConverter, KeyboardComponentFeatures>
+        {
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(KeyboardComponentFeatures source)
+            {
+                var rawFeatureBits = source & KeyboardComponentFeaturesHelpers.ValidFeaturesMask;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        private class EcsFeaturesToStringConverter : FeatureBitsToStringConverter<EcsFeaturesToStringConverter, EcsFeatures>
+        {
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(EcsFeatures source)
+            {
+                var rawFeatureBits = source & EcsFeaturesHelpers.ValidFeaturesMask;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        private class IntellicartCC3FeaturesToStringConverter : FeatureBitsToStringConverter<IntellicartCC3FeaturesToStringConverter, IntellicartCC3Features>
+        {
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(IntellicartCC3Features source)
+            {
+                var rawFeatureBits = source & IntellicartCC3FeaturesHelpers.ValidFeaturesMask;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        private class CuttleCart3FeaturesToStringConverter : FeatureBitsToStringConverter<CuttleCart3FeaturesToStringConverter, CuttleCart3Features>
+        {
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(CuttleCart3Features source)
+            {
+                var rawFeatureBits = source & CuttleCart3FeaturesHelpers.ValidFeaturesMask;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        private class JlpFeaturesToStringConverter : FeatureBitsToStringConverter<JlpFeaturesToStringConverter, JlpFeatures>
+        {
+            /// <summary>
+            /// Converts JLP features to a string, encoding the JLP hardware version as well.
+            /// </summary>
+            /// <param name="source">The JLP feature bits to convert to a string.</param>
+            /// <param name="hardwareVersion">The JLP hardware version to include in the string.</param>
+            /// <returns>The JLP features and hardware revision encoded as a numeric string.</returns>
+            public string Convert(JlpFeatures source, JlpHardwareVersion hardwareVersion)
+            {
+                var rawFeatureBits = GetRawFeatureBits(source);
+                var rawHardwareVersion = (uint)hardwareVersion;
+                if ((rawHardwareVersion > 0) && (rawHardwareVersion <= 15))
+                {
+                    var hardwareVersionFeatureBits = rawHardwareVersion << JlpFeaturesHelpers.FlashSaveDataSectorsOffset; // kinda icky, but we stash flash usage separately
+                    rawFeatureBits |= hardwareVersionFeatureBits;
+                }
+                var featureBitsToConvert = System.Convert.ToInt16(rawFeatureBits);
+                var featureBitsString = RawFeatureBitsToStringConverter.Instance.Convert(featureBitsToConvert);
+                return featureBitsString;
+            }
+
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(JlpFeatures source)
+            {
+                var rawFeatureBits = source & JlpFeaturesHelpers.ValidFeaturesMask;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        private class MinimumFlashSectorsToStringConverter : Converter<MinimumFlashSectorsToStringConverter, ushort, string>
+        {
+            /// <inheritdoc />
+            public override string Convert(ushort source)
+            {
+                var value = "-1";
+                if ((source > 0) && (source <= JlpFeaturesHelpers.MaxJlpFlashSectorUsage))
+                {
+                    value = source.ToString(CultureInfo.InvariantCulture);
+                }
+                return value;
+            }
+        }
+
+        private class LtoFlashFeaturesToStringConverter : FeatureBitsToStringConverter<LtoFlashFeaturesToStringConverter, LtoFlashFeatures>
+        {
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(LtoFlashFeatures source)
+            {
+                var rawFeatureBits = source & LtoFlashFeaturesHelpers.ValidFeaturesMask;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        private class Bee3FeaturesToStringConverter : FeatureBitsToStringConverter<Bee3FeaturesToStringConverter, Bee3Features>
+        {
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(Bee3Features source)
+            {
+                var rawFeatureBits = source & Bee3FeaturesHelpers.ValidFeaturesMask;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        private class HiveFeaturesToStringConverter : FeatureBitsToStringConverter<HiveFeaturesToStringConverter, HiveFeatures>
+        {
+            /// <inheritdoc />
+            protected override uint GetRawFeatureBits(HiveFeatures source)
+            {
+                var rawFeatureBits = source & HiveFeaturesHelpers.ValidFeaturesMask;
+                return (uint)rawFeatureBits;
+            }
+        }
+
+        #endregion // Features to String Converters
 
         private class StringToStringEnumerableConverter : Converter<StringToStringEnumerableConverter, string, IEnumerable<string>>
         {

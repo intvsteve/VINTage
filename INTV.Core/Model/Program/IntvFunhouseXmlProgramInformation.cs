@@ -498,7 +498,13 @@ namespace INTV.Core.Restricted.Model.Program
         /// <inheritdoc />
         public override IEnumerable<string> Descriptions
         {
-            get { yield return ProgramDescription; }
+            get
+            {
+                if (!string.IsNullOrEmpty(ProgramDescription))
+                {
+                    yield return ProgramDescription;
+                }
+            }
         }
 
         /// <inheritdoc />

@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Linq;
 
 namespace INTV.Core.Model.Program
@@ -63,5 +64,42 @@ namespace INTV.Core.Model.Program
         #endregion // XML Properties
 
         #endregion // Properties
+
+        /// <summary>
+        /// Creates a new instance of <see cref="XmlRomInformation"/> with default column values.
+        /// </summary>
+        /// <returns>A new instance of <see cref="XmlRomInformation"/>.</returns>
+        public static XmlRomInformation CreateDefault()
+        {
+            var columnNames = Enum.GetValues(typeof(XmlRomInformationDatabaseColumnName)).Cast<XmlRomInformationDatabaseColumnName>();
+            var xmlRomInformation = new XmlRomInformation { RomInfoDatabaseColumns = columnNames.Select(n => new XmlRomInformationDatabaseColumn(n)).ToArray() };
+            return xmlRomInformation;
+        }
+
+        /// <summary>
+        /// Gets a column.
+        /// </summary>
+        /// <param name="name">Identifies the column to get.</param>
+        /// <returns>The database column, <c>null</c> if the column identified by <paramref name="name"/> cannot be found.</returns>
+        public XmlRomInformationDatabaseColumn GetColumn(XmlRomInformationDatabaseColumnName name)
+        {
+            return GetColumn(name, requiredColumn: false);
+        }
+
+        /// <summary>
+        /// Gets a column.
+        /// </summary>
+        /// <param name="name">Identifies the column to get.</param>
+        /// <param name="requiredColumn">If <c>true</c>, the column must be present. If not, an exception is thrown.</param>
+        /// <returns>The database column, <c>null</c> if the column identified by <paramref name="name"/> cannot be found and <paramref name="requiredColumn"/> is <c>false</c>.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown if <paramref name="requiredColumn"/> is <c>true</c> and the column identified by <paramref name="name"/> cannot be found.</exception>
+        public XmlRomInformationDatabaseColumn GetColumn(XmlRomInformationDatabaseColumnName name, bool requiredColumn)
+        {
+            if (requiredColumn)
+            {
+                return RomInfoDatabaseColumns.First(c => c.Name == name.ToString());
+            }
+            return RomInfoDatabaseColumns.FirstOrDefault(c => c.Name == name.ToString());
+        }
     }
 }

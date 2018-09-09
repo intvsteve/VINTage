@@ -108,12 +108,17 @@
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTable.cs" />
     <Compile Include="Model\Program\IProgramDescription.cs" />
     <Compile Include="Model\Program\IProgramFeatures.cs" />
+    <Compile Include="Model\Program\IProgramFeaturesBuilder.cs" />
     <Compile Include="Model\Program\IProgramInformation.cs" />
     <Compile Include="Model\Program\IProgramInformationHelpers.cs" />
     <Compile Include="Model\Program\IProgramInformationTable.cs" />
+    <Compile Include="Model\Program\IProgramInformationToXmlRomInformationConverter.cs" />
     <Compile Include="Model\Program\IProgramMetadata.cs" />
+    <Compile Include="Model\Program\IProgramMetadataBuilder.cs" />
+    <Compile Include="Model\Program\IProgramMetadataFieldId.cs" />
     <Compile Include="Model\Program\IProgramMetadataHelpers.cs" />
     <Compile Include="Model\Program\IProgramRomInformation.cs" />
+    <Compile Include="Model\Program\IProgramRomInformationBuilder.cs" />
     <Compile Include="Model\Program\JlpFeatures.cs" />
     <Compile Include="Model\Program\KeyboardComponentFeatures.cs" />
     <Compile Include="Model\Program\LtoFlashFeatures.cs" />
@@ -122,6 +127,7 @@
     <Compile Include="Model\Program\ProgramDescription.cs" />
     <Compile Include="Model\Program\ProgramDescriptionHelpers.cs" />
     <Compile Include="Model\Program\ProgramFeatures.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesBuilder.cs" />
     <Compile Include="Model\Program\ProgramFeaturesHelpers.cs" />
     <Compile Include="Model\Program\ProgramFileKind.cs" />
     <Compile Include="Model\Program\ProgramFileKindHelpers.cs" />
@@ -131,6 +137,9 @@
     <Compile Include="Model\Program\ProgramInformationOrigin.cs" />
     <Compile Include="Model\Program\ProgramInformationTable.cs" />
     <Compile Include="Model\Program\ProgramInformationTableDescriptor.cs" />
+    <Compile Include="Model\Program\ProgramMetadata.cs" />
+    <Compile Include="Model\Program\ProgramMetadataBuilder.cs" />
+    <Compile Include="Model\Program\ProgramRomInformationBuilder.cs" />
     <Compile Include="Model\Program\ProgramSupportFiles.cs" />
     <Compile Include="Model\Program\ProgramSupportFilesHelpers.cs" />
     <Compile Include="Model\Program\ProgramSupportFileState.cs" />
@@ -143,6 +152,8 @@
     <Compile Include="Model\Program\UnmergedProgramInformationTable.cs" />
     <Compile Include="Model\Program\UserSpecifiedProgramInformation.cs" />
     <Compile Include="Model\Program\UserSpecifiedProgramInformationTable.cs" />
+    <Compile Include="Model\Program\XmlRomInformationHelpers.cs" />
+    <Compile Include="Model\Program\XmlRomInformationToProgramRomInformationConverter.cs" />
     <Compile Include="Model\Rom.cs" />
     <Compile Include="Model\RomComparer.cs" />
     <Compile Include="Model\RomComparerStrict.cs" />
@@ -167,6 +178,7 @@
     <Compile Include="Model\Stic\MobColor.cs" />
     <Compile Include="Model\Stic\Mode.cs" />
     <Compile Include="Model\XmlRom.cs" />
+    <Compile Include="ProgramRomInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
@@ -180,6 +192,8 @@
     <Compile Include="Utility\BinaryReader.cs" />
     <Compile Include="Utility\BinaryWriter.cs" />
     <Compile Include="Utility\ByteSerializer.cs" />
+    <Compile Include="Utility\Converter`T`TSource`TDestination.cs" />
+    <Compile Include="Utility\ConvertToMultiple`T`TSource`TDestination.cs" />
     <Compile Include="Utility\Crc16.cs" />
     <Compile Include="Utility\Crc24.cs" />
     <Compile Include="Utility\Crc32.cs" />

@@ -332,6 +332,7 @@ namespace INTV.Core.Model.Program
 
         private class StringToMetadataDateTimeConverter : Converter<StringToMetadataDateTimeConverter, string, MetadataDateTime>
         {
+            /// <inheritdoc />
             public override MetadataDateTime Convert(string source)
             {
                 if (!string.IsNullOrEmpty(source))
@@ -345,6 +346,63 @@ namespace INTV.Core.Model.Program
                     }
                 }
                 throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private class StringToDataOriginsConverter : Converter<StringToDataOriginsConverter, string, IEnumerable<ProgramInformationOrigin>>
+        {
+            /// <inheritdoc />
+            public override IEnumerable<ProgramInformationOrigin> Convert(string source)
+            {
+                var origins = new HashSet<ProgramInformationOrigin>();
+                if (!string.IsNullOrEmpty(source))
+                {
+                    // set('INTV Funhouse','Intellivision Lives','manual entry','e-mail','intvname','ROM','CFG','LUIGI','Catalog','other')
+                    var originStrings = source.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var originString in originStrings)
+                    {
+                        switch (originString)
+                        {
+                            case "INTV Funhouse":
+                                origins.Add(ProgramInformationOrigin.IntvFunhouse);
+                                break;
+                            case "Intellivision Lives":
+                                origins.Add(ProgramInformationOrigin.IntellivisionProductions);
+                                break;
+                            case "manual entry":
+                                origins.Add(ProgramInformationOrigin.UserDefined);
+                                break;
+                            case "e-mail":
+                                origins.Add(ProgramInformationOrigin.UserEmail);
+                                break;
+                            case "intvname":
+                                origins.Add(ProgramInformationOrigin.JzIntv);
+                                break;
+                            case "ROM":
+                                origins.Add(ProgramInformationOrigin.RomMetadataBlock);
+                                break;
+                            case "CFG":
+                                origins.Add(ProgramInformationOrigin.CfgVarMetadataBlock);
+                                break;
+                            case "LUIGI":
+                                origins.Add(ProgramInformationOrigin.LuigiMetadataBlock);
+                                break;
+                            case "Catalog":
+                                origins.Add(ProgramInformationOrigin.GameCatalog);
+                                break;
+                            case "other":
+                                origins.Add(ProgramInformationOrigin.None);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                if (!origins.Any())
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+                return origins;
             }
         }
     }

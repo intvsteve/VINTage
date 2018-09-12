@@ -503,16 +503,16 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="rom">The ROM whose format's compatibility is to be checked.</param>
         /// <param name="romFormat">The other ROM format.</param>
-        /// <param name="considerOrginalFormat">If <c>true</c> and <paramref name="rom"/> is of a format that may have a different 'format of origin' such as LUIGI, the also consider that format.</param>
+        /// <param name="considerOriginalFormat">If <c>true</c> and <paramref name="rom"/> is of a format that may have a different 'format of origin' such as LUIGI, the also consider that format.</param>
         /// <returns><c>true</c> if <paramref name="rom"/>'s format is compatible with <paramref name="romFormat"/>, or, if <paramref name="considerOriginalFormat"/> is <c>true</c>,
         /// the original ROM format is compatible with <paramref name="romFormat"/>.</returns>
-        public static bool MatchingRomFormat(this IRom rom, RomFormat romFormat, bool considerOrginalFormat)
+        public static bool MatchingRomFormat(this IRom rom, RomFormat romFormat, bool considerOriginalFormat)
         {
             var match = false;
             if (rom != null)
             {
                 match = rom.Format.IsCompatibleWithRomFormat(romFormat);
-                if (!match && (rom.Format == RomFormat.Luigi) && considerOrginalFormat)
+                if (!match && (rom.Format == RomFormat.Luigi) && considerOriginalFormat)
                 {
                     var luigiHeader = rom.GetLuigiHeader();
                     match = (luigiHeader != null) && rom.Format.IsCompatibleWithRomFormat(luigiHeader.OriginalRomFormat);

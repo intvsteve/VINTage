@@ -142,7 +142,7 @@ namespace INTV.Core.Model.Program
             {
                 if (!romFormatsMatch)
                 {
-                    romFormatsMatch = programDescription.Rom.MatchingRomFormat(romFormat, considerOrginalFormat: true);
+                    romFormatsMatch = programDescription.Rom.MatchingRomFormat(romFormat, considerOriginalFormat: true);
                 }
                 crcMatch = programDescription.Rom.MatchesProgramIdentifier(programIdentifier, cfgCrcMustMatch);
             }

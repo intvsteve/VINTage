@@ -178,12 +178,12 @@ namespace INTV.Core.Tests
             return decodedString;
         }
 
-        private static string HtmlEncode(string unEncodedHtmlString)
+        private static string HtmlEncode(string stringToEncode)
         {
             var decodedString = string.Empty;
-            if (!string.IsNullOrEmpty(unEncodedHtmlString))
+            if (!string.IsNullOrEmpty(stringToEncode))
             {
-                decodedString = HttpUtility.HtmlEncode(unEncodedHtmlString);
+                decodedString = HttpUtility.HtmlEncode(stringToEncode);
             }
             return decodedString;
         }

@@ -1,4 +1,4 @@
-﻿// <copyright file="StringUtilitiesTests.cs" company="INTV Funhouse">
+// <copyright file="StringUtilitiesTests.cs" company="INTV Funhouse">
 // Copyright (c) 2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -64,7 +64,7 @@ namespace INTV.Core.Tests
         }
 
         [Theory]
-        [InlineData(null, "")]
+        [InlineData(null, null)]
         [InlineData("TestString without HTML to decode", "TestString without HTML to decode")]
         [InlineData("Test string with &quot;encoded&quot; HTML characters", "Test string with \"encoded\" HTML characters")]
         [InlineData("Test string with <b>&quot;encoded&quot;</b> HTML characters", "Test string with <b>\"encoded\"</b> HTML characters")]
@@ -75,7 +75,7 @@ namespace INTV.Core.Tests
         }
 
         [Theory]
-        [InlineData(null, "")]
+        [InlineData(null, null)]
         [InlineData("TestString without HTML to decode", "TestString without HTML to decode")]
         [InlineData("Test string with &quot;encoded&quot; HTML characters", "Test string with \"encoded\" HTML characters")]
         [InlineData("Test string with <b>&quot;encoded&quot;</b> HTML characters", "Test string with \"encoded\" HTML characters")]

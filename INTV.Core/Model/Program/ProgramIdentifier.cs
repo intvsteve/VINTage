@@ -107,7 +107,7 @@ namespace INTV.Core.Model.Program
         /// <returns><c>true</c> if the values are not equal</returns>
         public static bool operator !=(ProgramIdentifier lhs, ProgramIdentifier rhs)
         {
-            return !lhs.Equals(lhs);
+            return !lhs.Equals(rhs);
         }
 
         /// <summary>

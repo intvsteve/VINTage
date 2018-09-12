@@ -56,5 +56,20 @@ namespace INTV.Shared.Utility
             }
             return decodedString;
         }
+
+        /// <summary>
+        /// Encodes a string that is to be used in HTML.
+        /// </summary>
+        /// <param name="rawString">The string to encode.</param>
+        /// <returns>The HTML-encoded string.</returns>
+        public static string HtmlEncode(this string rawString)
+        {
+            var encodedString = string.Empty;
+            if (!string.IsNullOrEmpty(rawString))
+            {
+                encodedString = WebUtility.HtmlEncode(rawString);
+            }
+            return encodedString;
+        }
     }
 }

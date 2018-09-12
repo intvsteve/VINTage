@@ -160,6 +160,7 @@ namespace INTV.Shared.Model
             if (initializedCoreStreamUtils)
             {
                 INTV.Core.Utility.StringUtilities.RegisterHtmlDecoder(StringUtilities.HtmlDecode);
+                INTV.Core.Utility.StringUtilities.RegisterHtmlEncoder(StringUtilities.HtmlEncode);
             }
             System.Diagnostics.Debug.Assert(initializedCoreStreamUtils, "Failed to initialize stream utilities!");
             Core.Model.IRomHelpers.InitializeCallbacks(GetIntvNameData);

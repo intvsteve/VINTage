@@ -27,7 +27,7 @@ namespace INTV.Core.Model.Program
     /// </summary>
     internal class MergedProgramInformationTable : ProgramInformationTable
     {
-        private Dictionary<uint, IProgramInformation> _programs = new Dictionary<uint, IProgramInformation>();
+        private readonly Dictionary<uint, IProgramInformation> _programs = new Dictionary<uint, IProgramInformation>();
 
         /// <inheritdoc />
         public override IEnumerable<IProgramInformation> Programs

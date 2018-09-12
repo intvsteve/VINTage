@@ -27,7 +27,7 @@ namespace INTV.Core.Utility
     /// </summary>
     public static class RandomUtilities
     {
-        private static Random _random = new Random();
+        private static readonly Random _random = new Random();
 
         /// <summary>
         /// Generate a random 32-bit uint value.

@@ -31,7 +31,7 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public class ProgramRomInformationBuilder : IProgramRomInformationBuilder
     {
-        private ProgramRomInformation _programRomInformation = new ProgramRomInformation();
+        private readonly ProgramRomInformation _programRomInformation = new ProgramRomInformation();
 
         /// <inheritdoc />
         public IProgramRomInformationBuilder WithTitle(string title)

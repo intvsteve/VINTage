@@ -1,4 +1,4 @@
-// <copyright file="StringUtilitiesTests.cs" company="INTV Funhouse">
+﻿// <copyright file="StringUtilitiesTests.cs" company="INTV Funhouse">
 // Copyright (c) 2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -89,6 +89,29 @@ namespace INTV.Core.Tests
 
         #region HTML Encoder Tests
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("TestString without HTML to encode")]
+        [InlineData("Test string with \"non-encoded\" HTML characters")]
+        [InlineData("Test string with non-encoded \"Dungeons & Dragons©®\" HTML characters")]
+        public void RegisterNullHtmlEncoder_CallEncodeHtmlString_DoesNotCrash(string testString)
+        {
+            StringUtilities.RegisterHtmlEncoder(null);
+            Assert.Equal(testString, testString.EncodeHtmlString());
+        }
+
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("TestString without HTML to encode", "TestString without HTML to encode")]
+        [InlineData("Test string with \"non-encoded\" HTML characters", "Test string with &quot;non-encoded&quot; HTML characters")]
+        [InlineData("Test string with non-encoded \"Dungeons & Dragons©®\" HTML characters", "Test string with non-encoded &quot;Dungeons &amp; Dragons&#169;&#174;&quot; HTML characters")]
+        ////[InlineData("Test string with non-encoded \"Dungeons & Dragons©®\" HTML characters", "Test string with non-encoded &quot;Dungeons &amp; Dragons&copy;&reg;&quot; HTML characters")]
+        public void RegisterHtmlEncoder_CallEncodeHtmlString_EncodesHtml(string testString, string expectedResult)
+        {
+            StringUtilities.RegisterHtmlEncoder(HtmlEncode);
+            Assert.Equal(expectedResult, testString.EncodeHtmlString());
+        }
+
         #endregion // HTML Encoder Tests
 
         #region C-Style Formatting Tests
@@ -132,6 +155,8 @@ namespace INTV.Core.Tests
             Assert.Equal(expectedResult, actualResult);
         }
 
+        #endregion // C-Style Formatting Tests
+
         private static string HtmlDecode(string encodedHtmlString)
         {
             var decodedString = string.Empty;
@@ -153,6 +178,14 @@ namespace INTV.Core.Tests
             return decodedString;
         }
 
-        #endregion // C-Style Formatting Tests
+        private static string HtmlEncode(string unEncodedHtmlString)
+        {
+            var decodedString = string.Empty;
+            if (!string.IsNullOrEmpty(unEncodedHtmlString))
+            {
+                decodedString = HttpUtility.HtmlEncode(unEncodedHtmlString);
+            }
+            return decodedString;
+        }
     }
 }

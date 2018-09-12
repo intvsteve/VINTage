@@ -22,6 +22,9 @@ using System.Collections.Generic;
 
 namespace INTV.Core.Model.Program
 {
+    /// <summary>
+    /// Defines an interface to describe an Intellivision program.
+    /// </summary>
     public interface IProgramInformation
     {
         /// <summary>
@@ -52,7 +55,6 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Gets or sets a short name for the program, maximum 18 characters.
         /// </summary>
-        /// <value>The short name.</value>
         string ShortName { get; set; }
 
         /// <summary>

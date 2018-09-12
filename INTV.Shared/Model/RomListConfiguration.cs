@@ -160,6 +160,7 @@ namespace INTV.Shared.Model
             if (initializedCoreStreamUtils)
             {
                 INTV.Core.Utility.StringUtilities.RegisterHtmlDecoder(StringUtilities.HtmlDecode);
+                INTV.Core.Utility.StringUtilities.RegisterHtmlEncoder(StringUtilities.HtmlEncode);
             }
             System.Diagnostics.Debug.Assert(initializedCoreStreamUtils, "Failed to initialize stream utilities!");
             Core.Model.IRomHelpers.InitializeCallbacks(GetIntvNameData);
@@ -185,7 +186,7 @@ namespace INTV.Shared.Model
             {
                 new ProgramInformationTableDescriptor(Path.Combine(_applicationDocumentsPath, LocalRomDefintions), UserSpecifiedProgramInformationTable.Initialize)
             };
-            ProgramInfoTable = ProgramInformationTable.Initialize(System.Net.WebUtility.HtmlDecode, localInfoTables);
+            ProgramInfoTable = ProgramInformationTable.Initialize(localInfoTables);
         }
 
         #endregion // IPartImportsSatisfiedNotification

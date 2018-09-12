@@ -29,7 +29,7 @@ namespace INTV.Core.Model.Device
     {
         private ushort _baseAddress;
         private ushort _size;
-        private List<ushort> _aliases;
+        private readonly List<ushort> _aliases;
 
         /// <summary>
         /// Initializes a new instance of MemoryMap.

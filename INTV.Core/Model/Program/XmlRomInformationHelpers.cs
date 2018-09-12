@@ -949,7 +949,7 @@ namespace INTV.Core.Model.Program
                 if (!string.IsNullOrEmpty(source))
                 {
                     var strings = source.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.DecodeHtmlString().Trim()).Where(s => s.Length > 0);
-                    if (strings.Count() == 0)
+                    if (!strings.Any())
                     {
                         throw new ArgumentOutOfRangeException();
                     }
@@ -973,7 +973,7 @@ namespace INTV.Core.Model.Program
                 if (!string.IsNullOrEmpty(source))
                 {
                     var strings = source.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.DecodeHtmlString().Trim().EnforceNameLength(maxLength, restrictToGromCharacters: true)).Where(s => s.Length > 0);
-                    if (strings.Count() == 0)
+                    if (!strings.Any())
                     {
                         throw new ArgumentOutOfRangeException();
                     }

@@ -27,6 +27,8 @@ namespace INTV.Core.Tests
 {
     public class StringUtilitiesTests
     {
+        #region EnforceNameLength Tests
+
         [Theory]
         [InlineData(null, 2, true, null)]
         [InlineData("", 1, true, "")]
@@ -45,6 +47,10 @@ namespace INTV.Core.Tests
             var actualResult = stringToFilter.EnforceNameLength(maxLength, restrictToGromCharacters);
             Assert.Equal(expectedResult, actualResult);
         }
+
+        #endregion // EnforceNameLength Tests
+
+        #region HTML Decoder Tests
 
         [Theory]
         [InlineData(null)]
@@ -78,6 +84,14 @@ namespace INTV.Core.Tests
             StringUtilities.RegisterHtmlDecoder(HtmlStripTagsAndDecode);
             Assert.Equal(expectedResult, testString.DecodeHtmlString());
         }
+
+        #endregion // HTML Decoder Tests
+
+        #region HTML Encoder Tests
+
+        #endregion // HTML Encoder Tests
+
+        #region C-Style Formatting Tests
 
         /// <summary>
         /// Tests for the SPrintf utility.
@@ -138,5 +152,7 @@ namespace INTV.Core.Tests
             }
             return decodedString;
         }
+
+        #endregion // C-Style Formatting Tests
     }
 }

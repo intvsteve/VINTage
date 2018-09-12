@@ -18,12 +18,15 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+
 namespace INTV.Core.Model.Program
 {
     /// <summary>
     /// Describes various features of a program, such as hardware compatibility, incompatibilities, requirements, et. al.
     /// </summary>
-    public class ProgramFeatures : System.IComparable, System.IComparable<ProgramFeatures>
+    public class ProgramFeatures : IProgramFeatures, IComparable, IComparable<IProgramFeatures>, IComparable<ProgramFeatures>
     {
         /// <summary>
         /// A set of completely empty ProgramFeatures.
@@ -53,7 +56,7 @@ namespace INTV.Core.Model.Program
         /// <remarks>NOTE: This does not assume 'unknown' for the GeneralFeatures field.</remarks>
         public static readonly ProgramFeatures DefaultFeatures = new ProgramFeatures(GeneralFeatures.None, FeatureCompatibility.Tolerates, FeatureCompatibility.Tolerates);
 
-        private System.Collections.Generic.Dictionary<FeatureCategory, uint> _features;
+        private Dictionary<FeatureCategory, uint> _features;
 
         #region Constructors
 
@@ -67,7 +70,7 @@ namespace INTV.Core.Model.Program
 
         private ProgramFeatures(GeneralFeatures generalFeatures, FeatureCompatibility ntsc, FeatureCompatibility pal)
         {
-            _features = new System.Collections.Generic.Dictionary<FeatureCategory, uint>();
+            _features = new Dictionary<FeatureCategory, uint>();
             _features[FeatureCategory.Ntsc] = (uint)ntsc;
             _features[FeatureCategory.Pal] = (uint)pal;
             _features[FeatureCategory.General] = (uint)generalFeatures;
@@ -335,7 +338,7 @@ namespace INTV.Core.Model.Program
                 }
                 combinedFeatures._features[feature] = featureBits;
             }
-            combinedFeatures.JlpHardwareVersion = (JlpHardwareVersion)System.Math.Max((int)features1.JlpHardwareVersion, (int)features2.JlpHardwareVersion);
+            combinedFeatures.JlpHardwareVersion = (JlpHardwareVersion)Math.Max((int)features1.JlpHardwareVersion, (int)features2.JlpHardwareVersion);
             return combinedFeatures;
         }
 
@@ -346,7 +349,7 @@ namespace INTV.Core.Model.Program
         public ProgramFeatures Clone()
         {
             var programFeatures = new ProgramFeatures();
-            programFeatures._features = new System.Collections.Generic.Dictionary<FeatureCategory, uint>(_features);
+            programFeatures._features = new Dictionary<FeatureCategory, uint>(_features);
             programFeatures.JlpHardwareVersion = JlpHardwareVersion;
             return programFeatures;
         }
@@ -399,6 +402,16 @@ namespace INTV.Core.Model.Program
         }
 
         #endregion // IComparable
+
+        #region IComparable<IProgramFeatures>
+
+        /// <inheritdoc />
+        public int CompareTo(IProgramFeatures other)
+        {
+            return CompareTo(other as ProgramFeatures);
+        }
+
+        #endregion // IComparable<IProgramFeatures>
 
         #region IComparable<ProgramFeatures>
 

@@ -28,8 +28,8 @@ namespace INTV.Core.Model
     /// </summary>
     public class StatusMessage : INTV.Core.ComponentModel.ModelBase
     {
-        private static StatusMessage _dummyMessage = new StatusMessage(MessageSeverity.None, string.Empty);
-        private static List<StatusMessage> _messages = new List<StatusMessage>();
+        private static readonly StatusMessage _dummyMessage = new StatusMessage(MessageSeverity.None, string.Empty);
+        private static readonly List<StatusMessage> _messages = new List<StatusMessage>();
 
         private MessageSeverity _severity;
         private string _message;

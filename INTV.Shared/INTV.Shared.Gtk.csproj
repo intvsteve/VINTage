@@ -60,7 +60,6 @@
       <Package>gconf-sharp-2.0</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="System.Web" />
   </ItemGroup>
   <!--  <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">

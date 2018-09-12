@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescriptionHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2015 All Rights Reserved
+// Copyright (c) 2015-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using INTV.Core.Restricted.Model.Program;
 using INTV.Core.Utility;
 
 namespace INTV.Core.Model.Program
@@ -79,6 +80,80 @@ namespace INTV.Core.Model.Program
                 }
             }
             return rom;
+        }
+
+        /// <summary>
+        /// Determines if a given <see cref="IProgramDescription"/> is considered a match based on given criteria.
+        /// </summary>
+        /// <param name="programDescription">An instance</param>
+        /// <param name="programIdentifier">Provides the unique identifier that must match the value that can be determined from <paramref name="programDescription"/>.</param>
+        /// <returns><c>true</c> if all of the specified criteria match the corresponding data in <paramref name="programDescription"/>.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="programDescription"/> is <c>null</c>.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if <paramref name="programIdentifier"/> is invalid.</exception>
+        public static bool IsMatchingProgramDescription(this IProgramDescription programDescription, ProgramIdentifier programIdentifier)
+        {
+            var match = IsMatchingProgramDescription(programDescription, programIdentifier, RomFormat.None, false, null);
+            return match;
+        }
+
+        /// <summary>
+        /// Determines if a given <see cref="IProgramDescription"/> is considered a match based on given criteria.
+        /// </summary>
+        /// <param name="programDescription">An instance</param>
+        /// <param name="programIdentifier">Provides the unique identifier that must match the value that can be determined from <paramref name="programDescription"/>.</param>
+        /// <param name="romFormat">If this value is not <see cref="RomFormat.None"/>, then <paramref name="programDescription"/> must have the same ROM format to be a match.</param>
+        /// <param name="cfgCrcMustMatch">If <paramref name="romFormat"/> matches and is <see cref="RomFormat.Bin"/>, and this value is <c>true</c>, the CRC of the CFG file must also match.</param>
+        /// <returns><c>true</c> if all of the specified criteria match the corresponding data in <paramref name="programDescription"/>.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="programDescription"/> is <c>null</c>.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if <paramref name="programIdentifier"/> is invalid.</exception>
+        public static bool IsMatchingProgramDescription(this IProgramDescription programDescription, ProgramIdentifier programIdentifier, RomFormat romFormat, bool cfgCrcMustMatch)
+        {
+            var match = IsMatchingProgramDescription(programDescription, programIdentifier, romFormat, cfgCrcMustMatch, null);
+            return match;
+        }
+
+        /// <summary>
+        /// Determines if a given <see cref="IProgramDescription"/> is considered a match based on given criteria.
+        /// </summary>
+        /// <param name="programDescription">An instance</param>
+        /// <param name="programIdentifier">Provides the unique identifier that must match the value that can be determined from <paramref name="programDescription"/>.</param>
+        /// <param name="romFormat">If this value is not <see cref="RomFormat.None"/>, then <paramref name="programDescription"/> must have the same ROM format to be a match.</param>
+        /// <param name="cfgCrcMustMatch">If <paramref name="romFormat"/> matches and is <see cref="RomFormat.Bin"/>, and this value is <c>true</c>, the CRC of the CFG file must also match.</param>
+        /// <param name="code">If specified (not <c>null</c> or empty), and it can be determined that <paramref name="programDescription"/> has a value, value is used in determining match.</param>
+        /// <returns><c>true</c> if all of the specified criteria match the corresponding data in <paramref name="programDescription"/>.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="programDescription"/> is <c>null</c>.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if <paramref name="programIdentifier"/> is invalid.</exception>
+        public static bool IsMatchingProgramDescription(this IProgramDescription programDescription, ProgramIdentifier programIdentifier, RomFormat romFormat, bool cfgCrcMustMatch, string code)
+        {
+            if (programDescription == null)
+            {
+                throw new ArgumentNullException("programDescription");
+            }
+            if (programIdentifier == ProgramIdentifier.Invalid)
+            {
+                throw new ArgumentException("programIdentifier");
+            }
+
+            var crcMatch = programDescription.Crc == programIdentifier.DataCrc;
+            var cfgCrcsMatch = !cfgCrcMustMatch;
+            var romFormatsMatch = romFormat == RomFormat.None; // don't care
+            var codesMatch = string.IsNullOrEmpty(code);
+            if (programDescription.Rom != null)
+            {
+                if (!romFormatsMatch)
+                {
+                    romFormatsMatch = programDescription.Rom.MatchingRomFormat(romFormat, considerOriginalFormat: true);
+                }
+                crcMatch = programDescription.Rom.MatchesProgramIdentifier(programIdentifier, cfgCrcMustMatch);
+            }
+
+            // This may be nearly worthless -- how many XML ProgramInformation implementations are hooked to ProgramDescriptions -- don't they all end up being UserSpecifiedProgramInformation?
+            if (!codesMatch && programDescription.ProgramInformation is IntvFunhouseXmlProgramInformation)
+            {
+                codesMatch = ((IntvFunhouseXmlProgramInformation)programDescription.ProgramInformation).Code == code;
+            }
+            var match = crcMatch && cfgCrcsMatch && romFormatsMatch && codesMatch;
+            return match;
         }
     }
 }

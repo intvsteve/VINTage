@@ -28,7 +28,7 @@ namespace INTV.Core.Model
     /// This type wraps <see cref="System.DateTimeOffset"/> in order to support leap second and indicate
     /// whether certain fields within the wrapped <see cref="System.DateTimeOffset"/> should be considered valid.
     /// </summary>
-    public struct MetadataDateTime
+    public struct MetadataDateTime : IComparable, IComparable<MetadataDateTime>, IEquatable<MetadataDateTime>, IFormattable
     {
         /// <summary>
         /// The minimum value.
@@ -77,5 +77,68 @@ namespace INTV.Core.Model
         /// Gets the field validation flags.
         /// </summary>
         public MetadataDateTimeFlags Flags { get; private set; }
+
+        /// <summary>
+        /// Compares the given <see cref="MetadataDateTime"/> to this instance.
+        /// </summary>
+        /// <param name="other">The other value to compare to this instance.</param>
+        /// <param name="compareFlags">If <c>true</c>, include <see cref="Flags"/> as part of the comparison if the <see cref="Date"/> values are considered equal.</param>
+        /// <returns>An integer value indicating less than, equal, or greater than.</returns>
+        public int CompareTo(MetadataDateTime other, bool compareFlags)
+        {
+            var result = Date.CompareTo(other.Date);
+            if ((result == 0) && compareFlags)
+            {
+                result = (int)Flags - (int)other.Flags;
+            }
+            return result;
+        }
+
+        #region IComparable
+
+        /// <inheritdoc />
+        public int CompareTo(object obj)
+        {
+            var result = -1;
+            if (obj is MetadataDateTime)
+            {
+                result = CompareTo((MetadataDateTime)obj);
+            }
+
+            return result;
+        }
+
+        #endregion // IComparable
+
+        #region IComparable<MetadataDateTime>
+
+        /// <inheritdoc />
+        public int CompareTo(MetadataDateTime other)
+        {
+            return CompareTo(other, compareFlags: true);
+        }
+
+        #endregion // IComparable<MetadataDateTime>
+
+        #region IEquatable<MetadataDateTime>
+
+        /// <inheritdoc />
+        public bool Equals(MetadataDateTime other)
+        {
+            return CompareTo(other) == 0;
+        }
+
+        #endregion // IEquatable<MetadataDateTime>
+
+        #region IFormattable
+
+        /// <inheritdoc />
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            var toString = Date.ToString(formatProvider) + " {" + Flags.ToString() + "}";
+            return toString;
+        }
+
+        #endregion // IFormattable
     }
 }

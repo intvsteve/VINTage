@@ -31,6 +31,7 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Creates a new instance of the UnmergedProgramInformation class.
         /// </summary>
+        /// <param name="code">INTV Funhouse database code of the program.</param>
         /// <param name="title">Title of the program.</param>
         /// <param name="vendor">Program vendor.</param>
         /// <param name="year">The year the program was copyrighted (or released).</param>
@@ -38,8 +39,9 @@ namespace INTV.Core.Model.Program
         /// <param name="crcDescriptions">Descriptions of the ROM variations.</param>
         /// <param name="crcCfgs">The default .cfg file to use if one is not provided.</param>
         /// <param name="features">The program's features.</param>
-        internal UnmergedProgramInformation(string title, string vendor, string year, uint[] crcData, string[] crcDescriptions, int[] crcCfgs, ProgramFeatures features)
+        internal UnmergedProgramInformation(string code, string title, string vendor, string year, uint[] crcData, string[] crcDescriptions, int[] crcCfgs, ProgramFeatures features)
         {
+            Code = code;
             _title = title;
             _vendor = vendor;
             _year = year;
@@ -218,6 +220,11 @@ namespace INTV.Core.Model.Program
         }
 
         #endregion // IProgramMetadata
+
+        /// <summary>
+        /// Gets the proposed INTV Funhouse database code for the program.
+        /// </summary>
+        public string Code { get; private set; }
 
         #endregion // Properties
 

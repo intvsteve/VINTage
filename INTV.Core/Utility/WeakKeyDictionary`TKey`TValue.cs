@@ -37,7 +37,7 @@ namespace INTV.Core.Utility
     /// dictionary uses locks to protect access.</remarks>
     public class WeakKeyDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary where TKey : class
     {
-        private Dictionary<WeakReference, TValue> _dictionary = new Dictionary<WeakReference, TValue>();
+        private readonly Dictionary<WeakReference, TValue> _dictionary = new Dictionary<WeakReference, TValue>();
 
         #region Properties
 

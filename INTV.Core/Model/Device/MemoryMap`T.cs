@@ -28,7 +28,7 @@ namespace INTV.Core.Model.Device
     /// <typeparam name="T">The register type, typically an enum.</typeparam>
     public abstract class MemoryMap<T> : MemoryMap
     {
-        private Dictionary<T, ushort> _registerMemoryMap = new Dictionary<T, ushort>();
+        private readonly Dictionary<T, ushort> _registerMemoryMap = new Dictionary<T, ushort>();
 
         /// <summary>
         /// Initializes a new instance of MemoryMap.

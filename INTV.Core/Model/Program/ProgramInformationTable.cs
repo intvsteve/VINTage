@@ -29,8 +29,7 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public abstract class ProgramInformationTable : IProgramInformationTable
     {
-        private static MergedProgramInformationTable _default = new MergedProgramInformationTable();
-        private static Func<string, string> _stringDecoder = new Func<string, string>(s => s);
+        private static readonly Lazy<MergedProgramInformationTable> Instance = new Lazy<MergedProgramInformationTable>(() => new MergedProgramInformationTable());
 
         #region Properties
 
@@ -39,15 +38,7 @@ namespace INTV.Core.Model.Program
         /// </summary>
         public static IProgramInformationTable Default
         {
-            get { return _default; }
-        }
-
-        /// <summary>
-        /// Gets the string decoder function to be used by database in case they are based upon strings such as HTML.
-        /// </summary>
-        public static Func<string, string> StringDecoder
-        {
-            get { return _stringDecoder; }
+            get { return Instance.Value; }
         }
 
         #region IProgramInformationTable
@@ -62,31 +53,30 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Initializes the general program information database system with a specific string decoder and program information table descriptions.
         /// </summary>
-        /// <param name="stringDecoder">The string decoder to use when expanding a database's contents. E.g. some database may use HTML encoding for descriptive data.</param>
         /// <param name="localInfoTables">Descriptions of how to access database tables.</param>
         /// <returns>The initialized program information table.</returns>
-        public static IProgramInformationTable Initialize(Func<string, string> stringDecoder, ProgramInformationTableDescriptor[] localInfoTables)
+        public static IProgramInformationTable Initialize(ProgramInformationTableDescriptor[] localInfoTables)
         {
-            _stringDecoder = stringDecoder;
             List<IProgramInformationTable> localTables = new List<IProgramInformationTable>();
             var conflicts = new List<KeyValuePair<IProgramInformation, IProgramInformation>>();
+            var instance = Instance.Value;
             foreach (var localInfoTable in localInfoTables)
             {
                 var localTable = localInfoTable.Factory(localInfoTable.FilePath);
-                conflicts.AddRange(_default.MergeTable(localTable));
+                conflicts.AddRange(instance.MergeTable(localTable));
                 localTables.Add(localTable);
             }
-            var confilictingWithIntvFunhouse = _default.MergeTable(INTV.Core.Restricted.Model.Program.IntvFunhouseXmlProgramInformationTable.Instance);
+            var confilictingWithIntvFunhouse = instance.MergeTable(INTV.Core.Restricted.Model.Program.IntvFunhouseXmlProgramInformationTable.Instance);
             if (confilictingWithIntvFunhouse.Any())
             {
                 System.Diagnostics.Debug.WriteLine("Found conflicts with INTV Funhouse database.");
             }
-            var conflictingWithJzIntv = _default.MergeTable(UnmergedProgramInformationTable.Instance);
+            var conflictingWithJzIntv = instance.MergeTable(UnmergedProgramInformationTable.Instance);
             if (conflictingWithJzIntv.Any())
             {
                 System.Diagnostics.Debug.WriteLine("Found conflicts with jzIntv / Unmerged ROMs database.");
             }
-            return _default;
+            return instance;
         }
 
         #region IProgramInformationTable
@@ -95,7 +85,14 @@ namespace INTV.Core.Model.Program
         /// <remarks>The default implementation simply looks in the default database for a program entry.</remarks>
         public virtual IProgramInformation FindProgram(uint crc)
         {
-            return _default.FindProgram(crc);
+            return Default.FindProgram(crc);
+        }
+
+        /// <inheritdoc />
+        /// <remarks>The default implementation simply looks in the default database for a program entry.</remarks>
+        public virtual IProgramInformation FindProgram(ProgramIdentifier programIdentifier)
+        {
+            return Default.FindProgram(programIdentifier);
         }
 
         #endregion // IProgramInformationTable

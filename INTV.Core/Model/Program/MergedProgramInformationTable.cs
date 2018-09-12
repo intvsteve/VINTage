@@ -27,7 +27,7 @@ namespace INTV.Core.Model.Program
     /// </summary>
     internal class MergedProgramInformationTable : ProgramInformationTable
     {
-        private Dictionary<uint, IProgramInformation> _programs = new Dictionary<uint, IProgramInformation>();
+        private readonly Dictionary<uint, IProgramInformation> _programs = new Dictionary<uint, IProgramInformation>();
 
         /// <inheritdoc />
         public override IEnumerable<IProgramInformation> Programs
@@ -44,6 +44,14 @@ namespace INTV.Core.Model.Program
                 programInfo = null;
             }
             return programInfo;
+        }
+
+        /// <inheritdoc />
+        public override IProgramInformation FindProgram(ProgramIdentifier programIdentifier)
+        {
+            var programInformation = FindProgram(programIdentifier.DataCrc);
+            System.Diagnostics.Debug.WriteLineIf((programIdentifier.OtherData != 0) && (programInformation != null), "Support for ProgramIdentifier lookups not implemented.");
+            return programInformation;
         }
 
         /// <summary>

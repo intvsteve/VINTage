@@ -18,8 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Net;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace INTV.Shared.Utility
 {
@@ -52,9 +52,24 @@ namespace INTV.Shared.Utility
                 // This function assumes the HTML is from a trusted source, and properly escapes anything that it should.
                 // See: https://stackoverflow.com/questions/18153998/how-do-i-remove-all-html-tags-from-a-string-without-knowing-which-tags-are-in-it
                 decodedString = stripHtmlTags ? Regex.Replace(encodedHtmlString, "<.*?>", string.Empty) : encodedHtmlString;
-                decodedString = HttpUtility.HtmlDecode(decodedString);
+                decodedString = WebUtility.HtmlDecode(decodedString);
             }
             return decodedString;
+        }
+
+        /// <summary>
+        /// Encodes a string that is to be used in HTML.
+        /// </summary>
+        /// <param name="rawString">The string to encode.</param>
+        /// <returns>The HTML-encoded string.</returns>
+        public static string HtmlEncode(this string rawString)
+        {
+            var encodedString = string.Empty;
+            if (!string.IsNullOrEmpty(rawString))
+            {
+                encodedString = WebUtility.HtmlEncode(rawString);
+            }
+            return encodedString;
         }
     }
 }

@@ -44,12 +44,15 @@ namespace INTV.Core.Utility
         #region ICollection Properties
 
         /// <inheritdoc/>
+        /// <remarks>The count may include objects that have already been garbage collected. Use the LiveCount property
+        /// to force a refresh of the dictionary to get a current count.</remarks>
         public int Count
         {
             get { return _dictionary.Count; }
         }
 
         /// <inheritdoc/>
+        /// <remarks>This collection is only partially thread safe.</remarks>
         public bool IsSynchronized
         {
             get { return false; }
@@ -120,6 +123,21 @@ namespace INTV.Core.Utility
         }
 
         #endregion // IDictionary<TKey, TValue> Properties
+
+        /// <summary>
+        /// Gets the current count of live entries in the dictionary.
+        /// </summary>
+        public int LiveCount
+        {
+            get
+            {
+                lock (_dictionary)
+                {
+                    PurgeDeadEntries();
+                    return Count;
+                }
+            }
+        }
 
         #endregion // Properties
 
@@ -316,7 +334,19 @@ namespace INTV.Core.Utility
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            throw new NotImplementedException("WeakKeyDictionary.TryGetValue()");
+            var gotValue = false;
+            value = default(TValue);
+            lock (_dictionary)
+            {
+                PurgeDeadEntries();
+                var entry = _dictionary.FirstOrDefault(e => e.Key.IsAlive && e.Key.Target == key);
+                gotValue = entry.Key != null;
+                if (gotValue)
+                {
+                    value = (TValue)entry.Value;
+                }
+            }
+            return gotValue;
         }
 
         #endregion // IDictionary<TKey, TValue>

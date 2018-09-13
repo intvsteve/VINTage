@@ -27,9 +27,9 @@ namespace INTV.Core.Model.Device
     /// </summary>
     public class MemoryMap : Connection
     {
+        private readonly List<ushort> _aliases;
         private ushort _baseAddress;
         private ushort _size;
-        private readonly List<ushort> _aliases;
 
         /// <summary>
         /// Initializes a new instance of MemoryMap.

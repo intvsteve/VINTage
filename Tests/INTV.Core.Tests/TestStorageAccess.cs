@@ -77,6 +77,7 @@ namespace INTV.Core.Tests
 
             private TestStorageStream(string location)
             {
+                Location = location;
             }
 
             private TestStorageStream(string location, int initialDataSize)
@@ -130,6 +131,10 @@ namespace INTV.Core.Tests
                 if (Instances.TryGetValue(location, out stream))
                 {
                     size = stream.Length;
+                }
+                else
+                {
+                    throw new FileNotFoundException("File not found", location);
                 }
                 return size;
             }

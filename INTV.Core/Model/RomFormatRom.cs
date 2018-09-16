@@ -110,9 +110,9 @@ namespace INTV.Core.Model
                 var metadata = new List<RomMetadataBlock>();
                 try
                 {
-                    if (IsValid && RomPath.FileExists())
+                    if (IsValid && StreamUtilities.FileExists(RomPath))
                     {
-                        using (var file = RomPath.OpenFileStream())
+                        using (var file = StreamUtilities.OpenFileStream(RomPath))
                         {
                             var offsetIntoFile = GetMetadataOffset(file);
                             while ((offsetIntoFile < file.Length) && (file.Position < file.Length))
@@ -149,7 +149,7 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override bool Validate()
         {
-            IsValid = !string.IsNullOrEmpty(RomPath) && RomPath.FileExists();
+            IsValid = !string.IsNullOrEmpty(RomPath) && StreamUtilities.FileExists(RomPath);
             return IsValid;
         }
 
@@ -157,7 +157,7 @@ namespace INTV.Core.Model
         public override uint RefreshCrc(out bool changed)
         {
             var crc = _crc;
-            if (IsValid && RomPath.FileExists())
+            if (IsValid && StreamUtilities.FileExists(RomPath))
             {
                 uint dontCare;
                 _crc = GetCrcs(Format, RomPath, null, out dontCare);
@@ -208,7 +208,7 @@ namespace INTV.Core.Model
             var format = CheckMemo(filePath);
             if (format == RomFormat.None)
             {
-                using (var file = filePath.OpenFileStream())
+                using (var file = StreamUtilities.OpenFileStream(filePath))
                 {
                     if ((file != null) && (file.Length > 0))
                     {
@@ -253,7 +253,7 @@ namespace INTV.Core.Model
             cfgCrc = 0;
             uint romCrc = 0;
 
-            if (romPath.FileExists())
+            if (StreamUtilities.FileExists(romPath))
             {
                 byte replacementByte = AutoBaudBytes[format];
 

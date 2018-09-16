@@ -72,7 +72,7 @@ namespace INTV.Core.Model.Program
         {
             try
             {
-                using (var fileStream = localFilePath.OpenFileStream())
+                using (var fileStream = StreamUtilities.OpenFileStream(localFilePath))
                 {
                     if (fileStream != null)
                     {

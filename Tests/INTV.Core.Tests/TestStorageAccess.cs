@@ -39,9 +39,42 @@ namespace INTV.Core.Tests
         /// <param name="storageLocation">Location of the stream.</param>
         /// <param name="initialDataSize">Initial data size of the stream (in bytes).</param>
         /// <returns>The stream, initialized.</returns>
+        /// <remarks>The capacity of the stream will be rounded up to the nearest multiple of 64 bytes.</remarks>
         public static Stream OpenOrCreate(string storageLocation, int initialDataSize)
         {
             return TestStorageStream.OpenOrCreate(storageLocation, initialDataSize);
+        }
+
+        /// <summary>
+        /// Gets the last write time (UTC) on a previously created stream.
+        /// </summary>
+        /// <param name="storageLocation">Location of the stream.</param>
+        /// <returns>Last modification time of the file, in UTC.</returns>
+        public static DateTime GetLastWriteTimeUtc(string storageLocation)
+        {
+            return TestStorageStream.GetLastWriteTimeUtc(storageLocation);
+        }
+
+        /// <summary>
+        /// Sets the last write time (UTC) on a previously created stream.
+        /// </summary>
+        /// <param name="storageLocation">Location of the stream.</param>
+        /// <param name="lastWriteTimeUtc">The last write time (in UTC) to set.</param>
+        /// <exception cref="System.FileNotFoundException">Thrown if stream at <paramref name="location"/> does not exist.</exception>
+        public static void SetLastWriteTimeUtc(string storageLocation, DateTime lastWriteTimeUtc)
+        {
+            TestStorageStream.SetLastWriteTimeUtc(storageLocation, lastWriteTimeUtc);
+        }
+
+        /// <summary>
+        /// Renames an existing stream.
+        /// </summary>
+        /// <param name="storageLocation">The current location for the stream.</param>
+        /// <param name="newStorageLocation">The new location for the stream.</param>
+        /// <exception cref="System.FileNotFoundException">Thrown if stream at <paramref name="location"/> does not exist.</exception>
+        public static void Rename(string storageLocation, string newStorageLocation)
+        {
+            TestStorageStream.Rename(storageLocation, newStorageLocation);
         }
 
         /// <inheritdoc />
@@ -70,7 +103,7 @@ namespace INTV.Core.Tests
 
         private class TestStorageStream : MemoryStream
         {
-            private static readonly ConcurrentDictionary<string, TestStorageStream> Instances = new ConcurrentDictionary<string, TestStorageStream>();
+            private static readonly Lazy<ConcurrentDictionary<string, TestStorageStream>> FakeFileSystem = new Lazy<ConcurrentDictionary<string, TestStorageStream>>();
 
             // See https://docs.microsoft.com/en-us/dotnet/api/system.io.file.getlastwritetime?view=netframework-4.0
             private static readonly DateTime FileNotFoundTime = new DateTime(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -81,9 +114,16 @@ namespace INTV.Core.Tests
             }
 
             private TestStorageStream(string location, int initialDataSize)
-                : base(Enumerable.Repeat((byte)0xFF, initialDataSize).ToArray())
+                : base(((initialDataSize / 64) + 1) * 64)
             {
                 Location = location;
+                base.Write(Enumerable.Repeat((byte)0xFF, initialDataSize).ToArray(), 0, initialDataSize);
+                Seek(0, SeekOrigin.Begin);
+            }
+
+            private static ConcurrentDictionary<string, TestStorageStream> FileSystem
+            {
+                get { return FakeFileSystem.Value; }
             }
 
             public string Location { get; private set; }
@@ -97,10 +137,10 @@ namespace INTV.Core.Tests
 
             public static TestStorageStream OpenOrCreate(string location, int initialSizeInBytes)
             {
-                lock (Instances)
+                lock (FileSystem)
                 {
                     TestStorageStream stream;
-                    if (!Instances.TryGetValue(location, out stream))
+                    if (!FileSystem.TryGetValue(location, out stream))
                     {
                         if (initialSizeInBytes > 0)
                         {
@@ -110,7 +150,7 @@ namespace INTV.Core.Tests
                         {
                             stream = new TestStorageStream(location);
                         }
-                        if (!Instances.TryAdd(location, stream))
+                        if (!FileSystem.TryAdd(location, stream))
                         {
                             throw new InvalidOperationException();
                         }
@@ -121,14 +161,14 @@ namespace INTV.Core.Tests
 
             public static bool Exists(string location)
             {
-                return Instances.ContainsKey(location);
+                return FileSystem.ContainsKey(location);
             }
 
             public static long GetSize(string location)
             {
                 var size = 0L;
                 TestStorageStream stream;
-                if (Instances.TryGetValue(location, out stream))
+                if (FileSystem.TryGetValue(location, out stream))
                 {
                     size = stream.Length;
                 }
@@ -143,11 +183,38 @@ namespace INTV.Core.Tests
             {
                 var lastWriteTimeUtc = FileNotFoundTime;
                 TestStorageStream stream;
-                if (Instances.TryGetValue(location, out stream))
+                if (FileSystem.TryGetValue(location, out stream))
                 {
                     lastWriteTimeUtc = stream.LastWriteTimeUtc;
                 }
                 return lastWriteTimeUtc;
+            }
+
+            public static void SetLastWriteTimeUtc(string location, DateTime lastWriteTimeUtc)
+            {
+                lock (FileSystem)
+                {
+                    TestStorageStream stream;
+                    if (!FileSystem.TryGetValue(location, out stream))
+                    {
+                        throw new FileNotFoundException();
+                    }
+                    stream.LastWriteTimeUtc = lastWriteTimeUtc;
+                }
+            }
+
+            public static void Rename(string location, string newLocation)
+            {
+                lock (FileSystem)
+                {
+                    TestStorageStream stream;
+                    if (!FileSystem.TryRemove(location, out stream))
+                    {
+                        throw new FileNotFoundException();
+                    }
+                    stream.Location = newLocation;
+                    FileSystem[newLocation] = stream;
+                }
             }
 
             /// <inheritdoc />
@@ -174,7 +241,7 @@ namespace INTV.Core.Tests
             protected override void Dispose(bool disposing)
             {
                 TestStorageStream dontCare;
-                Instances.TryRemove(Location, out dontCare);
+                FileSystem.TryRemove(Location, out dontCare);
                 base.Dispose(disposing);
             }
         }

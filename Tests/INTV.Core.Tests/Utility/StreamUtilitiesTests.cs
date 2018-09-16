@@ -31,85 +31,63 @@ namespace INTV.Core.Tests.Utility
         private static readonly DateTime FileNotFoundTime = new DateTime(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         [Fact]
-        public void StreamUtilitiesNotInitialized_CallOpenFileStream_ThrowsNullReferenceException()
+        public void StreamUtilities_RegisterNull_ThrowsArgumentNullException()
         {
-            Assert.True(StreamUtilities.Initialize(null));
-            Assert.Throws<NullReferenceException>(() => StreamUtilities.OpenFileStream(@"BogusOpenPath"));
+            Assert.Throws<ArgumentNullException>(() => StreamUtilities.Initialize(null));
         }
 
         [Fact]
-        public void StreamUtilitiesNotInitialized_CallFileExists_ThrowsNullReferenceException()
+        public void StreamUtilitiesWithTestStorage_CallOpenFileStream_ReturnsValidStream()
         {
-            Assert.True(StreamUtilities.Initialize(null));
-            Assert.Throws<NullReferenceException>(() => StreamUtilities.FileExists(@"BogusExistsPath"));
-        }
-
-        [Fact]
-        public void StreamUtilitiesNotInitialized_CallSize_ThrowsNullReferenceException()
-        {
-            Assert.True(StreamUtilities.Initialize(null));
-            Assert.Throws<NullReferenceException>(() => StreamUtilities.Size(@"BogusSizePath"));
-        }
-
-        [Fact]
-        public void StreamUtilitiesNotInitialized_CallLastWriteTimeUtc_ThrowsNullReferenceException()
-        {
-            Assert.True(StreamUtilities.Initialize(null));
-            Assert.Throws<NullReferenceException>(() => StreamUtilities.LastFileWriteTimeUtc(@"BogusLastWritePath"));
-        }
-
-        [Fact]
-        public void StreamUtilitiesInitialized_CallOpenFileStream_ReturnsValidStream()
-        {
-            Assert.True(StreamUtilities.Initialize(new TestStorageAccess()));
+            var storage = new TestStorageAccess();
             var testPath = @"~/open_create_path.dat";
-            using (var stream = StreamUtilities.OpenFileStream(testPath))
+            using (var stream = StreamUtilities.OpenFileStream(testPath, storage))
             {
-                Assert.True(StreamUtilities.FileExists(testPath));
+                Assert.True(StreamUtilities.FileExists(testPath, storage));
                 Assert.NotNull(stream);
             }
-            Assert.False(StreamUtilities.FileExists(testPath));
+            Assert.False(StreamUtilities.FileExists(testPath, storage));
         }
 
         [Fact]
-        public void StreamUtilitiesInitialized_CallFileExistsWithNonexistentPath_ReturnsFalse()
+        public void StreamUtilitiesWithTestStorage_CallFileExistsWithNonexistentPath_ReturnsFalse()
         {
-            Assert.True(StreamUtilities.Initialize(new TestStorageAccess()));
-            Assert.False(StreamUtilities.FileExists(@"SomeInvalidPathThatDoesNotExist"));
+            var storage = new TestStorageAccess();
+            Assert.False(StreamUtilities.FileExists(@"SomeInvalidPathThatDoesNotExist", storage));
         }
 
         [Fact]
-        public void StreamUtilitiesInitialized_CallSizeWithNonexistentPath_ThrowsFileNotFoundException()
+        public void StreamUtilitiesWithTestStorage_CallSizeWithNonexistentPath_ThrowsFileNotFoundException()
         {
-            Assert.True(StreamUtilities.Initialize(new TestStorageAccess()));
-            Assert.Throws<FileNotFoundException>(() => StreamUtilities.Size(@"SomeBogusPathThatHasNoSize"));
+            var storage = new TestStorageAccess();
+            Assert.Throws<FileNotFoundException>(() => StreamUtilities.FileSize(@"SomeBogusPathThatHasNoSize", storage));
         }
 
         [Fact]
-        public void StreamUtilitiesInitialized_CallLastWriteTimeUtcWithNonexistentPath_ReturnsDefaultDateTime()
+        public void StreamUtilitiesWithTestStorage_CallLastWriteTimeUtcWithNonexistentPath_ReturnsDefaultDateTime()
         {
-            Assert.True(StreamUtilities.Initialize(new TestStorageAccess()));
-            Assert.Equal(FileNotFoundTime, StreamUtilities.LastFileWriteTimeUtc(@"SomeSillyPathWithNoLastWriteTime"));
+            var storage = new TestStorageAccess();
+            Assert.Equal(FileNotFoundTime, StreamUtilities.LastFileWriteTimeUtc(@"SomeSillyPathWithNoLastWriteTime", storage));
         }
 
         [Fact]
-        public void StreamUtilitiesInitialized_CallSizeAfterCreatingSizedStream_ReturnsExpectedSize()
+        public void StreamUtilitiesWithTestStorage_CallSizeAfterCreatingSizedStream_ReturnsExpectedSize()
         {
-            Assert.True(StreamUtilities.Initialize(new TestStorageAccess()));
+            var storage = new TestStorageAccess();
             var testPath = @"~/.test_file.dat";
             var testSize = 64;
             using (var testStream = TestStorageAccess.OpenOrCreate(testPath, testSize))
             {
-                Assert.Equal(testSize, StreamUtilities.Size(testPath));
+                Assert.Equal(testSize, StreamUtilities.FileSize(testPath, storage));
             }
         }
 
         [Fact]
-        public void StreamUtilitiesInitialized_CallLastWriteTimeUtcAfterWritingToStream_ReturnsReasonableLastWriteTime()
+        public void StreamUtilitiesWithTestStorage_CallLastWriteTimeUtcAfterWritingToStream_ReturnsReasonableLastWriteTime()
         {
-            Assert.True(StreamUtilities.Initialize(new TestStorageAccess()));
+            var storage = new TestStorageAccess();
             var testPath = @"~/test_file_to_write.dat";
-            using (var stream = StreamUtilities.OpenFileStream(testPath))
+            using (var stream = StreamUtilities.OpenFileStream(testPath, storage))
             {
                 var beforeWrite = DateTime.UtcNow;
                 int numBytesToWrite = 128;
@@ -117,9 +95,9 @@ namespace INTV.Core.Tests.Utility
                 {
                     stream.WriteByte(i);
                 }
-                Assert.Equal(numBytesToWrite, StreamUtilities.Size(testPath));
+                Assert.Equal(numBytesToWrite, StreamUtilities.FileSize(testPath, storage));
                 var afterWrite = DateTime.UtcNow;
-                var lastWrite = StreamUtilities.LastFileWriteTimeUtc(testPath);
+                var lastWrite = StreamUtilities.LastFileWriteTimeUtc(testPath, storage);
                 Assert.True(lastWrite >= beforeWrite);
                 Assert.True(lastWrite <= afterWrite);
             }

@@ -476,6 +476,15 @@ namespace INTV.Core.Utility
                 get { return Entry; }
             }
 
+            #endregion // IDictionaryEnumerator
+
+            public static IDictionaryEnumerator GetDictionaryEnumerator(IDictionary<TKey, TValue> dictionary)
+            {
+                return new DictionaryEnumerator<TKey, TValue>(dictionary.GetEnumerator());
+            }
+
+            #region IDictionaryEnumerator
+
             /// <inheritdoc/>
             public bool MoveNext()
             {
@@ -499,11 +508,6 @@ namespace INTV.Core.Utility
             }
 
             #endregion // IDisposable
-
-            public static IDictionaryEnumerator GetDictionaryEnumerator(IDictionary<TKey, TValue> dictionary)
-            {
-                return new DictionaryEnumerator<TKey, TValue>(dictionary.GetEnumerator());
-            }
         }
     }
 }

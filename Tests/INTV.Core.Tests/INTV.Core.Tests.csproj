@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="TestStorageAccess.cs" />
     <Compile Include="Utility\FileMemoTests.cs" />
+    <Compile Include="Utility\RandomUtilitiesTests.cs" />
     <Compile Include="Utility\StreamUtilitiesTests.cs" />
     <Compile Include="Utility\StringUtilitiesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

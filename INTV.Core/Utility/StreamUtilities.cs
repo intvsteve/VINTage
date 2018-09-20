@@ -38,7 +38,10 @@ namespace INTV.Core.Utility
         private static readonly Lazy<ConcurrentDictionary<Type, IStorageAccess>> RegisteredStorageAccessProviders = new Lazy<ConcurrentDictionary<Type, IStorageAccess>>(() => new ConcurrentDictionary<Type, IStorageAccess>());
         private static readonly Lazy<IStorageAccess> DefaultStorageAccessProvider = new Lazy<IStorageAccess>(GetDefaultStorageAccess);
 
-        private static IStorageAccess DefaultStorageAccess
+        /// <summary>
+        /// Gets the default storage access.
+        /// </summary>
+        internal static IStorageAccess DefaultStorageAccess
         {
             get { return DefaultStorageAccessProvider.Value; }
         }
@@ -56,6 +59,30 @@ namespace INTV.Core.Utility
                 throw new ArgumentNullException();
             }
             return RegisteredStorageAccessProviders.Value.TryAdd(storageAccess.GetType(), storageAccess);
+        }
+
+        /// <summary>
+        /// Attempt to remove the storage access.
+        /// </summary>
+        /// <param name="storageAccess">The <see cref="IStorageAccess"/> to remove.</param>
+        /// <returns><c>true</c> if <paramref name="storageAccess"/> was successfully removed.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="storageAccess"/> is <c>null</c>.</exception>
+        public static bool Remove(IStorageAccess storageAccess)
+        {
+            if (storageAccess == null)
+            {
+                throw new ArgumentNullException();
+            }
+            var removed = false;
+            IStorageAccess current;
+            if (RegisteredStorageAccessProviders.Value.TryGetValue(storageAccess.GetType(), out current))
+            {
+                if (object.ReferenceEquals(current, storageAccess))
+                {
+                    removed = RegisteredStorageAccessProviders.Value.TryRemove(storageAccess.GetType(), out current);
+                }
+            }
+            return removed;
         }
 
         /// <summary>
@@ -108,7 +135,11 @@ namespace INTV.Core.Utility
 
         private static IStorageAccess GetStorageAccess(IStorageAccess specificStorageAccess)
         {
-            IStorageAccess storageAccess = specificStorageAccess == DefaultStorage ? DefaultStorageAccess : specificStorageAccess;
+            IStorageAccess storageAccess = specificStorageAccess;
+            if (specificStorageAccess == DefaultStorage)
+            {
+                storageAccess = DefaultStorageAccess;
+            }
             return storageAccess;
         }
 

@@ -37,6 +37,27 @@ namespace INTV.Core.Tests.Utility
         }
 
         [Fact]
+        public void StreamUtilities_RemoveNull_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => StreamUtilities.Remove(null));
+        }
+
+        [Fact]
+        public void StreamUtilities_InitializeCheckDefaultAndRemoveStorage_Succeeds()
+        {
+            var storageAcces = new MyPrivateStorageAccess();
+
+            // We use a privately defined type for the storage access to check initialize and remove, which will
+            // also guarantee that there is a default storage access at least for the duration of this test.
+            Assert.True(StreamUtilities.Initialize(storageAcces));
+            Assert.False(StreamUtilities.Initialize(storageAcces));
+            Assert.NotNull(StreamUtilities.DefaultStorageAccess);
+            Assert.False(StreamUtilities.FileExists(@"~-=</.\/_\/.\>=-~"));
+            Assert.True(StreamUtilities.Remove(storageAcces));
+            Assert.False(StreamUtilities.Remove(storageAcces));
+        }
+
+        [Fact]
         public void StreamUtilitiesWithTestStorage_CallOpenFileStream_ReturnsValidStream()
         {
             var storage = new TestStorageAccess();
@@ -101,6 +122,10 @@ namespace INTV.Core.Tests.Utility
                 Assert.True(lastWrite >= beforeWrite);
                 Assert.True(lastWrite <= afterWrite);
             }
+        }
+
+        private sealed class MyPrivateStorageAccess : TestStorageAccess
+        {
         }
     }
 }

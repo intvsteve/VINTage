@@ -26,6 +26,12 @@ namespace INTV.Core.Tests.Utility
     public class Crc8Tests
     {
         [Fact]
+        public void Crc8_OfNull_ThrowsNullReferenceException()
+        {
+            Assert.Throws<System.NullReferenceException>(() => Crc8.OfBlock(null));
+        }
+
+        [Fact]
         public void Crc8_OfBlock_IsCorrect()
         {
             var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };

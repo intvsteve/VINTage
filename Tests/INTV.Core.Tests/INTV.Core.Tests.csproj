@@ -64,6 +64,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="TestStorageAccess.cs" />
+    <Compile Include="Utility\Crc16Tests.cs" />
     <Compile Include="Utility\Crc8Tests.cs" />
     <Compile Include="Utility\FileMemoTests.cs" />
     <Compile Include="Utility\RandomUtilitiesTests.cs" />

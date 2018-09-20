@@ -33,7 +33,7 @@ namespace INTV.Core.Utility
         public const byte InitialValue = 0;
 
         /// <summary>
-        /// Lookup table used for the CRC-24 code.
+        /// Lookup table used for the CRC-8 code.
         /// </summary>
         private static readonly byte[] Crc8Table =
         {

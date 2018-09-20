@@ -220,7 +220,7 @@ namespace INTV.Core.Utility
         /// </summary>
         /// <param name="data">The data from which to compute the CRC.</param>
         /// <returns>The CRC of the data block.</returns>
-        private static uint OfBlock(byte[] data)
+        public static uint OfBlock(byte[] data)
         {
             uint crc = OfBlock(data, InitialValue) ^ InitialValue;
             return crc;
@@ -232,7 +232,7 @@ namespace INTV.Core.Utility
         /// <param name="data">The data from which to compute an updated running CRC.</param>
         /// <param name="runningValue">Running value of the CRC.</param>
         /// <returns>Running CRC, updated with the contents of the given data block.</returns>
-        private static uint OfBlock(byte[] data, uint runningValue)
+        public static uint OfBlock(byte[] data, uint runningValue)
         {
             return OfBlock(data, data.Length, null, runningValue);
         }
@@ -245,7 +245,7 @@ namespace INTV.Core.Utility
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the <paramref name="data"/> array, to exclude from the checksum.</param>
         /// <param name="runningValue">Running value of the CRC.</param>
         /// <returns>Running CRC, updated with the contents of the given data block.</returns>
-        private static uint OfBlock(byte[] data, int numBytesToProcess, IEnumerable<Range<int>> ignoreRanges, uint runningValue)
+        public static uint OfBlock(byte[] data, int numBytesToProcess, IEnumerable<Range<int>> ignoreRanges, uint runningValue)
         {
             var crc = runningValue;
             var checkIgnoreRange = (ignoreRanges != null) && ignoreRanges.Any(r => r.IsValid);

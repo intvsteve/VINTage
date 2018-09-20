@@ -413,6 +413,7 @@ namespace INTV.Core.Tests.Utility
         {
             var weakKeyDictionary = new WeakKeyDictionary<DisposableTestObject, int>();
             var values = new[] { 69, 2009, 68, 97, 99, 2002, 2004 };
+            var valueStrings = values.Select(v => v.ToString());
 
             for (int i = 0; i < values.Length; ++i)
             {
@@ -420,12 +421,10 @@ namespace INTV.Core.Tests.Utility
             }
 
             IEnumerable dictionary = weakKeyDictionary;
-            var index = 0;
             foreach (KeyValuePair<DisposableTestObject, int> entry in dictionary)
             {
-                Assert.Equal(values[index].ToString(), entry.Key.Name);
-                Assert.Equal(values[index], entry.Value);
-                ++index;
+                Assert.True(valueStrings.Contains(entry.Key.Name));
+                Assert.True(values.Contains(entry.Value));
             }
         }
 

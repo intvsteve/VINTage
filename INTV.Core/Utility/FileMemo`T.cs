@@ -144,12 +144,14 @@ namespace INTV.Core.Utility
         /// <returns><c>true</c> if the value of <paramref name="memo"/> is valid; <c>false</c> otherwise.</returns>
         protected abstract bool IsValidMemo(T memo);
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Diagnostics.Conditional("ENABLE_DEBUG_REPORTING")]
         private static void DebugOutput(object message)
         {
             System.Diagnostics.Debug.WriteLine(message);
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Diagnostics.Conditional("ENABLE_DEBUG_REPORTING")]
         private void PrintKeys()
         {

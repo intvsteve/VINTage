@@ -118,7 +118,7 @@ namespace INTV.Core.Tests
             {
                 Location = location;
                 base.Write(Enumerable.Repeat((byte)0xFF, initialDataSize).ToArray(), 0, initialDataSize);
-                Seek(0, SeekOrigin.Begin);
+                base.Seek(0, SeekOrigin.Begin);
             }
 
             private static ConcurrentDictionary<string, TestStorageStream> FileSystem

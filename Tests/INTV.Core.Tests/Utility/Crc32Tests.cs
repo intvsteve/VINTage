@@ -27,7 +27,7 @@ namespace INTV.Core.Tests.Utility
     public class Crc32Tests
     {
         [Fact]
-        public void Crc32_OfNull_ThrowsNullReferenceException()
+        public void Crc32_OfNullStream_ThrowsNullReferenceException()
         {
             Assert.Throws<System.NullReferenceException>(() => Crc32.OfStream(null));
         }
@@ -68,6 +68,19 @@ namespace INTV.Core.Tests.Utility
                 var crc32 = Crc32.OfStream(testData, ignoreRanges);
                 Assert.Equal(0xB4DA8CCAu, crc32);
             }
+        }
+
+        [Fact]
+        public void Crc32_OfNullFile_ThrowsArgumentNullException()
+        {
+            // We use a privately defined type for the storage access to check initialize and remove, which will
+            // hopefully guarantee that we use the expected storage during this test.
+            var storageAcces = new Crc32TestStorageAccess();
+            StreamUtilities.Initialize(storageAcces);
+            var ignoreRanges = new[] { new Range<int>(10, 200) };
+            Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(null));
+            Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(null, ignoreRanges));
+            Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(null, replaceFirstByte: true, alternateFirstByte: 0x42));
         }
 
         [Fact]

@@ -40,6 +40,7 @@ namespace INTV.Core.Tests.Utility
         }
 
         [Fact]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in BinaryWriter' works correctly.")]
         public void ByteSerializer_SerializeUsingBinaryWriter_SerializesExpectedNumberOfBytes()
         {
             using (var memory = new System.IO.MemoryStream())
@@ -70,6 +71,7 @@ namespace INTV.Core.Tests.Utility
         }
 
         [Fact]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in BinaryReader / BinaryWriter' works correctly.")]
         public void ByteSerializer_SerializeThenDeserialzeViaBinaryReaderWriter_CorrectlyInflatesData()
         {
             var data = new SerializeToBytesTester(42);

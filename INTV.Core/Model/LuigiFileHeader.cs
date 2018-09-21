@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFileHeader.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -392,6 +392,11 @@ namespace INTV.Core.Model
 
         private class LuigiHeaderMemo : FileMemo<LuigiFileHeader>
         {
+            public LuigiHeaderMemo()
+                : base(StreamUtilities.DefaultStorage)
+            {
+            }
+
             /// <inheritdoc />
             protected override LuigiFileHeader DefaultMemoValue
             {
@@ -404,7 +409,7 @@ namespace INTV.Core.Model
                 LuigiFileHeader luigiHeader = null;
                 try
                 {
-                    using (var file = filePath.OpenFileStream())
+                    using (var file = StreamUtilities.OpenFileStream(filePath))
                     {
                         var reader = new INTV.Core.Utility.BinaryReader(file);
                         byte[] header = reader.ReadBytes(MagicKey.Length);

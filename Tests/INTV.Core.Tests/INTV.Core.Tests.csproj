@@ -38,6 +38,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Web" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -62,14 +63,27 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="TestStorageAccess.cs" />
+    <Compile Include="Utility\ByteSerializerTests.cs" />
+    <Compile Include="Utility\ConverterTests.cs" />
+    <Compile Include="Utility\ConvertToMultipleTests.cs" />
+    <Compile Include="Utility\Crc16Tests.cs" />
+    <Compile Include="Utility\Crc24Tests.cs" />
+    <Compile Include="Utility\Crc32Tests.cs" />
+    <Compile Include="Utility\Crc8Tests.cs" />
+    <Compile Include="Utility\FileMemoTests.cs" />
+    <Compile Include="Utility\RandomUtilitiesTests.cs" />
+    <Compile Include="Utility\StreamUtilitiesTests.cs" />
     <Compile Include="Utility\StringUtilitiesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\RangeTests.cs" />
+    <Compile Include="Utility\WeakKeyDictionaryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\INTV.Core\INTV.Core.pcl.csproj">
+    <ProjectReference Include="..\..\INTV.Core\INTV.Core.pcl.csproj">
       <Project>{b90d8e04-5f83-45d7-bd39-0198a7c7c325}</Project>
       <Name>INTV.Core.pcl</Name>
     </ProjectReference>

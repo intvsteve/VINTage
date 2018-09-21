@@ -14,10 +14,14 @@
     <TargetFrameworkProfile>Profile5</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,6 +59,7 @@
     <Compile Include="ComponentModel\INotifyPropertyChangedHelpers.cs" />
     <Compile Include="ComponentModel\ModelBase.cs" />
     <Compile Include="ComponentModel\RelayCommandBase.cs" />
+    <Compile Include="ExcludeFromCodeCoverageAttribute.pcl.cs" />
     <Compile Include="Model\AlternateRom.cs" />
     <Compile Include="Model\BinFormatRom.cs" />
     <Compile Include="Model\CfgVarMetadataBlock.cs" />

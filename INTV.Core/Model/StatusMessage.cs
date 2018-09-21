@@ -28,8 +28,8 @@ namespace INTV.Core.Model
     /// </summary>
     public class StatusMessage : INTV.Core.ComponentModel.ModelBase
     {
-        private static readonly StatusMessage _dummyMessage = new StatusMessage(MessageSeverity.None, string.Empty);
-        private static readonly List<StatusMessage> _messages = new List<StatusMessage>();
+        private static readonly StatusMessage DummyMessage = new StatusMessage(MessageSeverity.None, string.Empty);
+        private static readonly List<StatusMessage> Messages = new List<StatusMessage>();
 
         private MessageSeverity _severity;
         private string _message;
@@ -56,7 +56,7 @@ namespace INTV.Core.Model
         /// </summary>
         public static IEnumerable<StatusMessage> AllMessages
         {
-            get { return _messages; }
+            get { return Messages; }
         }
 
         /// <summary>
@@ -138,10 +138,10 @@ namespace INTV.Core.Model
         /// <param name="raisePropertyChanged">If <c>true</c>, fire the PropertyChanged event.</param>
         public static void AddMessages(IEnumerable<StatusMessage> messages, object messageReporter, bool raisePropertyChanged)
         {
-            _messages.AddRange(messages);
+            Messages.AddRange(messages);
             if (raisePropertyChanged)
             {
-                _dummyMessage.RaisePropertyChanged(messageReporter, "AllMessages");
+                DummyMessage.RaisePropertyChanged(messageReporter, "AllMessages");
             }
         }
 
@@ -160,10 +160,10 @@ namespace INTV.Core.Model
         /// <param name="raisePropertyChanged">If <c>true</c>, fire the PropertyChanged event.</param>
         internal static void AddMessage(MessageSeverity severity, string message, object messageReporter, bool raisePropertyChanged)
         {
-            _messages.Add(new StatusMessage(severity, message));
+            Messages.Add(new StatusMessage(severity, message));
             if (raisePropertyChanged)
             {
-                _dummyMessage.RaisePropertyChanged(messageReporter, "AllMessages");
+                DummyMessage.RaisePropertyChanged(messageReporter, "AllMessages");
             }
         }
 
@@ -173,10 +173,10 @@ namespace INTV.Core.Model
         /// <param name="raisePropertyChanged">If <c>true</c>, fire the PropertyChanged event.</param>
         internal static void ClearMessages(bool raisePropertyChanged)
         {
-            _messages.Clear();
+            Messages.Clear();
             if (raisePropertyChanged)
             {
-                _dummyMessage.RaisePropertyChanged(null, "AllMessages");
+                DummyMessage.RaisePropertyChanged(null, "AllMessages");
             }
         }
     }

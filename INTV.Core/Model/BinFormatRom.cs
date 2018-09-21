@@ -95,11 +95,11 @@ namespace INTV.Core.Model
                 var metadata = new List<CfgVarMetadataBlock>();
                 try
                 {
-                    if (IsValid && ConfigPath.FileExists())
+                    if (IsValid && StreamUtilities.FileExists(ConfigPath))
                     {
-                        using (var file = ConfigPath.OpenFileStream())
+                        using (var file = StreamUtilities.OpenFileStream(ConfigPath))
                         {
-                            var cfgFileSize = (int)ConfigPath.Size();
+                            var cfgFileSize = (int)StreamUtilities.FileSize(ConfigPath);
                             var cfgFileBytes = new byte[cfgFileSize];
                             if (file.Read(cfgFileBytes, 0, cfgFileSize) == cfgFileSize)
                             {
@@ -142,10 +142,10 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override bool Validate()
         {
-            var isValid = !string.IsNullOrEmpty(RomPath) && RomPath.FileExists();
+            var isValid = !string.IsNullOrEmpty(RomPath) && StreamUtilities.FileExists(RomPath);
             if (isValid && !string.IsNullOrEmpty(ConfigPath))
             {
-                isValid = ConfigPath.FileExists();
+                isValid = StreamUtilities.FileExists(ConfigPath);
             }
             IsValid = isValid;
             return IsValid;
@@ -155,7 +155,7 @@ namespace INTV.Core.Model
         public override uint RefreshCrc(out bool changed)
         {
             var crc = _crc;
-            if (IsValid && RomPath.FileExists())
+            if (IsValid && StreamUtilities.FileExists(RomPath))
             {
                 uint dontCare;
                 _crc = GetCrcs(RomPath, null, out dontCare);
@@ -172,7 +172,7 @@ namespace INTV.Core.Model
         public override uint RefreshCfgCrc(out bool changed)
         {
             var cfgCrc = _cfgCrc;
-            if (IsValid && !string.IsNullOrEmpty(ConfigPath) && ConfigPath.FileExists())
+            if (IsValid && !string.IsNullOrEmpty(ConfigPath) && StreamUtilities.FileExists(ConfigPath))
             {
                 GetCrcs(null, ConfigPath, out _cfgCrc);
                 if (cfgCrc == 0)
@@ -209,7 +209,7 @@ namespace INTV.Core.Model
             var format = CheckFormat(filePath);
             if (format == RomFormat.Bin)
             {
-                using (System.IO.Stream configFile = (configFilePath == null) ? null : configFilePath.OpenFileStream())
+                using (System.IO.Stream configFile = (configFilePath == null) ? null : StreamUtilities.OpenFileStream(configFilePath))
                 {
                     // any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason, these all seem to be a multiple of
                     // 8KB + 1 byte in size. So allow those through, too.
@@ -233,7 +233,7 @@ namespace INTV.Core.Model
             var format = CheckMemo(filePath);
             if (format == RomFormat.None)
             {
-                using (System.IO.Stream file = filePath.OpenFileStream())
+                using (System.IO.Stream file = StreamUtilities.OpenFileStream(filePath))
                 {
                     // any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason, these all seem to be a multiple of
                     // 8KB + 1 byte in size. So allow those through, too.
@@ -267,11 +267,11 @@ namespace INTV.Core.Model
         {
             cfgCrc = 0;
             uint romCrc = 0;
-            if (!string.IsNullOrEmpty(romPath) && romPath.FileExists())
+            if (!string.IsNullOrEmpty(romPath) && StreamUtilities.FileExists(romPath))
             {
                 romCrc = Crc32.OfFile(romPath);
             }
-            if (!string.IsNullOrEmpty(cfgPath) && cfgPath.FileExists())
+            if (!string.IsNullOrEmpty(cfgPath) && StreamUtilities.FileExists(cfgPath))
             {
                 cfgCrc = Crc32.OfFile(cfgPath);
             }

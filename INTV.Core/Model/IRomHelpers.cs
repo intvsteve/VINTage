@@ -251,7 +251,7 @@ namespace INTV.Core.Model
         public static LuigiFileHeader GetLuigiHeader(this IRom rom)
         {
             LuigiFileHeader luigiHeader = null;
-            if ((rom != null) && (rom.Format == RomFormat.Luigi) && !string.IsNullOrEmpty(rom.RomPath) && rom.RomPath.FileExists() && LuigiFileHeader.PotentialLuigiFile(rom.RomPath))
+            if ((rom != null) && (rom.Format == RomFormat.Luigi) && !string.IsNullOrEmpty(rom.RomPath) && StreamUtilities.FileExists(rom.RomPath) && LuigiFileHeader.PotentialLuigiFile(rom.RomPath))
             {
                 luigiHeader = LuigiFileHeader.GetHeader(rom.RomPath);
             }
@@ -429,7 +429,7 @@ namespace INTV.Core.Model
             // file system interface to use for stuff like this... Maybe imported via MEF or some such...
             stockCfgFilePath = stockCfgFilePath.Replace('/', '\\');
 #endif // WIN
-            if (!stockCfgFilePath.FileExists())
+            if (!StreamUtilities.FileExists(stockCfgFilePath))
             {
                 stockCfgFilePath = null;
             }
@@ -450,10 +450,10 @@ namespace INTV.Core.Model
         public static bool EnsureCfgFileProvided(this IRom rom, IProgramInformation programInfo)
         {
             var usesStockCfgFile = false;
-            if ((rom.Format == RomFormat.Bin) && (string.IsNullOrEmpty(rom.ConfigPath) || !rom.ConfigPath.FileExists()))
+            if ((rom.Format == RomFormat.Bin) && (string.IsNullOrEmpty(rom.ConfigPath) || !StreamUtilities.FileExists(rom.ConfigPath)))
             {
                 var cfgFilePath = GetStockCfgFile(rom.Crc, rom.RomPath, programInfo);
-                usesStockCfgFile = !string.IsNullOrEmpty(cfgFilePath) && cfgFilePath.FileExists();
+                usesStockCfgFile = !string.IsNullOrEmpty(cfgFilePath) && StreamUtilities.FileExists(cfgFilePath);
                 if (usesStockCfgFile)
                 {
                     rom.UpdateCfgFile(cfgFilePath);

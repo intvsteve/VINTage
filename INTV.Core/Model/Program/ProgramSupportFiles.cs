@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramSupportFiles.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -372,10 +372,10 @@ namespace INTV.Core.Model.Program
                     {
                         var previousValidationState = ProgramSupportFileState.None;
                         _supportFileStates.TryGetValue(whichFile, out previousValidationState);
-                        if (!RomImagePath.FileExists())
+                        if (!StreamUtilities.FileExists(RomImagePath))
                         {
                             validationState = ProgramSupportFileState.Missing;
-                            if ((AlternateRomImagePaths != null) && AlternateRomImagePaths.Any(p => p.FileExists()))
+                            if ((AlternateRomImagePaths != null) && AlternateRomImagePaths.Any(p => StreamUtilities.FileExists(p)))
                             {
                                 validationState = ProgramSupportFileState.MissingWithAlternateFound;
                             }

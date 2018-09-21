@@ -27,7 +27,7 @@ namespace INTV.Core.Utility
     /// </summary>
     public static class RandomUtilities
     {
-        private static readonly Random _random = new Random();
+        private static readonly Random Random = new Random();
 
         /// <summary>
         /// Generate a random 32-bit uint value.
@@ -36,7 +36,7 @@ namespace INTV.Core.Utility
         public static uint Next32()
         {
             byte[] bytes = new byte[4];
-            _random.NextBytes(bytes);
+            Random.NextBytes(bytes);
             uint value = BitConverter.ToUInt32(bytes, 0);
             return value;
         }
@@ -48,7 +48,7 @@ namespace INTV.Core.Utility
         public static uint Next24()
         {
             byte[] bytes = new byte[3];
-            _random.NextBytes(bytes);
+            Random.NextBytes(bytes);
             var intBuffer = new byte[4];
             bytes.CopyTo(intBuffer, 0);
             uint value = BitConverter.ToUInt32(intBuffer, 0);
@@ -62,7 +62,7 @@ namespace INTV.Core.Utility
         public static ushort Next16()
         {
             byte[] bytes = new byte[2];
-            _random.NextBytes(bytes);
+            Random.NextBytes(bytes);
             ushort value = BitConverter.ToUInt16(bytes, 0);
             return value;
         }

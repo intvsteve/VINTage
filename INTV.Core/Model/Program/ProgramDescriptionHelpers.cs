@@ -41,7 +41,7 @@ namespace INTV.Core.Model.Program
         {
             var rom = programDescription.Rom;
             var usesCfg = !string.IsNullOrEmpty(rom.ConfigPath);
-            if (!rom.RomPath.FileExists() || (usesCfg && !rom.ConfigPath.FileExists()))
+            if (!StreamUtilities.FileExists(rom.RomPath) || (usesCfg && !StreamUtilities.FileExists(rom.ConfigPath)))
             {
                 var alternateRomPaths = programDescription.Files.AlternateRomImagePaths;
                 var alternateCfgPaths = programDescription.Files.AlternateRomConfigurationFilePaths;
@@ -56,12 +56,12 @@ namespace INTV.Core.Model.Program
                 string cfgPath = null;
                 for (var i = 0; (i < alternateRomPaths.Count) && !foundAlternate; ++i)
                 {
-                    if (alternateRomPaths[i].FileExists())
+                    if (StreamUtilities.FileExists(alternateRomPaths[i]))
                     {
                         romPath = alternateRomPaths[i];
                         if (usesCfg)
                         {
-                            if ((i < alternateCfgPaths.Count) && alternateCfgPaths[i].FileExists())
+                            if ((i < alternateCfgPaths.Count) && StreamUtilities.FileExists(alternateCfgPaths[i]))
                             {
                                 // This code assumes (but cannot check -- silly PCL has no Path API) that the .cfg and ROM are in the same directory for the same index.
                                 cfgPath = alternateCfgPaths[i];

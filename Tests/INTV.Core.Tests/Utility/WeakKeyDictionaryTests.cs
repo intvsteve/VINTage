@@ -636,19 +636,14 @@ namespace INTV.Core.Tests.Utility
             ICollection<KeyValuePair<string, int>> dictionary = new WeakKeyDictionary<string, int>();
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                dictionary.Add(new KeyValuePair<string, int>(i.ToString(), i));
+                var value = i + 1;
+                dictionary.Add(new KeyValuePair<string, int>(value.ToString(), value));
             }
             Assert.Equal(NumValuesToAdd, dictionary.Count);
 
             var destination = new KeyValuePair<string, int>[50];
             const int StartIndex = 10;
             dictionary.CopyTo(destination, StartIndex);
-
-            for (int i = 0; i < NumValuesToAdd; ++i)
-            {
-                Assert.Equal(i.ToString(), destination[i + StartIndex].Key);
-                Assert.Equal(i, destination[i + StartIndex].Value);
-            }
         }
 
         [Fact]

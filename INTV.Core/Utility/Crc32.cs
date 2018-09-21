@@ -169,7 +169,8 @@ namespace INTV.Core.Utility
         /// <param name="dataStream">The data stream upon which to compute a CRC.</param>
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="dataStream"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
-        private static uint OfStream(Stream dataStream, IEnumerable<Range<int>> ignoreRanges)
+        /// <remarks>This method will seek to the beginning of <paramref name="dataStream"/> before computing the CRC.</remarks>
+        public static uint OfStream(Stream dataStream, IEnumerable<Range<int>> ignoreRanges)
         {
             return OfStream(dataStream, false, 0, ignoreRanges);
         }
@@ -181,6 +182,7 @@ namespace INTV.Core.Utility
         /// <param name="replaceFirstByte">If <c>true</c>, replaces the first byte in the calculation with the value in alternateFirstByte.</param>
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
+        /// <remarks>This method will seek to the beginning of <paramref name="dataStream"/> before computing the CRC.</remarks>
         private static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte)
         {
             return OfStream(dataStream, replaceFirstByte, alternateFirstByte, null);
@@ -194,8 +196,10 @@ namespace INTV.Core.Utility
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="dataStream"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
+        /// <remarks>This method will seek to the beginning of <paramref name="dataStream"/> before computing the CRC.</remarks>
         private static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
         {
+            dataStream.Seek(0, SeekOrigin.Begin);
             var crc = InitialValue;
             var data = new byte[1024];
             var numBytesRead = 0;

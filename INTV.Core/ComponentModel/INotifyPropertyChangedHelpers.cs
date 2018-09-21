@@ -139,18 +139,6 @@ namespace INTV.Core.ComponentModel
         /// <param name="sender">An implementation of INotifyPropertyChanged.</param>
         /// <param name="handler">The event handler for the sender.</param>
         /// <param name="name">The name of the property.</param>
-        public static void RaisePropertyChanged<T>(this INotifyPropertyChanged sender, PropertyChangedEventHandler handler, string name)
-        {
-            RaisePropertyChanged(sender, handler, name, null, default(T));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event.
-        /// </summary>
-        /// <typeparam name="T">The type of the property.</typeparam>
-        /// <param name="sender">An implementation of INotifyPropertyChanged.</param>
-        /// <param name="handler">The event handler for the sender.</param>
-        /// <param name="name">The name of the property.</param>
         /// <param name="customAction">Custom action to execute after raising the property changed event.</param>
         /// <param name="newValue">The new value for the property.</param>
         /// <remarks>The custom action executes after the PropertyChange event is raised.</remarks>
@@ -202,13 +190,16 @@ namespace INTV.Core.ComponentModel
         public static bool SafeDidValueChangeCompare<T>(T newValue, T oldValue)
         {
             bool valueChanged = !object.ReferenceEquals(newValue, oldValue);
-            if (valueChanged && (newValue != null))
+            if (valueChanged)
             {
-                valueChanged = !newValue.Equals(oldValue);
-            }
-            else if (valueChanged && (oldValue != null))
-            {
-                valueChanged = !oldValue.Equals(newValue);
+                if (newValue != null)
+                {
+                    valueChanged = !newValue.Equals(oldValue);
+                }
+                else if (oldValue != null)
+                {
+                    valueChanged = !oldValue.Equals(newValue);
+                }
             }
             return valueChanged;
         }

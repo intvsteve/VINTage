@@ -520,7 +520,7 @@ namespace INTV.Core.Tests.Utility
         [Fact]
         public void WeakKeyDictionaryWithData_CopyToKeyValuePairArrayWithIndexResultingInWritePastEndOfArray_ThrowsArgumentException()
         {
-            const int NumValuesToAdd = 6;
+            const int NumValuesToAdd = 60;
             ICollection<KeyValuePair<string, int>> dictionary = new WeakKeyDictionary<string, int>();
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
@@ -529,7 +529,7 @@ namespace INTV.Core.Tests.Utility
             Assert.Equal(NumValuesToAdd, dictionary.Count);
 
             var destination = new KeyValuePair<string, int>[50];
-            Assert.Throws<ArgumentException>(() => dictionary.CopyTo(destination, 45));
+            Assert.Throws<ArgumentException>(() => dictionary.CopyTo(destination, 48));
         }
 
         [Fact]

@@ -63,6 +63,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ComponentModel\PropertyChangedNotifierTests.cs" />
     <Compile Include="TestStorageAccess.cs" />
     <Compile Include="Utility\BinaryReaderTests.cs" />
     <Compile Include="Utility\BinaryWriterTests.cs" />

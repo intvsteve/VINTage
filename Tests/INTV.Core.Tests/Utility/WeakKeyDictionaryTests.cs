@@ -520,7 +520,7 @@ namespace INTV.Core.Tests.Utility
         [Fact]
         public void WeakKeyDictionaryWithData_CopyToKeyValuePairArrayWithIndexResultingInWritePastEndOfArray_ThrowsArgumentException()
         {
-            const int NumValuesToAdd = 60;
+            const int NumValuesToAdd = 80;
             ICollection<KeyValuePair<string, int>> dictionary = new WeakKeyDictionary<string, int>();
             for (int i = 0; i < NumValuesToAdd; ++i)
             {

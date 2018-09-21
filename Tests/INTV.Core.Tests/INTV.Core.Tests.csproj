@@ -64,6 +64,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="TestStorageAccess.cs" />
+    <Compile Include="Utility\ByteSerializerTests.cs" />
     <Compile Include="Utility\ConverterTests.cs" />
     <Compile Include="Utility\ConvertToMultipleTests.cs" />
     <Compile Include="Utility\Crc16Tests.cs" />

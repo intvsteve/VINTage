@@ -113,6 +113,7 @@ namespace INTV.Core.Tests
                 Location = location;
             }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1100:DoNotPrefixCallsWithBaseUnlessLocalImplementationExists", Justification = "Not using base.Seek() triggers CA complaint. This class simply does not override it.")]
             private TestStorageStream(string location, int initialDataSize)
                 : base(((initialDataSize / 64) + 1) * 64)
             {

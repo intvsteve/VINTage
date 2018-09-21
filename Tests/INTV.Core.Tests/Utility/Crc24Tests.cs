@@ -18,9 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.IO;
-using System.Linq;
 using INTV.Core.Utility;
 using Xunit;
 

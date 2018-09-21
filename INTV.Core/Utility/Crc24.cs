@@ -165,6 +165,7 @@ namespace INTV.Core.Utility
                 uint crc = InitialValue;
                 using (var fileStream = StreamUtilities.OpenFileStream(filePath, StorageAccess))
                 {
+                    fileStream.Seek(0, SeekOrigin.Begin);
                     crc = OfStream(fileStream, InitialValue);
                 }
                 return crc;

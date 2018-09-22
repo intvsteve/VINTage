@@ -19,7 +19,6 @@
 // </copyright>
 
 using System;
-using System.Linq;
 using INTV.Core.ComponentModel;
 using Xunit;
 

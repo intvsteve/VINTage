@@ -30,12 +30,21 @@ namespace INTV.Core.Tests.Model
     public class EcsTests
     {
         [Fact]
+        public void Ecs_Name_IsCorrect()
+        {
+            var ecs = new Ecs();
+
+            Assert.Equal("ECS", ecs.Name);
+        }
+
+        [Fact]
         public void Ecs_Connections_AreValid()
         {
             var ecs = new Ecs();
 
             Assert.NotNull(ecs.Connections.FirstOrDefault(c => c is MemoryMap));
             Assert.NotNull(ecs.Connections.FirstOrDefault(c => c is CartridgePort));
+            Assert.Equal(2, ecs.Connections.Count());
         }
 
         [Fact]

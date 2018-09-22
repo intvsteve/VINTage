@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="ComponentModel\PropertyChangedNotifierTests.cs" />
     <Compile Include="ComponentModel\RelayCommandBaseTests.cs" />
+    <Compile Include="Model\EcsTests.cs" />
     <Compile Include="Model\PeripheralTests.cs" />
     <Compile Include="Model\StatusMessageTests.cs" />
     <Compile Include="TestStorageAccess.cs" />

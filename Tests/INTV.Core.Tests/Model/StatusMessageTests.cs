@@ -47,6 +47,7 @@ namespace INTV.Core.Tests.Model
             Assert.Equal(severity, receivedMessage.Severity);
             Assert.Equal(message, receivedMessage.Message);
 
+            StatusMessage.MessagesArrived -= handler;
             StatusMessage.ClearMessages();
         }
 

@@ -95,15 +95,15 @@ namespace INTV.Core.Tests.Model
         {
             var message = new StatusMessage(MessageSeverity.None, "nertz");
 
-            Assert.Equal(-1, message.CompareTo(null));
+            Assert.Equal(1, message.CompareTo((object)null));
         }
 
         [Fact]
-        public void StatusMessage_CompareToNonMessage_GetsExpectedResult()
+        public void StatusMessage_CompareToNonMessage_ThrowsArgumentException()
         {
             var message = new StatusMessage(MessageSeverity.Status, "By your command!");
 
-            Assert.Equal(-1, message.CompareTo("Hiya, Bugs!"));
+            Assert.Throws<ArgumentException>(() => message.CompareTo("Hiya, Bugs!"));
         }
 
         [Fact]

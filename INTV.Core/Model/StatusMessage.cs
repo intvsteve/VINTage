@@ -139,15 +139,18 @@ namespace INTV.Core.Model
         #region IComparable
 
         /// <inheritdoc />
+        /// <exception cref="System.ArgumentException">Thrown if <param name="obj"/> is not a <see cref="StatusMessage"/>.</exception>
         public int CompareTo(object obj)
         {
-            var result = -1;
-            if (obj is StatusMessage)
+            if (obj == null)
             {
-                result = CompareTo((StatusMessage)obj);
+                return 1;
             }
-
-            return result;
+            if (!(obj is StatusMessage))
+            {
+                throw new ArgumentException();
+            }
+            return CompareTo((StatusMessage)obj);
         }
 
         #endregion // IComparable
@@ -157,7 +160,7 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public int CompareTo(StatusMessage other)
         {
-            var result = -1;
+            var result = 1;
             if (other != null)
             {
                 result = (int)Severity - (int)other.Severity;

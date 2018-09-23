@@ -396,9 +396,18 @@ namespace INTV.Core.Model.Program
         #region IComparable
 
         /// <inheritdoc />
+        /// <exception cref="System.ArgumentException">Thrown if <param name="obj"/> is not a <see cref="IProgramFeatures"/>.</exception>
         public int CompareTo(object obj)
         {
-            return CompareTo(obj as ProgramFeatures);
+            if (obj == null)
+            {
+                return 1;
+            }
+            if (!(obj is IProgramFeatures))
+            {
+                throw new ArgumentException();
+            }
+            return CompareTo((IProgramFeatures)obj);
         }
 
         #endregion // IComparable

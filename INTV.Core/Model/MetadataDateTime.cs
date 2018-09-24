@@ -80,6 +80,30 @@ namespace INTV.Core.Model
         public MetadataDateTimeFlags Flags { get; private set; }
 
         /// <summary>
+        /// Tests two instances of <see cref="MetadataDateTime"/> for equality.
+        /// </summary>
+        /// <param name="lhs">Value on left hand side of operator.</param>
+        /// <param name="rhs">Value on right hand side of operator.</param>
+        /// <returns><c>true</c> if the two values are considered equal. See remarks.</returns>
+        /// <remarks>This is the same as calling <see cref="CompareTo(MetadataDateTime other, bool strict, bool compareOnlyCommonValidFields)"/> with strict set to <c>false</c> and compareOnlyCommonValidFields set to <c>true</c>.</remarks>
+        public static bool operator ==(MetadataDateTime lhs, MetadataDateTime rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        /// <summary>
+        /// Tests two instances of <see cref="MetadataDateTime"/> for inequality.
+        /// </summary>
+        /// <param name="lhs">Value on left hand side of operator.</param>
+        /// <param name="rhs">Value on right hand side of operator.</param>
+        /// <returns><c>true</c> if the two values are considered not equal. See remarks.</returns>
+        /// <remarks>This is the same as calling <see cref="CompareTo(MetadataDateTime other, bool strict, bool compareOnlyCommonValidFields)"/> with strict set to <c>false</c> and compareOnlyCommonValidFields set to <c>true</c>.</remarks>
+        public static bool operator !=(MetadataDateTime lhs, MetadataDateTime rhs)
+        {
+            return !lhs.Equals(rhs);
+        }
+
+        /// <summary>
         /// Converts the value of the underlying System.DateTimeOffset object to its equivalent string representation using the specified culture-specific formatting information.
         /// </summary>
         /// <param name="format">A format string as supported by <see cref="System.DateTimeOffset"/>.</param>
@@ -122,14 +146,13 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="other">The other value to compare to this instance.</param>
         /// <param name="strict">If <c>true</c>, the <see cref="Flags"/> must be the same before the date comparison will be done.</param>
-        /// <param name="compareOnlyValidFields">If <c>true</c>, only compare fields of each item's <see cref="Date"/> for which the corresponding flag is valid.</param>
+        /// <param name="compareOnlyCommonValidFields">If <c>true</c>, only compare fields of each item's <see cref="Date"/> for which the corresponding flag is valid.</param>
         /// <returns>An integer value indicating less than, equal, or greater than.</returns>
         /// <remarks>When <paramref name="strict"/> is <c>true</c>, the flag comparison of flags is done first. Next, if <paramref name="compareOnlyValidFields"/>
         /// is <c>true</c>, only portions of the date will be compared for which a flag is present in both objects. If there are no intersecting flags at
         /// when <paramref name="compareOnlyValidFields"/> is <c>true</c>, the underlying <see cref="System.DateTimeOffset"/> produces the result.
         /// If both <paramref name="strict"/> and <paramref name="compareOnlyValidFields"/> are <c>false</c>, then the comparison is equivalent to a simple
         /// <see cref="System.DateTimeOffset.CompareTo(DateTimeOffset)"/> operation.</remarks>
-        /// <paramref name="other"/> have no common valid field flags.</exception>
         public int CompareTo(MetadataDateTime other, bool strict, bool compareOnlyCommonValidFields)
         {
             var result = 0;
@@ -259,7 +282,7 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return Date.GetHashCode() * 31 + Flags.GetHashCode();
+            return (Date.GetHashCode() * 31) + Flags.GetHashCode();
         }
 
         /// <inheritdoc />

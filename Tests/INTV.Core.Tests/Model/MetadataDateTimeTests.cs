@@ -105,6 +105,7 @@ namespace INTV.Core.Tests.Model
 
             Assert.Equal(0, dateTime0.CompareTo(dateTime1, strict: false, compareOnlyCommonValidFields: true));
             Assert.True(dateTime1.Equals(dateTime0));
+            Assert.True(dateTime1 == dateTime0);
         }
 
         [Fact]
@@ -115,6 +116,7 @@ namespace INTV.Core.Tests.Model
 
             Assert.True(dateTime0.CompareTo(dateTime1, strict: false, compareOnlyCommonValidFields: true) != 0);
             Assert.False(dateTime1.Equals(dateTime0));
+            Assert.True(dateTime1 != dateTime0);
         }
 
         [Fact]

@@ -67,6 +67,7 @@
     <Compile Include="ComponentModel\RelayCommandBaseTests.cs" />
     <Compile Include="Model\EcsTests.cs" />
     <Compile Include="Model\GromTests.cs" />
+    <Compile Include="Model\JlpHardwareVersionHelpersTests.cs" />
     <Compile Include="Model\MetadataDateTimeTests.cs" />
     <Compile Include="Model\PeripheralTests.cs" />
     <Compile Include="Model\StatusMessageTests.cs" />

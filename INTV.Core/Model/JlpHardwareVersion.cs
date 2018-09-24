@@ -75,7 +75,12 @@ namespace INTV.Core.Model
         /// <returns>The display string for the version.</returns>
         public static string ToDisplayString(this JlpHardwareVersion jlpVersion)
         {
-            return VersionStrings[jlpVersion];
+            string displayString;
+            if (!VersionStrings.TryGetValue(jlpVersion, out displayString))
+            {
+                displayString = Resources.Strings.JlpHardwareVersion_None;
+            }
+            return displayString;
         }
 
         /// <summary>

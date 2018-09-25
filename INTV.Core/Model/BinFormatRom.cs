@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Linq;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
 
@@ -92,34 +93,14 @@ namespace INTV.Core.Model
         {
             get
             {
-                var metadata = new List<CfgVarMetadataBlock>();
+                var metadata = Enumerable.Empty<CfgVarMetadataBlock>();
                 try
                 {
                     if (IsValid && StreamUtilities.FileExists(ConfigPath))
                     {
                         using (var file = StreamUtilities.OpenFileStream(ConfigPath))
                         {
-                            var cfgFileSize = (int)StreamUtilities.FileSize(ConfigPath);
-                            var cfgFileBytes = new byte[cfgFileSize];
-                            if (file.Read(cfgFileBytes, 0, cfgFileSize) == cfgFileSize)
-                            {
-                                // PCLs only support UTF8... Spec says ASCII. Let's hope we don't run into anything *too* weird.
-                                var cfgFileContents = System.Text.Encoding.UTF8.GetString(cfgFileBytes, 0, cfgFileBytes.Length).Trim('\0');
-                                var cfgFileLines = cfgFileContents.Split(new[] { "\n", "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-                                foreach (var cfgFileLine in cfgFileLines)
-                                {
-                                    // Square peg, meet round hole.
-                                    var cfgFileLineBytes = System.Text.Encoding.UTF8.GetBytes(cfgFileLine);
-                                    using (var cfgFileLineStream = new System.IO.MemoryStream(cfgFileLineBytes))
-                                    {
-                                        var metadataBlock = CfgVarMetadataBlock.Inflate(cfgFileLineStream);
-                                        if (metadataBlock != null)
-                                        {
-                                            metadata.Add(metadataBlock);
-                                        }
-                                    }
-                                }
-                            }
+                            metadata = CfgVarMetadataBlock.InflateAll(file);
                         }
                     }
                 }

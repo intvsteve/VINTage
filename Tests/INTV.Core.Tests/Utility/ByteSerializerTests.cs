@@ -123,7 +123,7 @@ namespace INTV.Core.Tests.Utility
                 return sizeof(int);
             }
 
-            protected override int Deserialize(BinaryReader reader)
+            public override int Deserialize(BinaryReader reader)
             {
                 MuhDater = reader.ReadInt32();
                 return sizeof(int);

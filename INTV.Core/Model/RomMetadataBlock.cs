@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2017 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -158,7 +158,7 @@ namespace INTV.Core.Model
 
         /// <inheritdoc />
         /// <remarks>The precondition here is that the reader is positioned immediately after the ROM metadata block type.</remarks>
-        protected override int Deserialize(Core.Utility.BinaryReader reader)
+        public override int Deserialize(Core.Utility.BinaryReader reader)
         {
             var deserializedPayloadLength = DeserializePayload(reader);
             if (deserializedPayloadLength != Length)

@@ -1,5 +1,5 @@
 ﻿// <copyright file="ErrorLog.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -191,7 +191,7 @@ namespace INTV.LtoFlash.Model.Commands
         }
 
         /// <inheritdoc />
-        protected override int Deserialize(INTV.Core.Utility.BinaryReader reader)
+        public override int Deserialize(INTV.Core.Utility.BinaryReader reader)
         {
             ErrorIndex = reader.ReadUInt16();
             for (int i = 0; i < BufferSize; ++i)

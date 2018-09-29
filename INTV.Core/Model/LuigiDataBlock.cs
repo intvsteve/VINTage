@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiDataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -186,7 +186,7 @@ namespace INTV.Core.Model
 
         /// <inheritdoc />
         /// <remarks>The precondition here is that the reader is positioned immediately after the LUIGI block type value.</remarks>
-        protected override int Deserialize(Core.Utility.BinaryReader reader)
+        public override int Deserialize(Core.Utility.BinaryReader reader)
         {
             Length = reader.ReadUInt16();
             var bytesRead = PayloadLengthSize;

@@ -296,7 +296,7 @@ namespace INTV.Core.Model
         }
 
         /// <inheritdoc />
-        protected override int Deserialize(Core.Utility.BinaryReader reader)
+        public override int Deserialize(Core.Utility.BinaryReader reader)
         {
             var header = reader.ReadBytes(MagicKey.Length);
             var bytesRead = header.Length;

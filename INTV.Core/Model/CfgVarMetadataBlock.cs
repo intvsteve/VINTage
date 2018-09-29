@@ -199,7 +199,7 @@ namespace INTV.Core.Model
 
         /// <inheritdoc />
         /// <remarks>The precondition here is that the reader is positioned immediately after the ROM metadata block type.</remarks>
-        protected override int Deserialize(Core.Utility.BinaryReader reader)
+        public override int Deserialize(Core.Utility.BinaryReader reader)
         {
             int deserializedPayloadLength = 0;
             var payloadLength = reader.BaseStream.Length;

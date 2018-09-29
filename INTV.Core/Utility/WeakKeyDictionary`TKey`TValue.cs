@@ -492,6 +492,8 @@ namespace INTV.Core.Utility
             }
 
             /// <inheritdoc/>
+            /// <remarks>Code coverage reports this as incomplete because the underlying object throws.</remarks>
+            [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             public void Reset()
             {
                 _implementation.Reset();

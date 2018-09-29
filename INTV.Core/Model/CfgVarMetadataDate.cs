@@ -217,6 +217,7 @@ namespace INTV.Core.Model
                     var utcOffsetMinutes = MetadataDateTime.DefaultUtcOffsetMinutes;
                     if (flags.HasFlag(MetadataDateTimeFlags.Second) && (utcOffsetString.Length > 2) && ((utcOffsetString[0] == '-') || (utcOffsetString[0] == '+')))
                     {
+                        const short MaxUtcOffset = 12 * 60;
                         if (utcOffsetString.IndexOf(':') > 0)
                         {
                             parts = utcOffsetString.Split(new[] { ':' }, System.StringSplitOptions.RemoveEmptyEntries);
@@ -249,6 +250,15 @@ namespace INTV.Core.Model
                                                 utcOffsetMinutes = -utcOffsetMinutes;
                                             }
                                         }
+
+                                        // Range check the total offset, so things like -12:40 are rejected.
+                                        var utcTotalDeltaInMinutes = (utcOffsetHours * 60) + utcOffsetMinutes;
+                                        if (System.Math.Abs(utcTotalDeltaInMinutes) > MaxUtcOffset)
+                                        {
+                                            utcOffsetHours = 0;
+                                            utcOffsetMinutes = 0;
+                                            flags &= ~MetadataDateTimeFlags.UtcOffset;
+                                        }
                                     }
                                 }
                             }
@@ -259,7 +269,6 @@ namespace INTV.Core.Model
                             short shortUtcOffset;
                             if (short.TryParse(utcOffsetString, out shortUtcOffset))
                             {
-                                const short MaxUtcOffset = 12 * 60;
                                 var offsetMinutes = shortUtcOffset < 0 ? shortUtcOffset % -100 : shortUtcOffset % 100;
                                 var offsetHours = shortUtcOffset / 100;
                                 var utcTotalDeltaInMinutes = (offsetHours * 60) + offsetMinutes;

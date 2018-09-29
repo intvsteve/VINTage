@@ -63,8 +63,10 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Model\CfgVarMetadataIdTagHelpersTests.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifierTests.cs" />
     <Compile Include="ComponentModel\RelayCommandBaseTests.cs" />
+    <Compile Include="Model\CfgVarMetadataBlockTests.cs" />
     <Compile Include="Model\EcsTests.cs" />
     <Compile Include="Model\GromTests.cs" />
     <Compile Include="Model\JlpHardwareVersionHelpersTests.cs" />

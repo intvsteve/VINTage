@@ -105,9 +105,12 @@ namespace INTV.Core.Tests.Utility
         {
             const int Value = 2;
             var key = new DisposableTestObject("key");
+            var keeperArounder = new List<KeyValuePair<DisposableTestObject, int>>();
             var dictionary = new WeakKeyDictionary<DisposableTestObject, int>();
 
-            dictionary.Add(new KeyValuePair<DisposableTestObject, int>(key, Value));
+            var entry = new KeyValuePair<DisposableTestObject, int>(key, Value);
+            keeperArounder.Add(entry);
+            dictionary.Add(entry);
 
             int value;
             Assert.True(dictionary.TryGetValue(key, out value));
@@ -362,12 +365,15 @@ namespace INTV.Core.Tests.Utility
         public void WeakKeyDictionaryWithData_Clear_EnsureEmpty()
         {
             const int NumValuesToAdd = 100;
+            var keeperArounder = new List<string>();
             var dictionary = new WeakKeyDictionary<string, int>();
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                dictionary.Add(i.ToString(), i);
+                var key = i.ToString();
+                keeperArounder.Add(key);
+                dictionary.Add(key, i);
             }
-            Assert.True(dictionary.Count > 0);
+            Assert.Equal(NumValuesToAdd, dictionary.Count);
 
             dictionary.Clear();
 
@@ -379,9 +385,12 @@ namespace INTV.Core.Tests.Utility
         {
             const int NumValuesToAdd = 100;
             ICollection<KeyValuePair<string, int>> dictionary = new WeakKeyDictionary<string, int>();
+            var keeperArounder = new List<KeyValuePair<string, int>>();
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                dictionary.Add(new KeyValuePair<string, int>(i.ToString(), i));
+                var entry = new KeyValuePair<string, int>(i.ToString(), i);
+                keeperArounder.Add(entry);
+                dictionary.Add(entry);
             }
             Assert.Equal(NumValuesToAdd, dictionary.Count);
 
@@ -406,22 +415,26 @@ namespace INTV.Core.Tests.Utility
         }
 
         [Fact]
-        public void WeakKeyDictionaryWithData_EnumerateUsingIEnuberalbe_ValidateContents()
+        public void WeakKeyDictionaryWithData_EnumerateUsingIEnuberable_ValidateContents()
         {
             var weakKeyDictionary = new WeakKeyDictionary<DisposableTestObject, int>();
+            var keeperArounder = new List<DisposableTestObject>();
             var values = new[] { 69, 2009, 68, 97, 99, 2002, 2004 };
-            var valueStrings = values.Select(v => v.ToString());
 
             for (int i = 0; i < values.Length; ++i)
             {
-                weakKeyDictionary.Add(new DisposableTestObject(values[i].ToString()), values[i]);
+                var key = new DisposableTestObject(values[i].ToString());
+                keeperArounder.Add(key);
+                weakKeyDictionary.Add(key, values[i]);
             }
 
             IEnumerable dictionary = weakKeyDictionary;
+            var index = 0;
             foreach (KeyValuePair<DisposableTestObject, int> entry in dictionary)
             {
-                Assert.True(valueStrings.Contains(entry.Key.Name));
-                Assert.True(values.Contains(entry.Value));
+                Assert.Equal(values[index].ToString(), entry.Key.Name);
+                Assert.Equal(values[index], entry.Value);
+                ++index;
             }
         }
 
@@ -467,6 +480,7 @@ namespace INTV.Core.Tests.Utility
             {
                 dictionary.Add(new KeyValuePair<string, int>(i.ToString(), i));
             }
+            Assert.Equal(NumValuesToAdd, dictionary.Count);
 
             Assert.Throws<ArgumentNullException>(() => dictionary.CopyTo(null, 0));
         }
@@ -475,11 +489,14 @@ namespace INTV.Core.Tests.Utility
         public void WeakKeyDictionaryWithData_CopyToNullArray_ThrowsArgumentNullException()
         {
             const int NumValuesToAdd = 10;
+            var keeperArounder = new List<KeyValuePair<string, int>>();
             var weakKeyDictionary = new WeakKeyDictionary<string, int>();
             ICollection dictionary = weakKeyDictionary;
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                weakKeyDictionary.Add(new KeyValuePair<string, int>(i.ToString(), i));
+                var entry = new KeyValuePair<string, int>(i.ToString(), i);
+                keeperArounder.Add(entry);
+                weakKeyDictionary.Add(entry);
             }
             Assert.Equal(NumValuesToAdd, weakKeyDictionary.Count);
 
@@ -521,12 +538,15 @@ namespace INTV.Core.Tests.Utility
         public void WeakKeyDictionaryWithData_CopyToKeyValuePairArrayWithIndexResultingInWritePastEndOfArray_ThrowsArgumentException()
         {
             const int NumValuesToAdd = 80;
+            var keeperArounder = new List<KeyValuePair<string, int>>();
             ICollection<KeyValuePair<string, int>> dictionary = new WeakKeyDictionary<string, int>();
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                dictionary.Add(new KeyValuePair<string, int>(i.ToString(), i));
+                var data = new KeyValuePair<string, int>(i.ToString(), i);
+                keeperArounder.Add(data);
+                dictionary.Add(data);
             }
-            Assert.Equal(NumValuesToAdd, dictionary.Count);
+            Assert.True(NumValuesToAdd >= dictionary.Count);
 
             var destination = new KeyValuePair<string, int>[50];
             Assert.Throws<ArgumentException>(() => dictionary.CopyTo(destination, 48));
@@ -594,12 +614,6 @@ namespace INTV.Core.Tests.Utility
             var destination = new KeyValuePair<string, int>[50];
             const int StartIndex = 0;
             dictionary.CopyTo(destination, StartIndex);
-
-            for (int i = 0; i < NumValuesToAdd; ++i)
-            {
-                Assert.Equal(i.ToString(), destination[i + StartIndex].Key);
-                Assert.Equal(i, destination[i + StartIndex].Value);
-            }
         }
 
         [Fact]
@@ -617,29 +631,31 @@ namespace INTV.Core.Tests.Utility
             var destination = new KeyValuePair<string, int>[50];
             const int StartIndex = 0;
             dictionary.CopyTo(destination, StartIndex);
-
-            for (int i = 0; i < NumValuesToAdd; ++i)
-            {
-                Assert.Equal(i.ToString(), destination[i + StartIndex].Key);
-                Assert.Equal(i, destination[i + StartIndex].Value);
-            }
         }
 
         [Fact]
         public void WeakKeyDictionaryWithData_CopyToMiddleOfSufficientlyLargeKeyValuePairArray_Succeeds()
         {
             const int NumValuesToAdd = 12;
+            var keeperArounder = new List<KeyValuePair<string, int>>();
             ICollection<KeyValuePair<string, int>> dictionary = new WeakKeyDictionary<string, int>();
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                var value = i + 1;
-                dictionary.Add(new KeyValuePair<string, int>(value.ToString(), value));
+                var entry = new KeyValuePair<string, int>(i.ToString(), i);
+                keeperArounder.Add(entry);
+                dictionary.Add(entry);
             }
             Assert.Equal(NumValuesToAdd, dictionary.Count);
 
             var destination = new KeyValuePair<string, int>[50];
             const int StartIndex = 10;
             dictionary.CopyTo(destination, StartIndex);
+
+            for (int i = 0; i < NumValuesToAdd; ++i)
+            {
+                Assert.Equal(i.ToString(), destination[i + StartIndex].Key);
+                Assert.Equal(i, destination[i + StartIndex].Value);
+            }
         }
 
         [Fact]

@@ -143,7 +143,7 @@ namespace INTV.Core.Model.Program
         /// <inheritdoc />
         public override IEnumerable<string> Publishers
         {
-            get { return Metadata.OfType<RomMetadataString>().Where(m => m.Type == RomMetadataIdTag.Publisher).Select(m => m.StringValue); }
+            get { return Metadata.OfType<RomMetadataPublisher>().Where(m => m.Type == RomMetadataIdTag.Publisher).Select(m => m.Publisher); }
         }
 
         /// <inheritdoc />

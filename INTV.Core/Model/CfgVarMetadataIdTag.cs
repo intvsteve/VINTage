@@ -178,6 +178,7 @@ namespace INTV.Core.Model
             new KeyValuePair<CfgVarMetadataIdTag, string>(CfgVarMetadataIdTag.EcsCompatibility, "ecs_compat"),
             new KeyValuePair<CfgVarMetadataIdTag, string>(CfgVarMetadataIdTag.IntellivoiceCompatibility, "voice_compat"),
             new KeyValuePair<CfgVarMetadataIdTag, string>(CfgVarMetadataIdTag.IntellivisionIICompatibility, "intv2_compat"),
+            new KeyValuePair<CfgVarMetadataIdTag, string>(CfgVarMetadataIdTag.IntellivisionIICompatibility, "intv2_copmat"),
             new KeyValuePair<CfgVarMetadataIdTag, string>(CfgVarMetadataIdTag.KeyboardComponentCompatibility, "kc_compat"),
             new KeyValuePair<CfgVarMetadataIdTag, string>(CfgVarMetadataIdTag.TutorvisionCompatibility, "tv_compat"),
             new KeyValuePair<CfgVarMetadataIdTag, string>(CfgVarMetadataIdTag.Ecs,  "ecs"),

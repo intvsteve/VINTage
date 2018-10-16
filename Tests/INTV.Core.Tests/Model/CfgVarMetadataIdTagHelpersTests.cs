@@ -93,6 +93,7 @@ namespace INTV.Core.Tests
         [InlineData(CfgVarMetadataIdTag.EcsCompatibility, "ecs_compat")]
         [InlineData(CfgVarMetadataIdTag.IntellivoiceCompatibility, "voice_compat")]
         [InlineData(CfgVarMetadataIdTag.IntellivisionIICompatibility, "intv2_compat")]
+        [InlineData(CfgVarMetadataIdTag.IntellivisionIICompatibility, "intv2_copmat")]
         [InlineData(CfgVarMetadataIdTag.KeyboardComponentCompatibility, "kc_compat")]
         [InlineData(CfgVarMetadataIdTag.TutorvisionCompatibility, "tv_compat")]
         [InlineData(CfgVarMetadataIdTag.Ecs, "ecs")]

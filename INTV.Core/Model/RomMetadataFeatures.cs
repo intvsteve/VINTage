@@ -123,7 +123,7 @@ namespace INTV.Core.Model
                 // +----+----+----+----+----+----+----+----+
                 var featureBits = reader.ReadByte();
                 --remainingPayload;
-                var compatibility = RawFeatureToFeatureCompatibility((featureBits >> 6) & FeatureMask);
+                var compatibility = (FeatureCompatibility)((featureBits >> 6) & FeatureMask);
                 Features.Jlp = (JlpFeatures)compatibility;
                 if (((1 << 5) & featureBits) != 0)
                 {

@@ -315,7 +315,6 @@ short_name = wig
             }
         }
 
-
         [Theory]
         [InlineData(CfgVarMetadataIdTag.Ecs, "", FeatureCompatibility.Tolerates)]
         [InlineData(CfgVarMetadataIdTag.Ecs, "0", FeatureCompatibility.Tolerates)]

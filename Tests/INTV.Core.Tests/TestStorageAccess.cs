@@ -108,6 +108,8 @@ namespace INTV.Core.Tests
             // See https://docs.microsoft.com/en-us/dotnet/api/system.io.file.getlastwritetime?view=netframework-4.0
             private static readonly DateTime FileNotFoundTime = new DateTime(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
+            private int _usageCount = 0;
+
             private TestStorageStream(string location)
             {
                 Location = location;
@@ -156,6 +158,7 @@ namespace INTV.Core.Tests
                             throw new InvalidOperationException();
                         }
                     }
+                    stream.Open();
                     return stream;
                 }
             }
@@ -241,9 +244,19 @@ namespace INTV.Core.Tests
 
             protected override void Dispose(bool disposing)
             {
-                TestStorageStream dontCare;
-                FileSystem.TryRemove(Location, out dontCare);
-                base.Dispose(disposing);
+                var refCount = Interlocked.Decrement(ref _usageCount);
+                if (refCount == 0)
+                {
+                    TestStorageStream dontCare;
+                    FileSystem.TryRemove(Location, out dontCare);
+                    base.Dispose(disposing);
+                }
+            }
+
+            private void Open()
+            {
+                Interlocked.Increment(ref _usageCount);
+                Seek(0, SeekOrigin.Begin);
             }
         }
     }

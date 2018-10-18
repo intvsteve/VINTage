@@ -205,6 +205,7 @@
     <Compile Include="Model\LuigiMetadataIdTag.cs" />
     <Compile Include="Model\MetadataDateTimeFlags.cs" />
     <Compile Include="Model\MetadataDateTime.cs" />
+    <Compile Include="Model\MetadataDateTimeBuilder.cs" />
     <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
     <Compile Include="Model\CfgVarMetadataBlock.cs" />
     <Compile Include="Model\Program\CfgFileMetadataProgramInformation.cs" />

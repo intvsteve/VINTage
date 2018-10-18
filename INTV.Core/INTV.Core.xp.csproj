@@ -95,6 +95,7 @@
     <Compile Include="Model\LuigiScrambleKeyBlock.cs" />
     <Compile Include="Model\MessageSeverity.cs" />
     <Compile Include="Model\MetadataDateTime.cs" />
+    <Compile Include="Model\MetadataDateTimeBuilder.cs" />
     <Compile Include="Model\MetadataDateTimeFlags.cs" />
     <Compile Include="Model\MetadataHelpers.cs" />
     <Compile Include="Model\Program\Bee3Features.cs" />

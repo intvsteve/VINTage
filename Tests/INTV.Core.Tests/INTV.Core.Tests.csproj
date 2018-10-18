@@ -75,6 +75,7 @@
     <Compile Include="Model\PeripheralTests.cs" />
     <Compile Include="Model\RomFormatRomTests.cs" />
     <Compile Include="Model\RomFormatTests.cs" />
+    <Compile Include="Model\RomInfoIndexTests.cs" />
     <Compile Include="Model\StatusMessageTests.cs" />
     <Compile Include="TestStorageAccess.cs" />
     <Compile Include="UnexpectedFileTypeExceptionTests.cs" />

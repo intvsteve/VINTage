@@ -100,51 +100,52 @@ namespace INTV.Core.Model
             RomMetadataBlock metadataBlock = null;
             int additionalBytesInPayloadLength;
             var payloadLength = DecodeLength(reader, out additionalBytesInPayloadLength);
-            var metadataBlockType = RomMetadataIdTag.Ignore;
-            if (payloadLength > 0)
+            var metadataBlockType = (RomMetadataIdTag)reader.ReadByte();
+            switch (metadataBlockType)
             {
-                metadataBlockType = (RomMetadataIdTag)reader.ReadByte();
-                switch (metadataBlockType)
-                {
-                    case RomMetadataIdTag.Title:
-                    case RomMetadataIdTag.ShortTitle:
-                    case RomMetadataIdTag.License:
-                    case RomMetadataIdTag.Description:
-                    case RomMetadataIdTag.Version:
-                    case RomMetadataIdTag.UrlContactInfo:
-                        metadataBlock = new RomMetadataString(payloadLength, metadataBlockType);
-                        break;
-                    case RomMetadataIdTag.ReleaseDate:
-                    case RomMetadataIdTag.BuildDate:
-                        metadataBlock = new RomMetadataDate(payloadLength, metadataBlockType);
-                        break;
-                    case RomMetadataIdTag.Features:
-                        metadataBlock = new RomMetadataFeatures(payloadLength);
-                        break;
-                    case RomMetadataIdTag.Publisher:
-                        metadataBlock = new RomMetadataPublisher(payloadLength);
-                        break;
-                    case RomMetadataIdTag.Credits:
-                        metadataBlock = new RomMetadataCredits(payloadLength);
-                        break;
-                    case RomMetadataIdTag.ControllerBindings:
-                        metadataBlock = new RomMetadataControllerBindings(payloadLength);
-                        break;
-                    default:
-                        metadataBlock = new RomMetadataBlock(payloadLength, metadataBlockType);
-                        break;
-                }
-                metadataBlock._deserializeByteCount = (int)payloadLength + additionalBytesInPayloadLength + 1 + CrcByteCount + sizeof(RomMetadataIdTag);
-                metadataBlock.Deserialize(reader);
-
-                // Re-reading the block is more expensive than having a running CRC16 but it's easier to implement. :P
-                var numBytesInForCrc = metadataBlock._deserializeByteCount - CrcByteCount;
-                reader.BaseStream.Seek(-numBytesInForCrc, System.IO.SeekOrigin.Current);
-                var crc16 = INTV.Core.Utility.Crc16.OfBlock(reader.ReadBytes(numBytesInForCrc), INTV.Core.Utility.Crc16.InitialValue);
-                metadataBlock.Crc = (ushort)(((int)reader.ReadByte() << 8) | reader.ReadByte());
-
-                // TODO: Report error if CRCs do not match.
+                case RomMetadataIdTag.Title:
+                case RomMetadataIdTag.ShortTitle:
+                case RomMetadataIdTag.License:
+                case RomMetadataIdTag.Description:
+                case RomMetadataIdTag.Version:
+                case RomMetadataIdTag.UrlContactInfo:
+                    metadataBlock = new RomMetadataString(payloadLength, metadataBlockType);
+                    break;
+                case RomMetadataIdTag.ReleaseDate:
+                case RomMetadataIdTag.BuildDate:
+                    metadataBlock = new RomMetadataDate(payloadLength, metadataBlockType);
+                    break;
+                case RomMetadataIdTag.Features:
+                    metadataBlock = new RomMetadataFeatures(payloadLength);
+                    break;
+                case RomMetadataIdTag.Publisher:
+                    metadataBlock = new RomMetadataPublisher(payloadLength);
+                    break;
+                case RomMetadataIdTag.Credits:
+                    metadataBlock = new RomMetadataCredits(payloadLength);
+                    break;
+                case RomMetadataIdTag.ControllerBindings:
+                    metadataBlock = new RomMetadataControllerBindings(payloadLength);
+                    break;
+                default:
+                    metadataBlock = new RomMetadataBlock(payloadLength, metadataBlockType);
+                    break;
             }
+            metadataBlock._deserializeByteCount = (int)payloadLength + additionalBytesInPayloadLength + 1 + CrcByteCount + sizeof(RomMetadataIdTag);
+            metadataBlock.Deserialize(reader);
+
+            // Re-reading the block is more expensive than having a running CRC16 but it's easier to implement. :P
+            var numBytesInForCrc = metadataBlock._deserializeByteCount - CrcByteCount;
+            reader.BaseStream.Seek(-numBytesInForCrc, System.IO.SeekOrigin.Current);
+            var crc16 = INTV.Core.Utility.Crc16.OfBlock(reader.ReadBytes(numBytesInForCrc), INTV.Core.Utility.Crc16.InitialValue);
+            metadataBlock.Crc = (ushort)(((int)reader.ReadByte() << 8) | reader.ReadByte());
+
+            if (crc16 != metadataBlock.Crc)
+            {
+                ComplainAboutBadMetadata(metadataBlock);
+                metadataBlock.Type = RomMetadataIdTag.Ignore;
+            }
+
             return metadataBlock;
         }
 
@@ -196,6 +197,16 @@ namespace INTV.Core.Model
                 payloadLength |= partialLengthBits;
             }
             return payloadLength;
+        }
+
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        private static void ComplainAboutBadMetadata(RomMetadataBlock metadataBlock)
+        {
+            System.Diagnostics.Debug.WriteLine("CRC failed for metadata block of type: " + metadataBlock.Type);
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                System.Diagnostics.Debugger.Break();
+            }
         }
     }
 }

@@ -82,10 +82,13 @@ namespace INTV.Core.Model
         {
             get
             {
-                if (IsValid && (_crc == 0))
+                if (IsValid)
                 {
-                    bool changed;
-                    _crc = RefreshCrc(out changed);
+                    if (_crc == 0)
+                    {
+                        bool changed;
+                        _crc = RefreshCrc(out changed);
+                    }
                 }
                 return _crc;
             }
@@ -110,21 +113,27 @@ namespace INTV.Core.Model
                 var metadata = new List<RomMetadataBlock>();
                 try
                 {
-                    if (IsValid && StreamUtilities.FileExists(RomPath))
+                    if (IsValid)
                     {
-                        using (var file = StreamUtilities.OpenFileStream(RomPath))
+                        if (StreamUtilities.FileExists(RomPath))
                         {
-                            var offsetIntoFile = GetMetadataOffset(file);
-                            while ((offsetIntoFile < file.Length) && (file.Position < file.Length))
+                            using (var file = StreamUtilities.OpenFileStream(RomPath))
                             {
-                                var metadataBlock = RomMetadataBlock.Inflate(file);
-                                if (metadataBlock == null)
+                                var offsetIntoFile = GetMetadataOffset(file);
+                                while (offsetIntoFile < file.Length)
                                 {
-                                    break;
-                                }
-                                else
-                                {
-                                    metadata.Add(metadataBlock);
+                                    if (file.Position < file.Length)
+                                    {
+                                        var metadataBlock = RomMetadataBlock.Inflate(file);
+                                        if (metadataBlock != null)
+                                        {
+                                            metadata.Add(metadataBlock);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -149,7 +158,11 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override bool Validate()
         {
-            IsValid = !string.IsNullOrEmpty(RomPath) && StreamUtilities.FileExists(RomPath);
+            IsValid = !string.IsNullOrEmpty(RomPath);
+            if (IsValid)
+            {
+                IsValid = StreamUtilities.FileExists(RomPath);
+            }
             return IsValid;
         }
 
@@ -157,14 +170,17 @@ namespace INTV.Core.Model
         public override uint RefreshCrc(out bool changed)
         {
             var crc = _crc;
-            if (IsValid && StreamUtilities.FileExists(RomPath))
+            if (IsValid)
             {
-                uint dontCare;
-                _crc = GetCrcs(Format, RomPath, null, out dontCare);
-
-                if (crc == 0)
+                if (StreamUtilities.FileExists(RomPath))
                 {
-                    crc = _crc; // lazy initialization means on first read, we should never get a change
+                    uint dontCare;
+                    _crc = GetCrcs(Format, RomPath, null, out dontCare);
+
+                    if (crc == 0)
+                    {
+                        crc = _crc; // lazy initialization means on first read, we should never get a change
+                    }
                 }
             }
             changed = crc != _crc;
@@ -210,21 +226,24 @@ namespace INTV.Core.Model
             {
                 using (var file = StreamUtilities.OpenFileStream(filePath))
                 {
-                    if ((file != null) && (file.Length > 0))
+                    if (file != null)
                     {
-                        byte[] data = new byte[HeaderSize];
-                        var numBytesRead = file.Read(data, 0, HeaderSize);
-                        if (numBytesRead == HeaderSize)
+                        if (file.Length > 0)
                         {
-                            // Check the header (checks for both .rom and .cc3/.cc3 advanced formats)
-                            format = AutoBaudBytes.FirstOrDefault(a => a.Value == data[0]).Key;
-                            if (format != RomFormat.None)
+                            byte[] data = new byte[HeaderSize];
+                            var numBytesRead = file.Read(data, 0, HeaderSize);
+                            if (numBytesRead == HeaderSize)
                             {
-                                // If header appears to be valid, assume the entire ROM is valid. Full validation would require walking
-                                // all the segments -- essentially most of the ROM.
-                                if ((data[1] ^ data[2]) != 0xFF)
+                                // Check the header (checks for both .rom and .cc3/.cc3 advanced formats)
+                                format = AutoBaudBytes.FirstOrDefault(a => a.Value == data[0]).Key;
+                                if (format != RomFormat.None)
                                 {
-                                    format = RomFormat.None;
+                                    // If header appears to be valid, assume the entire ROM is valid. Full validation would require walking
+                                    // all the segments -- essentially most of the ROM.
+                                    if ((data[1] ^ data[2]) != 0xFF)
+                                    {
+                                        format = RomFormat.None;
+                                    }
                                 }
                             }
                         }
@@ -272,28 +291,31 @@ namespace INTV.Core.Model
         private int GetMetadataOffset(System.IO.Stream file)
         {
             var metadataOffset = 0;
-            if ((file != null) && (file.Length > 0))
+            if (file != null)
             {
-                file.Seek(RomSegmentCountOffset, System.IO.SeekOrigin.Begin);
-                var romSegmentsCount = file.ReadByte();
-
-                // Seek past the ROM segments.
-                file.Seek(InitialRomSegmentOffset, System.IO.SeekOrigin.Begin); // Seek to beginning of first segment
-                for (var i = 0; i < romSegmentsCount; ++i)
+                if (file.Length > 0)
                 {
-                    int segmentLow = (int)file.ReadByte() << 8; // Cast up to int for validity checking; each segment is on a 256 word boundary (in reality, a 2K word boundary)
-                    int segmentHigh = ((int)file.ReadByte() << 8) + MinimumSegmentWordCount; // Each segment must be at least 256 words
-                    if (segmentHigh < segmentLow)
-                    {
-                        throw new System.InvalidOperationException(Resources.Strings.RomFormatRom_InvalidFormat);
-                    }
-                    var segmentDataSize = (2 * (segmentHigh - segmentLow)) + Crc16Size; // segment size is in words, not bytes
-                    file.Seek(segmentDataSize, System.IO.SeekOrigin.Current); // skip past data and the CRC
-                }
+                    file.Seek(RomSegmentCountOffset, System.IO.SeekOrigin.Begin);
+                    var romSegmentsCount = file.ReadByte();
 
-                // Seek past the enable tables and the 16-bit CRC.
-                file.Seek(AccessTableSize + FineAddressRestrictionTableSize + Crc16Size, System.IO.SeekOrigin.Current);
-                metadataOffset = (int)file.Position;
+                    // Seek past the ROM segments.
+                    file.Seek(InitialRomSegmentOffset, System.IO.SeekOrigin.Begin); // Seek to beginning of first segment
+                    for (var i = 0; i < romSegmentsCount; ++i)
+                    {
+                        int segmentLow = (int)file.ReadByte() << 8; // Cast up to int for validity checking; each segment is on a 256 word boundary (in reality, a 2K word boundary)
+                        int segmentHigh = ((int)file.ReadByte() << 8) + MinimumSegmentWordCount; // Each segment must be at least 256 words
+                        if (segmentHigh < segmentLow)
+                        {
+                            throw new System.InvalidOperationException(Resources.Strings.RomFormatRom_InvalidFormat);
+                        }
+                        var segmentDataSize = (2 * (segmentHigh - segmentLow)) + Crc16Size; // segment size is in words, not bytes
+                        file.Seek(segmentDataSize, System.IO.SeekOrigin.Current); // skip past data and the CRC
+                    }
+
+                    // Seek past the enable tables and the 16-bit CRC.
+                    file.Seek(AccessTableSize + FineAddressRestrictionTableSize + Crc16Size, System.IO.SeekOrigin.Current);
+                    metadataOffset = (int)file.Position;
+                }
 
                 // Anything after this will be metadata...
             }

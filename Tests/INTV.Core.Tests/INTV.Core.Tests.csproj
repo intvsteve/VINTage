@@ -78,6 +78,7 @@
     <Compile Include="Model\RomInfoIndexTests.cs" />
     <Compile Include="Model\RomMetadataBlockTests.cs" />
     <Compile Include="Model\RomMetadataDateTests.cs" />
+    <Compile Include="Model\RomMetadataFeaturesTests.cs" />
     <Compile Include="Model\StatusMessageTests.cs" />
     <Compile Include="TestStorageAccess.cs" />
     <Compile Include="UnexpectedFileTypeExceptionTests.cs" />

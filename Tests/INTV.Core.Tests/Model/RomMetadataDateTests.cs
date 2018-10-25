@@ -18,8 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using INTV.Core.Model;
 using System;
+using INTV.Core.Model;
 using Xunit;
 
 namespace INTV.Core.Tests.Model

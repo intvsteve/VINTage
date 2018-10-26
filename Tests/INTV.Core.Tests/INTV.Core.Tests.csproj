@@ -77,6 +77,7 @@
     <Compile Include="Model\RomFormatTests.cs" />
     <Compile Include="Model\RomInfoIndexTests.cs" />
     <Compile Include="Model\RomMetadataBlockTests.cs" />
+    <Compile Include="Model\RomMetadataControllerBindingsTests.cs" />
     <Compile Include="Model\RomMetadataDateTests.cs" />
     <Compile Include="Model\RomMetadataFeaturesTests.cs" />
     <Compile Include="Model\RomMetadataPublisherTests.cs" />

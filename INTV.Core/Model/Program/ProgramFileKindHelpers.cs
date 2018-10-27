@@ -212,14 +212,17 @@ namespace INTV.Core.Model.Program
         public static bool HasCustomRomExtension(this ProgramFileKind fileKind, string filePath)
         {
             var hasCustomRomExtension = false;
-            if ((filePath != null) && (fileKind == ProgramFileKind.Rom))
+            if (filePath != null)
             {
-                var extension = GetExtension(filePath);
-                if (extension == null)
+                if (fileKind == ProgramFileKind.Rom)
                 {
-                    extension = string.Empty;
+                    var extension = GetExtension(filePath);
+                    if (extension == null)
+                    {
+                        extension = string.Empty;
+                    }
+                    hasCustomRomExtension = _customRomExtensions.Any(e => e.Equals(extension, System.StringComparison.OrdinalIgnoreCase));
                 }
-                hasCustomRomExtension = _customRomExtensions.Any(e => e.Equals(extension, System.StringComparison.OrdinalIgnoreCase));
             }
             return hasCustomRomExtension;
         }

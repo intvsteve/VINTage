@@ -19,12 +19,9 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
-using INTV.Core.Utility;
 using Xunit;
 
 namespace INTV.Core.Tests.Model
@@ -240,23 +237,8 @@ namespace INTV.Core.Tests.Model
             Assert.Empty(metadata.AdditionalInformation.Except(expectedAdditionalInformation, StringComparer.OrdinalIgnoreCase));
         }
 
-        private class RomFormatRomTestStorageAccess : TestStorageAccess
+        private class RomFormatRomTestStorageAccess : CachedResourceStorageAccess<RomFormatRomTestStorageAccess>
         {
-            private static readonly List<Stream> TestRomStreamsCache = new List<Stream>();
-
-            public static void Initialize(string testRomResourcePath)
-            {
-                var storageAcces = new RomFormatRomTestStorageAccess();
-                StreamUtilities.Initialize(storageAcces);
-                var assembly = typeof(RomFormatRomTestStorageAccess).Assembly;
-                var resource = assembly.GetName().Name + testRomResourcePath.Replace("/", ".");
-                using (var resourceStream = assembly.GetManifestResourceStream(resource))
-                {
-                    var testRomStream = storageAcces.Open(testRomResourcePath);
-                    resourceStream.CopyTo(testRomStream);
-                    TestRomStreamsCache.Add(testRomStream);
-                }
-            }
         }
     }
 }

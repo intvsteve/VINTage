@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model
 {
@@ -51,7 +52,8 @@ namespace INTV.Core.Model
             {
                 month = reader.ReadByte();
                 --remainingPayload;
-                if (!dateTimeFlags.HasFlag(MetadataDateTimeFlags.Year) || (month < 1) || (month > 12))
+                var monthRange = new Range<int>(1, 12);
+                if (!monthRange.IsValueInRange(month))
                 {
                     month = MetadataDateTime.DefaultMonth;
                 }
@@ -66,7 +68,8 @@ namespace INTV.Core.Model
             {
                 day = reader.ReadByte();
                 --remainingPayload;
-                if (!dateTimeFlags.HasFlag(MetadataDateTimeFlags.Month) || (day < 1) || (day > DateTime.DaysInMonth(year, month)))
+                var dayRange = new Range<int>(1, DateTime.DaysInMonth(year, month));
+                if (!dateTimeFlags.HasFlag(MetadataDateTimeFlags.Month) || !dayRange.IsValueInRange(day))
                 {
                     day = MetadataDateTime.DefaultDay;
                 }
@@ -81,7 +84,8 @@ namespace INTV.Core.Model
             {
                 hour = reader.ReadByte();
                 --remainingPayload;
-                if (!dateTimeFlags.HasFlag(MetadataDateTimeFlags.Day) || (hour > 23))
+                var hourRange = new Range<int>(0, 23);
+                if (!dateTimeFlags.HasFlag(MetadataDateTimeFlags.Day) || !hourRange.IsValueInRange(hour))
                 {
                     hour = MetadataDateTime.DefaultHour;
                 }
@@ -96,7 +100,8 @@ namespace INTV.Core.Model
             {
                 minute = reader.ReadByte();
                 --remainingPayload;
-                if (!dateTimeFlags.HasFlag(MetadataDateTimeFlags.Hour) || (minute > 59))
+                var minuteRange = new Range<int>(0, 59);
+                if (!dateTimeFlags.HasFlag(MetadataDateTimeFlags.Hour) || !minuteRange.IsValueInRange(minute))
                 {
                     minute = MetadataDateTime.DefaultMinute;
                 }
@@ -131,7 +136,8 @@ namespace INTV.Core.Model
             {
                 utcOffsetHours = reader.ReadSByte();
                 --remainingPayload;
-                if (!dateTimeFlags.HasFlag(MetadataDateTimeFlags.Second) || (utcOffsetHours < -12) || (utcOffsetHours > 12))
+                var offsetHoursRange = new Range<int>(-12, 12);
+                if (!dateTimeFlags.HasFlag(MetadataDateTimeFlags.Second) || !offsetHoursRange.IsValueInRange(utcOffsetHours))
                 {
                     utcOffsetHours = MetadataDateTime.DefaultUtcOffsetHours;
                 }

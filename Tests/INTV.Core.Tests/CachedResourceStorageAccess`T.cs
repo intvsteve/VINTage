@@ -37,31 +37,32 @@ namespace INTV.Core.Tests
         /// </summary>
         /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
         /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
-        public static void Initialize(string resourcePath, params string[] additionalResourcePaths)
+        /// <returns>The instance of the storage access that was created.</returns>
+        public static T Initialize(string resourcePath, params string[] additionalResourcePaths)
         {
             var storageAccess = new T();
             StreamUtilities.Initialize(storageAccess);
-            var assembly = typeof(T).Assembly;
-            var resource = assembly.GetName().Name + resourcePath.Replace("/", ".");
-            using (var resourceStream = assembly.GetManifestResourceStream(resource))
-            {
-                var stream = storageAccess.Open(resourcePath);
-                resourceStream.CopyTo(stream);
-                storageAccess._streamsCache.Add(stream);
-            }
+            storageAccess.AddCachedResource(resourcePath);
 
             if (additionalResourcePaths != null)
             {
                 foreach (var additionalResourcePath in additionalResourcePaths)
                 {
-                    resource = assembly.GetName().Name + additionalResourcePath.Replace("/", ".");
-                    using (var resourceStream = assembly.GetManifestResourceStream(resource))
-                    {
-                        var stream = storageAccess.Open(additionalResourcePath);
-                        resourceStream.CopyTo(stream);
-                        storageAccess._streamsCache.Add(stream);
-                    }
+                    storageAccess.AddCachedResource(additionalResourcePath);
                 }
+            }
+            return storageAccess;
+        }
+
+        private void AddCachedResource(string resourcePath)
+        {
+            var assembly = typeof(T).Assembly;
+            var resource = assembly.GetName().Name + resourcePath.Replace("/", ".");
+            using (var resourceStream = assembly.GetManifestResourceStream(resource))
+            {
+                var stream = Open(resourcePath);
+                resourceStream.CopyTo(stream);
+                _streamsCache.Add(stream);
             }
         }
     }

@@ -63,6 +63,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="CachedResourceStorageAccess`T.cs" />
+    <Compile Include="Model\BinFormatRomTests.cs" />
     <Compile Include="Model\CfgVarMetadataIdTagHelpersTests.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifierTests.cs" />
     <Compile Include="ComponentModel\RelayCommandBaseTests.cs" />
@@ -117,6 +119,11 @@
     <EmbeddedResource Include="Resources\tagalong_metadata.luigi" />
     <EmbeddedResource Include="Resources\tagalong_metadata.rom" />
     <EmbeddedResource Include="Resources\tagalong_metadata_badcrc.rom" />
+    <EmbeddedResource Include="Resources\tagalong" />
+    <EmbeddedResource Include="Resources\tagalong.int" />
+    <EmbeddedResource Include="Resources\tagalong.itv" />
+    <EmbeddedResource Include="Resources\tagalong_metadata_corrupt.cfg" />
+    <EmbeddedResource Include="Resources\tagalong_metadata_bad.cfg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\INTV.Core\INTV.Core.pcl.csproj">

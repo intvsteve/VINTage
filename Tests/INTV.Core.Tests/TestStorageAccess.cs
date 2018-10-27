@@ -101,6 +101,17 @@ namespace INTV.Core.Tests
             return TestStorageStream.GetLastWriteTimeUtc(storageLocation);
         }
 
+        /// <summary>
+        /// Introduces a corruption into the file system by setting an existing location's data to <c>null</c>.
+        /// </summary>
+        /// <param name="storageLocation">The location in the storage access to corrupt.</param>
+        /// <returns><c>true</c> if the corruption was successfully introduced.</returns>
+        public bool IntroduceCorruption(string storageLocation)
+        {
+            var mischiefManaged = TestStorageStream.IntroduceCorruption(storageLocation);
+            return mischiefManaged;
+        }
+
         private class TestStorageStream : MemoryStream
         {
             private static readonly Lazy<ConcurrentDictionary<string, TestStorageStream>> FakeFileSystem = new Lazy<ConcurrentDictionary<string, TestStorageStream>>();
@@ -219,6 +230,14 @@ namespace INTV.Core.Tests
                     stream.Location = newLocation;
                     FileSystem[newLocation] = stream;
                 }
+            }
+
+            public static bool IntroduceCorruption(string location)
+            {
+                TestStorageStream stream;
+                FileSystem.TryGetValue(location, out stream);
+                var mischiefManaged = FileSystem.TryUpdate(location, null, stream);
+                return mischiefManaged;
             }
 
             /// <inheritdoc />

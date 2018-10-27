@@ -96,11 +96,14 @@ namespace INTV.Core.Model
                 var metadata = Enumerable.Empty<CfgVarMetadataBlock>();
                 try
                 {
-                    if (IsValid && StreamUtilities.FileExists(ConfigPath))
+                    if (IsValid)
                     {
-                        using (var file = StreamUtilities.OpenFileStream(ConfigPath))
+                        if (StreamUtilities.FileExists(ConfigPath))
                         {
-                            metadata = CfgVarMetadataBlock.InflateAll(file);
+                            using (var file = StreamUtilities.OpenFileStream(ConfigPath))
+                            {
+                                metadata = CfgVarMetadataBlock.InflateAll(file);
+                            }
                         }
                     }
                 }
@@ -123,10 +126,17 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override bool Validate()
         {
-            var isValid = !string.IsNullOrEmpty(RomPath) && StreamUtilities.FileExists(RomPath);
-            if (isValid && !string.IsNullOrEmpty(ConfigPath))
+            var isValid = !string.IsNullOrEmpty(RomPath);
+            if (isValid)
             {
-                isValid = StreamUtilities.FileExists(ConfigPath);
+                isValid = StreamUtilities.FileExists(RomPath);
+            }
+            if (isValid)
+            {
+                if (!string.IsNullOrEmpty(ConfigPath))
+                {
+                    isValid = StreamUtilities.FileExists(ConfigPath);
+                }
             }
             IsValid = isValid;
             return IsValid;
@@ -136,13 +146,16 @@ namespace INTV.Core.Model
         public override uint RefreshCrc(out bool changed)
         {
             var crc = _crc;
-            if (IsValid && StreamUtilities.FileExists(RomPath))
+            if (IsValid)
             {
-                uint dontCare;
-                _crc = GetCrcs(RomPath, null, out dontCare);
-                if (crc == 0)
+                if (StreamUtilities.FileExists(RomPath))
                 {
-                    crc = _crc; // lazy initialization means on first read, we should never get a change
+                    uint dontCare;
+                    _crc = GetCrcs(RomPath, null, out dontCare);
+                    if (crc == 0)
+                    {
+                        crc = _crc; // lazy initialization means on first read, we should never get a change
+                    }
                 }
             }
             changed = crc != _crc;
@@ -153,12 +166,18 @@ namespace INTV.Core.Model
         public override uint RefreshCfgCrc(out bool changed)
         {
             var cfgCrc = _cfgCrc;
-            if (IsValid && !string.IsNullOrEmpty(ConfigPath) && StreamUtilities.FileExists(ConfigPath))
+            if (IsValid)
             {
-                GetCrcs(null, ConfigPath, out _cfgCrc);
-                if (cfgCrc == 0)
+                if (!string.IsNullOrEmpty(ConfigPath))
                 {
-                    cfgCrc = _cfgCrc; // lazy initialization means on first read, we should never get a change
+                    if (StreamUtilities.FileExists(ConfigPath))
+                    {
+                        GetCrcs(null, ConfigPath, out _cfgCrc);
+                        if (cfgCrc == 0)
+                        {
+                            cfgCrc = _cfgCrc; // lazy initialization means on first read, we should never get a change
+                        }
+                    }
                 }
             }
             changed = cfgCrc != _cfgCrc;
@@ -216,16 +235,11 @@ namespace INTV.Core.Model
             {
                 using (System.IO.Stream file = StreamUtilities.OpenFileStream(filePath))
                 {
-                    // any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason, these all seem to be a multiple of
-                    // 8KB + 1 byte in size. So allow those through, too.
                     var fileSizeCheck = file != null;
-                    if (fileSizeCheck && ProgramFileKind.Rom.HasCustomRomExtension(filePath))
+                    if (fileSizeCheck)
                     {
-                        fileSizeCheck = (file.Length >= MinRomSize) && ((file.Length % MinRomSize) == 0);
-                    }
-                    else if (fileSizeCheck)
-                    {
-                        fileSizeCheck = (file.Length >= MinRomSize) && (((file.Length % 2) == 0) || (((file.Length - 1) % MinRomSize) == 0));
+                        var allowOddRomFileSize = !ProgramFileKind.Rom.HasCustomRomExtension(filePath);
+                        fileSizeCheck = IsValidFileSize(file, allowOddRomFileSize);
                     }
                     if (fileSizeCheck)
                     {
@@ -257,6 +271,29 @@ namespace INTV.Core.Model
                 cfgCrc = Crc32.OfFile(cfgPath);
             }
             return romCrc;
+        }
+
+        private static bool IsValidFileSize(System.IO.Stream file, bool allowOddRomFileSize)
+        {
+            // Any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason,
+            // these all seem to be a multiple of 8KB + 1 byte in size. Allow those through, too.
+            var fileSizeCheck = file.Length >= MinRomSize;
+            if (fileSizeCheck)
+            {
+                if (allowOddRomFileSize)
+                {
+                    fileSizeCheck = (file.Length % 2) == 0;
+                    if (!fileSizeCheck)
+                    {
+                        fileSizeCheck = ((file.Length - 1) % MinRomSize) == 0;
+                    }
+                }
+                else
+                {
+                    fileSizeCheck = (file.Length % MinRomSize) == 0;
+                }
+            }
+            return fileSizeCheck;
         }
     }
 }

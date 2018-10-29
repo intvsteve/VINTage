@@ -591,11 +591,14 @@ namespace INTV.Core.Tests.Utility
         public void WeakKeyDictionaryWithData_CopyToArrayWithIndexResultingInWritePastEndOfArray_ThrowsArgumentException()
         {
             const int NumValuesToAdd = 6;
+            var keeperArounder = new List<KeyValuePair<string, int>>();
             var weakKeyDictionary = new WeakKeyDictionary<string, int>();
             ICollection dictionary = weakKeyDictionary;
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                weakKeyDictionary.Add(new KeyValuePair<string, int>(i.ToString(), i));
+                var data = new KeyValuePair<string, int>(i.ToString(), i);
+                keeperArounder.Add(data);
+                weakKeyDictionary.Add(data);
             }
             Assert.Equal(NumValuesToAdd, weakKeyDictionary.Count);
 

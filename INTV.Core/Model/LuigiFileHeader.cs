@@ -420,7 +420,7 @@ namespace INTV.Core.Model
                         }
                     }
                 }
-                catch (INTV.Core.UnexpectedFileTypeException)
+                catch (Exception)
                 {
                     // Just in case the header looks OK, but turns out to be bad.
                 }

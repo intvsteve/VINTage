@@ -1,5 +1,5 @@
 ﻿// <copyright file="XmlRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,7 +23,7 @@ namespace INTV.Core.Model
     /// <summary>
     /// This class represents a ROM described by an XML file, which is identified by one or two separate file system paths.
     /// </summary>
-    /// <remarks>This implementation of IRom will ultimately resolve into either a BinFormatRom, a RomFormatRom, or null.</remarks>
+    /// <remarks>This implementation of IRom will ultimately resolve into either a BinFormatRom, a RomFormatRom, a LuigiFormatRom, or null.</remarks>
     internal class XmlRom : Rom
     {
         #region Constructors

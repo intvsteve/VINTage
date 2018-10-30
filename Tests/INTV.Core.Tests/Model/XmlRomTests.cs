@@ -194,6 +194,24 @@ namespace INTV.Core.Tests.Model
         }
 
         [Fact]
+        public void XmlRom_SetToValidLuigiPath_BecomesValid()
+        {
+            XmlFormatRomTestStorageAccess.Initialize(TestLuigiFromBinPath);
+            var rom = new XmlRom();
+
+            rom.UpdateRomPath(TestLuigiFromBinPath);
+
+            Assert.True(rom.IsValid);
+            Assert.NotNull(rom.ResolvedRom);
+            Assert.Equal(RomFormat.Luigi, rom.Format);
+            Assert.Equal(TestLuigiFromBinPath, rom.RomPath);
+            Assert.Equal(null, rom.ConfigPath);
+            Assert.Equal(TestBinCrc, rom.Crc); // LUIGI should return original .BIN ROM's CRC
+            Assert.Equal(TestCfgCrc, rom.CfgCrc); // LUIGI should return original .CFG file's CRC
+            Assert.True(rom.Validate());
+        }
+
+        [Fact]
         public void XmlRom_SetToValidRomPathChangeToAnotherValidPath_RemainsValid()
         {
             XmlFormatRomTestStorageAccess.Initialize(TestRomPath, TestRomMetadataPath);

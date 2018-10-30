@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using INTV.Core.Utility;
@@ -38,17 +39,33 @@ namespace INTV.TestHelpers.Core.Utility
         /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
         /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
         /// <returns>The instance of the storage access that was created.</returns>
+        /// <remarks>This assumes the resources are located in the same assembly as the type parameter <typeparamref name="T"/>.</remarks>
         public static T Initialize(string resourcePath, params string[] additionalResourcePaths)
+        {
+            return Initialize(null, resourcePath, additionalResourcePaths);
+        }
+
+        /// <summary>
+        /// Initializes the storage manager and registers it for use, caching the given resources as files.
+        /// </summary>
+        /// <param name="typeForLocatingResources">If not <c>null</c>, the assembly containing the given type will be used to
+        /// locate the resources named by the <paramref name="resourcePath"/> and <paramref name="additionalResourcePaths"/> arguments.
+        /// Otherwise, the assembly that implements the type specified by the type parameter <typeparamref name="T"/> will be used
+        /// to locate the resources.</param>
+        /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
+        /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
+        /// <returns>The instance of the storage access that was created.</returns>
+        public static T Initialize(Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
         {
             var storageAccess = new T();
             StreamUtilities.Initialize(storageAccess);
-            storageAccess.AddCachedResource(resourcePath, resourcePath);
+            storageAccess.AddCachedResource(resourcePath, resourcePath, typeForLocatingResources);
 
             if (additionalResourcePaths != null)
             {
                 foreach (var additionalResourcePath in additionalResourcePaths)
                 {
-                    storageAccess.AddCachedResource(additionalResourcePath, additionalResourcePath);
+                    storageAccess.AddCachedResource(additionalResourcePath, additionalResourcePath, typeForLocatingResources);
                 }
             }
             return storageAccess;
@@ -59,16 +76,23 @@ namespace INTV.TestHelpers.Core.Utility
         /// </summary>
         /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
         /// <param name="newPath">The new path to use for the modified copy.</param>
-        public void CreateCopyOfResource(string resourcePath, string newPath)
+        /// <param name="typeForLocatingResource">If provided, the assembly containing the given type will be used to locate the
+        /// resource named by the <paramref name="resourcePath"/> argument. Otherwise, the assembly that implements the type
+        /// specified by the type parameter <typeparamref name="T"/> will be used to locate the resource.</param>
+        public void CreateCopyOfResource(string resourcePath, string newPath, Type typeForLocatingResource = null)
         {
-            AddCachedResource(resourcePath, newPath);
+            AddCachedResource(resourcePath, newPath, typeForLocatingResource);
         }
 
-        private void AddCachedResource(string resourcePath, string destinationPath)
+        private void AddCachedResource(string resourcePath, string destinationPath, Type typeForLocatingResource)
         {
             if (!string.IsNullOrEmpty(resourcePath))
             {
-                var assembly = typeof(T).Assembly;
+                if (typeForLocatingResource == null)
+                {
+                    typeForLocatingResource = typeof(T);
+                }
+                var assembly = typeForLocatingResource.Assembly;
                 var resource = assembly.GetName().Name + resourcePath.Replace("/", ".");
                 using (var resourceStream = assembly.GetManifestResourceStream(resource))
                 {

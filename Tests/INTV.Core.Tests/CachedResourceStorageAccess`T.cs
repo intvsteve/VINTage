@@ -42,27 +42,40 @@ namespace INTV.Core.Tests
         {
             var storageAccess = new T();
             StreamUtilities.Initialize(storageAccess);
-            storageAccess.AddCachedResource(resourcePath);
+            storageAccess.AddCachedResource(resourcePath, resourcePath);
 
             if (additionalResourcePaths != null)
             {
                 foreach (var additionalResourcePath in additionalResourcePaths)
                 {
-                    storageAccess.AddCachedResource(additionalResourcePath);
+                    storageAccess.AddCachedResource(additionalResourcePath, additionalResourcePath);
                 }
             }
             return storageAccess;
         }
 
-        private void AddCachedResource(string resourcePath)
+        /// <summary>
+        /// Create a copy of a resource, appending additional data to it.
+        /// </summary>
+        /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
+        /// <param name="newPath">The new path to use for the modified copy.</param>
+        public void CreateCopyOfResource(string resourcePath, string newPath)
         {
-            var assembly = typeof(T).Assembly;
-            var resource = assembly.GetName().Name + resourcePath.Replace("/", ".");
-            using (var resourceStream = assembly.GetManifestResourceStream(resource))
+            AddCachedResource(resourcePath, newPath);
+        }
+
+        private void AddCachedResource(string resourcePath, string destinationPath)
+        {
+            if (!string.IsNullOrEmpty(resourcePath))
             {
-                var stream = Open(resourcePath);
-                resourceStream.CopyTo(stream);
-                _streamsCache.Add(stream);
+                var assembly = typeof(T).Assembly;
+                var resource = assembly.GetName().Name + resourcePath.Replace("/", ".");
+                using (var resourceStream = assembly.GetManifestResourceStream(resource))
+                {
+                    var stream = Open(destinationPath);
+                    resourceStream.CopyTo(stream);
+                    _streamsCache.Add(stream);
+                }
             }
         }
     }

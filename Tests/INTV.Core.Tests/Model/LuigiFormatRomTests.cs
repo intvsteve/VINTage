@@ -21,6 +21,7 @@
 using System;
 using System.Linq;
 using INTV.Core.Model;
+using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
 namespace INTV.Core.Tests.Model

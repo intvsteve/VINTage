@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using INTV.Core.Utility;
 
-namespace INTV.Core.Tests
+namespace INTV.TestHelpers.Core.Utility
 {
     /// <summary>
     /// Specialized implementation of <see cref="TestStorageAccess"/> for implementing various ROM format file tests.

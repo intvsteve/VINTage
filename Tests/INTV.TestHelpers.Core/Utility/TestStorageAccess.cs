@@ -26,7 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using INTV.Core.Utility;
 
-namespace INTV.Core.Tests
+namespace INTV.TestHelpers.Core.Utility
 {
     /// <summary>
     /// Implements <see cref="IStorageAccess"/> for testing purposes.

@@ -22,6 +22,7 @@ using System;
 using System.IO;
 using System.Threading;
 using INTV.Core.Utility;
+using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
 namespace INTV.Core.Tests.Utility

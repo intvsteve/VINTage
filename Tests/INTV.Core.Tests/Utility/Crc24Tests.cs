@@ -20,6 +20,7 @@
 
 using System.IO;
 using INTV.Core.Utility;
+using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
 namespace INTV.Core.Tests.Utility

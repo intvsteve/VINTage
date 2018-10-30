@@ -63,7 +63,6 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="CachedResourceStorageAccess`T.cs" />
     <Compile Include="Model\BinFormatRomTests.cs" />
     <Compile Include="Model\CfgVarMetadataIdTagHelpersTests.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifierTests.cs" />
@@ -87,7 +86,6 @@
     <Compile Include="Model\RomMetadataPublisherTests.cs" />
     <Compile Include="Model\StatusMessageTests.cs" />
     <Compile Include="Model\XmlRomTests.cs" />
-    <Compile Include="TestStorageAccess.cs" />
     <Compile Include="UnexpectedFileTypeExceptionTests.cs" />
     <Compile Include="Utility\BinaryReaderTests.cs" />
     <Compile Include="Utility\BinaryWriterTests.cs" />

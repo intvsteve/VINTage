@@ -50,6 +50,8 @@ namespace INTV.Core.Model
         public override RomFormat Format
         {
             get { return IsValid ? ResolvedRom.Format : RomFormat.None; }
+
+            [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             protected set { }
         }
 

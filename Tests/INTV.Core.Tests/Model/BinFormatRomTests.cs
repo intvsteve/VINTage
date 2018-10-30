@@ -38,7 +38,7 @@ namespace INTV.Core.Tests.Model
         private const string TestCfgMetadataBadPath = "/Resources/tagalong_metadata_bad.cfg";
         private const string TestCorruptCfgMetadataPath = "/Resources/tagalong_metadata_corrupt.cfg";
 
-        private const uint TestRomCrc = 0xECBA3AF7;
+        private const uint TestBinCrc = 0xECBA3AF7;
         private const uint TestCfgCrc = 0x06B5EA3E;
 
         [Fact]
@@ -106,7 +106,7 @@ namespace INTV.Core.Tests.Model
             BinFormatRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
             var rom = Rom.Create(TestBinPath, TestCfgPath);
 
-            Assert.Equal(TestRomCrc, rom.Crc);
+            Assert.Equal(TestBinCrc, rom.Crc);
             Assert.Equal(TestCfgCrc, rom.CfgCrc);
         }
 

@@ -144,6 +144,10 @@
       <Project>{b90d8e04-5f83-45d7-bd39-0198a7c7c325}</Project>
       <Name>INTV.Core.pcl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\INTV.TestHelpers.Core\INTV.TestHelpers.Core.csproj">
+      <Project>{9b68a72c-43dc-4fa9-95d3-669f779cae37}</Project>
+      <Name>INTV.TestHelpers.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Choose>

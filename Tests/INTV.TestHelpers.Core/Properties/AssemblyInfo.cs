@@ -1,5 +1,5 @@
 ﻿// <copyright file="AssemblyInfo.cs" company="INTV Funhouse">
-// Copyright (c) 2013-2018 All Rights Reserved
+// Copyright (c) 2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,31 +19,28 @@
 // </copyright>
 
 using System.Reflection;
-using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-[assembly: InternalsVisibleTo("INTV.Core.Tests")]
-[assembly: InternalsVisibleTo("INTV.TestHelpers.Core")]
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Core Intellivision®-related interfaces")]
-[assembly: AssemblyDescription("This class library defines models describing Intellivision® ROMs and hardware, as well as other core platform abstraction services.")]
+[assembly: AssemblyTitle("INTV.TestHelpers.Core")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("INTVFunhouse")]
-[assembly: AssemblyProduct("VINTage")]
-[assembly: AssemblyCopyright("Copyright © INTV Funhouse 2013-" + INTV.VersionInfo.CurrentCopyrightYear)]
-[assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. Steve Orth and INTV Funhouse are not affiliated with Intellivision Productions.")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("INTV.TestHelpers.Core")]
+[assembly: AssemblyCopyright("Copyright © 2018")]
+[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-////[assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.AuthorKey, "Steven A. Orth")]
-[assembly: NeutralResourcesLanguage("en")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("fd0829c4-e890-49ac-95a3-0918c320a0b5")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -56,4 +53,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion(INTV.VersionInfo.FullVersionString)]
+[assembly: AssemblyFileVersion("1.0.0.0")]

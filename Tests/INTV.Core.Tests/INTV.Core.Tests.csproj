@@ -85,6 +85,7 @@
     <Compile Include="Model\RomMetadataDateTests.cs" />
     <Compile Include="Model\RomMetadataFeaturesTests.cs" />
     <Compile Include="Model\RomMetadataPublisherTests.cs" />
+    <Compile Include="Model\RomTests.cs" />
     <Compile Include="Model\StatusMessageTests.cs" />
     <Compile Include="Model\XmlRomTests.cs" />
     <Compile Include="UnexpectedFileTypeExceptionTests.cs" />

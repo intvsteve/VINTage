@@ -189,19 +189,21 @@ namespace INTV.Core.Tests.Model
             Assert.Throws<NullReferenceException>(() => LuigiFormatRom.CheckFormat(TestLuigiBadPath));
         }
 
-        [Fact]
-        public void LuigiFormatRom_GetRomCompareIgnoreRangesExcludingFeatureBits_VerifyRangesAreExcluded()
+        [Theory]
+        [InlineData(true, 3)]
+        [InlineData(false, 2)]
+        public void LuigiFormatRom_GetComparisonIgnoreRanges_ReturnsCorrectNumberOfExcludeRanges(bool excludeFeatureBits, int expectedNumberOfExcludeRanges)
         {
             LuigiFormatRomTestStorageAccess.Initialize(TestLuigiFromBinPath);
             var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(TestLuigiFromBinPath, null));
 
             // Three ranges of values are ignored in this case:
-            // 1. Feature flags
+            // 1. Feature flags (depends on value of excludeFeatureBits)
             // 2. The UID (which for this specific test ROM is the CRC32 of the .BIN and the CRC32 of the .CFG of the original ROM
             // 3. The CRC of the header
-            var rangesToIgnore = rom.GetComparisonIgnoreRanges(excludeFeatureBits: true);
+            var rangesToIgnore = rom.GetComparisonIgnoreRanges(excludeFeatureBits);
 
-            Assert.Equal(3, rangesToIgnore.Count());
+            Assert.Equal(expectedNumberOfExcludeRanges, rangesToIgnore.Count());
         }
 
         private class LuigiFormatRomTestStorageAccess : CachedResourceStorageAccess<LuigiFormatRomTestStorageAccess>

@@ -41,7 +41,40 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\CachedResourceStorageAccess`T.cs" />
+    <Compile Include="Utility\TestRomResources.cs" />
     <Compile Include="Utility\TestStorageAccess.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\tagalong.bin" />
+    <EmbeddedResource Include="Resources\tagalong.cfg" />
+    <EmbeddedResource Include="Resources\tagalong.luigi" />
+    <EmbeddedResource Include="Resources\tagalong.rom" />
+    <EmbeddedResource Include="Resources\tagalong.cc3" />
+    <EmbeddedResource Include="Resources\tagalong.adv" />
+    <EmbeddedResource Include="Resources\tagalong.bad" />
+    <EmbeddedResource Include="Resources\tagalong_corrupt.rom" />
+    <EmbeddedResource Include="Resources\tagalong_metadata.bin" />
+    <EmbeddedResource Include="Resources\tagalong_metadata.cfg" />
+    <EmbeddedResource Include="Resources\tagalong_metadata.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_metadata.rom" />
+    <EmbeddedResource Include="Resources\tagalong_metadata_badcrc.rom" />
+    <EmbeddedResource Include="Resources\tagalong" />
+    <EmbeddedResource Include="Resources\tagalong.int" />
+    <EmbeddedResource Include="Resources\tagalong.itv" />
+    <EmbeddedResource Include="Resources\tagalong_metadata_corrupt.cfg" />
+    <EmbeddedResource Include="Resources\tagalong_metadata_bad.cfg" />
+    <EmbeddedResource Include="Resources\tagalong_header_bad_crc.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_bad.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_from_rom.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_zero_crc.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_any.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_metadata_any.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_dev0.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_dev1.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_metadata_dev0.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_metadata_dev1.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_from_future.luigi" />
+    <EmbeddedResource Include="Resources\tagalong_v0.luigi" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\INTV.Core\INTV.Core.pcl.csproj">

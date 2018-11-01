@@ -39,7 +39,7 @@ namespace INTV.TestHelpers.Core.Utility
         /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
         /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
         /// <returns>The instance of the storage access that was created.</returns>
-        /// <remarks>This assumes the resources are located in the same assembly as the type parameter <typeparamref name="T"/>.</remarks>
+        /// <remarks>This assumes the resources are located in the same assembly as the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/>.</remarks>
         public static T Initialize(string resourcePath, params string[] additionalResourcePaths)
         {
             return Initialize(null, resourcePath, additionalResourcePaths);
@@ -50,7 +50,7 @@ namespace INTV.TestHelpers.Core.Utility
         /// </summary>
         /// <param name="typeForLocatingResources">If not <c>null</c>, the assembly containing the given type will be used to
         /// locate the resources named by the <paramref name="resourcePath"/> and <paramref name="additionalResourcePaths"/> arguments.
-        /// Otherwise, the assembly that implements the type specified by the type parameter <typeparamref name="T"/> will be used
+        /// Otherwise, the assembly that implements the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/> will be used
         /// to locate the resources.</param>
         /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
         /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
@@ -78,7 +78,7 @@ namespace INTV.TestHelpers.Core.Utility
         /// <param name="newPath">The new path to use for the modified copy.</param>
         /// <param name="typeForLocatingResource">If provided, the assembly containing the given type will be used to locate the
         /// resource named by the <paramref name="resourcePath"/> argument. Otherwise, the assembly that implements the type
-        /// specified by the type parameter <typeparamref name="T"/> will be used to locate the resource.</param>
+        /// <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/> will be used to locate the resource.</param>
         public void CreateCopyOfResource(string resourcePath, string newPath, Type typeForLocatingResource = null)
         {
             AddCachedResource(resourcePath, newPath, typeForLocatingResource);
@@ -90,7 +90,7 @@ namespace INTV.TestHelpers.Core.Utility
             {
                 if (typeForLocatingResource == null)
                 {
-                    typeForLocatingResource = typeof(T);
+                    typeForLocatingResource = typeof(TestRomResources);
                 }
                 var assembly = typeForLocatingResource.Assembly;
                 var resource = assembly.GetName().Name + resourcePath.Replace("/", ".");

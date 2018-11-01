@@ -28,19 +28,6 @@ namespace INTV.Core.Tests.Model
 {
     public class XmlRomTests
     {
-        private const string TestRomPath = "/Resources/tagalong.rom";
-        private const string TestRomMetadataPath = "/Resources/tagalong_metadata.rom";
-        private const string TestBinPath = "/Resources/tagalong.bin";
-        private const string TestCfgPath = "/Resources/tagalong.cfg";
-        private const string TestCfgMetadataPath = "/Resources/tagalong_metadata.cfg";
-        private const string TestLuigiFromBinPath = "/Resources/tagalong.luigi";
-
-        private const uint TestRomCrc = 0xFEF0BD41;
-        private const uint TestRomMetadataCrc = 0xC03B6B9E;
-        private const uint TestBinCrc = 0xECBA3AF7;
-        private const uint TestCfgCrc = 0x06B5EA3E;
-        private const uint TestMetadataCfgCrc = 0x68C3401C;
-
         [Fact]
         public void XmlRom_CreateUninitializedRom_IsNotValid()
         {
@@ -145,7 +132,7 @@ namespace INTV.Core.Tests.Model
             XmlFormatRomTestStorageAccess.Initialize(null);
             var rom = new XmlRom();
 
-            rom.UpdateRomPath("/oops/" + TestRomPath);
+            rom.UpdateRomPath("/oopsie" + TestRomResources.TestRomPath);
 
             Assert.False(rom.IsValid);
             Assert.Null(rom.ResolvedRom);
@@ -169,7 +156,7 @@ namespace INTV.Core.Tests.Model
             XmlFormatRomTestStorageAccess.Initialize(null);
             var rom = new XmlRom();
 
-            var invalidCfgPath = "/ooops/" + TestCfgPath;
+            var invalidCfgPath = "/ooops" + TestRomResources.TestCfgPath;
             rom.UpdateConfigPath(invalidCfgPath);
 
             Assert.Equal(invalidCfgPath, rom.ConfigPath);
@@ -179,17 +166,17 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidRomPath_BecomesValid()
         {
-            XmlFormatRomTestStorageAccess.Initialize(TestRomPath);
+            XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath);
             var rom = new XmlRom();
 
-            rom.UpdateRomPath(TestRomPath);
+            rom.UpdateRomPath(TestRomResources.TestRomPath);
 
             Assert.True(rom.IsValid);
             Assert.NotNull(rom.ResolvedRom);
             Assert.Equal(RomFormat.Rom, rom.Format);
-            Assert.Equal(TestRomPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestRomPath, rom.RomPath);
             Assert.Equal(null, rom.ConfigPath);
-            Assert.Equal(TestRomCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestRomCrc, rom.Crc);
             Assert.Equal(0u, rom.CfgCrc);
             Assert.True(rom.Validate());
         }
@@ -197,39 +184,39 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidLuigiPath_BecomesValid()
         {
-            XmlFormatRomTestStorageAccess.Initialize(TestLuigiFromBinPath);
+            XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath);
             var rom = new XmlRom();
 
-            rom.UpdateRomPath(TestLuigiFromBinPath);
+            rom.UpdateRomPath(TestRomResources.TestLuigiFromBinPath);
 
             Assert.True(rom.IsValid);
             Assert.NotNull(rom.ResolvedRom);
             Assert.Equal(RomFormat.Luigi, rom.Format);
-            Assert.Equal(TestLuigiFromBinPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestLuigiFromBinPath, rom.RomPath);
             Assert.Equal(null, rom.ConfigPath);
-            Assert.Equal(TestBinCrc, rom.Crc); // LUIGI should return original .BIN ROM's CRC
-            Assert.Equal(TestCfgCrc, rom.CfgCrc); // LUIGI should return original .CFG file's CRC
+            Assert.Equal(TestRomResources.TestBinCrc, rom.Crc); // LUIGI should return original .BIN ROM's CRC
+            Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc); // LUIGI should return original .CFG file's CRC
             Assert.True(rom.Validate());
         }
 
         [Fact]
         public void XmlRom_SetToValidRomPathChangeToAnotherValidPath_RemainsValid()
         {
-            XmlFormatRomTestStorageAccess.Initialize(TestRomPath, TestRomMetadataPath);
+            XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath, TestRomResources.TestRomMetadataPath);
             var rom = new XmlRom();
-            rom.UpdateRomPath(TestRomPath);
+            rom.UpdateRomPath(TestRomResources.TestRomPath);
             Assert.True(rom.IsValid);
-            Assert.Equal(TestRomCrc, rom.Crc);
-            Assert.Equal(TestRomPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestRomCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestRomPath, rom.RomPath);
 
-            rom.UpdateRomPath(TestRomMetadataPath);
+            rom.UpdateRomPath(TestRomResources.TestRomMetadataPath);
 
             Assert.True(rom.IsValid);
             Assert.NotNull(rom.ResolvedRom);
             Assert.Equal(RomFormat.Rom, rom.Format);
-            Assert.Equal(TestRomMetadataPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestRomMetadataPath, rom.RomPath);
             Assert.Equal(null, rom.ConfigPath);
-            Assert.Equal(TestRomMetadataCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestRomMetadataCrc, rom.Crc);
             Assert.Equal(0u, rom.CfgCrc);
             Assert.True(rom.Validate());
         }
@@ -237,14 +224,14 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidRomPathChangeToInvalidPath_BecomesInvalid()
         {
-            XmlFormatRomTestStorageAccess.Initialize(TestRomPath);
+            XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath);
             var rom = new XmlRom();
-            rom.UpdateRomPath(TestRomPath);
+            rom.UpdateRomPath(TestRomResources.TestRomPath);
             Assert.True(rom.IsValid);
-            Assert.Equal(TestRomCrc, rom.Crc);
-            Assert.Equal(TestRomPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestRomCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestRomPath, rom.RomPath);
 
-            var invalidPath = "/bad/" + TestRomPath;
+            var invalidPath = "/bad" + TestRomResources.TestRomPath;
             rom.UpdateRomPath(invalidPath);
 
             Assert.False(rom.IsValid);
@@ -260,73 +247,73 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidRomPathChangeToValidBinPathWithDifferentFormat_RemainsValid()
         {
-            XmlFormatRomTestStorageAccess.Initialize(TestRomPath, TestBinPath, TestCfgPath);
+            XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = new XmlRom();
-            rom.UpdateRomPath(TestRomPath);
+            rom.UpdateRomPath(TestRomResources.TestRomPath);
             Assert.True(rom.IsValid);
-            Assert.Equal(TestRomCrc, rom.Crc);
-            Assert.Equal(TestRomPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestRomCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestRomPath, rom.RomPath);
             Assert.Equal(RomFormat.Rom, rom.Format);
 
-            rom.UpdateRomPath(TestBinPath);
-            rom.UpdateConfigPath(TestCfgPath);
+            rom.UpdateRomPath(TestRomResources.TestBinPath);
+            rom.UpdateConfigPath(TestRomResources.TestCfgPath);
 
             Assert.True(rom.IsValid);
             Assert.NotNull(rom.ResolvedRom);
             Assert.Equal(RomFormat.Bin, rom.Format);
-            Assert.Equal(TestBinPath, rom.RomPath);
-            Assert.Equal(TestCfgPath, rom.ConfigPath);
-            Assert.Equal(TestBinCrc, rom.Crc);
-            Assert.Equal(TestCfgCrc, rom.CfgCrc);
+            Assert.Equal(TestRomResources.TestBinPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestCfgPath, rom.ConfigPath);
+            Assert.Equal(TestRomResources.TestBinCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
             Assert.True(rom.Validate());
         }
 
         [Fact]
         public void XmlRom_SetToValidBinPathChangeCfgPath_BinCrcUnchangedAndCfgCrcUpdatesImmediately()
         {
-            var storageAccess = XmlFormatRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath, TestCfgMetadataPath);
+            var storageAccess = XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, TestRomResources.TestCfgMetadataPath);
             var rom = new XmlRom();
-            rom.UpdateRomPath(TestBinPath);
-            rom.UpdateConfigPath(TestCfgPath);
+            rom.UpdateRomPath(TestRomResources.TestBinPath);
+            rom.UpdateConfigPath(TestRomResources.TestCfgPath);
             Assert.True(rom.IsValid);
             Assert.NotNull(rom.ResolvedRom);
             Assert.Equal(RomFormat.Bin, rom.Format);
-            Assert.Equal(TestBinPath, rom.RomPath);
-            Assert.Equal(TestCfgPath, rom.ConfigPath);
-            Assert.Equal(TestBinCrc, rom.Crc);
-            Assert.Equal(TestCfgCrc, rom.CfgCrc);
+            Assert.Equal(TestRomResources.TestBinPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestCfgPath, rom.ConfigPath);
+            Assert.Equal(TestRomResources.TestBinCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
 
-            rom.UpdateConfigPath(TestCfgMetadataPath);
+            rom.UpdateConfigPath(TestRomResources.TestCfgMetadataPath);
             var crcChanged = true;
             var crc = rom.RefreshCrc(out crcChanged);
             var cfgCrcChanged = true;
             var cfgCrc = rom.RefreshCfgCrc(out cfgCrcChanged);
 
             Assert.False(crcChanged);
-            Assert.Equal(TestBinCrc, rom.Crc);
-            Assert.Equal(TestBinCrc, crc);
+            Assert.Equal(TestRomResources.TestBinCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestBinCrc, crc);
             Assert.False(cfgCrcChanged);
-            Assert.Equal(TestMetadataCfgCrc, cfgCrc);
-            Assert.Equal(TestMetadataCfgCrc, rom.CfgCrc);
+            Assert.Equal(TestRomResources.TestMetadataCfgCrc, cfgCrc);
+            Assert.Equal(TestRomResources.TestMetadataCfgCrc, rom.CfgCrc);
         }
 
         [Fact]
         public void XmlRom_SetToValidBinThenModifyBin_RefreshCrcChanges()
         {
-            var storageAccess = XmlFormatRomTestStorageAccess.Initialize(TestCfgPath);
+            var storageAccess = XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestCfgPath);
             var testBinToModifyPath = "/Resources/tagalong_hacked.bin";
-            storageAccess.CreateCopyOfResource(TestBinPath, testBinToModifyPath);
+            storageAccess.CreateCopyOfResource(TestRomResources.TestBinPath, testBinToModifyPath);
 
             var rom = new XmlRom();
             rom.UpdateRomPath(testBinToModifyPath);
-            rom.UpdateConfigPath(TestCfgPath);
+            rom.UpdateConfigPath(TestRomResources.TestCfgPath);
             Assert.True(rom.IsValid);
             Assert.NotNull(rom.ResolvedRom);
             Assert.Equal(RomFormat.Bin, rom.Format);
             Assert.Equal(testBinToModifyPath, rom.RomPath);
-            Assert.Equal(TestCfgPath, rom.ConfigPath);
-            Assert.Equal(TestBinCrc, rom.Crc);
-            Assert.Equal(TestCfgCrc, rom.CfgCrc);
+            Assert.Equal(TestRomResources.TestCfgPath, rom.ConfigPath);
+            Assert.Equal(TestRomResources.TestBinCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
 
             using (var binStream = storageAccess.Open(testBinToModifyPath))
             {
@@ -340,26 +327,26 @@ namespace INTV.Core.Tests.Model
             var crc = rom.RefreshCrc(out crcChanged);
 
             Assert.True(crcChanged);
-            Assert.NotEqual(TestBinCrc, crc);
+            Assert.NotEqual(TestRomResources.TestBinCrc, crc);
         }
 
         [Fact]
         public void XmlRom_SetToValidBinThenModifyCfg_RefreshCfgCrcChanges()
         {
-            var storageAccess = XmlFormatRomTestStorageAccess.Initialize(TestBinPath);
+            var storageAccess = XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath);
             var testCfgToModifyPath = "/Resources/tagalong_hacked.cfg";
-            storageAccess.CreateCopyOfResource(TestCfgPath, testCfgToModifyPath);
+            storageAccess.CreateCopyOfResource(TestRomResources.TestCfgPath, testCfgToModifyPath);
 
             var rom = new XmlRom();
-            rom.UpdateRomPath(TestBinPath);
+            rom.UpdateRomPath(TestRomResources.TestBinPath);
             rom.UpdateConfigPath(testCfgToModifyPath);
             Assert.True(rom.IsValid);
             Assert.NotNull(rom.ResolvedRom);
             Assert.Equal(RomFormat.Bin, rom.Format);
-            Assert.Equal(TestBinPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestBinPath, rom.RomPath);
             Assert.Equal(testCfgToModifyPath, rom.ConfigPath);
-            Assert.Equal(TestBinCrc, rom.Crc);
-            Assert.Equal(TestCfgCrc, rom.CfgCrc);
+            Assert.Equal(TestRomResources.TestBinCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
 
             using (var cfgStream = storageAccess.Open(testCfgToModifyPath))
             {
@@ -378,7 +365,7 @@ name = ""wut?""
             var cfgCrc = rom.RefreshCfgCrc(out cfgCrcChanged);
 
             Assert.True(cfgCrcChanged);
-            Assert.NotEqual(TestCfgCrc, cfgCrc);
+            Assert.NotEqual(TestRomResources.TestCfgCrc, cfgCrc);
             Assert.Equal("wut?", rom.GetBinFileMetadata().LongNames.First());
         }
 

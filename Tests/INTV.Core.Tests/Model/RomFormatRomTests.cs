@@ -29,22 +29,10 @@ namespace INTV.Core.Tests.Model
 {
     public class RomFormatRomTests
     {
-        private const string TestRomPath = "/Resources/tagalong.rom";
-        private const string TestCc3Path = "/Resources/tagalong.cc3";
-        private const string TestAdvPath = "/Resources/tagalong.adv";
-        private const string TestBadPath = "/Resources/tagalong.bad";
-
-        private const string TestRomCorruptedPath = "/Resources/tagalong_corrupt.rom";
-
-        private const string TestRomMetadataPath = "/Resources/tagalong_metadata.rom";
-        private const string TestRomMetadataBadCrcPath = "/Resources/tagalong_metadata_badcrc.rom";
-
-        private const uint TestRomCrc = 0xFEF0BD41;
-
         [Theory]
-        [InlineData(TestRomPath, RomFormat.Intellicart)]
-        [InlineData(TestCc3Path, RomFormat.CuttleCart3)]
-        [InlineData(TestAdvPath, RomFormat.CuttleCart3Advanced)]
+        [InlineData(TestRomResources.TestRomPath, RomFormat.Intellicart)]
+        [InlineData(TestRomResources.TestCc3Path, RomFormat.CuttleCart3)]
+        [InlineData(TestRomResources.TestAdvPath, RomFormat.CuttleCart3Advanced)]
         public void RomFormatRom_LoadAndValidateRom_RomFormatIdentifiedCorrectly(string testRomPath, RomFormat expectedRomFormat)
         {
             RomFormatRomTestStorageAccess.Initialize(testRomPath);
@@ -58,8 +46,8 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomFormatRom_LoadCorruptedRom_ReturnsNullRom()
         {
-            RomFormatRomTestStorageAccess.Initialize(TestBadPath);
-            var rom = Rom.Create(TestBadPath, null);
+            RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomBadHeaderPath);
+            var rom = Rom.Create(TestRomResources.TestRomBadHeaderPath, null);
 
             Assert.Null(rom);
         }
@@ -67,18 +55,18 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomFormatRom_Load_VerifyCrc()
         {
-            RomFormatRomTestStorageAccess.Initialize(TestRomPath);
-            var rom = Rom.Create(TestRomPath, null);
+            RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath);
+            var rom = Rom.Create(TestRomResources.TestRomPath, null);
 
-            Assert.Equal(TestRomCrc, rom.Crc);
+            Assert.Equal(TestRomResources.TestRomCrc, rom.Crc);
             Assert.Equal(0u, rom.CfgCrc);
         }
 
         [Fact]
         public void RomFormatRom_RefreshCfgCrc_NeverRefreshes()
         {
-            RomFormatRomTestStorageAccess.Initialize(TestRomPath);
-            var rom = Rom.Create(TestRomPath, null);
+            RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath);
+            var rom = Rom.Create(TestRomResources.TestRomPath, null);
 
             var changed = true;
             Assert.Equal(0u, rom.RefreshCfgCrc(out changed));
@@ -88,21 +76,21 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomFormatRom_GetCrcs_ReturnsCorrectCrcs()
         {
-            RomFormatRomTestStorageAccess.Initialize(TestRomPath);
+            RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath);
 
             uint cfgCrc;
-            var crc = RomFormatRom.GetCrcs(TestRomPath, null, out cfgCrc);
+            var crc = RomFormatRom.GetCrcs(TestRomResources.TestRomPath, null, out cfgCrc);
 
-            Assert.Equal(TestRomCrc, crc);
+            Assert.Equal(TestRomResources.TestRomCrc, crc);
             Assert.Equal(0u, cfgCrc);
         }
 
         [Fact]
         public void RomFormatRom_GetMetadata_ReturnsNullMetadata()
         {
-            RomFormatRomTestStorageAccess.Initialize(TestRomPath);
+            RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath);
 
-            var rom = Rom.Create(TestRomPath, null);
+            var rom = Rom.Create(TestRomResources.TestRomPath, null);
             var metadata = rom.GetRomFileMetadata();
 
             Assert.Null(metadata);
@@ -111,9 +99,9 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomFormatRom_GetMetadataFromCorruptedRom_BehavesAsExpected()
         {
-            RomFormatRomTestStorageAccess.Initialize(TestRomCorruptedPath);
+            RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomCorruptedPath);
 
-            var rom = Rom.Create(TestRomCorruptedPath, null);
+            var rom = Rom.Create(TestRomResources.TestRomCorruptedPath, null);
 #if DEBUG
             Assert.Throws<InvalidOperationException>(() => rom.GetRomFileMetadata());
 #else
@@ -126,9 +114,9 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomFormatRom_GetMetadata_ReturnsExpectedMetadata()
         {
-            RomFormatRomTestStorageAccess.Initialize(TestRomMetadataPath);
+            RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomMetadataPath);
 
-            var rom = Rom.Create(TestRomMetadataPath, null);
+            var rom = Rom.Create(TestRomResources.TestRomMetadataPath, null);
             var metadata = rom.GetRomFileMetadata();
 
             Assert.NotNull(metadata);
@@ -138,9 +126,9 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomFormatRom_GetMetadataWithBadCrc_ReturnsExpectedMetadata()
         {
-            RomFormatRomTestStorageAccess.Initialize(TestRomMetadataBadCrcPath);
+            RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomMetadataBadCrcPath);
 
-            var rom = Rom.Create(TestRomMetadataBadCrcPath, null);
+            var rom = Rom.Create(TestRomResources.TestRomMetadataBadCrcPath, null);
             var metadata = rom.GetRomFileMetadata();
 
             Assert.NotNull(metadata);

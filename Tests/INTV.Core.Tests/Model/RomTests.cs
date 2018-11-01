@@ -28,18 +28,6 @@ namespace INTV.Core.Tests.Model
 {
     public class RomTests
     {
-        private const string TestBinPath = "/Resources/tagalong.bin";
-        private const string TestCfgPath = "/Resources/tagalong.cfg";
-        private const string TestRomPath = "/Resources/tagalong.rom";
-        private const string TestBadPath = "/Resources/tagalong.bad";
-        private const string TestCfgMetadataPath = "/Resources/tagalong_metadata.cfg";
-        private const string TestLuigiFromBinPath = "/Resources/tagalong.luigi";
-
-        private const uint TestBinCrc = 0xECBA3AF7;
-        private const uint TestCfgCrc = 0x06B5EA3E;
-        private const uint TestRomCrc = 0xFEF0BD41;
-        private const uint TestMetadataCfgCrc = 0x68C3401C;
-
         [Fact]
         public void Rom_GetRefreshedCrcsFromNullPaths_ThrowsAgumentNullException()
         {
@@ -52,29 +40,29 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void Rom_GetRefreshedCrcsFromNullBinPathAndValidCfgPath_ThrowsAgumentNullException()
         {
-            RomTestStorageAccess.Initialize(TestCfgPath);
+            RomTestStorageAccess.Initialize(TestRomResources.TestCfgPath);
 
             var cfgCrc = 0u;
-            Assert.Throws<ArgumentNullException>(() => Rom.GetRefreshedCrcs(null, TestCfgPath, out cfgCrc));
+            Assert.Throws<ArgumentNullException>(() => Rom.GetRefreshedCrcs(null, TestRomResources.TestCfgPath, out cfgCrc));
         }
 
         [Fact]
         public void Rom_GetRefreshedCrcsFromBinPathAndNullCfgPath_GetsCorrectBinCrcAndZeroCfgCrc()
         {
-            RomTestStorageAccess.Initialize(TestBinPath);
+            RomTestStorageAccess.Initialize(TestRomResources.TestBinPath);
 
             var cfgCrc = 0u;
-            var crc = Rom.GetRefreshedCrcs(TestBinPath, null, out cfgCrc);
+            var crc = Rom.GetRefreshedCrcs(TestRomResources.TestBinPath, null, out cfgCrc);
 
-            Assert.Equal(TestBinCrc, crc);
+            Assert.Equal(TestRomResources.TestBinCrc, crc);
             Assert.Equal(0u, cfgCrc);
         }
 
         [Theory]
-        [InlineData(TestBinPath, TestCfgPath, TestBinCrc, TestCfgCrc)]
-        [InlineData(TestRomPath, TestCfgPath, TestRomCrc, 0u)]
-        [InlineData(TestLuigiFromBinPath, null, TestBinCrc, TestCfgCrc)]
-        [InlineData(TestBadPath, null, 0u, 0u)]
+        [InlineData(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, TestRomResources.TestBinCrc, TestRomResources.TestCfgCrc)]
+        [InlineData(TestRomResources.TestRomPath, TestRomResources.TestCfgPath, TestRomResources.TestRomCrc, 0u)]
+        [InlineData(TestRomResources.TestLuigiFromBinPath, null, TestRomResources.TestBinCrc, TestRomResources.TestCfgCrc)]
+        [InlineData(TestRomResources.TestRomBadHeaderPath, null, 0u, 0u)]
         public void Rom_GetRefreshedCrcsFromValidBinAndCfgPaths_GetsCorrectBinAndCfgCrcs(string testRomPath, string testCfgPath, uint expectedRomCrc, uint expectedCfgCrc)
         {
             RomTestStorageAccess.Initialize(testRomPath, testCfgPath);
@@ -97,20 +85,20 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void Rom_ReplaceCfgOnNullRomWithValidCfgPath_DoesNotThrow()
         {
-            RomTestStorageAccess.Initialize(TestCfgPath);
+            RomTestStorageAccess.Initialize(TestRomResources.TestCfgPath);
 
-            Rom.ReplaceCfgPath(null, TestCfgPath);
+            Rom.ReplaceCfgPath(null, TestRomResources.TestCfgPath);
         }
 
         [Fact]
         public void Rom_ReplaceCfgWithNullCfgPath_RemovesConfigPath()
         {
-            RomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
-            var rom = Rom.Create(TestBinPath, TestCfgPath);
+            RomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var rom = Rom.Create(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             Assert.NotNull(rom);
-            Assert.Equal(TestBinPath, rom.RomPath);
-            Assert.Equal(TestCfgPath, rom.ConfigPath);
-            Assert.Equal(TestCfgCrc, rom.CfgCrc);
+            Assert.Equal(TestRomResources.TestBinPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestCfgPath, rom.ConfigPath);
+            Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
 
             Rom.ReplaceCfgPath(rom, null);
 
@@ -121,12 +109,12 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void Rom_ReplaceCfgWithNonexistentCfgPath_UpdatesConfigPath()
         {
-            RomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
-            var rom = Rom.Create(TestBinPath, TestCfgPath);
+            RomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var rom = Rom.Create(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             Assert.NotNull(rom);
-            Assert.Equal(TestBinPath, rom.RomPath);
-            Assert.Equal(TestCfgPath, rom.ConfigPath);
-            Assert.Equal(TestCfgCrc, rom.CfgCrc);
+            Assert.Equal(TestRomResources.TestBinPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestCfgPath, rom.ConfigPath);
+            Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
 
             var invalidCfgPath = "/Resources/Totes/Bogus/Cfg.cfg";
             Rom.ReplaceCfgPath(rom, invalidCfgPath);
@@ -138,30 +126,30 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void Rom_ReplaceCfgWithDifferentValidCfgPath_UpdatesConfigPath()
         {
-            RomTestStorageAccess.Initialize(TestBinPath, TestCfgPath, TestCfgMetadataPath);
-            var rom = Rom.Create(TestBinPath, TestCfgPath);
+            RomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, TestRomResources.TestCfgMetadataPath);
+            var rom = Rom.Create(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             Assert.NotNull(rom);
-            Assert.Equal(TestBinPath, rom.RomPath);
-            Assert.Equal(TestCfgPath, rom.ConfigPath);
-            Assert.Equal(TestCfgCrc, rom.CfgCrc);
+            Assert.Equal(TestRomResources.TestBinPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestCfgPath, rom.ConfigPath);
+            Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
 
-            Rom.ReplaceCfgPath(rom, TestCfgMetadataPath);
+            Rom.ReplaceCfgPath(rom, TestRomResources.TestCfgMetadataPath);
 
-            Assert.Equal(TestCfgMetadataPath, rom.ConfigPath);
-            Assert.Equal(TestMetadataCfgCrc, rom.CfgCrc);
+            Assert.Equal(TestRomResources.TestCfgMetadataPath, rom.ConfigPath);
+            Assert.Equal(TestRomResources.TestMetadataCfgCrc, rom.CfgCrc);
         }
 
         [Fact]
         public void Rom_ReplaceCfgOnNonBinFormatRom_HasNoEffect()
         {
-            RomTestStorageAccess.Initialize(TestRomPath, TestCfgPath, TestCfgMetadataPath);
-            var rom = Rom.Create(TestRomPath, TestCfgPath);
+            RomTestStorageAccess.Initialize(TestRomResources.TestRomPath, TestRomResources.TestCfgPath, TestRomResources.TestCfgMetadataPath);
+            var rom = Rom.Create(TestRomResources.TestRomPath, TestRomResources.TestCfgPath);
             Assert.NotNull(rom);
-            Assert.Equal(TestRomPath, rom.RomPath);
+            Assert.Equal(TestRomResources.TestRomPath, rom.RomPath);
             Assert.Null(rom.ConfigPath);
             Assert.Equal(0u, rom.CfgCrc);
 
-            Rom.ReplaceCfgPath(rom, TestCfgMetadataPath);
+            Rom.ReplaceCfgPath(rom, TestRomResources.TestCfgMetadataPath);
 
             Assert.Null(rom.ConfigPath);
             Assert.Equal(0u, rom.CfgCrc);
@@ -178,8 +166,8 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void Rom_GetLuigiHeaderFromLuigiRom_ReturnsHeader()
         {
-            RomTestStorageAccess.Initialize(TestLuigiFromBinPath);
-            var rom = Rom.Create(TestLuigiFromBinPath, null);
+            RomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath);
+            var rom = Rom.Create(TestRomResources.TestLuigiFromBinPath, null);
             Assert.NotNull(rom);
 
             Assert.NotNull(Rom.GetLuigiHeader(rom));
@@ -198,10 +186,10 @@ namespace INTV.Core.Tests.Model
         }
 
         [Theory]
-        [InlineData(TestRomPath, null, true)]
-        [InlineData(TestRomPath, null, false)]
-        [InlineData(TestBinPath, TestCfgPath, true)]
-        [InlineData(TestBinPath, TestCfgPath, false)]
+        [InlineData(TestRomResources.TestRomPath, null, true)]
+        [InlineData(TestRomResources.TestRomPath, null, false)]
+        [InlineData(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, true)]
+        [InlineData(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, false)]
         public void Rom_GetComparisonIgnoreRangesFromNonLuigiRom_ReturnsEmptyEnumerable(string testRomPath, string testCfgPath, bool excludeFeatureBits)
         {
             RomTestStorageAccess.Initialize(testRomPath, testCfgPath);
@@ -218,8 +206,8 @@ namespace INTV.Core.Tests.Model
         [InlineData(false)]
         public void Rom_GetComparisonIgnoreRangesFromLuigiRom_ReturnsNonEmptyEnumerable(bool excludeFeatureBits)
         {
-            RomTestStorageAccess.Initialize(TestLuigiFromBinPath);
-            var rom = Rom.Create(TestLuigiFromBinPath, null);
+            RomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath);
+            var rom = Rom.Create(TestRomResources.TestLuigiFromBinPath, null);
             Assert.NotNull(rom);
 
             var ignoreRanges = Rom.GetComparisonIgnoreRanges(rom, excludeFeatureBits);

@@ -28,16 +28,10 @@ namespace INTV.Core.Tests.Model
 {
     public class AlternateRomTests
     {
-        private const string TestBinPath = "/Resources/tagalong.bin";
-        private const string TestCfgPath = "/Resources/tagalong.cfg";
-
-        private const uint TestBinCrc = 0xECBA3AF7;
-        private const uint TestCfgCrc = 0x06B5EA3E;
-
         [Fact]
         public void AlternateRom_CreateWithNullArguments_ThrowsArgumentNullException()
         {
-            AlternateRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
+            AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
 
             Assert.Throws<ArgumentNullException>(() => new AlternateRom(null, null, null));
         }
@@ -45,12 +39,12 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNullAlternateBinPath_ThrowsArgumentNullException()
         {
-            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
+            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
 
-            var rom = Rom.Create(TestBinPath, TestCfgPath);
+            var rom = Rom.Create(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             Assert.NotNull(rom);
             var alternateCfgPath = "/Resources/TestWithNullBinPath/tagalong.cfg";
-            storageAccess.CreateCopyOfResource(TestCfgPath, alternateCfgPath);
+            storageAccess.CreateCopyOfResource(TestRomResources.TestCfgPath, alternateCfgPath);
 
             Assert.Throws<ArgumentNullException>(() => new AlternateRom(null, alternateCfgPath, rom));
         }
@@ -58,12 +52,12 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNullAlternateCfgPath_CreatesAlternateWithNullCfgPath()
         {
-            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
+            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
 
-            var rom = Rom.Create(TestBinPath, TestCfgPath);
+            var rom = Rom.Create(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             Assert.NotNull(rom);
             var alternateBinPath = "/Resources/TestWithNullCfgPath/tagalong.bin";
-            storageAccess.CreateCopyOfResource(TestBinPath, alternateBinPath);
+            storageAccess.CreateCopyOfResource(TestRomResources.TestBinPath, alternateBinPath);
             var alternate = new AlternateRom(alternateBinPath, null, rom);
 
             Assert.NotNull(alternate);
@@ -84,12 +78,12 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNullOriginalRom_AlternateIsValid()
         {
-            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
+            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
 
             var alternateBinPath = "/Resources/TestWithNullOriginalROM/tagalong.bin";
-            storageAccess.CreateCopyOfResource(TestBinPath, alternateBinPath);
+            storageAccess.CreateCopyOfResource(TestRomResources.TestBinPath, alternateBinPath);
             var alternateCfgPath = "/Resources/TestWithNullOriginalROM/tagalong.cfg";
-            storageAccess.CreateCopyOfResource(TestCfgPath, alternateCfgPath);
+            storageAccess.CreateCopyOfResource(TestRomResources.TestCfgPath, alternateCfgPath);
             var alternate = new AlternateRom(alternateBinPath, alternateCfgPath, null);
 
             Assert.NotNull(alternate);
@@ -98,15 +92,15 @@ namespace INTV.Core.Tests.Model
             Assert.NotNull(alternate.Alternate);
             Assert.Equal(alternateBinPath, alternate.RomPath);
             Assert.Equal(alternateCfgPath, alternate.ConfigPath);
-            Assert.Equal(TestBinCrc, alternate.Crc);
-            Assert.Equal(TestCfgCrc, alternate.CfgCrc);
+            Assert.Equal(TestRomResources.TestBinCrc, alternate.Crc);
+            Assert.Equal(TestRomResources.TestCfgCrc, alternate.CfgCrc);
             Assert.True(alternate.Validate());
         }
 
         [Fact]
         public void AlternateRom_CreateWithNonExistentPaths_ThrowsNullReferenceException()
         {
-            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
+            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var alternateBinPath = "/Resources/TestWithNonexistentPaths/tagalong.bin";
             var alternateCfgPath = "/Resources/TestWithNonexistentPaths/tagalong.cfg";
 
@@ -116,9 +110,9 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNonExistentCfgPath_ThrowsNullReferenceException()
         {
-            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
+            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var alternateBinPath = "/Resources/TestWithMissingCfgPath/tagalong.bin";
-            storageAccess.CreateCopyOfResource(TestBinPath, alternateBinPath);
+            storageAccess.CreateCopyOfResource(TestRomResources.TestBinPath, alternateBinPath);
             var alternateCfgPath = "/Resources/TestWithMissingCfgPath/tagalong.cfg";
 
             Assert.Throws<NullReferenceException>(() => new AlternateRom(alternateBinPath, alternateCfgPath, null));
@@ -127,15 +121,15 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_ChangeAlternateCfgPath_RefreshCfgCrcChangesCrc()
         {
-            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
+            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var alternateBinPath = "/Resources/TestWithCfgAtAlternateLocationThatIsChanging/tagalong.bin";
-            storageAccess.CreateCopyOfResource(TestBinPath, alternateBinPath);
+            storageAccess.CreateCopyOfResource(TestRomResources.TestBinPath, alternateBinPath);
             var alternateCfgPath = "/Resources/TestWithCfgAtAlternateLocationThatIsChanging/tagalong.cfg";
-            storageAccess.CreateCopyOfResource(TestCfgPath, alternateCfgPath);
+            storageAccess.CreateCopyOfResource(TestRomResources.TestCfgPath, alternateCfgPath);
             var alternate = new AlternateRom(alternateBinPath, alternateCfgPath, null);
             Assert.NotNull(alternate);
             Assert.True(alternate.IsValid);
-            Assert.Equal(TestCfgCrc, alternate.CfgCrc);
+            Assert.Equal(TestRomResources.TestCfgCrc, alternate.CfgCrc);
 
             using (var cfgStream = storageAccess.Open(alternateCfgPath))
             {
@@ -153,7 +147,7 @@ name = ""Weener Weener Cheekeen Deeener""
             var cfgCrc = alternate.RefreshCfgCrc(out cfgCrcChanged);
 
             Assert.True(cfgCrcChanged);
-            Assert.NotEqual(TestCfgCrc, cfgCrc);
+            Assert.NotEqual(TestRomResources.TestCfgCrc, cfgCrc);
             Assert.Equal(cfgCrc, alternate.CfgCrc);
             Assert.Equal(cfgCrc, alternate.Alternate.CfgCrc);
             Assert.Equal("Weener Weener Cheekeen Deeener", alternate.GetBinFileMetadata().LongNames.First());
@@ -162,15 +156,15 @@ name = ""Weener Weener Cheekeen Deeener""
         [Fact]
         public void AlternateRom_ChangeAlternateRom_RefreshCrcChangesCrc()
         {
-            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestBinPath, TestCfgPath);
-            var rom = Rom.Create(TestBinPath, TestCfgPath);
-            var alternateBinPath = "/Resources/TestWithRomAtAlternateLocationThatIsChagning/tagalong.bin";
-            storageAccess.CreateCopyOfResource(TestBinPath, alternateBinPath);
+            var storageAccess = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var rom = Rom.Create(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var alternateBinPath = "/Resources/TestWithRomAtAlternateLocationThatIsChanging/tagalong.bin";
+            storageAccess.CreateCopyOfResource(TestRomResources.TestBinPath, alternateBinPath);
             var alternate = new AlternateRom(alternateBinPath, null, rom);
             Assert.NotNull(alternate);
             Assert.True(alternate.IsValid);
             Assert.Equal(0u, alternate.CfgCrc);
-            Assert.Equal(TestBinCrc, alternate.Crc);
+            Assert.Equal(TestRomResources.TestBinCrc, alternate.Crc);
 
             using (var binStream = storageAccess.Open(alternateBinPath))
             {
@@ -184,7 +178,7 @@ name = ""Weener Weener Cheekeen Deeener""
 
             Assert.True(crcChanged);
             Assert.Equal(crc, alternate.Crc);
-            Assert.NotEqual(TestBinCrc, crc);
+            Assert.NotEqual(TestRomResources.TestBinCrc, crc);
             Assert.Equal(alternate.Crc, alternate.Alternate.Crc);
             Assert.NotEqual(alternate.Original.Crc, alternate.Crc);
             Assert.NotEqual(alternate.Original.Crc, alternate.Alternate.Crc);

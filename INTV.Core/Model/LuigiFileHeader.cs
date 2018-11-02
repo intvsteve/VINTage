@@ -239,7 +239,7 @@ namespace INTV.Core.Model
         {
             var willModifyFeatures = false;
             var hasFlagsFromCfgFile = Features.HasFlag(LuigiFeatureFlags.FeatureFlagsExplicitlySet);
-            if (!hasFlagsFromCfgFile || forceFeatureUpdate)
+            if (forceFeatureUpdate || !hasFlagsFromCfgFile)
             {
                 var currentFlags = Features & ~(LuigiFeatureFlags.UnusedMask | LuigiFeatureFlags.FeatureFlagsExplicitlySet);
                 var newFlags = features & ~(LuigiFeatureFlags.UnusedMask | LuigiFeatureFlags.FeatureFlagsExplicitlySet);

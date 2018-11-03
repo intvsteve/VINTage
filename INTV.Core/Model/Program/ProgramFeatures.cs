@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramFeatures.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,7 +26,7 @@ namespace INTV.Core.Model.Program
     /// <summary>
     /// Describes various features of a program, such as hardware compatibility, incompatibilities, requirements, et. al.
     /// </summary>
-    public class ProgramFeatures : IProgramFeatures, IComparable, IComparable<IProgramFeatures>, IComparable<ProgramFeatures>
+    public class ProgramFeatures : IProgramFeatures, IComparable, IComparable<IProgramFeatures>, IComparable<ProgramFeatures>, IEquatable<IProgramFeatures>, IEquatable<ProgramFeatures>
     {
         /// <summary>
         /// A set of completely empty ProgramFeatures.
@@ -289,6 +289,33 @@ namespace INTV.Core.Model.Program
         #endregion // Properties
 
         /// <summary>
+        /// Equality operator.
+        /// </summary>
+        /// <param name="lhs">The value on the left hand side of the operator.</param>
+        /// <param name="rhs">The value on the right hand side of the operator.</param>
+        /// <returns><c>true</c> if <paramref name="lhs"/> is considered to be equal to <paramref name="rhs"/>.</returns>
+        public static bool operator ==(ProgramFeatures lhs, ProgramFeatures rhs)
+        {
+            bool areEqual = object.ReferenceEquals(lhs, rhs);
+            if (!areEqual && !object.ReferenceEquals(lhs, null) && !object.ReferenceEquals(rhs, null))
+            {
+                areEqual = lhs.CompareTo(rhs) == 0;
+            }
+            return areEqual;
+        }
+
+        /// <summary>
+        /// Inequality operator.
+        /// </summary>
+        /// <param name="lhs">The value on the left hand side of the operator.</param>
+        /// <param name="rhs">The value on the right hand side of the operator.</param>
+        /// <returns><c>true</c> if <paramref name="lhs"/> is considered to be NOT equal to <paramref name="rhs"/>.</returns>
+        public static bool operator !=(ProgramFeatures lhs, ProgramFeatures rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        /// <summary>
         /// Creates a set of ProgramFeatures for use with ROMs that are not recognized by the database.
         /// </summary>
         /// <returns>Program features that describe a ROM not recognized by the database.</returns>
@@ -393,6 +420,28 @@ namespace INTV.Core.Model.Program
             }
         }
 
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !(obj is IProgramFeatures))
+            {
+                return false;
+            }
+            return CompareTo((IProgramFeatures)obj) == 0;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            var hashCode = 0;
+            foreach (var feature in _features)
+            {
+                hashCode = CombineHashCodes(hashCode, feature.Key.GetHashCode());
+                hashCode = CombineHashCodes(hashCode, feature.Value.GetHashCode());
+            }
+            return hashCode;
+        }
+
         #region IComparable
 
         /// <inheritdoc />
@@ -458,5 +507,30 @@ namespace INTV.Core.Model.Program
         }
 
         #endregion // IComparable<ProgramFeatures>
+
+        #region IEquatable<IProgramFeatures>
+
+        /// <inheritdoc />
+        public bool Equals(IProgramFeatures other)
+        {
+            return CompareTo(other) == 0;
+        }
+
+        #endregion // IEquatable<IProgramFeatures>
+
+        #region IEquatable<ProgramFeatures>
+
+        /// <inheritdoc />
+        public bool Equals(ProgramFeatures other)
+        {
+            return CompareTo(other) == 0;
+        }
+
+        #endregion // IEquatable<ProgramFeatures>
+
+        private static int CombineHashCodes(int h1, int h2)
+        {
+            return ((h1 << 5) + h1) ^ h2;
+        }
     }
 }

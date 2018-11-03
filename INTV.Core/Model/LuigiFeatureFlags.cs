@@ -107,7 +107,7 @@ namespace INTV.Core.Model
         #region LTO Flash! Flags
 
         /// <summary>If set, indicates that LTO Flash's memory mapper has been enabled at $1000 - $14FF.</summary>
-        LtoFlashMemoryMapperEnabled = 1 << 32,
+        LtoFlashMemoryMapperEnabled = 1ul << 32,
 
         #endregion // LTO Flash! Flags
 
@@ -278,7 +278,7 @@ namespace INTV.Core.Model
 
             if ((jlpAccelerationCompatibility != 0) || (programFeatures.JlpFlashMinimumSaveSectors > 0))
             {
-                if ((programFeatures.JlpHardwareVersion == JlpHardwareVersion.Incompatible) || (programFeatures.JlpHardwareVersion == JlpHardwareVersion.None))
+                if (programFeatures.JlpHardwareVersion == JlpHardwareVersion.None)
                 {
                     programFeatures.JlpHardwareVersion = JlpHardwareVersion.Jlp03;
                 }

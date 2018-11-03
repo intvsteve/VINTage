@@ -72,6 +72,7 @@
     <Compile Include="Model\EcsTests.cs" />
     <Compile Include="Model\GromTests.cs" />
     <Compile Include="Model\JlpHardwareVersionHelpersTests.cs" />
+    <Compile Include="Model\LuigiDataBlockTests.cs" />
     <Compile Include="Model\LuigiFeatureFlagsHelpersTests.cs" />
     <Compile Include="Model\LuigiFileHeaderTests.cs" />
     <Compile Include="Model\LuigiFormatRomTests.cs" />

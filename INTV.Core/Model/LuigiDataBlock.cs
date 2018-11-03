@@ -99,7 +99,12 @@ namespace INTV.Core.Model
 
         #endregion // Properties
 
-        public static LuigiDataBlockType GetBlockType<T>()
+        /// <summary>
+        /// Gets the appropriate <see cref="LuigiDataBlockType"/> enumeration value for a specific implementation.
+        /// </summary>
+        /// <typeparam name="T">A specific type of <see cref="LuigiDataBlock"/>.</typeparam>
+        /// <returns>The appropriate enumeration value used by the given <typeparamref name="T"/>.</returns>
+        public static LuigiDataBlockType GetBlockType<T>() where T : LuigiDataBlock
         {
             var dataBlockType = LuigiDataBlockType.UnknownBlockType;
             if (typeof(T) == typeof(LuigiScrambleKeyBlock))
@@ -168,7 +173,7 @@ namespace INTV.Core.Model
                     dataBlock = new LuigiEndOfFileBlock();
                     break;
                 default:
-                    dataBlock = new LuigiDataBlock(LuigiDataBlockType.UnknownBlockType);
+                    dataBlock = new LuigiDataBlock(LuigiDataBlockType.UnknownBlockType); // TODO: should this preserve block type?
                     break;
             }
             dataBlock._deserializeByteCount = BlockTypeSize;

@@ -18,8 +18,6 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
-using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
 using Xunit;

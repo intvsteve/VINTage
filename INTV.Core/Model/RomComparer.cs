@@ -125,7 +125,22 @@ namespace INTV.Core.Model
             try
             {
 #endif // REPORT_PERFORMANCE
-            result = Compare(x, null, y, null);
+            if (object.ReferenceEquals(x, y))
+            {
+                result = 0;
+            }
+            else if ((x == null) && (y != null))
+            {
+                result = -1;
+            }
+            else if ((x != null) && (y == null))
+            {
+                result = 1;
+            }
+            else
+            {
+                result = Compare(x, null, y, null);
+            }
 #if REPORT_PERFORMANCE
             }
             finally

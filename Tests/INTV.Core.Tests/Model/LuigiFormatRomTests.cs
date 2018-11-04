@@ -21,6 +21,7 @@
 using System;
 using System.Linq;
 using INTV.Core.Model;
+using INTV.Core.Model.Program;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -155,6 +156,7 @@ namespace INTV.Core.Tests.Model
             var metadata = rom.GetLuigiFileMetadata();
 
             Assert.NotNull(metadata);
+            VerifyExpectedMetadata(metadata);
         }
 
         [Fact]
@@ -183,6 +185,90 @@ namespace INTV.Core.Tests.Model
             var rangesToIgnore = rom.GetComparisonIgnoreRanges(excludeFeatureBits);
 
             Assert.Equal(expectedNumberOfExcludeRanges, rangesToIgnore.Count());
+        }
+
+        private void VerifyExpectedMetadata(IProgramMetadata metadata)
+        {
+            var expectedLongNames = new[] { "Tag-A-Long Todd" };
+            Assert.Empty(expectedLongNames.Except(metadata.LongNames, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.LongNames.Except(expectedLongNames, StringComparer.OrdinalIgnoreCase));
+
+            var expectedShortNames = new[] { "Tod" };
+            Assert.Empty(expectedShortNames.Except(metadata.ShortNames, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.ShortNames.Except(expectedShortNames, StringComparer.OrdinalIgnoreCase));
+
+            var expectedDescriptions = new[] { "Desc 3", "desc iv", string.Empty, "Description the first.", "Description the Second" };
+            Assert.Empty(expectedDescriptions.Except(metadata.Descriptions, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Descriptions.Except(expectedDescriptions, StringComparer.OrdinalIgnoreCase));
+
+            var expectedPublishers = new[] { "Zbiciak Electronics", "Left Turn Only" };
+            Assert.Empty(expectedPublishers.Except(metadata.Publishers, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Publishers.Except(expectedPublishers, StringComparer.OrdinalIgnoreCase));
+
+            var expectedProgrammers = new[] { "Joe Zbiciak", "intvnut", "JRMZ" };
+            Assert.Empty(expectedProgrammers.Except(metadata.Programmers, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Programmers.Except(expectedProgrammers, StringComparer.OrdinalIgnoreCase));
+
+            var expectedDesigners = new[] { "Unsure", "Unsurely - don't call me surely." };
+            Assert.Empty(expectedDesigners.Except(metadata.Designers, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Designers.Except(expectedDesigners, StringComparer.OrdinalIgnoreCase));
+
+            var expectedGraphics = new[] { "JZ", "No, not that JZ" };
+            Assert.Empty(expectedGraphics.Except(metadata.Graphics, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Graphics.Except(expectedGraphics, StringComparer.OrdinalIgnoreCase));
+
+            var expectedMusic = new[] { "Joe", "Wait, there's music?" };
+            Assert.Empty(expectedMusic.Except(metadata.Music, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Music.Except(expectedMusic, StringComparer.OrdinalIgnoreCase));
+
+            var expectedSoundEffects = new[] { "Joe Zbiciak", "Joseph Zbiciak" };
+            Assert.Empty(expectedSoundEffects.Except(metadata.SoundEffects, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.SoundEffects.Except(expectedSoundEffects, StringComparer.OrdinalIgnoreCase));
+
+            var expectedVoices = new[] { "None", "Really, none" };
+            Assert.Empty(expectedVoices.Except(metadata.Voices, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Voices.Except(expectedVoices, StringComparer.OrdinalIgnoreCase));
+
+            var expectedDocumentation = new[] { "JZ", "IM14U2C" };
+            Assert.Empty(expectedDocumentation.Except(metadata.Documentation, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Documentation.Except(expectedDocumentation, StringComparer.OrdinalIgnoreCase));
+
+            var expectedArtwork = new[] { "N/A", "Boxless ... for now" };
+            Assert.Empty(expectedArtwork.Except(metadata.Artwork, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Artwork.Except(expectedArtwork, StringComparer.OrdinalIgnoreCase));
+
+            var date0 = new MetadataDateTimeBuilder(1999).WithMonth(9).WithDay(9).Build();
+            var date1 = new MetadataDateTimeBuilder(2001).WithMonth(1).WithDay(1).Build();
+            var date2 = new MetadataDateTimeBuilder(1997).WithMonth(5).WithDay(17).WithHour(0).WithMinute(29).WithSecond(24).WithOffset(-7, -12).Build();
+            var date3 = new MetadataDateTimeBuilder(1999).WithMonth(10).WithDay(2).WithHour(5).WithMinute(16).WithSecond(18).WithOffset(7, 0).Build();
+            var expectedReleaseDates = new[] { date0, date1, date2, date3 };
+            Assert.Empty(expectedReleaseDates.Except(metadata.ReleaseDates));
+            Assert.Empty(metadata.ReleaseDates.Except(expectedReleaseDates));
+
+            var expectedLicenses = new[] { "PD", "Not GPL" };
+            Assert.Empty(expectedLicenses.Except(metadata.Licenses, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Licenses.Except(expectedLicenses, StringComparer.OrdinalIgnoreCase));
+
+            var expectedContactInformation = new[] { "spatula-city.org", "leftturnonly.info" };
+            Assert.Empty(expectedContactInformation.Except(metadata.ContactInformation, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.ContactInformation.Except(expectedContactInformation, StringComparer.OrdinalIgnoreCase));
+
+            // Both 'version' and 'versions' are parsed
+            var expectedVersions = new[] { "Tutorial", "Learning stuff", "Tutorial 2", "Learning stuff" };
+            Assert.Empty(expectedVersions.Except(metadata.Versions, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.Versions.Except(expectedVersions, StringComparer.OrdinalIgnoreCase));
+
+            date0 = new MetadataDateTimeBuilder(2013).WithMonth(10).WithDay(31).WithHour(17).WithMinute(57).WithSecond(4).WithOffset(-7, 0).Build();
+            date1 = new MetadataDateTimeBuilder(2013).WithMonth(10).WithDay(31).WithHour(17).WithMinute(57).WithSecond(4).WithOffset(0, -18).Build();
+            date2 = new MetadataDateTimeBuilder(2013).WithMonth(10).WithDay(31).WithHour(17).WithMinute(57).WithSecond(60).WithOffset(7, 42).Build();
+            date3 = new MetadataDateTimeBuilder(2013).WithMonth(10).WithDay(31).WithHour(17).WithMinute(57).WithSecond(60).WithOffset(0, 55).Build();
+            var expectedBuildDates = new[] { date0, date1, date2, date3 };
+            Assert.Empty(metadata.BuildDates.Except(expectedBuildDates));
+            Assert.Empty(expectedBuildDates.Except(metadata.BuildDates));
+
+            var expectedAdditionalInformation = Enumerable.Empty<string>();
+            Assert.Empty(expectedAdditionalInformation.Except(metadata.AdditionalInformation, StringComparer.OrdinalIgnoreCase));
+            Assert.Empty(metadata.AdditionalInformation.Except(expectedAdditionalInformation, StringComparer.OrdinalIgnoreCase));
         }
 
         private class LuigiFormatRomTestStorageAccess : CachedResourceStorageAccess<LuigiFormatRomTestStorageAccess>

@@ -39,16 +39,20 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override int Compare(IRom x, IProgramInformation programInformationRomX, IRom y, IProgramInformation programInformationRomY)
         {
-            var result = (int)x.Format - (int)y.Format;
-            if (result == 0)
+            var result = -1;
+            if (NeedsDetailedCompare(x, y, out result))
             {
-                result = (int)x.Crc - (int)y.Crc;
-            }
-            if (((x.Format == RomFormat.None) && (x.Crc == 0)) || ((x.Crc == 0) && (y.Crc == 0)))
-            {
-                // Both ROMs in the comparison are missing -- and both have the same CRC - which was zero.
-                // In such a case, try comparing the paths.
-                result = string.Compare(x.RomPath, y.RomPath);
+                result = (int)x.Format - (int)y.Format;
+                if (result == 0)
+                {
+                    result = (int)x.Crc - (int)y.Crc;
+                }
+                if (((x.Format == RomFormat.None) && (x.Crc == 0)) || ((x.Crc == 0) && (y.Crc == 0)))
+                {
+                    // Both ROMs in the comparison are missing -- and both have the same CRC - which was zero.
+                    // In such a case, try comparing the paths.
+                    result = string.Compare(x.RomPath, y.RomPath);
+                }
             }
             return result;
         }

@@ -125,22 +125,7 @@ namespace INTV.Core.Model
             try
             {
 #endif // REPORT_PERFORMANCE
-            if (object.ReferenceEquals(x, y))
-            {
-                result = 0;
-            }
-            else if ((x == null) && (y != null))
-            {
-                result = -1;
-            }
-            else if ((x != null) && (y == null))
-            {
-                result = 1;
-            }
-            else
-            {
-                result = Compare(x, null, y, null);
-            }
+            result = Compare(x, null, y, null);
 #if REPORT_PERFORMANCE
             }
             finally
@@ -182,6 +167,29 @@ namespace INTV.Core.Model
         /// <param name="disposing"><c>true</c> if IDisposable.Dispose() is called directly, or <c>false</c> if called from the Finalizer.</param>
         protected virtual void Dispose(bool disposing)
         {
+        }
+
+        protected bool NeedsDetailedCompare(IRom x, IRom y, out int result)
+        {
+            var needsDetailedCompare = false;
+            result = -2;
+            if (object.ReferenceEquals(x, y))
+            {
+                result = 0;
+            }
+            else if ((x == null) && (y != null))
+            {
+                result = -1;
+            }
+            else if ((x != null) && (y == null))
+            {
+                result = 1;
+            }
+            else
+            {
+                needsDetailedCompare = true;
+            }
+            return needsDetailedCompare;
         }
     }
 }

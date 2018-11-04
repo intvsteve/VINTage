@@ -43,9 +43,9 @@ namespace INTV.Core.Model.Program
             {
                 _title = metadata.LongNames.FirstOrDefault();
                 _vendor = metadata.Publishers.FirstOrDefault();
-                if (metadata.Dates.Any())
+                if (metadata.ReleaseDates.Any())
                 {
-                    _year = metadata.Dates.First().Date.Year.ToString();
+                    _year = metadata.ReleaseDates.First().Date.Year.ToString();
                 }
                 ShortName = metadata.ShortNames.FirstOrDefault();
             }
@@ -179,7 +179,7 @@ namespace INTV.Core.Model.Program
         /// <inheritdoc />
         public override IEnumerable<MetadataDateTime> ReleaseDates
         {
-            get { return Metadata.Dates; }
+            get { return Metadata.ReleaseDates; }
         }
 
         /// <inheritdoc />

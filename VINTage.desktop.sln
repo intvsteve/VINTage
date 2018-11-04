@@ -51,6 +51,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalDependencies", "ExternalDependencies", "{7730E0F0-853F-48FC-8AB1-C797524C9264}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9055BFFE-9E23-437E-AAF6-49656B820E21}"
+	ProjectSection(SolutionItems) = preProject
+		Tests\CodeCoverage.runsettings = Tests\CodeCoverage.runsettings
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INTV.Core.Tests", "Tests\INTV.Core.Tests\INTV.Core.Tests.csproj", "{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}"
 EndProject

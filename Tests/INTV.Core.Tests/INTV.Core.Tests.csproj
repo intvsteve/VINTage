@@ -76,6 +76,7 @@
     <Compile Include="Model\LuigiFeatureFlagsHelpersTests.cs" />
     <Compile Include="Model\LuigiFileHeaderTests.cs" />
     <Compile Include="Model\LuigiFormatRomTests.cs" />
+    <Compile Include="Model\LuigiMetadataBlockTests.cs" />
     <Compile Include="Model\MetadataDateTimeBuilderTests.cs" />
     <Compile Include="Model\MetadataDateTimeTests.cs" />
     <Compile Include="Model\MetadataHelpersTests.cs" />

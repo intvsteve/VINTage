@@ -81,6 +81,7 @@
     <Compile Include="Model\MetadataDateTimeTests.cs" />
     <Compile Include="Model\MetadataHelpersTests.cs" />
     <Compile Include="Model\PeripheralTests.cs" />
+    <Compile Include="Model\RomComparerStrictCrcOnlyTests.cs" />
     <Compile Include="Model\RomFormatRomTests.cs" />
     <Compile Include="Model\RomFormatTests.cs" />
     <Compile Include="Model\RomInfoIndexTests.cs" />

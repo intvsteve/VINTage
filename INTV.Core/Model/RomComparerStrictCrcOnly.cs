@@ -39,10 +39,6 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override int Compare(IRom x, IProgramInformation programInformationRomX, IRom y, IProgramInformation programInformationRomY)
         {
-            if (object.ReferenceEquals(x, y))
-            {
-                return 0;
-            }
             var result = (int)x.Format - (int)y.Format;
             if (result == 0)
             {

@@ -28,6 +28,7 @@ namespace INTV.Core.Tests.Model
     public class LuigiMetadataBlockTests
     {
         [Fact]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in 'BinaryReader' works correctly.")]
         public void LuigiMetadataBlock_InflateUnknownBlock_ProducesBaseMetadataBlock()
         {
             using (var rawMetadataBlock = new System.IO.MemoryStream())

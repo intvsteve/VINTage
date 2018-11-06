@@ -35,7 +35,7 @@ namespace INTV.Core.Tests.Model
         [InlineData((byte)PublisherId.Coleco, "Coleco")]
         [InlineData((byte)PublisherId.CBS, "CBS")]
         [InlineData((byte)PublisherId.ParkerBros, "Parker Brothers")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in BinaryWriter' works correctly.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in 'BinaryReader' works correctly.")]
         public void RomMetadataPublisher_DeserializePayloadUsingPublisherId_ProducesCorrectPublisherName(byte publisherId, string expectedPublisherName)
         {
             var publisherMetadata = new RomMetadataPublisher(1);

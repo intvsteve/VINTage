@@ -75,7 +75,7 @@ namespace INTV.Core.Tests.Model
         }
 
         [Fact]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in BinaryWriter' works correctly.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in 'BinaryReader' works correctly.")]
         public void RomMetadataBlock_InflateBlockTypeIgnore_ProducesCorrectMetadataBlockType()
         {
             using (var stream = RomMetadataTestBlock.CreatePseudoMetadata(0, RomMetadataIdTag.None, null))
@@ -94,7 +94,7 @@ namespace INTV.Core.Tests.Model
         /// Test to get code coverage of RomMetadataBlock only. See separate tests for RomMetadataControllerBindings.
         /// </summary>
         [Fact]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in BinaryWriter' works correctly.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in 'BinaryReader' works correctly.")]
         public void RomMetadataBlock_InflateEmptyControllerMetadata_ProducesEmptyControllerMetadata()
         {
             using (var stream = RomMetadataTestBlock.CreatePseudoMetadata(0, RomMetadataIdTag.ControllerBindings, null))

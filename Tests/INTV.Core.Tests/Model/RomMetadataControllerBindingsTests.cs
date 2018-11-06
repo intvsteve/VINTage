@@ -127,7 +127,7 @@ namespace INTV.Core.Tests.Model
 
         [Theory]
         [MemberData("ControllerBindingTheoryData")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in BinaryWriter' works correctly.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in 'BinaryReader' works correctly.")]
         public void RomMetadataControllerBinding_DeserializeOneBinding_ProducesExpectedControllerBinding(byte controllerBinding, string controllerDescription, byte expectedController)
         {
             using (var stream = new System.IO.MemoryStream())

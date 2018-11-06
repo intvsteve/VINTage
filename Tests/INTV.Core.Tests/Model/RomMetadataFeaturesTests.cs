@@ -29,7 +29,7 @@ namespace INTV.Core.Tests.Model
     public class RomMetadataFeaturesTests
     {
         [Fact]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in BinaryWriter' works correctly.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in 'BinaryReader' works correctly.")]
         public void RomMetadataFeatures_CreateWithZeroDataLength_DeserializeDoesNotChangeFeatures()
         {
             var featuresMetadata = new RomMetadataFeatures(0);
@@ -62,7 +62,7 @@ namespace INTV.Core.Tests.Model
         }
 
         [Fact]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in BinaryWriter' works correctly.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in 'BinaryReader' works correctly.")]
         public void RomMetadataFeatures_CreateWithAdditionalDataAndDeserialize_MovesToEndOfBuffer()
         {
             var dataSize = 10;

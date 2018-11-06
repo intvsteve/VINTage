@@ -98,11 +98,14 @@ namespace INTV.Core.Model
                 {
                     if (IsValid)
                     {
-                        if (StreamUtilities.FileExists(ConfigPath))
+                        if (ConfigPath != null)
                         {
-                            using (var file = StreamUtilities.OpenFileStream(ConfigPath))
+                            if (StreamUtilities.FileExists(ConfigPath))
                             {
-                                metadata = CfgVarMetadataBlock.InflateAll(file);
+                                using (var file = StreamUtilities.OpenFileStream(ConfigPath))
+                                {
+                                    metadata = CfgVarMetadataBlock.InflateAll(file);
+                                }
                             }
                         }
                     }

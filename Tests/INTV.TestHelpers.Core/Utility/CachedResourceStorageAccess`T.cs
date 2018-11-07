@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using INTV.Core.Model;
 using INTV.Core.Utility;
 
 namespace INTV.TestHelpers.Core.Utility
@@ -32,6 +33,7 @@ namespace INTV.TestHelpers.Core.Utility
     public class CachedResourceStorageAccess<T> : TestStorageAccess where T : CachedResourceStorageAccess<T>, new()
     {
         private readonly List<Stream> _streamsCache = new List<Stream>();
+        private T _self;
 
         /// <summary>
         /// Initializes the storage manager and registers it for use, caching the given resources as files.
@@ -58,6 +60,7 @@ namespace INTV.TestHelpers.Core.Utility
         public static T Initialize(Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
         {
             var storageAccess = new T();
+            storageAccess._self = storageAccess;
             StreamUtilities.Initialize(storageAccess);
             storageAccess.AddCachedResource(resourcePath, resourcePath, typeForLocatingResources);
 
@@ -84,6 +87,41 @@ namespace INTV.TestHelpers.Core.Utility
             AddCachedResource(resourcePath, newPath, typeForLocatingResource);
         }
 
+        /// <summary>
+        /// Registers the stock config files deployed with INTV.Core to be accessible via test code.
+        /// </summary>
+        /// <returns>This instance.</returns>
+        public T WithStockCfgResources()
+        {
+            var codeBase = typeof(IRomHelpers).Assembly.CodeBase;
+            var toolsFilesLocationUriPath = Path.Combine(Path.GetDirectoryName(codeBase), "tools\\");
+            Uri toolsFilesLocationUri;
+            if (Uri.TryCreate(toolsFilesLocationUriPath, UriKind.Absolute, out toolsFilesLocationUri))
+            {
+                var toolsFilesLocation = Uri.UnescapeDataString(toolsFilesLocationUri.AbsolutePath); // Need to unescape spaces.
+                IRomHelpers.SetConfigurationEntry(IRomHelpers.DefaultToolsDirectoryKey, toolsFilesLocation);
+                foreach (var toolsFile in Directory.EnumerateFiles(toolsFilesLocation))
+                {
+                    using (var fileStream = new FileStream(toolsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        // register twice so we don't need to care about file separators.
+                        var stream = Open(toolsFile);
+                        fileStream.CopyTo(stream);
+                        _streamsCache.Add(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+
+                        var toolsFileCopy = toolsFile.Replace('/', '\\');
+                        stream = Open(toolsFileCopy);
+                        fileStream.Seek(0, SeekOrigin.Begin);
+                        fileStream.CopyTo(stream);
+                        _streamsCache.Add(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+                    }
+                }
+            }
+            return _self;
+        }
+
         private void AddCachedResource(string resourcePath, string destinationPath, Type typeForLocatingResource)
         {
             if (!string.IsNullOrEmpty(resourcePath))
@@ -99,6 +137,7 @@ namespace INTV.TestHelpers.Core.Utility
                     var stream = Open(destinationPath);
                     resourceStream.CopyTo(stream);
                     _streamsCache.Add(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
                 }
             }
         }

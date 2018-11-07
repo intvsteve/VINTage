@@ -176,6 +176,9 @@ namespace INTV.TestHelpers.Core.Utility
         /// <summary>Presently, a copy of <see cref="TestLuigiWithBadHeaderCrcPath"/>.</summary>
         public const string TestLuigiWithBadHeaderPath = "/Resources/tagalong_bad.luigi";
 
+        /// <summary>A copy of <see cref="TestLuigiFromBinPath"/> with an extra trailing <c>null</c> byte.</summary>
+        public const string TestLuigiWithExtraNullBytePath = "/Resources/tagalong_extra_null_byte.luigi";
+
         #endregion // Corrupted LUIGI format ROMs
     }
 }

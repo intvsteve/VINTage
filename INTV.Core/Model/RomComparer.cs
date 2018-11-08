@@ -26,6 +26,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using INTV.Core.Model.Program;
+using INTV.Core.Resources;
 
 namespace INTV.Core.Model
 {
@@ -109,6 +110,24 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public int Compare(object x, object y)
         {
+            if ((x == null) && (y == null))
+            {
+                return 0;
+            }
+            var xIsRom = x is IRom;
+            var yIsRom = y is IRom;
+            if (!xIsRom && (x != null) && ((y == null) || yIsRom))
+            {
+                throw new ArgumentException(Strings.RomComparer_InvalidArgument_NonRom, "x");
+            }
+            if (((x == null) || xIsRom) && !yIsRom && (y != null))
+            {
+                throw new ArgumentException(Strings.RomComparer_InvalidArgument_NonRom, "y");
+            }
+            if (!xIsRom && !yIsRom)
+            {
+                throw new ArgumentException(Strings.RomComparer_InvalidArguments_NonRom);
+            }
             return Compare(x as IRom, null, y as IRom, null);
         }
 
@@ -177,18 +196,15 @@ namespace INTV.Core.Model
             {
                 result = 0;
             }
-            else if ((x == null) && (y != null))
+            if ((result == -2) && (x == null) && (y != null))
             {
                 result = -1;
             }
-            else if ((x != null) && (y == null))
+            if ((result == -2) && (x != null) && (y == null))
             {
                 result = 1;
             }
-            else
-            {
-                needsDetailedCompare = true;
-            }
+            needsDetailedCompare = result == -2;
             return needsDetailedCompare;
         }
     }

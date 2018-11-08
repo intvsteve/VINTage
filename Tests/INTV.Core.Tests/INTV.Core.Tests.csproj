@@ -83,6 +83,7 @@
     <Compile Include="Model\PeripheralTests.cs" />
     <Compile Include="Model\RomComparerStrictCrcOnlyTests.cs" />
     <Compile Include="Model\RomComparerStrictTests.cs" />
+    <Compile Include="Model\RomComparerTests.cs" />
     <Compile Include="Model\RomFormatRomTests.cs" />
     <Compile Include="Model\RomFormatTests.cs" />
     <Compile Include="Model\RomInfoIndexTests.cs" />

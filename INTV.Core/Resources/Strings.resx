@@ -168,6 +168,12 @@
   <data name="ProgramRomValidationFailed_Message" xml:space="preserve">
     <value>Invalid program ROM information. The following fields are not valid:</value>
   </data>
+  <data name="RomComparer_InvalidArguments_NonRom" xml:space="preserve">
+    <value>Non-ROM objects were passed to RomComparer.Compare()</value>
+  </data>
+  <data name="RomComparer_InvalidArgument_NonRom" xml:space="preserve">
+    <value>A non-ROM object was passed to RomComparer.Compare()</value>
+  </data>
   <data name="RomComparer_InvalidCompareRequestedFormat" xml:space="preserve">
     <value>Invalid ROM comparison requested: {0}</value>
     <comment>{0}: a RomComparison</comment>

@@ -205,6 +205,24 @@ namespace INTV.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A non-ROM object was passed to RomComparer.Compare().
+        /// </summary>
+        internal static string RomComparer_InvalidArgument_NonRom {
+            get {
+                return ResourceManager.GetString("RomComparer_InvalidArgument_NonRom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non-ROM objects were passed to RomComparer.Compare().
+        /// </summary>
+        internal static string RomComparer_InvalidArguments_NonRom {
+            get {
+                return ResourceManager.GetString("RomComparer_InvalidArguments_NonRom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid ROM comparison requested: {0}.
         /// </summary>
         internal static string RomComparer_InvalidCompareRequestedFormat {

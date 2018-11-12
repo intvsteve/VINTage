@@ -337,53 +337,69 @@ namespace INTV.Core.Model.Program
         /// If both feature sets define a JLP Hardware version, the larger of the two versions is used.</remarks>
         public static ProgramFeatures Combine(ProgramFeatures features1, ProgramFeatures features2)
         {
-            var combinedFeatures = EmptyFeatures.Clone();
-            foreach (var feature in features1._features.Keys)
+            ProgramFeatures combinedFeatures = null;
+            if ((features1 == null) && (features2 == null))
             {
-                var defaultFeatureBits = DefaultFeatures._features[feature];
-                var features1Bits = features1._features[feature];
-                var features2Bits = features2._features[feature];
-                var features1BitsMatchDefault = features1Bits == defaultFeatureBits;
-                var features2BitsMatchDefault = features2Bits == defaultFeatureBits;
-                var featureBits = features1Bits;
-                if (features1BitsMatchDefault && !features2BitsMatchDefault)
-                {
-                    featureBits = features2Bits;
-                }
-                else if (features2BitsMatchDefault && !features1BitsMatchDefault)
-                {
-                    featureBits = features1Bits;
-                }
-                else if (!features1BitsMatchDefault && !features2BitsMatchDefault)
-                {
-                    featureBits = features1Bits | features2Bits;
-                }
-                switch (feature)
-                {
-                    case FeatureCategory.Ntsc:
-                    case FeatureCategory.Pal:
-                        // If we've combined "Tolerates" and "Enhances" we'll get "required", which, for video standards, is not suitable.
-                        featureBits = (uint)((FeatureCompatibility)featureBits).CoerceVideoStandardCompatibility();
-                        break;
-                    case FeatureCategory.General:
-                    case FeatureCategory.SuperVideoArcade:
-                        // Leave these alone...
-                        break;
-                    default:
-                        // For these, we don't want to have a 'tolerates' combine with 'enhances' to turn into 'requires', so, if
-                        // one set contains only 'tolerates' and the other contains only 'enhances' then just keep 'enhances'.
-                        var feature1Compat = features1Bits & FeatureCompatibilityHelpers.CompatibilityMask;
-                        var feature2Compat = features2Bits & FeatureCompatibilityHelpers.CompatibilityMask;
-                        if ((feature1Compat != 0) && (feature2Compat != 0) && ((feature1Compat ^ feature2Compat) == (uint)FeatureCompatibility.Requires))
-                        {
-                            // Retain 'enhances' only.
-                            featureBits &= (uint)~FeatureCompatibility.Tolerates;
-                        }
-                        break;
-                }
-                combinedFeatures._features[feature] = featureBits;
+                combinedFeatures = GetUnrecognizedRomFeatures();
             }
-            combinedFeatures.JlpHardwareVersion = (JlpHardwareVersion)Math.Max((int)features1.JlpHardwareVersion, (int)features2.JlpHardwareVersion);
+            else if (features1 == null)
+            {
+                combinedFeatures = features2.Clone();
+            }
+            else if (features2 == null)
+            {
+                combinedFeatures = features1.Clone();
+            }
+            else
+            {
+                combinedFeatures = EmptyFeatures.Clone();
+                foreach (var feature in features1._features.Keys)
+                {
+                    var defaultFeatureBits = DefaultFeatures._features[feature];
+                    var features1Bits = features1._features[feature];
+                    var features2Bits = features2._features[feature];
+                    var features1BitsMatchDefault = features1Bits == defaultFeatureBits;
+                    var features2BitsMatchDefault = features2Bits == defaultFeatureBits;
+                    var featureBits = features1Bits;
+                    if (features1BitsMatchDefault && !features2BitsMatchDefault)
+                    {
+                        featureBits = features2Bits;
+                    }
+                    else if (features2BitsMatchDefault && !features1BitsMatchDefault)
+                    {
+                        featureBits = features1Bits;
+                    }
+                    else if (!features1BitsMatchDefault && !features2BitsMatchDefault)
+                    {
+                        featureBits = features1Bits | features2Bits;
+                    }
+                    switch (feature)
+                    {
+                        case FeatureCategory.Ntsc:
+                        case FeatureCategory.Pal:
+                            // If we've combined "Tolerates" and "Enhances" we'll get "required", which, for video standards, is not suitable.
+                            featureBits = (uint)((FeatureCompatibility)featureBits).CoerceVideoStandardCompatibility();
+                            break;
+                        case FeatureCategory.General:
+                        case FeatureCategory.SuperVideoArcade:
+                            // Leave these alone...
+                            break;
+                        default:
+                            // For these, we don't want to have a 'tolerates' combine with 'enhances' to turn into 'requires', so, if
+                            // one set contains only 'tolerates' and the other contains only 'enhances' then just keep 'enhances'.
+                            var feature1Compat = features1Bits & FeatureCompatibilityHelpers.CompatibilityMask;
+                            var feature2Compat = features2Bits & FeatureCompatibilityHelpers.CompatibilityMask;
+                            if ((feature1Compat != 0) && (feature2Compat != 0) && ((feature1Compat ^ feature2Compat) == (uint)FeatureCompatibility.Requires))
+                            {
+                                // Retain 'enhances' only.
+                                featureBits &= (uint)~FeatureCompatibility.Tolerates;
+                            }
+                            break;
+                    }
+                    combinedFeatures._features[feature] = featureBits;
+                }
+                combinedFeatures.JlpHardwareVersion = (JlpHardwareVersion)Math.Max((int)features1.JlpHardwareVersion, (int)features2.JlpHardwareVersion);
+            }
             return combinedFeatures;
         }
 

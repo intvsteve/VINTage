@@ -103,6 +103,7 @@ namespace INTV.Core.Model
         public static ProgramFeatures GetProgramFeatures(this IRom rom)
         {
             var features = ProgramFeatures.GetUnrecognizedRomFeatures();
+            // TODO: Add support for CFGVAR and ROM metadata features!
             if (rom.Format == RomFormat.Luigi)
             {
                 var header = rom.GetLuigiHeader();
@@ -126,7 +127,8 @@ namespace INTV.Core.Model
         /// 2. ROM-specific metadata
         ///   a. LUIGI metadata check
         ///   b. ROM ID tag metadata check
-        /// 3. intvname utility check (which has its own internal order-of-precedence, and should cover .bin+cfg)
+        ///   c. CFGVAR metadata check
+        /// 3. intvname utility check (which has its own internal order-of-precedence, likely overlapping with this)
         /// If multiple sources are available, an attempt is made to merge the results.</remarks>
         public static IProgramInformation GetProgramInformation(this IRom rom)
         {
@@ -142,19 +144,41 @@ namespace INTV.Core.Model
             {
                 metadataProgramInfo = rom.GetBinFileMetadata();
             }
-            IProgramInformation intvNameInfo = null;
-            if (programInfo == null)
+
+            var programInfoData = rom.GetRomInformation();
+            var programName = programInfoData.GetRomInfoString(RomInfoIndex.Name);
+            var programYear = programInfoData.GetRomInfoString(RomInfoIndex.Copyright);
+            var programShortName = programInfoData.GetRomInfoString(RomInfoIndex.ShortName);
+            var intvNameInfo = new UserSpecifiedProgramInformation(rom.Crc, programName, programYear, rom.GetProgramFeatures());
+            if (programInfoData.Any(s => !string.IsNullOrEmpty(s)))
             {
-                var programInfoData = rom.GetRomInformation();
-                var programName = programInfoData.GetRomInfoString(RomInfoIndex.Name);
-                var programYear = programInfoData.GetRomInfoString(RomInfoIndex.Copyright);
-                intvNameInfo = new UserSpecifiedProgramInformation(rom.Crc, programName, programYear, rom.GetProgramFeatures());
-                var programShortName = programInfoData.GetRomInfoString(RomInfoIndex.ShortName);
                 if (!string.IsNullOrEmpty(programShortName))
                 {
                     intvNameInfo.ShortName = programShortName;
                 }
+
+                if (programInfo != null)
+                {
+                    // If we have a database entry, which is the ultimate arbiter of "known" -- either a-priory, or as specified
+                    // explicitly by the user as a new entry for the database, then strip the "unrecognized-ness" from the intvname
+                    // data.  Presumably, the database entry specified these values. We do not want to re-mark the features as unknown
+                    // when merging intvname information into a database entry's information. The ROM metadata that can be directly
+                    // harvested from a program, however, does not track these aspects of a program, hence we will retain the values
+                    // in the situation where we may have nearly complete feature data about a program aside from what the database tracks.
+                    intvNameInfo.Features.ClearUnrecongizedRomFeatures();
+                }
             }
+            else if ((programInfo != null) || (metadataProgramInfo != null))
+            {
+                intvNameInfo = null;
+            }
+
+            if ((programInfo == null) && (metadataProgramInfo != null))
+            {
+                // Mark features with unrecognized settings, since we don't have a database entry.
+                metadataProgramInfo.Features.SetUnrecongizedRomFeatures();
+            }
+
             var primaryInfo = programInfo ?? metadataProgramInfo ?? intvNameInfo;
             var secondaryInfo = object.ReferenceEquals(primaryInfo, metadataProgramInfo) ? intvNameInfo : metadataProgramInfo ?? intvNameInfo;
             var tertiaryInfo = object.ReferenceEquals(secondaryInfo, intvNameInfo) ? null : intvNameInfo;
@@ -178,6 +202,7 @@ namespace INTV.Core.Model
             {
                 programInfo = primaryInfo;
             }
+
             return programInfo;
         }
 
@@ -602,7 +627,7 @@ namespace INTV.Core.Model
                     case RomFormat.Intellicart:
                     case RomFormat.CuttleCart3:
                     case RomFormat.CuttleCart3Advanced:
-                        rom.GetRomFileMetadata();
+                        programMetadata = rom.GetRomFileMetadata();
                         break;
                     case RomFormat.Luigi:
                         programMetadata = programMetadata = rom.GetLuigiFileMetadata();

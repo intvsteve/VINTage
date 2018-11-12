@@ -32,6 +32,8 @@ namespace INTV.Core.Tests.Model
 {
     public class IRomHelpersTests
     {
+        #region GetProgramFeatures Tests
+
         [Fact]
         public void IRomHelpers_GetProgramFeaturesWithNullRom_ThrowsNullReferenceException()
         {
@@ -66,6 +68,10 @@ namespace INTV.Core.Tests.Model
             Assert.NotEqual(ProgramFeatures.GetUnrecognizedRomFeatures(), features);
         }
 
+        #endregion // GetProgramFeatures Tests
+
+        #region GetProgramInformation Tests
+
         [Fact]
         public void IRomHelpers_GetProgramInformationWithNullRom_ThrowsNullReferenceException()
         {
@@ -88,8 +94,15 @@ namespace INTV.Core.Tests.Model
                 EnsureDatabaseEntryNotPresent(TestRomResources.TestBinCrc);
                 var programInformation = rom.GetProgramInformation();
 
-                VerifyProgramInformation(programInformation, ProgramInformationOrigin.UserDefined, TestRomResources.TestBinCrc, INTV.Core.Resources.Strings.ProgramInformation_DefaultTitle,
-                                         string.Empty, null, ProgramFeatures.GetUnrecognizedRomFeatures(), null);
+                VerifyProgramInformation(
+                    programInformation,
+                    ProgramInformationOrigin.UserDefined,
+                    TestRomResources.TestBinCrc,
+                    INTV.Core.Resources.Strings.ProgramInformation_DefaultTitle,
+                    string.Empty,
+                    null,
+                    ProgramFeatures.GetUnrecognizedRomFeatures(),
+                    null);
             }
         }
 
@@ -110,8 +123,15 @@ namespace INTV.Core.Tests.Model
                 EnsureDatabaseEntryNotPresent(TestRomResources.TestBinCrc);
                 var programInformation = rom.GetProgramInformation();
 
-                VerifyProgramInformation(programInformation, ProgramInformationOrigin.UserDefined, TestRomResources.TestBinCrc, name,
-                                         date, shortName, ProgramFeatures.GetUnrecognizedRomFeatures(), null);
+                VerifyProgramInformation(
+                    programInformation,
+                    ProgramInformationOrigin.UserDefined,
+                    TestRomResources.TestBinCrc,
+                    name,
+                    date,
+                    shortName,
+                    ProgramFeatures.GetUnrecognizedRomFeatures(),
+                    null);
             }
         }
 
@@ -139,8 +159,15 @@ namespace INTV.Core.Tests.Model
                 EnsureDatabaseEntryNotPresent(TestRomResources.TestBinCrc);
                 var programInformation = rom.GetProgramInformation();
 
-                VerifyProgramInformation(programInformation, ProgramInformationOrigin.CfgVarMetadataBlock, TestRomResources.TestBinCrc, metadata.LongNames.First(),
-                                         metadata.ReleaseDates.First().Date.Year.ToString(CultureInfo.InvariantCulture), metadata.ShortNames.First(), expectedProgramFeatures, metadata.Publishers.First());
+                VerifyProgramInformation(
+                    programInformation,
+                    ProgramInformationOrigin.CfgVarMetadataBlock,
+                    TestRomResources.TestBinCrc,
+                    metadata.LongNames.First(),
+                    metadata.ReleaseDates.First().Date.Year.ToString(CultureInfo.InvariantCulture),
+                    metadata.ShortNames.First(),
+                    expectedProgramFeatures,
+                    metadata.Publishers.First());
             }
         }
 
@@ -168,8 +195,15 @@ namespace INTV.Core.Tests.Model
                 EnsureDatabaseEntryNotPresent(TestRomResources.TestBinCrc);
                 var programInformation = rom.GetProgramInformation();
 
-                VerifyProgramInformation(programInformation, ProgramInformationOrigin.CfgVarMetadataBlock, TestRomResources.TestBinCrc, metadata.LongNames.First(),
-                                         metadata.ReleaseDates.First().Date.Year.ToString(CultureInfo.InvariantCulture), metadata.ShortNames.First(), expectedProgramFeatures, metadata.Publishers.First());
+                VerifyProgramInformation(
+                    programInformation,
+                    ProgramInformationOrigin.CfgVarMetadataBlock,
+                    TestRomResources.TestBinCrc,
+                    metadata.LongNames.First(),
+                    metadata.ReleaseDates.First().Date.Year.ToString(CultureInfo.InvariantCulture),
+                    metadata.ShortNames.First(),
+                    expectedProgramFeatures,
+                    metadata.Publishers.First());
             }
         }
 
@@ -197,8 +231,15 @@ namespace INTV.Core.Tests.Model
             {
                 var programInformation = rom.GetProgramInformation();
 
-                VerifyProgramInformation(programInformation, ProgramInformationOrigin.None, TestRomResources.TestRomCrc, testRomInfo.Title,
-                    testRomInfo.Year, testRomInfo.ShortName, testRomInfo.Features, testRomInfo.Vendor);
+                VerifyProgramInformation(
+                    programInformation,
+                    ProgramInformationOrigin.None,
+                    TestRomResources.TestRomCrc,
+                    testRomInfo.Title,
+                    testRomInfo.Year,
+                    testRomInfo.ShortName,
+                    testRomInfo.Features,
+                    testRomInfo.Vendor);
             }
         }
 
@@ -226,8 +267,15 @@ namespace INTV.Core.Tests.Model
             {
                 var programInformation = rom.GetProgramInformation();
 
-                VerifyProgramInformation(programInformation, ProgramInformationOrigin.None, TestRomResources.TestBinCrc, testRomInfo.Title,
-                    testRomInfo.Year, testRomInfo.ShortName, testRomInfo.Features, testRomInfo.Vendor);
+                VerifyProgramInformation(
+                    programInformation,
+                    ProgramInformationOrigin.None,
+                    TestRomResources.TestBinCrc,
+                    testRomInfo.Title,
+                    testRomInfo.Year,
+                    testRomInfo.ShortName,
+                    testRomInfo.Features,
+                    testRomInfo.Vendor);
             }
         }
 
@@ -259,8 +307,15 @@ namespace INTV.Core.Tests.Model
             {
                 var programInformation = rom.GetProgramInformation();
 
-                VerifyProgramInformation(programInformation, ProgramInformationOrigin.None, TestRomResources.TestRomMetadataCrc, testRomInfo.Title,
-                    testRomInfo.Year, testRomInfo.ShortName, expectedFeatures, testRomInfo.Vendor);
+                VerifyProgramInformation(
+                    programInformation,
+                    ProgramInformationOrigin.None,
+                    TestRomResources.TestRomMetadataCrc,
+                    testRomInfo.Title,
+                    testRomInfo.Year,
+                    testRomInfo.ShortName,
+                    expectedFeatures,
+                    testRomInfo.Vendor);
             }
         }
 
@@ -292,8 +347,15 @@ namespace INTV.Core.Tests.Model
             {
                 var programInformation = rom.GetProgramInformation();
 
-                VerifyProgramInformation(programInformation, ProgramInformationOrigin.None, TestRomResources.TestBinCrc, testRomInfo.Title,
-                    testRomInfo.Year, testRomInfo.ShortName, expectedFeatures, testRomInfo.Vendor);
+                VerifyProgramInformation(
+                    programInformation,
+                    ProgramInformationOrigin.None,
+                    TestRomResources.TestBinCrc,
+                    testRomInfo.Title,
+                    testRomInfo.Year,
+                    testRomInfo.ShortName,
+                    expectedFeatures,
+                    testRomInfo.Vendor);
             }
         }
 
@@ -338,13 +400,99 @@ Year = 2112
             {
                 var programInformation = rom.GetProgramInformation();
 
-                VerifyProgramInformation(programInformation, ProgramInformationOrigin.None, TestRomResources.TestBinCrc, "Rootin Tootin",
-                    testRomInfo.Year, intvnameShortName, metadata.Features, testRomInfo.Vendor);
+                VerifyProgramInformation(
+                    programInformation,
+                    ProgramInformationOrigin.None,
+                    TestRomResources.TestBinCrc,
+                    "Rootin Tootin",
+                    testRomInfo.Year,
+                    intvnameShortName,
+                    metadata.Features,
+                    testRomInfo.Vendor);
             }
         }
 
-        private void VerifyProgramInformation(IProgramInformation programInformation, ProgramInformationOrigin expectedOrigin, uint expectedCrc, string expectedTitle,
-                                              string expectedYear, string expectedShortName, IProgramFeatures expectedProgramFeatures, string expectedVendor)
+        #endregion // GetProgramInformation Tests
+
+        #region CanExecuteOnDevice Tests
+
+        [Fact]
+        public void IRomHelpers_CanExecuteOnDeviceWithNullRom_ReturnsTrue()
+        {
+            Assert.True(IRomHelpers.CanExecuteOnDevice(null, null));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice0UniqueId)]
+        public void IRomHelpers_CanExecuteOnDeviceWithNonLuigiRom_ReturnsTrue(string deviceId)
+        {
+            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestAdvPath);
+            var rom = Rom.Create(TestRomResources.TestAdvPath, null);
+            Assert.NotNull(rom);
+
+            Assert.True(rom.CanExecuteOnDevice(deviceId));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("Not a valid Device Unique ID")]
+        [InlineData(LuigiScrambleKeyBlock.AnyLTOFlashId)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice0UniqueId)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice1UniqueId)]
+        public void IRomHelpers_CanExecuteOnDeviceWithNonScrambledLuigiRom_ReturnsTrue(string deviceId)
+        {
+            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiFromRomPath);
+            var rom = Rom.Create(TestRomResources.TestLuigiFromRomPath, null);
+            Assert.NotNull(rom);
+
+            Assert.True(rom.CanExecuteOnDevice(deviceId));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("Not a valid Device Unique ID")]
+        [InlineData(LuigiScrambleKeyBlock.AnyLTOFlashId)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice0UniqueId)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice1UniqueId)]
+        public void IRomHelpers_CanExecuteOnDeviceWithScrambledForAnyLuigiRom_ReturnsTrue(string deviceId)
+        {
+            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForAnyDevicePath);
+            var rom = Rom.Create(TestRomResources.TestLuigiScrambledForAnyDevicePath, null);
+            Assert.NotNull(rom);
+
+            Assert.True(rom.CanExecuteOnDevice(deviceId));
+        }
+
+        [Theory]
+        [InlineData(null, true)] // TODO: Is this a bug?
+        [InlineData("", true)] // TODO: Is this a bug?
+        [InlineData("Not a valid Device Unique ID", false)]
+        [InlineData(LuigiScrambleKeyBlock.AnyLTOFlashId, false)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice0UniqueId, false)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice1UniqueId, true)]
+        public void IRomHelpers_CanExecuteOnDeviceWithScrambledForSpecificLuigiRom_ReturnsTrue(string deviceId, bool expectedCanExecuteOnDevice)
+        {
+            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForDevice1Path);
+            var rom = Rom.Create(TestRomResources.TestLuigiScrambledForDevice1Path, null);
+            Assert.NotNull(rom);
+
+            Assert.Equal(expectedCanExecuteOnDevice, rom.CanExecuteOnDevice(deviceId));
+        }
+
+        #endregion // CanExecuteOnDevice Tests
+
+        private void VerifyProgramInformation(
+            IProgramInformation programInformation,
+            ProgramInformationOrigin expectedOrigin,
+            uint expectedCrc,
+            string expectedTitle,
+            string expectedYear,
+            string expectedShortName,
+            IProgramFeatures expectedProgramFeatures,
+            string expectedVendor)
         {
             Assert.NotNull(programInformation);
             Assert.Equal(expectedOrigin, programInformation.DataOrigin);

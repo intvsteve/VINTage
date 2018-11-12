@@ -103,6 +103,7 @@ namespace INTV.Core.Model
         public static ProgramFeatures GetProgramFeatures(this IRom rom)
         {
             var features = ProgramFeatures.GetUnrecognizedRomFeatures();
+
             // TODO: Add support for CFGVAR and ROM metadata features!
             if (rom.Format == RomFormat.Luigi)
             {

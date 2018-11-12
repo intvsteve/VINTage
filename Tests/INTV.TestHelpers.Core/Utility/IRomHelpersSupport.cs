@@ -54,7 +54,7 @@ namespace INTV.TestHelpers.Core.Utility
             {
                 if (infoStrings.Count >= (int)RomInfoIndex.Copyright + 1)
                 {
-                    infoStrings[(int)RomInfoIndex.Copyright] = copyright;
+                    infoStrings[(int)(RomInfoIndex.NumEntries - RomInfoIndex.Copyright - 1)] = copyright;
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace INTV.TestHelpers.Core.Utility
             {
                 if (infoStrings.Count >= (int)RomInfoIndex.Name + 1)
                 {
-                    infoStrings[(int)RomInfoIndex.Name] = name;
+                    infoStrings[(int)(RomInfoIndex.NumEntries - RomInfoIndex.Name - 1)] = name;
                 }
                 else
                 {

@@ -331,20 +331,38 @@ namespace INTV.Core.Model.Program
         /// <param name="features1">The first set of features.</param>
         /// <param name="features2">The second set of features.</param>
         /// <returns>The combined set of features.</returns>
-        /// <remarks>NOTE: Only basic consistency checks are done. The feature bits of each category are effectively ORed together.
+        /// <remarks>NOTE: Only basic consistency checks are done. The default behavior is to OR the feature bits of each category
+        /// together, with additional comparison against the default set of bits for the feature set. If the bits are different from
+        /// each other, and one set matches the default bits while the other does not, then the non-default bits "win".
         /// If both feature sets define a JLP Hardware version, the larger of the two versions is used.</remarks>
         public static ProgramFeatures Combine(ProgramFeatures features1, ProgramFeatures features2)
         {
             var combinedFeatures = EmptyFeatures.Clone();
             foreach (var feature in features1._features.Keys)
             {
-                var featureBits = features1._features[feature] | features2._features[feature];
+                var defaultFeatureBits = DefaultFeatures._features[feature];
+                var features1Bits = features1._features[feature];
+                var features2Bits = features2._features[feature];
+                var features1BitsMatchDefault = features1Bits == defaultFeatureBits;
+                var features2BitsMatchDefault = features2Bits == defaultFeatureBits;
+                var featureBits = features1Bits;
+                if (features1BitsMatchDefault && !features2BitsMatchDefault)
+                {
+                    featureBits = features2Bits;
+                }
+                else if (features2BitsMatchDefault && !features1BitsMatchDefault)
+                {
+                    featureBits = features1Bits;
+                }
+                else if (!features1BitsMatchDefault && !features2BitsMatchDefault)
+                {
+                    featureBits = features1Bits | features2Bits;
+                }
                 switch (feature)
                 {
                     case FeatureCategory.Ntsc:
                     case FeatureCategory.Pal:
                         // If we've combined "Tolerates" and "Enhances" we'll get "required", which, for video standards, is not suitable.
-                        // We may want to do this generally for 
                         featureBits = (uint)((FeatureCompatibility)featureBits).CoerceVideoStandardCompatibility();
                         break;
                     case FeatureCategory.General:
@@ -354,9 +372,9 @@ namespace INTV.Core.Model.Program
                     default:
                         // For these, we don't want to have a 'tolerates' combine with 'enhances' to turn into 'requires', so, if
                         // one set contains only 'tolerates' and the other contains only 'enhances' then just keep 'enhances'.
-                        var feature1Compat = features1._features[feature] & FeatureCompatibilityHelpers.CompatibilityMask;
-                        var feature2Compat = features2._features[feature] & FeatureCompatibilityHelpers.CompatibilityMask;
-                        if ((feature1Compat ^ feature2Compat) == (uint)FeatureCompatibility.Requires)
+                        var feature1Compat = features1Bits & FeatureCompatibilityHelpers.CompatibilityMask;
+                        var feature2Compat = features2Bits & FeatureCompatibilityHelpers.CompatibilityMask;
+                        if ((feature1Compat != 0) && (feature2Compat != 0) && ((feature1Compat ^ feature2Compat) == (uint)FeatureCompatibility.Requires))
                         {
                             // Retain 'enhances' only.
                             featureBits &= (uint)~FeatureCompatibility.Tolerates;

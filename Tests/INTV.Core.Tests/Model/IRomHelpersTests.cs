@@ -676,6 +676,38 @@ Year = 2112
 
         #endregion // GetLuigiHeader Tests
 
+        #region IsAlternateRom Tests
+
+        [Fact]
+        public void IRomHelpers_IsAlternateRomOnNullRom_ReturnsFalse()
+        {
+            Assert.False(IRomHelpers.IsAlternateRom(null));
+        }
+
+        [Fact]
+        public void IRomHelpers_IsAlternateRomOnRomFormatRom_ReturnsFalse()
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath).First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+
+            Assert.False(rom.IsAlternateRom());
+        }
+
+        [Fact]
+        public void IRomHelpers_IsAlternateRomOnAlternateRom_ReturnsTrue()
+        {
+            var romPaths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestRomPath).ToList();
+            var originalRom = Rom.Create(romPaths[0], null);
+            Assert.NotNull(originalRom);
+            var rom = new AlternateRom(romPaths[1], null, originalRom);
+            Assert.NotNull(rom);
+
+            Assert.True(rom.IsAlternateRom());
+        }
+
+        #endregion // IsAlternateRom Tests
+
         private void VerifyProgramInformation(
             IProgramInformation programInformation,
             ProgramInformationOrigin expectedOrigin,

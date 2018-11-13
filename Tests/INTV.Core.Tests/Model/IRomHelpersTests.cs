@@ -484,6 +484,43 @@ Year = 2112
 
         #endregion // CanExecuteOnDevice Tests
 
+        #region GetStockCfgFilePath Tests
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(10)]
+        [InlineData(123456)]
+        public void IRomHelpers_GetStockCfgFilePathWithInvalidStockPathNumber_ReturnsNull(int stockCfgFileNumber)
+        {
+            string toolsDir;
+            IRomHelpersTestStorageAccess.Initialize(null).WithDefaultToolsDirectory(out toolsDir);
+
+            Assert.Null(IRomHelpers.GetStockCfgFilePath(stockCfgFileNumber));
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        public void IRomHelpers_GetStockCfgFilePath_ReturnsValidPath(int stockCfgFileNumber)
+        {
+            var storageAccess = IRomHelpersTestStorageAccess.Initialize(null).WithStockCfgResources();
+
+            var stockCfgFilePath = IRomHelpers.GetStockCfgFilePath(stockCfgFileNumber);
+
+            Assert.False(string.IsNullOrEmpty(stockCfgFilePath));
+            Assert.True(storageAccess.Exists(stockCfgFilePath));
+        }
+
+        #endregion // GetStockCfgFilePath
+
         private void VerifyProgramInformation(
             IProgramInformation programInformation,
             ProgramInformationOrigin expectedOrigin,

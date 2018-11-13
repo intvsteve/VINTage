@@ -581,6 +581,39 @@ Year = 2112
 
         #endregion // EnsureCfgFileProvided Tests
 
+        #region GetLuigiFileMetadata Tests
+
+        [Fact]
+        public void IRomHelpers_GetLuigiFileMetadataFromNullRom_ReturnsNull()
+        {
+            Assert.Null(IRomHelpers.GetLuigiFileMetadata(null));
+        }
+
+        [Fact]
+        public void IRomHelpers_GetLuigiFileMetadataFromNonLuigiRom_ReturnsNull()
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath).First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+
+            Assert.Null(rom.GetLuigiFileMetadata());
+        }
+
+        [Fact]
+        public void IRomHelpers_GetLuigiFileMetadataFromCorruptedLuigiFile_ThrowsNullReferenceException()
+        {
+            IEnumerable<string> paths;
+            var storageAccess = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(out paths, TestRomResources.TestLuigiWithExtraNullBytePath);
+            var romPath = paths.First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+            Assert.True(storageAccess.IntroduceCorruption(romPath));
+
+            Assert.Throws<NullReferenceException>(() => rom.GetLuigiFileMetadata());
+        }
+
+        #endregion // GetLuigiFileMetadata Tests
+
         private void VerifyProgramInformation(
             IProgramInformation programInformation,
             ProgramInformationOrigin expectedOrigin,

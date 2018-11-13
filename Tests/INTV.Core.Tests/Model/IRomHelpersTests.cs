@@ -614,6 +614,68 @@ Year = 2112
 
         #endregion // GetLuigiFileMetadata Tests
 
+        #region GetLuigiHeader Tests
+
+        [Fact]
+        public void IRomHelpers_GetLuigiHeaderWithNullRom_ReturnsNull()
+        {
+            Assert.Null(IRomHelpers.GetLuigiHeader(null));
+        }
+
+        [Fact]
+        public void IRomHelpers_GetLuigiHeaderWithNonLuigiRomFormat_ReturnsNull()
+        {
+            var rom = EdgeCaseTestingRom.CreateTestingRom(null).WithFormat(RomFormat.None);
+
+            Assert.Null(IRomHelpers.GetLuigiHeader(null));
+        }
+
+        [Fact]
+        public void IRomHelpers_GetLuigiHeaderWithLuigiRomFormatButNullPath_ReturnsNull()
+        {
+            var rom = EdgeCaseTestingRom.CreateTestingRom(null).WithFormat(RomFormat.Luigi);
+
+            Assert.Null(IRomHelpers.GetLuigiHeader(null));
+        }
+
+        [Fact]
+        public void IRomHelpers_GetLuigiHeaderWithLuigiRomFormatAndNonexistentPath_ReturnsNull()
+        {
+            IRomHelpersTestStorageAccess.Initialize(null);
+            var rom = EdgeCaseTestingRom.CreateTestingRom("/Resources/IRomHelpers_GetLuigiHeaderWithLuigiRomFormatAndNonexistentPath_ReturnsNull.luigi").WithFormat(RomFormat.Luigi);
+
+            Assert.Null(IRomHelpers.GetLuigiHeader(null));
+        }
+
+        [Fact]
+        public void IRomHelpers_GetLuigiHeaderWithLuigiFormatRomFormatWithCorruptHeader_ReturnsNull()
+        {
+            IEnumerable<string> paths;
+            var storageAccess = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(out paths, TestRomResources.TestLuigiWithBadHeaderCrcPath);
+            var romPath = paths.First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+            using (var file = storageAccess.Open(romPath))
+            {
+                file.WriteByte(1);
+            }
+            storageAccess.SetLastWriteTimeUtc(romPath, DateTime.UtcNow.AddSeconds(12.3));
+
+            Assert.Null(rom.GetLuigiHeader());
+        }
+
+        [Fact]
+        public void IRomHelpers_GetLuigiHeaderWithLuigiFormatRom_ReturnsValidLuigiHeader()
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiFromRomPath).First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+
+            Assert.NotNull(rom.GetLuigiHeader());
+        }
+
+        #endregion // GetLuigiHeader Tests
+
         private void VerifyProgramInformation(
             IProgramInformation programInformation,
             ProgramInformationOrigin expectedOrigin,
@@ -781,6 +843,86 @@ Year = 2112
             }
 
             #endregion // IProgramInformation
+        }
+
+        private class EdgeCaseTestingRom : Rom
+        {
+            /// <inheritdoc />
+            public override RomFormat Format { get; protected set; }
+
+            /// <inheritdoc />
+            public override string RomPath { get; protected set; }
+
+            /// <inheritdoc />
+            public override string ConfigPath { get; protected set; }
+
+            /// <inheritdoc />
+            public override bool IsValid { get; protected set; }
+
+            /// <inheritdoc />
+            public override uint Crc
+            {
+                get { return _crc; }
+            }
+            private uint _crc;
+
+            /// <inheritdoc />
+            public override uint CfgCrc
+            {
+                get { return _cfgCrc; }
+            }
+            private uint _cfgCrc;
+
+            public override bool Validate()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override uint RefreshCrc(out bool changed)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override uint RefreshCfgCrc(out bool changed)
+            {
+                throw new NotImplementedException();
+            }
+
+            public static EdgeCaseTestingRom CreateTestingRom(string romPath)
+            {
+                var rom = new EdgeCaseTestingRom() { RomPath = romPath };
+                return rom;
+            }
+
+            public EdgeCaseTestingRom WithFormat(RomFormat format)
+            {
+                Format = format;
+                return this;
+            }
+
+            public EdgeCaseTestingRom WithConfigPath(string configPath)
+            {
+                ConfigPath = configPath;
+                return this;
+            }
+
+            public EdgeCaseTestingRom WithValidity(bool isValid)
+            {
+                IsValid = isValid;
+                return this;
+            }
+
+            public EdgeCaseTestingRom WithCrc(uint crc)
+            {
+                _crc = crc;
+                return this;
+            }
+
+            public EdgeCaseTestingRom WithCfgCrc(uint cfgCrc)
+            {
+                _cfgCrc = cfgCrc;
+                return this;
+            }
         }
     }
 }

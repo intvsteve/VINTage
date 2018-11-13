@@ -521,6 +521,66 @@ Year = 2112
 
         #endregion // GetStockCfgFilePath
 
+        #region EnsureCfgFileProvided Tests
+
+        [Fact]
+        public void IRomHelpers_EnsureCfgFileProvidedWithNullRom_ThrowsNullReferenceException()
+        {
+            Assert.Throws<NullReferenceException>(() => IRomHelpers.EnsureCfgFileProvided(null, null));
+        }
+
+        [Theory]
+        [InlineData(TestRomResources.TestLuigiWithMetadataPath)]
+        [InlineData(TestRomResources.TestRomPath)]
+        [InlineData(TestRomResources.TestCc3Path)]
+        [InlineData(TestRomResources.TestAdvPath)]
+        public void IRomHelpers_EnsureCfgFileProvidedWithNonBinFormatRomAndNoProgramInformation_ReturnsFalse(string romResourcePath)
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(romResourcePath).First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+
+            Assert.False(rom.EnsureCfgFileProvided(null));
+        }
+
+        [Theory]
+        [InlineData(TestRomResources.TestLuigiWithMetadataPath)]
+        [InlineData(TestRomResources.TestRomMetadataPath)]
+        public void IRomHelpers_EnsureCfgFileProvidedWithNonBinFormatRomWithProgramInformation_ReturnsFalse(string romResourcePath)
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(romResourcePath).First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+            var programInformation = rom.GetProgramMetadata() as IProgramInformation;
+            Assert.NotNull(programInformation);
+
+            Assert.False(rom.EnsureCfgFileProvided(null));
+        }
+
+        [Fact]
+        public void IRomHelpers_EnsureCfgFileProvidedWhenStockCfgMissing_ReturnsFalse()
+        {
+            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestBinPath).WithStockCfgResources(new[] { 0 });
+            var rom = Rom.Create(TestRomResources.TestBinPath, null);
+            Assert.NotNull(rom);
+
+            Assert.False(rom.EnsureCfgFileProvided(null));
+        }
+
+        [Fact]
+        public void IRomHelpers_EnsureCfgFileProvidedWhenStockCfgPresent_ReturnsTrue()
+        {
+            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestBinPath).WithStockCfgResources();
+            var rom = Rom.Create(TestRomResources.TestBinPath, null);
+            Assert.NotNull(rom);
+
+            Assert.True(rom.EnsureCfgFileProvided(null));
+            Assert.False(string.IsNullOrEmpty(rom.ConfigPath));
+            Assert.NotEqual(0u, rom.CfgCrc);
+        }
+
+        #endregion // EnsureCfgFileProvided Tests
+
         private void VerifyProgramInformation(
             IProgramInformation programInformation,
             ProgramInformationOrigin expectedOrigin,

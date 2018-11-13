@@ -20,8 +20,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using INTV.Core.Model;
+using INTV.Core.Model.Program;
 using INTV.Core.Utility;
 
 namespace INTV.TestHelpers.Core.Utility
@@ -113,27 +116,49 @@ namespace INTV.TestHelpers.Core.Utility
         /// <summary>
         /// Registers the stock config files deployed with INTV.Core to be accessible via test code.
         /// </summary>
+        /// <param name="stockCfgFileNumbersToExclude">If non-empty, indicates stock CFG files to leave out of the storage.</param>
         /// <returns>This instance.</returns>
-        public T WithStockCfgResources()
+        public T WithStockCfgResources(IEnumerable<int> stockCfgFileNumbersToExclude = null)
         {
             string toolsFilesLocation;
             WithDefaultToolsDirectory(out toolsFilesLocation);
+            var stockCfgFilesToExclude = Enumerable.Empty<string>();
+            if (stockCfgFileNumbersToExclude != null)
+            {
+                stockCfgFilesToExclude = stockCfgFileNumbersToExclude.Select(n => Path.ChangeExtension(n.ToString(CultureInfo.InvariantCulture), ProgramFileKind.CfgFile.FileExtension()));
+            }
             foreach (var toolsFile in Directory.EnumerateFiles(toolsFilesLocation))
             {
-                using (var fileStream = new FileStream(toolsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                var exclude = stockCfgFilesToExclude.Contains(Path.GetFileName(toolsFile));
+                if (exclude)
                 {
-                    // register twice so we don't need to care about file separators.
-                    var stream = Open(toolsFile);
-                    fileStream.CopyTo(stream);
-                    _streamsCache.Add(stream);
-                    stream.Seek(0, SeekOrigin.Begin);
-
+                    if (Exists(toolsFile))
+                    {
+                        Rename(toolsFile, toolsFile + ".ded");
+                    }
                     var toolsFileCopy = toolsFile.Replace('/', '\\');
-                    stream = Open(toolsFileCopy);
-                    fileStream.Seek(0, SeekOrigin.Begin);
-                    fileStream.CopyTo(stream);
-                    _streamsCache.Add(stream);
-                    stream.Seek(0, SeekOrigin.Begin);
+                    if (Exists(toolsFileCopy))
+                    {
+                        Rename(toolsFileCopy, toolsFileCopy + ".ded");
+                    }
+                }
+                else
+                {
+                    using (var fileStream = new FileStream(toolsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        // register twice so we don't need to care about file separators.
+                        var stream = Open(toolsFile);
+                        fileStream.CopyTo(stream);
+                        _streamsCache.Add(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+
+                        var toolsFileCopy = toolsFile.Replace('/', '\\');
+                        stream = Open(toolsFileCopy);
+                        fileStream.Seek(0, SeekOrigin.Begin);
+                        fileStream.CopyTo(stream);
+                        _streamsCache.Add(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+                    }
                 }
             }
             return _self;

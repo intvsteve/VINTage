@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
@@ -444,7 +445,7 @@ namespace INTV.Core.Model
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="stockConfigFileNumber"/> is less than zero.</exception>
         public static string GetStockCfgFilePath(int stockConfigFileNumber)
         {
-            var stockCfgFileName = stockConfigFileNumber.ToString() + ProgramFileKind.CfgFile.FileExtension();
+            var stockCfgFileName = stockConfigFileNumber.ToString(CultureInfo.InvariantCulture) + ProgramFileKind.CfgFile.FileExtension();
             var stockCfgUri = new Uri(DefaultToolsDirectory + stockCfgFileName);
             var stockCfgFilePath = Uri.UnescapeDataString(stockCfgUri.AbsolutePath); // Need to unescape spaces.
 #if WIN
@@ -463,23 +464,23 @@ namespace INTV.Core.Model
         }
 
         /// <summary>
-        /// Ensures that a configuration file can be located for a given ROM. If the ROM does not already specify one, the best possible matching file is returned.
+        /// Ensures that a configuration file can be located for a given ROM.
         /// </summary>
         /// <param name="rom">A ROM that may need a configuration (.cfg) file.</param>
         /// <param name="programInfo">Detailed <see cref="IProgramInformation"/> providing detailed data about the ROM.</param>
-        /// <returns>An absolute path to the best known configuration file for <paramref name="rom"/>, using a stock file if necessary.</returns>
-        /// <remarks>If a ROM requires a configuration file, but one cannot be found, the best possible matching file will be supplied. This is only applicable
+        /// <returns><c>true</c> if <paramref name="rom"/> uses an existing stock CFG file, <c>false</c> otherwise.</returns>
+        /// <remarks>If a ROM requires a configuration file, but one cannot be found, the best possible matching file will be searched for. This is only applicable
         /// to .bin format ROMs (or their compatriots, .itv and .int files, typically). If <paramref name="rom"/> either does not provide a .cfg file, or
         /// the file it provides cannot be found, the best possible match based on <paramref name="programInfo"/> will be used. If <paramref name="programInfo"/>
-        /// is also null, the CRC of the ROM will be checked against the active ROM database in memory for a possible stock .cfg file match, and a path to a
-        /// stock file will be returned.</remarks>
+        /// is also null, the CRC of the ROM will be checked against the active ROM database in memory for a possible stock .cfg file match. If the matching
+        /// stock file is found, then the function returns <c>true</c>.</remarks>
         public static bool EnsureCfgFileProvided(this IRom rom, IProgramInformation programInfo)
         {
             var usesStockCfgFile = false;
             if ((rom.Format == RomFormat.Bin) && (string.IsNullOrEmpty(rom.ConfigPath) || !StreamUtilities.FileExists(rom.ConfigPath)))
             {
                 var cfgFilePath = GetStockCfgFile(rom.Crc, rom.RomPath, programInfo);
-                usesStockCfgFile = !string.IsNullOrEmpty(cfgFilePath) && StreamUtilities.FileExists(cfgFilePath);
+                usesStockCfgFile = !string.IsNullOrEmpty(cfgFilePath); // && StreamUtilities.FileExists(cfgFilePath); // GetStockCfgFile() never returns a non-empty path if the file does not exist
                 if (usesStockCfgFile)
                 {
                     rom.UpdateCfgFile(cfgFilePath);

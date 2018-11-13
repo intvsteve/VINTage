@@ -88,35 +88,52 @@ namespace INTV.TestHelpers.Core.Utility
         }
 
         /// <summary>
-        /// Registers the stock config files deployed with INTV.Core to be accessible via test code.
+        /// Registers the tools location.
         /// </summary>
+        /// <param name="toolsFilesLocation">Receives the tools location directory.</param>
         /// <returns>This instance.</returns>
-        public T WithStockCfgResources()
+        public T WithDefaultToolsDirectory(out string toolsFilesLocation)
         {
+            toolsFilesLocation = null;
             var codeBase = typeof(IRomHelpers).Assembly.CodeBase;
             var toolsFilesLocationUriPath = Path.Combine(Path.GetDirectoryName(codeBase), "tools\\");
             Uri toolsFilesLocationUri;
             if (Uri.TryCreate(toolsFilesLocationUriPath, UriKind.Absolute, out toolsFilesLocationUri))
             {
-                var toolsFilesLocation = Uri.UnescapeDataString(toolsFilesLocationUri.AbsolutePath); // Need to unescape spaces.
+                toolsFilesLocation = Uri.UnescapeDataString(toolsFilesLocationUri.AbsolutePath); // Need to unescape spaces.
                 IRomHelpers.SetConfigurationEntry(IRomHelpers.DefaultToolsDirectoryKey, toolsFilesLocation);
-                foreach (var toolsFile in Directory.EnumerateFiles(toolsFilesLocation))
-                {
-                    using (var fileStream = new FileStream(toolsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    {
-                        // register twice so we don't need to care about file separators.
-                        var stream = Open(toolsFile);
-                        fileStream.CopyTo(stream);
-                        _streamsCache.Add(stream);
-                        stream.Seek(0, SeekOrigin.Begin);
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+            return _self;
+        }
 
-                        var toolsFileCopy = toolsFile.Replace('/', '\\');
-                        stream = Open(toolsFileCopy);
-                        fileStream.Seek(0, SeekOrigin.Begin);
-                        fileStream.CopyTo(stream);
-                        _streamsCache.Add(stream);
-                        stream.Seek(0, SeekOrigin.Begin);
-                    }
+        /// <summary>
+        /// Registers the stock config files deployed with INTV.Core to be accessible via test code.
+        /// </summary>
+        /// <returns>This instance.</returns>
+        public T WithStockCfgResources()
+        {
+            string toolsFilesLocation;
+            WithDefaultToolsDirectory(out toolsFilesLocation);
+            foreach (var toolsFile in Directory.EnumerateFiles(toolsFilesLocation))
+            {
+                using (var fileStream = new FileStream(toolsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    // register twice so we don't need to care about file separators.
+                    var stream = Open(toolsFile);
+                    fileStream.CopyTo(stream);
+                    _streamsCache.Add(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    var toolsFileCopy = toolsFile.Replace('/', '\\');
+                    stream = Open(toolsFileCopy);
+                    fileStream.Seek(0, SeekOrigin.Begin);
+                    fileStream.CopyTo(stream);
+                    _streamsCache.Add(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
                 }
             }
             return _self;

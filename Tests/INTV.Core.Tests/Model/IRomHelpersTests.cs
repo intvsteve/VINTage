@@ -774,6 +774,63 @@ Year = 2112
 
         #endregion // GetTargetDeviceUniqueId Tests
 
+        #region OriginalRom Tests
+
+        [Fact]
+        public void IRomHelpers_OriginalRomOfNull_ReturnsNull()
+        {
+            Assert.Null(IRomHelpers.OriginalRom(null));
+        }
+
+        [Theory]
+        [InlineData(TestRomResources.TestBinPath)]
+        [InlineData(TestRomResources.TestRomPath)]
+        [InlineData(TestRomResources.TestAdvPath)]
+        [InlineData(TestRomResources.TestCc3Path)]
+        [InlineData(TestRomResources.TestLuigiFromBinPath)]
+        [InlineData(TestRomResources.TestLuigiFromRomPath)]
+        [InlineData(TestRomResources.TestLuigiWithMetadataPath)]
+        [InlineData(TestRomResources.TestLuigiScrambledForAnyDevicePath)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice0Path)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice1Path)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForAnyDevicePath)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForDevice0Path)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForDevice1Path)]
+        public void IRomHelpers_OriginalRomOfConcreteRomType_ReturnsInputRom(string romResourcePath)
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(romResourcePath).First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+
+            Assert.True(object.ReferenceEquals(rom, rom.OriginalRom()));
+        }
+
+        [Fact]
+        public void IRomHelpers_OriginalRomOfAlternate_ReturnsOriginal()
+        {
+            var romPaths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestRomPath).ToList();
+            var originalRom = Rom.Create(romPaths[0], null);
+            Assert.NotNull(originalRom);
+            var rom = new AlternateRom(romPaths[1], null, originalRom);
+            Assert.NotNull(rom);
+
+            Assert.True(object.ReferenceEquals(originalRom, rom.OriginalRom()));
+        }
+
+        [Fact]
+        public void IRomHelpers_OriginalRomOfXmlRom_ReturnsResolvedRom()
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomMetadataPath).First();
+            var rom = new XmlRom();
+            rom.UpdateRomPath(romPath);
+            Assert.True(rom.IsValid);
+            Assert.NotNull(rom.ResolvedRom);
+
+            Assert.True(object.ReferenceEquals(rom.ResolvedRom, rom.OriginalRom()));
+        }
+
+        #endregion // OriginalRom Tests
+
         private void VerifyProgramInformation(
             IProgramInformation programInformation,
             ProgramInformationOrigin expectedOrigin,

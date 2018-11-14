@@ -774,6 +774,86 @@ Year = 2112
 
         #endregion // GetTargetDeviceUniqueId Tests
 
+        #region MatchesProgramIdentifier Tests
+
+        [Fact]
+        public void IRomHelpers_MatchesProgramIdentifierOfNull_ReturnsFalse()
+        {
+            Assert.False(IRomHelpers.MatchesProgramIdentifier(null, new ProgramIdentifier(), false));
+        }
+
+        [Fact]
+        public void IRomHelpers_MatchesProgramIdentifierOfInvalidRomFormat_ThrowsInvalidOperationException()
+        {
+            IRomHelpersTestStorageAccess.Initialize(null);
+            var rom = EdgeCaseTestingRom.CreateTestingRom("/Resources/IRomHelpers_MatchesProgramIdentifierOfInvalidRomFormat_ThrowsInvalidOperationException.file").WithFormat(RomFormat.None);
+
+            Assert.Throws<InvalidOperationException>(() => rom.MatchesProgramIdentifier(ProgramIdentifier.Invalid, cfgCrcMustMatch: true));
+        }
+
+        public static IEnumerable<object[]> MatchesProgramIdentifierTestData
+        {
+            get
+            {
+                var testRomResources = new[]
+                {
+                    new Tuple<string, string, uint, uint>(TestRomResources.TestBinPath, TestRomResources.TestCfgMetadataPath, TestRomResources.TestBinCrc, TestRomResources.TestMetadataCfgCrc),
+                    new Tuple<string, string, uint, uint>(TestRomResources.TestRomPath, null, TestRomResources.TestRomCrc, TestRomResources.TestRomCrc),
+                    new Tuple<string, string, uint, uint>(TestRomResources.TestCc3Path, null, TestRomResources.TestCc3Crc, TestRomResources.TestCc3Crc),
+                    new Tuple<string, string, uint, uint>(TestRomResources.TestAdvPath, null, TestRomResources.TestAdvCrc, TestRomResources.TestAdvCrc),
+                    new Tuple<string, string, uint, uint>(TestRomResources.TestLuigiFromBinPath, null, TestRomResources.TestBinCrc, TestRomResources.TestCfgCrc),
+                    new Tuple<string, string, uint, uint>(TestRomResources.TestLuigiFromRomPath, null, TestRomResources.TestRomCrc, TestRomResources.TestRomCrc),
+                    new Tuple<string, string, uint, uint>(TestRomResources.TestLuigiScrambledForAnyDevicePath, null, TestRomResources.TestLuigiScrambledForAnyDeviceCrc, TestRomResources.TestLuigiScrambledForAnyDeviceCrc),
+                    new Tuple<string, string, uint, uint>(TestRomResources.TestLuigiScrambledForDevice0Path, null, TestRomResources.TestLuigiScrambledForDevice0Crc, TestRomResources.TestLuigiScrambledForDevice0Crc),
+                    new Tuple<string, string, uint, uint>(TestRomResources.TestLuigiWithZeroCrcsPath, null, 0u, 0u)
+                };
+
+                var cfgCrcMustMatchValues = new[] { false, true };
+                foreach (var testRomResource in testRomResources)
+                {
+                    foreach (var cfgCrcMustMatch in cfgCrcMustMatchValues)
+                    {
+                        for (var i = 0u; i < 2; ++i)
+                        {
+                            for (var j = 0u; j < 2; ++j)
+                            {
+                                var programIdentifier = new ProgramIdentifier(testRomResource.Item3 + i, testRomResource.Item4 + j);
+                                var expectedMatchResult = (programIdentifier.DataCrc == testRomResource.Item3) && (programIdentifier.DataCrc != TestRomResources.TestLuigiScrambledForAnyDeviceCrc) && (programIdentifier.DataCrc != TestRomResources.TestLuigiScrambledForDevice0Crc);
+                                if ((!string.IsNullOrEmpty(testRomResource.Item2) || testRomResource.Item1.EndsWith(".luigi")) && expectedMatchResult && cfgCrcMustMatch)
+                                {
+                                    // Only .bin format ROMs care about cfgCrc matching.
+                                    switch (testRomResource.Item3)
+                                    {
+                                        case TestRomResources.TestRomCrc:
+                                            break;
+                                        default:
+                                            expectedMatchResult = programIdentifier.OtherData == testRomResource.Item4;
+                                            break;
+                                    }
+                                }
+                                yield return new object[] { testRomResource.Item1, testRomResource.Item2, programIdentifier, cfgCrcMustMatch, expectedMatchResult };
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("MatchesProgramIdentifierTestData")]
+        public void IRomHelpers_MatchesProgramIdentifierForGivenRom_MatchesAsExpected(string romResourcePath, string cfgResourcePath, ProgramIdentifier programIdentifier, bool cfgCrcMustMatch, bool expectedMatchResult)
+        {
+            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(romResourcePath, cfgResourcePath).ToList();
+            var romPath = paths[0];
+            var cfgPath = string.IsNullOrEmpty(cfgResourcePath) ? null : paths[1];
+            var rom = Rom.Create(romPath, cfgPath);
+            Assert.NotNull(rom);
+
+            Assert.Equal(expectedMatchResult, rom.MatchesProgramIdentifier(programIdentifier, cfgCrcMustMatch));
+        }
+
+        #endregion // MatchesProgramIdentifier Tests
+
         #region MatchingRomFormat Tests
 
         [Fact]
@@ -1012,7 +1092,7 @@ Year = 2112
 
                 if (additionalResourcePaths != null)
                 {
-                    foreach (var additionalResourcePath in additionalResourcePaths)
+                    foreach (var additionalResourcePath in additionalResourcePaths.Where(p => !string.IsNullOrEmpty(p)))
                     {
                         fileExtension = Path.GetExtension(additionalResourcePath);
                         randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());

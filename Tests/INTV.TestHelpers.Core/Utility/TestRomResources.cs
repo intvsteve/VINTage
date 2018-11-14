@@ -83,8 +83,14 @@ namespace INTV.TestHelpers.Core.Utility
         /// <summary>Path for a .ROM format ROM created by using bin2rom --cc3 with <see cref="TestBinPath"/> and <see cref="TestCfgPath"/> as the input.</summary>
         public const string TestCc3Path = "/Resources/tagalong.cc3";
 
+        /// <summary>CRC32 of <see cref="TestCc3Path"/>.</summary>
+        public const uint TestCc3Crc = 0x511F0AD1;
+
         /// <summary>Path for a .ROM format ROM created by using bin2rom --adv (or was it hacked?) with <see cref="TestBinPath"/> and <see cref="TestCfgPath"/> as the input.</summary>
         public const string TestAdvPath = "/Resources/tagalong.adv";
+
+        /// <summary>CRC32 of <see cref="TestAdvPath"/>.</summary>
+        public const uint TestAdvCrc = 0xA56346FC;
 
         /// <summary>Path for a .ROM format ROM created by using bin2rom with <see cref="TestBinMetadataPath"/> and <see cref="TestCfgMetadataPath"/> as the input.</summary>
         public const string TestRomMetadataPath = "/Resources/tagalong_metadata.rom";
@@ -139,6 +145,9 @@ namespace INTV.TestHelpers.Core.Utility
         /// scrambled to work on any LTO Flash! - but scrambled nonetheless.</summary>
         public const string TestLuigiScrambledForAnyDevicePath = "/Resources/tagalong_any.luigi";
 
+        /// <summary>CRC32 of <see cref="TestLuigiScrambledForAnyDevicePath"/>.</summary>
+        public const uint TestLuigiScrambledForAnyDeviceCrc = 0x619CC8FA;
+
         /// <summary>Path for a .LUIGI format ROM created by using bin2luigi with <see cref="TestBinMetadataPath"/> and <see cref="TestCfgMetadataPath"/> as the input,
         /// scrambled to work on a specific LTO Flash!.</summary>
         public const string TestLuigiWithMetadatdaScrambledForAnyDevicePath = "/Resources/tagalong_metadata_any.luigi";
@@ -146,6 +155,9 @@ namespace INTV.TestHelpers.Core.Utility
         /// <summary>Path for a .LUIGI format ROM created by using bin2luigi with <see cref="TestBinPath"/> and <see cref="TestCfgPath"/> as the input,
         /// scrambled to work on a specific LTO Flash!.</summary>
         public const string TestLuigiScrambledForDevice0Path = "/Resources/tagalong_dev0.luigi";
+
+        /// <summary>CRC32 of <see cref="TestLuigiScrambledForDevice0Path"/>.</summary>
+        public const uint TestLuigiScrambledForDevice0Crc = 0xB7D6E9BB;
 
         /// <summary>The unique ID for which <see cref="TestLuigiScrambledForDevice0Path"/> is scrambled</summary>
         public const string TestLuigiScrambledForDevice0UniqueId = "471CE1A23325706E8F91CCDA1E5DB8E3";

@@ -741,6 +741,39 @@ Year = 2112
 
         #endregion // IsLtoFlashOnlyRom Tests
 
+        #region GetTargetDeviceUniqueId Tests
+
+        [Fact]
+        public void IRomHelpers_GetTargetDeviceUniqueIdWithNullRom_ReturnsNull()
+        {
+            Assert.Null(IRomHelpers.GetTargetDeviceUniqueId(null));
+        }
+
+        [Theory]
+        [InlineData(TestRomResources.TestBinPath, null)]
+        [InlineData(TestRomResources.TestRomPath, null)]
+        [InlineData(TestRomResources.TestAdvPath, null)]
+        [InlineData(TestRomResources.TestCc3Path, null)]
+        [InlineData(TestRomResources.TestLuigiFromBinPath, "")]
+        [InlineData(TestRomResources.TestLuigiFromRomPath, "")]
+        [InlineData(TestRomResources.TestLuigiWithMetadataPath, "")]
+        [InlineData(TestRomResources.TestLuigiScrambledForAnyDevicePath, LuigiScrambleKeyBlock.AnyLTOFlashId)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice0Path, TestRomResources.TestLuigiScrambledForDevice0UniqueId)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice1Path, TestRomResources.TestLuigiScrambledForDevice1UniqueId)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForAnyDevicePath, LuigiScrambleKeyBlock.AnyLTOFlashId)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForDevice0Path, TestRomResources.TestLuigiScrambledForDevice0UniqueId)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForDevice1Path, TestRomResources.TestLuigiScrambledForDevice1UniqueId)]
+        public void IRomHelpers_GetTargetDeviceUniqueId_ReturnsExpectedTargetUniqueId(string romResourcePath, string expectedtargetUniqueId)
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(romResourcePath).First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+
+            Assert.Equal(expectedtargetUniqueId, rom.GetTargetDeviceUniqueId());
+        }
+
+        #endregion // GetTargetDeviceUniqueId Tests
+
         private void VerifyProgramInformation(
             IProgramInformation programInformation,
             ProgramInformationOrigin expectedOrigin,

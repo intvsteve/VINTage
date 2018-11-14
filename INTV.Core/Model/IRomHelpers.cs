@@ -526,7 +526,7 @@ namespace INTV.Core.Model
         }
 
         /// <summary>
-        ///   Checks if the given ROM's format is compatible with the given format.
+        /// Checks if the given ROM's format is compatible with the given format.
         /// </summary>
         /// <param name="rom">The ROM whose format's compatibility is to be checked.</param>
         /// <param name="romFormat">The other ROM format.</param>
@@ -542,7 +542,7 @@ namespace INTV.Core.Model
                 if (!match && (rom.Format == RomFormat.Luigi) && considerOriginalFormat)
                 {
                     var luigiHeader = rom.GetLuigiHeader();
-                    match = (luigiHeader != null) && rom.Format.IsCompatibleWithRomFormat(luigiHeader.OriginalRomFormat);
+                    match = (luigiHeader != null) && romFormat.IsCompatibleWithRomFormat(luigiHeader.OriginalRomFormat);
                 }
             }
             return match;

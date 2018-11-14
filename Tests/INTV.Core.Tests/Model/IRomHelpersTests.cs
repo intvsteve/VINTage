@@ -774,6 +774,112 @@ Year = 2112
 
         #endregion // GetTargetDeviceUniqueId Tests
 
+        #region MatchingRomFormat Tests
+
+        [Fact]
+        public void IRomHelpers_MatchingRomFormatOfNull_ReturnsFalse()
+        {
+            Assert.False(IRomHelpers.MatchingRomFormat(null, RomFormat.None, considerOriginalFormat: true));
+        }
+
+        public static IEnumerable<object[]> MatchingRomFormatTestData
+        {
+            get
+            {
+                var testRomResources = new[]
+                {
+                    new Tuple<string, RomFormat>(TestRomResources.TestBinPath, RomFormat.Bin),
+                    new Tuple<string, RomFormat>(TestRomResources.TestRomPath, RomFormat.Intellicart),
+                    new Tuple<string, RomFormat>(TestRomResources.TestCc3Path, RomFormat.CuttleCart3),
+                    new Tuple<string, RomFormat>(TestRomResources.TestAdvPath, RomFormat.CuttleCart3Advanced),
+                    new Tuple<string, RomFormat>(TestRomResources.TestLuigiFromBinPath, RomFormat.Luigi),
+                    new Tuple<string, RomFormat>(TestRomResources.TestLuigiFromRomPath, RomFormat.Luigi),
+                    new Tuple<string, RomFormat>(TestRomResources.TestLuigiScrambledForAnyDevicePath, RomFormat.Luigi),
+                    new Tuple<string, RomFormat>(TestRomResources.TestLuigiScrambledForDevice0Path, RomFormat.Luigi)
+                };
+
+                var romFormats = Enum.GetValues(typeof(RomFormat)).Cast<RomFormat>().Where(f => f != RomFormat.None);
+                var considerOriginalFormatValues = new[] { false, true };
+                foreach (var testRomResource in testRomResources)
+                {
+                    foreach (var romFormat in romFormats)
+                    {
+                        foreach (var considerOriginalFormat in considerOriginalFormatValues)
+                        {
+                            var expectedMatchResult = testRomResource.Item2 == romFormat;
+                            if (!expectedMatchResult)
+                            {
+                                switch (testRomResource.Item2)
+                                {
+                                    case RomFormat.CuttleCart3:
+                                    case RomFormat.CuttleCart3Advanced:
+                                    case RomFormat.Intellicart:
+                                        switch (romFormat)
+                                        {
+                                            case RomFormat.CuttleCart3:
+                                            case RomFormat.CuttleCart3Advanced:
+                                            case RomFormat.Intellicart:
+                                                expectedMatchResult = true;
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        break;
+                                    case RomFormat.Luigi:
+                                        if (considerOriginalFormat)
+                                        {
+                                            switch (testRomResource.Item1)
+                                            {
+                                                case TestRomResources.TestLuigiFromBinPath:
+                                                case TestRomResources.TestLuigiScrambledForAnyDevicePath:
+                                                case TestRomResources.TestLuigiScrambledForDevice0Path:
+                                                    expectedMatchResult = romFormat == RomFormat.Bin;
+                                                    break;
+                                                case TestRomResources.TestLuigiFromRomPath:
+                                                    expectedMatchResult = romFormat == RomFormat.Rom;
+                                                    if (!expectedMatchResult)
+                                                    {
+                                                        switch (romFormat)
+                                                        {
+                                                            case RomFormat.CuttleCart3:
+                                                            case RomFormat.CuttleCart3Advanced:
+                                                            case RomFormat.Intellicart:
+                                                                expectedMatchResult = true;
+                                                                break;
+                                                            default:
+                                                                break;
+                                                        }
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            yield return new object[] { testRomResource.Item1, romFormat, considerOriginalFormat, expectedMatchResult };
+                        }
+                    }
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("MatchingRomFormatTestData")]
+        public void IRomHelpers_MatchingRomFormatOfRom_MatchesAsExpected(string romResourcePath, RomFormat format, bool considerOriginalFormat, bool expectedMatchResult)
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(romResourcePath).First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+
+            Assert.Equal(expectedMatchResult, rom.MatchingRomFormat(format, considerOriginalFormat));
+        }
+
+        #endregion // MatchingRomFormat Tests
+
         #region OriginalRom Tests
 
         [Fact]

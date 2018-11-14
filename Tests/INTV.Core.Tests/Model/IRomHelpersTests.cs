@@ -708,6 +708,39 @@ Year = 2112
 
         #endregion // IsAlternateRom Tests
 
+        #region IsLtoFlashOnlyRom Tests
+
+        [Fact]
+        public void IRomHelpers_IsLtoFlashOnlyRomWithNullRom_ReturnsFalse()
+        {
+            Assert.False(IRomHelpers.IsLtoFlashOnlyRom(null));
+        }
+
+        [Theory]
+        [InlineData(TestRomResources.TestBinPath, false)]
+        [InlineData(TestRomResources.TestRomPath, false)]
+        [InlineData(TestRomResources.TestAdvPath, false)]
+        [InlineData(TestRomResources.TestCc3Path, false)]
+        [InlineData(TestRomResources.TestLuigiFromBinPath, false)]
+        [InlineData(TestRomResources.TestLuigiFromRomPath, false)]
+        [InlineData(TestRomResources.TestLuigiWithMetadataPath, false)]
+        [InlineData(TestRomResources.TestLuigiScrambledForAnyDevicePath, true)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice0Path, true)]
+        [InlineData(TestRomResources.TestLuigiScrambledForDevice1Path, true)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForAnyDevicePath, true)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForDevice0Path, true)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForDevice1Path, true)]
+        public void IRomHelpers_IsLtoFlashOnlyRom_ReturnsExpectedResult(string romResourcePath, bool expectedIsLtoFlashOnlyResult)
+        {
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(romResourcePath).First();
+            var rom = Rom.Create(romPath, null);
+            Assert.NotNull(rom);
+
+            Assert.Equal(expectedIsLtoFlashOnlyResult, rom.IsLtoFlashOnlyRom());
+        }
+
+        #endregion // IsLtoFlashOnlyRom Tests
+
         private void VerifyProgramInformation(
             IProgramInformation programInformation,
             ProgramInformationOrigin expectedOrigin,
@@ -905,25 +938,28 @@ Year = 2112
             }
             private uint _cfgCrc;
 
+            public static EdgeCaseTestingRom CreateTestingRom(string romPath)
+            {
+                var rom = new EdgeCaseTestingRom() { RomPath = romPath };
+                return rom;
+            }
+
+            /// <inheritdoc />
             public override bool Validate()
             {
                 throw new NotImplementedException();
             }
 
+            /// <inheritdoc />
             public override uint RefreshCrc(out bool changed)
             {
                 throw new NotImplementedException();
             }
 
+            /// <inheritdoc />
             public override uint RefreshCfgCrc(out bool changed)
             {
                 throw new NotImplementedException();
-            }
-
-            public static EdgeCaseTestingRom CreateTestingRom(string romPath)
-            {
-                var rom = new EdgeCaseTestingRom() { RomPath = romPath };
-                return rom;
             }
 
             public EdgeCaseTestingRom WithFormat(RomFormat format)

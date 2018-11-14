@@ -510,10 +510,13 @@ namespace INTV.Core.Tests.Utility
         public void WeakKeyDictionaryWithData_CopyToKeyValuePairArrayWithNegativeIndex_ThrowsArgumentOutOfRangeException()
         {
             const int NumValuesToAdd = 6;
+            var keeperArounder = new List<KeyValuePair<string, int>>();
             ICollection<KeyValuePair<string, int>> dictionary = new WeakKeyDictionary<string, int>();
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                dictionary.Add(new KeyValuePair<string, int>(i.ToString(), i));
+                var entry = new KeyValuePair<string, int>(i.ToString(), i);
+                keeperArounder.Add(entry);
+                dictionary.Add(entry);
             }
             Assert.Equal(NumValuesToAdd, dictionary.Count);
 

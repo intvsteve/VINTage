@@ -782,6 +782,15 @@ Year = 2112
             Assert.False(IRomHelpers.MatchingRomFormat(null, RomFormat.None, considerOriginalFormat: true));
         }
 
+        [Fact]
+        public void IRomHelpers_MatchingRomFormatOfBadLuigi_ReturnsFalse()
+        {
+            IRomHelpersTestStorageAccess.Initialize(null);
+            var rom = EdgeCaseTestingRom.CreateTestingRom("/Resources/IRomHelpers_MatchingRomFormatOfBadLuigi_ReturnsFalse.luigi").WithFormat(RomFormat.Luigi);
+
+            Assert.False(rom.MatchingRomFormat(RomFormat.Bin, considerOriginalFormat: true));
+        }
+
         public static IEnumerable<object[]> MatchingRomFormatTestData
         {
             get

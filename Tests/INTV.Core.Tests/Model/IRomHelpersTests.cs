@@ -83,7 +83,7 @@ namespace INTV.Core.Tests.Model
         [Fact] // 0,0,0 [no supporting data]
         public void IRomHelpers_GetProgramInforamtionForBinFormatRomWithEmptyIntvnameInformation_ReturnsUnknownProgramInfo()
         {
-            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath).ToList();
+            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var romPath = paths[0];
             var cfgPath = paths[1];
             var rom = Rom.Create(romPath, cfgPath);
@@ -109,7 +109,7 @@ namespace INTV.Core.Tests.Model
         [Fact] // 0, 0, i [i = intvname data]
         public void IRomHelpers_GetProgramInformationForBinFormatRom_UsesIntvnameInformation()
         {
-            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath).ToList();
+            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var romPath = paths[0];
             var cfgPath = paths[1];
             var rom = Rom.Create(romPath, cfgPath);
@@ -138,7 +138,7 @@ namespace INTV.Core.Tests.Model
         [Fact] // 0, m, 0 [m = metadata]
         public void IRomHelpers_GetProgramInformationForBinFormatRomWithMetadata_UsesMetadata()
         {
-            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgMetadataPath).ToList();
+            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgMetadataPath);
             var romPath = paths[0];
             var cfgPath = paths[1];
             var rom = Rom.Create(romPath, cfgPath);
@@ -174,7 +174,7 @@ namespace INTV.Core.Tests.Model
         [Fact] // 0, m, i  [m = metadata, i = intvname data]
         public void IRomHelpers_GetProgramInformationForBinFormatRomWithMetadataAndIntvnameData_UsesMetadata()
         {
-            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgMetadataPath).ToList();
+            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgMetadataPath);
             var romPath = paths[0];
             var cfgPath = paths[1];
             var rom = Rom.Create(romPath, cfgPath);
@@ -373,9 +373,8 @@ namespace INTV.Core.Tests.Model
             testRomInfo.AddCrc(TestRomResources.TestBinCrc, "Odysseus 7", IncompatibilityFlags.None);
             testDatabase.AddProgram(testRomInfo);
             InitializeTestProgramInfoDatabase(testDatabase);
-            IEnumerable<string> copiedPaths;
-            var storageAccess = IRomHelpersTestStorageAccess.Initialize(out copiedPaths, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
-            var paths = copiedPaths.ToList();
+            IReadOnlyList<string> paths;
+            var storageAccess = IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var romPath = paths[0];
             var cfgPath = paths[1];
             using (var cfgFile = storageAccess.Open(cfgPath))
@@ -602,7 +601,7 @@ Year = 2112
         [Fact]
         public void IRomHelpers_GetLuigiFileMetadataFromCorruptedLuigiFile_ThrowsNullReferenceException()
         {
-            IEnumerable<string> paths;
+            IReadOnlyList<string> paths;
             var storageAccess = IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestLuigiWithExtraNullBytePath);
             var romPath = paths.First();
             var rom = Rom.Create(romPath, null);
@@ -650,7 +649,7 @@ Year = 2112
         [Fact]
         public void IRomHelpers_GetLuigiHeaderWithLuigiFormatRomFormatWithCorruptHeader_ReturnsNull()
         {
-            IEnumerable<string> paths;
+            IReadOnlyList<string> paths;
             var storageAccess = IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestLuigiWithBadHeaderCrcPath);
             var romPath = paths.First();
             var rom = Rom.Create(romPath, null);
@@ -697,7 +696,7 @@ Year = 2112
         [Fact]
         public void IRomHelpers_IsAlternateRomOnAlternateRom_ReturnsTrue()
         {
-            var romPaths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestRomPath).ToList();
+            var romPaths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestRomPath);
             var originalRom = Rom.Create(romPaths[0], null);
             Assert.NotNull(originalRom);
             var rom = new AlternateRom(romPaths[1], null, originalRom);
@@ -843,7 +842,7 @@ Year = 2112
         [MemberData("MatchesProgramIdentifierTestData")]
         public void IRomHelpers_MatchesProgramIdentifierForGivenRom_MatchesAsExpected(string romResourcePath, string cfgResourcePath, ProgramIdentifier programIdentifier, bool cfgCrcMustMatch, bool expectedMatchResult)
         {
-            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(romResourcePath, cfgResourcePath).ToList();
+            var paths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(romResourcePath, cfgResourcePath);
             var romPath = paths[0];
             var cfgPath = string.IsNullOrEmpty(cfgResourcePath) ? null : paths[1];
             var rom = Rom.Create(romPath, cfgPath);
@@ -1003,7 +1002,7 @@ Year = 2112
         [Fact]
         public void IRomHelpers_OriginalRomOfAlternate_ReturnsOriginal()
         {
-            var romPaths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestRomPath).ToList();
+            var romPaths = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestRomPath);
             var originalRom = Rom.Create(romPaths[0], null);
             Assert.NotNull(originalRom);
             var rom = new AlternateRom(romPaths[1], null, originalRom);

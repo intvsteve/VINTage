@@ -38,9 +38,9 @@ namespace INTV.TestHelpers.Core.Utility
         private readonly List<Stream> _streamsCache = new List<Stream>();
         private T _self;
 
-        public static IEnumerable<string> InitializeStorageWithCopiesOfResources(string resourcePath, params string[] additionalResourcePaths)
+        public static IReadOnlyList<string> InitializeStorageWithCopiesOfResources(string resourcePath, params string[] additionalResourcePaths)
         {
-            IEnumerable<string> copiedResourcePaths;
+            IReadOnlyList<string> copiedResourcePaths;
             Initialize(out copiedResourcePaths, resourcePath, additionalResourcePaths);
             return copiedResourcePaths;
         }
@@ -53,7 +53,7 @@ namespace INTV.TestHelpers.Core.Utility
         /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
         /// <returns>The instance of the storage access that was created.</returns>
         /// <remarks>This assumes the resources are located in the same assembly as the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/>.</remarks>
-        public static T Initialize(out IEnumerable<string> copiedResourcePaths, string resourcePath, params string[] additionalResourcePaths)
+        public static T Initialize(out IReadOnlyList<string> copiedResourcePaths, string resourcePath, params string[] additionalResourcePaths)
         {
             return Initialize(out copiedResourcePaths, null, resourcePath, additionalResourcePaths);
         }
@@ -70,7 +70,7 @@ namespace INTV.TestHelpers.Core.Utility
         /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
         /// <returns>The instance of the storage access that was created.</returns>
         /// <remarks>This assumes the resources are located in the same assembly as the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/>.</remarks>
-        public static T Initialize(out IEnumerable<string> copiedResourcePaths, Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
+        public static T Initialize(out IReadOnlyList<string> copiedResourcePaths, Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
         {
             var storageAccess = Initialize(resourcePath, additionalResourcePaths).WithStockCfgResources();
 

@@ -79,7 +79,7 @@ namespace INTV.TestHelpers.Core.Utility
             var directory = Path.GetDirectoryName(resourcePath);
             var randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
 
-            storageAccess.CreateCopyOfResource(resourcePath, randomPath);
+            storageAccess.AddCachedResource(resourcePath, randomPath, typeForLocatingResources);
             var copiedPaths = new List<string>() { randomPath };
             copiedResourcePaths = copiedPaths;
 
@@ -92,7 +92,7 @@ namespace INTV.TestHelpers.Core.Utility
                     directory = Path.GetDirectoryName(additionalResourcePath);
                     randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
 
-                    storageAccess.CreateCopyOfResource(additionalResourcePath, randomPath);
+                    storageAccess.AddCachedResource(additionalResourcePath, randomPath, typeForLocatingResources);
                     copiedPaths.Add(randomPath);
                 }
             }
@@ -137,19 +137,6 @@ namespace INTV.TestHelpers.Core.Utility
                 }
             }
             return storageAccess;
-        }
-
-        /// <summary>
-        /// Create a copy of a resource, appending additional data to it.
-        /// </summary>
-        /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
-        /// <param name="newPath">The new path to use for the modified copy.</param>
-        /// <param name="typeForLocatingResource">If provided, the assembly containing the given type will be used to locate the
-        /// resource named by the <paramref name="resourcePath"/> argument. Otherwise, the assembly that implements the type
-        /// <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/> will be used to locate the resource.</param>
-        public void CreateCopyOfResource(string resourcePath, string newPath, Type typeForLocatingResource = null)
-        {
-            AddCachedResource(resourcePath, newPath, typeForLocatingResource);
         }
 
         /// <summary>

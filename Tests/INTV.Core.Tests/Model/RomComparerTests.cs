@@ -182,8 +182,8 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomComparer_FirstNotRomSecondIsRom_ThrowsArgumentException()
         {
-            RomComparerTestStorageAccess.Initialize(TestRomResources.TestRomPath);
-            var rom = Rom.Create(TestRomResources.TestRomPath, null);
+            var romPath = RomComparerTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
             var x = new object();
 
@@ -196,8 +196,8 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomComparer_FirstIsRomSecondNotRom_ThrowsArgumentException()
         {
-            RomComparerTestStorageAccess.Initialize(TestRomResources.TestBinPath);
-            var rom = Rom.Create(TestRomResources.TestBinPath, null);
+            var romPath = RomComparerTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
             var y = new object();
 
@@ -212,9 +212,9 @@ namespace INTV.Core.Tests.Model
         [InlineData(RomComparison.StrictRomCrcOnly)]
         public void RomComparer_CompareTwoDifferentRomsAsObjects_ProducesCorrectResult(RomComparison comparisonMode)
         {
-            RomComparerTestStorageAccess.Initialize(TestRomResources.TestRomPath, TestRomResources.TestBinPath);
-            object rom0 = Rom.Create(TestRomResources.TestRomPath, null);
-            object rom1 = Rom.Create(TestRomResources.TestBinPath, null);
+            var paths = RomComparerTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath, TestRomResources.TestBinPath);
+            object rom0 = Rom.Create(paths[0], null);
+            object rom1 = Rom.Create(paths[1], null);
 
             using (var comparer = RomComparer.GetComparer(comparisonMode))
             {
@@ -227,11 +227,10 @@ namespace INTV.Core.Tests.Model
         [InlineData(RomComparison.StrictRomCrcOnly)]
         public void RomComparer_CompareTwoSameRomsAsObjects_ProducesCorrectResult(RomComparison comparisonMode)
         {
-            var storageAccess = RomComparerTestStorageAccess.Initialize(TestRomResources.TestRomPath);
-            string romCopy = "/Resources/RomComparer_CompareTwoSameRomsAsObjects_ProducesCorrectResult/test_rom.rom";
-            storageAccess.CreateCopyOfResource(TestRomResources.TestRomPath, romCopy);
-            object rom0 = Rom.Create(TestRomResources.TestRomPath, null);
-            object rom1 = Rom.Create(romCopy, null);
+            var paths = RomComparerTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath, TestRomResources.TestRomPath);
+            Assert.NotEqual(paths[0], paths[1]);
+            object rom0 = Rom.Create(paths[0], null);
+            object rom1 = Rom.Create(paths[1], null);
 
             using (var comparer = RomComparer.GetComparer(comparisonMode))
             {
@@ -244,8 +243,8 @@ namespace INTV.Core.Tests.Model
         [InlineData(RomComparison.StrictRomCrcOnly)]
         public void RomComparer_CompareRomToNullsAsObjects_ProducesCorrectResult(RomComparison comparisonMode)
         {
-            var storageAccess = RomComparerTestStorageAccess.Initialize(TestRomResources.TestRomPath);
-            object rom0 = Rom.Create(TestRomResources.TestRomPath, null);
+            var romPath = RomComparerTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath).First();
+            object rom0 = Rom.Create(romPath, null);
             object rom1 = null;
 
             using (var comparer = RomComparer.GetComparer(comparisonMode))
@@ -259,9 +258,9 @@ namespace INTV.Core.Tests.Model
         [InlineData(RomComparison.StrictRomCrcOnly)]
         public void RomComparer_CompareNullToRomsAsObjects_ProducesCorrectResult(RomComparison comparisonMode)
         {
-            var storageAccess = RomComparerTestStorageAccess.Initialize(TestRomResources.TestRomPath);
+            var romPath = RomComparerTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath).First();
             object rom0 = null;
-            object rom1 = Rom.Create(TestRomResources.TestRomPath, null);
+            object rom1 = Rom.Create(romPath, null);
 
             using (var comparer = RomComparer.GetComparer(comparisonMode))
             {

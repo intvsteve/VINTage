@@ -32,7 +32,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNullArguments_ThrowsArgumentNullException()
         {
-            AlternateRomTestStorageAccess.Initialize(null);
+            AlternateRomTestStorageAccess.Initialize();
 
             Assert.Throws<ArgumentNullException>(() => new AlternateRom(null, null, null));
         }
@@ -40,7 +40,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNullAlternateBinPath_ThrowsArgumentNullException()
         {
-            var paths = AlternateRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, TestRomResources.TestCfgPath);
+            var paths = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, TestRomResources.TestCfgPath);
 
             var rom = Rom.Create(paths[0], paths[1]);
             Assert.NotNull(rom);
@@ -52,7 +52,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNullAlternateCfgPath_CreatesAlternateWithNullCfgPath()
         {
-            var paths = AlternateRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, TestRomResources.TestBinPath);
+            var paths = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, TestRomResources.TestBinPath);
 
             var rom = Rom.Create(paths[0], paths[1]);
             Assert.NotNull(rom);
@@ -77,7 +77,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNullOriginalRom_AlternateIsValid()
         {
-            var paths = AlternateRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var paths = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
 
             var alternateBinPath = paths[0]; // "/Resources/TestWithNullOriginalROM/tagalong.bin";
             var alternateCfgPath = paths[1]; // "/Resources/TestWithNullOriginalROM/tagalong.cfg";
@@ -97,7 +97,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNonExistentPaths_ThrowsNullReferenceException()
         {
-            AlternateRomTestStorageAccess.Initialize(null);
+            AlternateRomTestStorageAccess.Initialize();
             var alternateBinPath = "/Resources/TestWithNonexistentPaths/tagalong.bin";
             var alternateCfgPath = "/Resources/TestWithNonexistentPaths/tagalong.cfg";
 
@@ -107,7 +107,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void AlternateRom_CreateWithNonExistentCfgPath_ThrowsNullReferenceException()
         {
-            var alternateBinPath = AlternateRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath).First();
+            var alternateBinPath = AlternateRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath).First();
             var alternateCfgPath = "/Resources/TestWithMissingCfgPath/tagalong.cfg";
 
             Assert.Throws<NullReferenceException>(() => new AlternateRom(alternateBinPath, alternateCfgPath, null));

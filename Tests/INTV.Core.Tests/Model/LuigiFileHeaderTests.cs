@@ -45,7 +45,7 @@ namespace INTV.Core.Tests.Model
         [InlineData(TestRomResources.TestBinPath, "/Really/not/a/valid.luigi", false)]
         public void LuigiFileHeader_IsPotentialLuigiFile_ProvidesCorrectResult(string resourceToRegister, string potentialLuigiFilePath, bool expectedIsPotentialLuigiFile)
         {
-            var romFilePath = LuigiFileHeaderTestStorageAccess.InitializeStorageWithCopiesOfResources(resourceToRegister).First();
+            var romFilePath = LuigiFileHeaderTestStorageAccess.Initialize(resourceToRegister).First();
             if (string.IsNullOrEmpty(potentialLuigiFilePath))
             {
                 potentialLuigiFilePath = romFilePath;
@@ -57,7 +57,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void LuigiFileHeader_IsPotentialLuigiFile_ThrowsArgumentNullException()
         {
-            LuigiFileHeaderTestStorageAccess.Initialize(null);
+            LuigiFileHeaderTestStorageAccess.Initialize();
 
             Assert.Throws<ArgumentNullException>(() => LuigiFileHeader.PotentialLuigiFile(null));
         }
@@ -92,7 +92,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void LuigiFileHeader_ReadVersionZeroHeader_DoesNotThrowAndReportsVersionZero()
         {
-            var romPath = LuigiFileHeaderTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiFromBinWithVersionZeroHeaderPath).First();
+            var romPath = LuigiFileHeaderTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinWithVersionZeroHeaderPath).First();
 
             var header = LuigiFileHeader.GetHeader(romPath);
 
@@ -119,7 +119,7 @@ namespace INTV.Core.Tests.Model
         [InlineData((LuigiFeatureFlags)0x55, true)]
         public void LuigiFileHeader_UpdateFeaturesOnLuigiWithMetadata_UpdatesFeatures(LuigiFeatureFlags newFeatures, bool forceFeatureUpdate)
         {
-            var romPath = LuigiFileHeaderTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiScrambledForDevice1Path).First();
+            var romPath = LuigiFileHeaderTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForDevice1Path).First();
 
             var header = LuigiFileHeader.GetHeader(romPath);
             var originalCrc = header.Crc;
@@ -138,7 +138,7 @@ namespace INTV.Core.Tests.Model
         [InlineData((LuigiFeatureFlags)0x55, true)]
         public void LuigiFileHeader_UpdateFeaturesOnScrambledLuigiRom_UpdatesFeatures(LuigiFeatureFlags newFeatures, bool forceFeatureUpdate)
         {
-            var romPath = LuigiFileHeaderTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiScrambledForDevice0Path).First();
+            var romPath = LuigiFileHeaderTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForDevice0Path).First();
 
             var header = LuigiFileHeader.GetHeader(romPath);
             var originalCrc = header.Crc;
@@ -167,7 +167,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void LuigiFileHeader_SerializeHeaderFromTestRom_SerializesCorrectNumberOfBytes()
         {
-            var romPath = LuigiFileHeaderTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiFromBinPath).First();
+            var romPath = LuigiFileHeaderTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).First();
             var header = LuigiFileHeader.GetHeader(romPath);
 
             using (var writer = new BinaryWriter(new System.IO.MemoryStream()))

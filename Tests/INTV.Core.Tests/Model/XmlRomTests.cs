@@ -112,7 +112,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_CreateUninitializedRomAnd_ValidateThrowsArgumentNullException()
         {
-            XmlFormatRomTestStorageAccess.Initialize(null);
+            XmlFormatRomTestStorageAccess.Initialize();
             var rom = new XmlRom();
 
             Assert.Throws<ArgumentNullException>(() => rom.Validate());
@@ -121,7 +121,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToNullRomPath_ThrowsArgumentNullException()
         {
-            XmlFormatRomTestStorageAccess.Initialize(null);
+            XmlFormatRomTestStorageAccess.Initialize();
             var rom = new XmlRom();
 
             Assert.Throws<ArgumentNullException>(() => rom.UpdateRomPath(null));
@@ -130,7 +130,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToNonexistentRomPath_RemainsInvalid()
         {
-            XmlFormatRomTestStorageAccess.Initialize(null);
+            XmlFormatRomTestStorageAccess.Initialize();
             var rom = new XmlRom();
 
             rom.UpdateRomPath("/oopsie" + TestRomResources.TestRomPath);
@@ -142,7 +142,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToNullCfgPath_CfgCrcRemainsZero()
         {
-            XmlFormatRomTestStorageAccess.Initialize(null);
+            XmlFormatRomTestStorageAccess.Initialize();
             var rom = new XmlRom();
 
             rom.UpdateConfigPath(null);
@@ -154,7 +154,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToNonexistentCfgPath_CfgPathChanges()
         {
-            XmlFormatRomTestStorageAccess.Initialize(null);
+            XmlFormatRomTestStorageAccess.Initialize();
             var rom = new XmlRom();
 
             var invalidCfgPath = "/ooops" + TestRomResources.TestCfgPath;
@@ -167,7 +167,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidRomPath_BecomesValid()
         {
-            var romPath = XmlFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath).First();
+            var romPath = XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath).First();
             var rom = new XmlRom();
 
             rom.UpdateRomPath(romPath);
@@ -185,7 +185,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidLuigiPath_BecomesValid()
         {
-            var romPath = XmlFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiFromBinPath).First();
+            var romPath = XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).First();
             var rom = new XmlRom();
 
             rom.UpdateRomPath(romPath);
@@ -203,7 +203,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidRomPathChangeToAnotherValidPath_RemainsValid()
         {
-            var paths = XmlFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath, TestRomResources.TestRomMetadataPath);
+            var paths = XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath, TestRomResources.TestRomMetadataPath);
             var rom = new XmlRom();
             rom.UpdateRomPath(paths[0]);
             Assert.True(rom.IsValid);
@@ -225,7 +225,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidRomPathChangeToInvalidPath_BecomesInvalid()
         {
-            var romPath = XmlFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath).First();
+            var romPath = XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath).First();
             var rom = new XmlRom();
             rom.UpdateRomPath(romPath);
             Assert.True(rom.IsValid);
@@ -248,7 +248,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidRomPathChangeToValidBinPathWithDifferentFormat_RemainsValid()
         {
-            var paths = XmlFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var paths = XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = new XmlRom();
             rom.UpdateRomPath(paths[0]);
             Assert.True(rom.IsValid);
@@ -272,7 +272,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void XmlRom_SetToValidBinPathChangeCfgPath_BinCrcUnchangedAndCfgCrcUpdatesImmediately()
         {
-            var paths = XmlFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, TestRomResources.TestCfgMetadataPath);
+            var paths = XmlFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath, TestRomResources.TestCfgMetadataPath);
             var rom = new XmlRom();
             rom.UpdateRomPath(paths[0]);
             rom.UpdateConfigPath(paths[1]);

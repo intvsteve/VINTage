@@ -38,7 +38,24 @@ namespace INTV.TestHelpers.Core.Utility
         private readonly List<Stream> _streamsCache = new List<Stream>();
         private T _self;
 
-        public static IReadOnlyList<string> InitializeStorageWithCopiesOfResources(string resourcePath, params string[] additionalResourcePaths)
+        /// <summary>
+        /// Initializes the storage access and registers it for use.
+        /// </summary>
+        /// <returns>The instance of the storage access that was created.</returns>
+        public static T Initialize()
+        {
+            return InitializeCore(null, null, null);
+        }
+
+        /// <summary>
+        /// Initializes the storage access and registers it for use, caching the given resources as files and creating copies for use by tests.
+        /// </summary>
+        /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
+        /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
+        /// <returns>The paths to the copies of the resources.</returns>
+        /// <remarks>Behaves poorly if entries in <paramref name="additionalResourcePaths"/> are <c>null</c>. They are simply excluded from the
+        /// output list, rather than having <c>null</c> entries in the output.</remarks>
+        public static IReadOnlyList<string> Initialize(string resourcePath, params string[] additionalResourcePaths)
         {
             IReadOnlyList<string> copiedResourcePaths;
             Initialize(out copiedResourcePaths, resourcePath, additionalResourcePaths);
@@ -46,7 +63,7 @@ namespace INTV.TestHelpers.Core.Utility
         }
 
         /// <summary>
-        /// Initializes the storage manager and registers it for use, caching the given resources as files and creating copies for use by tests.
+        /// Initializes the storage access and registers it for use, caching the given resources as files and creating copies for use by tests.
         /// </summary>
         /// <param name="copiedResourcePaths">Receives the temporary path copies for the corresponding resources</param>
         /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
@@ -59,7 +76,7 @@ namespace INTV.TestHelpers.Core.Utility
         }
 
         /// <summary>
-        /// Initializes the storage manager and registers it for use, caching the given resources as files and creating copies for use by tests.
+        /// Initializes the storage access and registers it for use, caching the given resources as files and creating copies for use by tests.
         /// </summary>
         /// <param name="copiedResourcePaths">Receives the temporary path copies for the corresponding resources</param>
         /// <param name="typeForLocatingResources">If not <c>null</c>, the assembly containing the given type will be used to
@@ -72,7 +89,7 @@ namespace INTV.TestHelpers.Core.Utility
         /// <remarks>This assumes the resources are located in the same assembly as the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/>.</remarks>
         public static T Initialize(out IReadOnlyList<string> copiedResourcePaths, Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
         {
-            var storageAccess = Initialize(resourcePath, additionalResourcePaths).WithStockCfgResources();
+            var storageAccess = Initialize(typeForLocatingResources, resourcePath, additionalResourcePaths).WithStockCfgResources();
 
             var fileExtension = Path.GetExtension(resourcePath);
             var randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
@@ -101,19 +118,7 @@ namespace INTV.TestHelpers.Core.Utility
         }
 
         /// <summary>
-        /// Initializes the storage manager and registers it for use, caching the given resources as files.
-        /// </summary>
-        /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
-        /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
-        /// <returns>The instance of the storage access that was created.</returns>
-        /// <remarks>This assumes the resources are located in the same assembly as the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/>.</remarks>
-        public static T Initialize(string resourcePath, params string[] additionalResourcePaths)
-        {
-            return Initialize(null, resourcePath, additionalResourcePaths);
-        }
-
-        /// <summary>
-        /// Initializes the storage manager and registers it for use, caching the given resources as files.
+        /// Initializes the storage access and registers it for use, caching the given resources as files.
         /// </summary>
         /// <param name="typeForLocatingResources">If not <c>null</c>, the assembly containing the given type will be used to
         /// locate the resources named by the <paramref name="resourcePath"/> and <paramref name="additionalResourcePaths"/> arguments.
@@ -124,19 +129,7 @@ namespace INTV.TestHelpers.Core.Utility
         /// <returns>The instance of the storage access that was created.</returns>
         public static T Initialize(Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
         {
-            var storageAccess = new T();
-            storageAccess._self = storageAccess;
-            StreamUtilities.Initialize(storageAccess);
-            storageAccess.AddCachedResource(resourcePath, resourcePath, typeForLocatingResources);
-
-            if (additionalResourcePaths != null)
-            {
-                foreach (var additionalResourcePath in additionalResourcePaths)
-                {
-                    storageAccess.AddCachedResource(additionalResourcePath, additionalResourcePath, typeForLocatingResources);
-                }
-            }
-            return storageAccess;
+            return InitializeCore(typeForLocatingResources, resourcePath, additionalResourcePaths);
         }
 
         /// <summary>
@@ -193,10 +186,10 @@ namespace INTV.TestHelpers.Core.Utility
                 }
                 else
                 {
-                    using (var fileStream = new FileStream(toolsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (var fileStream = Stream.Synchronized(new FileStream(toolsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
                     {
                         // register twice so we don't need to care about file separators.
-                        var stream = Open(toolsFile);
+                        var stream = Stream.Synchronized(Open(toolsFile));
                         fileStream.CopyTo(stream);
                         _streamsCache.Add(stream);
                         stream.Seek(0, SeekOrigin.Begin);
@@ -211,6 +204,23 @@ namespace INTV.TestHelpers.Core.Utility
                 }
             }
             return _self;
+        }
+
+        private static T InitializeCore(Type typeForLocatingResources, string resourcePath, IEnumerable<string> additionalResourcePaths)
+        {
+            var storageAccess = new T();
+            storageAccess._self = storageAccess;
+            StreamUtilities.Initialize(storageAccess);
+            storageAccess.AddCachedResource(resourcePath, resourcePath, typeForLocatingResources);
+
+            if (additionalResourcePaths != null)
+            {
+                foreach (var additionalResourcePath in additionalResourcePaths)
+                {
+                    storageAccess.AddCachedResource(additionalResourcePath, additionalResourcePath, typeForLocatingResources);
+                }
+            }
+            return storageAccess;
         }
 
         private void AddCachedResource(string resourcePath, string destinationPath, Type typeForLocatingResource)

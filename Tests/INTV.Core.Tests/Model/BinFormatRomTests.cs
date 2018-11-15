@@ -33,7 +33,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_LoadAndValidateRom_RomFormatIdentifiedCorrectly()
         {
-            var paths = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
             Assert.NotNull(rom);
@@ -46,7 +46,7 @@ namespace INTV.Core.Tests.Model
         {
             var customExtension = ".itv";
             ProgramFileKind.Rom.AddCustomExtension(customExtension);
-            var paths = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestItvPath, TestRomResources.TestCfgPath);
+            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestItvPath, TestRomResources.TestCfgPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
             Assert.NotNull(rom);
@@ -59,7 +59,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_LoadAndValidateRomWithNoFileExtension_RomFormatIdentifiedCorrectly()
         {
-            var paths = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPathNoFileExtension, TestRomResources.TestCfgPath);
+            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPathNoFileExtension, TestRomResources.TestCfgPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
             Assert.NotNull(rom);
@@ -70,7 +70,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_LoadAndValidateRomWithOddFileSize_RomFormatIdentifiedCorrectly()
         {
-            var paths = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestIntPath, TestRomResources.TestCfgPath);
+            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestIntPath, TestRomResources.TestCfgPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
             Assert.NotNull(rom);
@@ -81,7 +81,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_LoadAndValidateRomWithoutCfgPath_RomFormatIdentifiedCorrectly()
         {
-            var path = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath).First();
+            var path = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath).First();
             var rom = Rom.Create(path, null);
 
             Assert.NotNull(rom);
@@ -92,7 +92,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_Load_VerifyCrc()
         {
-            var paths = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
             Assert.Equal(TestRomResources.TestBinCrc, rom.Crc);
@@ -102,7 +102,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_RefreshCfgCrc_NeverRefreshes()
         {
-            var paths = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
             var changed = true;
@@ -113,7 +113,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_ReplaceCfgPath_CfgPathChanges()
         {
-            var paths = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
             var fakeCfgPath = "/Resources/tugalong.cfg";
@@ -125,7 +125,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_GetMetadata_ReturnsExpectedMetadata()
         {
-            var paths = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinMetadataPath, TestRomResources.TestCfgMetadataPath);
+            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinMetadataPath, TestRomResources.TestCfgMetadataPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
             var metadata = rom.GetBinFileMetadata();
@@ -136,7 +136,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_GetMetadataFromCorruptCfgFile_DoesNotThrow()
         {
-            var paths = BinFormatRomTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinMetadataPath, TestRomResources.TestCfgCorruptMetadataPath);
+            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinMetadataPath, TestRomResources.TestCfgCorruptMetadataPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
             var metadata = rom.GetBinFileMetadata();

@@ -38,6 +38,68 @@ namespace INTV.TestHelpers.Core.Utility
         private readonly List<Stream> _streamsCache = new List<Stream>();
         private T _self;
 
+        public static IEnumerable<string> InitializeStorageWithCopiesOfResources(string resourcePath, params string[] additionalResourcePaths)
+        {
+            IEnumerable<string> copiedResourcePaths;
+            Initialize(out copiedResourcePaths, resourcePath, additionalResourcePaths);
+            return copiedResourcePaths;
+        }
+
+        /// <summary>
+        /// Initializes the storage manager and registers it for use, caching the given resources as files and creating copies for use by tests.
+        /// </summary>
+        /// <param name="copiedResourcePaths">Receives the temporary path copies for the corresponding resources</param>
+        /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
+        /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
+        /// <returns>The instance of the storage access that was created.</returns>
+        /// <remarks>This assumes the resources are located in the same assembly as the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/>.</remarks>
+        public static T Initialize(out IEnumerable<string> copiedResourcePaths, string resourcePath, params string[] additionalResourcePaths)
+        {
+            return Initialize(out copiedResourcePaths, null, resourcePath, additionalResourcePaths);
+        }
+
+        /// <summary>
+        /// Initializes the storage manager and registers it for use, caching the given resources as files and creating copies for use by tests.
+        /// </summary>
+        /// <param name="copiedResourcePaths">Receives the temporary path copies for the corresponding resources</param>
+        /// <param name="typeForLocatingResources">If not <c>null</c>, the assembly containing the given type will be used to
+        /// locate the resources named by the <paramref name="resourcePath"/> and <paramref name="additionalResourcePaths"/> arguments.
+        /// Otherwise, the assembly that implements the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/> will be used
+        /// to locate the resources.</param>
+        /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
+        /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
+        /// <returns>The instance of the storage access that was created.</returns>
+        /// <remarks>This assumes the resources are located in the same assembly as the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/>.</remarks>
+        public static T Initialize(out IEnumerable<string> copiedResourcePaths, Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
+        {
+            var storageAccess = Initialize(resourcePath, additionalResourcePaths).WithStockCfgResources();
+
+            var fileExtension = Path.GetExtension(resourcePath);
+            var randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
+            var directory = Path.GetDirectoryName(resourcePath);
+            var randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
+
+            storageAccess.CreateCopyOfResource(resourcePath, randomPath);
+            var copiedPaths = new List<string>() { randomPath };
+            copiedResourcePaths = copiedPaths;
+
+            if (additionalResourcePaths != null)
+            {
+                foreach (var additionalResourcePath in additionalResourcePaths.Where(p => !string.IsNullOrEmpty(p)))
+                {
+                    fileExtension = Path.GetExtension(additionalResourcePath);
+                    randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
+                    directory = Path.GetDirectoryName(additionalResourcePath);
+                    randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
+
+                    storageAccess.CreateCopyOfResource(additionalResourcePath, randomPath);
+                    copiedPaths.Add(randomPath);
+                }
+            }
+
+            return storageAccess;
+        }
+
         /// <summary>
         /// Initializes the storage manager and registers it for use, caching the given resources as files.
         /// </summary>

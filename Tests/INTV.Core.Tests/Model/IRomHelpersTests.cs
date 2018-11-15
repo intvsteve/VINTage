@@ -374,7 +374,7 @@ namespace INTV.Core.Tests.Model
             testDatabase.AddProgram(testRomInfo);
             InitializeTestProgramInfoDatabase(testDatabase);
             IEnumerable<string> copiedPaths;
-            var storageAccess = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(out copiedPaths, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var storageAccess = IRomHelpersTestStorageAccess.Initialize(out copiedPaths, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var paths = copiedPaths.ToList();
             var romPath = paths[0];
             var cfgPath = paths[1];
@@ -603,7 +603,7 @@ Year = 2112
         public void IRomHelpers_GetLuigiFileMetadataFromCorruptedLuigiFile_ThrowsNullReferenceException()
         {
             IEnumerable<string> paths;
-            var storageAccess = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(out paths, TestRomResources.TestLuigiWithExtraNullBytePath);
+            var storageAccess = IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestLuigiWithExtraNullBytePath);
             var romPath = paths.First();
             var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
@@ -651,7 +651,7 @@ Year = 2112
         public void IRomHelpers_GetLuigiHeaderWithLuigiFormatRomFormatWithCorruptHeader_ReturnsNull()
         {
             IEnumerable<string> paths;
-            var storageAccess = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(out paths, TestRomResources.TestLuigiWithBadHeaderCrcPath);
+            var storageAccess = IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestLuigiWithBadHeaderCrcPath);
             var romPath = paths.First();
             var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
@@ -1070,42 +1070,6 @@ Year = 2112
 
         private class IRomHelpersTestStorageAccess : CachedResourceStorageAccess<IRomHelpersTestStorageAccess>
         {
-            public static IEnumerable<string> InitializeStorageWithCopiesOfResources(string resourcePath, params string[] additionalResourcePaths)
-            {
-                IEnumerable<string> copiedResourcePaths;
-                InitializeStorageWithCopiesOfResources(out copiedResourcePaths, resourcePath, additionalResourcePaths);
-                return copiedResourcePaths;
-            }
-
-            public static IRomHelpersTestStorageAccess InitializeStorageWithCopiesOfResources(out IEnumerable<string> copiedResourcePaths, string resourcePath, params string[] additionalResourcePaths)
-            {
-                var storageAccess = IRomHelpersTestStorageAccess.Initialize(resourcePath, additionalResourcePaths).WithStockCfgResources();
-
-                var fileExtension = Path.GetExtension(resourcePath);
-                var randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
-                var directory = Path.GetDirectoryName(resourcePath);
-                var randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
-
-                storageAccess.CreateCopyOfResource(resourcePath, randomPath);
-                var copiedPaths = new List<string>() { randomPath };
-                copiedResourcePaths = copiedPaths;
-
-                if (additionalResourcePaths != null)
-                {
-                    foreach (var additionalResourcePath in additionalResourcePaths.Where(p => !string.IsNullOrEmpty(p)))
-                    {
-                        fileExtension = Path.GetExtension(additionalResourcePath);
-                        randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
-                        directory = Path.GetDirectoryName(additionalResourcePath);
-                        randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
-
-                        storageAccess.CreateCopyOfResource(additionalResourcePath, randomPath);
-                        copiedPaths.Add(randomPath);
-                    }
-                }
-
-                return storageAccess;
-            }
         }
 
         private class IRomHelpersTestProgramDatabase : IProgramInformationTable

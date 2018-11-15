@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Linq;
 using INTV.Core.Model;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
@@ -31,10 +32,10 @@ namespace INTV.Core.Tests.Model
         [InlineData(TestRomResources.TestRomPath, TestRomResources.TestRomMetadataPath, 0x3EB551A3)]
         public void RomComparerStrictCrcOnlyTests_CompareRoms_CompareCorrectly(string firstRomPath, string secondRomPath, int expectedCompareResult)
         {
-            RomComparerStrictCrcOnlyTestStorageAccess.Initialize(firstRomPath, secondRomPath);
-            var rom0 = Rom.Create(firstRomPath, null);
+            var paths = RomComparerStrictCrcOnlyTestStorageAccess.InitializeStorageWithCopiesOfResources(firstRomPath, secondRomPath);
+            var rom0 = Rom.Create(paths[0], null);
             Assert.NotNull(rom0);
-            var rom1 = Rom.Create(secondRomPath, null);
+            var rom1 = Rom.Create(paths[1], null);
             Assert.NotNull(rom1);
 
             var compareResult = RomComparerStrictCrcOnly.Default.Compare(rom0, rom1);
@@ -72,8 +73,8 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomComparerStrictCrcOnlyTests_CompareRomToItself_ReturnsZero()
         {
-            RomComparerStrictCrcOnlyTestStorageAccess.Initialize(TestRomResources.TestRomPath);
-            var rom = Rom.Create(TestRomResources.TestRomPath, null);
+            var romPath = RomComparerStrictCrcOnlyTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestRomPath).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
 
             var compareResult = RomComparerStrictCrcOnly.Default.Compare(rom, rom);
@@ -92,8 +93,8 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomComparerStrictCrcOnlyTests_CompareRomToNull_ReturnsOne()
         {
-            RomComparerStrictCrcOnlyTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath);
-            var rom = Rom.Create(TestRomResources.TestLuigiFromBinPath, null);
+            var romPath = RomComparerStrictCrcOnlyTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiFromBinPath).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
 
             var compareResult = RomComparerStrictCrcOnly.Default.Compare(rom, null);
@@ -104,8 +105,8 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomComparerStrictCrcOnlyTests_CompareNullToRom_ReturnsNegativeOne()
         {
-            RomComparerStrictCrcOnlyTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
-            var rom = Rom.Create(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var paths = RomComparerStrictCrcOnlyTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            var rom = Rom.Create(paths[0], paths[1]);
             Assert.NotNull(rom);
 
             var compareResult = RomComparerStrictCrcOnly.Default.Compare(null, rom);

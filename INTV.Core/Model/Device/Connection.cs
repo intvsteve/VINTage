@@ -1,5 +1,5 @@
 ﻿// <copyright file="Connection.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -54,12 +54,12 @@ namespace INTV.Core.Model.Device
         }
 
         /// <summary>
-        /// Creates a psuedo connection, useful for sitations in which a fully-functional
+        /// Creates a pseudo connection, useful for situations in which a fully-functional
         /// connection implementation is not necessary.
         /// </summary>
         /// <param name="name">The name of the connection.</param>
         /// <param name="type">The kind of connection.</param>
-        /// <returns>The psuedo connection.</returns>
+        /// <returns>The pseudo connection.</returns>
         public static IConnection CreatePseudoConnection(string name, ConnectionType type)
         {
             return new Connection(name, type);

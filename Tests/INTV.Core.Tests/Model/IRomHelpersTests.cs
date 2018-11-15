@@ -45,8 +45,8 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void IRomHelpers_GetProgramFeaturesForNonLuigiFormatRom_ReturnsUnrecognizedProgramFeatures()
         {
-            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestCc3Path);
-            var rom = Rom.Create(TestRomResources.TestCc3Path, null);
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestCc3Path).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
 
             var features = rom.GetProgramFeatures();
@@ -59,8 +59,8 @@ namespace INTV.Core.Tests.Model
         [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForAnyDevicePath)]
         public void IRomHelpers_GetProgramFeaturesForLuigiFormatRom_ReturnsExpectedProgramFeatures(string testLuigiRomPath)
         {
-            IRomHelpersTestStorageAccess.Initialize(testLuigiRomPath);
-            var rom = Rom.Create(testLuigiRomPath, null);
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(testLuigiRomPath).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
 
             var features = rom.GetProgramFeatures();
@@ -426,8 +426,8 @@ Year = 2112
         [InlineData(TestRomResources.TestLuigiScrambledForDevice0UniqueId)]
         public void IRomHelpers_CanExecuteOnDeviceWithNonLuigiRom_ReturnsTrue(string deviceId)
         {
-            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestAdvPath);
-            var rom = Rom.Create(TestRomResources.TestAdvPath, null);
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestAdvPath).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
 
             Assert.True(rom.CanExecuteOnDevice(deviceId));
@@ -442,8 +442,8 @@ Year = 2112
         [InlineData(TestRomResources.TestLuigiScrambledForDevice1UniqueId)]
         public void IRomHelpers_CanExecuteOnDeviceWithNonScrambledLuigiRom_ReturnsTrue(string deviceId)
         {
-            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiFromRomPath);
-            var rom = Rom.Create(TestRomResources.TestLuigiFromRomPath, null);
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiFromRomPath).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
 
             Assert.True(rom.CanExecuteOnDevice(deviceId));
@@ -458,8 +458,8 @@ Year = 2112
         [InlineData(TestRomResources.TestLuigiScrambledForDevice1UniqueId)]
         public void IRomHelpers_CanExecuteOnDeviceWithScrambledForAnyLuigiRom_ReturnsTrue(string deviceId)
         {
-            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForAnyDevicePath);
-            var rom = Rom.Create(TestRomResources.TestLuigiScrambledForAnyDevicePath, null);
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiScrambledForAnyDevicePath).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
 
             Assert.True(rom.CanExecuteOnDevice(deviceId));
@@ -474,8 +474,8 @@ Year = 2112
         [InlineData(TestRomResources.TestLuigiScrambledForDevice1UniqueId, true)]
         public void IRomHelpers_CanExecuteOnDeviceWithScrambledForSpecificLuigiRom_ReturnsTrue(string deviceId, bool expectedCanExecuteOnDevice)
         {
-            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForDevice1Path);
-            var rom = Rom.Create(TestRomResources.TestLuigiScrambledForDevice1Path, null);
+            var romPath = IRomHelpersTestStorageAccess.InitializeStorageWithCopiesOfResources(TestRomResources.TestLuigiScrambledForDevice1Path).First();
+            var rom = Rom.Create(romPath, null);
             Assert.NotNull(rom);
 
             Assert.Equal(expectedCanExecuteOnDevice, rom.CanExecuteOnDevice(deviceId));
@@ -559,8 +559,9 @@ Year = 2112
         [Fact]
         public void IRomHelpers_EnsureCfgFileProvidedWhenStockCfgMissing_ReturnsFalse()
         {
-            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestBinPath).WithStockCfgResources(new[] { 0 });
-            var rom = Rom.Create(TestRomResources.TestBinPath, null);
+            IReadOnlyList<string> paths;
+            IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestBinPath).WithStockCfgResources(new[] { 0 });
+            var rom = Rom.Create(paths[0], null);
             Assert.NotNull(rom);
 
             Assert.False(rom.EnsureCfgFileProvided(null));
@@ -569,8 +570,9 @@ Year = 2112
         [Fact]
         public void IRomHelpers_EnsureCfgFileProvidedWhenStockCfgPresent_ReturnsTrue()
         {
-            IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestBinPath).WithStockCfgResources();
-            var rom = Rom.Create(TestRomResources.TestBinPath, null);
+            IReadOnlyList<string> paths;
+            IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestBinPath).WithStockCfgResources();
+            var rom = Rom.Create(paths[0], null);
             Assert.NotNull(rom);
 
             Assert.True(rom.EnsureCfgFileProvided(null));

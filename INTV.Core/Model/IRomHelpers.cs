@@ -590,18 +590,19 @@ namespace INTV.Core.Model
                         break;
                     case RomFormat.Luigi:
                         var luigiHeader = rom.GetLuigiHeader();
-                        switch (luigiHeader.OriginalRomFormat)
+                        if (luigiHeader != null)
                         {
-                            case RomFormat.Bin:
+                            match = programIdentifier.Id == luigiHeader.Uid; // probably will never use this result, but...
+                            if (luigiHeader.OriginalRomFormat == RomFormat.Bin)
+                            {
                                 match = (programIdentifier.DataCrc == luigiHeader.OriginalRomCrc32) && (!cfgCrcMustMatch || (programIdentifier.OtherData == luigiHeader.OriginalCfgCrc32));
-                                break;
-                            case RomFormat.Rom:
+                            }
+                            else if (luigiHeader.OriginalRomFormat == RomFormat.Rom)
+                            {
                                 match = programIdentifier.DataCrc == luigiHeader.OriginalRomCrc32;
-                                break;
-                            default:
-                                // Should we throw here? This situation (as of 2. Sept. 2018) cannot exist.
-                                match = programIdentifier.Id == luigiHeader.Uid;
-                                break;
+                            }
+
+                            // else .. Should we throw here? This situation (as of 2. Sept. 2018) cannot exist.
                         }
                         break;
                     default:

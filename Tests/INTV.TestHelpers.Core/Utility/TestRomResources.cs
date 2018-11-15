@@ -125,7 +125,7 @@ namespace INTV.TestHelpers.Core.Utility
         public const string TestLuigiFromRomPath = "/Resources/tagalong_from_rom.luigi";
 
         /// <summary>Path for a .LUIGI format ROM that has a version 0x00 header. None of these should exist in the wild.</summary>
-        public const string TestLuigiFromBinWithVersionZeroHeader = "/Resources/tagalong_v0.luigi";
+        public const string TestLuigiFromBinWithVersionZeroHeaderPath = "/Resources/tagalong_v0.luigi";
 
         /// <summary>Path for a .LUIGI format ROM that has a version 0xDD header from the future. It's totally a hack.</summary>
         public const string TestLuigiFromFuturePath = "/Resources/tagalong_from_future.luigi";

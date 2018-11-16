@@ -159,5 +159,44 @@ namespace INTV.Core.Tests.Model.Device
         {
             Assert.Equal(expectedHardwareBits, keys.ToHardwareBits());
         }
+
+        public static IEnumerable<object[]> IsReservedKeyCombinationTestData
+        {
+            get
+            {
+                yield return new object[] { null, false };
+                yield return new object[] { Enumerable.Empty<ControllerKeys>(), false };
+                yield return new object[] { new[] { ControllerKeys.KeypadEnter }, false };
+                yield return new object[] { new[] { ControllerKeys.Keypad1, ControllerKeys.Keypad9 }, true };
+                yield return new object[] { new[] { ControllerKeys.Keypad3, ControllerKeys.Keypad7 }, true };
+                yield return new object[] { new[] { ControllerKeys.Keypad1, ControllerKeys.Keypad9, ControllerKeys.ActionKeyTop }, true }; // Bet you didn't expect that!
+                yield return new object[] { new[] { ControllerKeys.Keypad1, ControllerKeys.Keypad9, ControllerKeys.ActionKeyBottomRight }, false };
+                yield return new object[] { new[] { ControllerKeys.Keypad1, ControllerKeys.Keypad9, ControllerKeys.DiscN }, true }; // Bet you didn't expect that!
+                yield return new object[] { new[] { ControllerKeys.Keypad1, ControllerKeys.Keypad9, ControllerKeys.DiscS }, true }; // Bet you didn't expect that!
+                yield return new object[] { new[] { ControllerKeys.Keypad1, ControllerKeys.Keypad9, ControllerKeys.DiscE }, false };
+                yield return new object[] { new[] { ControllerKeys.Keypad1, ControllerKeys.Keypad9, ControllerKeys.DiscW }, false };
+                yield return new object[] { new[] { ControllerKeys.KeypadEnter | ControllerKeys.Keypad2 }, false };
+                yield return new object[] { new[] { ControllerKeys.DiscSW | ControllerKeys.DiscW }, false };
+            }
+        }
+
+        [Theory]
+        [MemberData("IsReservedKeyCombinationTestData")]
+        public void ControllerKeys_IsReservedKeyCombinationFromKeys_ProducesExpectedResult(IEnumerable<ControllerKeys> keys, bool expectedIsReservedKeyCombination)
+        {
+            Assert.Equal(expectedIsReservedKeyCombination, keys.IsReservedKeyCombination());
+        }
+
+        [Theory]
+        [InlineData((byte)0, false)]
+        [InlineData((byte)0xFF, false)]
+        [InlineData((byte)0xA5, true)]
+        [InlineData((byte)0xA7, false)]
+        [InlineData((byte)0xC5, false)]
+        [InlineData((byte)0xC7, false)]
+        public void ControllerKeys_IsReservedKeyCombinationFromHardwareBits_ProducesExpectedResults(byte hardwareBits, bool expectedIsReservedKeyCombination)
+        {
+            Assert.Equal(expectedIsReservedKeyCombination, hardwareBits.IsReservedKeyCombination());
+        }
     }
 }

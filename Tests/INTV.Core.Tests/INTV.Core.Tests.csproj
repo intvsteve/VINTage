@@ -70,6 +70,7 @@
     <Compile Include="ComponentModel\RelayCommandBaseTests.cs" />
     <Compile Include="Model\CfgVarMetadataBlockTests.cs" />
     <Compile Include="Model\Device\ConnectionTests.cs" />
+    <Compile Include="Model\Device\ControllerKeysTests.cs" />
     <Compile Include="Model\Device\MemoryMapTests.cs" />
     <Compile Include="Model\EcsTests.cs" />
     <Compile Include="Model\GromTests.cs" />

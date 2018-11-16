@@ -36,7 +36,7 @@ namespace INTV.Core.Model.Device
         /// <param name="baseAddress">The address of the memory map connection.</param>
         /// <param name="size">The number of contiguous bytes mapped to a device using this connection.</param>
         /// <param name="aliases">Any aliases that may be also access the device.</param>
-        protected MemoryMap(ushort baseAddress, ushort size, List<ushort> aliases)
+        protected MemoryMap(ushort baseAddress, ushort size, IEnumerable<ushort> aliases)
             : base(baseAddress, size, aliases)
         {
         }
@@ -52,12 +52,28 @@ namespace INTV.Core.Model.Device
         /// <summary>
         /// Given a register, return its memory-mapped location.
         /// </summary>
-        /// <param name="register">The register for which to retrive the memory location.</param>
+        /// <param name="register">The register for which to retrieve the memory location.</param>
         /// <returns>The memory address that corresponds to the register.</returns>
-        /// <exception cref="KeyNotFoundException">Thrown if no address is availble for the given register.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if no address is available for the given register.</exception>
         public ushort GetMemoryLocationForRegister(T register)
         {
             return _registerMemoryMap[register];
+        }
+
+        /// <summary>
+        /// Implementations provide this to initialize registers for a memory-mapped device that provide access to a device.
+        /// </summary>
+        protected abstract void InitializeRegisterMemoryMap();
+
+        /// <summary>
+        /// Adds a register to the memory map.
+        /// </summary>
+        /// <param name="register">The register whose memory location is to be registered.</param>
+        /// <param name="memoryLocation">The memory location in the map for the given register.</param>
+        /// <exception cref="ArgumentException">Thrown if there is already an entry for the given <paramref name="register"/>.~</exception>
+        protected void AddRegister(T register, ushort memoryLocation)
+        {
+            _registerMemoryMap.Add(register, memoryLocation);
         }
     }
 }

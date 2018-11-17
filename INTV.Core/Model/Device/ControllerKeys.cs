@@ -1,5 +1,5 @@
 ﻿// <copyright file="ControllerKeys.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -424,10 +424,11 @@ namespace INTV.Core.Model.Device
         /// the results - E, ESE, ENE, SE and NE. As is easy to see, values larger than 1 for<paramref name="adjacentDistance"/>
         /// are usually excessive.
         /// NOTE: If the discDirection bit pattern matches more than one disc input, the function will return an empty list.</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="adjacentDistance"/> is greater than 7 or less than -7.</exception>
         public static IEnumerable<ControllerKeys> GetDiscInputs(this byte discDirection, sbyte adjacentDistance)
         {
             const short MaxDirection = (short)(ControllerKeys.DiscESE & ~ControllerKeys.DiscActive);
-            if (System.Math.Abs(adjacentDistance) > 7)
+            if ((adjacentDistance > 7) || (adjacentDistance < -7))
             {
                 throw new System.ArgumentOutOfRangeException("adjacentDistance", adjacentDistance, Resources.Strings.ControllerKeys_AdjacentDistanceTooLarge);
             }
@@ -445,7 +446,7 @@ namespace INTV.Core.Model.Device
                     {
                         directionToCheck %= MaxDirection + 1;
                     }
-                    System.Diagnostics.Debug.Assert((directionToCheck >= 0) && (directionToCheck <= MaxDirection), "Error computing adjacent direction.");
+
                     var keyToCheck = ControllerKeys.DiscActive | (ControllerKeys)directionToCheck;
                     discInputMatches.Add(keyToCheck);
                     directionToCheck = direction - i;

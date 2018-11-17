@@ -32,7 +32,7 @@ namespace INTV.Core.Tests.Model.Device
         {
             get
             {
-                var allControllerKeysValues = Enum.GetValues(typeof(ControllerKeys)).Cast<ControllerKeys>();
+                var allControllerKeysValues = Enum.GetValues(typeof(ControllerKeys)).Cast<ControllerKeys>().Distinct();
                 return allControllerKeysValues;
             }
         }
@@ -197,6 +197,82 @@ namespace INTV.Core.Tests.Model.Device
         public void ControllerKeys_IsReservedKeyCombinationFromHardwareBits_ProducesExpectedResults(byte hardwareBits, bool expectedIsReservedKeyCombination)
         {
             Assert.Equal(expectedIsReservedKeyCombination, hardwareBits.IsReservedKeyCombination());
+        }
+
+        public static IEnumerable<object[]> GetDiscInputsTestData
+        {
+            get
+            {
+                yield return new object[] { (byte)0, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0x84, new[] { ControllerKeys.DiscN } };
+                yield return new object[] { (byte)0xA0, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0x06, new[] { ControllerKeys.DiscE, ControllerKeys.DiscN, ControllerKeys.DiscENE } };
+                yield return new object[] { (byte)0x03, new[] { ControllerKeys.DiscS, ControllerKeys.DiscE, ControllerKeys.DiscSSE } };
+            }
+        }
+
+        [Theory]
+        [MemberData("GetDiscInputsTestData")]
+        public void ControllerKeys_GetDiscInputs_ReturnsCorrectInputs(byte hardwareBits, IEnumerable<ControllerKeys> expectedDiscInputs)
+        {
+            var discInputs = hardwareBits.GetDiscInputs();
+
+            Assert.False(expectedDiscInputs.Except(discInputs).Any());
+            Assert.False(discInputs.Except(expectedDiscInputs).Any());
+        }
+
+        public static IEnumerable<object[]> GetDiscInputsIncludingAdjacentTestData
+        {
+            get
+            {
+                yield return new object[] { (byte)0x04, (sbyte)0, new[] { ControllerKeys.DiscN } }; // NORTH
+                yield return new object[] { (byte)0x04, (sbyte)1, new[] { ControllerKeys.DiscNNW, ControllerKeys.DiscN, ControllerKeys.DiscNNE } };
+                yield return new object[] { (byte)0x04, (sbyte)-2, new[] { ControllerKeys.DiscNW, ControllerKeys.DiscNNW, ControllerKeys.DiscN, ControllerKeys.DiscNNE, ControllerKeys.DiscNE } };
+                yield return new object[] { (byte)0x04, (sbyte)7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscS) };
+                yield return new object[] { (byte)0x04, (sbyte)-7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscS) };
+                yield return new object[] { (byte)0x01, (sbyte)0, new[] { ControllerKeys.DiscS } }; // SOUTH
+                yield return new object[] { (byte)0x01, (sbyte)3, new[] { ControllerKeys.DiscWSW, ControllerKeys.DiscSW, ControllerKeys.DiscSSW, ControllerKeys.DiscS, ControllerKeys.DiscSSE, ControllerKeys.DiscSE, ControllerKeys.DiscESE } };
+                yield return new object[] { (byte)0x01, (sbyte)-4, new[] { ControllerKeys.DiscW, ControllerKeys.DiscWSW, ControllerKeys.DiscSW, ControllerKeys.DiscSSW, ControllerKeys.DiscS, ControllerKeys.DiscSSE, ControllerKeys.DiscSE, ControllerKeys.DiscESE, ControllerKeys.DiscE } };
+                yield return new object[] { (byte)0x01, (sbyte)7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscN) };
+                yield return new object[] { (byte)0x01, (sbyte)-7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscN) };
+                yield return new object[] { (byte)0x02, (sbyte)0, new[] { ControllerKeys.DiscE } }; // EAST
+                yield return new object[] { (byte)0x02, (sbyte)5, DiscDirectionValues.Except(new[] { ControllerKeys.DiscNW, ControllerKeys.DiscWNW, ControllerKeys.DiscW, ControllerKeys.DiscWSW, ControllerKeys.DiscSW }) };
+                yield return new object[] { (byte)0x02, (sbyte)-6, DiscDirectionValues.Except(new[] { ControllerKeys.DiscWNW, ControllerKeys.DiscW, ControllerKeys.DiscWSW }) };
+                yield return new object[] { (byte)0x02, (sbyte)7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscW) };
+                yield return new object[] { (byte)0x02, (sbyte)-7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscW) };
+                yield return new object[] { (byte)0x08, (sbyte)0, new[] { ControllerKeys.DiscW } }; // WEST
+                yield return new object[] { (byte)0x08, (sbyte)2, new[] { ControllerKeys.DiscNW, ControllerKeys.DiscWNW, ControllerKeys.DiscW, ControllerKeys.DiscWSW, ControllerKeys.DiscSW } };
+                yield return new object[] { (byte)0x08, (sbyte)-3, new[] { ControllerKeys.DiscNNW, ControllerKeys.DiscNW, ControllerKeys.DiscWNW, ControllerKeys.DiscW, ControllerKeys.DiscWSW, ControllerKeys.DiscSW, ControllerKeys.DiscSSW } };
+                yield return new object[] { (byte)0x08, (sbyte)7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscE) };
+                yield return new object[] { (byte)0x08, (sbyte)-7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscE) };
+                yield return new object[] { (byte)0x11, (sbyte)0, new[] { ControllerKeys.DiscSSW } }; // SOUTHxSOUTHWEST
+                yield return new object[] { (byte)0x11, (sbyte)-1, new[] { ControllerKeys.DiscS, ControllerKeys.DiscSSW, ControllerKeys.DiscSW } };
+                yield return new object[] { (byte)0x11, (sbyte)6, DiscDirectionValues.Except(new[] { ControllerKeys.DiscN, ControllerKeys.DiscNNE, ControllerKeys.DiscNE }) };
+                yield return new object[] { (byte)0x11, (sbyte)7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscNNE) };
+                yield return new object[] { (byte)0x11, (sbyte)-7, DiscDirectionValues.Where(d => d != ControllerKeys.DiscNNE) };
+            }
+        }
+
+        [Theory]
+        [MemberData("GetDiscInputsIncludingAdjacentTestData")]
+        public void ControllerKeys_GetDiscInputsIncludingAdjacentInputs_ReturnsCorrectInputs(byte hardwareBits, sbyte adjacentDistance, IEnumerable<ControllerKeys> expectedDiscInputs)
+        {
+            var discInputs = hardwareBits.GetDiscInputs(adjacentDistance);
+
+            Assert.False(expectedDiscInputs.Except(discInputs).Any());
+            Assert.False(discInputs.Except(expectedDiscInputs).Any());
+        }
+
+        [Theory]
+        [InlineData(9)]
+        [InlineData(8)]
+        [InlineData(-8)]
+        [InlineData(-9)]
+        [InlineData(sbyte.MaxValue)]
+        [InlineData(sbyte.MinValue)]
+        public void ControllerKeys_GetDiscInputsIncludingOutOfAdjacentInputs_ThrowsArgumentOutOfRangeException(sbyte outOfRangeAdjacency)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => ((byte)0x01).GetDiscInputs(outOfRangeAdjacency));
         }
     }
 }

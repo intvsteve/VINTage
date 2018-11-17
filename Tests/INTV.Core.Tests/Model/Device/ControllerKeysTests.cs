@@ -313,5 +313,30 @@ namespace INTV.Core.Tests.Model.Device
             Assert.False(expectedKeypadInputs.Except(keypadInputs).Any());
             Assert.False(keypadInputs.Except(expectedKeypadInputs).Any());
         }
+
+        public static IEnumerable<object[]> GetActionKeyInputsTestData
+        {
+            get
+            {
+                yield return new object[] { (byte)0x00, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0xFF, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0x0C, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0x28, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0xA0, new[] { ControllerKeys.ActionKeyTop } };
+                yield return new object[] { (byte)0x60, new[] { ControllerKeys.ActionKeyBottomLeft } };
+                yield return new object[] { (byte)0xC0, new[] { ControllerKeys.ActionKeyBottomRight } };
+                yield return new object[] { (byte)0xE0, new[] { ControllerKeys.ActionKeyTop, ControllerKeys.ActionKeyBottomLeft, ControllerKeys.ActionKeyBottomRight } };
+            }
+        }
+
+        [Theory]
+        [MemberData("GetActionKeyInputsTestData")]
+        public void ControllerKeys_GetActionKeyInputs_ReturnsExpectedKeys(byte hardwareBits, IEnumerable<ControllerKeys> expectedActionKeyInputs)
+        {
+            var actionKeyInputs = hardwareBits.GetActionKeyInputs();
+
+            Assert.False(expectedActionKeyInputs.Except(actionKeyInputs).Any());
+            Assert.False(actionKeyInputs.Except(expectedActionKeyInputs).Any());
+        }
     }
 }

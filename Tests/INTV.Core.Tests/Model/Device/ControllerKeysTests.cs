@@ -274,5 +274,44 @@ namespace INTV.Core.Tests.Model.Device
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => ((byte)0x01).GetDiscInputs(outOfRangeAdjacency));
         }
+
+        public static IEnumerable<object[]> GetKeypadInputsTestData
+        {
+            get
+            {
+                yield return new object[] { (byte)0x00, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0xFF, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0x0C, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0xA0, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0x06, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0x03, Enumerable.Empty<ControllerKeys>() };
+                yield return new object[] { (byte)0x81, new[] { ControllerKeys.Keypad1 } };
+                yield return new object[] { (byte)0x41, new[] { ControllerKeys.Keypad2 } };
+                yield return new object[] { (byte)0x21, new[] { ControllerKeys.Keypad3 } };
+                yield return new object[] { (byte)0x82, new[] { ControllerKeys.Keypad4 } };
+                yield return new object[] { (byte)0x42, new[] { ControllerKeys.Keypad5 } };
+                yield return new object[] { (byte)0x22, new[] { ControllerKeys.Keypad6 } };
+                yield return new object[] { (byte)0x84, new[] { ControllerKeys.Keypad7 } };
+                yield return new object[] { (byte)0x44, new[] { ControllerKeys.Keypad8 } };
+                yield return new object[] { (byte)0x24, new[] { ControllerKeys.Keypad9 } };
+                yield return new object[] { (byte)0x88, new[] { ControllerKeys.KeypadClear } };
+                yield return new object[] { (byte)0x48, new[] { ControllerKeys.Keypad0 } };
+                yield return new object[] { (byte)0x28, new[] { ControllerKeys.KeypadEnter } };
+                yield return new object[] { (byte)0xA5, new[] { ControllerKeys.Keypad1, ControllerKeys.Keypad3, ControllerKeys.Keypad7, ControllerKeys.Keypad9 } };
+                yield return new object[] { (byte)0xA4, new[] { ControllerKeys.Keypad7, ControllerKeys.Keypad9 } }; // Disk N + Top Action Key
+                yield return new object[] { (byte)0xA2, new[] { ControllerKeys.Keypad4, ControllerKeys.Keypad6 } }; // Disk E + Top Action Key
+                yield return new object[] { (byte)0xA1, new[] { ControllerKeys.Keypad1, ControllerKeys.Keypad3 } }; // Disk S + Top Action Key
+            }
+        }
+
+        [Theory]
+        [MemberData("GetKeypadInputsTestData")]
+        public void ControllerKeys_GetKeypadInputs_ReturnsExpectedKeys(byte hardwareBits, IEnumerable<ControllerKeys> expectedKeypadInputs)
+        {
+            var keypadInputs = hardwareBits.GetKeypadInputs();
+
+            Assert.False(expectedKeypadInputs.Except(keypadInputs).Any());
+            Assert.False(keypadInputs.Except(expectedKeypadInputs).Any());
+        }
     }
 }

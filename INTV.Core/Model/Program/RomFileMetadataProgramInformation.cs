@@ -31,10 +31,9 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Core.Model.Program.RomFileMetadataProgramInformation"/> class.
         /// </summary>
-        /// <param name="rom">The ROM from which program information is collected.</param>
         public RomFileMetadataProgramInformation(IRom rom)
         {
-            _features = ProgramFeatures.DefaultFeatures.Clone();
+            _features = ProgramFeatures.GetUnrecognizedRomFeatures();
             Metadata = Enumerable.Empty<RomMetadataBlock>();
             var romFormatRom = Rom.AsSpecificRomType<RomFormatRom>(rom);
             if (romFormatRom != null)

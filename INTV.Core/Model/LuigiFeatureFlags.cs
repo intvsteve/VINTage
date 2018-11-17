@@ -235,7 +235,7 @@ namespace INTV.Core.Model
         /// <returns>ProgramFeatures representing the compatibility modes described by the feature flags.</returns>
         public static ProgramFeatures ToProgramFeatures(this LuigiFeatureFlags featureFlags)
         {
-            var programFeatures = new ProgramFeatures();
+            var programFeatures = ProgramFeatures.GetUnrecognizedRomFeatures();
 
             var intellivoiceCompatibililty = (uint)(featureFlags & LuigiFeatureFlags.IntellivoiceMask);
             programFeatures.Intellivoice = (FeatureCompatibility)(intellivoiceCompatibililty >> IntellivoiceOffset);

@@ -90,6 +90,7 @@ namespace INTV.Core.Tests.Model
             {
                 programFeaturesHavingNoLuigiFeatureFlags.Tutorvision = FeatureCompatibility.Incompatible;
             }
+            programFeaturesHavingNoLuigiFeatureFlags.SetUnrecongizedRomFeatures();
 
             return programFeaturesHavingNoLuigiFeatureFlags;
         }

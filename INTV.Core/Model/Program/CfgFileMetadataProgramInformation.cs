@@ -32,7 +32,7 @@ namespace INTV.Core.Model.Program
 
         public CfgFileMetadataProgramInformation(IRom rom)
         {
-            _features = ProgramFeatures.DefaultFeatures.Clone();
+            _features = ProgramFeatures.GetUnrecognizedRomFeatures();
             Metadata = Enumerable.Empty<CfgVarMetadataBlock>();
             var binFormatRom = Rom.AsSpecificRomType<BinFormatRom>(rom);
             if (binFormatRom != null)

@@ -674,9 +674,17 @@ namespace INTV.Core.Model.Program
                     int releaseYear;
                     if (int.TryParse(_year, out releaseYear))
                     {
-                        var dateTime = new DateTime(releaseYear, MetadataDateTime.DefaultMonth, MetadataDateTime.DefaultDay);
-                        var releaseDate = new MetadataDateTime(dateTime, MetadataDateTimeFlags.Year);
-                        AddReleaseDate(releaseDate);
+                        try
+                        {
+                            var dateBuilder = new MetadataDateTimeBuilder(releaseYear);
+                            var releaseDate = dateBuilder.Build();
+                            AddReleaseDate(releaseDate);
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            // Scrambled LUIGI files may return a year string of "-1" via the intvname tool.
+                            _year = string.Empty;
+                        }
                     }
                 }
             }

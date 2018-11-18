@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Generic;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
 using Xunit;
@@ -26,6 +27,89 @@ namespace INTV.Core.Tests.Model
 {
     public class LuigiFeatureFlagsHelpersTests
     {
+        public static IEnumerable<object[]> LuigiFeatureFlagsToProgramFeaturesTestData
+        {
+            get
+            {
+                for (var i = 0; i < sizeof(LuigiFeatureFlags) * 8; ++i)
+                {
+                    var featureFlags = (LuigiFeatureFlags)(1ul << i);
+                    var expectedProgramFeatures = CreateProgramFeaturesWithoutCoreCompatibility(featureFlags);
+                    switch ((ulong)featureFlags)
+                    {
+                        case 1ul << 0:
+                            expectedProgramFeatures.Intellivoice = FeatureCompatibility.Tolerates;
+                            break;
+                        case 1ul << 1:
+                            expectedProgramFeatures.Intellivoice = FeatureCompatibility.Enhances;
+                            break;
+                        case 1ul << 2:
+                            expectedProgramFeatures.Ecs = EcsFeatures.Tolerates;
+                            break;
+                        case 1ul << 3:
+                            expectedProgramFeatures.Ecs = EcsFeatures.Enhances;
+                            break;
+                        case 1ul << 4:
+                            expectedProgramFeatures.IntellivisionII = FeatureCompatibility.Tolerates;
+                            break;
+                        case 1ul << 5:
+                            expectedProgramFeatures.IntellivisionII = FeatureCompatibility.Enhances;
+                            break;
+                        case 1ul << 6:
+                            expectedProgramFeatures.KeyboardComponent = KeyboardComponentFeatures.Tolerates;
+                            break;
+                        case 1ul << 7:
+                            expectedProgramFeatures.KeyboardComponent = KeyboardComponentFeatures.Enhances;
+                            break;
+                        case 1ul << 8: // Extended feature bits version -- so far version 1 only includes Tutorvision, which, unset, means incompatible
+                        case 1ul << 9: // Extended feature bits version -- so far version 1 only includes Tutorvision, which, unset, means incompatible
+                            expectedProgramFeatures.Tutorvision =  FeatureCompatibility.Incompatible;
+                            break;
+                        case 1ul << 10: // Tutorvision Tolerates -- ignored because no extended feature bits version is set
+                        case 1ul << 11: // Tutorvision Tolerates -- ignored because no extended feature bits version is set
+                            break;
+                        case 1ul << 16:
+                            expectedProgramFeatures.Jlp = JlpFeatures.Tolerates;
+                            expectedProgramFeatures.JlpHardwareVersion = JlpHardwareVersion.Jlp03;
+                            break;
+                        case 1ul << 17:
+                            expectedProgramFeatures.Jlp = JlpFeatures.Enhances;
+                            expectedProgramFeatures.JlpHardwareVersion = JlpHardwareVersion.Jlp03;
+                            break;
+                        case 1ul << 22: // JLP flash data sector usage
+                        case 1ul << 23: // JLP flash data sector usage
+                        case 1ul << 24: // JLP flash data sector usage
+                        case 1ul << 25: // JLP flash data sector usage
+                        case 1ul << 26: // JLP flash data sector usage
+                        case 1ul << 27: // JLP flash data sector usage
+                        case 1ul << 28: // JLP flash data sector usage
+                        case 1ul << 29: // JLP flash data sector usage
+                        case 1ul << 30: // JLP flash data sector usage
+                        case 1ul << 31: // JLP flash data sector usage
+                            expectedProgramFeatures.Jlp = JlpFeatures.SaveDataRequired;
+                            expectedProgramFeatures.JlpFlashMinimumSaveSectors = (ushort)(1 << (i - 22));
+                            expectedProgramFeatures.JlpHardwareVersion = JlpHardwareVersion.Jlp03;
+                            break;
+                        case 1ul << 32:
+                            expectedProgramFeatures.LtoFlash = LtoFlashFeatures.LtoFlashMemoryMapped;
+                            break;
+                        default:
+                            break;
+                    }
+                    yield return new object[] { featureFlags, expectedProgramFeatures };
+                }
+
+                yield return new object[] { LuigiFeatureFlags.None, CreateProgramFeaturesWithoutCoreCompatibility(LuigiFeatureFlags.None) };
+            }
+        }
+
+        [Theory]
+        [MemberData("LuigiFeatureFlagsToProgramFeaturesTestData")]
+        public void LuigiFeatureFlags_ToProgramFeatures_ProducesExpectedProgramFeatures(LuigiFeatureFlags featureFlags, ProgramFeatures expectedProgramFeatures)
+        {
+            Assert.Equal(expectedProgramFeatures, featureFlags.ToProgramFeatures());
+        }
+
         [Fact]
         public void LuigiFeatureFlags_FeatureFlagsWithMaximumVersionToProgramFeatures_ProduceCorrectlyFormedProgramFeatures()
         {

@@ -338,5 +338,27 @@ namespace INTV.Core.Tests.Model.Device
             Assert.False(expectedActionKeyInputs.Except(actionKeyInputs).Any());
             Assert.False(actionKeyInputs.Except(expectedActionKeyInputs).Any());
         }
+
+        public static IEnumerable<object[]> GetDiscPlusActionKeyAliasesIncludingAdjacentTestData
+        {
+            get
+            {
+                yield return new object[] { (byte)0x04, (sbyte)0, Enumerable.Empty<ControllerKeys>() }; // NORTH
+                yield return new object[] { (byte)0xA4, (sbyte)1, new[] { ControllerKeys.ActionKeyTop, ControllerKeys.DiscN } };
+                yield return new object[] { (byte)0xC4, (sbyte)-2, new[] { ControllerKeys.ActionKeyBottomRight, ControllerKeys.DiscN } };
+                yield return new object[] { (byte)0x64, (sbyte)7, new[] { ControllerKeys.ActionKeyBottomLeft, ControllerKeys.DiscN } };
+                yield return new object[] { (byte)0x04, (sbyte)-7, Enumerable.Empty<ControllerKeys>() };
+            }
+        }
+
+        [Theory]
+        [MemberData("GetDiscPlusActionKeyAliasesIncludingAdjacentTestData")]
+        public void ControllerKeys_GetDiscPlusActionKeyAliases_ReturnsExpectedKeys(byte hardwareBits, sbyte adjacentDistance, IEnumerable<ControllerKeys> expectedDiscInputs)
+        {
+            var discPlusActionKeyInputs = hardwareBits.GetDiscPlusActionKeyAliases(adjacentDistance);
+
+            Assert.False(expectedDiscInputs.Except(discPlusActionKeyInputs).Any());
+            Assert.False(discPlusActionKeyInputs.Except(expectedDiscInputs).Any());
+        }
     }
 }

@@ -169,37 +169,40 @@ namespace INTV.TestHelpers.Core.Utility
             {
                 stockCfgFilesToExclude = stockCfgFileNumbersToExclude.Select(n => Path.ChangeExtension(n.ToString(CultureInfo.InvariantCulture), ProgramFileKind.CfgFile.FileExtension()));
             }
-            foreach (var toolsFile in Directory.EnumerateFiles(toolsFilesLocation))
+            lock (_streamsCache)
             {
-                var exclude = stockCfgFilesToExclude.Contains(Path.GetFileName(toolsFile));
-                if (exclude)
+                foreach (var toolsFile in Directory.EnumerateFiles(toolsFilesLocation))
                 {
-                    if (Exists(toolsFile))
+                    var exclude = stockCfgFilesToExclude.Contains(Path.GetFileName(toolsFile));
+                    if (exclude)
                     {
-                        Rename(toolsFile, toolsFile + ".ded");
-                    }
-                    var toolsFileCopy = toolsFile.Replace('/', '\\');
-                    if (Exists(toolsFileCopy))
-                    {
-                        Rename(toolsFileCopy, toolsFileCopy + ".ded");
-                    }
-                }
-                else
-                {
-                    using (var fileStream = Stream.Synchronized(new FileStream(toolsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-                    {
-                        // register twice so we don't need to care about file separators.
-                        var stream = Stream.Synchronized(Open(toolsFile));
-                        fileStream.CopyTo(stream);
-                        _streamsCache.Add(stream);
-                        stream.Seek(0, SeekOrigin.Begin);
-
+                        if (Exists(toolsFile))
+                        {
+                            Rename(toolsFile, toolsFile + ".ded");
+                        }
                         var toolsFileCopy = toolsFile.Replace('/', '\\');
-                        stream = Open(toolsFileCopy);
-                        fileStream.Seek(0, SeekOrigin.Begin);
-                        fileStream.CopyTo(stream);
-                        _streamsCache.Add(stream);
-                        stream.Seek(0, SeekOrigin.Begin);
+                        if (Exists(toolsFileCopy))
+                        {
+                            Rename(toolsFileCopy, toolsFileCopy + ".ded");
+                        }
+                    }
+                    else
+                    {
+                        using (var fileStream = Stream.Synchronized(new FileStream(toolsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                        {
+                            // register twice so we don't need to care about file separators.
+                            var stream = Stream.Synchronized(Open(toolsFile));
+                            fileStream.CopyTo(stream);
+                            _streamsCache.Add(stream);
+                            stream.Seek(0, SeekOrigin.Begin);
+
+                            var toolsFileCopy = toolsFile.Replace('/', '\\');
+                            stream = Stream.Synchronized(Open(toolsFileCopy));
+                            fileStream.Seek(0, SeekOrigin.Begin);
+                            fileStream.CopyTo(stream);
+                            _streamsCache.Add(stream);
+                            stream.Seek(0, SeekOrigin.Begin);
+                        }
                     }
                 }
             }

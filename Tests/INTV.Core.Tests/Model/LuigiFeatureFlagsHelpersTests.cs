@@ -63,7 +63,7 @@ namespace INTV.Core.Tests.Model
                             break;
                         case 1ul << 8: // Extended feature bits version -- so far version 1 only includes Tutorvision, which, unset, means incompatible
                         case 1ul << 9: // Extended feature bits version -- so far version 1 only includes Tutorvision, which, unset, means incompatible
-                            expectedProgramFeatures.Tutorvision =  FeatureCompatibility.Incompatible;
+                            expectedProgramFeatures.Tutorvision = FeatureCompatibility.Incompatible;
                             break;
                         case 1ul << 10: // Tutorvision Tolerates -- ignored because no extended feature bits version is set
                         case 1ul << 11: // Tutorvision Tolerates -- ignored because no extended feature bits version is set

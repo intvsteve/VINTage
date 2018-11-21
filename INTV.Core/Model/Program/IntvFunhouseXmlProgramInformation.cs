@@ -24,6 +24,7 @@ using System.Globalization;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Resources;
 using INTV.Core.Utility;
 
 namespace INTV.Core.Restricted.Model.Program
@@ -422,9 +423,12 @@ namespace INTV.Core.Restricted.Model.Program
                             try
                             {
                                 var jlpFlashSectors = Convert.ToUInt16(jlpRawFlashSectors);
-                                if ((jlpFlashSectors > 0) && (jlpRawFlashSectors <= JlpFeaturesHelpers.MaxTheoreticalJlpFlashSectorUsage))
+                                if (jlpFlashSectors > 0)
                                 {
-                                    _features.JlpFlashMinimumSaveSectors = jlpFlashSectors;
+                                    if (jlpRawFlashSectors <= JlpFeaturesHelpers.MaxTheoreticalJlpFlashSectorUsage)
+                                    {
+                                        _features.JlpFlashMinimumSaveSectors = jlpFlashSectors;
+                                    }
                                 }
                             }
                             catch (OverflowException)
@@ -470,7 +474,15 @@ namespace INTV.Core.Restricted.Model.Program
                     for (int i = 0; i < crcs.Length; ++i)
                     {
                         var note = (i < crcNotes.Length) ? crcNotes[i] : string.Empty;
-                        var incompatibilities = (i < CrcIncompatibilitiesString.Length) ? (IncompatibilityFlags)uint.Parse(crcIncompatibilities[i], NumberStyles.HexNumber) : IncompatibilityFlags.None;
+                        var incompatibilities = IncompatibilityFlags.None;
+                        if (i < crcIncompatibilities.Length)
+                        {
+                            int incompatibilitiesBits;
+                            if (int.TryParse(crcIncompatibilities[i], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out incompatibilitiesBits))
+                            {
+                                incompatibilities = (IncompatibilityFlags)incompatibilitiesBits;
+                            }
+                        }
                         _crc.Add(new CrcData(crcs[i], note, incompatibilities, crcBinCfgNumbers[i]));
                     }
                 }
@@ -601,7 +613,7 @@ namespace INTV.Core.Restricted.Model.Program
         /// <inheritdoc />
         public override IEnumerable<string> AdditionalInformation
         {
-            get { return SplitMultipleEntryString(OtherInfo, removeEmptyEntries: true); }
+            get { return GetAdditionalInformation(OtherInfo, ProgramVendor, OriginalProgramVendor); }
         }
 
         #endregion // IProgramMetadata
@@ -663,12 +675,34 @@ namespace INTV.Core.Restricted.Model.Program
         {
             var vendor = useOriginalProgramVendor && !string.IsNullOrEmpty(originalProgramVendor) ? originalProgramVendor : programVendor;
             string contactUrlBase = null;
-            VendorUrls urls;
-            if (!string.IsNullOrEmpty(vendor) && VendorInfo.TryGetValue(vendor, out urls))
+            if (!string.IsNullOrEmpty(vendor))
             {
-                contactUrlBase = urls.GameInfoBaseUrl;
+                VendorUrls urls;
+                if (VendorInfo.TryGetValue(vendor, out urls))
+                {
+                    contactUrlBase = urls.GameInfoBaseUrl;
+                }
             }
             return contactUrlBase;
+        }
+
+        private static IEnumerable<string> GetAdditionalInformation(string otherInfo, string programVendor, string originalProgramVendor)
+        {
+            var additionalInformation = new List<string>(SplitMultipleEntryString(otherInfo, removeEmptyEntries: true));
+            var vendors = new[] { originalProgramVendor, programVendor };
+            foreach (var vendor in vendors)
+            {
+                if (!string.IsNullOrEmpty(vendor))
+                {
+                    VendorUrls urls;
+                    if (VendorInfo.TryGetValue(vendor, out urls))
+                    {
+                        var vendorWebsite = string.Format(CultureInfo.CurrentCulture, Strings.AdditionalVendorInfoWebsite_Format, vendor, urls.WebsiteUrl);
+                        additionalInformation.Add(vendorWebsite);
+                    }
+                }
+            }
+            return additionalInformation;
         }
 
         /// <summary>
@@ -683,7 +717,7 @@ namespace INTV.Core.Restricted.Model.Program
             var values = Enumerable.Empty<string>();
             if (!string.IsNullOrEmpty(rawData))
             {
-                if ((separator == null) || !separator.Any())
+                if (!separator.Any())
                 {
                     separator  = new[] { "\n", "\r", "\r\n", "\n\r" };
                 }

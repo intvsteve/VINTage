@@ -61,6 +61,15 @@ namespace INTV.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Website for {0}: {1}.
+        /// </summary>
+        internal static string AdditionalVendorInfoWebsite_Format {
+            get {
+                return ResourceManager.GetString("AdditionalVendorInfoWebsite_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to convert CfgVarMetadataIdTag to LuigiMetadataIdTag!.
         /// </summary>
         internal static string CfgVarMetadata_ToLuigiError {

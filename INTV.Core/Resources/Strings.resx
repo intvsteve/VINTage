@@ -212,4 +212,8 @@
     <value>Unable to locate data converter for column '{0}'.</value>
     <comment>{0}: name of the column in the rominfo database</comment>
   </data>
+  <data name="AdditionalVendorInfoWebsite_Format" xml:space="preserve">
+    <value>Website for {0}: {1}</value>
+    <comment>{0} a vendor name; {1} a website URL</comment>
+  </data>
 </root>

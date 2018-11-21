@@ -147,6 +147,7 @@ namespace INTV.Core.Utility
         /// <param name="parameters">The parameters.</param>
         /// <returns>The formatted output string.</returns>
         /// <remarks>Adapted from: http://www.codeproject.com/Articles/19274/A-printf-implementation-in-C </remarks>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static string SPrintf(string format, params object[] parameters)
         {
             var formattedStringBuilder = new StringBuilder();
@@ -413,7 +414,7 @@ namespace INTV.Core.Utility
                         ++defaultParamIndex;
                         break;
 
-                    case 'p':   // pointer
+                    case 'p':   // pointer NOTE: Code coverage during tests depends on bitness of test runner
                         if (value is IntPtr)
                         {
                             if (IntPtr.Size == sizeof(long))
@@ -432,7 +433,7 @@ namespace INTV.Core.Utility
                         formattedString = FormatNumber("d", flagAlternate, fieldLength, int.MinValue, flagLeftToRight, flagPositiveSign, flagPositiveSpace, paddingCharacter, match.Index);
                         break;
 
-                    default:
+                    default:   // unreachable, as all possible matches are covered, and also the switch is gated by requiring success in the regex match
                         formattedString = string.Empty;
                         ++defaultParamIndex;
                         break;
@@ -604,6 +605,7 @@ namespace INTV.Core.Utility
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns><c>true</c> if the specified value is positive; otherwise, <c>false</c>.</returns>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private static bool IsPositive(object value)
         {
             switch (Type.GetTypeCode(value.GetType()))
@@ -677,6 +679,7 @@ namespace INTV.Core.Utility
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private static long UnboxToLong(object value)
         {
             switch (Type.GetTypeCode(value.GetType()))

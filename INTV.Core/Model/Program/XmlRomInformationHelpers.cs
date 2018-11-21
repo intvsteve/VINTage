@@ -733,7 +733,7 @@ namespace INTV.Core.Model.Program
             public override ushort Convert(string source)
             {
                 var value = ushort.Parse(source, CultureInfo.InvariantCulture);
-                if (value > JlpFeaturesHelpers.JlpFlashBaseSaveDataSectorsCountMask)
+                if (value > JlpFeaturesHelpers.MaxTheoreticalJlpFlashSectorUsage)
                 {
                     throw new ArgumentOutOfRangeException();
                 }

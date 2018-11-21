@@ -422,7 +422,7 @@ namespace INTV.Core.Restricted.Model.Program
                             try
                             {
                                 var jlpFlashSectors = Convert.ToUInt16(jlpRawFlashSectors);
-                                if ((jlpFlashSectors > 0) && (jlpRawFlashSectors <= JlpFeaturesHelpers.JlpFlashBaseSaveDataSectorsCountMask))
+                                if ((jlpFlashSectors > 0) && (jlpRawFlashSectors <= JlpFeaturesHelpers.MaxTheoreticalJlpFlashSectorUsage))
                                 {
                                     _features.JlpFlashMinimumSaveSectors = jlpFlashSectors;
                                 }

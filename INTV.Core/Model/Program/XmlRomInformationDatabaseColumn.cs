@@ -92,9 +92,17 @@ namespace INTV.Core.Model.Program
             }
         }
 
+        /// <summary>
+        /// Gets or sets the name of the column.
+        /// </summary>
+        /// <remarks>The setter must be public so XML serialization can be used to set the value</remarks>
         [System.Xml.Serialization.XmlAttribute(RomInfoColumnNameAttributeName)]
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the string value stored in the column.
+        /// </summary>
+        /// <remarks>The setter must be public so XML serialization can be used to set the value</remarks>
         [System.Xml.Serialization.XmlText]
         public string Value { get; set; }
     }

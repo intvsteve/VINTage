@@ -89,6 +89,7 @@
     <Compile Include="Model\PeripheralTests.cs" />
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTableTests.cs" />
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTests.cs" />
+    <Compile Include="Model\Program\XmlRomInformationDatabaseColumnTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationDatabaseTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationTests.cs" />
     <Compile Include="Model\RomComparerStrictCrcOnlyTests.cs" />

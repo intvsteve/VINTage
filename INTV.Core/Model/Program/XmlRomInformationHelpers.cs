@@ -150,6 +150,7 @@ namespace INTV.Core.Model.Program
         /// <param name="featuresToOverride">Known existing features for the ROM that may be overridden. This value may be <c>null</c>.</param>
         /// <returns>The <see cref="IProgramFeatures"/> for the ROM.</returns>
         /// <remarks>If <paramref name="featuresToOverride"/> is <c>null</c>, a default set of features will act as the starting point.</remarks>
+        /// <remarks>Only database columns already present in <paramref name="xmlRomInformation"/> will be updated.</remarks>
         public static IProgramFeatures GetProgramFeatures(this XmlRomInformation xmlRomInformation, IProgramFeatures featuresToOverride)
         {
             var programFeaturesBuilder = new ProgramFeaturesBuilder().WithInitialFeatures(featuresToOverride);
@@ -223,9 +224,6 @@ namespace INTV.Core.Model.Program
                 catch (OverflowException)
                 {
                 }
-                catch (NullReferenceException)
-                {
-                }
                 catch (ArgumentException)
                 {
                 }
@@ -257,6 +255,7 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <param name="xmlRomInformation">The instance of <see cref="XmlRomInformation"/> whose features-related column values are to be set.</param>
         /// <param name="features">The features to use to set the column values.</param>
+        /// <remarks>Only database columns already present in <paramref name="xmlRomInformation"/> will be updated.</remarks>
         public static void SetProgramFeatures(this XmlRomInformation xmlRomInformation, IProgramFeatures features)
         {
             if (features != null)
@@ -714,6 +713,8 @@ namespace INTV.Core.Model.Program
             /// <exception cref="System.ArgumentException">Thrown if the string describes a raw bits value that is invalid.</exception>
             /// <exception cref="System.FormatException">Thrown if the string cannot be parsed.</exception>
             /// <exception cref="System.OverflowException">Thrown if the raw bits are out of range.</exception>
+            /// <remarks>Note that the INTV Funhouse database repurposes the save data segment count bits in the raw JlpFeatures flags
+            /// to encode JLP hardware version. JLP Flash save data segment count is retrieved separately via the jlp_save column.</remarks>
             public JlpHardwareVersion GetJlpHardwareVersion(string source)
             {
                 var rawFeatureBits = StringToRawFeatureBitsConverter.Instance.Convert(source);
@@ -744,9 +745,19 @@ namespace INTV.Core.Model.Program
         private class StringToLtoFlashFeaturesConverter : StringToFeatureBitsConverter<StringToLtoFlashFeaturesConverter, LtoFlashFeatures>
         {
             /// <inheritdoc />
+            /// <remarks>Note that the INTV Funhouse database repurposes the save data segment count bits in the raw LtoFlashFeatures flags
+            /// to encode features above bit 15, starting with <see cref="LtoFlashFeatures.FsdBit0"/>. For example, <see cref="LtoFlashFeatures.LtoFlashMemoryMapped"/>
+            /// is stored in <see cref="LtoFlashFeatures.FsdBit0"/>. The flash save data segment count is retrieved separately via the
+            /// jlp_save column.</remarks>
             public override LtoFlashFeatures Convert(string source)
             {
                 var ltoFlashFeatures = (LtoFlashFeatures)ConvertCore(source, LtoFlashFeaturesHelpers.FeaturesMask);
+                var rawFeatureBits = StringToRawFeatureBitsConverter.Instance.Convert(source);
+                var additionalLtoFlashFeatureBits = (LtoFlashFeatures)System.Convert.ToUInt32(rawFeatureBits);
+                if (additionalLtoFlashFeatureBits.HasFlag(LtoFlashFeatures.FsdBit0))
+                {
+                    ltoFlashFeatures |= LtoFlashFeatures.LtoFlashMemoryMapped;
+                }
                 return ltoFlashFeatures;
             }
         }

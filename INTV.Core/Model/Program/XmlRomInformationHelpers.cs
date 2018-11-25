@@ -394,7 +394,7 @@ namespace INTV.Core.Model.Program
                             programMetadataBuilder.WithLicenses(StringToStringEnumerableConverter.Instance.Convert(column.Value));
                             break;
                         case XmlRomInformationDatabaseColumnName.contact_info:
-                            programMetadataBuilder.WithContactInformation(StringToStringEnumerableConverter.Instance.Convert(column.Value));
+                            programMetadataBuilder.WithContactInformation(StringToStringEnumerableConverter.Instance.Convert(column.Value, withHtmlDecoding: false));
                             break;
                         case XmlRomInformationDatabaseColumnName.source: // accumulated in additional info
                             var sources = StringToStringEnumerableConverter.Instance.Convert(column.Value);
@@ -432,9 +432,6 @@ namespace INTV.Core.Model.Program
                 {
                 }
                 catch (ArgumentException)
-                {
-                }
-                catch (NullReferenceException)
                 {
                 }
             }
@@ -957,9 +954,22 @@ namespace INTV.Core.Model.Program
             /// <inheritdoc />
             public override IEnumerable<string> Convert(string source)
             {
+                return Convert(source, withHtmlDecoding: true);
+            }
+
+            /// <summary>
+            /// Splits the given string using the '|' character, optionally decoding HTML within the given string.
+            /// </summary>
+            /// <param name="source">The string to convert.</param>
+            /// <param name="withHtmlDecoding">If <c>true</c>, run strings through the registered HTML string decoder, else leave unchanged.</param>
+            /// <returns>An enumerable of strings.</returns>
+            /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="source"/> is null or empty, or no viable entries exist.</exception>
+            public IEnumerable<string> Convert(string source, bool withHtmlDecoding)
+            {
                 if (!string.IsNullOrEmpty(source))
                 {
-                    var strings = source.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.DecodeHtmlString().Trim()).Where(s => s.Length > 0);
+                    Func<string, string> selector = s => withHtmlDecoding ? StringUtilities.DecodeHtmlString(s) : s;
+                    var strings = source.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(s => selector(s).Trim()).Where(s => s.Length > 0);
                     if (!strings.Any())
                     {
                         throw new ArgumentOutOfRangeException();
@@ -1021,8 +1031,9 @@ namespace INTV.Core.Model.Program
                     if (dateParts.Length == 3)
                     {
                         var dateTimeOffset = DateTimeOffset.ParseExact(source, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                        var dateTime = new MetadataDateTime(dateTimeOffset, MetadataDateTimeFlags.Year | MetadataDateTimeFlags.Month | MetadataDateTimeFlags.Day);
+                        var dateTime = new MetadataDateTimeBuilder(dateTimeOffset.Year).WithMonth(dateTimeOffset.Month).WithDay(dateTimeOffset.Day).Build();
                         yield return dateTime;
+                        yield break;
                     }
                 }
                 throw new ArgumentOutOfRangeException();

@@ -131,6 +131,7 @@ namespace INTV.Core.Model.Program
                 replacementColumns.Add(column);
                 RomInfoDatabaseColumns = replacementColumns.ToArray();
             }
+            column.Value = value;
         }
 
         /// <summary>

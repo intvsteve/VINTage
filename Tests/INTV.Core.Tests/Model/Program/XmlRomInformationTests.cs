@@ -74,9 +74,11 @@ namespace INTV.Core.Tests.Model.Program
             var xmlRomInformation = new XmlRomInformation();
             Assert.Equal(0, xmlRomInformation.RomInfoDatabaseColumns.Length);
 
-            xmlRomInformation.AddColumn(XmlRomInformationDatabaseColumnName.format, null);
+            var value = "value";
+            xmlRomInformation.AddColumn(XmlRomInformationDatabaseColumnName.format, value);
 
             Assert.NotNull(xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.format));
+            Assert.Equal(value, xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.format).Value);
         }
 
         [Fact]
@@ -86,9 +88,11 @@ namespace INTV.Core.Tests.Model.Program
             xmlRomInformation.RomInfoDatabaseColumns = null;
             Assert.Null(xmlRomInformation.RomInfoDatabaseColumns);
 
-            xmlRomInformation.AddColumn(XmlRomInformationDatabaseColumnName.format, null);
+            var value = "value";
+            xmlRomInformation.AddColumn(XmlRomInformationDatabaseColumnName.format, value);
 
             Assert.NotNull(xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.format));
+            Assert.Equal(value, xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.format).Value);
         }
 
         [Fact]

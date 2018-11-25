@@ -32,6 +32,8 @@ namespace INTV.Core.Tests.Model.Program
     /// </summary>
     public partial class XmlRomInformationHelpersTests
     {
+        #region Get Features Test Data
+
         public static IEnumerable<object[]> FeatureCompatibilityTestData
         {
             get
@@ -286,5 +288,178 @@ namespace INTV.Core.Tests.Model.Program
                 yield return new object[] { "4294967295", HiveFeatures.Incompatible };
             }
         }
+
+        #endregion // Get Features Test Data
+
+        #region Get Metadata Test Data
+
+        public static IEnumerable<object[]> LongNamesTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|Pick me!|", new[] { "Pick me!" } };
+                yield return new object[] { "Howdy\nDoody", new[] { "Howdy~Doody" } };
+                yield return new object[] { "a|b||c", new[] { "a", "b", "c" } };
+                yield return new object[] { "&amp;", new[] { "&" } };
+                yield return new object[] { "This title is more than sixty characters long and that is really a shame because titles are being restricted to sixty characters in this converter", new[] { "This title is more than sixty characters long and that is re" } };
+                yield return new object[] { "&nbsp;", Enumerable.Empty<string>() };
+                yield return new object[] { "A|a", new[] { "A" } }; // duplicates are not retained
+                yield return new object[] { "b|B|A|a", new[] { "b", "A" } }; // duplicates are not retained
+           }
+        }
+
+        public static IEnumerable<object[]> ShortNamesTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|Pick me!|", new[] { "Pick me!" } };
+                yield return new object[] { "Howdy\nDoody", new[] { "Howdy~Doody" } };
+                yield return new object[] { "a|b||c", new[] { "a", "b", "c" } };
+                yield return new object[] { "&amp;", new[] { "&" } };
+                yield return new object[] { "This title is more than eighteen characters long so it will be truncated", new[] { "This title is more" } };
+                yield return new object[] { "&nbsp;", Enumerable.Empty<string>() };
+                yield return new object[] { "A|a", new[] { "A" } }; // duplicates are not retained
+                yield return new object[] { "b|B|A|a", new[] { "b", "A" } }; // duplicates are not retained
+            }
+        }
+
+        public static IEnumerable<object[]> DescriptionsTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|This is a very short description.|", new[] { "This is a very short description." } };
+                yield return new object[] { "A pretty neat game.\n\nYou are challenged to get the high score.", new[] { "A pretty neat game.\n\nYou are challenged to get the high score." } };
+                yield return new object[] { "First description.|Second description.||Fourth description.", new[] { "First description.", "Second description.", "Fourth description." } };
+                yield return new object[] { "Clink &amp; Clank", new[] { "Clink & Clank" } };
+                yield return new object[] { "This&nbsp;has a non-breaking space\nand some newlines\nto test things out.", new[] { "This has a non-breaking space\nand some newlines\nto test things out." } };
+                yield return new object[] { "A description|a Description", new[] { "A description" } }; // duplicates are not retained
+            }
+        }
+
+        public static IEnumerable<object[]> VendorsTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|Mattel Electronics|", new[] { "Mattel Electronics" } };
+                yield return new object[] { "Imagic", new[] { "Imagic" } };
+                yield return new object[] { "Mattel Electronics|Sears||INTV Corp.", new[] { "Mattel Electronics", "Sears", "INTV Corp." } };
+                yield return new object[] { "Bob &amp; Betsy", new[] { "Bob & Betsy" } };
+                yield return new object[] { "Activision||activision", new[] { "Activision" } }; // duplicates are not retained
+            }
+        }
+
+        public static IEnumerable<object[]> ContributorsTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|Contributor|", new[] { "Contributor" } };
+                yield return new object[] { "Contributor", new[] { "Contributor" } };
+                yield return new object[] { "Contributor 0|Contributor 1||Contributor 3", new[] { "Contributor 0", "Contributor 1", "Contributor 3" } };
+                yield return new object[] { "Con &amp; Tributor", new[] { "Con & Tributor" } };
+                yield return new object[] { "Contributor||CONTRIBUTOR", new[] { "Contributor" } }; // duplicates are not retained
+            }
+        }
+
+        public static IEnumerable<object[]> MetadataDateTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<MetadataDateTime>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<MetadataDateTime>() };
+                yield return new object[] { "1979", Enumerable.Empty<MetadataDateTime>() };
+                yield return new object[] { "1980/8/4", Enumerable.Empty<MetadataDateTime>() };
+                yield return new object[] { "1981-8-4", Enumerable.Empty<MetadataDateTime>() };
+                yield return new object[] { "1982-08-04", new[] { new MetadataDateTimeBuilder(1982).WithDay(4).WithMonth(8).Build() } };
+                yield return new object[] { "1983-08", Enumerable.Empty<MetadataDateTime>() };
+                yield return new object[] { "1983-18", Enumerable.Empty<MetadataDateTime>() };
+            }
+        }
+
+        public static IEnumerable<object[]> LicensesTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|GPLv2|", new[] { "GPLv2" } };
+                yield return new object[] { "GPLv3+", new[] { "GPLv3+" } };
+                yield return new object[] { "GPLv2|GPLv2+||GPLv3+", new[] { "GPLv2", "GPLv2+", "GPLv3+" } };
+                yield return new object[] { "CC BY-NC-SA||cc by-nc-sa", new[] { "CC BY-NC-SA" } }; // duplicates are not retained
+            }
+        }
+
+        public static IEnumerable<object[]> ContactInfoTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|a@b.com|", new[] { "a@b.com" } };
+                yield return new object[] { "c@d.com", new[] { "c@d.com" } };
+                yield return new object[] { "|Dead Letter Office <deadletter@defunct.com>|INTV Funhouse||.com", new[] { "Dead Letter Office <deadletter@defunct.com>", "INTV Funhouse", ".com" } };
+                yield return new object[] { "Hankster||hankster", new[] { "Hankster" } }; // duplicates are not retained
+            }
+        }
+
+        public static IEnumerable<object[]> SourcesTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|BSRs|", new[] { "BSRs" } };
+                yield return new object[] { "INTV Funhouse", new[] { "INTV Funhouse" } };
+                yield return new object[] { "|BSRs|INTV Funhouse||Electronic Games Magazine", new[] { "BSRs", "INTV Funhouse", "Electronic Games Magazine" } };
+                yield return new object[] { "BSRs||bsrs", new[] { "BSRs" } }; // duplicates are not retained
+            }
+        }
+
+        public static IEnumerable<object[]> RomVariantNamesTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|Fast Version|", new[] { "Fast Version" } };
+                yield return new object[] { "Original release", new[] { "Original release" } };
+                yield return new object[] { "|POV Steering|Revised Steering||Car-Oriented Steering", new[] { "POV Steering", "Revised Steering", "Car-Oriented Steering" } };
+                yield return new object[] { "beta 1||Beta 1", new[] { "beta 1" } }; // duplicates are not retained
+            }
+        }
+
+        public static IEnumerable<object[]> OtherInformationTestData
+        {
+            get
+            {
+                yield return new object[] { null, Enumerable.Empty<string>() };
+                yield return new object[] { string.Empty, Enumerable.Empty<string>() };
+                yield return new object[] { "||", Enumerable.Empty<string>() };
+                yield return new object[] { "|What would you like to know?|", new[] { "What would you like to know?" } };
+                yield return new object[] { "You wish you knew it all.", new[] { "You wish you knew it all." } };
+                yield return new object[] { "|Nobody||likes|a know-it-all||||", new[] { "Nobody", "likes", "a know-it-all" } };
+                yield return new object[] { "Really?||REALLY?", new[] { "Really?" } }; // duplicates are not retained
+            }
+        }
+
+        #endregion // Get Metadata Test Data
     }
 }

@@ -22,8 +22,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
@@ -37,6 +38,12 @@ namespace INTV.Core.Tests.Model.Program
     /// </summary>
     public partial class XmlRomInformationHelpersTests
     {
+        public XmlRomInformationHelpersTests()
+        {
+            StringUtilities.RegisterHtmlDecoder(HtmlStripTagsAndDecode);
+            StringUtilities.RegisterHtmlEncoder(HtmlEncode);
+        }
+
         #region GetProgramIdentifier Tests
 
         [Fact]
@@ -726,6 +733,239 @@ name = ""Tag-A-Long Toady""
             VerifyEmptyMetadata(metadata);
         }
 
+        [Theory]
+        [MemberData("LongNamesTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithTitleColumn_ReturnsExpectedTitles(string longNamesValue, IEnumerable<string> expectedLongNames)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.title).Value = longNamesValue;
+
+            Assert.Equal(expectedLongNames, info.GetProgramMetadata(new ProgramMetadata()).LongNames);
+        }
+
+        [Theory]
+        [MemberData("ShortNamesTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithShortNameColumn_ReturnsExpectedShortNames(string shortNamesValue, IEnumerable<string> expectedShortNames)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.short_name).Value = shortNamesValue;
+
+            Assert.Equal(expectedShortNames, info.GetProgramMetadata(new ProgramMetadata()).ShortNames);
+        }
+
+        [Theory]
+        [MemberData("DescriptionsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithDescriptionColumn_ReturnsExpectedDescriptions(string descriptionsValue, IEnumerable<string> expectedDescriptions)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.description).Value = descriptionsValue;
+
+            Assert.Equal(expectedDescriptions, info.GetProgramMetadata(new ProgramMetadata()).Descriptions);
+        }
+
+        [Theory]
+        [MemberData("VendorsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithVendorColumn_ReturnsExpectedVendors(string vendorsValue, IEnumerable<string> expectedVendors)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.vendor).Value = vendorsValue;
+
+            Assert.Equal(expectedVendors, info.GetProgramMetadata(new ProgramMetadata()).Publishers);
+        }
+
+        [Theory]
+        [MemberData("ContributorsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithProgramColumn_ReturnsExpectedProgrammers(string contributorsValue, IEnumerable<string> expectedContributors)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.program).Value = contributorsValue;
+
+            Assert.Equal(expectedContributors, info.GetProgramMetadata(new ProgramMetadata()).Programmers);
+        }
+
+        [Theory]
+        [MemberData("ContributorsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithConceptColumn_ReturnsExpectedDesigners(string contributorsValue, IEnumerable<string> expectedContributors)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.concept).Value = contributorsValue;
+
+            Assert.Equal(expectedContributors, info.GetProgramMetadata(new ProgramMetadata()).Designers);
+        }
+
+        [Theory]
+        [MemberData("ContributorsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithGraphicsColumn_ReturnsExpectedGraphicsDesigners(string contributorsValue, IEnumerable<string> expectedContributors)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.game_graphics).Value = contributorsValue;
+
+            Assert.Equal(expectedContributors, info.GetProgramMetadata(new ProgramMetadata()).Graphics);
+        }
+
+        [Theory]
+        [MemberData("ContributorsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithMusicColumn_ReturnsExpectedMusicComposers(string contributorsValue, IEnumerable<string> expectedContributors)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.music).Value = contributorsValue;
+
+            Assert.Equal(expectedContributors, info.GetProgramMetadata(new ProgramMetadata()).Music);
+        }
+
+        [Theory]
+        [MemberData("ContributorsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithSoundColumn_ReturnsExpectedSoundEffects(string contributorsValue, IEnumerable<string> expectedContributors)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.soundfx).Value = contributorsValue;
+
+            Assert.Equal(expectedContributors, info.GetProgramMetadata(new ProgramMetadata()).SoundEffects);
+        }
+
+        [Theory]
+        [MemberData("ContributorsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithVoicesColumn_ReturnsExpectedVoiceActors(string contributorsValue, IEnumerable<string> expectedContributors)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.voices).Value = contributorsValue;
+
+            Assert.Equal(expectedContributors, info.GetProgramMetadata(new ProgramMetadata()).Voices);
+        }
+
+        [Theory]
+        [MemberData("ContributorsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithDocumentationColumn_ReturnsExpectedDocumentationAuthors(string contributorsValue, IEnumerable<string> expectedContributors)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.game_docs).Value = contributorsValue;
+
+            Assert.Equal(expectedContributors, info.GetProgramMetadata(new ProgramMetadata()).Documentation);
+        }
+
+        [Theory]
+        [MemberData("ContributorsTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithBoxArtColumn_ReturnsExpectedOtherArtists(string contributorsValue, IEnumerable<string> expectedContributors)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.box_art).Value = contributorsValue;
+
+            Assert.Equal(expectedContributors, info.GetProgramMetadata(new ProgramMetadata()).Artwork);
+        }
+
+        [Theory]
+        [MemberData("MetadataDateTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithReleaseDateColumn_ReturnsExpectedReleaseDates(string releaseDateValue, IEnumerable<MetadataDateTime> expectedReleaseDates)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.release_date).Value = releaseDateValue;
+
+            Assert.Equal(expectedReleaseDates, info.GetProgramMetadata(new ProgramMetadata()).ReleaseDates);
+        }
+
+        [Theory]
+        [MemberData("LicensesTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithLicenseColumn_ReturnsExpectedLicenses(string licensesValue, IEnumerable<string> expectedLicenses)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.license).Value = licensesValue;
+
+            Assert.Equal(expectedLicenses, info.GetProgramMetadata(new ProgramMetadata()).Licenses);
+        }
+
+        [Theory]
+        [MemberData("ContactInfoTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithContactInfoColumn_ReturnsExpectedContactInformation(string contactInformationValue, IEnumerable<string> expectedContactInformation)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.contact_info).Value = contactInformationValue;
+
+            Assert.Equal(expectedContactInformation, info.GetProgramMetadata(new ProgramMetadata()).ContactInformation);
+        }
+
+        [Theory]
+        [MemberData("SourcesTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithSourceColumn_ReturnsExpectedAdditionalInformation(string sourcesValue, IEnumerable<string> expectedAdditionalInformation)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.source).Value = sourcesValue;
+
+            Assert.Equal(expectedAdditionalInformation, info.GetProgramMetadata(new ProgramMetadata()).AdditionalInformation);
+        }
+
+        [Theory]
+        [MemberData("RomVariantNamesTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithRomVariantNameColumn_ReturnsExpectedRomVersions(string romVariantNamesValue, IEnumerable<string> expectedVersions)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.name).Value = romVariantNamesValue;
+
+            Assert.Equal(expectedVersions, info.GetProgramMetadata(new ProgramMetadata()).Versions);
+        }
+
+        [Theory]
+        [MemberData("MetadataDateTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithBuildDateColumn_ReturnsExpectedBuildDates(string buildDateValue, IEnumerable<MetadataDateTime> expectedBuildDates)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.build_date).Value = buildDateValue;
+
+            Assert.Equal(expectedBuildDates, info.GetProgramMetadata(new ProgramMetadata()).BuildDates);
+        }
+
+        [Theory]
+        [MemberData("OtherInformationTestData")]
+        public void XmlRomInformation_GetProgramMetadataWithOtherColumn_ReturnsExpectedAdditionalInformation(string otherInformationValue, IEnumerable<string> expectedAdditionalInformation)
+        {
+            var info = XmlRomInformation.CreateDefault();
+
+            info.GetColumn(XmlRomInformationDatabaseColumnName.other).Value = otherInformationValue;
+
+            Assert.Equal(expectedAdditionalInformation, info.GetProgramMetadata(new ProgramMetadata()).AdditionalInformation);
+        }
+
+        [Fact]
+        public void XmlRomInformation_GetProgramMetadataWithSourceAndOtherColumns_ReturnsExpectedAdditionalInformation()
+        {
+            var info = new XmlRomInformation();
+
+            info.AddColumn(XmlRomInformationDatabaseColumnName.source, "BSRs|Mattel Electronics|Old Magazines");
+            info.AddColumn(XmlRomInformationDatabaseColumnName.other, "|Various Websites|old magazines");
+
+            var expectedAdditionalInformation = new[] { "BSRs", "Mattel Electronics", "Old Magazines", "Various Websites" };
+            Assert.Equal(expectedAdditionalInformation, info.GetProgramMetadata(new ProgramMetadata()).AdditionalInformation);
+        }
+
+        [Fact]
+        public void XmlRomInformation_GetProgramMetadataWithOtherAndSourceColumns_ReturnsExpectedAdditionalInformation()
+        {
+            var info = new XmlRomInformation();
+
+            info.AddColumn(XmlRomInformationDatabaseColumnName.other, "|Various Websites|old magazines");
+            info.AddColumn(XmlRomInformationDatabaseColumnName.source, "BSRs|Mattel Electronics|Old Magazines");
+
+            var expectedAdditionalInformation = new[] { "Various Websites", "old magazines", "BSRs", "Mattel Electronics" };
+            Assert.Equal(expectedAdditionalInformation, info.GetProgramMetadata(new ProgramMetadata()).AdditionalInformation);
+        }
+
         #endregion // GetProgramMetadata Tests
 
         #region SetProgramMetadata Tests
@@ -758,6 +998,27 @@ name = ""Tag-A-Long Toady""
         }
 
         #endregion // SetProgramMetadata Tests
+
+        private static string HtmlStripTagsAndDecode(string encodedHtmlString)
+        {
+            var decodedString = string.Empty;
+            if (!string.IsNullOrEmpty(encodedHtmlString))
+            {
+                decodedString = Regex.Replace(encodedHtmlString, "<.*?>", string.Empty);
+                decodedString = HttpUtility.HtmlDecode(decodedString);
+            }
+            return decodedString;
+        }
+
+        private static string HtmlEncode(string stringToEncode)
+        {
+            var decodedString = string.Empty;
+            if (!string.IsNullOrEmpty(stringToEncode))
+            {
+                decodedString = HttpUtility.HtmlEncode(stringToEncode);
+            }
+            return decodedString;
+        }
 
         private void VerifyEmptyMetadata(IProgramMetadata metadata)
         {

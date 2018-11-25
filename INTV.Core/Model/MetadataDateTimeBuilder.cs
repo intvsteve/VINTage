@@ -37,6 +37,7 @@ namespace INTV.Core.Model
         private int _offsetHours = int.MaxValue;
         private int _offsetMinutes = int.MaxValue;
         private MetadataDateTimeFlags _flags = MetadataDateTimeFlags.None;
+        private bool _withLocalOffset;
 
         /// <summary>
         /// Initialize a new instance of the builder with the given year.
@@ -123,6 +124,17 @@ namespace INTV.Core.Model
         {
             _offsetHours = hours;
             _offsetMinutes = minutes;
+            return this;
+        }
+
+        /// <summary>
+        /// Instructs the builder to use provide the local system's UTC offset to the timestamp.
+        /// </summary>
+        /// <returns>The builder.</returns>
+        /// <remarks>If both this and an offset are provided, the supplied UTC offset values are ignored.</remarks>
+        public MetadataDateTimeBuilder WithLocalUtcOffset()
+        {
+            _withLocalOffset = true;
             return this;
         }
 
@@ -235,33 +247,44 @@ namespace INTV.Core.Model
 
         private void ValidateOffset()
         {
-            var offsetHoursRange = new Range<int>(-12, 12);
-            if (offsetHoursRange.IsValueInRange(_offsetHours))
+            if (_withLocalOffset)
             {
                 _flags |= MetadataDateTimeFlags.UtcOffset;
+                var dateTime = new DateTime(_year, _month, _day, _hour, _minute, _second);
+                var offset = TimeZoneInfo.Local.GetUtcOffset(dateTime);
+                _offsetHours = offset.Hours;
+                _offsetMinutes = offset.Minutes;
             }
             else
             {
-                _offsetHours = MetadataDateTime.DefaultUtcOffsetHours;
-            }
-
-            if (_flags.HasFlag(MetadataDateTimeFlags.UtcOffset))
-            {
-                var offsetMinutesRange = new Range<int>(0, 59);
-                if (offsetMinutesRange.IsValueInRange(_offsetMinutes))
+                var offsetHoursRange = new Range<int>(-12, 12);
+                if (offsetHoursRange.IsValueInRange(_offsetHours))
                 {
                     _flags |= MetadataDateTimeFlags.UtcOffset;
                 }
-            }
+                else
+                {
+                    _offsetHours = MetadataDateTime.DefaultUtcOffsetHours;
+                }
 
-            // Range check the total offset, so things like -12:40 are rejected.
-            const int MaxUtcOffset = 12 * 60;
-            var utcTotalDeltaInMinutes = (_offsetHours * 60) + _offsetMinutes;
-            if (System.Math.Abs(utcTotalDeltaInMinutes) > MaxUtcOffset)
-            {
-                _offsetHours = 0;
-                _offsetMinutes = 0;
-                _flags &= ~MetadataDateTimeFlags.UtcOffset;
+                if (_flags.HasFlag(MetadataDateTimeFlags.UtcOffset))
+                {
+                    var offsetMinutesRange = new Range<int>(0, 59);
+                    if (offsetMinutesRange.IsValueInRange(_offsetMinutes))
+                    {
+                        _flags |= MetadataDateTimeFlags.UtcOffset;
+                    }
+                }
+
+                // Range check the total offset, so things like -12:40 are rejected.
+                const int MaxUtcOffset = 12 * 60;
+                var utcTotalDeltaInMinutes = (_offsetHours * 60) + _offsetMinutes;
+                if (System.Math.Abs(utcTotalDeltaInMinutes) > MaxUtcOffset)
+                {
+                    _offsetHours = 0;
+                    _offsetMinutes = 0;
+                    _flags &= ~MetadataDateTimeFlags.UtcOffset;
+                }
             }
         }
     }

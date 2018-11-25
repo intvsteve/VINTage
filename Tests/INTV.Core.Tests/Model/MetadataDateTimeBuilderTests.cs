@@ -128,5 +128,23 @@ namespace INTV.Core.Tests.Model
 
             Assert.Equal(0, expectedMetadataDateTime.CompareTo(actualMetadataDateTime, strict: true, compareOnlyCommonValidFields: false));
         }
+
+        [Fact]
+        public void MetadataDateTimeBuilder_WithLocalUtcOffset_CreatesExpectedMetadataDateTime()
+        {
+            var year = 1984;
+            var offsetHours = -3;
+            var offsetMinutes = -3;
+            var flags = MetadataDateTimeFlags.Year | MetadataDateTimeFlags.UtcOffset;
+            var dateTime = new DateTime(year, 1, 1);
+            var offset = TimeZoneInfo.Local.GetUtcOffset(dateTime);
+            var date = new System.DateTimeOffset(dateTime, offset);
+            var expectedMetadataDateTime = new MetadataDateTime(date, flags);
+
+            var builder = new MetadataDateTimeBuilder(year).WithOffset(offsetHours, offsetMinutes).WithLocalUtcOffset();
+            var actualMetadataDateTime = builder.Build();
+
+            Assert.Equal(0, expectedMetadataDateTime.CompareTo(actualMetadataDateTime, strict: true, compareOnlyCommonValidFields: false));
+        }
     }
 }

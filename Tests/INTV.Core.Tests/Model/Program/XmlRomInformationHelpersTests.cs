@@ -141,7 +141,7 @@ namespace INTV.Core.Tests.Model.Program
 
             var expectedProgramIdentifier = new ProgramIdentifier(1024u);
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc).Value = expectedProgramIdentifier.DataCrc.ToString(CultureInfo.InvariantCulture);
-            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = "ROM";
+            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = XmlRomInformationDatabaseColumn.RomFormatValueRom;
 
             Assert.Equal(expectedProgramIdentifier, info.GetProgramIdentifier());
         }
@@ -154,7 +154,7 @@ namespace INTV.Core.Tests.Model.Program
             var expectedProgramIdentifier = new ProgramIdentifier(1024u);
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc).Value = expectedProgramIdentifier.DataCrc.ToString(CultureInfo.InvariantCulture);
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc_2).Value = "-2";
-            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = "ROM";
+            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = XmlRomInformationDatabaseColumn.RomFormatValueRom;
 
             Assert.Equal(expectedProgramIdentifier, info.GetProgramIdentifier());
         }
@@ -168,7 +168,7 @@ namespace INTV.Core.Tests.Model.Program
             var expectedProgramIdentifier = new ProgramIdentifier(1024u);
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc).Value = expectedProgramIdentifier.DataCrc.ToString(CultureInfo.InvariantCulture);
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc_2).Value = "-2";
-            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = "BIN+CFG";
+            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = XmlRomInformationDatabaseColumn.RomFormatValueBin;
 
             Assert.Equal(expectedProgramIdentifier, info.GetProgramIdentifier());
         }
@@ -182,7 +182,7 @@ namespace INTV.Core.Tests.Model.Program
             Assert.True(info.RemoveColumn(XmlRomInformationDatabaseColumnName.bin_cfg));
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc).Value = expectedProgramIdentifier.DataCrc.ToString(CultureInfo.InvariantCulture);
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc_2).Value = "-2";
-            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = "BIN+CFG";
+            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = XmlRomInformationDatabaseColumn.RomFormatValueBin;
 
             Assert.Equal(expectedProgramIdentifier, info.GetProgramIdentifier());
         }
@@ -205,7 +205,7 @@ name = ""Tag-A-Long Toady""
             var expectedProgramIdentifier = new ProgramIdentifier(1024u, Crc32.OfBlock(Encoding.UTF8.GetBytes(cfgContent)));
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc).Value = expectedProgramIdentifier.DataCrc.ToString(CultureInfo.InvariantCulture);
             info.GetColumn(XmlRomInformationDatabaseColumnName.bin_cfg).Value = cfgContent;
-            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = "BIN+CFG";
+            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = XmlRomInformationDatabaseColumn.RomFormatValueBin;
 
             Assert.Equal(expectedProgramIdentifier, info.GetProgramIdentifier());
         }
@@ -220,7 +220,7 @@ name = ""Tag-A-Long Toady""
             var expectedProgramIdentifier = new ProgramIdentifier(1024u, Crc32.OfFile(IRomHelpers.GetStockCfgFilePath(stockCfgFile)));
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc).Value = expectedProgramIdentifier.DataCrc.ToString(CultureInfo.InvariantCulture);
             info.GetColumn(XmlRomInformationDatabaseColumnName.bin_cfg).Value = stockCfgFile.ToString(CultureInfo.InvariantCulture);
-            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = "BIN+CFG";
+            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = XmlRomInformationDatabaseColumn.RomFormatValueBin;
 
             Assert.Equal(expectedProgramIdentifier, info.GetProgramIdentifier());
         }
@@ -235,7 +235,7 @@ name = ""Tag-A-Long Toady""
             var expectedProgramIdentifier = new ProgramIdentifier(1024u);
             info.GetColumn(XmlRomInformationDatabaseColumnName.crc).Value = expectedProgramIdentifier.DataCrc.ToString(CultureInfo.InvariantCulture);
             info.GetColumn(XmlRomInformationDatabaseColumnName.bin_cfg).Value = stockCfgFile.ToString(CultureInfo.InvariantCulture);
-            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = "BIN+CFG";
+            info.GetColumn(XmlRomInformationDatabaseColumnName.format).Value = XmlRomInformationDatabaseColumn.RomFormatValueBin;
 
             Assert.Equal(expectedProgramIdentifier, info.GetProgramIdentifier());
         }
@@ -302,9 +302,9 @@ name = ""Tag-A-Long Toady""
         }
 
         [Theory]
-        [InlineData("ROM", RomFormat.Rom)]
-        [InlineData("BIN+CFG", RomFormat.Bin)]
-        [InlineData("LUIGI", RomFormat.Luigi)]
+        [InlineData(XmlRomInformationDatabaseColumn.RomFormatValueRom, RomFormat.Rom)]
+        [InlineData(XmlRomInformationDatabaseColumn.RomFormatValueBin, RomFormat.Bin)]
+        [InlineData(XmlRomInformationDatabaseColumn.RomFormatValueLuigi, RomFormat.Luigi)]
         public void XmlRomInformation_GetRomFormatWithValidFormatColumnValue_ReturnsExpectedRomFormat(string romFormatString, RomFormat expectedRomFormat)
         {
             var info = XmlRomInformation.CreateDefault();
@@ -400,8 +400,8 @@ name = ""Tag-A-Long Toady""
         }
 
         [Theory]
-        [InlineData("BIOS", GeneralFeatures.SystemRom)] // case sensitive
-        [InlineData("Program", GeneralFeatures.None)] // case sensitive
+        [InlineData(XmlRomInformationDatabaseColumn.RomTypeValueSystem, GeneralFeatures.SystemRom)] // case sensitive
+        [InlineData(XmlRomInformationDatabaseColumn.RomTypeValueRom, GeneralFeatures.None)] // case sensitive
         public void XmlRomInformation_GetProgramFeaturesWithValidTypeColumnValue_ReturnsDefaultFeatures(string validRomType, GeneralFeatures expectedGeneralFeatures)
         {
             var info = XmlRomInformation.CreateDefault();
@@ -412,8 +412,8 @@ name = ""Tag-A-Long Toady""
         }
 
         [Theory]
-        [InlineData("BIOS", GeneralFeatures.SystemRom)] // case sensitive
-        [InlineData("Program", GeneralFeatures.None)] // case sensitive
+        [InlineData(XmlRomInformationDatabaseColumn.RomTypeValueSystem, GeneralFeatures.SystemRom)] // case sensitive
+        [InlineData(XmlRomInformationDatabaseColumn.RomTypeValueRom, GeneralFeatures.None)] // case sensitive
         public void XmlRomInformation_GetProgramFeaturesWithFeaturesToOverrideAndValidTypeColumnValue_CorrectlyOverridesGeneralFeatures(string validRomType, GeneralFeatures expectedGeneralFeatures)
         {
             var info = XmlRomInformation.CreateDefault();
@@ -610,7 +610,7 @@ name = ""Tag-A-Long Toady""
 
         #endregion // CuttleCart3 Features Tests
 
-        #region // JLP Features Tests
+        #region JLP Features Tests
 
         [Theory]
         [MemberData("JlpFeaturesTestData")]
@@ -710,6 +710,495 @@ name = ""Tag-A-Long Toady""
 
             Assert.Equal(ProgramFeatures.DefaultFeatures, info.GetProgramFeatures(null));
         }
+
+        #region Set General Features Tests
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesWithAllGeneralFeaturesSet_ProducesExpectedColumnValues()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.GeneralFeatures = GeneralFeatures.UnrecognizedRom | GeneralFeatures.PageFlipping | GeneralFeatures.OnboardRam | GeneralFeatures.SystemRom;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(XmlRomInformationDatabaseColumn.RomTypeValueSystem, info.GetColumn(XmlRomInformationDatabaseColumnName.type).Value);
+            Assert.Equal("7", info.GetColumn(XmlRomInformationDatabaseColumnName.general_features).Value);
+        }
+
+        [Theory]
+        [MemberData("SetGeneralFeaturesTestData")]
+        public void XmlRomInformation_SetProgramFeaturesWithGeneralFeature_ProducesExpectedColumnValues(GeneralFeatures generalFeatures, string expectedGeneralFeatures, string expectedType)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.GeneralFeatures = generalFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedType, info.GetColumn(XmlRomInformationDatabaseColumnName.type).Value);
+            Assert.Equal(expectedGeneralFeatures, info.GetColumn(XmlRomInformationDatabaseColumnName.general_features).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidGeneralFeature_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidGeneralFeature = 1u << 6;
+            Assert.Equal(0u, testInvalidGeneralFeature & GeneralFeaturesHelpers.FeaturesMask);
+            features.GeneralFeatures = (GeneralFeatures)testInvalidGeneralFeature;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.general_features).Value);
+        }
+
+        #endregion // Set General Features Tests
+
+        #region Set NTSC Compatibility Tests
+
+        [Theory]
+        [MemberData("SetNtscPalCompatibilityTestData")]
+        public void SetProgramFeaturesWithNtscCompatibility_ProducesExpectedColumnValue(FeatureCompatibility ntscCompatibility, string expectedNtscColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Ntsc = ntscCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedNtscColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.ntsc).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidNtscCompatibility_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidCompatibility = 1u << 6;
+            Assert.Equal(0u, testInvalidCompatibility & FeatureCompatibilityHelpers.CompatibilityMask);
+            features.Ntsc = (FeatureCompatibility)testInvalidCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.ntsc).Value);
+        }
+
+        #endregion // Set NTSC Compatibility Tests
+
+        #region Set PAL Compatibility Tests
+
+        [Theory]
+        [MemberData("SetNtscPalCompatibilityTestData")]
+        public void SetProgramFeaturesWithPalCompatibility_ProducesExpectedColumnValue(FeatureCompatibility palCompatibility, string expectedPalColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Pal = palCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedPalColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.pal).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidPalCompatibility_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidCompatibility = 1u << 6;
+            Assert.Equal(0u, testInvalidCompatibility & FeatureCompatibilityHelpers.CompatibilityMask);
+            features.Pal = (FeatureCompatibility)testInvalidCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.pal).Value);
+        }
+
+        #endregion // Set PAL Compatibility Tests
+
+        #region Set Keyboard Component Features Tests
+
+        [Theory]
+        [MemberData("SetKeyboardComponentFeaturesTestData")]
+        public void SetProgramFeaturesWithKeyboardComponentFeatures_ProducesExpectedColumnValue(KeyboardComponentFeatures keybardComponentFeatures, string expectedKeyboardComponentFeaturesColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.KeyboardComponent = keybardComponentFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedKeyboardComponentFeaturesColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.kc).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidKeyboardComponentFeatures_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidKeyboardComponentFeatures = 1u << 12;
+            Assert.Equal(0u, testInvalidKeyboardComponentFeatures & KeyboardComponentFeaturesHelpers.FeaturesMask);
+            features.KeyboardComponent = (KeyboardComponentFeatures)testInvalidKeyboardComponentFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.kc).Value);
+        }
+
+        #endregion // Set Keyboard Component Features Tests
+
+        #region Set Super Video Arcade Compatibility Tests
+
+        [Theory]
+        [MemberData("CommonSetFeatureCompatibilityTestData")]
+        public void SetProgramFeaturesWithSearsSuperVideoArcadeCompatibility_ProducesExpectedColumnValue(FeatureCompatibility superVideoArcadeCompatibility, string expectedSuperVideoArcadeCompatibilityColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.SuperVideoArcade = superVideoArcadeCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedSuperVideoArcadeCompatibilityColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.sva).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidSuperVideoArcadeCompatibility_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidCompatibility = 1u << 6;
+            Assert.Equal(0u, testInvalidCompatibility & FeatureCompatibilityHelpers.CompatibilityMask);
+            features.SuperVideoArcade = (FeatureCompatibility)testInvalidCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.sva).Value);
+        }
+
+        #endregion // Set Super Video Arcade Compatibility Tests
+
+        #region Set Intellivoice Compatibility Tests
+
+        [Theory]
+        [MemberData("CommonSetFeatureCompatibilityTestData")]
+        public void SetProgramFeaturesWithIntellivoiceCompatibility_ProducesExpectedColumnValue(FeatureCompatibility intellivoiceCompatibility, string expectedIntellivoiceCompatibilityColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Intellivoice = intellivoiceCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedIntellivoiceCompatibilityColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.ivoice).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidIntellivoiceCompatibility_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidCompatibility = 1u << 6;
+            Assert.Equal(0u, testInvalidCompatibility & FeatureCompatibilityHelpers.CompatibilityMask);
+            features.Intellivoice = (FeatureCompatibility)testInvalidCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.ivoice).Value);
+        }
+
+        #endregion // Set Intellivoice Compatibility Tests
+
+        #region Set Intellivision II Compatibility Tests
+
+        [Theory]
+        [MemberData("CommonSetFeatureCompatibilityTestData")]
+        public void SetProgramFeaturesWithIntellivisionIICompatibility_ProducesExpectedColumnValue(FeatureCompatibility intellivisionIICompatibility, string expectedIntellivisionIICompatibilityColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.IntellivisionII = intellivisionIICompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedIntellivisionIICompatibilityColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.intyii).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidIntellivisionIICompatibility_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidCompatibility = 1u << 6;
+            Assert.Equal(0u, testInvalidCompatibility & FeatureCompatibilityHelpers.CompatibilityMask);
+            features.IntellivisionII = (FeatureCompatibility)testInvalidCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.intyii).Value);
+        }
+
+        #endregion // Set Intellivision II Compatibility Tests
+
+        #region Set ECS Features Tests
+
+        [Theory]
+        [MemberData("SetEcsFeaturesTestData")]
+        public void SetProgramFeaturesWithEcsFeatures_ProducesExpectedColumnValue(EcsFeatures ecsFeatures, string expectedEcsFeaturesColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Ecs = ecsFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedEcsFeaturesColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.ecs).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidEcsFeatures_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidEcsFeatures = 1u << 12;
+            Assert.Equal(0u, testInvalidEcsFeatures & EcsFeaturesHelpers.FeaturesMask);
+            features.Ecs = (EcsFeatures)testInvalidEcsFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.ecs).Value);
+        }
+
+        #endregion // Set ECS Features Tests
+
+        #region Set Tutorvision Compatibility Tests
+
+        [Theory]
+        [MemberData("CommonSetFeatureCompatibilityTestData")]
+        public void SetProgramFeaturesWithTutorvisionCompatibility_ProducesExpectedColumnValue(FeatureCompatibility tutorvisionCompatibility, string expectedTutorvisionCompatibilityColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Tutorvision = tutorvisionCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedTutorvisionCompatibilityColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.tutor).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidTutorvisionCompatibility_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidCompatibility = 1u << 6;
+            Assert.Equal(0u, testInvalidCompatibility & FeatureCompatibilityHelpers.CompatibilityMask);
+            features.Tutorvision = (FeatureCompatibility)testInvalidCompatibility;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.tutor).Value);
+        }
+
+        #endregion // Set Tutorvision Compatibility Tests
+
+        #region Set Intellicart Features Tests
+
+        [Theory]
+        [MemberData("SetIntellicartFeaturesTestData")]
+        public void SetProgramFeaturesWithIntellicartFeatures_ProducesExpectedColumnValue(IntellicartCC3Features intellicartFeatures, string expectedIntellicartFeaturesColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Intellicart = intellicartFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedIntellicartFeaturesColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.icart).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidIntellicartFeatures_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidIntellicartFeatures = 1u << 12;
+            Assert.Equal(0u, testInvalidIntellicartFeatures & IntellicartCC3FeaturesHelpers.FeaturesMask);
+            features.Intellicart = (IntellicartCC3Features)testInvalidIntellicartFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.icart).Value);
+        }
+
+        #endregion // Set Intellicart Features Tests
+
+        #region Set CuttleCart3 Features Tests
+
+        [Theory]
+        [MemberData("SetCuttleCart3FeaturesTestData")]
+        public void SetProgramFeaturesWithCuttleCart3Features_ProducesExpectedColumnValue(CuttleCart3Features cuttleCart3Features, string expectedCuttleCart3FeaturesColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.CuttleCart3 = cuttleCart3Features;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedCuttleCart3FeaturesColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.cc3).Value);
+        }
+
+        [Fact]
+        public void XmlRomInformation_SetProgramFeaturesToInvalidCuttleCart3Features_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidCuttleCart3Features = 1u << 12;
+            Assert.Equal(0u, testInvalidCuttleCart3Features & CuttleCart3FeaturesHelpers.FeaturesMask);
+            features.CuttleCart3 = (CuttleCart3Features)testInvalidCuttleCart3Features;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.cc3).Value);
+        }
+
+        #endregion // Set CuttleCart3 Features Tests
+
+        #region Set JLP Features Tests
+
+        [Theory]
+        [MemberData("SetJlpFeaturesTestData")]
+        public void SetProgramFeaturesWithJlpFeatures_ProducesExpectedColumnValue(JlpFeatures jlpFeatures, JlpHardwareVersion jlpHardwareVersion, string expectedJlpFeaturesColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Jlp = jlpFeatures;
+            features.JlpHardwareVersion = jlpHardwareVersion;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedJlpFeaturesColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.jlp).Value);
+        }
+
+        [Fact]
+        public void SetProgramFeaturesWithJlpFeaturesWithHighFlashSectorCount_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Jlp = JlpFeatures.FsdBit9 | JlpFeatures.FsdBit8;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.jlp).Value);
+        }
+
+        [Theory]
+        [MemberData("SetJlpFlashSectorUsageCountTestData")]
+        public void SetProgramFeaturesWithJlpFlashSectorsFeatures_ProducesExpectedColumnValue(ushort jlpFlashSectors, string expectedJlpFlashSectorsColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.JlpFlashMinimumSaveSectors = jlpFlashSectors;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedJlpFlashSectorsColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.jlp_savegame).Value);
+        }
+
+        #endregion // Set JLP Features Tests
+
+        #region Set LTO Flash! Features Tests
+
+        [Theory]
+        [MemberData("SetLtoFlashFeaturesTestData")]
+        public void SetProgramFeaturesWithLtoFlashFeatures_ProducesExpectedColumnValue(LtoFlashFeatures ltoFlashFeatures, string expectedLtoFlashFeaturesColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.LtoFlash = ltoFlashFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedLtoFlashFeaturesColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.lto_flash).Value);
+        }
+
+        [Fact]
+        public void SetProgramFeaturesWithLtoFlashFeaturesWithHighFlashSectorCount_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.LtoFlash = LtoFlashFeatures.FsdBit9 | LtoFlashFeatures.FsdBit8;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.lto_flash).Value);
+        }
+
+        #endregion // Set LTO Flash! Features Tests
+
+        #region Set Bee3 Features Tests
+
+        [Theory]
+        [MemberData("SetBee3FeaturesTestData")]
+        public void SetProgramFeaturesWithBee3Features_ProducesExpectedColumnValue(Bee3Features bee3Features, string expectedBee3FeaturesColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Bee3 = bee3Features;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedBee3FeaturesColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.bee3).Value);
+        }
+
+        [Fact]
+        public void SetProgramFeaturesWithInvalidBee3Features_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidBee3Features = 1u << 12;
+            Assert.Equal(0u, testInvalidBee3Features & Bee3FeaturesHelpers.FeaturesMask);
+            features.Bee3 = (Bee3Features)testInvalidBee3Features;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.bee3).Value);
+        }
+
+        #endregion // Set Bee3 Features Tests
+
+        #region Set Hive Features Tests
+
+        [Theory]
+        [MemberData("SetHiveFeaturesTestData")]
+        public void SetProgramFeaturesWithHiveFeatures_ProducesExpectedColumnValue(HiveFeatures hiveFeatures, string expectedHiveFeaturesColumnValue)
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            features.Hive = hiveFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal(expectedHiveFeaturesColumnValue, info.GetColumn(XmlRomInformationDatabaseColumnName.hive).Value);
+        }
+
+        [Fact]
+        public void SetProgramFeaturesWithInvalidHiveFeatures_ProducesExpectedColumnValue()
+        {
+            var info = XmlRomInformation.CreateDefault();
+            var features = ProgramFeatures.DefaultFeatures.Clone();
+            var testInvalidHiveFeatures = 1u << 12;
+            Assert.Equal(0u, testInvalidHiveFeatures & HiveFeaturesHelpers.FeaturesMask);
+            features.Hive = (HiveFeatures)testInvalidHiveFeatures;
+
+            info.SetProgramFeatures(features);
+
+            Assert.Equal("0", info.GetColumn(XmlRomInformationDatabaseColumnName.hive).Value);
+        }
+
+        #endregion // Set Hive Features Tests
 
         #endregion // SetProgramFeatures Tests
 

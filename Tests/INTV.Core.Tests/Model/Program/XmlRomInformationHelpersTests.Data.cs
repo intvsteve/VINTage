@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
@@ -290,6 +291,171 @@ namespace INTV.Core.Tests.Model.Program
         }
 
         #endregion // Get Features Test Data
+
+        #region Set Features Test Data
+
+        public static IEnumerable<object[]> CommonSetFeatureCompatibilityTestData
+        {
+            get
+            {
+                var values = Enum.GetValues(typeof(FeatureCompatibility)).Cast<FeatureCompatibility>().Where(c => c != FeatureCompatibility.NumCompatibilityModes);
+                foreach (var value in values)
+                {
+                    yield return new object[] { value, ((uint)value).ToString(CultureInfo.InvariantCulture) };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetGeneralFeaturesTestData
+        {
+            get
+            {
+                return GetValuesForSetUintFeatureFlags(
+                    GeneralFeaturesHelpers.FeaturesMask,
+                    f =>
+                    {
+                        var flag = (GeneralFeatures)f;
+                        var expectedGeneralFeatures = flag == GeneralFeatures.SystemRom ? 0u : f;
+                        var expectedType = flag == GeneralFeatures.SystemRom ? XmlRomInformationDatabaseColumn.RomTypeValueSystem : XmlRomInformationDatabaseColumn.RomTypeValueRom;
+                        return new object[] { flag, expectedGeneralFeatures.ToString(CultureInfo.InvariantCulture), expectedType };
+                    });
+            }
+        }
+
+        public static IEnumerable<object[]> SetNtscPalCompatibilityTestData
+        {
+            get
+            {
+                foreach (var testData in CommonSetFeatureCompatibilityTestData)
+                {
+                    var setting = (FeatureCompatibility)testData[0];
+                    if (setting == FeatureCompatibility.Requires)
+                    {
+                        yield return new object[] { setting, ((uint)FeatureCompatibility.Enhances).ToString(CultureInfo.InvariantCulture) };
+                    }
+                    else
+                    {
+                        yield return testData;
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetKeyboardComponentFeaturesTestData
+        {
+            get
+            {
+                return GetValuesForSetUintFeatureFlags(KeyboardComponentFeaturesHelpers.FeaturesMask, null);
+            }
+        }
+
+        public static IEnumerable<object[]> SetEcsFeaturesTestData
+        {
+            get
+            {
+                return GetValuesForSetUintFeatureFlags(EcsFeaturesHelpers.FeaturesMask, null);
+            }
+        }
+
+        public static IEnumerable<object[]> SetIntellicartFeaturesTestData
+        {
+            get
+            {
+                return GetValuesForSetUintFeatureFlags(IntellicartCC3FeaturesHelpers.FeaturesMask, null);
+            }
+        }
+
+        public static IEnumerable<object[]> SetCuttleCart3FeaturesTestData
+        {
+            get
+            {
+                return GetValuesForSetUintFeatureFlags(CuttleCart3FeaturesHelpers.FeaturesMask, null);
+            }
+        }
+
+        public static IEnumerable<object[]> SetJlpFeaturesTestData
+        {
+            get
+            {
+                var jlpHardwareVersions = Enum.GetValues(typeof(JlpHardwareVersion)).Cast<JlpHardwareVersion>().Except(new[] { JlpHardwareVersion.Incompatible });
+                var jlpFeaturesTestData = GetValuesForSetUintFeatureFlags(JlpFeaturesHelpers.FeaturesMask, null);
+                foreach (var jlpFeatureTestData in jlpFeaturesTestData)
+                {
+                    foreach (var jlpHardwareVersion in jlpHardwareVersions)
+                    {
+                        // Database reuses the flash sectors bits for hardware version, as it uses a separate field for flash sectors.
+                        var bitsForString = (uint)jlpFeatureTestData[0] | ((uint)jlpHardwareVersion << JlpFeaturesHelpers.FlashSaveDataSectorsOffset);
+                        yield return new object[] { jlpFeatureTestData[0], jlpHardwareVersion, bitsForString.ToString(CultureInfo.InvariantCulture) };
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetJlpFlashSectorUsageCountTestData
+        {
+            get
+            {
+                yield return new object[] { (ushort)0, "-1" };
+                for (var i = 0; i < JlpFeaturesHelpers.JlpFlashSaveDataSectorsBitCount; ++i)
+                {
+                    var sectorCount = (ushort)1 << i;
+                    yield return new object[] { sectorCount, sectorCount.ToString(CultureInfo.InvariantCulture) };
+                }
+                yield return new object[] { (ushort)0x8000, "-1" };
+            }
+        }
+
+        public static IEnumerable<object[]> SetLtoFlashFeaturesTestData
+        {
+            get
+            {
+                return GetValuesForSetUintFeatureFlags(
+                    LtoFlashFeaturesHelpers.FeaturesMask,
+                    f =>
+                    {
+                        // XML database repositions memory mapped flag down to first unused flash storage bit.
+                        var flagsForResult = f == (uint)LtoFlashFeatures.LtoFlashMemoryMapped ? (uint)LtoFlashFeatures.FsdBit0 : f;
+                        return new object[] { f, flagsForResult.ToString(CultureInfo.InvariantCulture) };
+                    });
+            }
+        }
+
+        public static IEnumerable<object[]> SetBee3FeaturesTestData
+        {
+            get
+            {
+                return GetValuesForSetUintFeatureFlags(Bee3FeaturesHelpers.FeaturesMask, null);
+            }
+        }
+
+        public static IEnumerable<object[]> SetHiveFeaturesTestData
+        {
+            get
+            {
+                return GetValuesForSetUintFeatureFlags(HiveFeaturesHelpers.FeaturesMask, null);
+            }
+        }
+
+        private static IEnumerable<object[]> GetValuesForSetUintFeatureFlags(uint mask, Func<uint, object[]> customGetValues)
+        {
+            for (var i = 0; i < sizeof(uint) * 8; ++i)
+            {
+                var flag = 1u << i;
+                if ((flag & mask) != 0)
+                {
+                    if (customGetValues != null)
+                    {
+                        yield return customGetValues(flag);
+                    }
+                    else
+                    {
+                        yield return new object[] { flag, flag.ToString(CultureInfo.InvariantCulture) };
+                    }
+                }
+            }
+        }
+
+        #endregion // Set Features Test Data
 
         #region Get Metadata Test Data
 

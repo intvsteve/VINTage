@@ -363,34 +363,34 @@ namespace INTV.Core.Model.Program
                     {
                         switch (originString)
                         {
-                            case "INTV Funhouse":
+                            case XmlRomInformationDatabaseColumn.SourceIntvFunhouse:
                                 origins.Add(ProgramInformationOrigin.IntvFunhouse);
                                 break;
-                            case "Intellivision Lives":
+                            case XmlRomInformationDatabaseColumn.SourceBlueSkyRangers:
                                 origins.Add(ProgramInformationOrigin.IntellivisionProductions);
                                 break;
-                            case "manual entry":
+                            case XmlRomInformationDatabaseColumn.SourceUserDefined:
                                 origins.Add(ProgramInformationOrigin.UserDefined);
                                 break;
-                            case "e-mail":
+                            case XmlRomInformationDatabaseColumn.SourceUserEmail:
                                 origins.Add(ProgramInformationOrigin.UserEmail);
                                 break;
-                            case "intvname":
+                            case XmlRomInformationDatabaseColumn.SourceIntvName:
                                 origins.Add(ProgramInformationOrigin.JzIntv);
                                 break;
-                            case "ROM":
+                            case XmlRomInformationDatabaseColumn.SourceRomFormatMetadata:
                                 origins.Add(ProgramInformationOrigin.RomMetadataBlock);
                                 break;
-                            case "CFG":
+                            case XmlRomInformationDatabaseColumn.SourceCfgFormatMetadata:
                                 origins.Add(ProgramInformationOrigin.CfgVarMetadataBlock);
                                 break;
-                            case "LUIGI":
+                            case XmlRomInformationDatabaseColumn.SourceLuigiFormatMetadata:
                                 origins.Add(ProgramInformationOrigin.LuigiMetadataBlock);
                                 break;
-                            case "Catalog":
+                            case XmlRomInformationDatabaseColumn.SourceCatalog:
                                 origins.Add(ProgramInformationOrigin.GameCatalog);
                                 break;
-                            case "other":
+                            case XmlRomInformationDatabaseColumn.SourceOther:
                                 origins.Add(ProgramInformationOrigin.None);
                                 break;
                             default:

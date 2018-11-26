@@ -30,9 +30,52 @@ namespace INTV.Core.Model.Program
     [System.Xml.Serialization.XmlType(RomInfoColumnXmlTypeName)]
     public class XmlRomInformationDatabaseColumn
     {
-        /// <summary>
-        /// The XML element name of a rominfo property in the MySql database as exported by phpMyAdmin.
-        /// </summary>
+        /// <summary>A system ROM, such as an EXEC, GROM, or ECS ROM.</summary>
+        internal const string RomTypeValueSystem = "BIOS";
+
+        /// <summary>A standard executable ROM.</summary>
+        internal const string RomTypeValueRom = "Program";
+
+        /// <summary>A .BIN+.CFG-format ROM.</summary>
+        internal const string RomFormatValueBin = "BIN+CFG";
+
+        /// <summary>A ROM-format ROM.</summary>
+        internal const string RomFormatValueRom = "ROM";
+
+        /// <summary>A LUIGI-format ROM.</summary>
+        internal const string RomFormatValueLuigi = "LUIGI";
+
+        /// <summary>ROM information is from the INTV Funhouse databases.</summary>
+        internal const string SourceIntvFunhouse = "INTV Funhouse";
+
+        /// <summary>ROM information is from the Intellivision Lives / Blue Sky Rangers website or published materials.</summary>
+        internal const string SourceBlueSkyRangers = "Intellivision Lives";
+
+        /// <summary>ROM information is from user edits to a database entry.</summary>
+        internal const string SourceUserDefined = "manual entry";
+
+        /// <summary>ROM information is from an email submission.</summary>
+        internal const string SourceUserEmail = "e-mail";
+
+        /// <summary>ROM information is from the intvname utility.</summary>
+        internal const string SourceIntvName = "intvname";
+
+        /// <summary>ROM information is from ROM-format metadata.</summary>
+        internal const string SourceRomFormatMetadata = "ROM";
+
+        /// <summary>ROM information is from a .CFG file's VARS section.</summary>
+        internal const string SourceCfgFormatMetadata = "CFG";
+
+        /// <summary>ROM information is from LUIGI-format metadata.</summary>
+        internal const string SourceLuigiFormatMetadata = "LUIGI";
+
+        /// <summary>ROM information is from a catalog.</summary>
+        internal const string SourceCatalog = "Catalog";
+
+        /// <summary>ROM information is from some other source.</summary>
+        internal const string SourceOther = "other";
+
+        /// <summary>The XML element name of a rominfo property in the MySql database as exported by phpMyAdmin.</summary>
         internal const string RomInfoColumnXmlTypeName = "column";
 
         private const string RomInfoColumnNameAttributeName = "name";

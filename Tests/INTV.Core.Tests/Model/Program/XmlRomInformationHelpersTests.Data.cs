@@ -658,7 +658,7 @@ namespace INTV.Core.Tests.Model.Program
             {
                 foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.vendor, 4))
                 {
-                    yield return new object[] { testData.Item1, testData.Item2 , testData.Item3 };
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
                 }
             }
         }
@@ -950,7 +950,6 @@ namespace INTV.Core.Tests.Model.Program
             }
 
             yield return new Tuple<IProgramMetadata, XmlRomInformationDatabaseColumnName, string>(new ProgramMetadata(), column, includeFirstOnly ? null : string.Empty);
-
         }
 
         #endregion // Set Metadata Test Data

@@ -520,21 +520,16 @@ namespace INTV.Core.Model.Program
                                 column.Value = StringEnumerableToStringConverter.Instance.Convert(metadata.AdditionalInformation);
                                 break;
                             case XmlRomInformationDatabaseColumnName.license:
+                                column.Value = StringEnumerableToStringConverter.Instance.Convert(metadata.Licenses);
                                 break;
                             case XmlRomInformationDatabaseColumnName.contact_info:
-                                column.Value = StringEnumerableToStringConverter.Instance.Convert(metadata.ContactInformation);
+                                column.Value = StringEnumerableToStringConverter.Instance.Convert(metadata.ContactInformation, withHtmlEncoding: false);
                                 break;
                             default:
                                 break;
                         }
                     }
-                    catch (FormatException)
-                    {
-                    }
                     catch (ArgumentException)
-                    {
-                    }
-                    catch (NullReferenceException)
                     {
                     }
                 }

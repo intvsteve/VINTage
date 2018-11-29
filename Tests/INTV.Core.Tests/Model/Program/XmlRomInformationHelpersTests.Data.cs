@@ -24,7 +24,7 @@ using System.Globalization;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
-using Xunit;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Tests.Model.Program
 {
@@ -627,5 +627,332 @@ namespace INTV.Core.Tests.Model.Program
         }
 
         #endregion // Get Metadata Test Data
+
+        #region Set Metadata Test Data
+
+        public static IEnumerable<object[]> SetLongNameMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.title, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetShortNameMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.short_name, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetPublisherMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.vendor, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2 , testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetDescriptionMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.description, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetReleaseDateMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.release_date, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetProgrammersMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.program, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetDesignersMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.concept, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetGraphicsMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.game_graphics, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetSoundEffectsMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.soundfx, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetMusicMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.music, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetVoicesMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.voices, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetDocumentationMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.game_docs, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetArtworkMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.box_art, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetVersionsMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.name, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetBuildDateMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.build_date, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetAdditionalMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.other, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetLicenseMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.license, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> SetContactInformationMetadataTestData
+        {
+            get
+            {
+                foreach (var testData in GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName.contact_info, 4))
+                {
+                    yield return new object[] { testData.Item1, testData.Item2, testData.Item3 };
+                }
+            }
+        }
+
+        private static IEnumerable<Tuple<IProgramMetadata, XmlRomInformationDatabaseColumnName, string>> GetTestMetadataForColumn(XmlRomInformationDatabaseColumnName column, int numValues)
+        {
+            var strings = Enumerable.Repeat(string.Empty, 1);
+            var suffixes = Enumerable.Range(0, numValues);
+            var htmlEncode = true;
+            var includeFirstOnly = false;
+            string expectedString = null;
+
+            for (int i = 0; i < 2; ++i)
+            {
+                var programMetadataBuilder = new ProgramMetadataBuilder();
+                expectedString = null;
+
+                switch (column)
+                {
+                    case XmlRomInformationDatabaseColumnName.title:
+                        programMetadataBuilder.WithLongNames(strings);
+                        includeFirstOnly = true;
+                        break;
+                    case XmlRomInformationDatabaseColumnName.short_name:
+                        programMetadataBuilder.WithShortNames(strings);
+                        includeFirstOnly = true;
+                        break;
+                    case XmlRomInformationDatabaseColumnName.vendor:
+                        programMetadataBuilder.WithPublishers(strings);
+                        includeFirstOnly = true;
+                        break;
+                    case XmlRomInformationDatabaseColumnName.description:
+                        programMetadataBuilder.WithDescriptions(strings);
+                        includeFirstOnly = true;
+                        break;
+                    case XmlRomInformationDatabaseColumnName.release_date:
+                        if (i == 0)
+                        {
+                            var date = new MetadataDateTimeBuilder(1981).WithMonth(12).WithDay(25).Build();
+                            programMetadataBuilder.WithReleaseDates(new[] { date });
+                            expectedString = "1981-12-25";
+                        }
+                        else
+                        {
+                            var dates = suffixes.Select(d => new MetadataDateTimeBuilder(1982).WithMonth(8).WithDay(d + 1).Build());
+                            programMetadataBuilder.WithReleaseDates(dates);
+                            expectedString = "1982-08-01";
+                        }
+                        includeFirstOnly = true;
+                        break;
+                    case XmlRomInformationDatabaseColumnName.program:
+                        programMetadataBuilder.WithProgrammers(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.concept:
+                        programMetadataBuilder.WithDesigners(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.game_graphics:
+                        programMetadataBuilder.WithGraphics(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.soundfx:
+                        programMetadataBuilder.WithSoundEffects(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.music:
+                        programMetadataBuilder.WithMusic(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.voices:
+                        programMetadataBuilder.WithVoices(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.game_docs:
+                        programMetadataBuilder.WithDocumentation(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.box_art:
+                        programMetadataBuilder.WithArtwork(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.name:
+                        programMetadataBuilder.WithVersions(strings);
+                        includeFirstOnly = true;
+                        break;
+                    case XmlRomInformationDatabaseColumnName.build_date:
+                        if (i == 0)
+                        {
+                            var date = new MetadataDateTimeBuilder(1980).WithMonth(8).WithDay(4).Build();
+                            programMetadataBuilder.WithBuildDates(new[] { date });
+                            expectedString = "1980-08-04";
+                        }
+                        else
+                        {
+                            var dates = suffixes.Select(d => new MetadataDateTimeBuilder(1984).WithMonth(6).WithDay(d + 12).Build());
+                            programMetadataBuilder.WithBuildDates(dates);
+                            expectedString = "1984-06-12";
+                        }
+                        includeFirstOnly = true;
+                        break;
+                    case XmlRomInformationDatabaseColumnName.other:
+                        programMetadataBuilder.WithAdditionalInformation(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.license:
+                        programMetadataBuilder.WithLicenses(strings);
+                        break;
+                    case XmlRomInformationDatabaseColumnName.contact_info:
+                        programMetadataBuilder.WithContactInformation(strings);
+                        htmlEncode = false;
+                        break;
+                    default:
+                        throw new InvalidOperationException();
+                }
+                if (string.IsNullOrEmpty(expectedString))
+                {
+                    if (includeFirstOnly)
+                    {
+                        strings = new[] { strings.First() };
+                    }
+                    if (htmlEncode)
+                    {
+                        expectedString = string.Join("|", strings.Select(s => HtmlEncode(s)));
+                    }
+                    else
+                    {
+                        expectedString = string.Join("|", strings);
+                    }
+                }
+                yield return new Tuple<IProgramMetadata, XmlRomInformationDatabaseColumnName, string>(programMetadataBuilder.Build(), column, expectedString);
+                strings = suffixes.Select(s => "Abbott & Costello Part " + s.ToString(CultureInfo.InvariantCulture));
+            }
+
+            yield return new Tuple<IProgramMetadata, XmlRomInformationDatabaseColumnName, string>(new ProgramMetadata(), column, includeFirstOnly ? null : string.Empty);
+
+        }
+
+        #endregion // Set Metadata Test Data
     }
 }

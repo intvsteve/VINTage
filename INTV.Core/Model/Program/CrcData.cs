@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace INTV.Core.Model.Program
 {
@@ -131,7 +132,7 @@ namespace INTV.Core.Model.Program
         /// <inheritdoc />
         public override string ToString()
         {
-            return string.Format("Name: '{0}', CRC: 0x{1}", Description, Crc.ToString("X8"));
+            return string.Format(CultureInfo.InvariantCulture, "Name: '{0}', CRC: 0x{1}", Description, Crc.ToString("X8", CultureInfo.InvariantCulture));
         }
 
         /// <inheritdoc />

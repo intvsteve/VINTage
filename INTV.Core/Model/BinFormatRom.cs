@@ -102,9 +102,17 @@ namespace INTV.Core.Model
                         {
                             if (StreamUtilities.FileExists(ConfigPath))
                             {
+                                if (MetadataCacheEnabled && (_metadata != null))
+                                {
+                                    return _metadata;
+                                }
                                 using (var file = StreamUtilities.OpenFileStream(ConfigPath))
                                 {
                                     metadata = CfgVarMetadataBlock.InflateAll(file);
+                                }
+                                if (MetadataCacheEnabled && (_metadata == null))
+                                {
+                                    _metadata = metadata;
                                 }
                             }
                         }
@@ -121,6 +129,12 @@ namespace INTV.Core.Model
                 return metadata;
             }
         }
+        private IEnumerable<CfgVarMetadataBlock> _metadata;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to cache metadata. If set to <c>true</c>, metadata will be cached rather than re-parsed.
+        /// </summary>
+        internal bool MetadataCacheEnabled { get; set; }
 
         #endregion // Properties
 

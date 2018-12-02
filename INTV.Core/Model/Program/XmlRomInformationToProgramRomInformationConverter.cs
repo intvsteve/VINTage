@@ -31,13 +31,13 @@ namespace INTV.Core.Model.Program
     /// </summary>
     internal class XmlRomInformationToProgramRomInformationConverter : IConverter<XmlRomInformation, IProgramRomInformation>
     {
-        private XmlRomInformationToProgramRomInformationConverter(IProgramInformationTable defaultInformationSource, IEnumerable<ProgramDescription> defaultDescriptionsSource)
+        private XmlRomInformationToProgramRomInformationConverter(IProgramInformationTable defaultInformationSource, IEnumerable<IProgramDescription> defaultDescriptionsSource)
         {
             DefaultDescriptionsSource = defaultDescriptionsSource;
             DefaultInformationSource = defaultInformationSource;
         }
 
-        private IEnumerable<ProgramDescription> DefaultDescriptionsSource { get; set; }
+        private IEnumerable<IProgramDescription> DefaultDescriptionsSource { get; set; }
 
         private IProgramInformationTable DefaultInformationSource { get; set; }
 
@@ -69,7 +69,7 @@ namespace INTV.Core.Model.Program
         /// <returns>An instance of the converter.</returns>
         /// <remarks>First, <paramref name="initialDescriptionsSource"/> will be searched for initial values for ROM information. Values supplied directly from the ROM
         /// being converted will override those from the initial source.</remarks>
-        public static XmlRomInformationToProgramRomInformationConverter Create(IEnumerable<ProgramDescription> initialDescriptionsSource)
+        public static XmlRomInformationToProgramRomInformationConverter Create(IEnumerable<IProgramDescription> initialDescriptionsSource)
         {
             return Create(null, initialDescriptionsSource);
         }
@@ -82,7 +82,7 @@ namespace INTV.Core.Model.Program
         /// <returns>An instance of the converter.</returns>
         /// <remarks>First, <paramref name="initialDescriptionsSource"/> will be searched, then <paramref name="initialInformationSource"/>, for initial values for ROM information. Values
         /// supplied directly from the ROM being converted will override those from the initial source.</remarks>
-        public static XmlRomInformationToProgramRomInformationConverter Create(IProgramInformationTable initialInformationSource, IEnumerable<ProgramDescription> initialDescriptionsSource)
+        public static XmlRomInformationToProgramRomInformationConverter Create(IProgramInformationTable initialInformationSource, IEnumerable<IProgramDescription> initialDescriptionsSource)
         {
             return new XmlRomInformationToProgramRomInformationConverter(initialInformationSource, initialDescriptionsSource);
         }
@@ -138,7 +138,7 @@ namespace INTV.Core.Model.Program
                             programInformationBuilder.WithLongName(StringConverter.Instance.Convert(column.Value, 60));
                             break;
                         case XmlRomInformationDatabaseColumnName.vendor:
-                            programInformationBuilder.WithTitle(StringConverter.Instance.Convert(column.Value));
+                            programInformationBuilder.WithVendor(StringConverter.Instance.Convert(column.Value));
                             break;
                         case XmlRomInformationDatabaseColumnName.release_date:
                             programInformationBuilder.WithYear(StringToMetadataDateTimeConverter.Instance.Convert(column.Value).Date.Year);
@@ -235,26 +235,14 @@ namespace INTV.Core.Model.Program
             {
                 programInformationBuilder.WithTitle(title);
             }
-            catch (ArgumentOutOfRangeException)
+            catch (InvalidOperationException)
             {
             }
-            try
-            {
-                programInformationBuilder.WithVendor(vendor);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-            }
+            programInformationBuilder.WithVendor(vendor);
             int year;
             if (int.TryParse(yearString, out year))
             {
-                try
-                {
-                    programInformationBuilder.WithYear(year);
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                }
+                programInformationBuilder.WithYear(year);
             }
             if (!string.IsNullOrEmpty(shortName))
             {
@@ -349,6 +337,7 @@ namespace INTV.Core.Model.Program
             }
         }
 
+#if CONVERT_DATA_ORIGIN
         private class StringToDataOriginsConverter : Converter<StringToDataOriginsConverter, string, IEnumerable<ProgramInformationOrigin>>
         {
             /// <inheritdoc />
@@ -405,5 +394,6 @@ namespace INTV.Core.Model.Program
                 return origins;
             }
         }
+#endif // CONVERT_DATA_ORIGIN
     }
 }

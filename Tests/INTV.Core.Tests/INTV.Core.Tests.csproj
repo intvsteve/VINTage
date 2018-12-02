@@ -94,6 +94,7 @@
     <Compile Include="Model\Program\XmlRomInformationHelpersTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationHelpersTests.Data.cs" />
     <Compile Include="Model\Program\XmlRomInformationTests.cs" />
+    <Compile Include="Model\Program\XmlRomInformationToProgramRomInformationConverterTests.cs" />
     <Compile Include="Model\RomComparerStrictCrcOnlyTests.cs" />
     <Compile Include="Model\RomComparerStrictTests.cs" />
     <Compile Include="Model\RomComparerTests.cs" />

@@ -88,6 +88,7 @@
     <Compile Include="Model\MetadataHelpersTests.cs" />
     <Compile Include="Model\PeripheralTests.cs" />
     <Compile Include="Model\Program\CfgFileMetadataProgramInformationTests.cs" />
+    <Compile Include="Model\Program\CrcDataTests.cs" />
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTableTests.cs" />
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationDatabaseColumnTests.cs" />

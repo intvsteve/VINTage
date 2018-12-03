@@ -21,7 +21,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using INTV.Core.Model.Program;
 using Xunit;
 

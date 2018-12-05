@@ -145,7 +145,7 @@ namespace INTV.Core.Tests.Model
         }
 
         [Fact]
-        public void BinFormatRom_GetMetadataFromCorruptCfgFile_ThrowsNullReferenceException()
+        public void BinFormatRom_GetMetadataFromCorruptCfgFile_BehavesAsExpected()
         {
             IReadOnlyList<string> paths;
             var storageAccess = BinFormatRomTestStorageAccess.Initialize(out paths, TestRomResources.TestBinMetadataPath, TestRomResources.TestCfgBadMetadataPath);
@@ -154,7 +154,17 @@ namespace INTV.Core.Tests.Model
             var corrupted = storageAccess.IntroduceCorruption(paths[1]);
 
             Assert.True(corrupted);
+            AssertMetadataBehavior(rom);
+        }
+
+        private void AssertMetadataBehavior(IRom rom)
+        {
+            // Icky, but for debugging purposes, the Metadata property will throw, while release will not.
+#if DEBUG
             Assert.Throws<NullReferenceException>(() => rom.GetBinFileMetadata());
+#else
+            Assert.Null(rom.GetBinFileMetadata());
+#endif
         }
 
         private class BinFormatRomTestStorageAccess : CachedResourceStorageAccess<BinFormatRomTestStorageAccess>

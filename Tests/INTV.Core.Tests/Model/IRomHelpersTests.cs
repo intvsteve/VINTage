@@ -601,7 +601,7 @@ Year = 2112
         }
 
         [Fact]
-        public void IRomHelpers_GetLuigiFileMetadataFromCorruptedLuigiFile_ThrowsNullReferenceException()
+        public void IRomHelpers_GetLuigiFileMetadataFromCorruptedLuigiFile_BehavesAsExpected()
         {
             IReadOnlyList<string> paths;
             var storageAccess = IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestLuigiWithExtraNullBytePath);
@@ -610,7 +610,17 @@ Year = 2112
             Assert.NotNull(rom);
             Assert.True(storageAccess.IntroduceCorruption(romPath));
 
+            AssertMetadataBehavior(rom);
+        }
+
+        private void AssertMetadataBehavior(IRom rom)
+        {
+            // Icky, but for debugging purposes, the Metadata property will throw, while release will not.
+#if DEBUG
             Assert.Throws<NullReferenceException>(() => rom.GetLuigiFileMetadata());
+#else
+            Assert.Null(rom.GetLuigiFileMetadata());
+#endif
         }
 
         #endregion // GetLuigiFileMetadata Tests

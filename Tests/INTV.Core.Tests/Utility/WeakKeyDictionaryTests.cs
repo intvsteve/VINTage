@@ -646,23 +646,23 @@ namespace INTV.Core.Tests.Utility
         public void WeakKeyDictionaryWithData_CopyToMiddleOfSufficientlyLargeKeyValuePairArray_Succeeds()
         {
             const int NumValuesToAdd = 12;
-            var keeperArounder = new List<KeyValuePair<string, int>>();
-            ICollection<KeyValuePair<string, int>> dictionary = new WeakKeyDictionary<string, int>();
+            var keeperArounder = new List<KeyValuePair<IntBox, int>>();
+            ICollection<KeyValuePair<IntBox, int>> dictionary = new WeakKeyDictionary<IntBox, int>();
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                var entry = new KeyValuePair<string, int>(i.ToString(), i);
+                var entry = new KeyValuePair<IntBox, int>(new IntBox(i), i);
                 keeperArounder.Add(entry);
                 dictionary.Add(entry);
             }
             Assert.Equal(NumValuesToAdd, dictionary.Count);
 
-            var destination = new KeyValuePair<string, int>[50];
+            var destination = new KeyValuePair<IntBox, int>[50];
             const int StartIndex = 10;
             dictionary.CopyTo(destination, StartIndex);
 
             for (int i = 0; i < NumValuesToAdd; ++i)
             {
-                Assert.Equal(i.ToString(), destination[i + StartIndex].Key);
+                Assert.Equal(i, destination[i + StartIndex].Key.Value);
                 Assert.Equal(i, destination[i + StartIndex].Value);
             }
         }
@@ -695,6 +695,31 @@ namespace INTV.Core.Tests.Utility
         private bool AddShortLivedObjectToDictionary(WeakKeyDictionary<DisposableTestObject, string> dictionary, string name)
         {
             return dictionary.AddEntry(new DisposableTestObject(name), name);
+        }
+
+        private class IntBox
+        {
+            public IntBox(int value)
+            {
+                Value = value;
+            }
+
+            public int Value { get; private set; }
+
+            public override string ToString()
+            {
+                return base.ToString();
+            }
+
+            public override bool Equals(object obj)
+            {
+                return ((IntBox)obj).Value == Value;
+            }
+
+            public override int GetHashCode()
+            {
+                return Value.GetHashCode();
+            }
         }
 
         private class DisposableTestObject : IDisposable

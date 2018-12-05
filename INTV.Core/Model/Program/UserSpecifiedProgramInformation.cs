@@ -93,6 +93,7 @@ namespace INTV.Core.Model.Program
         /// <param name="features">The features of the program.</param>
         /// <param name="crcDescription">Description of the variant of the program identified by its CRC.</param>
         /// <exception cref="ArgumentException">Thrown if crc is zero.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if any metadata values are <c>null</c>.</exception>
         public UserSpecifiedProgramInformation(uint crc, string title, string year, ProgramFeatures features, string crcDescription)
             : this(crc, title, year, features, crcDescription, IncompatibilityFlags.None)
         {
@@ -108,6 +109,7 @@ namespace INTV.Core.Model.Program
         /// <param name="crcDescription">Description of the variant of the program identified by its CRC.</param>
         /// <param name="incompatibilities">Describes known hardware incompatibilities associated with the ROM.</param>
         /// <exception cref="ArgumentException">Thrown if crc is zero.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if any metadata values are <c>null</c>.</exception>
         public UserSpecifiedProgramInformation(uint crc, string title, string year, ProgramFeatures features, string crcDescription, IncompatibilityFlags incompatibilities)
         {
             if (crc == 0)
@@ -127,6 +129,7 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <param name="programInformation">The source program information.</param>
         /// <exception cref="ArgumentException">Thrown if programInformation is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if any metadata values are <c>null</c>.</exception>
         public UserSpecifiedProgramInformation(IProgramInformation programInformation)
         {
             if (programInformation == null)

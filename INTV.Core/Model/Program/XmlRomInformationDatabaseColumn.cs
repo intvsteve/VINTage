@@ -46,34 +46,34 @@ namespace INTV.Core.Model.Program
         internal const string RomFormatValueLuigi = "LUIGI";
 
         /// <summary>ROM information is from the INTV Funhouse databases.</summary>
-        internal const string SourceIntvFunhouse = "INTV Funhouse";
+        internal const string OriginIntvFunhouse = "INTV Funhouse";
 
         /// <summary>ROM information is from the Intellivision Lives / Blue Sky Rangers website or published materials.</summary>
-        internal const string SourceBlueSkyRangers = "Intellivision Lives";
+        internal const string OriginBlueSkyRangers = "Intellivision Lives";
 
         /// <summary>ROM information is from user edits to a database entry.</summary>
-        internal const string SourceUserDefined = "manual entry";
+        internal const string OriginUserDefined = "manual entry";
 
         /// <summary>ROM information is from an email submission.</summary>
-        internal const string SourceUserEmail = "e-mail";
+        internal const string OriginUserEmail = "e-mail";
 
         /// <summary>ROM information is from the intvname utility.</summary>
-        internal const string SourceIntvName = "intvname";
+        internal const string OriginIntvName = "intvname";
 
         /// <summary>ROM information is from ROM-format metadata.</summary>
-        internal const string SourceRomFormatMetadata = "ROM";
+        internal const string OriginRomFormatMetadata = "ROM";
 
         /// <summary>ROM information is from a .CFG file's VARS section.</summary>
-        internal const string SourceCfgFormatMetadata = "CFG";
+        internal const string OriginCfgFormatMetadata = "CFG";
 
         /// <summary>ROM information is from LUIGI-format metadata.</summary>
-        internal const string SourceLuigiFormatMetadata = "LUIGI";
+        internal const string OriginLuigiFormatMetadata = "LUIGI";
 
         /// <summary>ROM information is from a catalog.</summary>
-        internal const string SourceCatalog = "Catalog";
+        internal const string OriginCatalog = "Catalog";
 
         /// <summary>ROM information is from some other source.</summary>
-        internal const string SourceOther = "other";
+        internal const string OriginOther = "other";
 
         /// <summary>The XML element name of a rominfo property in the MySql database as exported by phpMyAdmin.</summary>
         internal const string RomInfoColumnXmlTypeName = "column";

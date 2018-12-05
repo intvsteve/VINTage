@@ -63,7 +63,7 @@ namespace INTV.Core.Tests.Model.Program
             { XmlRomInformationDatabaseColumnName.vendor, "Spatula City" },
             { XmlRomInformationDatabaseColumnName.name, "Tutorial 2" },
             { XmlRomInformationDatabaseColumnName.format, XmlRomInformationDatabaseColumn.RomFormatValueBin },
-            { XmlRomInformationDatabaseColumnName.origin, XmlRomInformationDatabaseColumn.SourceOther },
+            { XmlRomInformationDatabaseColumnName.origin, XmlRomInformationDatabaseColumn.OriginOther },
             { XmlRomInformationDatabaseColumnName.description, "A tutorial to help one to learn CP-1600 assembly programming." },
             { XmlRomInformationDatabaseColumnName.release_date, "1998-06-12" },
             { XmlRomInformationDatabaseColumnName.source, "http://spatula-city.org" },

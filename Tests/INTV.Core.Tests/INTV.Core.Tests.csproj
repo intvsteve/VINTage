@@ -92,6 +92,7 @@
     <Compile Include="Model\Program\FeatureCompatibilityHelpersTests.cs" />
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTableTests.cs" />
     <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTests.cs" />
+    <Compile Include="Model\Program\IProgramInformationHelpersTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationDatabaseColumnTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationDatabaseTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationHelpersTests.cs" />

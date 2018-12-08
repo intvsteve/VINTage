@@ -287,7 +287,7 @@ namespace INTV.Core.Model.Program
     /// <summary>
     /// Helper methods for <see cref="XmlRomInformationDatabaseColumnName"/>.
     /// </summary>
-    public static class RomInformationDatabaseColumnNameHelpers
+    public static class XmlRomInformationDatabaseColumnNameHelpers
     {
         /// <summary>
         /// Converts a string to a <see cref="XmlRomInformationDatabaseColumnName"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -176,6 +176,7 @@
     <Compile Include="Model\RomMetadataPublisher.cs" />
     <Compile Include="Model\RomMetadataString.cs" />
     <Compile Include="Model\StatusMessage.cs" />
+    <Compile Include="Model\StatusMessageEventArgs.cs" />
     <Compile Include="Model\Stic\Color.cs" />
     <Compile Include="Model\Stic\CsForegroundColor.cs" />
     <Compile Include="Model\Stic\FgBgBackgroundColor.cs" />

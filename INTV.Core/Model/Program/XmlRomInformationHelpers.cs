@@ -160,7 +160,7 @@ namespace INTV.Core.Model.Program
             {
                 try
                 {
-                    switch (column.Name.ToRomInfoDatabaseColumnName())
+                    switch (column.Name.ToXmlRomInformationDatabaseColumnName())
                     {
                         case XmlRomInformationDatabaseColumnName.type:
                             programType = RomTypeStringToGeneralFeaturesConverter.Instance.Convert(column.Value);
@@ -262,7 +262,7 @@ namespace INTV.Core.Model.Program
             {
                 foreach (var column in xmlRomInformation.RomInfoDatabaseColumns)
                 {
-                    var columnName = column.Name.ToRomInfoDatabaseColumnName();
+                    var columnName = column.Name.ToXmlRomInformationDatabaseColumnName();
                     switch (columnName)
                     {
                         case XmlRomInformationDatabaseColumnName.ntsc:
@@ -340,7 +340,7 @@ namespace INTV.Core.Model.Program
             {
                 try
                 {
-                    switch (column.Name.ToRomInfoDatabaseColumnName())
+                    switch (column.Name.ToXmlRomInformationDatabaseColumnName())
                     {
                         case XmlRomInformationDatabaseColumnName.title:
                             programMetadataBuilder.WithLongNames(StringToStringEnumerableConverter.Instance.Convert(column.Value, 60));
@@ -445,7 +445,7 @@ namespace INTV.Core.Model.Program
             {
                 foreach (var column in xmlRomInformation.RomInfoDatabaseColumns)
                 {
-                    var columnName = column.Name.ToRomInfoDatabaseColumnName();
+                    var columnName = column.Name.ToXmlRomInformationDatabaseColumnName();
                     try
                     {
                         switch (columnName)

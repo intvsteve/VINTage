@@ -131,7 +131,7 @@ namespace INTV.Core.Model.Program
             {
                 try
                 {
-                    switch (column.Name.ToRomInfoDatabaseColumnName())
+                    switch (column.Name.ToXmlRomInformationDatabaseColumnName())
                     {
                         case XmlRomInformationDatabaseColumnName.title:
                             programInformationBuilder.WithTitle(StringConverter.Instance.Convert(column.Value));

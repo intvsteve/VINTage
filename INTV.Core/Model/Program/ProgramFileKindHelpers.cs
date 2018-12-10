@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramFileKindHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,70 +33,34 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Lookup table of a file kind to file system extensions (case-insensitive).
         /// </summary>
-        public static readonly Dictionary<ProgramFileKind, List<string>> FileExtensionsForFileKind = new Dictionary<ProgramFileKind, List<string>>()
-        {
-            { ProgramFileKind.None, new List<string>() { string.Empty } },
-            { ProgramFileKind.Rom, new List<string>() { ".rom", ".cc3", ".bin", ".itv", ".int", ".luigi" } },
-            { ProgramFileKind.Box, new List<string>() { ".jpg", ".bmp", ".png", ".gif" } },
-            { ProgramFileKind.Label, new List<string>() { ".jpg", ".bmp", ".png", ".gif" } },
-            { ProgramFileKind.Overlay, new List<string>() { ".jpg", ".bmp", ".png", ".gif" } },
-            { ProgramFileKind.ManualCover, new List<string>() { ".jpg", ".bmp", ".png", ".gif" } },
-            { ProgramFileKind.ManualText, new List<string>() { ".txt" } },
-            { ProgramFileKind.SaveData, new List<string>() { ".jlp" } },
-            { ProgramFileKind.CfgFile, new List<string>() { ".cfg" } },
-            { ProgramFileKind.LuigiFile, new List<string>() { ".luigi" } },
-            { ProgramFileKind.Vignette, new List<string>() { string.Empty } },
-            { ProgramFileKind.GenericSupportFile, new List<string>() { string.Empty } },
-        };
+        private static readonly Lazy<ConcurrentDictionary<ProgramFileKind, IEnumerable<string>>> FileExtensionsForFileKind = new Lazy<ConcurrentDictionary<ProgramFileKind, IEnumerable<string>>>(GetFileExtensionsForFileKind);
 
         /// <summary>
         /// Lookup table of a file kind to a file suffix for support files (box, label, overlay, or manual images, for example).
         /// </summary>
-        public static readonly Dictionary<ProgramFileKind, string> FileSuffixForFileKind = new Dictionary<ProgramFileKind, string>()
-        {
-            { ProgramFileKind.None, null },
-            { ProgramFileKind.Rom, null },
-            { ProgramFileKind.Box, "_box" },
-            { ProgramFileKind.Label, "_label" },
-            { ProgramFileKind.Overlay, "_overlay" },
-            { ProgramFileKind.ManualCover, "_manual" },
-            { ProgramFileKind.ManualText, string.Empty },
-            { ProgramFileKind.SaveData, string.Empty },
-            { ProgramFileKind.CfgFile, string.Empty },
-            { ProgramFileKind.LuigiFile, string.Empty },
-            { ProgramFileKind.Vignette, string.Empty },
-            { ProgramFileKind.GenericSupportFile, string.Empty },
-        };
+        private static readonly Lazy<ConcurrentDictionary<ProgramFileKind, string>> FileSuffixForFileKind = new Lazy<ConcurrentDictionary<ProgramFileKind, string>>(GetFileSuffixForFileKind);
 
         /// <summary>
         /// Lookup table of a file kind to a list of subdirectories in which the support file kind may found.
         /// </summary>
-        public static readonly Dictionary<ProgramFileKind, List<string>> FileSubdirectoriesForFileKind = new Dictionary<ProgramFileKind, List<string>>()
-        {
-            { ProgramFileKind.None, null },
-            { ProgramFileKind.Rom, null },
-            { ProgramFileKind.Box, new List<string>() { "box", "boxes" } },
-            { ProgramFileKind.Label, new List<string>() { "label", "labels", "cart" } },
-            { ProgramFileKind.Overlay, new List<string>() { "overlay", "overlays" } },
-            { ProgramFileKind.ManualCover, new List<string>() { "manual", "manuals" } },
-            { ProgramFileKind.ManualText, new List<string>() { "manual", "manuals" } },
-            { ProgramFileKind.SaveData, new List<string>() { "savedata", "savegame", "savegames" } },
-            { ProgramFileKind.CfgFile, null },
-            { ProgramFileKind.LuigiFile, null },
-            { ProgramFileKind.Vignette, null },
-            { ProgramFileKind.GenericSupportFile, null },
-        };
+        private static readonly Lazy<ConcurrentDictionary<ProgramFileKind, IEnumerable<string>>> FileSubdirectoriesForFileKind = new Lazy<ConcurrentDictionary<ProgramFileKind, IEnumerable<string>>>(GetFileSubdirectoriesForFileKind);
 
-        private static readonly List<string> RomsThatUseCfgFiles = new List<string>() { ".bin", ".itv", ".int" };
-
-        private static readonly ProgramFileKind[] SupportFileKindsArray = new[] { ProgramFileKind.Box, ProgramFileKind.ManualCover, ProgramFileKind.ManualText, ProgramFileKind.Overlay, ProgramFileKind.Label, ProgramFileKind.SaveData, ProgramFileKind.CfgFile, ProgramFileKind.Vignette, ProgramFileKind.GenericSupportFile };
-
-        private static HashSet<string> _customRomExtensions = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase) { string.Empty };
-        private static IEnumerable<string> _supportFileExtensions;
-        private static IEnumerable<string> _supportFileSuffixes;
-        private static IEnumerable<string> _supportFileSubdirectories;
+        private static readonly Lazy<ConcurrentBag<string>> RomsThatUseCfgFiles = new Lazy<ConcurrentBag<string>>(() => new ConcurrentBag<string>(new[] { ".bin", ".itv", ".int" }));
+        private static readonly Lazy<ConcurrentBag<ProgramFileKind>> SupportFileKindsBag = new Lazy<ConcurrentBag<ProgramFileKind>>(() => new ConcurrentBag<ProgramFileKind>(new[] { ProgramFileKind.Box, ProgramFileKind.ManualCover, ProgramFileKind.ManualText, ProgramFileKind.Overlay, ProgramFileKind.Label, ProgramFileKind.SaveData, ProgramFileKind.CfgFile, ProgramFileKind.Vignette, ProgramFileKind.GenericSupportFile }));
+        private static readonly Lazy<HashSet<string>> CustomRomExtensions = new Lazy<HashSet<string>>(() => new HashSet<string>(System.StringComparer.OrdinalIgnoreCase) { string.Empty });
+        private static readonly Lazy<IEnumerable<string>> SupportFileExtensionsData = new Lazy<IEnumerable<string>>(() => SupportFileKindsBag.Value.SelectMany(kind => FileExtensionsForFileKind.Value[kind]).Distinct());
+        private static readonly Lazy<IEnumerable<string>> SupportFileSuffixesData = new Lazy<IEnumerable<string>>(() => SupportFileKindsBag.Value.Select(kind => FileSuffixForFileKind.Value[kind]).Distinct());
+        private static readonly Lazy<IEnumerable<string>> SupportFileSubdirectoriesData = new Lazy<IEnumerable<string>>(() => SupportFileKindsBag.Value.SelectMany(kind => FileSubdirectoriesForFileKind.Value[kind]).Distinct());
 
         #region Properties
+
+        public static IEnumerable<ProgramFileKind> FileKinds
+        {
+            get
+            {
+                return FileExtensionsForFileKind.Value.Keys;
+            }
+        }
 
         /// <summary>
         /// Gets the user-defined ROM file extensions that use .cfg files.
@@ -103,13 +69,16 @@ namespace INTV.Core.Model.Program
         {
             get
             {
-                foreach (var extension in RomsThatUseCfgFiles)
+                foreach (var extension in RomsThatUseCfgFiles.Value)
                 {
                     yield return extension;
                 }
-                foreach (var extension in _customRomExtensions)
+                lock (CustomRomExtensions.Value)
                 {
-                    yield return extension;
+                    foreach (var extension in CustomRomExtensions.Value)
+                    {
+                        yield return extension;
+                    }
                 }
             }
         }
@@ -119,7 +88,7 @@ namespace INTV.Core.Model.Program
         /// </summary>
         public static IEnumerable<ProgramFileKind> SupportFileKinds
         {
-            get { return SupportFileKindsArray; }
+            get { return SupportFileKindsBag.Value; }
         }
 
         /// <summary>
@@ -129,11 +98,7 @@ namespace INTV.Core.Model.Program
         {
             get
             {
-                if (_supportFileSuffixes == null)
-                {
-                    _supportFileSuffixes = SupportFileKindsArray.Select(kind => FileSuffixForFileKind[kind]).Distinct();
-                }
-                return _supportFileSuffixes;
+                return SupportFileSuffixesData.Value;
             }
         }
 
@@ -144,39 +109,54 @@ namespace INTV.Core.Model.Program
         {
             get
             {
-                if (_supportFileSubdirectories == null)
-                {
-                    _supportFileSubdirectories = SupportFileKindsArray.SelectMany(kind => FileSubdirectoriesForFileKind[kind]).Distinct();
-                }
-                return _supportFileSubdirectories;
+                return SupportFileSubdirectoriesData.Value;
             }
         }
 
         /// <summary>
         /// Gets an enumerable of the file extensions for support files.
         /// </summary>
-        private static IEnumerable<string> SupportFileExtensions
+        public static IEnumerable<string> SupportFileExtensions
         {
             get
             {
-                if (_supportFileExtensions == null)
-                {
-                    _supportFileExtensions = SupportFileKindsArray.SelectMany(kind => FileExtensionsForFileKind[kind]).Distinct();
-                }
-                return _supportFileExtensions;
+                return SupportFileExtensionsData.Value;
             }
         }
 
         #endregion // Properties
 
         /// <summary>
+        /// Get the suffix to append to a file name for a particular <see cref="ProgramFileKind"/>, such as a manual or overlay.
+        /// </summary>
+        /// <param name="fileKind">The kind of program file for which a suffix is desired.</param>
+        /// <returns>The suffix to use. May be empty.</returns>
+        /// <exception cref="KeyNotFoundException">Thrown if <paramref name="fileKind"/> does not support a suffix.</exception>
+        public static string GetSuffix(this ProgramFileKind fileKind)
+        {
+            return FileSuffixForFileKind.Value[fileKind];
+        }
+
+        /// <summary>
+        /// Get the subdirectories into which to store a support file for a particular <see cref="ProgramFileKind"/>, such as a manual or overlay.
+        /// </summary>
+        /// <param name="fileKind">The kind of program file for which a subdirectory is desired.</param>
+        /// <returns>The subdirectories that may be used. File kinds that refer to known ROM types, or are unrecognized, will return an empty enumerable.</returns>
+        /// <exception cref="KeyNotFoundException">Thrown if <paramref name="fileKind"/> is not valid.</exception>
+        public static IEnumerable<string> GetSubdirectories(this ProgramFileKind fileKind)
+        {
+            return FileSubdirectoriesForFileKind.Value[fileKind];
+        }
+
+        /// <summary>
         /// Get the file extension for a program file.
         /// </summary>
         /// <param name="fileKind">The kind of program file for which an extension is desired.</param>
         /// <returns>The file extensions. May be empty.</returns>
-        public static List<string> FileExtensions(this ProgramFileKind fileKind)
+        /// <exception cref="KeyNotFoundException">Thrown if <paramref name="fileKind"/> is not supported.</exception>
+        public static IEnumerable<string> FileExtensions(this ProgramFileKind fileKind)
         {
-            return FileExtensionsForFileKind[fileKind];
+            return FileExtensionsForFileKind.Value[fileKind];
         }
 
         /// <summary>
@@ -184,6 +164,7 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <param name="fileKind">The kind of program file for which an extension is desired.</param>
         /// <returns>The file extension.</returns>
+        /// <exception cref="KeyNotFoundException">Thrown if <paramref name="fileKind"/> is not supported.</exception>
         public static string FileExtension(this ProgramFileKind fileKind)
         {
             return fileKind.FileExtensions().First();
@@ -199,7 +180,7 @@ namespace INTV.Core.Model.Program
         {
             var fileTypes = fileKind.FileExtensions();
             var extension = GetExtension(filePath);
-            var hasStandardExtension = (fileTypes != null) && (extension != null) && fileTypes.Any(e => e.Equals(extension, System.StringComparison.OrdinalIgnoreCase));
+            var hasStandardExtension = (extension != null) && fileTypes.Any(e => e.Equals(extension, System.StringComparison.OrdinalIgnoreCase));
             return hasStandardExtension;
         }
 
@@ -221,7 +202,10 @@ namespace INTV.Core.Model.Program
                     {
                         extension = string.Empty;
                     }
-                    hasCustomRomExtension = _customRomExtensions.Any(e => e.Equals(extension, System.StringComparison.OrdinalIgnoreCase));
+                    lock (CustomRomExtensions.Value)
+                    {
+                        hasCustomRomExtension = CustomRomExtensions.Value.Any(e => e.Equals(extension, System.StringComparison.OrdinalIgnoreCase));
+                    }
                 }
             }
             return hasCustomRomExtension;
@@ -236,7 +220,10 @@ namespace INTV.Core.Model.Program
         {
             if ((fileKind == ProgramFileKind.Rom) && !string.IsNullOrEmpty(extension))
             {
-                _customRomExtensions.Add(extension);
+                lock (CustomRomExtensions.Value)
+                {
+                    CustomRomExtensions.Value.Add(extension);
+                }
             }
         }
 
@@ -249,7 +236,10 @@ namespace INTV.Core.Model.Program
         {
             if ((fileKind == ProgramFileKind.Rom) && !string.IsNullOrEmpty(extension))
             {
-                _customRomExtensions.Remove(extension);
+                lock (CustomRomExtensions.Value)
+                {
+                    CustomRomExtensions.Value.Remove(extension);
+                }
             }
         }
 
@@ -269,6 +259,66 @@ namespace INTV.Core.Model.Program
                 }
             }
             return extension;
+        }
+
+        private static ConcurrentDictionary<ProgramFileKind, IEnumerable<string>> GetFileExtensionsForFileKind()
+        {
+            var data = new Dictionary<ProgramFileKind, IEnumerable<string>>()
+            {
+                { ProgramFileKind.None, new[] { string.Empty } },
+                { ProgramFileKind.Rom, new[] { ".rom", ".cc3", ".bin", ".itv", ".int", ".luigi" } },
+                { ProgramFileKind.Box, new[] { ".jpg", ".bmp", ".png", ".gif" } },
+                { ProgramFileKind.Label, new[] { ".jpg", ".bmp", ".png", ".gif" } },
+                { ProgramFileKind.Overlay, new[] { ".jpg", ".bmp", ".png", ".gif" } },
+                { ProgramFileKind.ManualCover, new[] { ".jpg", ".bmp", ".png", ".gif" } },
+                { ProgramFileKind.ManualText, new[] { ".txt" } },
+                { ProgramFileKind.SaveData, new[] { ".jlp" } },
+                { ProgramFileKind.CfgFile, new[] { ".cfg" } },
+                { ProgramFileKind.LuigiFile, new[] { ".luigi" } },
+                { ProgramFileKind.Vignette, new[] { string.Empty } },
+                { ProgramFileKind.GenericSupportFile, new[] { string.Empty } },
+            };
+            return new ConcurrentDictionary<ProgramFileKind, IEnumerable<string>>(data);
+        }
+
+        private static ConcurrentDictionary<ProgramFileKind, string> GetFileSuffixForFileKind()
+        {
+            var data = new Dictionary<ProgramFileKind, string>()
+            {
+                { ProgramFileKind.None, null },
+                { ProgramFileKind.Rom, null },
+                { ProgramFileKind.Box, "_box" },
+                { ProgramFileKind.Label, "_label" },
+                { ProgramFileKind.Overlay, "_overlay" },
+                { ProgramFileKind.ManualCover, "_manual" },
+                { ProgramFileKind.ManualText, string.Empty },
+                { ProgramFileKind.SaveData, string.Empty },
+                { ProgramFileKind.CfgFile, string.Empty },
+                { ProgramFileKind.LuigiFile, string.Empty },
+                { ProgramFileKind.Vignette, string.Empty },
+                { ProgramFileKind.GenericSupportFile, string.Empty },
+            };
+            return new ConcurrentDictionary<ProgramFileKind, string>(data);
+        }
+
+        private static ConcurrentDictionary<ProgramFileKind, IEnumerable<string>> GetFileSubdirectoriesForFileKind()
+        {
+            var data = new Dictionary<ProgramFileKind, IEnumerable<string>>()
+            {
+                { ProgramFileKind.None, Enumerable.Empty<string>() },
+                { ProgramFileKind.Rom, Enumerable.Empty<string>() },
+                { ProgramFileKind.Box, new[] { "box", "boxes" } },
+                { ProgramFileKind.Label, new[] { "label", "labels", "cart" } },
+                { ProgramFileKind.Overlay, new[] { "overlay", "overlays" } },
+                { ProgramFileKind.ManualCover, new[] { "manual", "manuals" } },
+                { ProgramFileKind.ManualText, new[] { "manual", "manuals" } },
+                { ProgramFileKind.SaveData, new[] { "savedata", "savegame", "savegames" } },
+                { ProgramFileKind.CfgFile, Enumerable.Empty<string>() },
+                { ProgramFileKind.LuigiFile, Enumerable.Empty<string>() },
+                { ProgramFileKind.Vignette, Enumerable.Empty<string>() },
+                { ProgramFileKind.GenericSupportFile, Enumerable.Empty<string>() },
+            };
+            return new ConcurrentDictionary<ProgramFileKind, IEnumerable<string>>(data);
         }
     }
 }

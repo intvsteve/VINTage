@@ -98,6 +98,7 @@
     <Compile Include="Model\Program\JlpFeaturesHelpersTests.cs" />
     <Compile Include="Model\Program\LuigiFileMetadataProgramInformationTests.cs" />
     <Compile Include="Model\Program\MergedProgramInformationTableTests.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesHelpersTests.cs" />
     <Compile Include="Model\Program\ProgramFileKindHelpersTests.cs" />
     <Compile Include="Model\Program\ProgramIdentifierTests.cs" />
     <Compile Include="Model\Program\ProgramMetadataTests.cs" />

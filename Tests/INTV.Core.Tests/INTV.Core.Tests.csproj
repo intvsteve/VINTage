@@ -101,6 +101,7 @@
     <Compile Include="Model\Program\ProgramFeaturesHelpersTests.cs" />
     <Compile Include="Model\Program\ProgramFileKindHelpersTests.cs" />
     <Compile Include="Model\Program\ProgramIdentifierTests.cs" />
+    <Compile Include="Model\Program\ProgramInformationTableDescriptorTests.cs" />
     <Compile Include="Model\Program\ProgramMetadataTests.cs" />
     <Compile Include="Model\Program\ProgramRomInformationBuilderTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationDatabaseColumnNameHelpersTests.cs" />

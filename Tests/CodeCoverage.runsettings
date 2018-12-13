@@ -14,6 +14,7 @@
                 <ModulePath>.*\.Tests.dll</ModulePath>
                 <ModulePath>.*TestHelpers.*</ModulePath>
                 <ModulePath>.*xunit.*</ModulePath>
+                <ModulePath>^Microsoft.*</ModulePath>
               </Exclude>
             </ModulePaths>
 

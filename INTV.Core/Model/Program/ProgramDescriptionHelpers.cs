@@ -48,7 +48,7 @@ namespace INTV.Core.Model.Program
 
                 if (usesCfg && (alternateRomPaths.Count != alternateCfgPaths.Count))
                 {
-                    throw new InvalidOperationException(Resources.Strings.ProgramDescription_MIssingAlternateCfgFile);
+                    throw new InvalidOperationException(Resources.Strings.ProgramDescription_MissingAlternateCfgFile);
                 }
 
                 var foundAlternate = false;
@@ -61,7 +61,7 @@ namespace INTV.Core.Model.Program
                         romPath = alternateRomPaths[i];
                         if (usesCfg)
                         {
-                            if ((i < alternateCfgPaths.Count) && StreamUtilities.FileExists(alternateCfgPaths[i]))
+                            if (StreamUtilities.FileExists(alternateCfgPaths[i]))
                             {
                                 // This code assumes (but cannot check -- silly PCL has no Path API) that the .cfg and ROM are in the same directory for the same index.
                                 cfgPath = alternateCfgPaths[i];
@@ -145,6 +145,10 @@ namespace INTV.Core.Model.Program
                     romFormatsMatch = programDescription.Rom.MatchingRomFormat(romFormat, considerOriginalFormat: true);
                 }
                 crcMatch = programDescription.Rom.MatchesProgramIdentifier(programIdentifier, cfgCrcMustMatch);
+                if (cfgCrcMustMatch)
+                {
+                    cfgCrcsMatch = crcMatch;
+                }
             }
 
             // This may be nearly worthless -- how many XML ProgramInformation implementations are hooked to ProgramDescriptions -- don't they all end up being UserSpecifiedProgramInformation?

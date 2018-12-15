@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescription.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -86,6 +86,7 @@ namespace INTV.Core.Model.Program
         /// Initializes a new instance of ProgramDescription.
         /// </summary>
         /// <remarks>This constructor exists so XmlSerializer is easy to use with this class.</remarks>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private ProgramDescription()
         {
         }
@@ -226,7 +227,18 @@ namespace INTV.Core.Model.Program
         public static bool Validate(ProgramDescription program, IEnumerable<IPeripheral> peripherals, IEnumerable<IPeripheral> connectedPeripheralsHistory, bool reportMessagesChanged)
         {
             bool validSettings = false;
-            program.Files.ValidateSupportFile(ProgramFileKind.Rom, program.Crc, program, peripherals, connectedPeripheralsHistory, true);
+            var supportFileState = program.Files.ValidateSupportFile(ProgramFileKind.Rom, program.Crc, program, peripherals, connectedPeripheralsHistory, true);
+            switch (supportFileState)
+            {
+                case ProgramSupportFileState.New:
+                case ProgramSupportFileState.PresentAndUnchanged:
+                case ProgramSupportFileState.PresentButModified:
+                case ProgramSupportFileState.RequiredPeripheralAvailable:
+                    validSettings = true;
+                    break;
+                default:
+                    break;
+            }
             return validSettings;
         }
 
@@ -261,7 +273,7 @@ namespace INTV.Core.Model.Program
         /// Create a copy of the object.
         /// </summary>
         /// <returns>A copy of this instance.</returns>
-        /// <remarks>Note that the underlying ProgramInformation data and support files are not deep copied -- shallow copies are used.</remarks>
+        /// <remarks>Note that the underlying ROM is not deep copied.</remarks>
         public ProgramDescription Copy()
         {
             var description = new ProgramDescription(Crc, Rom, ProgramInformation);
@@ -284,6 +296,7 @@ namespace INTV.Core.Model.Program
         }
 
         /// <inheritdoc />
+        /// <remarks>See issue: https://github.com/intvsteve/VINTage/issues/239 which details lameness of this implementation.</remarks>
         public override int GetHashCode()
         {
             return _crc.GetHashCode();
@@ -296,8 +309,9 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <param name="other">The other <see cref="IProgramDescription"/> to compare against.</param>
         /// <returns>If this instance and <paramref name="other"/> are considered equivalent, returns zero. A non-zero value indicates inequality.</returns>
-        /// <remarks>Consider implementing the IComparable / IComparer / IEquatable / IEqualityComparer interfaces on ProgramDescription instead?</remarks>
-        public int CompareToIProgramDescription(IProgramDescription other)
+        /// <remarks>Consider implementing the IComparable / IComparer / IEquatable / IEqualityComparer interfaces on ProgramDescription instead?
+        /// Deficiency noted here: https://github.com/intvsteve/VINTage/issues/239 </remarks>
+        private int CompareToIProgramDescription(IProgramDescription other)
         {
             var result = 1;
             if (other != null)

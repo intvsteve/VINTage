@@ -168,7 +168,7 @@ namespace INTV.Core.Model.Program
         /// <remarks>The setter is public to support XmlSerializer.</remarks>
         public string RomConfigurationFilePath
         {
-            get { return _programRom.ConfigPath; }
+            get { return (_programRom == null) ? null : _programRom.ConfigPath; }
             set { UpdateProgramRom(ProgramFileKind.CfgFile, value); } // If this is only present for XML... why go through the complex code?
         }
 

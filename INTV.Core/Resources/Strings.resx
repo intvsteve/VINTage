@@ -152,7 +152,7 @@
   <data name="JlpHardwareVersion_None" xml:space="preserve">
     <value>&lt;None&gt;</value>
   </data>
-  <data name="ProgramDescription_MIssingAlternateCfgFile" xml:space="preserve">
+  <data name="ProgramDescription_MissingAlternateCfgFile" xml:space="preserve">
     <value>Alternate ROM paths do not also provide alternate .cfg file paths!</value>
   </data>
   <data name="ProgramInformationTable_NoEditsToDefaultDatabase" xml:space="preserve">

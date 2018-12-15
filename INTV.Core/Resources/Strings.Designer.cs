@@ -171,9 +171,9 @@ namespace INTV.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Alternate ROM paths do not also provide alternate .cfg file paths!.
         /// </summary>
-        internal static string ProgramDescription_MIssingAlternateCfgFile {
+        internal static string ProgramDescription_MissingAlternateCfgFile {
             get {
-                return ResourceManager.GetString("ProgramDescription_MIssingAlternateCfgFile", resourceCulture);
+                return ResourceManager.GetString("ProgramDescription_MissingAlternateCfgFile", resourceCulture);
             }
         }
         

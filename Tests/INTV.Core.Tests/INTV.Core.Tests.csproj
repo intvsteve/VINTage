@@ -101,6 +101,7 @@
     <Compile Include="Model\Program\ProgramDescriptionHelpersTests.cs" />
     <Compile Include="Model\Program\ProgramDescriptionTests.cs" />
     <Compile Include="Model\Program\ProgramFeaturesHelpersTests.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesTests.cs" />
     <Compile Include="Model\Program\ProgramFileKindHelpersTests.cs" />
     <Compile Include="Model\Program\ProgramIdentifierTests.cs" />
     <Compile Include="Model\Program\ProgramInformationTableDescriptorTests.cs" />

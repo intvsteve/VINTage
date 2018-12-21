@@ -83,6 +83,11 @@ namespace INTV.Core.Model.Program
     public static class CuttleCart3FeaturesHelpers
     {
         /// <summary>
+        /// The default compatibility mode for the Cuttle Cart 3.
+        /// </summary>
+        public const CuttleCart3Features Default = CuttleCart3Features.Tolerates;
+
+        /// <summary>
         /// The bit offset to apply to create or access bank switching mode flags.
         /// </summary>
         public const int BankswitchingOffset = 2;

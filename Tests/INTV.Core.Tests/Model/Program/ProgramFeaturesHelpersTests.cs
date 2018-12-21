@@ -110,7 +110,7 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramFeatures_SetUnrecongizedRomFeatures_SetsFeaturesForUnrecognizedRom()
         {
-            var features = ProgramFeatures.EmptyFeatures;
+            var features = ProgramFeatures.EmptyFeatures.Clone();
 
             features.SetUnrecongizedRomFeatures();
 

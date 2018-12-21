@@ -47,14 +47,15 @@ namespace INTV.Core.Model.Program
             Jlp = JlpFeatures.Incompatible,
             LtoFlash = LtoFlashFeatures.Incompatible,
             Bee3 = Bee3Features.Incompatible,
-            Hive = HiveFeatures.Incompatible
+            Hive = HiveFeatures.Incompatible,
+            IsReadOnly = true
         };
 
         /// <summary>
         /// A set of default features.
         /// </summary>
         /// <remarks>NOTE: This does not assume 'unknown' for the GeneralFeatures field.</remarks>
-        public static readonly ProgramFeatures DefaultFeatures = new ProgramFeatures(GeneralFeatures.None, FeatureCompatibility.Tolerates, FeatureCompatibility.Tolerates);
+        public static readonly ProgramFeatures DefaultFeatures = new ProgramFeatures(GeneralFeatures.None, FeatureCompatibility.Tolerates, FeatureCompatibility.Tolerates) { IsReadOnly = true };
 
         private Dictionary<FeatureCategory, uint> _features;
 
@@ -71,21 +72,21 @@ namespace INTV.Core.Model.Program
         private ProgramFeatures(GeneralFeatures generalFeatures, FeatureCompatibility ntsc, FeatureCompatibility pal)
         {
             _features = new Dictionary<FeatureCategory, uint>();
-            _features[FeatureCategory.Ntsc] = (uint)ntsc;
-            _features[FeatureCategory.Pal] = (uint)pal;
-            _features[FeatureCategory.General] = (uint)generalFeatures;
-            _features[FeatureCategory.KeyboardComponent] = (uint)KeyboardComponentFeaturesHelpers.Default;
-            _features[FeatureCategory.SuperVideoArcade] = (uint)FeatureCompatibility.Tolerates;
-            _features[FeatureCategory.Intellivoice] = (uint)FeatureCompatibility.Tolerates;
-            _features[FeatureCategory.IntellivisionII] = (uint)FeatureCompatibility.Tolerates;
-            _features[FeatureCategory.Ecs] = (uint)EcsFeaturesHelpers.Default;
-            _features[FeatureCategory.Tutorvision] = (uint)FeatureCompatibility.Tolerates;
-            _features[FeatureCategory.Intellicart] = (uint)IntellicartCC3FeaturesHelpers.Default;
-            _features[FeatureCategory.CuttleCart3] = (uint)IntellicartCC3FeaturesHelpers.Default;
-            _features[FeatureCategory.Jlp] = (uint)JlpFeaturesHelpers.Default;
-            _features[FeatureCategory.LtoFlash] = (uint)LtoFlashFeaturesHelpers.Default;
-            _features[FeatureCategory.Bee3] = (uint)Bee3FeaturesHelpers.Default;
-            _features[FeatureCategory.Hive] = (uint)HiveFeaturesHelpers.Default;
+            CheckAccessSetFeatureBits(FeatureCategory.Ntsc, (uint)ntsc);
+            CheckAccessSetFeatureBits(FeatureCategory.Pal, (uint)pal);
+            CheckAccessSetFeatureBits(FeatureCategory.General, (uint)generalFeatures);
+            CheckAccessSetFeatureBits(FeatureCategory.KeyboardComponent, (uint)KeyboardComponentFeaturesHelpers.Default);
+            CheckAccessSetFeatureBits(FeatureCategory.SuperVideoArcade, (uint)FeatureCompatibility.Tolerates);
+            CheckAccessSetFeatureBits(FeatureCategory.Intellivoice, (uint)FeatureCompatibility.Tolerates);
+            CheckAccessSetFeatureBits(FeatureCategory.IntellivisionII, (uint)FeatureCompatibility.Tolerates);
+            CheckAccessSetFeatureBits(FeatureCategory.Ecs, (uint)EcsFeaturesHelpers.Default);
+            CheckAccessSetFeatureBits(FeatureCategory.Tutorvision, (uint)FeatureCompatibility.Tolerates);
+            CheckAccessSetFeatureBits(FeatureCategory.Intellicart, (uint)IntellicartCC3FeaturesHelpers.Default);
+            CheckAccessSetFeatureBits(FeatureCategory.CuttleCart3, (uint)CuttleCart3FeaturesHelpers.Default);
+            CheckAccessSetFeatureBits(FeatureCategory.Jlp, (uint)JlpFeaturesHelpers.Default);
+            CheckAccessSetFeatureBits(FeatureCategory.LtoFlash, (uint)LtoFlashFeaturesHelpers.Default);
+            CheckAccessSetFeatureBits(FeatureCategory.Bee3, (uint)Bee3FeaturesHelpers.Default);
+            CheckAccessSetFeatureBits(FeatureCategory.Hive, (uint)HiveFeaturesHelpers.Default);
             System.Diagnostics.Debug.Assert(_features.Count == (int)FeatureCategory.NumberOfCategories, "Failed to assign default features for all feature categories.");
         }
 
@@ -99,7 +100,7 @@ namespace INTV.Core.Model.Program
         public FeatureCompatibility Ntsc
         {
             get { return (FeatureCompatibility)_features[FeatureCategory.Ntsc]; }
-            set { _features[FeatureCategory.Ntsc] = (uint)value.CoerceVideoStandardCompatibility(); }
+            set { CheckAccessSetFeatureBits(FeatureCategory.Ntsc, (uint)value.CoerceVideoStandardCompatibility()); }
         }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace INTV.Core.Model.Program
         public FeatureCompatibility Pal
         {
             get { return (FeatureCompatibility)_features[FeatureCategory.Pal]; }
-            set { _features[FeatureCategory.Pal] = (uint)value.CoerceVideoStandardCompatibility(); }
+            set { CheckAccessSetFeatureBits(FeatureCategory.Pal, (uint)value.CoerceVideoStandardCompatibility()); }
         }
 
         /// <summary>
@@ -117,7 +118,7 @@ namespace INTV.Core.Model.Program
         public GeneralFeatures GeneralFeatures
         {
             get { return (GeneralFeatures)_features[FeatureCategory.General]; }
-            set { _features[FeatureCategory.General] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.General, (uint)value); }
         }
 
         /// <summary>
@@ -126,7 +127,7 @@ namespace INTV.Core.Model.Program
         public KeyboardComponentFeatures KeyboardComponent
         {
             get { return (KeyboardComponentFeatures)_features[FeatureCategory.KeyboardComponent]; }
-            set { _features[FeatureCategory.KeyboardComponent] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.KeyboardComponent, (uint)value); }
         }
 
         /// <summary>
@@ -135,7 +136,7 @@ namespace INTV.Core.Model.Program
         public FeatureCompatibility SuperVideoArcade
         {
             get { return (FeatureCompatibility)_features[FeatureCategory.SuperVideoArcade]; }
-            set { _features[FeatureCategory.SuperVideoArcade] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.SuperVideoArcade, (uint)value); }
         }
 
         /// <summary>
@@ -144,7 +145,7 @@ namespace INTV.Core.Model.Program
         public FeatureCompatibility Intellivoice
         {
             get { return (FeatureCompatibility)_features[FeatureCategory.Intellivoice]; }
-            set { _features[FeatureCategory.Intellivoice] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.Intellivoice, (uint)value); }
         }
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace INTV.Core.Model.Program
         public FeatureCompatibility IntellivisionII
         {
             get { return (FeatureCompatibility)_features[FeatureCategory.IntellivisionII]; }
-            set { _features[FeatureCategory.IntellivisionII] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.IntellivisionII, (uint)value); }
         }
 
         /// <summary>
@@ -162,7 +163,7 @@ namespace INTV.Core.Model.Program
         public EcsFeatures Ecs
         {
             get { return (EcsFeatures)_features[FeatureCategory.Ecs]; }
-            set { _features[FeatureCategory.Ecs] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.Ecs, (uint)value); }
         }
 
         /// <summary>
@@ -171,7 +172,7 @@ namespace INTV.Core.Model.Program
         public FeatureCompatibility Tutorvision
         {
             get { return (FeatureCompatibility)_features[FeatureCategory.Tutorvision]; }
-            set { _features[FeatureCategory.Tutorvision] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.Tutorvision, (uint)value); }
         }
 
         /// <summary>
@@ -180,7 +181,7 @@ namespace INTV.Core.Model.Program
         public IntellicartCC3Features Intellicart
         {
             get { return (IntellicartCC3Features)_features[FeatureCategory.Intellicart]; }
-            set { _features[FeatureCategory.Intellicart] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.Intellicart, (uint)value); }
         }
 
         /// <summary>
@@ -189,7 +190,7 @@ namespace INTV.Core.Model.Program
         public CuttleCart3Features CuttleCart3
         {
             get { return (CuttleCart3Features)_features[FeatureCategory.CuttleCart3]; }
-            set { _features[FeatureCategory.CuttleCart3] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.CuttleCart3, (uint)value); }
         }
 
         /// <summary>
@@ -198,13 +199,29 @@ namespace INTV.Core.Model.Program
         public JlpFeatures Jlp
         {
             get { return (JlpFeatures)_features[FeatureCategory.Jlp]; }
-            set { _features[FeatureCategory.Jlp] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.Jlp, (uint)value); }
         }
 
         /// <summary>
         /// Gets or sets the JLP hardware version.
         /// </summary>
-        public JlpHardwareVersion JlpHardwareVersion { get; set; }
+        public JlpHardwareVersion JlpHardwareVersion
+        {
+            get
+            {
+                return _jlpHardwareVersion;
+            }
+
+            set
+            {
+                if (IsReadOnly)
+                {
+                    throw new InvalidOperationException("JlpHardwareVersion");
+                }
+                _jlpHardwareVersion = value;
+            }
+        }
+        private JlpHardwareVersion _jlpHardwareVersion;
 
         /// <summary>
         /// Gets or sets the minimum number of JLP Flash save data sectors required by a program.
@@ -221,7 +238,7 @@ namespace INTV.Core.Model.Program
         public LtoFlashFeatures LtoFlash
         {
             get { return (LtoFlashFeatures)_features[FeatureCategory.LtoFlash]; }
-            set { _features[FeatureCategory.LtoFlash] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.LtoFlash, (uint)value); }
         }
 
         /// <summary>
@@ -230,7 +247,7 @@ namespace INTV.Core.Model.Program
         public Bee3Features Bee3
         {
             get { return (Bee3Features)_features[FeatureCategory.Bee3]; }
-            set { _features[FeatureCategory.Bee3] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.Bee3, (uint)value); }
         }
 
         /// <summary>
@@ -239,7 +256,7 @@ namespace INTV.Core.Model.Program
         public HiveFeatures Hive
         {
             get { return (HiveFeatures)_features[FeatureCategory.Hive]; }
-            set { _features[FeatureCategory.Hive] = (uint)value; }
+            set { CheckAccessSetFeatureBits(FeatureCategory.Hive, (uint)value); }
         }
 
         /// <summary>
@@ -263,6 +280,9 @@ namespace INTV.Core.Model.Program
                         case FeatureCategory.IntellivisionII:
                             luigiFeatures |= IntellivisionII.ToLuigiFeatureFlags(FeatureCategory.IntellivisionII);
                             break;
+                        case FeatureCategory.KeyboardComponent:
+                            luigiFeatures |= KeyboardComponent.ToLuigiFeatureFlags();
+                            break;
                         case FeatureCategory.Jlp:
                             luigiFeatures |= Jlp.ToLuigiFeatureFlags();
                             break;
@@ -285,6 +305,8 @@ namespace INTV.Core.Model.Program
                 return LuigiFeatureFlags2.None;
             }
         }
+
+        private bool IsReadOnly { get; set; }
 
         #endregion // Properties
 
@@ -396,7 +418,7 @@ namespace INTV.Core.Model.Program
                             }
                             break;
                     }
-                    combinedFeatures._features[feature] = featureBits;
+                    combinedFeatures.CheckAccessSetFeatureBits(feature, featureBits);
                 }
                 combinedFeatures.JlpHardwareVersion = (JlpHardwareVersion)Math.Max((int)features1.JlpHardwareVersion, (int)features2.JlpHardwareVersion);
             }
@@ -439,18 +461,19 @@ namespace INTV.Core.Model.Program
                             break;
                         default:
                             // A value of zero means INCOMPATIBLE WITH ALL FEATURES, so clear ALL the bits in such a case.
-                            _features[category] = 0;
+                            CheckAccessSetFeatureBits(category, 0);
                             break;
                     }
                 }
                 else
                 {
-                    _features[category] |= features;
+                    // BUG ? For video (PAL/NTSC) we usually coerce to prevent "requires" value.
+                    CheckAccessSetFeatureBits(category, _features[category] | features);
                 }
             }
             else
             {
-                _features[category] &= ~features;
+                CheckAccessSetFeatureBits(category, _features[category] & ~features);
             }
         }
 
@@ -565,6 +588,15 @@ namespace INTV.Core.Model.Program
         private static int CombineHashCodes(int h1, int h2)
         {
             return ((h1 << 5) + h1) ^ h2;
+        }
+
+        private void CheckAccessSetFeatureBits(FeatureCategory category, uint bits)
+        {
+            if (IsReadOnly)
+            {
+                throw new InvalidOperationException(category.ToString());
+            }
+            _features[category] = bits;
         }
     }
 }

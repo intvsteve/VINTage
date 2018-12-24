@@ -135,6 +135,7 @@ namespace INTV.Core.Model.Program
         /// Initializes a new instance of ProgramSupportFiles.
         /// </summary>
         /// <remarks>This constructor exists so XmlSerializer is easy to use with it.</remarks>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private ProgramSupportFiles()
             : this(null)
         {

@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescriptionHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2018 All Rights Reserved
+// Copyright (c) 2015-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Linq;
 using INTV.Core.Restricted.Model.Program;
 using INTV.Core.Utility;
 
@@ -43,8 +44,8 @@ namespace INTV.Core.Model.Program
             var usesCfg = !string.IsNullOrEmpty(rom.ConfigPath);
             if (!StreamUtilities.FileExists(rom.RomPath) || (usesCfg && !StreamUtilities.FileExists(rom.ConfigPath)))
             {
-                var alternateRomPaths = programDescription.Files.AlternateRomImagePaths;
-                var alternateCfgPaths = programDescription.Files.AlternateRomConfigurationFilePaths;
+                var alternateRomPaths = programDescription.Files.AlternateRomImagePaths.ToList();
+                var alternateCfgPaths = programDescription.Files.AlternateRomConfigurationFilePaths.ToList();
 
                 if (usesCfg && (alternateRomPaths.Count != alternateCfgPaths.Count))
                 {

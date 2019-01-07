@@ -41,6 +41,9 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Web" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.Serialization" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
       <Private>True</Private>
@@ -107,6 +110,7 @@
     <Compile Include="Model\Program\ProgramInformationTableDescriptorTests.cs" />
     <Compile Include="Model\Program\ProgramMetadataTests.cs" />
     <Compile Include="Model\Program\ProgramRomInformationBuilderTests.cs" />
+    <Compile Include="Model\Program\ProgramSupportFilesTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationDatabaseColumnNameHelpersTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationDatabaseColumnTests.cs" />
     <Compile Include="Model\Program\XmlRomInformationDatabaseTests.cs" />

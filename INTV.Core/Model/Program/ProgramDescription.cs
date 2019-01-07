@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescription.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -86,7 +86,7 @@ namespace INTV.Core.Model.Program
         /// Initializes a new instance of ProgramDescription.
         /// </summary>
         /// <remarks>This constructor exists so XmlSerializer is easy to use with this class.</remarks>
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] // TODO: REMOVE and have XML parse test
         private ProgramDescription()
         {
         }

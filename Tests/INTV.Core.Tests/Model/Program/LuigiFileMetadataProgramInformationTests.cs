@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFileMetadataProgramInformationTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -92,6 +92,23 @@ namespace INTV.Core.Tests.Model.Program
             information.Title = testTitle;
 
             Assert.Equal(testTitle, information.Title);
+        }
+
+        [Fact]
+        public void LuigiFileMetadataProgramInformation_CreateWithNoMetadatda_VerifySetShortName()
+        {
+            var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).Single();
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
+            Assert.NotNull(rom);
+            var metadataBlock = rom.LocateDataBlock<LuigiMetadataBlock>();
+            Assert.Null(metadataBlock);
+            var information = new LuigiFileMetadataProgramInformation(rom.Header, metadataBlock);
+            Assert.Null(information.ShortName);
+
+            var testShortName = "Tag Toad";
+            information.ShortName = testShortName;
+
+            Assert.Equal(testShortName, information.ShortName);
         }
 
         [Fact]

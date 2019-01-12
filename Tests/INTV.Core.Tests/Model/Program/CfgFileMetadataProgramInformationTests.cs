@@ -1,5 +1,5 @@
 ﻿// <copyright file="CfgFileMetadataProgramInformationTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -60,6 +60,18 @@ namespace INTV.Core.Tests.Model.Program
             cfgMetadataInformation.Title = testTitle;
 
             Assert.Equal(testTitle, cfgMetadataInformation.Title);
+        }
+
+        [Fact]
+        public void CfgFileMetadataProgramInformation_SetShortName_SetsShortName()
+        {
+            var cfgMetadataInformation = new CfgFileMetadataProgramInformation(null);
+            Assert.Null(cfgMetadataInformation.ShortName);
+
+            var testShortName = "Giddyup";
+            cfgMetadataInformation.ShortName = testShortName;
+
+            Assert.Equal(testShortName, cfgMetadataInformation.ShortName);
         }
 
         [Fact]

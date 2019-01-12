@@ -87,9 +87,5 @@ namespace INTV.Core.Tests.Model.Program
 
             Assert.Throws<InvalidOperationException>(() => information.AddCrc(1u, "blah", IncompatibilityFlags.Ecs));
         }
-
-        private class RomFileMetadataProgramInformationTestsStorageAccess : CachedResourceStorageAccess<RomFileMetadataProgramInformationTestsStorageAccess>
-        {
-        }
     }
 }

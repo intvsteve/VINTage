@@ -90,30 +90,35 @@ namespace INTV.TestHelpers.Core.Utility
         public static T Initialize(out IReadOnlyList<string> copiedResourcePaths, Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
         {
             var storageAccess = Initialize(typeForLocatingResources, resourcePath, additionalResourcePaths).WithStockCfgResources();
-
-            var fileExtension = Path.GetExtension(resourcePath);
-            var randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
-            var directory = Path.GetDirectoryName(resourcePath);
-            var randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
-
-            storageAccess.AddCachedResource(resourcePath, randomPath, typeForLocatingResources);
-            var copiedPaths = new List<string>() { randomPath };
-            copiedResourcePaths = copiedPaths;
-
-            if (additionalResourcePaths != null)
+            if (string.IsNullOrEmpty(resourcePath))
             {
-                foreach (var additionalResourcePath in additionalResourcePaths.Where(p => !string.IsNullOrEmpty(p)))
-                {
-                    fileExtension = Path.GetExtension(additionalResourcePath);
-                    randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
-                    directory = Path.GetDirectoryName(additionalResourcePath);
-                    randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
+                copiedResourcePaths = new List<string>();
+            }
+            else
+            {
+                var fileExtension = Path.GetExtension(resourcePath);
+                var randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
+                var directory = Path.GetDirectoryName(resourcePath);
+                var randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
 
-                    storageAccess.AddCachedResource(additionalResourcePath, randomPath, typeForLocatingResources);
-                    copiedPaths.Add(randomPath);
+                storageAccess.AddCachedResource(resourcePath, randomPath, typeForLocatingResources);
+                var copiedPaths = new List<string>() { randomPath };
+                copiedResourcePaths = copiedPaths;
+
+                if (additionalResourcePaths != null)
+                {
+                    foreach (var additionalResourcePath in additionalResourcePaths.Where(p => !string.IsNullOrEmpty(p)))
+                    {
+                        fileExtension = Path.GetExtension(additionalResourcePath);
+                        randomFileName = Path.GetFileNameWithoutExtension(Path.GetTempFileName());
+                        directory = Path.GetDirectoryName(additionalResourcePath);
+                        randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
+
+                        storageAccess.AddCachedResource(additionalResourcePath, randomPath, typeForLocatingResources);
+                        copiedPaths.Add(randomPath);
+                    }
                 }
             }
-
             return storageAccess;
         }
 

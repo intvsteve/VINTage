@@ -31,11 +31,11 @@ namespace INTV.Core.Tests.Model.Program
     public class CfgFileMetadataProgramInformationTests
     {
         [Fact]
-        public void CfgFileMetadataProgramInformation_AddCrc_ThrowsNotImplementedException()
+        public void CfgFileMetadataProgramInformation_AddCrc_ThrowsInvalidOperationException()
         {
             var cfgMetadataInformation = new CfgFileMetadataProgramInformation(null);
 
-            Assert.Throws<NotImplementedException>(() => cfgMetadataInformation.AddCrc(0u, null, IncompatibilityFlags.None));
+            Assert.Throws<InvalidOperationException>(() => cfgMetadataInformation.AddCrc(0u, null, IncompatibilityFlags.None));
         }
 
         [Fact]

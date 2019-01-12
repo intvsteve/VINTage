@@ -36,7 +36,7 @@ namespace INTV.Core.Tests.Model.Program
         }
 
         [Fact]
-        public void LuigiFileMetadataProgramInformation_AddCrc_ThrowsNotImplementedException()
+        public void LuigiFileMetadataProgramInformation_AddCrc_ThrowsInvalidOperationException()
         {
             var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).Single();
             var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
@@ -46,7 +46,7 @@ namespace INTV.Core.Tests.Model.Program
 
             var information = new LuigiFileMetadataProgramInformation(rom.Header, metadataBlock);
 
-            Assert.Throws<NotImplementedException>(() => information.AddCrc(1u, "version", IncompatibilityFlags.None));
+            Assert.Throws<InvalidOperationException>(() => information.AddCrc(1u, "version", IncompatibilityFlags.None));
         }
 
         [Fact]

@@ -632,7 +632,7 @@ namespace INTV.Core.Restricted.Model.Program
         /// <inheritdoc />
         public override bool AddCrc(uint newCrc, string crcDescription, IncompatibilityFlags incompatibilities)
         {
-            throw new NotImplementedException("INTV Funhouse XML program info AddCrc not implemented.");
+            throw new InvalidOperationException();
         }
 
         #endregion // IProgramInformation

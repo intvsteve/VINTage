@@ -255,11 +255,11 @@ namespace INTV.Core.Tests.Model.Program
         }
 
         [Fact]
-        public void IntvFunhouseXmlProgramInformation_AddCrc_ThrowsNotImplementedException()
+        public void IntvFunhouseXmlProgramInformation_AddCrc_ThrowsInvalidOperationException()
         {
             var info = new IntvFunhouseXmlProgramInformation();
 
-            Assert.Throws<NotImplementedException>(() => info.AddCrc(0, null, IncompatibilityFlags.None));
+            Assert.Throws<InvalidOperationException>(() => info.AddCrc(0, null, IncompatibilityFlags.None));
         }
 
         [Fact]

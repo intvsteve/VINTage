@@ -253,7 +253,7 @@ namespace INTV.Core.Model.Program
         /// <inheritdoc />
         public override bool AddCrc(uint newCrc, string crcDescription, IncompatibilityFlags incompatibilities)
         {
-            throw new System.NotImplementedException();
+            throw new System.InvalidOperationException();
         }
 
         #endregion // IProgramInformation

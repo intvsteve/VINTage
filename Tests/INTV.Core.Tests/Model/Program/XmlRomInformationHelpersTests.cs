@@ -1,5 +1,5 @@
 ﻿// <copyright file="XmlRomInformationHelpersTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -1995,6 +1995,18 @@ name = ""Tag-A-Long Toady""
             }
 
             public override ProgramFeatures Features
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public override string ShortName
             {
                 get
                 {

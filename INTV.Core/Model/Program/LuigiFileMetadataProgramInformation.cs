@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFileMetadataProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2018 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -47,7 +47,7 @@ namespace INTV.Core.Model.Program
                 {
                     _year = metadata.ReleaseDates.First().Date.Year.ToString();
                 }
-                ShortName = metadata.ShortNames.FirstOrDefault();
+                _shortName = metadata.ShortNames.FirstOrDefault();
             }
         }
 
@@ -92,6 +92,14 @@ namespace INTV.Core.Model.Program
             set { _features = value; }
         }
         private ProgramFeatures _features;
+
+        /// <inheritdoc />
+        public override string ShortName
+        {
+            get { return _shortName; }
+            set { _shortName = value; }
+        }
+        private string _shortName;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs

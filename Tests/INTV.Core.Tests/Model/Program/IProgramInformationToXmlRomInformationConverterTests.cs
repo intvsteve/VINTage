@@ -1,5 +1,5 @@
 ﻿// <copyright file="IProgramInformationToXmlRomInformationConverterTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -159,6 +159,9 @@ namespace INTV.Core.Tests.Model.Program
 
             /// <inheritdoc />
             public override ProgramFeatures Features { get; set; }
+
+            /// <inheritdoc />
+            public override string ShortName { get; set; }
 
             /// <inheritdoc />
             public override IEnumerable<CrcData> Crcs

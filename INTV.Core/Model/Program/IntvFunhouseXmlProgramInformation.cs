@@ -1,5 +1,5 @@
 ﻿// <copyright file="IntvFunhouseXmlProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -446,6 +446,14 @@ namespace INTV.Core.Restricted.Model.Program
             }
         }
         private ProgramFeatures _features;
+
+        /// <inheritdoc />
+        public override string ShortName
+        {
+            get { return _shortName; }
+            set { _shortName = value; }
+        }
+        private string _shortName;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs

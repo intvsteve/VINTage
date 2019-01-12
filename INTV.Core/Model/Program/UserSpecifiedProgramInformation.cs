@@ -1,5 +1,5 @@
 ﻿// <copyright file="UserSpecifiedProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -143,7 +143,7 @@ namespace INTV.Core.Model.Program
             _year = programInformation.Year;
             _features = programInformation.Features;
             _origin = programInformation.DataOrigin;
-            ShortName = programInformation.ShortName;
+            _shortName = programInformation.ShortName;
             if (userSpecified != null)
             {
                 _crcs = new Dictionary<uint, KeyValuePair<string, IncompatibilityFlags>>(userSpecified._crcs);
@@ -153,10 +153,6 @@ namespace INTV.Core.Model.Program
                 _crcs = programInformation.Crcs.ToDictionary(c => c.Crc, d => new KeyValuePair<string, IncompatibilityFlags>(d.Description, d.Incompatibilities));
             }
             FinishInitialization();
-        }
-
-        private UserSpecifiedProgramInformation()
-        {
         }
 
         #endregion // Constructors
@@ -180,6 +176,7 @@ namespace INTV.Core.Model.Program
         private ProgramInformationOrigin _origin;
 
         /// <inheritdoc />
+        /// <remarks>Behavior here is odd. See: https://github.com/intvsteve/VINTage/issues/242 </remarks>
         public override string Title
         {
             get
@@ -220,6 +217,14 @@ namespace INTV.Core.Model.Program
             set { this.AssignAndUpdateProperty(PropertyChanged, "Features", value, ref _features, MarkDirty); }
         }
         private ProgramFeatures _features;
+
+        /// <inheritdoc />
+        public override string ShortName
+        {
+            get { return _shortName; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, "ShortName", value, ref _shortName, MarkDirty); }
+        }
+        private string _shortName;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs
@@ -622,17 +627,21 @@ namespace INTV.Core.Model.Program
                 _versions = new HashSet<string>(metadata.Versions, StringComparer.OrdinalIgnoreCase);
                 _buildDates = new SortedSet<MetadataDateTime>(metadata.BuildDates);
                 _additionalInformation = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                if (metadata.AdditionalInformation == null)
+                {
+                    throw new ArgumentNullException("metadata.AdditionalInformation");
+                }
                 var additionalInformationIndex = 0;
                 foreach (var additionalInformation in metadata.AdditionalInformation)
                 {
                     _additionalInformation[additionalInformationIndex.ToString(CultureInfo.InvariantCulture)] = additionalInformation;
                     ++additionalInformationIndex;
                 }
-                if (string.IsNullOrEmpty(ShortName))
+                if (string.IsNullOrEmpty(_shortName))
                 {
                     if (!string.IsNullOrEmpty(_shortNames.FirstOrDefault()))
                     {
-                        ShortName = _shortNames.First();
+                        _shortName = _shortNames.First();
                     }
                 }
             }
@@ -662,9 +671,9 @@ namespace INTV.Core.Model.Program
                     _longNames.Add(_title);
                 }
 
-                if (!string.IsNullOrEmpty(ShortName))
+                if (!string.IsNullOrEmpty(_shortName))
                 {
-                    _shortNames.Add(ShortName);
+                    _shortNames.Add(_shortName);
                 }
 
                 if (!string.IsNullOrEmpty(_vendor))

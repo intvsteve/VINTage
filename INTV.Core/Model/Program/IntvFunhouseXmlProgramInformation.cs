@@ -450,10 +450,9 @@ namespace INTV.Core.Restricted.Model.Program
         /// <inheritdoc />
         public override string ShortName
         {
-            get { return _shortName; }
-            set { _shortName = value; }
+            get { return null; }
+            set { }
         }
-        private string _shortName;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs

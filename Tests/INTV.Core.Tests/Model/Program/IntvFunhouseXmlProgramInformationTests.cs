@@ -1,5 +1,5 @@
 ﻿// <copyright file="IntvFunhouseXmlProgramInformationTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -40,6 +40,17 @@ namespace INTV.Core.Tests.Model.Program
             info.Title = "did it change?";
 
             Assert.Equal(title, info.Title);
+        }
+
+        [Fact]
+        public void IntvFunhouseXmlProgramInformation_SetShortName_HasNoEffect()
+        {
+            var title = "No short names";
+            var info = new IntvFunhouseXmlProgramInformation() { ProgramTitle = title };
+
+            info.ShortName = "did it change?";
+
+            Assert.Null(info.ShortName);
         }
 
         [Fact]

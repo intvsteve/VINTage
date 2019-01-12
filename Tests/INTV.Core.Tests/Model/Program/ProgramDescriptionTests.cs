@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescriptionTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -426,6 +426,11 @@ namespace INTV.Core.Tests.Model.Program
             Assert.False(description.Equals(null));
         }
 
+        // Disable warning CS0252:
+        // Possible unintended reference comparison; to get a value comparison, cast the left hand side to type 'INTV.Core.Model.Program.ProgramDescription'
+        // This test wishes to test the operator in this scenario.
+#pragma warning disable 252
+
         [Fact]
         public void ProgramDescription_OperatorNullEquals_ReturnsFalse()
         {
@@ -439,6 +444,8 @@ namespace INTV.Core.Tests.Model.Program
 
             Assert.False(other == description);
         }
+
+#pragma warning restore 252
 
         [Fact]
         public void ProgramDescription_NullEquals_ThrowsNullReferenceException()

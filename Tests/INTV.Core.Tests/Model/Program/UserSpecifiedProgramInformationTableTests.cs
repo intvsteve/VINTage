@@ -33,6 +33,8 @@ namespace INTV.Core.Tests.Model.Program
     {
         [Theory]
         [InlineData(0)]
+        [InlineData(4 * 0)]
+        [InlineData(23 & 0)]
         public void UserSpecifiedProgramInformationTable_Initialize_CreatesExpectedDatabase(int numberOfEntries)
         {
             IReadOnlyList<string> romPaths;
@@ -93,7 +95,7 @@ namespace INTV.Core.Tests.Model.Program
             IReadOnlyList<string> romPaths;
             var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
             var databaseFilePath = "/testing/database/add_duplicate_entry_to_database.xml";
-            storageAccess.AddDatabaseFile(databaseFilePath, 0);
+            storageAccess.AddDatabaseFile(databaseFilePath, 8);
             var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
             var entry = new UserSpecifiedProgramInformation(0x23457689, "My dev ROM");
             Assert.True(database.AddEntry(entry));
@@ -108,7 +110,7 @@ namespace INTV.Core.Tests.Model.Program
             IReadOnlyList<string> romPaths;
             var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
             var databaseFilePath = "/testing/database/group_null_entries.xml";
-            storageAccess.AddDatabaseFile(databaseFilePath, 0);
+            storageAccess.AddDatabaseFile(databaseFilePath, 2);
             var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
 
             Assert.False(database.GroupWithExistingEntry(null, null));
@@ -120,7 +122,7 @@ namespace INTV.Core.Tests.Model.Program
             IReadOnlyList<string> romPaths;
             var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
             var databaseFilePath = "/testing/database/group_new_entry_null_existing.xml";
-            storageAccess.AddDatabaseFile(databaseFilePath, 0);
+            storageAccess.AddDatabaseFile(databaseFilePath, 1);
             var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
 
             var newEntry = new UserSpecifiedProgramInformation(0x23457689, "My new dev ROM");
@@ -133,7 +135,7 @@ namespace INTV.Core.Tests.Model.Program
             IReadOnlyList<string> romPaths;
             var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
             var databaseFilePath = "/testing/database/group_null_new_entry.xml";
-            storageAccess.AddDatabaseFile(databaseFilePath, 0);
+            storageAccess.AddDatabaseFile(databaseFilePath, 3);
             var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
             var entry = new UserSpecifiedProgramInformation(0x23457689, "My dev ROM");
             Assert.True(database.AddEntry(entry));
@@ -147,7 +149,7 @@ namespace INTV.Core.Tests.Model.Program
             IReadOnlyList<string> romPaths;
             var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
             var databaseFilePath = "/testing/database/group_existing_groups.xml";
-            storageAccess.AddDatabaseFile(databaseFilePath, 0);
+            storageAccess.AddDatabaseFile(databaseFilePath, 87);
             var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
             var entry = new UserSpecifiedProgramInformation(0x23457689, "My dev ROM");
             Assert.True(database.AddEntry(entry));
@@ -164,7 +166,7 @@ namespace INTV.Core.Tests.Model.Program
             IReadOnlyList<string> romPaths;
             var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
             var databaseFilePath = "/testing/database/group_existing_with_overlapping_crcs_groups.xml";
-            storageAccess.AddDatabaseFile(databaseFilePath, 0);
+            storageAccess.AddDatabaseFile(databaseFilePath, 6);
             var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
             var entry = new UserSpecifiedProgramInformation(1, "My dev ROM");
             entry.AddCrc(3);
@@ -187,7 +189,7 @@ namespace INTV.Core.Tests.Model.Program
             IReadOnlyList<string> romPaths;
             var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
             var databaseFilePath = "/testing/database/group_existing_new_is_crc_match_does_not_group.xml";
-            storageAccess.AddDatabaseFile(databaseFilePath, 0);
+            storageAccess.AddDatabaseFile(databaseFilePath, 2);
             var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
             var entry = new UserSpecifiedProgramInformation(0x23457689, "My dev ROM");
             Assert.True(database.AddEntry(entry));
@@ -202,13 +204,65 @@ namespace INTV.Core.Tests.Model.Program
             IReadOnlyList<string> romPaths;
             var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
             var databaseFilePath = "/testing/database/group_nonexisting_entry_does_not_group.xml";
-            storageAccess.AddDatabaseFile(databaseFilePath, 0);
+            storageAccess.AddDatabaseFile(databaseFilePath, 9);
             var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
             var entry = new UserSpecifiedProgramInformation(0x98765432, "My dev ROM");
             Assert.True(database.AddEntry(entry));
 
             var newEntry = new UserSpecifiedProgramInformation(0x23457689, "My other dev ROM");
             Assert.False(database.GroupWithExistingEntry(entry, newEntry));
+        }
+
+        [Theory]
+        [InlineData(0, false)]
+        [InlineData(0x98765432, true)]
+        [InlineData(6, false)]
+        public void UserSpecifiedProgramInformationTable_FindProgram_FindsProgramAsExpected(uint crc, bool expectedFound)
+        {
+            IReadOnlyList<string> romPaths;
+            var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
+            var databaseFilePath = "/testing/database/find_by_crc.xml";
+            storageAccess.AddDatabaseFile(databaseFilePath, 2);
+            var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
+            var entry = new UserSpecifiedProgramInformation(0x98765432u, "My findable ROM");
+            database.AddEntry(entry);
+
+            var foundInfo = database.FindProgram(crc);
+
+            if (expectedFound)
+            {
+                Assert.True(object.ReferenceEquals(entry, foundInfo));
+            }
+            else
+            {
+                Assert.Null(foundInfo);
+            }
+        }
+
+        [Theory]
+        [InlineData(0, false)]
+        [InlineData(0x98765432, true)]
+        [InlineData(6, false)]
+        public void UserSpecifiedProgramInformationTable_FindProgramWithProgramIdentifier_FindsProgramAsExpected(uint crc, bool expectedFound)
+        {
+            IReadOnlyList<string> romPaths;
+            var storageAccess = UserSpecifiedProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
+            var databaseFilePath = "/testing/database/find_by_program_info.xml";
+            storageAccess.AddDatabaseFile(databaseFilePath, 4);
+            var database = UserSpecifiedProgramInformationTable.Initialize(databaseFilePath) as UserSpecifiedProgramInformationTable;
+            var entry = new UserSpecifiedProgramInformation(0x98765432u, "My findable ROM");
+            database.AddEntry(entry);
+
+            var foundInfo = database.FindProgram(new ProgramIdentifier(crc, 0));
+
+            if (expectedFound)
+            {
+                Assert.True(object.ReferenceEquals(entry, foundInfo));
+            }
+            else
+            {
+                Assert.Null(foundInfo);
+            }
         }
 
         private static string CreateDatabaseXmlString(int numberOfEntries)
@@ -220,6 +274,7 @@ namespace INTV.Core.Tests.Model.Program
 
             for (var i = 0; i < numberOfEntries; ++i)
             {
+                var crc = 0xffddcc00 + i;
             }
 
             databaseStringBuilder.AppendFormat("  </{0}>", UserSpecifiedProgramInformationTable.XmlRomsCollectionName);

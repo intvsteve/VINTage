@@ -1,5 +1,5 @@
 ﻿// <copyright file="MergedProgramInformationTable.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -37,20 +37,9 @@ namespace INTV.Core.Model.Program
         }
 
         /// <inheritdoc />
-        public override IProgramInformation FindProgram(uint crc)
-        {
-            IProgramInformation programInfo;
-            if (!_programs.TryGetValue(crc, out programInfo))
-            {
-                programInfo = null;
-            }
-            return programInfo;
-        }
-
-        /// <inheritdoc />
         public override IProgramInformation FindProgram(ProgramIdentifier programIdentifier)
         {
-            var programInformation = FindProgram(programIdentifier.DataCrc);
+            var programInformation = base.FindProgram(programIdentifier);
             System.Diagnostics.Debug.WriteLineIf((programIdentifier.OtherData != 0) && (programInformation != null), "Support for ProgramIdentifier lookups not implemented.");
             return programInformation;
         }
@@ -96,6 +85,17 @@ namespace INTV.Core.Model.Program
             IProgramInformation entry;
             var removed = _programs.TryRemove(entryCrc, out entry);
             return removed;
+        }
+
+        /// <inheritdoc />
+        protected override IProgramInformation FindProgramCore(ProgramIdentifier programIdentifier)
+        {
+            IProgramInformation programInfo;
+            if (!_programs.TryGetValue(programIdentifier.DataCrc, out programInfo))
+            {
+                programInfo = null;
+            }
+            return programInfo;
         }
     }
 }

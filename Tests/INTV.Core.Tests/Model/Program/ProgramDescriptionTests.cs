@@ -20,7 +20,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml.Serialization;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
 using INTV.TestHelpers.Core.Utility;
@@ -571,6 +574,69 @@ namespace INTV.Core.Tests.Model.Program
             VerifyProgramInformation(description0.ProgramInformation, description1.ProgramInformation);
             VerifyProgramSupportFiles(description0.Files, description1.Files);
             Assert.Equal(description0, description1);
+        }
+
+        [Fact]
+        public void ProgramDescription_ParseFromXml_ProducesValidProgramDescription()
+        {
+            ProgramDescriptionTestStorage.Initialize(null);
+            var xmlProgramDescription = @"<?xml version=""1.0""?>
+  <ProgramDescription>
+    <Crc>3971627767</Crc>
+    <Name>Tagalong Todd!</Name>
+    <Vendor>Zbiciak Electronics</Vendor>
+    <Year>1999</Year>
+    <Features>
+      <Ntsc>Tolerates</Ntsc>
+      <Pal>Tolerates</Pal>
+      <GeneralFeatures>None</GeneralFeatures>
+      <KeyboardComponent>Tolerates</KeyboardComponent>
+      <SuperVideoArcade>Tolerates</SuperVideoArcade>
+      <Intellivoice>Tolerates</Intellivoice>
+      <IntellivisionII>Tolerates</IntellivisionII>
+      <Ecs>Tolerates</Ecs>
+      <Tutorvision>Tolerates</Tutorvision>
+      <Intellicart>Tolerates</Intellicart>
+      <CuttleCart3>Tolerates</CuttleCart3>
+      <Jlp>Incompatible</Jlp>
+      <JlpHardwareVersion>None</JlpHardwareVersion>
+      <JlpFlashMinimumSaveSectors>0</JlpFlashMinimumSaveSectors>
+      <LtoFlash>Incompatible</LtoFlash>
+      <Bee3>Incompatible</Bee3>
+      <Hive>Incompatible</Hive>
+    </Features>
+    <Files>
+      <RomImagePath>\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin</RomImagePath>
+      <RomConfigurationFilePath>/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg</RomConfigurationFilePath>
+      <AlternateRomImagePaths />
+      <AlternateRomConfigurationFilePaths />
+    </Files>
+  </ProgramDescription>
+";
+            ProgramDescription description;
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlProgramDescription)))
+            {
+                var serializer = new XmlSerializer(typeof(ProgramDescription));
+                description = serializer.Deserialize(stream) as ProgramDescription;
+            }
+
+            Assert.NotNull(description);
+            Assert.Equal("Tagalong Todd!", description.Name);
+            Assert.Equal("Zbiciak Electronics", description.Vendor);
+            Assert.Equal("1999", description.Year);
+            Assert.Equal(TestRomResources.TestBinCrc, description.Crc);
+            Assert.Equal(ProgramFeatures.DefaultFeatures, description.Features);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.RomImagePath);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.RomConfigurationFilePath);
+            Assert.Empty(description.Files.AlternateRomImagePaths);
+            Assert.Empty(description.Files.AlternateRomConfigurationFilePaths);
+            Assert.NotNull(description.Rom);
+            Assert.True(description.Rom is XmlRom);
+            Assert.Null(((XmlRom)description.Rom).ResolvedRom);
+            Assert.Equal(0u, description.Rom.Crc);
+            Assert.Equal(0u, description.Rom.CfgCrc);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath);
         }
 
         private void VerifyProgramInformation(IProgramInformation information0, IProgramInformation information1)

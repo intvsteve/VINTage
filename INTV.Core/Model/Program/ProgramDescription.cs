@@ -86,7 +86,6 @@ namespace INTV.Core.Model.Program
         /// Initializes a new instance of ProgramDescription.
         /// </summary>
         /// <remarks>This constructor exists so XmlSerializer is easy to use with this class.</remarks>
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] // TODO: REMOVE and have XML parse test
         private ProgramDescription()
         {
         }

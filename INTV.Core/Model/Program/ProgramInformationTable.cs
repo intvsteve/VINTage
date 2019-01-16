@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramInformationTable.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace INTV.Core.Model.Program
@@ -66,35 +67,51 @@ namespace INTV.Core.Model.Program
                 conflicts.AddRange(instance.MergeTable(localTable));
                 localTables.Add(localTable);
             }
-            var confilictingWithIntvFunhouse = instance.MergeTable(INTV.Core.Restricted.Model.Program.IntvFunhouseXmlProgramInformationTable.Instance);
-            if (confilictingWithIntvFunhouse.Any())
-            {
-                System.Diagnostics.Debug.WriteLine("Found conflicts with INTV Funhouse database.");
-            }
+            var conflictingWithIntvFunhouse = instance.MergeTable(INTV.Core.Restricted.Model.Program.IntvFunhouseXmlProgramInformationTable.Instance);
+            ReportConflicts("local databases", conflictingWithIntvFunhouse);
+
             var conflictingWithJzIntv = instance.MergeTable(UnmergedProgramInformationTable.Instance);
-            if (conflictingWithJzIntv.Any())
-            {
-                System.Diagnostics.Debug.WriteLine("Found conflicts with jzIntv / Unmerged ROMs database.");
-            }
+            ReportConflicts("unmerged + jzintv database", conflictingWithJzIntv);
+
             return instance;
         }
 
         #region IProgramInformationTable
 
         /// <inheritdoc />
-        /// <remarks>The default implementation simply looks in the default database for a program entry.</remarks>
         public virtual IProgramInformation FindProgram(uint crc)
         {
-            return Default.FindProgram(crc);
+            return FindProgramCore(crc);
         }
 
         /// <inheritdoc />
-        /// <remarks>The default implementation simply looks in the default database for a program entry.</remarks>
         public virtual IProgramInformation FindProgram(ProgramIdentifier programIdentifier)
         {
-            return Default.FindProgram(programIdentifier);
+            return FindProgramCore(programIdentifier);
         }
 
         #endregion // IProgramInformationTable
+
+        /// <summary>
+        /// Locates a program in the table given a program's unique identifier.
+        /// </summary>
+        /// <param name="programIdentifier">The unique identifier of the ROM to be located.</param>
+        /// <returns>The <see cref="IProgramInformation"/> that matches the given <see cref="ProgramIdentifier"/> as the table is best able to determine, otherwise <c>null</c>.</returns>
+        protected virtual IProgramInformation FindProgramCore(ProgramIdentifier programIdentifier)
+        {
+            // TODO: Improve behaver w.r.t. CFG CRC.
+            var programInformation = Programs.FirstOrDefault(p => p.Crcs.FirstOrDefault(c => c.Crc == programIdentifier.DataCrc) != null);
+            return programInformation;
+        }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        private static void ReportConflicts(string conflictsSource, IEnumerable<KeyValuePair<IProgramInformation, IProgramInformation>> conflicts)
+        {
+            if (conflicts.Any())
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Found conflicts merging data from '{0}' with INTV Funhouse database.", conflicts));
+            }
+        }
     }
 }

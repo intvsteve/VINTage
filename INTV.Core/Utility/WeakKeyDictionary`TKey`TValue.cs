@@ -436,11 +436,11 @@ namespace INTV.Core.Utility
             }
         }
 
-        private class DictionaryEnumerator<TKey, TValue> : IDictionaryEnumerator, IDisposable
+        private class DictionaryEnumerator<TKeyType, TValueType> : IDictionaryEnumerator, IDisposable
         {
-            private readonly IEnumerator<KeyValuePair<TKey, TValue>> _implementation;
+            private readonly IEnumerator<KeyValuePair<TKeyType, TValueType>> _implementation;
 
-            private DictionaryEnumerator(IEnumerator<KeyValuePair<TKey, TValue>> implementation)
+            private DictionaryEnumerator(IEnumerator<KeyValuePair<TKeyType, TValueType>> implementation)
             {
                 _implementation = implementation;
             }
@@ -478,9 +478,9 @@ namespace INTV.Core.Utility
 
             #endregion // IDictionaryEnumerator
 
-            public static IDictionaryEnumerator GetDictionaryEnumerator(IDictionary<TKey, TValue> dictionary)
+            public static IDictionaryEnumerator GetDictionaryEnumerator(IDictionary<TKeyType, TValueType> dictionary)
             {
-                return new DictionaryEnumerator<TKey, TValue>(dictionary.GetEnumerator());
+                return new DictionaryEnumerator<TKeyType, TValueType>(dictionary.GetEnumerator());
             }
 
             #region IDictionaryEnumerator
@@ -492,6 +492,8 @@ namespace INTV.Core.Utility
             }
 
             /// <inheritdoc/>
+            /// <remarks>Code coverage reports this as incomplete because the underlying object throws.</remarks>
+            [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             public void Reset()
             {
                 _implementation.Reset();

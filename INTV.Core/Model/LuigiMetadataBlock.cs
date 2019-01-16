@@ -18,7 +18,6 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -83,7 +82,7 @@ namespace INTV.Core.Model
             {
                 _stringMetadataEntries[stringMetadataType] = new List<string>();
             }
-            _dates = new List<MetadataDateTime>();
+            _releaseDates = new List<MetadataDateTime>();
         }
 
         /// <summary>
@@ -117,15 +116,6 @@ namespace INTV.Core.Model
         {
             get { return _stringMetadataEntries[LuigiMetadataIdTag.Publisher]; }
         }
-
-        /// <summary>
-        /// Gets the publication dates.
-        /// </summary>
-        public IEnumerable<MetadataDateTime> Dates
-        {
-            get { return _dates; }
-        }
-        private List<MetadataDateTime> _dates;
 
         /// <summary>
         /// Gets the licenses.
@@ -202,8 +192,9 @@ namespace INTV.Core.Model
         /// <summary>Gets the release dates.</summary>
         public IEnumerable<MetadataDateTime> ReleaseDates
         {
-            get { return Dates; }
+            get { return _releaseDates; }
         }
+        private List<MetadataDateTime> _releaseDates;
 
         /// <summary>Gets the build dates.</summary>
         public IEnumerable<MetadataDateTime> BuildDates
@@ -266,7 +257,7 @@ namespace INTV.Core.Model
                 {
                     case LuigiMetadataIdTag.Date:
                         var date = (MetadataDateTime)metadata;
-                        _dates.Add(date);
+                        _releaseDates.Add(date);
                         break;
                     default:
                         List<string> metadataStringStorage;

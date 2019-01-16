@@ -39,7 +39,7 @@ namespace INTV.Core.Model
         public override int Compare(IRom x, IProgramInformation programInformationRomX, IRom y, IProgramInformation programInformationRomY)
         {
             var result = base.Compare(x, programInformationRomX, y, programInformationRomY);
-            if (result == 0)
+            if ((result == 0) && (x != null))
             {
                 switch (x.Format)
                 {

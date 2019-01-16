@@ -21,6 +21,7 @@
 using System;
 using System.IO;
 using INTV.Core.Utility;
+using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
 namespace INTV.Core.Tests.Utility
@@ -97,7 +98,7 @@ namespace INTV.Core.Tests.Utility
             var storage = new TestStorageAccess();
             var testPath = @"~/.test_file.dat";
             var testSize = 64;
-            using (var testStream = TestStorageAccess.OpenOrCreate(testPath, testSize))
+            using (var testStream = storage.OpenOrCreate(testPath, testSize))
             {
                 Assert.Equal(testSize, StreamUtilities.FileSize(testPath, storage));
             }

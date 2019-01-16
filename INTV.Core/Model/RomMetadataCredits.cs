@@ -353,8 +353,6 @@ namespace INTV.Core.Model
                 case CreditFlags.BoxOrOtherArtwork:
                     _boxOrOtherArtwork.Add(name);
                     break;
-                default:
-                    break;
             }
         }
 

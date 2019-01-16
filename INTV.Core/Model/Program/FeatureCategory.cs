@@ -82,7 +82,7 @@ namespace INTV.Core.Model.Program
         // in any of the *Features classes, ProgramInformation, ProgramDescription, et. al.
 
         /// <summary>Remapped values that are similar to Ecs.</summary>
-        EcsLegacy = 0x1000, 
+        EcsLegacy = 0x1000,
 
         /// <summary>Remapped values that are similar to Intellivoice.</summary>
         IntellivoiceLegacy,

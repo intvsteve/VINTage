@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramSupportFiles.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -168,14 +168,15 @@ namespace INTV.Core.Model.Program
         /// <remarks>The setter is public to support XmlSerializer.</remarks>
         public string RomConfigurationFilePath
         {
-            get { return _programRom.ConfigPath; }
+            get { return (_programRom == null) ? null : _programRom.ConfigPath; }
             set { UpdateProgramRom(ProgramFileKind.CfgFile, value); } // If this is only present for XML... why go through the complex code?
         }
 
         /// <summary>
         /// Gets or sets the ROM file's alternate paths.
         /// </summary>
-        /// <remarks>The setter is present and public to support XmlSerializer.</remarks>
+        /// <remarks>The setter is present, public and uses <see cref="List"/> to support XmlSerializer.
+        /// Also the AddRange behavior seems pretty bad.</remarks>
         public List<string> AlternateRomImagePaths
         {
             get { return _supportFiles[ProgramFileKind.Rom]; }
@@ -185,7 +186,8 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Gets or sets the ROM's alternate configuration file paths.
         /// </summary>
-        /// <remarks>The setter is present and public to support XmlSerializer.</remarks>
+        /// <remarks>The setter is present, public and uses <see cref="List"/> to support XmlSerializer.
+        /// Also the AddRange behavior seems pretty bad.</remarks>
         public List<string> AlternateRomConfigurationFilePaths
         {
             get { return _supportFiles[ProgramFileKind.CfgFile]; }
@@ -209,7 +211,7 @@ namespace INTV.Core.Model.Program
         }
 
         /// <summary>
-        /// Gets the manual over image paths.
+        /// Gets the manual cover image paths.
         /// </summary>
         public IEnumerable<string> ManualCoverImagePaths
         {
@@ -375,7 +377,7 @@ namespace INTV.Core.Model.Program
                         if (!StreamUtilities.FileExists(RomImagePath))
                         {
                             validationState = ProgramSupportFileState.Missing;
-                            if ((AlternateRomImagePaths != null) && AlternateRomImagePaths.Any(p => StreamUtilities.FileExists(p)))
+                            if (AlternateRomImagePaths.Any(p => StreamUtilities.FileExists(p)))
                             {
                                 validationState = ProgramSupportFileState.MissingWithAlternateFound;
                             }
@@ -395,14 +397,15 @@ namespace INTV.Core.Model.Program
                         {
                             case ProgramSupportFileState.PresentAndUnchanged:
                             case ProgramSupportFileState.None:
-                                // Treat an ROM file's missing or modified state as higher priority to report than peripheral-related information.
+                                // Treat a ROM file's missing or modified state as higher priority to report than peripheral-related information.
                                 // This bit of code is entirely LTO Flash!-specific in its assumptions. If there should ever be other
                                 // peripheral-specific needs to address here, a larger architectural change may be necessary. While the
                                 // language of the states here is neutral, the basis of this check is not.
-                                var requiresPeripheral = programDescription.Rom.IsLtoFlashOnlyRom();
+                                var rom = programDescription == null ? Rom : programDescription.Rom;
+                                var requiresPeripheral = rom.IsLtoFlashOnlyRom();
                                 if (requiresPeripheral)
                                 {
-                                    var isUniversallyCompatible = programDescription.Rom.GetTargetDeviceUniqueId() == LuigiScrambleKeyBlock.AnyLTOFlashId;
+                                    var isUniversallyCompatible = rom.GetTargetDeviceUniqueId() == LuigiScrambleKeyBlock.AnyLTOFlashId;
                                     var matchesPeripheralInDeviceHistory = isUniversallyCompatible || ((connectedPeripheralsHistory != null) && (connectedPeripheralsHistory.FirstOrDefault(p => p.IsRomCompatible(programDescription)) != null));
                                     var canRunOnConnected = isUniversallyCompatible || ((peripherals != null) && (peripherals.FirstOrDefault(p => p.IsRomCompatible(programDescription)) != null));
 
@@ -424,6 +427,19 @@ namespace INTV.Core.Model.Program
                                                     validationState = matchesPeripheralInDeviceHistory ? ProgramSupportFileState.RequiredPeripheralNotAttached : ProgramSupportFileState.RequiredPeripheralUnknown;
                                                     break;
                                                 default:
+                                                    // TODO: Decide if the following is a bug:
+                                                    // 0: Presume a scrambled (unique) LUIGI, no device or device history provided (null)
+                                                    // 1. Initially ROM's file is missing, but its alternate is found - this caches the 'MissingButAlternateFound' state
+                                                    // 2. Update ROM to use alternate path as primary path
+                                                    // 3. Re-validate
+                                                    // At this point, the "Present and unmodified" state is used -- despite the ROM requiring
+                                                    // a specific device.
+                                                    // Why is this considered correct at this time?
+                                                    // a) When no devices or device history are give (nulls), it's impossible to know. So just use the simple state of he file.
+                                                    // b) It MAY be a bug that, if we pass in EMPTY peripheral / history lists that we should consider something different... but
+                                                    //    then again, should we report 'unknown peripheral' at that time? Or would reporting 'not attached' be better?
+                                                    //    What about 'universally' scrambled ROMs? Using 'not attached' may be more accurate then as well...
+                                                    // The case of scrambled ROMs likely needs more careful consideration generally...
                                                     break;
                                             }
                                         }
@@ -454,6 +470,7 @@ namespace INTV.Core.Model.Program
                     }
                     break;
                 default:
+                    // TODO: Implement remaining validation code.
                     break;
             }
             _supportFileStates[whichFile] = validationState;
@@ -508,7 +525,10 @@ namespace INTV.Core.Model.Program
             {
                 if (anyFiles)
                 {
-                    // When a support file path is removed, do so by setting the path to <null>.
+                    // When the default support file path is set to null, it is removed.
+                    // TODO: Should we be setting the path to <null>? The way this works, if
+                    // we have more entries, then the second in the list will become the new
+                    // default, which is not intuitive.
                     files.RemoveAt(0);
                 }
             }

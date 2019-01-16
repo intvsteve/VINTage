@@ -1,5 +1,5 @@
 ﻿// <copyright file="UserSpecifiedProgramInformationTable.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -27,12 +27,20 @@ namespace INTV.Core.Model.Program
 {
     /// <summary>
     /// This information table stores locally specified program information. This is typically for
-    /// program the user has developed, or others have distributed informally only in ROM format.
+    /// program the user has developed, or others have distributed only in ROM format.
     /// </summary>
-    [System.Xml.Serialization.XmlRoot("LocalProgramInformation")]
+    [System.Xml.Serialization.XmlRoot(XmlRootName)]
     public class UserSpecifiedProgramInformationTable : ProgramInformationTable
     {
-        private static UserSpecifiedProgramInformationTable _instance;
+        /// <summary>Name of the root XML element in a user-specified program information database.</summary>
+        internal const string XmlRootName = "UserSpecifiedProgramInformationTable";
+
+        /// <summary>Name of XML element that stores the collection of user-specified program information objects in a user-specified program information database.</summary>
+        internal const string XmlRomsCollectionName = "Programs";
+
+        /// <summary>Name of XML element that stores a single user-specified program information object in a user-specified program information database.</summary>
+        internal const string XmlRomInfoName = "UserSpecifiedProgramInformation";
+
         private readonly List<UserSpecifiedProgramInformation> _programs;
 
         #region Constructors
@@ -44,20 +52,12 @@ namespace INTV.Core.Model.Program
 
         #endregion // Constructors
 
-        /// <summary>
-        /// Gets the single instance of this class.
-        /// </summary>
-        public static UserSpecifiedProgramInformationTable Instance
-        {
-            get { return _instance; }
-        }
-
         #region IProgramInformationTable
 
         /// <inheritdoc />
         public override IEnumerable<IProgramInformation> Programs
         {
-            get { return _programs.Select(p => p as IProgramInformation); }
+            get { return _programs; }
         }
 
         #endregion // IProgramInformationTable
@@ -70,6 +70,7 @@ namespace INTV.Core.Model.Program
         /// empty table is returned.</returns>
         public static IProgramInformationTable Initialize(string localFilePath)
         {
+            UserSpecifiedProgramInformationTable table = null;
             try
             {
                 using (var fileStream = StreamUtilities.OpenFileStream(localFilePath))
@@ -77,19 +78,21 @@ namespace INTV.Core.Model.Program
                     if (fileStream != null)
                     {
                         var serializer = new System.Xml.Serialization.XmlSerializer(typeof(UserSpecifiedProgramInformationTable));
-                        _instance = serializer.Deserialize(fileStream) as UserSpecifiedProgramInformationTable;
+                        table = serializer.Deserialize(fileStream) as UserSpecifiedProgramInformationTable;
                     }
                 }
             }
             catch (Exception)
             {
                 // TODO Silently fail to load user-defined ROMs for now. Eventually need to report back to user once this is supported.
+                table = null;
             }
-            if (_instance == null)
+            if (table == null)
             {
-                _instance = new UserSpecifiedProgramInformationTable();
+                // Return an empty instance, which can be harmlessly merged into the master in-memory database.
+                table = new UserSpecifiedProgramInformationTable();
             }
-            return _instance;
+            return table;
         }
 
         /// <summary>
@@ -99,19 +102,13 @@ namespace INTV.Core.Model.Program
         /// <returns><c>true</c> if the program was added. If it was not, then a match based on CRC was found.</returns>
         public bool AddEntry(UserSpecifiedProgramInformation program)
         {
-            bool addedEntry = false;
-
             // Check the incoming program's CRCs against the CRCs of existing entries. If any CRC in the incoming program matches a CRC of an entry, then  it's a match!
+            // TODO: Move to also include CfgCrc where appropriate.  Ideally we would canonicalize CFG file content in memory and then check.
             var existingEntry = _programs.FirstOrDefault(e => e.Crcs.FirstOrDefault(c => program.Crcs.FirstOrDefault(crc => crc.Crc == c.Crc) != null) != null);
-            if (existingEntry == null)
-            {
-                // Check the incoming program's title against the titles of existing entries.
-                existingEntry = _programs.FirstOrDefault(e => e.Title == program.Title);
-            }
-            if (existingEntry == null)
+            bool addedEntry = existingEntry == null;
+            if (addedEntry)
             {
                 _programs.Add(program);
-                addedEntry = true;
             }
             return addedEntry;
         }
@@ -124,13 +121,14 @@ namespace INTV.Core.Model.Program
         /// <returns><c>true</c> if the new entry was merged into the existing one.</returns>
         public bool GroupWithExistingEntry(UserSpecifiedProgramInformation program, UserSpecifiedProgramInformation groupWithEntry)
         {
-            bool groupedWithEntry = _programs.Contains(groupWithEntry);
-            IEnumerable<CrcData> newCrcs = null;
-            if (groupedWithEntry)
+            // TODO: Improvement should be done regarding CFG CRCs.
+            var newCrcs = Enumerable.Empty<CrcData>();
+            if (_programs.Contains(groupWithEntry))
             {
-                newCrcs = groupWithEntry.Crcs.Except(program.Crcs);
+                var groupEntryCrcs = groupWithEntry.Crcs.Select(c => c.Crc).ToList();
+                newCrcs = program.Crcs.Where(c => !groupEntryCrcs.Contains(c.Crc));
             }
-            groupedWithEntry = (newCrcs != null) && newCrcs.Any();
+            var groupedWithEntry = newCrcs.Any();
             if (groupedWithEntry)
             {
                 foreach (var crc in newCrcs)

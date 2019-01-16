@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace INTV.Core.Model
 {
@@ -64,6 +65,51 @@ namespace INTV.Core.Model
         public CfgVarMetadataIdTag Type { get; private set; }
 
         #endregion // Properties
+
+        /// <summary>
+        /// Inflates all the recognizable metadata from a .CFG file from the given stream.
+        /// </summary>
+        /// <param name="stream">The stream containing the data to parse for CFGVAR metadata.</param>
+        /// <returns>An enumerable of the recognizable metadata.</returns>
+        /// <remarks>Callers should be dutiful in handling exceptions, as stream, Regex and other exceptions may result during parsing.
+        /// Also note that this is a really simplistic parser, so it's possible that all sorts of holes exist.</remarks>
+        public static IEnumerable<CfgVarMetadataBlock> InflateAll(System.IO.Stream stream)
+        {
+            var metadataBlocks = new List<CfgVarMetadataBlock>();
+
+            var cfgFileSize = (int)stream.Length;
+            var cfgFileBytes = new byte[cfgFileSize];
+            if (stream.Read(cfgFileBytes, 0, cfgFileSize) == cfgFileSize)
+            {
+                // PCLs only support UTF8... Spec says ASCII. Let's hope we don't run into anything *too* weird.
+                var cfgFileContents = System.Text.Encoding.UTF8.GetString(cfgFileBytes, 0, cfgFileBytes.Length).Trim('\0');
+                var cfgFileLines = cfgFileContents.Split(new[] { "\n", "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+                var currentSection = string.Empty;
+                const string VarsSection = "[vars]";
+                foreach (var cfgFileLine in cfgFileLines)
+                {
+                    var sectionMatch = Regex.Match(cfgFileLine, @"\[(.*?)\]");
+                    if (sectionMatch.Success)
+                    {
+                        currentSection = sectionMatch.Value;
+                    }
+                    else if (currentSection.Equals(VarsSection, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var cfgFileLineBytes = System.Text.Encoding.UTF8.GetBytes(cfgFileLine);
+                        using (var cfgFileLineStream = new System.IO.MemoryStream(cfgFileLineBytes))
+                        {
+                            var metadataBlock = CfgVarMetadataBlock.Inflate(cfgFileLineStream);
+                            if (metadataBlock != null)
+                            {
+                                metadataBlocks.Add(metadataBlock);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return metadataBlocks;
+        }
 
         /// <summary>
         /// Creates a new instance of a CfgVarMetadataBlock by inflating it from a Stream.
@@ -153,7 +199,7 @@ namespace INTV.Core.Model
 
         /// <inheritdoc />
         /// <remarks>The precondition here is that the reader is positioned immediately after the ROM metadata block type.</remarks>
-        protected override int Deserialize(Core.Utility.BinaryReader reader)
+        public override int Deserialize(Core.Utility.BinaryReader reader)
         {
             int deserializedPayloadLength = 0;
             var payloadLength = reader.BaseStream.Length;

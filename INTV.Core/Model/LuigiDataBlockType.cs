@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiDataBlockType.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ namespace INTV.Core.Model
         Metadata = 0x03,
 
         /// <summary>
-        /// End-of-file sentinal block.
+        /// End-of-file sentinel block.
         /// </summary>
         EndOfFile = 0xFF,
 

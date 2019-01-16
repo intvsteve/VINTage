@@ -82,7 +82,11 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override bool Validate()
         {
-            IsValid = !string.IsNullOrEmpty(RomPath) && StreamUtilities.FileExists(RomPath);
+            IsValid = !string.IsNullOrEmpty(RomPath);
+            if (IsValid)
+            {
+                IsValid = StreamUtilities.FileExists(RomPath);
+            }
             return IsValid;
         }
 
@@ -124,9 +128,15 @@ namespace INTV.Core.Model
         {
             get
             {
-                if (IsValid && (_crc24 == 0) && StreamUtilities.FileExists(RomPath))
+                if (IsValid)
                 {
-                    _crc24 = INTV.Core.Utility.Crc24.OfFile(RomPath);
+                    if (_crc24 == 0)
+                    {
+                        if (StreamUtilities.FileExists(RomPath))
+                        {
+                            _crc24 = INTV.Core.Utility.Crc24.OfFile(RomPath);
+                        }
+                    }
                 }
                 return _crc24;
             }
@@ -189,18 +199,15 @@ namespace INTV.Core.Model
             {
                 using (var file = StreamUtilities.OpenFileStream(filePath))
                 {
-                    if ((file != null) && (file.Length > 0))
+                    if (file != null)
                     {
-                        try
+                        if (file.Length > 0)
                         {
                             if (LuigiFileHeader.GetHeader(filePath) != null)
                             {
                                 format = RomFormat.Luigi;
                                 AddMemo(filePath, format);
                             }
-                        }
-                        catch (INTV.Core.UnexpectedFileTypeException)
-                        {
                         }
                     }
                 }
@@ -258,10 +265,6 @@ namespace INTV.Core.Model
         /// created from different sources (e.g. .rom vs. .bin) to actually compare as equivalent.</returns>
         public IEnumerable<Range<int>> GetComparisonIgnoreRanges(bool excludeFeatureBits)
         {
-            if (Header.Version > LuigiFileHeader.CurrentVersion)
-            {
-                throw new System.InvalidOperationException(string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.UnsupportedLuigiVersion_Format, Header.Version));
-            }
             if (excludeFeatureBits)
             {
                 var rangeStart = LuigiFileHeader.FeatureBytesOffset;
@@ -296,9 +299,9 @@ namespace INTV.Core.Model
             {
                 using (var file = StreamUtilities.OpenFileStream(RomPath))
                 {
-                    if ((file != null) && (file.Length > 0))
+                    if (file != null)
                     {
-                        try
+                        if (file.Length > 0)
                         {
                             var blockType = LuigiDataBlock.GetBlockType<T>();
                             var luigiHeader = LuigiFileHeader.Inflate(file);
@@ -316,10 +319,6 @@ namespace INTV.Core.Model
                             {
                                 dataBlock = block as T;
                             }
-                        }
-                        catch (INTV.Core.UnexpectedFileTypeException)
-                        {
-                            // Would be odd if we got this by this point, but perhaps it's a corrupted LUIGI file.
                         }
                     }
                 }

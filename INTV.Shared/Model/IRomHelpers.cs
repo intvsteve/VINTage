@@ -108,12 +108,8 @@ namespace INTV.Shared.Model
         /// <returns><c>true</c> if <paramref name="rom"/> and <paramref name="otherRom"/> are considered equal using <paramref name="comparer"/>.</returns>
         public static bool IsEquivalentTo(this IRom rom, IRom otherRom, IProgramInformation otherProgramInfo, RomComparer comparer)
         {
-            var equivalent = object.ReferenceEquals(rom, otherRom);
-            if (!equivalent)
-            {
-                var result = comparer.Compare(rom, null, otherRom, otherProgramInfo);
-                equivalent = result == 0;
-            }
+            var result = comparer.Compare(rom, null, otherRom, otherProgramInfo);
+            var equivalent = result == 0;
             return equivalent;
         }
 

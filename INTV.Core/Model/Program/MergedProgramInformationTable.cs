@@ -1,5 +1,5 @@
 ﻿// <copyright file="MergedProgramInformationTable.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace INTV.Core.Model.Program
@@ -27,7 +28,7 @@ namespace INTV.Core.Model.Program
     /// </summary>
     internal class MergedProgramInformationTable : ProgramInformationTable
     {
-        private readonly Dictionary<uint, IProgramInformation> _programs = new Dictionary<uint, IProgramInformation>();
+        private readonly ConcurrentDictionary<uint, IProgramInformation> _programs = new ConcurrentDictionary<uint, IProgramInformation>();
 
         /// <inheritdoc />
         public override IEnumerable<IProgramInformation> Programs
@@ -36,20 +37,9 @@ namespace INTV.Core.Model.Program
         }
 
         /// <inheritdoc />
-        public override IProgramInformation FindProgram(uint crc)
-        {
-            IProgramInformation programInfo;
-            if (!_programs.TryGetValue(crc, out programInfo))
-            {
-                programInfo = null;
-            }
-            return programInfo;
-        }
-
-        /// <inheritdoc />
         public override IProgramInformation FindProgram(ProgramIdentifier programIdentifier)
         {
-            var programInformation = FindProgram(programIdentifier.DataCrc);
+            var programInformation = base.FindProgram(programIdentifier);
             System.Diagnostics.Debug.WriteLineIf((programIdentifier.OtherData != 0) && (programInformation != null), "Support for ProgramIdentifier lookups not implemented.");
             return programInformation;
         }
@@ -82,6 +72,30 @@ namespace INTV.Core.Model.Program
             }
 
             return conflictingEntries;
+        }
+
+        /// <summary>
+        /// Removes an entry from the database if possible.
+        /// </summary>
+        /// <param name="entryCrc">The unique ID (typically the CRC32 of a ROM) to remove from the database.</param>
+        /// <returns><c>true</c> if the entry was removed, false otherwise.</returns>
+        /// <remarks>This is presently only exposed for testing purposes.</remarks>
+        internal bool RemoveEntry(uint entryCrc)
+        {
+            IProgramInformation entry;
+            var removed = _programs.TryRemove(entryCrc, out entry);
+            return removed;
+        }
+
+        /// <inheritdoc />
+        protected override IProgramInformation FindProgramCore(ProgramIdentifier programIdentifier)
+        {
+            IProgramInformation programInfo;
+            if (!_programs.TryGetValue(programIdentifier.DataCrc, out programInfo))
+            {
+                programInfo = null;
+            }
+            return programInfo;
         }
     }
 }

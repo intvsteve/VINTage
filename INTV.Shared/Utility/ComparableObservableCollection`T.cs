@@ -18,13 +18,17 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 namespace INTV.Shared.Utility
 {
     /// <summary>
     /// Implements a comparable, observable collection.
     /// </summary>
     /// <typeparam name="T">The type of elements in the collection, which must be comparable.</typeparam>
-    public class ComparableObservableCollection<T> : System.Collections.ObjectModel.ObservableCollection<T>, System.IComparable<ComparableObservableCollection<T>>, System.IComparable where T : System.IComparable
+    public class ComparableObservableCollection<T> : ObservableCollection<T>, IComparable<ComparableObservableCollection<T>>, IComparable where T : IComparable
     {
         #region Constructors
 
@@ -41,7 +45,7 @@ namespace INTV.Shared.Utility
         /// elements copied from the specified collection.
         /// </summary>
         /// <param name="collection">The collection from which the elements are copied.</param>
-        public ComparableObservableCollection(System.Collections.Generic.IEnumerable<T> collection)
+        public ComparableObservableCollection(IEnumerable<T> collection)
             : base(collection)
         {
         }
@@ -51,7 +55,7 @@ namespace INTV.Shared.Utility
         /// elements copied from the specified list.
         /// </summary>
         /// <param name="list">The list from which the elements are copied.</param>
-        public ComparableObservableCollection(System.Collections.Generic.List<T> list)
+        public ComparableObservableCollection(List<T> list)
             : base(list)
         {
         }
@@ -66,7 +70,7 @@ namespace INTV.Shared.Utility
             var result = 1;
             if (other != null)
             {
-                var numCommonElements = System.Math.Min(this.Count, other.Count);
+                var numCommonElements = Math.Min(this.Count, other.Count);
                 result = 0;
                 for (int i = 0; (result == 0) && (i < numCommonElements); ++i)
                 {
@@ -85,9 +89,18 @@ namespace INTV.Shared.Utility
         #region IComparable
 
         /// <inheritdoc />
+        /// <exception cref="System.ArgumentException">Thrown if <param name="obj"/> is not a <see cref="ComparableObservableCollection{T}"/>.</exception>
         public int CompareTo(object obj)
         {
-            return CompareTo(obj as ComparableObservableCollection<T>);
+            if (obj == null)
+            {
+                return 1;
+            }
+            if (!(obj is ComparableObservableCollection<T>))
+            {
+                throw new ArgumentException();
+            }
+            return CompareTo((ComparableObservableCollection<T>)obj);
         }
 
         #endregion // IComparable

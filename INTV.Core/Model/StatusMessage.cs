@@ -1,5 +1,5 @@
 ﻿// <copyright file="StatusMessage.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,21 +18,18 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace INTV.Core.Model
 {
     /// <summary>
     /// Describes a status message.
     /// </summary>
-    public class StatusMessage : INTV.Core.ComponentModel.ModelBase
+    public class StatusMessage : IComparable, IComparable<StatusMessage>, IEquatable<StatusMessage>
     {
-        private static readonly StatusMessage DummyMessage = new StatusMessage(MessageSeverity.None, string.Empty);
-        private static readonly List<StatusMessage> Messages = new List<StatusMessage>();
-
-        private MessageSeverity _severity;
-        private string _message;
+        private static readonly Lazy<ConcurrentBag<StatusMessage>> TheMessages = new Lazy<ConcurrentBag<StatusMessage>>(() => new ConcurrentBag<StatusMessage>());
 
         #region Constructors
 
@@ -43,8 +40,8 @@ namespace INTV.Core.Model
         /// <param name="message">The message text.</param>
         public StatusMessage(MessageSeverity severity, string message)
         {
-            _severity = severity;
-            _message = message;
+            Severity = severity;
+            Message = message;
         }
 
         #endregion // Constructors
@@ -59,45 +56,51 @@ namespace INTV.Core.Model
             get { return Messages; }
         }
 
+        private static ConcurrentBag<StatusMessage> Messages
+        {
+            get { return TheMessages.Value; }
+        }
+
         /// <summary>
         /// Gets the severity of a message.
         /// </summary>
-        public MessageSeverity Severity
-        {
-            get { return _severity; }
-            private set { _severity = value; }
-        }
+        public MessageSeverity Severity { get; private set; }
 
         /// <summary>
         /// Gets the message text.
         /// </summary>
-        public string Message
-        {
-            get { return _message; }
-            private set { _message = value; }
-        }
+        public string Message { get; private set; }
 
         #endregion // Properties
 
         /// <summary>
+        /// This event is raised when messages are reported.
+        /// </summary>
+        public static event EventHandler<StatusMessageEventArgs> MessagesArrived;
+
+        /// <summary>
         /// Add a message to the list of active messages.
         /// </summary>
+        /// <param name="messageReporter">The entity reporting the message.</param>
         /// <param name="severity">The severity of the message to add.</param>
         /// <param name="message">The text of the message.</param>
-        /// <param name="messageReporter">The entity reporting the message.</param>
-        public static void AddMessage(MessageSeverity severity, string message, object messageReporter)
+        public static void AddMessage(object messageReporter, MessageSeverity severity, string message)
         {
-            AddMessage(severity, message, messageReporter, true);
+            AddMessages(messageReporter, new[] { new StatusMessage(severity, message) });
         }
 
         /// <summary>
         /// Add multiple messages to the list of active messages.
         /// </summary>
-        /// <param name="messages">The messages to add.</param>
         /// <param name="messageReporter">The entity reporting the messages.</param>
-        public static void AddMessages(IEnumerable<StatusMessage> messages, object messageReporter)
+        /// <param name="messages">The messages to add.</param>
+        public static void AddMessages(object messageReporter, IEnumerable<StatusMessage> messages)
         {
-            AddMessages(messages, messageReporter, true);
+            foreach (var message in messages)
+            {
+                Messages.Add(message);
+            }
+            OnMessagesArrived(messageReporter, messages);
         }
 
         /// <summary>
@@ -105,7 +108,11 @@ namespace INTV.Core.Model
         /// </summary>
         public static void ClearMessages()
         {
-            ClearMessages(true);
+            while (!Messages.IsEmpty)
+            {
+                StatusMessage dontCare;
+                Messages.TryTake(out dontCare);
+            }
         }
 
         /// <summary>
@@ -115,34 +122,65 @@ namespace INTV.Core.Model
         public static MessageSeverity GetOverallSeverity()
         {
             MessageSeverity severity = MessageSeverity.None;
-            if (AllMessages.Where(m => m.Severity == MessageSeverity.Error).Any())
+            foreach (var message in AllMessages)
             {
-                severity = MessageSeverity.Error;
-            }
-            else if (AllMessages.Where(m => m.Severity == MessageSeverity.Warning).Any())
-            {
-                severity = MessageSeverity.Warning;
-            }
-            else if (AllMessages.Where(m => m.Severity == MessageSeverity.Status).Any())
-            {
-                severity = MessageSeverity.Status;
+                if (message.Severity > severity)
+                {
+                    severity = message.Severity;
+                }
+                if (severity == MessageSeverity.MaximumSeverity)
+                {
+                    break;
+                }
             }
             return severity;
         }
 
-        /// <summary>
-        /// Add multiple messages to the list of active messages.
-        /// </summary>
-        /// <param name="messages">The messages to add.</param>
-        /// <param name="messageReporter">The entity reporting the messages.</param>
-        /// <param name="raisePropertyChanged">If <c>true</c>, fire the PropertyChanged event.</param>
-        public static void AddMessages(IEnumerable<StatusMessage> messages, object messageReporter, bool raisePropertyChanged)
+        #region IComparable
+
+        /// <inheritdoc />
+        /// <exception cref="System.ArgumentException">Thrown if <param name="obj"/> is not a <see cref="StatusMessage"/>.</exception>
+        public int CompareTo(object obj)
         {
-            Messages.AddRange(messages);
-            if (raisePropertyChanged)
+            if (obj == null)
             {
-                DummyMessage.RaisePropertyChanged(messageReporter, "AllMessages");
+                return 1;
             }
+            if (!(obj is StatusMessage))
+            {
+                throw new ArgumentException();
+            }
+            return CompareTo((StatusMessage)obj);
+        }
+
+        #endregion // IComparable
+
+        #region IComparable<StatusMessage>
+
+        /// <inheritdoc />
+        public int CompareTo(StatusMessage other)
+        {
+            var result = 1;
+            if (other != null)
+            {
+                result = (int)Severity - (int)other.Severity;
+                if (result == 0)
+                {
+                    result = StringComparer.CurrentCultureIgnoreCase.Compare(Message, other.Message);
+                }
+            }
+
+            return result;
+        }
+
+        #endregion // IComparable<StatusMessage>
+
+        #region IEquatable<StatusMessage>
+
+        /// <inheritdoc />
+        public bool Equals(StatusMessage other)
+        {
+            return CompareTo(other) == 0;
         }
 
         /// <inheritdoc/>
@@ -151,32 +189,14 @@ namespace INTV.Core.Model
             return string.Format("{0}: {1}", Severity, Message);
         }
 
-        /// <summary>
-        /// Add a message to the list of active messages.
-        /// </summary>
-        /// <param name="severity">The severity of the message to add.</param>
-        /// <param name="message">The text of the message.</param>
-        /// <param name="messageReporter">The entity reporting the message.</param>
-        /// <param name="raisePropertyChanged">If <c>true</c>, fire the PropertyChanged event.</param>
-        internal static void AddMessage(MessageSeverity severity, string message, object messageReporter, bool raisePropertyChanged)
-        {
-            Messages.Add(new StatusMessage(severity, message));
-            if (raisePropertyChanged)
-            {
-                DummyMessage.RaisePropertyChanged(messageReporter, "AllMessages");
-            }
-        }
+        #endregion // IEquatable<StatusMessage>
 
-        /// <summary>
-        /// Clear the list of active messages.
-        /// </summary>
-        /// <param name="raisePropertyChanged">If <c>true</c>, fire the PropertyChanged event.</param>
-        internal static void ClearMessages(bool raisePropertyChanged)
+        private static void OnMessagesArrived(object reporter, IEnumerable<StatusMessage> messages)
         {
-            Messages.Clear();
-            if (raisePropertyChanged)
+            var messagesArrived = MessagesArrived;
+            if (messagesArrived != null)
             {
-                DummyMessage.RaisePropertyChanged(null, "AllMessages");
+                messagesArrived(reporter, new StatusMessageEventArgs(messages));
             }
         }
     }

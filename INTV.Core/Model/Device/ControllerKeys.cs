@@ -1,5 +1,5 @@
 ﻿// <copyright file="ControllerKeys.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -321,6 +321,7 @@ namespace INTV.Core.Model.Device
         /// </summary>
         /// <returns>The hardware bits.</returns>
         /// <param name="keys">The keys that are active.</param>
+        /// <remarks>Note that a value of <c>0xFF</c> for <paramref name="keys"/> will always return an empty enumerable.</remarks>
         public static IEnumerable<ControllerKeys> FromHardwareBits(this byte keys)
         {
             return keys.FromHardwareBits(ControllerKeyHardwareBits, false);
@@ -331,6 +332,7 @@ namespace INTV.Core.Model.Device
         /// </summary>
         /// <returns>The hardware bits.</returns>
         /// <param name="keys">The keys that are active.</param>
+        /// <remarks>Note that a value of <c>0xFF</c> for <paramref name="keys"/> will always return an empty enumerable.</remarks>
         public static IEnumerable<ControllerKeys> FromHardwareBitsAlternate(this byte keys)
         {
             return keys.FromHardwareBits(ControllerKeyHardwareBits.Reverse(), false);
@@ -342,6 +344,7 @@ namespace INTV.Core.Model.Device
         /// <param name="keys">The hardware bits to break out into an enumerable of controller keys.</param>
         /// <param name="filter">Enumerable of keys that should be considered for matching. A <c>null</c> filter matches all keys.</param>
         /// <returns>The controller keys described by the hardware bits that are also in <paramref name="filter"/>.</returns>
+        /// <remarks>Note that a value of <c>0xFF</c> for <paramref name="keys"/> will always return an empty enumerable.</remarks>
         public static IEnumerable<ControllerKeys> FromHardwareBits(this byte keys, IEnumerable<ControllerKeys> filter)
         {
             return keys.FromHardwareBits(k => (filter == null) || filter.Contains(k));
@@ -353,14 +356,18 @@ namespace INTV.Core.Model.Device
         /// <param name="keys">The hardware bits to break out into an enumerable of controller keys.</param>
         /// <param name="filter">Enumerable of keys that should be considered for matching. A <c>null</c> filter matches all keys.</param>
         /// <returns>The controller keys described by the hardware bits that are also in <paramref name="filter"/>.</returns>
+        /// <remarks>Note that a value of <c>0xFF</c> for <paramref name="keys"/> will always return an empty enumerable.</remarks>
         public static IEnumerable<ControllerKeys> FromHardwareBits(this byte keys, System.Predicate<ControllerKeys> filter)
         {
             var allControllerKeys = new List<ControllerKeys>();
-            foreach (var entry in ControllerKeyHardwareBits)
+            if (keys != 0xFF)
             {
-                if (((keys & entry.Value) == entry.Value) && ((filter == null) || filter(entry.Key)))
+                foreach (var entry in ControllerKeyHardwareBits)
                 {
-                    allControllerKeys.Add(entry.Key);
+                    if (((keys & entry.Value) == entry.Value) && ((filter == null) || filter(entry.Key)))
+                    {
+                        allControllerKeys.Add(entry.Key);
+                    }
                 }
             }
             return allControllerKeys;
@@ -393,6 +400,7 @@ namespace INTV.Core.Model.Device
         /// </summary>
         /// <param name="keys">The controller input to get keypad inputs from.</param>
         /// <returns>The keypad inputs.</returns>
+        /// <remarks>Note that a value of <c>0xFF</c> for <paramref name="keys"/> will always return an empty enumerable.</remarks>
         public static IEnumerable<ControllerKeys> GetKeypadInputs(this byte keys)
         {
             var allKeys = keys.FromHardwareBits(ControllerKeyHardwareBits, true);
@@ -405,6 +413,7 @@ namespace INTV.Core.Model.Device
         /// </summary>
         /// <param name="keys">The controller input to get disc directional inputs from.</param>
         /// <returns>All the matching disc inputs. The check is a simple bitwise AND operation.</returns>
+        /// <remarks>Note that a value of <c>0xFF</c> for <paramref name="keys"/> will always return an empty enumerable.</remarks>
         public static IEnumerable<ControllerKeys> GetDiscInputs(this byte keys)
         {
             var allKeys = keys.FromHardwareBits(ControllerKeyHardwareBits, true);
@@ -424,10 +433,11 @@ namespace INTV.Core.Model.Device
         /// the results - E, ESE, ENE, SE and NE. As is easy to see, values larger than 1 for<paramref name="adjacentDistance"/>
         /// are usually excessive.
         /// NOTE: If the discDirection bit pattern matches more than one disc input, the function will return an empty list.</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="adjacentDistance"/> is greater than 7 or less than -7.</exception>
         public static IEnumerable<ControllerKeys> GetDiscInputs(this byte discDirection, sbyte adjacentDistance)
         {
             const short MaxDirection = (short)(ControllerKeys.DiscESE & ~ControllerKeys.DiscActive);
-            if (System.Math.Abs(adjacentDistance) > 7)
+            if ((adjacentDistance > 7) || (adjacentDistance < -7))
             {
                 throw new System.ArgumentOutOfRangeException("adjacentDistance", adjacentDistance, Resources.Strings.ControllerKeys_AdjacentDistanceTooLarge);
             }
@@ -445,7 +455,7 @@ namespace INTV.Core.Model.Device
                     {
                         directionToCheck %= MaxDirection + 1;
                     }
-                    System.Diagnostics.Debug.Assert((directionToCheck >= 0) && (directionToCheck <= MaxDirection), "Error computing adjacent direction.");
+
                     var keyToCheck = ControllerKeys.DiscActive | (ControllerKeys)directionToCheck;
                     discInputMatches.Add(keyToCheck);
                     directionToCheck = direction - i;
@@ -465,6 +475,7 @@ namespace INTV.Core.Model.Device
         /// </summary>
         /// <param name="keys">The controller input to test.</param>
         /// <returns>The action key inputs.</returns>
+        /// <remarks>Note that a value of <c>0xFF</c> for <paramref name="keys"/> will always return an empty enumerable.</remarks>
         public static IEnumerable<ControllerKeys> GetActionKeyInputs(this byte keys)
         {
             var allKeys = keys.FromHardwareBits(ControllerKeyHardwareBits, true);

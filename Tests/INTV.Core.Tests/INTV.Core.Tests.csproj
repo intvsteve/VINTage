@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props" Condition="Exists('..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" />
-  <Import Project="..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props')" />
+  <Import Project="..\..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props" Condition="Exists('..\..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" />
+  <Import Project="..\..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -41,16 +41,19 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Web" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.Serialization" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
+      <HintPath>..\..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="xunit.assert, Version=2.0.0.2929, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.assert.2.0.0\lib\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.assert.dll</HintPath>
+      <HintPath>..\..\packages\xunit.assert.2.0.0\lib\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.assert.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="xunit.core, Version=2.0.0.2929, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.extensibility.core.2.0.0\lib\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.dll</HintPath>
+      <HintPath>..\..\packages\xunit.extensibility.core.2.0.0\lib\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -63,7 +66,81 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="TestStorageAccess.cs" />
+    <Compile Include="Model\AlternateRomTests.cs" />
+    <Compile Include="Model\BinFormatRomTests.cs" />
+    <Compile Include="Model\CfgVarMetadataIdTagHelpersTests.cs" />
+    <Compile Include="ComponentModel\PropertyChangedNotifierTests.cs" />
+    <Compile Include="ComponentModel\RelayCommandBaseTests.cs" />
+    <Compile Include="Model\CfgVarMetadataBlockTests.cs" />
+    <Compile Include="Model\Device\ConnectionTests.cs" />
+    <Compile Include="Model\Device\ControllerKeysTests.cs" />
+    <Compile Include="Model\Device\ControllerKeysTests.Data.cs" />
+    <Compile Include="Model\Device\MemoryMapTests.cs" />
+    <Compile Include="Model\EcsTests.cs" />
+    <Compile Include="Model\GromTests.cs" />
+    <Compile Include="Model\IRomHelpersTests.cs" />
+    <Compile Include="Model\JlpHardwareVersionHelpersTests.cs" />
+    <Compile Include="Model\LuigiDataBlockTests.cs" />
+    <Compile Include="Model\LuigiFeatureFlags2HelpersTests.cs" />
+    <Compile Include="Model\LuigiFeatureFlagsHelpersTests.cs" />
+    <Compile Include="Model\LuigiFileHeaderTests.cs" />
+    <Compile Include="Model\LuigiFormatRomTests.cs" />
+    <Compile Include="Model\LuigiMetadataBlockTests.cs" />
+    <Compile Include="Model\MetadataDateTimeBuilderTests.cs" />
+    <Compile Include="Model\MetadataDateTimeTests.cs" />
+    <Compile Include="Model\MetadataHelpersTests.cs" />
+    <Compile Include="Model\PeripheralTests.cs" />
+    <Compile Include="Model\Program\CfgFileMetadataProgramInformationTests.cs" />
+    <Compile Include="Model\Program\CrcDataTests.cs" />
+    <Compile Include="Model\Program\FeatureCompatibilityHelpersTests.cs" />
+    <Compile Include="Model\Program\IncompatibilityFlagsHelpersTests.cs" />
+    <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTableTests.cs" />
+    <Compile Include="Model\Program\IntvFunhouseXmlProgramInformationTests.cs" />
+    <Compile Include="Model\Program\IProgramInformationHelpersTests.cs" />
+    <Compile Include="Model\Program\IProgramInformationToXmlRomInformationConverterTests.cs" />
+    <Compile Include="Model\Program\JlpFeaturesHelpersTests.cs" />
+    <Compile Include="Model\Program\LuigiFileMetadataProgramInformationTests.cs" />
+    <Compile Include="Model\Program\MergedProgramInformationTableTests.cs" />
+    <Compile Include="Model\Program\ProgramDescriptionHelpersTests.cs" />
+    <Compile Include="Model\Program\ProgramDescriptionTests.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesHelpersTests.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesTests.cs" />
+    <Compile Include="Model\Program\ProgramFileKindHelpersTests.cs" />
+    <Compile Include="Model\Program\ProgramIdentifierTests.cs" />
+    <Compile Include="Model\Program\ProgramInformationTableDescriptorTests.cs" />
+    <Compile Include="Model\Program\ProgramInformationTableTests.cs" />
+    <Compile Include="Model\Program\ProgramMetadataTests.cs" />
+    <Compile Include="Model\Program\ProgramRomInformationBuilderTests.cs" />
+    <Compile Include="Model\Program\ProgramSupportFilesTests.cs" />
+    <Compile Include="Model\Program\RomFileMetadataProgramInformationTests.cs" />
+    <Compile Include="Model\Program\UnmergedProgramInformationTableTests.cs" />
+    <Compile Include="Model\Program\UnmergedProgramInformationTests.cs" />
+    <Compile Include="Model\Program\UserSpecifiedProgramInformationTableTests.cs" />
+    <Compile Include="Model\Program\UserSpecifiedProgramInformationTests.cs" />
+    <Compile Include="Model\Program\XmlRomInformationDatabaseColumnNameHelpersTests.cs" />
+    <Compile Include="Model\Program\XmlRomInformationDatabaseColumnTests.cs" />
+    <Compile Include="Model\Program\XmlRomInformationDatabaseTests.cs" />
+    <Compile Include="Model\Program\XmlRomInformationHelpersTests.cs" />
+    <Compile Include="Model\Program\XmlRomInformationHelpersTests.Data.cs" />
+    <Compile Include="Model\Program\XmlRomInformationTests.cs" />
+    <Compile Include="Model\Program\XmlRomInformationToProgramRomInformationConverterTests.cs" />
+    <Compile Include="Model\RomComparerStrictCrcOnlyTests.cs" />
+    <Compile Include="Model\RomComparerStrictTests.cs" />
+    <Compile Include="Model\RomComparerTests.cs" />
+    <Compile Include="Model\RomFormatRomTests.cs" />
+    <Compile Include="Model\RomFormatTests.cs" />
+    <Compile Include="Model\RomInfoIndexTests.cs" />
+    <Compile Include="Model\RomMetadataBlockTests.cs" />
+    <Compile Include="Model\RomMetadataControllerBindingsTests.cs" />
+    <Compile Include="Model\RomMetadataDateTests.cs" />
+    <Compile Include="Model\RomMetadataFeaturesTests.cs" />
+    <Compile Include="Model\RomMetadataPublisherTests.cs" />
+    <Compile Include="Model\RomTests.cs" />
+    <Compile Include="Model\StatusMessageTests.cs" />
+    <Compile Include="Model\XmlRomTests.cs" />
+    <Compile Include="UnexpectedFileTypeExceptionTests.cs" />
+    <Compile Include="Utility\BinaryReaderTests.cs" />
+    <Compile Include="Utility\BinaryWriterTests.cs" />
     <Compile Include="Utility\ByteSerializerTests.cs" />
     <Compile Include="Utility\ConverterTests.cs" />
     <Compile Include="Utility\ConvertToMultipleTests.cs" />
@@ -87,7 +164,12 @@
       <Project>{b90d8e04-5f83-45d7-bd39-0198a7c7c325}</Project>
       <Name>INTV.Core.pcl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\INTV.TestHelpers.Core\INTV.TestHelpers.Core.csproj">
+      <Project>{9b68a72c-43dc-4fa9-95d3-669f779cae37}</Project>
+      <Name>INTV.TestHelpers.Core</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
@@ -112,8 +194,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props'))" />
-    <Error Condition="!Exists('..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props'))" />
+    <Error Condition="!Exists('..\..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.runner.visualstudio.2.0.1\build\net20\xunit.runner.visualstudio.props'))" />
+    <Error Condition="!Exists('..\..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.0.0\build\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.core.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

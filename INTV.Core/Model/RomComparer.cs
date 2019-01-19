@@ -26,6 +26,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using INTV.Core.Model.Program;
+using INTV.Core.Resources;
 
 namespace INTV.Core.Model
 {
@@ -109,6 +110,24 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public int Compare(object x, object y)
         {
+            if ((x == null) && (y == null))
+            {
+                return 0;
+            }
+            var xIsRom = x is IRom;
+            var yIsRom = y is IRom;
+            if (!xIsRom && (x != null) && ((y == null) || yIsRom))
+            {
+                throw new ArgumentException(Strings.RomComparer_InvalidArgument_NonRom, "x");
+            }
+            if (((x == null) || xIsRom) && !yIsRom && (y != null))
+            {
+                throw new ArgumentException(Strings.RomComparer_InvalidArgument_NonRom, "y");
+            }
+            if (!xIsRom && !yIsRom)
+            {
+                throw new ArgumentException(Strings.RomComparer_InvalidArguments_NonRom);
+            }
             return Compare(x as IRom, null, y as IRom, null);
         }
 
@@ -167,6 +186,26 @@ namespace INTV.Core.Model
         /// <param name="disposing"><c>true</c> if IDisposable.Dispose() is called directly, or <c>false</c> if called from the Finalizer.</param>
         protected virtual void Dispose(bool disposing)
         {
+        }
+
+        protected bool NeedsDetailedCompare(IRom x, IRom y, out int result)
+        {
+            var needsDetailedCompare = false;
+            result = -2;
+            if (object.ReferenceEquals(x, y))
+            {
+                result = 0;
+            }
+            if ((result == -2) && (x == null) && (y != null))
+            {
+                result = -1;
+            }
+            if ((result == -2) && (x != null) && (y == null))
+            {
+                result = 1;
+            }
+            needsDetailedCompare = result == -2;
+            return needsDetailedCompare;
         }
     }
 }

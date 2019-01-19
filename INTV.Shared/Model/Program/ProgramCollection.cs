@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramCollection.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -254,7 +254,7 @@ namespace INTV.Shared.Model.Program
                                 var programDescription = new ProgramDescription(romFile.Crc, romFile, programInfo);
                                 if (localRomCopy != null)
                                 {
-                                    programDescription.Files.AlternateRomImagePaths.Add(localRomCopy.RomPath);
+                                    programDescription.Files.AddSupportFile(ProgramFileKind.Rom, localRomCopy.RomPath);
                                 }
                                 if ((romFile.Format == RomFormat.Bin) && (string.IsNullOrEmpty(romFile.ConfigPath) || !File.Exists(romFile.ConfigPath) || (localRomCopy != null)))
                                 {
@@ -271,7 +271,7 @@ namespace INTV.Shared.Model.Program
                                         }
                                         if (!string.IsNullOrEmpty(cfgFilePath) && File.Exists(cfgFilePath))
                                         {
-                                            programDescription.Files.AlternateRomConfigurationFilePaths.Add(cfgFilePath);
+                                            programDescription.Files.AddSupportFile(ProgramFileKind.CfgFile, cfgFilePath);
                                         }
                                     }
                                     else

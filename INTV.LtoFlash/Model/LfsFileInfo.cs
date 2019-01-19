@@ -1,5 +1,5 @@
 ﻿// <copyright file="LfsFileInfo.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -349,7 +349,7 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <inheritdoc />
-        protected override int Deserialize(INTV.Core.Utility.BinaryReader reader)
+        public override int Deserialize(INTV.Core.Utility.BinaryReader reader)
         {
             FileType = (FileType)reader.ReadByte();
             Color = (INTV.Core.Model.Stic.Color)reader.ReadByte();

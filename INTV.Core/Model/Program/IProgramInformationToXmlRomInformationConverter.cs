@@ -80,13 +80,20 @@ namespace INTV.Core.Model.Program
             xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.vendor).Value = source.Vendor.EncodeHtmlString();
             xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.short_name).Value = source.ShortName.EncodeHtmlString();
             xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.origin).Value = ProgramInformationOriginToDatabaseString.Instance.Convert(source.DataOrigin);
-            xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.type).Value = GeneralFeaturesToRomTypeStringConverter.Instance.Convert(source.Features.GeneralFeatures);
 
-            int year;
-            if ((source.Year.Length == 4) && int.TryParse(source.Year, NumberStyles.None, CultureInfo.InvariantCulture, out year))
+            if (source.Features != null)
             {
-                // Only have year, so assume 01 Jan. This will be superseded if metadata contains release date (taking first one).
-                xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.release_date).Value = string.Format(CultureInfo.InvariantCulture, "{0:0000}-01-01", year);
+                xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.type).Value = GeneralFeaturesToRomTypeStringConverter.Instance.Convert(source.Features.GeneralFeatures);
+            }
+
+            if (!string.IsNullOrEmpty(source.Year))
+            {
+                int year;
+                if ((source.Year.Length == 4) && int.TryParse(source.Year, NumberStyles.None, CultureInfo.InvariantCulture, out year))
+                {
+                    // Only have year, so assume 01 Jan. This will be superseded if metadata contains release date (taking first one).
+                    xmlRomInformation.GetColumn(XmlRomInformationDatabaseColumnName.release_date).Value = string.Format(CultureInfo.InvariantCulture, "{0:0000}-01-01", year);
+                }
             }
 
             if (!string.IsNullOrEmpty(romVariant.Description))
@@ -106,34 +113,34 @@ namespace INTV.Core.Model.Program
                 {
                     case ProgramInformationOrigin.IntvFunhouse:
                     case ProgramInformationOrigin.Embedded:
-                        originString = "INTV Funhouse";
+                        originString = XmlRomInformationDatabaseColumn.OriginIntvFunhouse;
                         break;
                     case ProgramInformationOrigin.IntellivisionProductions:
-                        originString = "Intellivision Lives";
+                        originString = XmlRomInformationDatabaseColumn.OriginBlueSkyRangers;
                         break;
                     case ProgramInformationOrigin.UserDefined:
-                        originString = "manual entry";
+                        originString = XmlRomInformationDatabaseColumn.OriginUserDefined;
                         break;
                     case ProgramInformationOrigin.UserEmail:
-                        originString = "e-mail";
+                        originString = XmlRomInformationDatabaseColumn.OriginUserEmail;
                         break;
                     case ProgramInformationOrigin.JzIntv:
-                        originString = "intvname";
+                        originString = XmlRomInformationDatabaseColumn.OriginIntvName;
                         break;
                     case ProgramInformationOrigin.RomMetadataBlock:
-                        originString = "ROM";
+                        originString = XmlRomInformationDatabaseColumn.OriginRomFormatMetadata;
                         break;
                     case ProgramInformationOrigin.CfgVarMetadataBlock:
-                        originString = "CFG";
+                        originString = XmlRomInformationDatabaseColumn.OriginCfgFormatMetadata;
                         break;
                     case ProgramInformationOrigin.LuigiMetadataBlock:
-                        originString = "LUIGI";
+                        originString = XmlRomInformationDatabaseColumn.OriginLuigiFormatMetadata;
                         break;
                     case ProgramInformationOrigin.GameCatalog:
-                        originString = "Catalog";
+                        originString = XmlRomInformationDatabaseColumn.OriginCatalog;
                         break;
                     default:
-                        originString = "other";
+                        originString = XmlRomInformationDatabaseColumn.OriginOther;
                         break;
                 }
                 return originString;
@@ -147,7 +154,7 @@ namespace INTV.Core.Model.Program
             {
                 // Database schema info: enum('BIOS','Program') DEFAULT 'Program'
                 var generalFeatures = source & GeneralFeaturesHelpers.ValidFeaturesMask;
-                var romTypeString = generalFeatures.HasFlag(GeneralFeatures.SystemRom) ? "BIOS" : "Program";
+                var romTypeString = generalFeatures.HasFlag(GeneralFeatures.SystemRom) ? XmlRomInformationDatabaseColumn.RomTypeValueSystem : XmlRomInformationDatabaseColumn.RomTypeValueRom;
                 return romTypeString;
             }
         }

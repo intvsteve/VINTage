@@ -1,5 +1,5 @@
 ﻿// <copyright file="CfgFileMetadataProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -32,7 +32,7 @@ namespace INTV.Core.Model.Program
 
         public CfgFileMetadataProgramInformation(IRom rom)
         {
-            _features = ProgramFeatures.DefaultFeatures.Clone();
+            _features = ProgramFeatures.GetUnrecognizedRomFeatures();
             Metadata = Enumerable.Empty<CfgVarMetadataBlock>();
             var binFormatRom = Rom.AsSpecificRomType<BinFormatRom>(rom);
             if (binFormatRom != null)
@@ -46,7 +46,7 @@ namespace INTV.Core.Model.Program
                 stringMetaData = Metadata.FirstOrDefault(m => m.Type == CfgVarMetadataIdTag.ShortName) as CfgVarMetadataString;
                 if ((stringMetaData != null) && !string.IsNullOrEmpty(stringMetaData.StringValue))
                 {
-                    ShortName = stringMetaData.StringValue;
+                    _shortName = stringMetaData.StringValue;
                 }
                 var date = Metadata.OfType<CfgVarMetadataDate>().FirstOrDefault(d => d.Type == CfgVarMetadataIdTag.ReleaseDate);
                 if ((date != null) && date.Date.Flags.HasFlag(MetadataDateTimeFlags.Year))
@@ -168,6 +168,14 @@ namespace INTV.Core.Model.Program
             set { _features = value; }
         }
         private ProgramFeatures _features;
+
+        /// <inheritdoc />
+        public override string ShortName
+        {
+            get { return _shortName; }
+            set { _shortName = value; }
+        }
+        private string _shortName;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs
@@ -302,7 +310,7 @@ namespace INTV.Core.Model.Program
         /// <inheritdoc />
         public override bool AddCrc(uint newCrc, string crcDescription, IncompatibilityFlags incompatibilities)
         {
-            throw new System.NotImplementedException();
+            throw new System.InvalidOperationException();
         }
 
         #endregion // IProgramInformation

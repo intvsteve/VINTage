@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFileHeader.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -239,7 +239,7 @@ namespace INTV.Core.Model
         {
             var willModifyFeatures = false;
             var hasFlagsFromCfgFile = Features.HasFlag(LuigiFeatureFlags.FeatureFlagsExplicitlySet);
-            if (!hasFlagsFromCfgFile || forceFeatureUpdate)
+            if (forceFeatureUpdate || !hasFlagsFromCfgFile)
             {
                 var currentFlags = Features & ~(LuigiFeatureFlags.UnusedMask | LuigiFeatureFlags.FeatureFlagsExplicitlySet);
                 var newFlags = features & ~(LuigiFeatureFlags.UnusedMask | LuigiFeatureFlags.FeatureFlagsExplicitlySet);
@@ -296,7 +296,7 @@ namespace INTV.Core.Model
         }
 
         /// <inheritdoc />
-        protected override int Deserialize(Core.Utility.BinaryReader reader)
+        public override int Deserialize(Core.Utility.BinaryReader reader)
         {
             var header = reader.ReadBytes(MagicKey.Length);
             var bytesRead = header.Length;
@@ -346,14 +346,8 @@ namespace INTV.Core.Model
             Crc = reader.ReadByte();
             bytesRead += HeaderChecksumSize;
 
-#if DEBUG
-            System.Diagnostics.Debug.Assert((bytesRead == BaseFlatSize) || (bytesRead == VersionOneFlatSize), "Invalid LUIGI header size.");
-            reader.BaseStream.Seek(-bytesRead, System.IO.SeekOrigin.Current);
-            var data = reader.ReadBytes(bytesRead - 1);
-            var crc8 = Crc8.OfBlock(data);
-            reader.BaseStream.Seek(bytesRead, System.IO.SeekOrigin.Begin);
-            System.Diagnostics.Debug.Assert(crc8 == Crc, "Failed to correctly compute DOWCRC for LUIGI header!");
-#endif // DEBUG
+            ValidateHeaderCrc(reader, bytesRead);
+
             _deserializeByteCount = bytesRead;
             return bytesRead;
         }
@@ -390,8 +384,28 @@ namespace INTV.Core.Model
 
         #endregion // ByteSerializer
 
+        [System.Diagnostics.Conditional("DEBUG")]
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        private void ValidateHeaderCrc(Core.Utility.BinaryReader reader, int bytesRead)
+        {
+            System.Diagnostics.Debug.Assert((bytesRead == BaseFlatSize) || (bytesRead == VersionOneFlatSize), "Invalid LUIGI header size.");
+            reader.BaseStream.Seek(-bytesRead, System.IO.SeekOrigin.Current);
+            var data = reader.ReadBytes(bytesRead - 1);
+            var crc8 = Crc8.OfBlock(data);
+            reader.BaseStream.Seek(bytesRead, System.IO.SeekOrigin.Begin);
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                System.Diagnostics.Debug.Assert(crc8 == Crc, "Failed to correctly compute DOWCRC for LUIGI header!");
+            }
+        }
+
         private class LuigiHeaderMemo : FileMemo<LuigiFileHeader>
         {
+            public LuigiHeaderMemo()
+                : base(StreamUtilities.DefaultStorage)
+            {
+            }
+
             /// <inheritdoc />
             protected override LuigiFileHeader DefaultMemoValue
             {
@@ -404,7 +418,7 @@ namespace INTV.Core.Model
                 LuigiFileHeader luigiHeader = null;
                 try
                 {
-                    using (var file = filePath.OpenFileStream())
+                    using (var file = StreamUtilities.OpenFileStream(filePath))
                     {
                         var reader = new INTV.Core.Utility.BinaryReader(file);
                         byte[] header = reader.ReadBytes(MagicKey.Length);
@@ -415,7 +429,7 @@ namespace INTV.Core.Model
                         }
                     }
                 }
-                catch (INTV.Core.UnexpectedFileTypeException)
+                catch (Exception)
                 {
                     // Just in case the header looks OK, but turns out to be bad.
                 }

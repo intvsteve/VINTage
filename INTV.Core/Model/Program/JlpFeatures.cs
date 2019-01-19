@@ -253,6 +253,11 @@ namespace INTV.Core.Model.Program
         public const ushort MaxJlpFlashSectorUsage = (ushort)((MaxMcuFlashSize - JlpEstimatedFirmwareSize) / BytesPerSector);
 
         /// <summary>
+        /// The theoretical maximum number of JLP flash sectors.
+        /// </summary>
+        public const ushort MaxTheoreticalJlpFlashSectorUsage = JlpFlashBaseSaveDataSectorsCountMask;
+
+        /// <summary>
         /// A typical JLP game ROM's size (in bytes) is roughly 48 KB.
         /// </summary>
         public const uint TypicalRomSize = 0xC000;

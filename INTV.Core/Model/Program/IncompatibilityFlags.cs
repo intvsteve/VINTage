@@ -125,7 +125,7 @@ namespace INTV.Core.Model.Program
         /// <param name="incompatibilityFlags">The flags to convert.</param>
         /// <returns>A ProgramFeatures object that includes all incompatibilities.</returns>
         /// <remarks>The default features are contained in the returned features for any incompatibility flag that is not set.</remarks>
-        public static ProgramFeatures ToProgramFeatures(this IncompatibilityFlags incompatibilityFlags)
+        public static IProgramFeatures ToProgramFeatures(this IncompatibilityFlags incompatibilityFlags)
         {
             var programFeatures = new ProgramFeatures();
             return incompatibilityFlags.ApplyFlagsToProgramFeatures(programFeatures);

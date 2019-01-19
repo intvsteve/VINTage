@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramFileKindHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -85,15 +85,15 @@ namespace INTV.Shared.Model.Program
             bool isProgramFile = (hasExpectedExtension || hasCustomRomExtension) && (string.IsNullOrEmpty(rootFile) || Path.GetFileName(filePath).StartsWith(Path.GetFileNameWithoutExtension(rootFile), StringComparison.InvariantCultureIgnoreCase));
             if (isProgramFile)
             {
-                // Check if file name has proper suffix. Don't care about case sensitvity of file system.
-                var suffix = INTV.Core.Model.Program.ProgramFileKindHelpers.FileSuffixForFileKind[fileKind];
+                // Check if file name has proper suffix. Don't care about case sensitivity of file system.
+                var suffix = fileKind.GetSuffix();
                 isProgramFile = string.IsNullOrEmpty(suffix) || Path.GetFileNameWithoutExtension(filePath).EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase);
 
                 if (!isProgramFile)
                 {
                     // Check if it's in a proper directory.
-                    var subdirectoriesForFile = INTV.Core.Model.Program.ProgramFileKindHelpers.FileSubdirectoriesForFileKind[fileKind];
-                    isProgramFile = (subdirectoriesForFile == null) || subdirectoriesForFile.Contains(Path.GetFileName(Path.GetDirectoryName(filePath)), INTV.Shared.Utility.PathComparer.Instance);
+                    var subdirectoriesForFile = fileKind.GetSubdirectories();
+                    isProgramFile = !subdirectoriesForFile.Any() || subdirectoriesForFile.Contains(Path.GetFileName(Path.GetDirectoryName(filePath)), INTV.Shared.Utility.PathComparer.Instance);
                 }
             }
             return isProgramFile;
@@ -109,7 +109,7 @@ namespace INTV.Shared.Model.Program
             var fileKind = ProgramFileKind.None;
 
             // Do this the easy way... just test each of the kinds.
-            foreach (var kind in INTV.Core.Model.Program.ProgramFileKindHelpers.FileExtensionsForFileKind.Keys)
+            foreach (var kind in INTV.Core.Model.Program.ProgramFileKindHelpers.FileKinds)
             {
                 if (kind.IsProgramFile(filePath))
                 {

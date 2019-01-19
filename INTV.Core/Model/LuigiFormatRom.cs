@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFormatRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -82,7 +82,11 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override bool Validate()
         {
-            IsValid = !string.IsNullOrEmpty(RomPath) && RomPath.FileExists();
+            IsValid = !string.IsNullOrEmpty(RomPath);
+            if (IsValid)
+            {
+                IsValid = StreamUtilities.FileExists(RomPath);
+            }
             return IsValid;
         }
 
@@ -124,9 +128,15 @@ namespace INTV.Core.Model
         {
             get
             {
-                if (IsValid && (_crc24 == 0) && RomPath.FileExists())
+                if (IsValid)
                 {
-                    _crc24 = INTV.Core.Utility.Crc24.OfFile(RomPath);
+                    if (_crc24 == 0)
+                    {
+                        if (StreamUtilities.FileExists(RomPath))
+                        {
+                            _crc24 = INTV.Core.Utility.Crc24.OfFile(RomPath);
+                        }
+                    }
                 }
                 return _crc24;
             }
@@ -187,20 +197,17 @@ namespace INTV.Core.Model
             var format = CheckMemo(filePath);
             if (format == RomFormat.None)
             {
-                using (var file = filePath.OpenFileStream())
+                using (var file = StreamUtilities.OpenFileStream(filePath))
                 {
-                    if ((file != null) && (file.Length > 0))
+                    if (file != null)
                     {
-                        try
+                        if (file.Length > 0)
                         {
                             if (LuigiFileHeader.GetHeader(filePath) != null)
                             {
                                 format = RomFormat.Luigi;
                                 AddMemo(filePath, format);
                             }
-                        }
-                        catch (INTV.Core.UnexpectedFileTypeException)
-                        {
                         }
                     }
                 }
@@ -241,7 +248,7 @@ namespace INTV.Core.Model
                     }
                 }
             }
-            if (romCrc == 0 && romPath.FileExists())
+            if (romCrc == 0 && StreamUtilities.FileExists(romPath))
             {
                 usedLuigiFileCrc = true;
                 romCrc = INTV.Core.Utility.Crc32.OfFile(romPath);
@@ -258,10 +265,6 @@ namespace INTV.Core.Model
         /// created from different sources (e.g. .rom vs. .bin) to actually compare as equivalent.</returns>
         public IEnumerable<Range<int>> GetComparisonIgnoreRanges(bool excludeFeatureBits)
         {
-            if (Header.Version > LuigiFileHeader.CurrentVersion)
-            {
-                throw new System.InvalidOperationException(string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.UnsupportedLuigiVersion_Format, Header.Version));
-            }
             if (excludeFeatureBits)
             {
                 var rangeStart = LuigiFileHeader.FeatureBytesOffset;
@@ -292,13 +295,13 @@ namespace INTV.Core.Model
         internal T LocateDataBlock<T>() where T : LuigiDataBlock
         {
             var dataBlock = default(T);
-            if (RomPath.FileExists())
+            if (StreamUtilities.FileExists(RomPath))
             {
-                using (var file = RomPath.OpenFileStream())
+                using (var file = StreamUtilities.OpenFileStream(RomPath))
                 {
-                    if ((file != null) && (file.Length > 0))
+                    if (file != null)
                     {
-                        try
+                        if (file.Length > 0)
                         {
                             var blockType = LuigiDataBlock.GetBlockType<T>();
                             var luigiHeader = LuigiFileHeader.Inflate(file);
@@ -317,10 +320,6 @@ namespace INTV.Core.Model
                                 dataBlock = block as T;
                             }
                         }
-                        catch (INTV.Core.UnexpectedFileTypeException)
-                        {
-                            // Would be odd if we got this by this point, but perhaps it's a corrupted LUIGI file.
-                        }
                     }
                 }
             }
@@ -329,6 +328,11 @@ namespace INTV.Core.Model
 
         private class LuigiUniqueIdMemo : FileMemo<string>
         {
+            public LuigiUniqueIdMemo()
+                : base(StreamUtilities.DefaultStorage)
+            {
+            }
+
             /// <inheritdoc />
             protected override string DefaultMemoValue
             {

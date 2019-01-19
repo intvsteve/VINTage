@@ -1,5 +1,5 @@
 ﻿// <copyright file="Crc32.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -169,7 +169,8 @@ namespace INTV.Core.Utility
         /// <param name="dataStream">The data stream upon which to compute a CRC.</param>
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="dataStream"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
-        private static uint OfStream(Stream dataStream, IEnumerable<Range<int>> ignoreRanges)
+        /// <remarks>This method will seek to the beginning of <paramref name="dataStream"/> before computing the CRC.</remarks>
+        public static uint OfStream(Stream dataStream, IEnumerable<Range<int>> ignoreRanges)
         {
             return OfStream(dataStream, false, 0, ignoreRanges);
         }
@@ -181,6 +182,7 @@ namespace INTV.Core.Utility
         /// <param name="replaceFirstByte">If <c>true</c>, replaces the first byte in the calculation with the value in alternateFirstByte.</param>
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
+        /// <remarks>This method will seek to the beginning of <paramref name="dataStream"/> before computing the CRC.</remarks>
         private static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte)
         {
             return OfStream(dataStream, replaceFirstByte, alternateFirstByte, null);
@@ -194,8 +196,10 @@ namespace INTV.Core.Utility
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="dataStream"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
+        /// <remarks>This method will seek to the beginning of <paramref name="dataStream"/> before computing the CRC.</remarks>
         private static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
         {
+            dataStream.Seek(0, SeekOrigin.Begin);
             var crc = InitialValue;
             var data = new byte[1024];
             var numBytesRead = 0;
@@ -220,7 +224,7 @@ namespace INTV.Core.Utility
         /// </summary>
         /// <param name="data">The data from which to compute the CRC.</param>
         /// <returns>The CRC of the data block.</returns>
-        private static uint OfBlock(byte[] data)
+        public static uint OfBlock(byte[] data)
         {
             uint crc = OfBlock(data, InitialValue) ^ InitialValue;
             return crc;
@@ -232,7 +236,7 @@ namespace INTV.Core.Utility
         /// <param name="data">The data from which to compute an updated running CRC.</param>
         /// <param name="runningValue">Running value of the CRC.</param>
         /// <returns>Running CRC, updated with the contents of the given data block.</returns>
-        private static uint OfBlock(byte[] data, uint runningValue)
+        public static uint OfBlock(byte[] data, uint runningValue)
         {
             return OfBlock(data, data.Length, null, runningValue);
         }
@@ -245,7 +249,7 @@ namespace INTV.Core.Utility
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the <paramref name="data"/> array, to exclude from the checksum.</param>
         /// <param name="runningValue">Running value of the CRC.</param>
         /// <returns>Running CRC, updated with the contents of the given data block.</returns>
-        private static uint OfBlock(byte[] data, int numBytesToProcess, IEnumerable<Range<int>> ignoreRanges, uint runningValue)
+        public static uint OfBlock(byte[] data, int numBytesToProcess, IEnumerable<Range<int>> ignoreRanges, uint runningValue)
         {
             var crc = runningValue;
             var checkIgnoreRange = (ignoreRanges != null) && ignoreRanges.Any(r => r.IsValid);
@@ -285,15 +289,22 @@ namespace INTV.Core.Utility
 
         private class Crc32Memo : FileMemo<uint>
         {
+            public Crc32Memo()
+                : base(StreamUtilities.DefaultStorage)
+            {
+            }
+
+            /// <inheritdoc />
             protected override uint DefaultMemoValue
             {
                 get { return InitialValue; }
             }
 
+            /// <inheritdoc />
             protected override uint GetMemo(string filePath, object data)
             {
                 uint crc = InitialValue;
-                using (var fileStream = filePath.OpenFileStream())
+                using (var fileStream = StreamUtilities.OpenFileStream(filePath, StorageAccess))
                 {
                     var supportData = (Tuple<bool, byte, IEnumerable<Range<int>>>)data;
                     var replaceFirstByte = supportData.Item1;
@@ -304,6 +315,7 @@ namespace INTV.Core.Utility
                 return crc;
             }
 
+            /// <inheritdoc />
             protected override bool IsValidMemo(uint memo)
             {
                 return memo != DefaultMemoValue;

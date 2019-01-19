@@ -1,5 +1,5 @@
 ﻿// <copyright file="ByteSerializer.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -107,6 +107,6 @@ namespace INTV.Core.Utility
         /// </summary>
         /// <param name="reader">The reader to use to inflate the data.</param>
         /// <returns>The number of bytes deserialized by the reader.</returns>
-        protected abstract int Deserialize(BinaryReader reader);
+        public abstract int Deserialize(BinaryReader reader);
     }
 }

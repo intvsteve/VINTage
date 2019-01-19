@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace INTV.Core.Model.Program
@@ -100,6 +101,53 @@ namespace INTV.Core.Model.Program
                 return RomInfoDatabaseColumns.First(c => c.Name == name.ToString());
             }
             return RomInfoDatabaseColumns.FirstOrDefault(c => c.Name == name.ToString());
+        }
+
+        /// <summary>
+        /// Adds the given column with the given data.
+        /// </summary>
+        /// <param name="name">Identifies the column to add.</param>
+        /// <param name="value">The value to assign to the column.</param>
+        /// <remarks>No validation of <paramref name="value"/> is done.</remarks>
+        /// <exception cref="ArgumentException">Thrown if the column already exists.</exception>
+        public void AddColumn(XmlRomInformationDatabaseColumnName name, string value)
+        {
+            if (RomInfoDatabaseColumns != null)
+            {
+                if (GetColumn(name) != null)
+                {
+                    throw new ArgumentException();
+                }
+            }
+
+            var column = new XmlRomInformationDatabaseColumn(name);
+            if (RomInfoDatabaseColumns == null)
+            {
+                RomInfoDatabaseColumns = new List<XmlRomInformationDatabaseColumn>(new[] { column }).ToArray();
+            }
+            else
+            {
+                var replacementColumns = new List<XmlRomInformationDatabaseColumn>(RomInfoDatabaseColumns);
+                replacementColumns.Add(column);
+                RomInfoDatabaseColumns = replacementColumns.ToArray();
+            }
+            column.Value = value;
+        }
+
+        /// <summary>
+        /// Removes the given column.
+        /// </summary>
+        /// <param name="name">Identifies the column to remove.</param>
+        /// <returns><c>true</c> if the column is removed, <c>false</c> otherwise.</returns>
+        public bool RemoveColumn(XmlRomInformationDatabaseColumnName name)
+        {
+            var removed = (RomInfoDatabaseColumns != null) && (GetColumn(name) != null);
+            if (removed)
+            {
+                var replacementColumns = RomInfoDatabaseColumns.Where(c => c.Name != name.ToString());
+                RomInfoDatabaseColumns = replacementColumns.ToArray();
+            }
+            return removed;
         }
     }
 }

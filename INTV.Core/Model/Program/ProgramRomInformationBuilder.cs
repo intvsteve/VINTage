@@ -54,10 +54,7 @@ namespace INTV.Core.Model.Program
         /// <inheritdoc />
         public IProgramRomInformationBuilder WithYear(int year)
         {
-            if ((year >= 0) && (year < 1978))
-            {
-            }
-            else if (year >= 1978)
+            if (year >= 1900 && year <= 2155)
             {
                 _programRomInformation.Year = year.ToString(CultureInfo.InvariantCulture);
             }

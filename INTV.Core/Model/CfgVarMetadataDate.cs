@@ -18,7 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System.Collections.Generic;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model
 {
@@ -117,34 +117,47 @@ namespace INTV.Core.Model
                         ushort shortYear;
                         if (ushort.TryParse(parts[0], out shortYear))
                         {
-                            if ((shortYear > 0) && (shortYear < 100))
+                            var shortYearRange = new Range<int>(1, 99);
+                            var fullYearRange = new Range<int>(1901, 1900 + 255);
+                            if (shortYearRange.IsValueInRange(shortYear))
                             {
                                 year = 1900 + shortYear;
                                 flags |= MetadataDateTimeFlags.Year;
                             }
-                            else if ((shortYear >= 1901) && (shortYear <= (1900 + 255)))
+                            else if (fullYearRange.IsValueInRange(shortYear))
                             {
                                 year = shortYear;
                                 flags |= MetadataDateTimeFlags.Year;
                             }
                         }
                     }
-                    if (flags.HasFlag(MetadataDateTimeFlags.Year) && (parts.Length > 1))
+                    if (flags.HasFlag(MetadataDateTimeFlags.Year))
                     {
-                        byte byteMonth;
-                        if (byte.TryParse(parts[1], out byteMonth) && (byteMonth > 0) && (byteMonth <= 12))
+                        if (parts.Length > 1)
                         {
-                            month = byteMonth;
-                            flags |= MetadataDateTimeFlags.Month;
+                            byte byteMonth;
+                            if (byte.TryParse(parts[1], out byteMonth))
+                            {
+                                var monthRange = new Range<byte>(1, 12);
+                                if (monthRange.IsValueInRange(byteMonth))
+                                {
+                                    month = byteMonth;
+                                    flags |= MetadataDateTimeFlags.Month;
+                                }
+                            }
                         }
                     }
                     if (flags.HasFlag(MetadataDateTimeFlags.Month) && (parts.Length > 2))
                     {
                         byte byteDay;
-                        if (byte.TryParse(parts[2], out byteDay) && (byteDay > 0) && (byteDay <= System.DateTime.DaysInMonth(year, month)))
+                        if (byte.TryParse(parts[2], out byteDay))
                         {
-                            day = byteDay;
-                            flags |= MetadataDateTimeFlags.Day;
+                            var dayRange = new Range<byte>(1, (byte)System.DateTime.DaysInMonth(year, month));
+                            if (dayRange.IsValueInRange(byteDay))
+                            {
+                                day = byteDay;
+                                flags |= MetadataDateTimeFlags.Day;
+                            }
                         }
                     }
 
@@ -156,33 +169,45 @@ namespace INTV.Core.Model
                     if (flags.HasFlag(MetadataDateTimeFlags.Day) && (parts.Length > 0))
                     {
                         byte byteHour;
-                        if (byte.TryParse(parts[0], out byteHour) && (byteHour >= 0) && (byteHour <= 23))
+                        if (byte.TryParse(parts[0], out byteHour))
                         {
-                            hour = byteHour;
-                            flags |= MetadataDateTimeFlags.Hour;
+                            var hourRange = new Range<byte>(0, 23);
+                            if (hourRange.IsValueInRange(byteHour))
+                            {
+                                hour = byteHour;
+                                flags |= MetadataDateTimeFlags.Hour;
+                            }
                         }
                     }
                     if (flags.HasFlag(MetadataDateTimeFlags.Hour) && (parts.Length > 1))
                     {
                         byte byteMinute;
-                        if (byte.TryParse(parts[1], out byteMinute) && (byteMinute >= 0) && (byteMinute <= 59))
+                        if (byte.TryParse(parts[1], out byteMinute))
                         {
-                            minute = byteMinute;
-                            flags |= MetadataDateTimeFlags.Minute;
+                            var minuteRange = new Range<byte>(0, 59);
+                            if (minuteRange.IsValueInRange(byteMinute))
+                            {
+                                minute = byteMinute;
+                                flags |= MetadataDateTimeFlags.Minute;
+                            }
                         }
                     }
                     if (flags.HasFlag(MetadataDateTimeFlags.Minute) && (parts.Length > 2))
                     {
                         byte byteSecond;
-                        if (byte.TryParse(parts[2], out byteSecond) && (byteSecond >= 0) && (byteSecond <= 60))
+                        if (byte.TryParse(parts[2], out byteSecond))
                         {
-                            second = byteSecond;
-                            flags |= MetadataDateTimeFlags.Second;
-                            if (byteSecond == 60)
+                            var secondRange = new Range<byte>(0, 60);
+                            if (secondRange.IsValueInRange(byteSecond))
                             {
-                                // For leap second, set flag and set to 59, since C# does not support it.
-                                --second;
-                                flags |= MetadataDateTimeFlags.LeapSecond;
+                                second = byteSecond;
+                                flags |= MetadataDateTimeFlags.Second;
+                                if (byteSecond == 60)
+                                {
+                                    // For leap second, set flag and set to 59, since C# does not support it.
+                                    --second;
+                                    flags |= MetadataDateTimeFlags.LeapSecond;
+                                }
                             }
                         }
                     }
@@ -192,27 +217,48 @@ namespace INTV.Core.Model
                     var utcOffsetMinutes = MetadataDateTime.DefaultUtcOffsetMinutes;
                     if (flags.HasFlag(MetadataDateTimeFlags.Second) && (utcOffsetString.Length > 2) && ((utcOffsetString[0] == '-') || (utcOffsetString[0] == '+')))
                     {
+                        const short MaxUtcOffset = 12 * 60;
                         if (utcOffsetString.IndexOf(':') > 0)
                         {
                             parts = utcOffsetString.Split(new[] { ':' }, System.StringSplitOptions.RemoveEmptyEntries);
                             if (parts.Length > 0)
                             {
                                 sbyte byteUtcOffsetHours;
-                                if (sbyte.TryParse(parts[0], out byteUtcOffsetHours) && (byteUtcOffsetHours >= -12) && (byteUtcOffsetHours <= 12))
+                                if (sbyte.TryParse(parts[0], out byteUtcOffsetHours))
                                 {
-                                    utcOffsetHours = byteUtcOffsetHours;
-                                    flags |= MetadataDateTimeFlags.UtcOffset;
+                                    var offsetHoursRange = new Range<sbyte>(-12, 12);
+                                    if (offsetHoursRange.IsValueInRange(byteUtcOffsetHours))
+                                    {
+                                        utcOffsetHours = byteUtcOffsetHours;
+                                        flags |= MetadataDateTimeFlags.UtcOffset;
+                                    }
                                 }
                             }
-                            if (flags.HasFlag(MetadataDateTimeFlags.UtcOffset) && (parts.Length > 1))
+                            if (flags.HasFlag(MetadataDateTimeFlags.UtcOffset))
                             {
-                                byte byteUtcOffsetMinutes;
-                                if (byte.TryParse(parts[1], out byteUtcOffsetMinutes) && (byteUtcOffsetMinutes <= 59))
+                                if (parts.Length > 1)
                                 {
-                                    utcOffsetMinutes = byteUtcOffsetMinutes;
-                                    if ((utcOffsetHours < 0) || (utcOffsetString[0] == '-'))
+                                    byte byteUtcOffsetMinutes;
+                                    if (byte.TryParse(parts[1], out byteUtcOffsetMinutes))
                                     {
-                                        utcOffsetMinutes = -utcOffsetMinutes;
+                                        var offsetMinutesRange = new Range<byte>(0, 59);
+                                        if (offsetMinutesRange.IsValueInRange(byteUtcOffsetMinutes))
+                                        {
+                                            utcOffsetMinutes = byteUtcOffsetMinutes;
+                                            if ((utcOffsetHours < 0) || (utcOffsetString[0] == '-'))
+                                            {
+                                                utcOffsetMinutes = -utcOffsetMinutes;
+                                            }
+                                        }
+
+                                        // Range check the total offset, so things like -12:40 are rejected.
+                                        var utcTotalDeltaInMinutes = (utcOffsetHours * 60) + utcOffsetMinutes;
+                                        if (System.Math.Abs(utcTotalDeltaInMinutes) > MaxUtcOffset)
+                                        {
+                                            utcOffsetHours = 0;
+                                            utcOffsetMinutes = 0;
+                                            flags &= ~MetadataDateTimeFlags.UtcOffset;
+                                        }
                                     }
                                 }
                             }
@@ -223,7 +269,6 @@ namespace INTV.Core.Model
                             short shortUtcOffset;
                             if (short.TryParse(utcOffsetString, out shortUtcOffset))
                             {
-                                const short MaxUtcOffset = 12 * 60;
                                 var offsetMinutes = shortUtcOffset < 0 ? shortUtcOffset % -100 : shortUtcOffset % 100;
                                 var offsetHours = shortUtcOffset / 100;
                                 var utcTotalDeltaInMinutes = (offsetHours * 60) + offsetMinutes;

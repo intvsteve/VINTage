@@ -74,7 +74,7 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Data was adapted from information supplied by IntelligentVision.
         /// </summary>
-        IntelligentVision,
+        Intelligentvision,
 
         /// <summary>
         /// Data was adapted from information supplied by CollectorVision.

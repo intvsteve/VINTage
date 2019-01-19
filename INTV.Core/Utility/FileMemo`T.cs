@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileMemo`T.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -35,6 +35,13 @@ namespace INTV.Core.Utility
     {
         private readonly ConcurrentDictionary<string, Tuple<long, DateTime, T>> _memos = new System.Collections.Concurrent.ConcurrentDictionary<string, Tuple<long, DateTime, T>>(StringComparer.OrdinalIgnoreCase);
 
+        protected FileMemo(IStorageAccess storageAccess)
+        {
+            StorageAccess = storageAccess;
+        }
+
+        protected IStorageAccess StorageAccess { get; private set; }
+
         /// <summary>
         /// Gets the default value for a memo. Note that this is necessary because the default value many not be the same as default(T).
         /// </summary>
@@ -52,7 +59,7 @@ namespace INTV.Core.Utility
             memo = DefaultMemoValue;
             var foundMemo = false;
             Tuple<long, DateTime, T> memorandum;
-            if (!filePath.FileExists())
+            if (!StreamUtilities.FileExists(filePath, StorageAccess))
             {
                 if (_memos.TryRemove(filePath, out memorandum))
                 {
@@ -61,7 +68,7 @@ namespace INTV.Core.Utility
             }
             else
             {
-                foundMemo = _memos.TryGetValue(filePath, out memorandum) && (filePath.Size() == memorandum.Item1) && (filePath.LastFileWriteTimeUtc() == memorandum.Item2);
+                foundMemo = _memos.TryGetValue(filePath, out memorandum) && (StreamUtilities.FileSize(filePath, StorageAccess) == memorandum.Item1) && (StreamUtilities.LastFileWriteTimeUtc(filePath, StorageAccess) == memorandum.Item2);
             }
             if (foundMemo)
             {
@@ -81,10 +88,10 @@ namespace INTV.Core.Utility
         public bool AddMemo(string filePath, T memo)
         {
 #if ENABLE_MEMOS
-            var added = IsValidMemo(memo) && filePath.FileExists();
+            var added = IsValidMemo(memo) && StreamUtilities.FileExists(filePath, StorageAccess);
             if (added)
             {
-                _memos[filePath] = new Tuple<long, DateTime, T>(filePath.Size(), filePath.LastFileWriteTimeUtc(), memo);
+                _memos[filePath] = new Tuple<long, DateTime, T>(StreamUtilities.FileSize(filePath, StorageAccess), StreamUtilities.LastFileWriteTimeUtc(filePath, StorageAccess), memo);
             }
             else
             {
@@ -137,12 +144,14 @@ namespace INTV.Core.Utility
         /// <returns><c>true</c> if the value of <paramref name="memo"/> is valid; <c>false</c> otherwise.</returns>
         protected abstract bool IsValidMemo(T memo);
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Diagnostics.Conditional("ENABLE_DEBUG_REPORTING")]
         private static void DebugOutput(object message)
         {
             System.Diagnostics.Debug.WriteLine(message);
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Diagnostics.Conditional("ENABLE_DEBUG_REPORTING")]
         private void PrintKeys()
         {

@@ -43,6 +43,11 @@ namespace INTV.Core.Model
         /// <summary>
         /// Error message. jzIntv will not run correctly.
         /// </summary>
-        Error
+        Error,
+
+        /// <summary>
+        /// Sentinel value that indicates the highest level of severity possible.
+        /// </summary>
+        MaximumSeverity = Error
     }
 }

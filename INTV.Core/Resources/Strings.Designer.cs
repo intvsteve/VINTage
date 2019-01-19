@@ -61,6 +61,15 @@ namespace INTV.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Website for {0}: {1}.
+        /// </summary>
+        internal static string AdditionalVendorInfoWebsite_Format {
+            get {
+                return ResourceManager.GetString("AdditionalVendorInfoWebsite_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to convert CfgVarMetadataIdTag to LuigiMetadataIdTag!.
         /// </summary>
         internal static string CfgVarMetadata_ToLuigiError {
@@ -162,9 +171,9 @@ namespace INTV.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Alternate ROM paths do not also provide alternate .cfg file paths!.
         /// </summary>
-        internal static string ProgramDescription_MIssingAlternateCfgFile {
+        internal static string ProgramDescription_MissingAlternateCfgFile {
             get {
-                return ResourceManager.GetString("ProgramDescription_MIssingAlternateCfgFile", resourceCulture);
+                return ResourceManager.GetString("ProgramDescription_MissingAlternateCfgFile", resourceCulture);
             }
         }
         
@@ -201,6 +210,24 @@ namespace INTV.Core.Resources {
         internal static string ProgramRomValidationFailed_Message {
             get {
                 return ResourceManager.GetString("ProgramRomValidationFailed_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A non-ROM object was passed to RomComparer.Compare().
+        /// </summary>
+        internal static string RomComparer_InvalidArgument_NonRom {
+            get {
+                return ResourceManager.GetString("RomComparer_InvalidArgument_NonRom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non-ROM objects were passed to RomComparer.Compare().
+        /// </summary>
+        internal static string RomComparer_InvalidArguments_NonRom {
+            get {
+                return ResourceManager.GetString("RomComparer_InvalidArguments_NonRom", resourceCulture);
             }
         }
         

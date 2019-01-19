@@ -54,7 +54,7 @@ namespace INTV.Core.Model
         public static ProgramFeatures ToProgramFeatures(this LuigiFeatureFlags2 featureFlags2)
         {
             // No relevant features are currently defined in LuigiFeatureFlags2.
-            var programFeatures = ProgramFeatures.EmptyFeatures.Clone();
+            var programFeatures = ProgramFeatures.GetUnrecognizedRomFeatures();
             return programFeatures;
         }
     }

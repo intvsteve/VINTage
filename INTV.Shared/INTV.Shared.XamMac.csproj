@@ -61,7 +61,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Posix" />
     <Reference Include="Xamarin.Mac" />
-    <Reference Include="System.Web.Services" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

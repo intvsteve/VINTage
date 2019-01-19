@@ -207,6 +207,29 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Utility\Converter`T`TSource`TDestination.cs" />
+    <Compile Include="Utility\ConvertToMultiple`T`TSource`TDestination.cs" />
+    <Compile Include="Utility\IConverter`TSource`TDestination.cs" />
+    <Compile Include="Utility\IConvertToMultiple`TSource`TDestination.cs" />
+    <Compile Include="Model\Program\IProgramFeatures.cs" />
+    <Compile Include="Model\Program\IProgramFeaturesBuilder.cs" />
+    <Compile Include="Model\Program\IProgramInformationToXmlRomInformationConverter.cs" />
+    <Compile Include="Model\Program\IProgramMetadataBuilder.cs" />
+    <Compile Include="Model\Program\IProgramMetadataFieldId.cs" />
+    <Compile Include="Model\Program\IProgramRomInformation.cs" />
+    <Compile Include="Model\Program\IProgramRomInformationBuilder.cs" />
+    <Compile Include="Model\Program\ProgramFeaturesBuilder.cs" />
+    <Compile Include="Model\Program\ProgramIdentifier.cs" />
+    <Compile Include="Model\Program\ProgramMetadata.cs" />
+    <Compile Include="Model\Program\ProgramMetadataBuilder.cs" />
+    <Compile Include="Model\Program\ProgramRomInformation.cs" />
+    <Compile Include="Model\Program\ProgramRomInformationBuilder.cs" />
+    <Compile Include="Model\Program\XmlRomInformation.cs" />
+    <Compile Include="Model\Program\XmlRomInformationDatabase.cs" />
+    <Compile Include="Model\Program\XmlRomInformationDatabaseColumn.cs" />
+    <Compile Include="Model\Program\XmlRomInformationDatabaseColumnName.cs" />
+    <Compile Include="Model\Program\XmlRomInformationHelpers.cs" />
+    <Compile Include="Model\Program\XmlRomInformationToProgramRomInformationConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

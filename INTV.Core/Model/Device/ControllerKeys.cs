@@ -478,7 +478,7 @@ namespace INTV.Core.Model.Device
         /// <param name="keys">The controller input to examine.</param>
         /// <param name="adjacentDistance">A value from 0-7 indicating how many additional adjacent disc directions should be included in the output. See remarks.</param>
         /// <returns>The disc plus action key aliases.</returns>
-        /// <remarks>For more details about <paramref name="adjacentDistance"/>, <see cref="GetDiscInputs"/>. This function
+        /// <remarks>For more details about <paramref name="adjacentDistance"/>, <see cref="GetDiscInputs(byte, sbyte)"/>. This function
         /// will determine if the hardware bits in the <paramref name="keys"/> input may result in the same bit pattern
         /// as a controller disc direction combined with any combination of action keys. Using a nonzero value for
         /// the <paramref name="adjacentDistance"/> values can be used to account for the possibility of a glitchy hardware

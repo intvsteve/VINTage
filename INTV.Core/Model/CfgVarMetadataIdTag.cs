@@ -351,7 +351,7 @@ namespace INTV.Core.Model
         /// <returns>The LUIGI metadata identifier tag.</returns>
         /// <remarks>All feature-related data is directly supported by the LUIGI format. Therefore, a CFG metadata tag
         /// that describes a feature will cause this function to return <see cref="LuigiMetadataIdTag.Miscellaneous"/>
-        /// and set the specific feature in the <paramref name="featureId"/> output. CFGVAR metadata that is not directly represented
+        /// and set the specific feature in the <paramref name="feature"/> output. CFGVAR metadata that is not directly represented
         /// by the LUIGI format, nor its defined metadata tags, will cause this function to return <see cref="LuigiMetadataIdTag.Miscellaneous"/>
         /// and the original value of the <paramref name="tag"/> argument will be returned via <paramref name="cfgVarTag"/>.</remarks>
         public static LuigiMetadataIdTag ToLuigiMetadataIdTag(this CfgVarMetadataIdTag tag, out FeatureCategory feature, out CfgVarMetadataIdTag cfgVarTag)

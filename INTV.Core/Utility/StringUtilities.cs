@@ -31,6 +31,7 @@ namespace INTV.Core.Utility
     public static class StringUtilities
     {
         private static Func<string, string> _htmlDecoder;
+        private static Func<string, string> _htmlEncoder;
 
         /// <summary>
         /// The replacement character to use for characters not in the GROM character set.
@@ -80,6 +81,15 @@ namespace INTV.Core.Utility
         }
 
         /// <summary>
+        /// Registers a delegate to encode a string for use in HTML.
+        /// </summary>
+        /// <param name="encoder">The HTML decoder delegate to use.</param>
+        public static void RegisterHtmlEncoder(Func<string, string> encoder)
+        {
+            _htmlEncoder = encoder;
+        }
+
+        /// <summary>
         /// Decodes a string that was HTML-encoded.
         /// </summary>
         /// <param name="encodedHtmlString">A string that was HTML-encoded.</param>
@@ -87,11 +97,26 @@ namespace INTV.Core.Utility
         public static string DecodeHtmlString(this string encodedHtmlString)
         {
             var decodedHtmlString = encodedHtmlString;
-            if (_htmlDecoder != null)
+            if ((_htmlDecoder != null) && !string.IsNullOrEmpty(encodedHtmlString))
             {
                 decodedHtmlString = _htmlDecoder(encodedHtmlString);
             }
             return decodedHtmlString;
+        }
+
+        /// <summary>
+        /// Encodes a string for use in HTML.
+        /// </summary>
+        /// <param name="rawString">A string that must be HTML-encoded.</param>
+        /// <returns>The encoded string.</returns>
+        public static string EncodeHtmlString(this string rawString)
+        {
+            var encodedHtmlString = rawString;
+            if ((_htmlEncoder != null) && !string.IsNullOrEmpty(rawString))
+            {
+                encodedHtmlString = _htmlEncoder(rawString);
+            }
+            return encodedHtmlString;
         }
 
         #region C-style Format Specifier Support

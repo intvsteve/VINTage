@@ -36,7 +36,14 @@ namespace INTV.Core.Model.Program
         /// Locates a program in the table given a CRC of its ROM.
         /// </summary>
         /// <param name="crc">The 32-bit CRC of the program ROM to be located.</param>
-        /// <returns>The IProgramInformation if an entry with a matching CRC value is found in the table, otherwise <c>null</c>.</returns>
+        /// <returns>The <see cref="IProgramInformation"/> if an entry with a matching CRC value is found in the table, otherwise <c>null</c>.</returns>
         IProgramInformation FindProgram(uint crc);
+
+        /// <summary>
+        /// Locates a program in the table given a program's unique identifier.
+        /// </summary>
+        /// <param name="programIdentifier">The unique identifier of the ROM to be located.</param>
+        /// <returns>The <see cref="IProgramInformation"/> that matches the given <see cref="ProgramIdentifier"/> as the table is best able to determine, otherwise <c>null</c>.</returns>
+        IProgramInformation FindProgram(ProgramIdentifier programIdentifier);
     }
 }

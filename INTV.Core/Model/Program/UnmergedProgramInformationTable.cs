@@ -366,7 +366,7 @@ namespace INTV.Core.Model.Program
             /// <returns>A new instance of UnmergedProgramInformation.</returns>
             internal UnmergedProgramInformation ToUnmergedProgramInformation()
             {
-                return new UnmergedProgramInformation(Title, Vendor, Year, CrcData, CrcDescriptions, CrcCfgs, Features);
+                return new UnmergedProgramInformation(Code, Title, Vendor, Year, CrcData, CrcDescriptions, CrcCfgs, Features);
             }
         }
     }

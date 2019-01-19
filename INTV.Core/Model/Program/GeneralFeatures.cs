@@ -59,9 +59,10 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public static class GeneralFeaturesHelpers
     {
-        /// <summary>
-        /// Valid flags.
-        /// </summary>
-        public const GeneralFeatures ValidFeaturesMask = (GeneralFeatures)0x80000007;
+        /// <summary>Mask to use to retrieve basic feature mask from larger flag sets.</summary>
+        public const uint FeaturesMask = 0x80000007;
+
+        /// <summary>Valid flags.</summary>
+        public const GeneralFeatures ValidFeaturesMask = (GeneralFeatures)FeaturesMask;
     }
 }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="UserSpecifiedProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -93,6 +93,7 @@ namespace INTV.Core.Model.Program
         /// <param name="features">The features of the program.</param>
         /// <param name="crcDescription">Description of the variant of the program identified by its CRC.</param>
         /// <exception cref="ArgumentException">Thrown if crc is zero.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if any metadata values are <c>null</c>.</exception>
         public UserSpecifiedProgramInformation(uint crc, string title, string year, ProgramFeatures features, string crcDescription)
             : this(crc, title, year, features, crcDescription, IncompatibilityFlags.None)
         {
@@ -108,6 +109,7 @@ namespace INTV.Core.Model.Program
         /// <param name="crcDescription">Description of the variant of the program identified by its CRC.</param>
         /// <param name="incompatibilities">Describes known hardware incompatibilities associated with the ROM.</param>
         /// <exception cref="ArgumentException">Thrown if crc is zero.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if any metadata values are <c>null</c>.</exception>
         public UserSpecifiedProgramInformation(uint crc, string title, string year, ProgramFeatures features, string crcDescription, IncompatibilityFlags incompatibilities)
         {
             if (crc == 0)
@@ -127,6 +129,7 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <param name="programInformation">The source program information.</param>
         /// <exception cref="ArgumentException">Thrown if programInformation is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if any metadata values are <c>null</c>.</exception>
         public UserSpecifiedProgramInformation(IProgramInformation programInformation)
         {
             if (programInformation == null)
@@ -140,6 +143,7 @@ namespace INTV.Core.Model.Program
             _year = programInformation.Year;
             _features = programInformation.Features;
             _origin = programInformation.DataOrigin;
+            _shortName = programInformation.ShortName;
             if (userSpecified != null)
             {
                 _crcs = new Dictionary<uint, KeyValuePair<string, IncompatibilityFlags>>(userSpecified._crcs);
@@ -149,10 +153,6 @@ namespace INTV.Core.Model.Program
                 _crcs = programInformation.Crcs.ToDictionary(c => c.Crc, d => new KeyValuePair<string, IncompatibilityFlags>(d.Description, d.Incompatibilities));
             }
             FinishInitialization();
-        }
-
-        private UserSpecifiedProgramInformation()
-        {
         }
 
         #endregion // Constructors
@@ -176,6 +176,7 @@ namespace INTV.Core.Model.Program
         private ProgramInformationOrigin _origin;
 
         /// <inheritdoc />
+        /// <remarks>Behavior here is odd. See: https://github.com/intvsteve/VINTage/issues/242 </remarks>
         public override string Title
         {
             get
@@ -216,6 +217,14 @@ namespace INTV.Core.Model.Program
             set { this.AssignAndUpdateProperty(PropertyChanged, "Features", value, ref _features, MarkDirty); }
         }
         private ProgramFeatures _features;
+
+        /// <inheritdoc />
+        public override string ShortName
+        {
+            get { return _shortName; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, "ShortName", value, ref _shortName, MarkDirty); }
+        }
+        private string _shortName;
 
         /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs
@@ -597,48 +606,98 @@ namespace INTV.Core.Model.Program
 
         private void FinishInitialization()
         {
-            _longNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _shortNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _descriptions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _publishers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _programmers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _designers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _graphics = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _music = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _soundEffects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _voices = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _documentation = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _artwork = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _releaseDates = new SortedSet<MetadataDateTime>();
-            _licenses = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _contactInformation = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _versions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            _buildDates = new SortedSet<MetadataDateTime>();
-            _additionalInformation = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-            if (!string.IsNullOrEmpty(_title))
+            var metadata = SourceInformation as IProgramMetadata;
+            if (metadata != null)
             {
-                _longNames.Add(_title);
-            }
-
-            if (!string.IsNullOrEmpty(ShortName))
-            {
-                _shortNames.Add(ShortName);
-            }
-
-            if (!string.IsNullOrEmpty(_vendor))
-            {
-                AddPublisher(_vendor);
-            }
-
-            if (!string.IsNullOrEmpty(_year))
-            {
-                int releaseYear;
-                if (int.TryParse(_year, out releaseYear))
+                _longNames = new HashSet<string>(metadata.LongNames, StringComparer.OrdinalIgnoreCase);
+                _shortNames = new HashSet<string>(metadata.ShortNames, StringComparer.OrdinalIgnoreCase);
+                _descriptions = new HashSet<string>(metadata.Descriptions, StringComparer.OrdinalIgnoreCase);
+                _publishers = new HashSet<string>(metadata.Publishers, StringComparer.OrdinalIgnoreCase);
+                _programmers = new HashSet<string>(metadata.Programmers, StringComparer.OrdinalIgnoreCase);
+                _designers = new HashSet<string>(metadata.Designers, StringComparer.OrdinalIgnoreCase);
+                _graphics = new HashSet<string>(metadata.Graphics, StringComparer.OrdinalIgnoreCase);
+                _music = new HashSet<string>(metadata.Music, StringComparer.OrdinalIgnoreCase);
+                _soundEffects = new HashSet<string>(metadata.SoundEffects, StringComparer.OrdinalIgnoreCase);
+                _voices = new HashSet<string>(metadata.Voices, StringComparer.OrdinalIgnoreCase);
+                _documentation = new HashSet<string>(metadata.Documentation, StringComparer.OrdinalIgnoreCase);
+                _artwork = new HashSet<string>(metadata.Artwork, StringComparer.OrdinalIgnoreCase);
+                _releaseDates = new SortedSet<MetadataDateTime>(metadata.ReleaseDates);
+                _licenses = new HashSet<string>(metadata.Licenses, StringComparer.OrdinalIgnoreCase);
+                _contactInformation = new HashSet<string>(metadata.ContactInformation, StringComparer.OrdinalIgnoreCase);
+                _versions = new HashSet<string>(metadata.Versions, StringComparer.OrdinalIgnoreCase);
+                _buildDates = new SortedSet<MetadataDateTime>(metadata.BuildDates);
+                _additionalInformation = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                if (metadata.AdditionalInformation == null)
                 {
-                    var dateTime = new DateTime(releaseYear, MetadataDateTime.DefaultMonth, MetadataDateTime.DefaultDay);
-                    var releaseDate = new MetadataDateTime(dateTime, MetadataDateTimeFlags.Year);
-                    AddReleaseDate(releaseDate);
+                    throw new ArgumentNullException("metadata.AdditionalInformation");
+                }
+                var additionalInformationIndex = 0;
+                foreach (var additionalInformation in metadata.AdditionalInformation)
+                {
+                    _additionalInformation[additionalInformationIndex.ToString(CultureInfo.InvariantCulture)] = additionalInformation;
+                    ++additionalInformationIndex;
+                }
+                if (string.IsNullOrEmpty(_shortName))
+                {
+                    if (!string.IsNullOrEmpty(_shortNames.FirstOrDefault()))
+                    {
+                        _shortName = _shortNames.First();
+                    }
+                }
+            }
+            else
+            {
+                _longNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _shortNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _descriptions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _publishers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _programmers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _designers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _graphics = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _music = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _soundEffects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _voices = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _documentation = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _artwork = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _releaseDates = new SortedSet<MetadataDateTime>();
+                _licenses = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _contactInformation = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _versions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                _buildDates = new SortedSet<MetadataDateTime>();
+                _additionalInformation = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                if (!string.IsNullOrEmpty(_title))
+                {
+                    _longNames.Add(_title);
+                }
+
+                if (!string.IsNullOrEmpty(_shortName))
+                {
+                    _shortNames.Add(_shortName);
+                }
+
+                if (!string.IsNullOrEmpty(_vendor))
+                {
+                    AddPublisher(_vendor);
+                }
+
+                if (!string.IsNullOrEmpty(_year))
+                {
+                    int releaseYear;
+                    if (int.TryParse(_year, out releaseYear))
+                    {
+                        try
+                        {
+                            var dateBuilder = new MetadataDateTimeBuilder(releaseYear);
+                            var releaseDate = dateBuilder.Build();
+                            AddReleaseDate(releaseDate);
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            // Scrambled LUIGI files may return a year string of "-1" via the intvname tool.
+                            _year = string.Empty;
+                        }
+                    }
                 }
             }
 

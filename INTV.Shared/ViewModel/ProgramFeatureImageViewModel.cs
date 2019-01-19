@@ -103,9 +103,18 @@ namespace INTV.Shared.ViewModel
         #region IComparable
 
         /// <inheritdoc />
+        /// <exception cref="System.ArgumentException">Thrown if <param name="obj"/> is not a <see cref="ProgramFeatureImageViewModel"/>.</exception>
         public int CompareTo(object obj)
         {
-            return CompareTo(obj as ProgramFeatureImageViewModel);
+            if (obj == null)
+            {
+                return 1;
+            }
+            if (!(obj is ProgramFeatureImageViewModel))
+            {
+                throw new System.ArgumentException();
+            }
+            return CompareTo((ProgramFeatureImageViewModel)obj);
         }
 
         #endregion // IComparable

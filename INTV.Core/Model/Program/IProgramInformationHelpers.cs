@@ -85,15 +85,21 @@ namespace INTV.Core.Model.Program
         /// <param name="programInformation">The program information whose name is to be computed for the given CRC.</param>
         /// <param name="crc">The variant for which to get a full name.</param>
         /// <returns>The full name of the program.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown if no matching CRC is found.</exception>
         public static string GetNameForCrc(this IProgramInformation programInformation, uint crc)
         {
             var name = programInformation.Title;
-            var variantName = programInformation.Crcs.FirstOrDefault(crcEntry => crcEntry.Crc == crc).Description;
-            if (!string.IsNullOrEmpty(variantName))
+            var crcData = programInformation.Crcs.FirstOrDefault(crcEntry => crcEntry.Crc == crc);
+            if (crcData != null)
             {
-                name = string.Format("{0} ({1})", name, variantName);
+                var variantName = crcData.Description;
+                if (!string.IsNullOrEmpty(variantName))
+                {
+                    name = string.Format("{0} ({1})", name, variantName);
+                }
+                return name;
             }
-            return name;
+            throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -131,10 +137,19 @@ namespace INTV.Core.Model.Program
         /// By carefully considering these flags, you can have a reasonably rich order-of-precedence defined for establishing
         /// the data in the merged result.
         /// </remarks>
+        /// <exception cref="System.ArgumentException">Thrown if unrecognized flags are provided in <paramref name="fieldsToMerge"/> or via <paramref name="otherSources"/>.</exception>
         public static IProgramInformation Merge(this IProgramInformation programInformation, ProgramInformationMergeFieldsFlags fieldsToMerge, params Tuple<IProgramInformation, ProgramInformationMergeFieldsFlags>[] otherSources)
         {
             // Grr.... PCLs (at least in .NET 4.0) don't support Enum.GetValues()
             var flagsToProcess = new[] { ProgramInformationMergeFieldsFlags.Title, ProgramInformationMergeFieldsFlags.Vendor, ProgramInformationMergeFieldsFlags.Year, ProgramInformationMergeFieldsFlags.Features, ProgramInformationMergeFieldsFlags.ShortName, ProgramInformationMergeFieldsFlags.Crcs };
+
+            var unknownFlagsForMerge = otherSources.Select(s => s.Item2).Concat(new[] { fieldsToMerge }).Except(flagsToProcess).Except(new[] { ProgramInformationMergeFieldsFlags.None, ProgramInformationMergeFieldsFlags.All });
+            if (unknownFlagsForMerge.Any())
+            {
+                var unknownFlags = unknownFlagsForMerge.Aggregate((all, flag) => all | flag);
+                throw new ArgumentException(string.Format(Resources.Strings.ProgramInformation_InvalidFieldFormat, unknownFlags));
+            }
+
             var mergedProgramInformation = new UserSpecifiedProgramInformation(programInformation);
             var mergedPriorityFlags = fieldsToMerge; // accumulates if a "higher priority" info has already claimed a field
             foreach (var otherSource in otherSources)
@@ -200,11 +215,6 @@ namespace INTV.Core.Model.Program
                                     mergedPriorityFlags |= flag;
                                 }
                                 break;
-                            case ProgramInformationMergeFieldsFlags.All:
-                            case ProgramInformationMergeFieldsFlags.None:
-                                break;
-                            default:
-                                throw new ArgumentException(string.Format(Resources.Strings.ProgramInformation_InvalidFieldFormat, flag));
                         }
                     }
                 }

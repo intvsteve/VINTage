@@ -155,6 +155,7 @@
     <Compile Include="Model\RomFormat.cs" />
     <Compile Include="Model\RomFormatRom.cs" />
     <Compile Include="Model\StatusMessage.cs" />
+    <Compile Include="Model\StatusMessageEventArgs.cs" />
     <Compile Include="Model\XmlRom.cs" />
     <Compile Include="Utility\WeakKeyDictionary`TKey`TValue.cs" />
     <Compile Include="ComponentModel\INotifyPropertyChangedHelpers.Mac.cs" />
@@ -206,6 +207,7 @@
     <Compile Include="Model\LuigiMetadataIdTag.cs" />
     <Compile Include="Model\MetadataDateTimeFlags.cs" />
     <Compile Include="Model\MetadataDateTime.cs" />
+    <Compile Include="Model\MetadataDateTimeBuilder.cs" />
     <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
     <Compile Include="Model\CfgVarMetadataBlock.cs" />
     <Compile Include="Model\Program\CfgFileMetadataProgramInformation.cs" />

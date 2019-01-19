@@ -1,5 +1,5 @@
 // <copyright file="WeakKeyDictionary`TKey`TValue.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -34,7 +34,8 @@ namespace INTV.Core.Utility
     /// object acting as a key is garbage collected, the entry in the dictionary will 'go bad'.
     /// Each access to the dictionary will, by necessity, sweep for 'dead' objects.
     /// Also note that because of the object lifetime awareness via the WeakReference, this
-    /// dictionary uses locks to protect access.</remarks>
+    /// dictionary uses locks to protect access. This is inspired and informed by:
+    /// https://blogs.msdn.microsoft.com/nicholg/2006/06/04/presenting-weakdictionarytkey-tvalue/ </remarks>
     public class WeakKeyDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary where TKey : class
     {
         private readonly Dictionary<WeakReference, TValue> _dictionary = new Dictionary<WeakReference, TValue>();
@@ -44,12 +45,15 @@ namespace INTV.Core.Utility
         #region ICollection Properties
 
         /// <inheritdoc/>
+        /// <remarks>The count may include objects that have already been garbage collected. Use the LiveCount property
+        /// to force a refresh of the dictionary to get a current count.</remarks>
         public int Count
         {
             get { return _dictionary.Count; }
         }
 
         /// <inheritdoc/>
+        /// <remarks>This collection is only partially thread safe.</remarks>
         public bool IsSynchronized
         {
             get { return false; }
@@ -121,6 +125,21 @@ namespace INTV.Core.Utility
 
         #endregion // IDictionary<TKey, TValue> Properties
 
+        /// <summary>
+        /// Gets the current count of live entries in the dictionary.
+        /// </summary>
+        public int LiveCount
+        {
+            get
+            {
+                lock (_dictionary)
+                {
+                    PurgeDeadEntries();
+                    return Count;
+                }
+            }
+        }
+
         #endregion // Properties
 
         /// <summary>
@@ -135,7 +154,7 @@ namespace INTV.Core.Utility
             lock (_dictionary)
             {
                 PurgeDeadEntries();
-                var entryKey = _dictionary.FirstOrDefault(e => e.Key.IsAlive && e.Key.Target == key).Key;
+                var entryKey = _dictionary.FirstOrDefault(e => IncludeEntryPredicate(e.Key, key)).Key;
                 if (entryKey == null)
                 {
                     entryKey = new WeakReference(key);
@@ -156,7 +175,7 @@ namespace INTV.Core.Utility
             bool removed = false;
             lock (_dictionary)
             {
-                var entry = _dictionary.FirstOrDefault(e => e.Key.IsAlive && e.Key.Target == key);
+                var entry = _dictionary.FirstOrDefault(e => IncludeEntryPredicate(e.Key, key));
                 if (entry.Key != null)
                 {
                     removed = _dictionary.Remove(entry.Key);
@@ -179,7 +198,7 @@ namespace INTV.Core.Utility
             lock (_dictionary)
             {
                 PurgeDeadEntries();
-                var entry = _dictionary.FirstOrDefault(e => e.Key.IsAlive && e.Key.Target == key);
+                var entry = _dictionary.FirstOrDefault(e => IncludeEntryPredicate(e.Key, key));
                 if (entry.Key != null)
                 {
                     value = (TValue)entry.Value;
@@ -193,7 +212,7 @@ namespace INTV.Core.Utility
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _dictionary.GetEnumerator();
+            return GetMyEnumerator();
         }
 
         #endregion // IEnumerable
@@ -203,7 +222,28 @@ namespace INTV.Core.Utility
         /// <inheritdoc/>
         public void CopyTo(Array array, int index)
         {
-            throw new NotImplementedException("ICollection.CopyTo");
+            if (array == null)
+            {
+                throw new ArgumentNullException("array");
+            }
+            if (index < 0)
+            {
+                throw new ArgumentOutOfRangeException("arrayIndex");
+            }
+            if (array.Rank > 1)
+            {
+                throw new ArgumentException();
+            }
+            if (LiveCount > (array.Length - index))
+            {
+                throw new ArgumentException();
+            }
+            var destination = array as KeyValuePair<TKey, TValue>[];
+            if (destination == null)
+            {
+                throw new ArgumentException();
+            }
+            CopyTo(destination, index);
         }
 
         #endregion // ICollection
@@ -231,7 +271,7 @@ namespace INTV.Core.Utility
         /// <inheritdoc/>
         public IDictionaryEnumerator GetEnumerator()
         {
-            return _dictionary.GetEnumerator();
+            return DictionaryEnumerator<TKey, TValue>.GetDictionaryEnumerator(this);
         }
 
         /// <inheritdoc/>
@@ -244,12 +284,13 @@ namespace INTV.Core.Utility
 
         #region IEnumerable<KeyValuePair<TKey, TValue>>
 
-        #endregion // IEnumerable<KeyValuePair<TKey, TValue>>
-
+        /// <inheritdoc/>
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
-            return ((IEnumerable<KeyValuePair<TKey, TValue>>)_dictionary).GetEnumerator();
+            return GetMyEnumerator();
         }
+
+        #endregion // IEnumerable<KeyValuePair<TKey, TValue>>
 
         #region ICollection<KeyValuePair<TKey, TValue>>
 
@@ -268,19 +309,47 @@ namespace INTV.Core.Utility
         /// <inheritdoc/>
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            return ContainsKey(item.Key);
+            TValue value;
+            var containsEntry = TryGetValue(item.Key, out value);
+            if (containsEntry)
+            {
+                containsEntry = object.Equals(item.Value, value);
+            }
+            return containsEntry;
         }
 
         /// <inheritdoc/>
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            ((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).CopyTo(array, arrayIndex);
+            if (array == null)
+            {
+                throw new ArgumentNullException("array");
+            }
+            if (arrayIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException("arrayIndex");
+            }
+            if (LiveCount > (array.Length - arrayIndex))
+            {
+                throw new ArgumentException();
+            }
+            var enumerator = GetMyEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var entry = enumerator.Current;
+                array[arrayIndex++] = entry;
+            }
         }
 
         /// <inheritdoc/>
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            return RemoveEntry(item.Key);
+            var entryRemoved = Contains(item);
+            if (entryRemoved)
+            {
+                entryRemoved = RemoveEntry(item.Key);
+            }
+            return entryRemoved;
         }
 
         #endregion // ICollection<KeyValuePair<TKey, TValue>>
@@ -304,7 +373,7 @@ namespace INTV.Core.Utility
             lock (_dictionary)
             {
                 PurgeDeadEntries();
-                containsKey = _dictionary.FirstOrDefault(e => e.Key.IsAlive && e.Key.Target == key).Key != null;
+                containsKey = _dictionary.FirstOrDefault(e => IncludeEntryPredicate(e.Key, key)).Key != null;
             }
             return containsKey;
         }
@@ -316,10 +385,32 @@ namespace INTV.Core.Utility
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            throw new NotImplementedException("WeakKeyDictionary.TryGetValue()");
+            var gotValue = false;
+            value = default(TValue);
+            lock (_dictionary)
+            {
+                PurgeDeadEntries();
+                var entry = _dictionary.FirstOrDefault(e => IncludeEntryPredicate(e.Key, key));
+                gotValue = entry.Key != null;
+                if (gotValue)
+                {
+                    value = (TValue)entry.Value;
+                }
+            }
+            return gotValue;
         }
 
         #endregion // IDictionary<TKey, TValue>
+
+        private static bool IncludeEntryPredicate(WeakReference dictionaryKey, TKey key)
+        {
+            var includeEntry = dictionaryKey.IsAlive;
+            if (includeEntry)
+            {
+                includeEntry = object.Equals((TKey)dictionaryKey.Target, key);
+            }
+            return includeEntry;
+        }
 
         private void PurgeDeadEntries()
         {
@@ -328,6 +419,97 @@ namespace INTV.Core.Utility
             {
                 _dictionary.Remove(deadEntry);
             }
+        }
+
+        private IEnumerator<KeyValuePair<TKey, TValue>> GetMyEnumerator()
+        {
+            foreach (var entry in _dictionary)
+            {
+                var weakKey = entry.Key;
+                var key = default(TKey);
+                if (weakKey.IsAlive)
+                {
+                    key = (TKey)weakKey.Target;
+                    var keyValuePair = new KeyValuePair<TKey, TValue>(key, entry.Value);
+                    yield return keyValuePair;
+                }
+            }
+        }
+
+        private class DictionaryEnumerator<TKeyType, TValueType> : IDictionaryEnumerator, IDisposable
+        {
+            private readonly IEnumerator<KeyValuePair<TKeyType, TValueType>> _implementation;
+
+            private DictionaryEnumerator(IEnumerator<KeyValuePair<TKeyType, TValueType>> implementation)
+            {
+                _implementation = implementation;
+            }
+
+            #region IDictionaryEnumerator
+
+            /// <inheritdoc/>
+            public DictionaryEntry Entry
+            {
+                get
+                {
+                    var pair = _implementation.Current;
+                    var entry = new DictionaryEntry(pair.Key, pair.Value);
+                    return entry;
+                }
+            }
+
+            /// <inheritdoc/>
+            public object Key
+            {
+                get { return _implementation.Current.Key; }
+            }
+
+            /// <inheritdoc/>
+            public object Value
+            {
+                get { return _implementation.Current.Value; }
+            }
+
+            /// <inheritdoc/>
+            public object Current
+            {
+                get { return Entry; }
+            }
+
+            #endregion // IDictionaryEnumerator
+
+            public static IDictionaryEnumerator GetDictionaryEnumerator(IDictionary<TKeyType, TValueType> dictionary)
+            {
+                return new DictionaryEnumerator<TKeyType, TValueType>(dictionary.GetEnumerator());
+            }
+
+            #region IDictionaryEnumerator
+
+            /// <inheritdoc/>
+            public bool MoveNext()
+            {
+                return _implementation.MoveNext();
+            }
+
+            /// <inheritdoc/>
+            /// <remarks>Code coverage reports this as incomplete because the underlying object throws.</remarks>
+            [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+            public void Reset()
+            {
+                _implementation.Reset();
+            }
+
+            #endregion // IDictionaryEnumerator
+
+            #region IDisposable
+
+            /// <inheritdoc/>
+            public void Dispose()
+            {
+                _implementation.Dispose();
+            }
+
+            #endregion // IDisposable
         }
     }
 }

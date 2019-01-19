@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescriptionHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2018 All Rights Reserved
+// Copyright (c) 2015-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Linq;
 using INTV.Core.Restricted.Model.Program;
 using INTV.Core.Utility;
 
@@ -41,14 +42,14 @@ namespace INTV.Core.Model.Program
         {
             var rom = programDescription.Rom;
             var usesCfg = !string.IsNullOrEmpty(rom.ConfigPath);
-            if (!rom.RomPath.FileExists() || (usesCfg && !rom.ConfigPath.FileExists()))
+            if (!StreamUtilities.FileExists(rom.RomPath) || (usesCfg && !StreamUtilities.FileExists(rom.ConfigPath)))
             {
-                var alternateRomPaths = programDescription.Files.AlternateRomImagePaths;
-                var alternateCfgPaths = programDescription.Files.AlternateRomConfigurationFilePaths;
+                var alternateRomPaths = programDescription.Files.AlternateRomImagePaths.ToList();
+                var alternateCfgPaths = programDescription.Files.AlternateRomConfigurationFilePaths.ToList();
 
                 if (usesCfg && (alternateRomPaths.Count != alternateCfgPaths.Count))
                 {
-                    throw new InvalidOperationException(Resources.Strings.ProgramDescription_MIssingAlternateCfgFile);
+                    throw new InvalidOperationException(Resources.Strings.ProgramDescription_MissingAlternateCfgFile);
                 }
 
                 var foundAlternate = false;
@@ -56,12 +57,12 @@ namespace INTV.Core.Model.Program
                 string cfgPath = null;
                 for (var i = 0; (i < alternateRomPaths.Count) && !foundAlternate; ++i)
                 {
-                    if (alternateRomPaths[i].FileExists())
+                    if (StreamUtilities.FileExists(alternateRomPaths[i]))
                     {
                         romPath = alternateRomPaths[i];
                         if (usesCfg)
                         {
-                            if ((i < alternateCfgPaths.Count) && alternateCfgPaths[i].FileExists())
+                            if (StreamUtilities.FileExists(alternateCfgPaths[i]))
                             {
                                 // This code assumes (but cannot check -- silly PCL has no Path API) that the .cfg and ROM are in the same directory for the same index.
                                 cfgPath = alternateCfgPaths[i];
@@ -145,6 +146,10 @@ namespace INTV.Core.Model.Program
                     romFormatsMatch = programDescription.Rom.MatchingRomFormat(romFormat, considerOriginalFormat: true);
                 }
                 crcMatch = programDescription.Rom.MatchesProgramIdentifier(programIdentifier, cfgCrcMustMatch);
+                if (cfgCrcMustMatch)
+                {
+                    cfgCrcsMatch = crcMatch;
+                }
             }
 
             // This may be nearly worthless -- how many XML ProgramInformation implementations are hooked to ProgramDescriptions -- don't they all end up being UserSpecifiedProgramInformation?

@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataControllerBindings.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2017 All Rights Reserved
+// Copyright (c) 2016-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,9 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
-using INTV.Core.Model.Device;
+using System.Linq;
 
 namespace INTV.Core.Model
 {
@@ -36,9 +35,22 @@ namespace INTV.Core.Model
         public RomMetadataControllerBindings(uint length)
             : base(length, RomMetadataIdTag.ControllerBindings)
         {
+            _bindings = new Dictionary<byte, string>();
         }
 
         #region Properties
+
+        /// <summary>
+        /// Gets the controller bindings.
+        /// </summary>
+        public IEnumerable<KeyValuePair<byte, string>> Bindings
+        {
+            get
+            {
+                return _bindings;
+            }
+        }
+        private Dictionary<byte, string> _bindings;
 
         #endregion // Properties
 
@@ -47,8 +59,6 @@ namespace INTV.Core.Model
         /// <inheritdoc/>
         protected override uint DeserializePayload(INTV.Core.Utility.BinaryReader reader)
         {
-            var descriptions = new Dictionary<Controller, string>();
-
             var bytesParsed = 0u;
             var descriptionBuffer = new List<byte>();
             var currentController = Controller.None;
@@ -65,15 +75,12 @@ namespace INTV.Core.Model
                 else
                 {
                     // Finished previous.
-                    if (currentController != Controller.None)
-                    {
-                        // Put the description into the map.
-                        descriptions[currentController] = System.Text.Encoding.UTF8.GetString(descriptionBuffer.ToArray(), 0, descriptionBuffer.Count).Trim('\0');
-                    }
+                    AddControllerToBindings(currentController, descriptionBuffer);
                     currentController = controller;
                     descriptionBuffer.Clear();
                 }
             }
+            AddControllerToBindings(currentController, descriptionBuffer);
             return Length;
         }
 
@@ -98,11 +105,24 @@ namespace INTV.Core.Model
             {
                 controller = Controller.Controller3;
             }
+            else if ((input >= InputSource.ControllerAnyFirst) && (input <= InputSource.ControllerAnyLast))
+            {
+                controller = Controller.AnyController;
+            }
             else if ((input >= InputSource.KeyboardFirst) && (input <= InputSource.KeyboardLast))
             {
                 controller = Controller.Keyboard;
             }
             return controller;
+        }
+
+        private void AddControllerToBindings(Controller controller, IEnumerable<byte> descriptionBuffer)
+        {
+            if (controller != Controller.None)
+            {
+                // Put the description into the map.
+                _bindings[(byte)controller] = System.Text.Encoding.UTF8.GetString(descriptionBuffer.ToArray(), 0, descriptionBuffer.Count()).Trim('\0');
+            }
         }
 
         /// <summary>

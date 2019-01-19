@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramFeaturesHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -98,6 +98,29 @@ namespace INTV.Core.Model.Program
                 incompatibilityFlags |= IncompatibilityFlags.Hive;
             }
             return incompatibilityFlags;
+        }
+
+        /// <summary>
+        /// Clear the features that are used when an 'unrecognized' ROM is being handled.
+        /// </summary>
+        /// <param name="programFeatures">The <see cref="ProgramFeatures"/> whose unrecognized-ness is to be cleared.</param>
+        public static void ClearUnrecongizedRomFeatures(this ProgramFeatures programFeatures)
+        {
+            programFeatures.GeneralFeatures &= ~GeneralFeatures.UnrecognizedRom;
+            programFeatures.Ntsc = ProgramFeatures.DefaultFeatures.Ntsc;
+            programFeatures.Pal = ProgramFeatures.DefaultFeatures.Pal;
+        }
+
+        /// <summary>
+        /// Set the features that indicate a ROM should be treated as 'unrecognized'.
+        /// </summary>
+        /// <param name="programFeatures">The <see cref="ProgramFeatures"/> whose features should be marked to indicate is not recognized.</param>
+        public static void SetUnrecongizedRomFeatures(this ProgramFeatures programFeatures)
+        {
+            var unrecognizedFeatures = ProgramFeatures.GetUnrecognizedRomFeatures();
+            programFeatures.GeneralFeatures |= GeneralFeatures.UnrecognizedRom;
+            programFeatures.Ntsc = unrecognizedFeatures.Ntsc;
+            programFeatures.Pal = unrecognizedFeatures.Pal;
         }
     }
 }

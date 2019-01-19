@@ -353,7 +353,7 @@ namespace INTV.LtoFlash.Model.Commands
         }
 
         /// <inheritdoc />
-        protected override int Deserialize(INTV.Core.Utility.BinaryReader reader)
+        public override int Deserialize(INTV.Core.Utility.BinaryReader reader)
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="UnmergedProgramInformationTable.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -247,7 +247,7 @@ namespace INTV.Core.Model.Program
                 Code = code;
                 CrcData = crcData;
                 CrcDescriptions = crcDescriptions;
-                CrcCfgs = Enumerable.Repeat((generalFeatures == GeneralFeatures.SystemRom) ? -1 : 0, crcData.Count()).ToArray();
+                CrcCfgs = Enumerable.Repeat(-1, crcData.Count()).ToArray();
                 Year = year;
                 Title = title;
                 Vendor = vendor;
@@ -297,17 +297,13 @@ namespace INTV.Core.Model.Program
                 Code = code;
                 CrcData = crcData;
                 CrcDescriptions = crcDescriptions;
-                CrcCfgs = Enumerable.Repeat((generalFeatures == GeneralFeatures.SystemRom) ? -1 : 0, crcData.Count()).ToArray();
+                CrcCfgs = Enumerable.Repeat(-1, crcData.Count()).ToArray();
                 Year = year;
                 Title = title;
                 Vendor = vendor;
                 Features = new ProgramFeatures();
                 Features.GeneralFeatures = generalFeatures;
                 Features.Ecs = ecs;
-                if (generalFeatures.HasFlag(GeneralFeatures.OnboardRam))
-                {
-                    Features.Intellicart = IntellicartCC3Features.Incompatible;
-                }
             }
 
             /// <summary>
@@ -326,7 +322,7 @@ namespace INTV.Core.Model.Program
                 Code = code;
                 CrcData = crcData;
                 CrcDescriptions = crcDescriptions;
-                CrcCfgs = Enumerable.Repeat((generalFeatures == GeneralFeatures.SystemRom) ? -1 : 0, crcData.Count()).ToArray();
+                CrcCfgs = Enumerable.Repeat(-1, crcData.Count()).ToArray();
                 Year = year;
                 Title = title;
                 Vendor = vendor;
@@ -351,7 +347,7 @@ namespace INTV.Core.Model.Program
                 Code = code;
                 CrcData = crcData;
                 CrcDescriptions = crcDescriptions;
-                CrcCfgs = Enumerable.Repeat((generalFeatures == GeneralFeatures.SystemRom) ? -1 : 0, crcData.Count()).ToArray();
+                CrcCfgs = Enumerable.Repeat(-1, crcData.Count()).ToArray();
                 Year = year;
                 Title = title;
                 Vendor = vendor;

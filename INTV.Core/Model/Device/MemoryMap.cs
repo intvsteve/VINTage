@@ -1,5 +1,5 @@
 ﻿// <copyright file="MemoryMap.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace INTV.Core.Model.Device
 {
@@ -27,9 +28,9 @@ namespace INTV.Core.Model.Device
     /// </summary>
     public class MemoryMap : Connection
     {
+        private readonly List<ushort> _aliases;
         private ushort _baseAddress;
         private ushort _size;
-        private readonly List<ushort> _aliases;
 
         /// <summary>
         /// Initializes a new instance of MemoryMap.
@@ -37,12 +38,16 @@ namespace INTV.Core.Model.Device
         /// <param name="baseAddress">The address of the memory map connection.</param>
         /// <param name="size">The number of contiguous bytes mapped to a device using this connection.</param>
         /// <param name="aliases">Any aliases that may be also access the device.</param>
-        public MemoryMap(ushort baseAddress, ushort size, List<ushort> aliases)
+        public MemoryMap(ushort baseAddress, ushort size, IEnumerable<ushort> aliases)
             : base("Memory Map", ConnectionType.MemoryMap)
         {
             _baseAddress = baseAddress;
             _size = size;
-            _aliases = aliases;
+            if (aliases == null)
+            {
+                aliases = Enumerable.Empty<ushort>();
+            }
+            _aliases = new List<ushort>(aliases);
         }
 
         /// <summary>

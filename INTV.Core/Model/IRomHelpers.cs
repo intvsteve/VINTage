@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
@@ -103,6 +104,8 @@ namespace INTV.Core.Model
         public static ProgramFeatures GetProgramFeatures(this IRom rom)
         {
             var features = ProgramFeatures.GetUnrecognizedRomFeatures();
+
+            // TODO: Add support for CFGVAR and ROM metadata features!
             if (rom.Format == RomFormat.Luigi)
             {
                 var header = rom.GetLuigiHeader();
@@ -126,7 +129,8 @@ namespace INTV.Core.Model
         /// 2. ROM-specific metadata
         ///   a. LUIGI metadata check
         ///   b. ROM ID tag metadata check
-        /// 3. intvname utility check (which has its own internal order-of-precedence, and should cover .bin+cfg)
+        ///   c. CFGVAR metadata check
+        /// 3. intvname utility check (which has its own internal order-of-precedence, likely overlapping with this)
         /// If multiple sources are available, an attempt is made to merge the results.</remarks>
         public static IProgramInformation GetProgramInformation(this IRom rom)
         {
@@ -142,19 +146,41 @@ namespace INTV.Core.Model
             {
                 metadataProgramInfo = rom.GetBinFileMetadata();
             }
-            IProgramInformation intvNameInfo = null;
-            if (programInfo == null)
+
+            var programInfoData = rom.GetRomInformation();
+            var programName = programInfoData.GetRomInfoString(RomInfoIndex.Name);
+            var programYear = programInfoData.GetRomInfoString(RomInfoIndex.Copyright);
+            var programShortName = programInfoData.GetRomInfoString(RomInfoIndex.ShortName);
+            var intvNameInfo = new UserSpecifiedProgramInformation(rom.Crc, programName, programYear, rom.GetProgramFeatures());
+            if (programInfoData.Any(s => !string.IsNullOrEmpty(s)))
             {
-                var programInfoData = rom.GetRomInformation();
-                var programName = programInfoData.GetRomInfoString(RomInfoIndex.Name);
-                var programYear = programInfoData.GetRomInfoString(RomInfoIndex.Copyright);
-                intvNameInfo = new UserSpecifiedProgramInformation(rom.Crc, programName, programYear, rom.GetProgramFeatures());
-                var programShortName = programInfoData.GetRomInfoString(RomInfoIndex.ShortName);
                 if (!string.IsNullOrEmpty(programShortName))
                 {
                     intvNameInfo.ShortName = programShortName;
                 }
+
+                if (programInfo != null)
+                {
+                    // If we have a database entry, which is the ultimate arbiter of "known" -- either a-priory, or as specified
+                    // explicitly by the user as a new entry for the database, then strip the "unrecognized-ness" from the intvname
+                    // data.  Presumably, the database entry specified these values. We do not want to re-mark the features as unknown
+                    // when merging intvname information into a database entry's information. The ROM metadata that can be directly
+                    // harvested from a program, however, does not track these aspects of a program, hence we will retain the values
+                    // in the situation where we may have nearly complete feature data about a program aside from what the database tracks.
+                    intvNameInfo.Features.ClearUnrecongizedRomFeatures();
+                }
             }
+            else if ((programInfo != null) || (metadataProgramInfo != null))
+            {
+                intvNameInfo = null;
+            }
+
+            if ((programInfo == null) && (metadataProgramInfo != null))
+            {
+                // Mark features with unrecognized settings, since we don't have a database entry.
+                metadataProgramInfo.Features.SetUnrecongizedRomFeatures();
+            }
+
             var primaryInfo = programInfo ?? metadataProgramInfo ?? intvNameInfo;
             var secondaryInfo = object.ReferenceEquals(primaryInfo, metadataProgramInfo) ? intvNameInfo : metadataProgramInfo ?? intvNameInfo;
             var tertiaryInfo = object.ReferenceEquals(secondaryInfo, intvNameInfo) ? null : intvNameInfo;
@@ -178,6 +204,7 @@ namespace INTV.Core.Model
             {
                 programInfo = primaryInfo;
             }
+
             return programInfo;
         }
 
@@ -251,7 +278,7 @@ namespace INTV.Core.Model
         public static LuigiFileHeader GetLuigiHeader(this IRom rom)
         {
             LuigiFileHeader luigiHeader = null;
-            if ((rom != null) && (rom.Format == RomFormat.Luigi) && !string.IsNullOrEmpty(rom.RomPath) && rom.RomPath.FileExists() && LuigiFileHeader.PotentialLuigiFile(rom.RomPath))
+            if ((rom != null) && (rom.Format == RomFormat.Luigi) && !string.IsNullOrEmpty(rom.RomPath) && StreamUtilities.FileExists(rom.RomPath) && LuigiFileHeader.PotentialLuigiFile(rom.RomPath))
             {
                 luigiHeader = LuigiFileHeader.GetHeader(rom.RomPath);
             }
@@ -418,7 +445,7 @@ namespace INTV.Core.Model
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="stockConfigFileNumber"/> is less than zero.</exception>
         public static string GetStockCfgFilePath(int stockConfigFileNumber)
         {
-            var stockCfgFileName = stockConfigFileNumber.ToString() + ProgramFileKind.CfgFile.FileExtension();
+            var stockCfgFileName = stockConfigFileNumber.ToString(CultureInfo.InvariantCulture) + ProgramFileKind.CfgFile.FileExtension();
             var stockCfgUri = new Uri(DefaultToolsDirectory + stockCfgFileName);
             var stockCfgFilePath = Uri.UnescapeDataString(stockCfgUri.AbsolutePath); // Need to unescape spaces.
 #if WIN
@@ -429,7 +456,7 @@ namespace INTV.Core.Model
             // file system interface to use for stuff like this... Maybe imported via MEF or some such...
             stockCfgFilePath = stockCfgFilePath.Replace('/', '\\');
 #endif // WIN
-            if (!stockCfgFilePath.FileExists())
+            if (!StreamUtilities.FileExists(stockCfgFilePath))
             {
                 stockCfgFilePath = null;
             }
@@ -437,23 +464,23 @@ namespace INTV.Core.Model
         }
 
         /// <summary>
-        /// Ensures that a configuration file can be located for a given ROM. If the ROM does not already specify one, the best possible matching file is returned.
+        /// Ensures that a configuration file can be located for a given ROM.
         /// </summary>
         /// <param name="rom">A ROM that may need a configuration (.cfg) file.</param>
         /// <param name="programInfo">Detailed <see cref="IProgramInformation"/> providing detailed data about the ROM.</param>
-        /// <returns>An absolute path to the best known configuration file for <paramref name="rom"/>, using a stock file if necessary.</returns>
-        /// <remarks>If a ROM requires a configuration file, but one cannot be found, the best possible matching file will be supplied. This is only applicable
+        /// <returns><c>true</c> if <paramref name="rom"/> uses an existing stock CFG file, <c>false</c> otherwise.</returns>
+        /// <remarks>If a ROM requires a configuration file, but one cannot be found, the best possible matching file will be searched for. This is only applicable
         /// to .bin format ROMs (or their compatriots, .itv and .int files, typically). If <paramref name="rom"/> either does not provide a .cfg file, or
         /// the file it provides cannot be found, the best possible match based on <paramref name="programInfo"/> will be used. If <paramref name="programInfo"/>
-        /// is also null, the CRC of the ROM will be checked against the active ROM database in memory for a possible stock .cfg file match, and a path to a
-        /// stock file will be returned.</remarks>
+        /// is also null, the CRC of the ROM will be checked against the active ROM database in memory for a possible stock .cfg file match. If the matching
+        /// stock file is found, then the function returns <c>true</c>.</remarks>
         public static bool EnsureCfgFileProvided(this IRom rom, IProgramInformation programInfo)
         {
             var usesStockCfgFile = false;
-            if ((rom.Format == RomFormat.Bin) && (string.IsNullOrEmpty(rom.ConfigPath) || !rom.ConfigPath.FileExists()))
+            if ((rom.Format == RomFormat.Bin) && (string.IsNullOrEmpty(rom.ConfigPath) || !StreamUtilities.FileExists(rom.ConfigPath)))
             {
                 var cfgFilePath = GetStockCfgFile(rom.Crc, rom.RomPath, programInfo);
-                usesStockCfgFile = !string.IsNullOrEmpty(cfgFilePath) && cfgFilePath.FileExists();
+                usesStockCfgFile = !string.IsNullOrEmpty(cfgFilePath); // && StreamUtilities.FileExists(cfgFilePath); // GetStockCfgFile() never returns a non-empty path if the file does not exist
                 if (usesStockCfgFile)
                 {
                     rom.UpdateCfgFile(cfgFilePath);
@@ -499,7 +526,7 @@ namespace INTV.Core.Model
         }
 
         /// <summary>
-        ///   Checks if the given ROM's format is compatible with the given format.
+        /// Checks if the given ROM's format is compatible with the given format.
         /// </summary>
         /// <param name="rom">The ROM whose format's compatibility is to be checked.</param>
         /// <param name="romFormat">The other ROM format.</param>
@@ -515,7 +542,7 @@ namespace INTV.Core.Model
                 if (!match && (rom.Format == RomFormat.Luigi) && considerOriginalFormat)
                 {
                     var luigiHeader = rom.GetLuigiHeader();
-                    match = (luigiHeader != null) && rom.Format.IsCompatibleWithRomFormat(luigiHeader.OriginalRomFormat);
+                    match = (luigiHeader != null) && romFormat.IsCompatibleWithRomFormat(luigiHeader.OriginalRomFormat);
                 }
             }
             return match;
@@ -563,18 +590,19 @@ namespace INTV.Core.Model
                         break;
                     case RomFormat.Luigi:
                         var luigiHeader = rom.GetLuigiHeader();
-                        switch (luigiHeader.OriginalRomFormat)
+                        if (luigiHeader != null)
                         {
-                            case RomFormat.Bin:
+                            match = programIdentifier.Id == luigiHeader.Uid; // probably will never use this result, but...
+                            if (luigiHeader.OriginalRomFormat == RomFormat.Bin)
+                            {
                                 match = (programIdentifier.DataCrc == luigiHeader.OriginalRomCrc32) && (!cfgCrcMustMatch || (programIdentifier.OtherData == luigiHeader.OriginalCfgCrc32));
-                                break;
-                            case RomFormat.Rom:
+                            }
+                            else if (luigiHeader.OriginalRomFormat == RomFormat.Rom)
+                            {
                                 match = programIdentifier.DataCrc == luigiHeader.OriginalRomCrc32;
-                                break;
-                            default:
-                                // Should we throw here? This situation (as of 2. Sept. 2018) cannot exist.
-                                match = programIdentifier.Id == luigiHeader.Uid;
-                                break;
+                            }
+
+                            // else .. Should we throw here? This situation (as of 2. Sept. 2018) cannot exist.
                         }
                         break;
                     default:
@@ -602,7 +630,7 @@ namespace INTV.Core.Model
                     case RomFormat.Intellicart:
                     case RomFormat.CuttleCart3:
                     case RomFormat.CuttleCart3Advanced:
-                        rom.GetRomFileMetadata();
+                        programMetadata = rom.GetRomFileMetadata();
                         break;
                     case RomFormat.Luigi:
                         programMetadata = programMetadata = rom.GetLuigiFileMetadata();

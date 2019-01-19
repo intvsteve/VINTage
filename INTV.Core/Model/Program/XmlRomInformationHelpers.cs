@@ -150,6 +150,7 @@ namespace INTV.Core.Model.Program
         /// <param name="featuresToOverride">Known existing features for the ROM that may be overridden. This value may be <c>null</c>.</param>
         /// <returns>The <see cref="IProgramFeatures"/> for the ROM.</returns>
         /// <remarks>If <paramref name="featuresToOverride"/> is <c>null</c>, a default set of features will act as the starting point.</remarks>
+        /// <remarks>Only database columns already present in <paramref name="xmlRomInformation"/> will be updated.</remarks>
         public static IProgramFeatures GetProgramFeatures(this XmlRomInformation xmlRomInformation, IProgramFeatures featuresToOverride)
         {
             var programFeaturesBuilder = new ProgramFeaturesBuilder().WithInitialFeatures(featuresToOverride);
@@ -159,7 +160,7 @@ namespace INTV.Core.Model.Program
             {
                 try
                 {
-                    switch (column.Name.ToRomInfoDatabaseColumnName())
+                    switch (column.Name.ToXmlRomInformationDatabaseColumnName())
                     {
                         case XmlRomInformationDatabaseColumnName.type:
                             programType = RomTypeStringToGeneralFeaturesConverter.Instance.Convert(column.Value);
@@ -223,9 +224,6 @@ namespace INTV.Core.Model.Program
                 catch (OverflowException)
                 {
                 }
-                catch (NullReferenceException)
-                {
-                }
                 catch (ArgumentException)
                 {
                 }
@@ -257,77 +255,69 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <param name="xmlRomInformation">The instance of <see cref="XmlRomInformation"/> whose features-related column values are to be set.</param>
         /// <param name="features">The features to use to set the column values.</param>
+        /// <remarks>Only database columns already present in <paramref name="xmlRomInformation"/> will be updated.</remarks>
         public static void SetProgramFeatures(this XmlRomInformation xmlRomInformation, IProgramFeatures features)
         {
             if (features != null)
             {
                 foreach (var column in xmlRomInformation.RomInfoDatabaseColumns)
                 {
-                    var columnName = column.Name.ToRomInfoDatabaseColumnName();
-                    try
+                    var columnName = column.Name.ToXmlRomInformationDatabaseColumnName();
+                    switch (columnName)
                     {
-                        switch (columnName)
-                        {
-                            case XmlRomInformationDatabaseColumnName.ntsc:
-                                column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Ntsc);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.pal:
-                                column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Pal);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.general_features:
-                                column.Value = GeneralFeaturesToStringConverter.Instance.Convert(features.GeneralFeatures);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.kc:
-                                column.Value = KeyboardComponentFeaturesToStringConverter.Instance.Convert(features.KeyboardComponent);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.sva:
-                                column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.SuperVideoArcade);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.ivoice:
-                                column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Intellivoice);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.intyii:
-                                column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.IntellivisionII);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.ecs:
-                                column.Value = EcsFeaturesToStringConverter.Instance.Convert(features.Ecs);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.tutor:
-                                column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Tutorvision);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.icart:
-                                column.Value = IntellicartCC3FeaturesToStringConverter.Instance.Convert(features.Intellicart);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.cc3:
-                                column.Value = CuttleCart3FeaturesToStringConverter.Instance.Convert(features.CuttleCart3);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.jlp:
-                                column.Value = JlpFeaturesToStringConverter.Instance.Convert(features.Jlp, features.JlpHardwareVersion);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.jlp_savegame:
-                                column.Value = MinimumFlashSectorsToStringConverter.Instance.Convert(features.JlpFlashMinimumSaveSectors);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.lto_flash:
-                                column.Value = LtoFlashFeaturesToStringConverter.Instance.Convert(features.LtoFlash);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.bee3:
-                                column.Value = Bee3FeaturesToStringConverter.Instance.Convert(features.Bee3);
-                                break;
-                            case XmlRomInformationDatabaseColumnName.hive:
-                                column.Value = HiveFeaturesToStringConverter.Instance.Convert(features.Hive);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    catch (ArgumentException)
-                    {
-                    }
-                    catch (FormatException)
-                    {
-                    }
-                    catch (OverflowException)
-                    {
+                        case XmlRomInformationDatabaseColumnName.ntsc:
+                            column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Ntsc);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.pal:
+                            column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Pal);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.general_features:
+                            column.Value = GeneralFeaturesToStringConverter.Instance.Convert(features.GeneralFeatures);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.type:
+                            column.Value = GeneralFeaturesToStringConverter.Instance.ConvertToRomType(features.GeneralFeatures);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.kc:
+                            column.Value = KeyboardComponentFeaturesToStringConverter.Instance.Convert(features.KeyboardComponent);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.sva:
+                            column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.SuperVideoArcade);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.ivoice:
+                            column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Intellivoice);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.intyii:
+                            column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.IntellivisionII);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.ecs:
+                            column.Value = EcsFeaturesToStringConverter.Instance.Convert(features.Ecs);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.tutor:
+                            column.Value = FeatureCompatibilityToStringConverter.Instance.Convert(features.Tutorvision);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.icart:
+                            column.Value = IntellicartCC3FeaturesToStringConverter.Instance.Convert(features.Intellicart);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.cc3:
+                            column.Value = CuttleCart3FeaturesToStringConverter.Instance.Convert(features.CuttleCart3);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.jlp:
+                            column.Value = JlpFeaturesToStringConverter.Instance.Convert(features.Jlp, features.JlpHardwareVersion);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.jlp_savegame:
+                            column.Value = MinimumFlashSectorsToStringConverter.Instance.Convert(features.JlpFlashMinimumSaveSectors);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.lto_flash:
+                            column.Value = LtoFlashFeaturesToStringConverter.Instance.Convert(features.LtoFlash);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.bee3:
+                            column.Value = Bee3FeaturesToStringConverter.Instance.Convert(features.Bee3);
+                            break;
+                        case XmlRomInformationDatabaseColumnName.hive:
+                            column.Value = HiveFeaturesToStringConverter.Instance.Convert(features.Hive);
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -350,7 +340,7 @@ namespace INTV.Core.Model.Program
             {
                 try
                 {
-                    switch (column.Name.ToRomInfoDatabaseColumnName())
+                    switch (column.Name.ToXmlRomInformationDatabaseColumnName())
                     {
                         case XmlRomInformationDatabaseColumnName.title:
                             programMetadataBuilder.WithLongNames(StringToStringEnumerableConverter.Instance.Convert(column.Value, 60));
@@ -395,7 +385,7 @@ namespace INTV.Core.Model.Program
                             programMetadataBuilder.WithLicenses(StringToStringEnumerableConverter.Instance.Convert(column.Value));
                             break;
                         case XmlRomInformationDatabaseColumnName.contact_info:
-                            programMetadataBuilder.WithContactInformation(StringToStringEnumerableConverter.Instance.Convert(column.Value));
+                            programMetadataBuilder.WithContactInformation(StringToStringEnumerableConverter.Instance.Convert(column.Value, withHtmlDecoding: false));
                             break;
                         case XmlRomInformationDatabaseColumnName.source: // accumulated in additional info
                             var sources = StringToStringEnumerableConverter.Instance.Convert(column.Value);
@@ -435,9 +425,6 @@ namespace INTV.Core.Model.Program
                 catch (ArgumentException)
                 {
                 }
-                catch (NullReferenceException)
-                {
-                }
             }
             if (additionalInformation != null)
             {
@@ -458,7 +445,7 @@ namespace INTV.Core.Model.Program
             {
                 foreach (var column in xmlRomInformation.RomInfoDatabaseColumns)
                 {
-                    var columnName = column.Name.ToRomInfoDatabaseColumnName();
+                    var columnName = column.Name.ToXmlRomInformationDatabaseColumnName();
                     try
                     {
                         switch (columnName)
@@ -533,21 +520,16 @@ namespace INTV.Core.Model.Program
                                 column.Value = StringEnumerableToStringConverter.Instance.Convert(metadata.AdditionalInformation);
                                 break;
                             case XmlRomInformationDatabaseColumnName.license:
+                                column.Value = StringEnumerableToStringConverter.Instance.Convert(metadata.Licenses);
                                 break;
                             case XmlRomInformationDatabaseColumnName.contact_info:
-                                column.Value = StringEnumerableToStringConverter.Instance.Convert(metadata.ContactInformation);
+                                column.Value = StringEnumerableToStringConverter.Instance.Convert(metadata.ContactInformation, withHtmlEncoding: false);
                                 break;
                             default:
                                 break;
                         }
                     }
-                    catch (FormatException)
-                    {
-                    }
                     catch (ArgumentException)
-                    {
-                    }
-                    catch (NullReferenceException)
                     {
                     }
                 }
@@ -564,14 +546,14 @@ namespace INTV.Core.Model.Program
                 var romFormat = RomFormat.None;
                 switch (source)
                 {
-                    case "BIN+CFG":
+                    case XmlRomInformationDatabaseColumn.RomFormatValueBin:
                         romFormat = RomFormat.Bin;
                         break;
-                    case "ROM":
+                    case XmlRomInformationDatabaseColumn.RomFormatValueRom:
                         // NOTE: This is a catch-all for .ROM and its sub-types (CC3 and CC3-Advanced).
                         romFormat = RomFormat.Rom;
                         break;
-                    case "LUIGI":
+                    case XmlRomInformationDatabaseColumn.RomFormatValueLuigi:
                         romFormat = RomFormat.Luigi;
                         break;
                     default:
@@ -590,10 +572,10 @@ namespace INTV.Core.Model.Program
                 var generalFeatures = GeneralFeatures.None;
                 switch (source)
                 {
-                    case "BIOS":
+                    case XmlRomInformationDatabaseColumn.RomTypeValueSystem:
                         generalFeatures |= GeneralFeatures.SystemRom;
                         break;
-                    case "Program":
+                    case XmlRomInformationDatabaseColumn.RomTypeValueRom:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -714,6 +696,8 @@ namespace INTV.Core.Model.Program
             /// <exception cref="System.ArgumentException">Thrown if the string describes a raw bits value that is invalid.</exception>
             /// <exception cref="System.FormatException">Thrown if the string cannot be parsed.</exception>
             /// <exception cref="System.OverflowException">Thrown if the raw bits are out of range.</exception>
+            /// <remarks>Note that the INTV Funhouse database repurposes the save data segment count bits in the raw JlpFeatures flags
+            /// to encode JLP hardware version. JLP Flash save data segment count is retrieved separately via the jlp_save column.</remarks>
             public JlpHardwareVersion GetJlpHardwareVersion(string source)
             {
                 var rawFeatureBits = StringToRawFeatureBitsConverter.Instance.Convert(source);
@@ -733,7 +717,7 @@ namespace INTV.Core.Model.Program
             public override ushort Convert(string source)
             {
                 var value = ushort.Parse(source, CultureInfo.InvariantCulture);
-                if (value > JlpFeaturesHelpers.JlpFlashBaseSaveDataSectorsCountMask)
+                if (value > JlpFeaturesHelpers.MaxTheoreticalJlpFlashSectorUsage)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
@@ -744,9 +728,19 @@ namespace INTV.Core.Model.Program
         private class StringToLtoFlashFeaturesConverter : StringToFeatureBitsConverter<StringToLtoFlashFeaturesConverter, LtoFlashFeatures>
         {
             /// <inheritdoc />
+            /// <remarks>Note that the INTV Funhouse database repurposes the save data segment count bits in the raw LtoFlashFeatures flags
+            /// to encode features above bit 15, starting with <see cref="LtoFlashFeatures.FsdBit0"/>. For example, <see cref="LtoFlashFeatures.LtoFlashMemoryMapped"/>
+            /// is stored in <see cref="LtoFlashFeatures.FsdBit0"/>. The flash save data segment count is retrieved separately via the
+            /// jlp_save column.</remarks>
             public override LtoFlashFeatures Convert(string source)
             {
                 var ltoFlashFeatures = (LtoFlashFeatures)ConvertCore(source, LtoFlashFeaturesHelpers.FeaturesMask);
+                var rawFeatureBits = StringToRawFeatureBitsConverter.Instance.Convert(source);
+                var additionalLtoFlashFeatureBits = (LtoFlashFeatures)System.Convert.ToUInt32(rawFeatureBits);
+                if (additionalLtoFlashFeatureBits.HasFlag(LtoFlashFeatures.FsdBit0))
+                {
+                    ltoFlashFeatures |= LtoFlashFeatures.LtoFlashMemoryMapped;
+                }
                 return ltoFlashFeatures;
             }
         }
@@ -822,6 +816,18 @@ namespace INTV.Core.Model.Program
                 // System ROM is handled in a separate conversion.
                 var rawFeatureBits = (source & GeneralFeaturesHelpers.ValidFeaturesMask) & ~GeneralFeatures.SystemRom;
                 return (uint)rawFeatureBits;
+            }
+
+            /// <summary>
+            /// Converts general features to 'BIOS' or 'Program' for a ROM type.
+            /// </summary>
+            /// <param name="source">General features from program information.</param>
+            /// <returns>A string that is used for the value of the 'type' column value for a <see cref="XmlRomInformationDatabaseColumn"/>.</returns>
+            public string ConvertToRomType(GeneralFeatures source)
+            {
+                var generalFeatures = source & GeneralFeaturesHelpers.ValidFeaturesMask;
+                var romTypeString = generalFeatures.HasFlag(GeneralFeatures.SystemRom) ? XmlRomInformationDatabaseColumn.RomTypeValueSystem : XmlRomInformationDatabaseColumn.RomTypeValueRom;
+                return romTypeString;
             }
         }
 
@@ -901,7 +907,7 @@ namespace INTV.Core.Model.Program
             public override string Convert(ushort source)
             {
                 var value = "-1";
-                if ((source > 0) && (source <= JlpFeaturesHelpers.MaxJlpFlashSectorUsage))
+                if ((source > 0) && (source <= JlpFeaturesHelpers.MaxTheoreticalJlpFlashSectorUsage))
                 {
                     value = source.ToString(CultureInfo.InvariantCulture);
                 }
@@ -914,7 +920,12 @@ namespace INTV.Core.Model.Program
             /// <inheritdoc />
             protected override uint GetRawFeatureBits(LtoFlashFeatures source)
             {
-                var rawFeatureBits = source & LtoFlashFeaturesHelpers.ValidFeaturesMask;
+                var rawFeatureBits = (source & ~LtoFlashFeatures.LtoFlashMemoryMapped) & LtoFlashFeaturesHelpers.ValidFeaturesMask;
+                if (source.HasFlag(LtoFlashFeatures.LtoFlashMemoryMapped))
+                {
+                    // Relocate this to fit in the lower 16-bits, which have masked out the flash sector usage bits.
+                    rawFeatureBits |= LtoFlashFeatures.FsdBit0;
+                }
                 return (uint)rawFeatureBits;
             }
         }
@@ -946,9 +957,22 @@ namespace INTV.Core.Model.Program
             /// <inheritdoc />
             public override IEnumerable<string> Convert(string source)
             {
+                return Convert(source, withHtmlDecoding: true);
+            }
+
+            /// <summary>
+            /// Splits the given string using the '|' character, optionally decoding HTML within the given string.
+            /// </summary>
+            /// <param name="source">The string to convert.</param>
+            /// <param name="withHtmlDecoding">If <c>true</c>, run strings through the registered HTML string decoder, else leave unchanged.</param>
+            /// <returns>An enumerable of strings.</returns>
+            /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="source"/> is null or empty, or no viable entries exist.</exception>
+            public IEnumerable<string> Convert(string source, bool withHtmlDecoding)
+            {
                 if (!string.IsNullOrEmpty(source))
                 {
-                    var strings = source.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.DecodeHtmlString().Trim()).Where(s => s.Length > 0);
+                    Func<string, string> selector = s => withHtmlDecoding ? StringUtilities.DecodeHtmlString(s) : s;
+                    var strings = source.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(s => selector(s).Trim()).Where(s => s.Length > 0);
                     if (!strings.Any())
                     {
                         throw new ArgumentOutOfRangeException();
@@ -991,10 +1015,28 @@ namespace INTV.Core.Model.Program
             /// <inheritdoc />
             public override string Convert(IEnumerable<string> source)
             {
+                return Convert(source, withHtmlEncoding: true);
+            }
+
+            /// <summary>
+            /// Joins the given enumerable of strings using the '|' character, optionally encoding HTML within the given strings.
+            /// </summary>
+            /// <param name="source">The strings to convert.</param>
+            /// <param name="withHtmlEncoding">If <c>true</c>, run strings through the registered HTML string encoder, else leave unchanged.</param>
+            /// <returns>A string.</returns>
+            public string Convert(IEnumerable<string> source, bool withHtmlEncoding)
+            {
                 var serializedStringEnumerable = string.Empty;
                 if ((source != null) && source.Any())
                 {
-                    serializedStringEnumerable = string.Join("|", source.Select(s => s.EncodeHtmlString()));
+                    if (withHtmlEncoding)
+                    {
+                        serializedStringEnumerable = string.Join("|", source.Select(s => s.EncodeHtmlString()));
+                    }
+                    else
+                    {
+                        serializedStringEnumerable = string.Join("|", source);
+                    }
                 }
                 return serializedStringEnumerable;
             }
@@ -1010,8 +1052,9 @@ namespace INTV.Core.Model.Program
                     if (dateParts.Length == 3)
                     {
                         var dateTimeOffset = DateTimeOffset.ParseExact(source, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                        var dateTime = new MetadataDateTime(dateTimeOffset, MetadataDateTimeFlags.Year | MetadataDateTimeFlags.Month | MetadataDateTimeFlags.Day);
+                        var dateTime = new MetadataDateTimeBuilder(dateTimeOffset.Year).WithMonth(dateTimeOffset.Month).WithDay(dateTimeOffset.Day).Build();
                         yield return dateTime;
+                        yield break;
                     }
                 }
                 throw new ArgumentOutOfRangeException();

@@ -27,26 +27,21 @@ namespace INTV.Core.Model
     /// <summary>
     /// Model for the Entertainment Computer System.
     /// </summary>
-    public class Ecs : Peripheral
+    public sealed class Ecs : Peripheral
     {
-        private List<IConnection> _connections;
-
         /// <summary>
         /// Initializes a new instance of Ecs.
         /// </summary>
         public Ecs()
         {
-            _connections = new List<IConnection>() { new MemoryMap(0, 0, null), new CartridgePort("ECS") };
+            Connections = new List<IConnection>() { new MemoryMap(0, 0, null), new CartridgePort("ECS") };
+            Name = "ECS";
         }
 
         #region IPeripheral
 
         /// <inheritdoc />
-        public override IEnumerable<IConnection> Connections
-        {
-            get { return _connections; }
-            protected set { }
-        }
+        public override IEnumerable<IConnection> Connections { get; protected set; }
 
         /// <inheritdoc />
         public override bool IsRomCompatible(IProgramDescription programDescription)

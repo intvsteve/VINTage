@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomFileMetadataProgramInformation.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2018 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -31,10 +31,11 @@ namespace INTV.Core.Model.Program
         /// <summary>
         /// Initializes a new instance of the <see cref="INTV.Core.Model.Program.RomFileMetadataProgramInformation"/> class.
         /// </summary>
-        /// <param name="rom">The ROM from which program information is collected.</param>
+        /// <param name="rom">The ROM whose metadata program information is desired. If not a RomFormatRom, the
+        /// metadata will be empty, and the features will be generic unrecognized ROM features.</param>
         public RomFileMetadataProgramInformation(IRom rom)
         {
-            _features = ProgramFeatures.DefaultFeatures.Clone();
+            _features = ProgramFeatures.GetUnrecognizedRomFeatures();
             Metadata = Enumerable.Empty<RomMetadataBlock>();
             var romFormatRom = Rom.AsSpecificRomType<RomFormatRom>(rom);
             if (romFormatRom != null)
@@ -48,7 +49,7 @@ namespace INTV.Core.Model.Program
                 stringMetaData = Metadata.FirstOrDefault(m => m.Type == RomMetadataIdTag.ShortTitle) as RomMetadataString;
                 if ((stringMetaData != null) && !string.IsNullOrEmpty(stringMetaData.StringValue))
                 {
-                    ShortName = stringMetaData.StringValue;
+                    _shortName = stringMetaData.StringValue;
                 }
                 var date = Metadata.OfType<RomMetadataDate>().FirstOrDefault(d => d.Type == RomMetadataIdTag.ReleaseDate);
                 if ((date != null) && date.Date.Flags.HasFlag(MetadataDateTimeFlags.Year))
@@ -112,6 +113,14 @@ namespace INTV.Core.Model.Program
         private ProgramFeatures _features;
 
         /// <inheritdoc />
+        public override string ShortName
+        {
+            get { return _shortName; }
+            set { _shortName = value; }
+        }
+        private string _shortName;
+
+        /// <inheritdoc />
         public override IEnumerable<CrcData> Crcs
         {
             get { yield return _crc; }
@@ -143,7 +152,7 @@ namespace INTV.Core.Model.Program
         /// <inheritdoc />
         public override IEnumerable<string> Publishers
         {
-            get { return Metadata.OfType<RomMetadataString>().Where(m => m.Type == RomMetadataIdTag.Publisher).Select(m => m.StringValue); }
+            get { return Metadata.OfType<RomMetadataPublisher>().Where(m => m.Type == RomMetadataIdTag.Publisher).Select(m => m.Publisher); }
         }
 
         /// <inheritdoc />
@@ -244,7 +253,7 @@ namespace INTV.Core.Model.Program
         /// <inheritdoc />
         public override bool AddCrc(uint newCrc, string crcDescription, IncompatibilityFlags incompatibilities)
         {
-            throw new System.NotImplementedException();
+            throw new System.InvalidOperationException();
         }
 
         #endregion // IProgramInformation

@@ -58,6 +58,7 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public bool IsRomCompatible(IProgramDescription programDescription)
         {
+            // TODO: Perhaps this is not actually always the case. E.g. the standard GROM may not work for Tutorvision games?
             return true;
         }
     }

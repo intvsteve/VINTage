@@ -1,5 +1,5 @@
 ﻿// <copyright file="Fork.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -441,7 +441,7 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <inheritdoc />
-        protected override int Deserialize(INTV.Core.Utility.BinaryReader reader)
+        public override int Deserialize(INTV.Core.Utility.BinaryReader reader)
         {
             StartingVirtualBlock = reader.ReadUInt16();
             byte[] rawuInt = new byte[4];

@@ -11,10 +11,14 @@
     <AssemblyName>INTV.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -91,6 +95,7 @@
     <Compile Include="Model\LuigiScrambleKeyBlock.cs" />
     <Compile Include="Model\MessageSeverity.cs" />
     <Compile Include="Model\MetadataDateTime.cs" />
+    <Compile Include="Model\MetadataDateTimeBuilder.cs" />
     <Compile Include="Model\MetadataDateTimeFlags.cs" />
     <Compile Include="Model\MetadataHelpers.cs" />
     <Compile Include="Model\Program\Bee3Features.cs" />
@@ -171,6 +176,7 @@
     <Compile Include="Model\RomMetadataPublisher.cs" />
     <Compile Include="Model\RomMetadataString.cs" />
     <Compile Include="Model\StatusMessage.cs" />
+    <Compile Include="Model\StatusMessageEventArgs.cs" />
     <Compile Include="Model\Stic\Color.cs" />
     <Compile Include="Model\Stic\CsForegroundColor.cs" />
     <Compile Include="Model\Stic\FgBgBackgroundColor.cs" />

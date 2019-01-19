@@ -1,5 +1,5 @@
 ﻿// <copyright file="KeyboardComponentFeatures.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -142,5 +142,19 @@ namespace INTV.Core.Model.Program
         /// Mask for extracting Microsoft Basic cartridge compatibility.
         /// </summary>
         public const KeyboardComponentFeatures BasicMask = KeyboardComponentFeatures.BasicIncompatible | KeyboardComponentFeatures.BasicTolerated | KeyboardComponentFeatures.BasicRequired;
+
+        /// <summary>
+        /// Converts KeyboardComponent features to LuigiFeatureFlags.
+        /// </summary>
+        /// <param name="features">The features to convert.</param>
+        /// <returns>The compatibility represented as appropriate LuigiFeatureFlags.</returns>
+        /// <remarks>The additional aspects described by <see cref="KeyboardComponentFeatures"/> are not retained in
+        /// <see cref="LuigiFeatureFlags"/>, only basic compatibility.</remarks>
+        public static LuigiFeatureFlags ToLuigiFeatureFlags(this KeyboardComponentFeatures features)
+        {
+            var compatibilty = (FeatureCompatibility)features & FeatureCompatibilityHelpers.ValidFeaturesMask;
+            var luigiFeatureFlags = compatibilty.ToLuigiFeatureFlags(FeatureCategory.KeyboardComponent);
+            return luigiFeatureFlags;
+        }
     }
 }

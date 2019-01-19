@@ -146,7 +146,8 @@ namespace INTV.Core.Utility
         /// <param name="format">A C-style format specifier.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The formatted output string.</returns>
-        /// <remarks>Adapted from: http://www.codeproject.com/Articles/19274/A-printf-implementation-in-C</remarks>
+        /// <remarks>Adapted from: http://www.codeproject.com/Articles/19274/A-printf-implementation-in-C </remarks>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static string SPrintf(string format, params object[] parameters)
         {
             var formattedStringBuilder = new StringBuilder();
@@ -162,10 +163,13 @@ namespace INTV.Core.Utility
             {
                 // get parameter index
                 var paramIndex = defaultParamIndex;
-                if (match.Groups[1] != null && match.Groups[1].Value.Length > 0)
+                if (match.Groups[1] != null)
                 {
-                    string val = match.Groups[1].Value.Substring(0, match.Groups[1].Value.Length - 1);
-                    paramIndex = Convert.ToInt32(val) - 1;
+                    if (match.Groups[1].Value.Length > 0)
+                    {
+                        string val = match.Groups[1].Value.Substring(0, match.Groups[1].Value.Length - 1);
+                        paramIndex = Convert.ToInt32(val) - 1;
+                    }
                 }
 
                 // extract format flags
@@ -175,30 +179,36 @@ namespace INTV.Core.Utility
                 var flagPositiveSpace = false;
                 var flagZeroPadding = false;
                 var flagGroupThousands = false;
-                if (match.Groups[2] != null && match.Groups[2].Value.Length > 0)
+                if (match.Groups[2] != null)
                 {
-                    var flags = match.Groups[2].Value;
-
-                    flagAlternate = flags.IndexOf('#') >= 0;
-                    flagLeftToRight = flags.IndexOf('-') >= 0;
-                    flagPositiveSign = flags.IndexOf('+') >= 0;
-                    flagPositiveSpace = flags.IndexOf(' ') >= 0;
-                    flagGroupThousands = flags.IndexOf('\'') >= 0;
-
-                    // positive + indicator overrides a positive space character
-                    if (flagPositiveSign && flagPositiveSpace)
+                    if (match.Groups[2].Value.Length > 0)
                     {
-                        flagPositiveSpace = false;
+                        var flags = match.Groups[2].Value;
+
+                        flagAlternate = flags.IndexOf('#') >= 0;
+                        flagLeftToRight = flags.IndexOf('-') >= 0;
+                        flagPositiveSign = flags.IndexOf('+') >= 0;
+                        flagPositiveSpace = flags.IndexOf(' ') >= 0;
+                        flagGroupThousands = flags.IndexOf('\'') >= 0;
+
+                        // positive + indicator overrides a positive space character
+                        if (flagPositiveSign && flagPositiveSpace)
+                        {
+                            flagPositiveSpace = false;
+                        }
                     }
                 }
 
                 // extract field length and padding character
                 var paddingCharacter = ' ';
                 var fieldLength = int.MinValue;
-                if (match.Groups[3] != null && match.Groups[3].Value.Length > 0)
+                if (match.Groups[3] != null)
                 {
-                    fieldLength = Convert.ToInt32(match.Groups[3].Value);
-                    flagZeroPadding = match.Groups[3].Value[0] == '0';
+                    if (match.Groups[3].Value.Length > 0)
+                    {
+                        fieldLength = Convert.ToInt32(match.Groups[3].Value);
+                        flagZeroPadding = match.Groups[3].Value[0] == '0';
+                    }
                 }
 
                 if (flagZeroPadding)
@@ -215,23 +225,32 @@ namespace INTV.Core.Utility
 
                 // extract field precision
                 var fieldPrecision = int.MinValue;
-                if (match.Groups[4] != null && match.Groups[4].Value.Length > 0)
+                if (match.Groups[4] != null)
                 {
-                    fieldPrecision = Convert.ToInt32(match.Groups[4].Value);
+                    if (match.Groups[4].Value.Length > 0)
+                    {
+                        fieldPrecision = Convert.ToInt32(match.Groups[4].Value);
+                    }
                 }
 
                 // extract short / long indicator
                 var shortLongIndicator = char.MinValue;
-                if (match.Groups[5] != null && match.Groups[5].Value.Length > 0)
+                if (match.Groups[5] != null)
                 {
-                    shortLongIndicator = match.Groups[5].Value[0];
+                    if (match.Groups[5].Value.Length > 0)
+                    {
+                        shortLongIndicator = match.Groups[5].Value[0];
+                    }
                 }
 
                 // extract format specifier
                 var formatSpecifier = char.MinValue;
-                if (match.Groups[6] != null && match.Groups[6].Value.Length > 0)
+                if (match.Groups[6] != null)
                 {
-                    formatSpecifier = match.Groups[6].Value[0];
+                    if (match.Groups[6].Value.Length > 0)
+                    {
+                        formatSpecifier = match.Groups[6].Value[0];
+                    }
                 }
 
                 // default precision is 6 digits if none is specified except
@@ -345,8 +364,8 @@ namespace INTV.Core.Utility
                         break;
 
                     case 's':   // string
-                        formattedString = value.ToString();
-                        if (fieldPrecision >= 0)
+                        formattedString = value == null ? string.Empty : value.ToString();
+                        if (fieldPrecision >= 0 && formattedString.Length >= fieldPrecision)
                         {
                             formattedString = formattedString.Substring(0, fieldPrecision);
                         }
@@ -364,7 +383,14 @@ namespace INTV.Core.Utility
                         ++defaultParamIndex;
                         break;
                     case 'f':   // double
-                        formattedString = FormatNumber(flagGroupThousands ? "n" : "f", flagAlternate, fieldLength, fieldPrecision, flagLeftToRight, flagPositiveSign, flagPositiveSpace, paddingCharacter, value);
+                        if (flagGroupThousands)
+                        {
+                            formattedString = FormatNumber("n", flagAlternate, fieldLength, fieldPrecision, flagLeftToRight, flagPositiveSign, flagPositiveSpace, paddingCharacter, value);
+                        }
+                        else
+                        {
+                            formattedString = FormatNumber("f", flagAlternate, fieldLength, fieldPrecision, flagLeftToRight, flagPositiveSign, flagPositiveSpace, paddingCharacter, value);
+                        }
                         ++defaultParamIndex;
                         break;
 
@@ -388,7 +414,7 @@ namespace INTV.Core.Utility
                         ++defaultParamIndex;
                         break;
 
-                    case 'p':   // pointer
+                    case 'p':   // pointer NOTE: Code coverage during tests depends on bitness of test runner
                         if (value is IntPtr)
                         {
                             if (IntPtr.Size == sizeof(long))
@@ -407,7 +433,7 @@ namespace INTV.Core.Utility
                         formattedString = FormatNumber("d", flagAlternate, fieldLength, int.MinValue, flagLeftToRight, flagPositiveSign, flagPositiveSpace, paddingCharacter, match.Index);
                         break;
 
-                    default:
+                    default:   // unreachable, as all possible matches are covered, and also the switch is gated by requiring success in the regex match
                         formattedString = string.Empty;
                         ++defaultParamIndex;
                         break;
@@ -431,7 +457,7 @@ namespace INTV.Core.Utility
             string formattedNumberString = string.Empty;
             if (IsNumericType(value))
             {
-                formattedNumberString = Convert.ToString(UnboxToLong(value, true), 8);
+                formattedNumberString = Convert.ToString(UnboxToLong(value), 8);
 
                 if (leftToRight || padChar == ' ')
                 {
@@ -503,9 +529,16 @@ namespace INTV.Core.Utility
 
                 if (leftToRight || padChar == ' ')
                 {
-                    if (IsPositive(value, true))
+                    if (IsPositive(value))
                     {
-                        formattedNumberString = (positiveSign ? "+" : (positiveSpace ? " " : string.Empty)) + formattedNumberString;
+                        if (positiveSign)
+                        {
+                            formattedNumberString = "+" + formattedNumberString;
+                        }
+                        else if (positiveSpace)
+                        {
+                            formattedNumberString = " " + formattedNumberString;
+                        }
                     }
                     formattedNumberString = string.Format(lengthFormat, formattedNumberString);
                 }
@@ -519,9 +552,23 @@ namespace INTV.Core.Utility
                     {
                         formattedNumberString = formattedNumberString.PadLeft(fieldLength - 1, padChar);
                     }
-                    if (IsPositive(value, true))
+                    if (IsPositive(value))
                     {
-                        formattedNumberString = (positiveSign ? "+" : (positiveSpace ? " " : (fieldLength != int.MinValue ? padChar.ToString() : string.Empty))) + formattedNumberString;
+                        if (positiveSign)
+                        {
+                            formattedNumberString = "+" + formattedNumberString;
+                        }
+                        else
+                        {
+                            if (positiveSpace)
+                            {
+                                formattedNumberString = " " + formattedNumberString;
+                            }
+                            else if (fieldLength != int.MinValue)
+                            {
+                                formattedNumberString = padChar.ToString() + formattedNumberString;
+                            }
+                        }
                     }
                     else
                     {
@@ -557,38 +604,38 @@ namespace INTV.Core.Utility
         /// Determines whether the specified value is positive.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <param name="zeroIsPositive">if set to <c>true</c> treats 0 as positive.</param>
         /// <returns><c>true</c> if the specified value is positive; otherwise, <c>false</c>.</returns>
-        private static bool IsPositive(object value, bool zeroIsPositive)
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        private static bool IsPositive(object value)
         {
             switch (Type.GetTypeCode(value.GetType()))
             {
                 case TypeCode.SByte:
-                    return zeroIsPositive ? (sbyte)value >= 0 : (sbyte)value > 0;
+                    return (sbyte)value >= 0;
                 case TypeCode.Int16:
-                    return zeroIsPositive ? (short)value >= 0 : (short)value > 0;
+                    return (short)value >= 0;
                 case TypeCode.Int32:
-                    return zeroIsPositive ? (int)value >= 0 : (int)value > 0;
+                    return (int)value >= 0;
                 case TypeCode.Int64:
-                    return zeroIsPositive ? (long)value >= 0 : (long)value > 0;
+                    return (long)value >= 0;
                 case TypeCode.Single:
-                    return zeroIsPositive ? (float)value >= 0 : (float)value > 0;
+                    return (float)value >= 0;
                 case TypeCode.Double:
-                    return zeroIsPositive ? (double)value >= 0 : (double)value > 0;
+                    return (double)value >= 0;
                 case TypeCode.Decimal:
-                    return zeroIsPositive ? (decimal)value >= 0 : (decimal)value > 0;
+                    return (decimal)value >= 0;
                 case TypeCode.Byte:
-                    return zeroIsPositive ? true : (byte)value > 0;
+                    return true;
                 case TypeCode.UInt16:
-                    return zeroIsPositive ? true : (ushort)value > 0;
+                    return true;
                 case TypeCode.UInt32:
-                    return zeroIsPositive ? true : (uint)value > 0;
+                    return true;
                 case TypeCode.UInt64:
-                    return zeroIsPositive ? true : (ulong)value > 0;
-                case TypeCode.Char:
-                    return zeroIsPositive ? true : (char)value != '\0';
+                    return true;
+                ////case TypeCode.Char:
+                ////    return true; // this is unreachable due to caller always checking 'IsNumeric' which returns false for char
                 default:
-                    return false;
+                    return false; // this is unreachable due to caller always checking 'IsNumeric' which returns false for char
             }
         }
 
@@ -599,6 +646,10 @@ namespace INTV.Core.Utility
         /// <returns>A boxed numeric object whose type is unsigned.</returns>
         private static object ToUnsigned(object value)
         {
+            if (value == null)
+            {
+                return null;
+            }
             switch (Type.GetTypeCode(value.GetType()))
             {
                 case TypeCode.SByte:
@@ -628,7 +679,8 @@ namespace INTV.Core.Utility
             }
         }
 
-        private static long UnboxToLong(object value, bool round)
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        private static long UnboxToLong(object value)
         {
             switch (Type.GetTypeCode(value.GetType()))
             {
@@ -649,13 +701,13 @@ namespace INTV.Core.Utility
                 case TypeCode.UInt64:
                     return (long)((ulong)value);
                 case TypeCode.Single:
-                    return round ? (long)Math.Round((float)value) : (long)((float)value);
+                    return (long)Math.Round((float)value);
                 case TypeCode.Double:
-                    return round ? (long)Math.Round((double)value) : (long)((double)value);
+                    return (long)Math.Round((double)value);
                 case TypeCode.Decimal:
-                    return round ? (long)Math.Round((decimal)value) : (long)((decimal)value);
+                    return (long)Math.Round((decimal)value);
                 default:
-                    return 0;
+                    return 0; // this is unreachable due to caller always checking 'IsNumeric' which returns false for char
             }
         }
 

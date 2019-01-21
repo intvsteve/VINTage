@@ -480,7 +480,7 @@ namespace INTV.Core.Model
             if ((rom.Format == RomFormat.Bin) && (string.IsNullOrEmpty(rom.ConfigPath) || !StreamUtilities.FileExists(rom.ConfigPath)))
             {
                 var cfgFilePath = GetStockCfgFile(rom.Crc, rom.RomPath, programInfo);
-                usesStockCfgFile = !string.IsNullOrEmpty(cfgFilePath); // && StreamUtilities.FileExists(cfgFilePath); // GetStockCfgFile() never returns a non-empty path if the file does not exist
+                usesStockCfgFile = !string.IsNullOrEmpty(cfgFilePath);
                 if (usesStockCfgFile)
                 {
                     rom.UpdateCfgFile(cfgFilePath);

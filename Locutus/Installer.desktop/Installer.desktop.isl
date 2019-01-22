@@ -4081,14 +4081,14 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PatchSequence</td><td>1.0.0</td></row>
 		<row><td>SaveAsSchema</td><td/></row>
 		<row><td>SccEnabled</td><td>0</td></row>
-		<row><td>SccPath</td><td>SAK</td></row>
+		<row><td>SccPath</td><td></td></row>
 		<row><td>SchemaVersion</td><td>776</td></row>
 		<row><td>SwidtagLocalComponent</td><td>ISO19770_LocalTag</td></row>
 		<row><td>SwidtagSystemComponent</td><td>ISO19770_SystemTag</td></row>
 		<row><td>Type</td><td>MSIE</td></row>
-		<row><td>VSSccAuxPath</td><td>SAK</td></row>
-		<row><td>VSSccLocalPath</td><td>SAK</td></row>
-		<row><td>VSSccProvider</td><td>SAK</td></row>
+		<row><td>VSSccAuxPath</td><td></td></row>
+		<row><td>VSSccLocalPath</td><td></td></row>
+		<row><td>VSSccProvider</td><td></td></row>
 	</table>
 
 	<table name="InstallUISequence">

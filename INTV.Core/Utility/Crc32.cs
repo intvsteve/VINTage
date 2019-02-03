@@ -66,13 +66,14 @@ namespace INTV.Core.Utility
         /* ======================================================================== */
 
         /// <summary>
-        /// The initial value to use for a CRC32.
+        /// The initial value to use for a CRC32 (inverting).
         /// </summary>
         public const uint InitialValue = 0xffffffff;
 
         /// <summary>
         /// Lookup table used for the CRC-32 code.
         /// </summary>
+        /// Default lookup table used for the CRC-32 code. Polynomial: 0xEDB88320
         private static readonly uint[] Crc32Table =
         {
             0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419,

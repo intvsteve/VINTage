@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiDataBlockTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -114,7 +114,7 @@ namespace INTV.Core.Tests.Model
 
                 var luigiDataBlock = LuigiDataBlock.Inflate(fakeLuigiBlockData);
 
-                Assert.Equal(LuigiDataBlockType.UnknownBlockType, luigiDataBlock.Type);
+                Assert.Equal(LuigiTestDataBlock.BlockType, luigiDataBlock.Type);
                 Assert.Equal(crc, luigiDataBlock.HeaderCrc);
                 Assert.Equal(0u, luigiDataBlock.PayloadCrc);
             }

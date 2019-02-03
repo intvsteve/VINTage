@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiDataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2018 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -173,7 +173,7 @@ namespace INTV.Core.Model
                     dataBlock = new LuigiEndOfFileBlock();
                     break;
                 default:
-                    dataBlock = new LuigiDataBlock(LuigiDataBlockType.UnknownBlockType); // TODO: should this preserve block type?
+                    dataBlock = new LuigiDataBlock((LuigiDataBlockType)blockType);
                     break;
             }
             dataBlock._deserializeByteCount = BlockTypeSize;

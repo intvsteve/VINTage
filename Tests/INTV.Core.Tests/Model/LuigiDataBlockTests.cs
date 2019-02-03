@@ -120,6 +120,46 @@ namespace INTV.Core.Tests.Model
             }
         }
 
+        [Fact]
+        public void LuigiDataBlock_DeserializeEmptyBlock_ThrowsEndOfStreamException()
+        {
+            var truncatedDataBlock = new byte[0];
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializeTruncatedPayloadLengthBlock_ThrowsEndOfStreamException()
+        {
+            var truncatedDataBlock = new byte[] { 0x00, 0x10 };
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializeTruncatedHeaderCrcBlock_ThrowsEndOfStreamException()
+        {
+            var truncatedDataBlock = new byte[] { 0x00, 0x01, 0x00 };
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializeTruncatedPayloadCrcBlock_ThrowsEndOfStreamException()
+        {
+            var truncatedDataBlock = new byte[] { 0x00, 0x01, 0x00, 0x11, 0x22 };
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+            }
+        }
+
         private class LuigiTestDataBlock : LuigiDataBlock
         {
             public const LuigiDataBlockType BlockType = (LuigiDataBlockType)0xFD;

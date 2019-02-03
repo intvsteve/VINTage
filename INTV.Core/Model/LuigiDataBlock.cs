@@ -19,6 +19,8 @@
 // </copyright>
 
 using System;
+using System.Globalization;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model
 {
@@ -197,6 +199,8 @@ namespace INTV.Core.Model
             var bytesRead = PayloadLengthSize;
             HeaderCrc = reader.ReadByte();
             bytesRead += HeaderChecksumSize;
+            ValidateHeaderCrc();
+
             if (Length > 0)
             {
                 PayloadCrc = reader.ReadUInt32();
@@ -225,6 +229,19 @@ namespace INTV.Core.Model
                 throw new System.IO.EndOfStreamException();
             }
             return Length;
+        }
+
+        private void ValidateHeaderCrc()
+        {
+            var headerCrc = Crc8.Update(Crc8.InitialValue, (byte)Type);
+            foreach (var value in BitConverter.GetBytes(Length))
+            {
+                headerCrc = Crc8.Update(headerCrc, value);
+            }
+            if (headerCrc != HeaderCrc)
+            {
+                throw new System.IO.InvalidDataException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, headerCrc, HeaderCrc));
+            }
         }
     }
 }

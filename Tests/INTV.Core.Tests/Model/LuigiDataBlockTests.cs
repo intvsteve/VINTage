@@ -153,7 +153,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void LuigiDataBlock_DeserializeTruncatedPayloadCrcBlock_ThrowsEndOfStreamException()
         {
-            var truncatedDataBlock = new byte[] { 0x00, 0x01, 0x00, 0x11, 0x22 };
+            var truncatedDataBlock = new byte[] { 0x00, 0x01, 0x00, 0xe5, 0x22 };
             using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
             {
                 Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
@@ -163,7 +163,7 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void LuigiDataBlock_DeserializeTruncatedPayloadBlock_ThrowsEndOfStreamException()
         {
-            var truncatedDataBlock = new byte[] { (byte)LuigiTestDataBlock.BlockType, 0x01, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55 };
+            var truncatedDataBlock = new byte[] { (byte)LuigiTestDataBlock.BlockType, 0x01, 0x00, 0x77, 0x22, 0x33, 0x44, 0x55 };
             using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
             {
                 Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));

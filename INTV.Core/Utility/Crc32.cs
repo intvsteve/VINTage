@@ -275,7 +275,7 @@ namespace INTV.Core.Utility
         /// <param name="data">The new data to incorporate into the CRC.</param>
         /// <returns>The new CRC value.</returns>
         /// <remarks>The 32-bit CRC is set up as a right-shifting CRC with no inversions.</remarks>
-        private static uint Update(uint crc, byte data)
+        public static uint Update(uint crc, byte data)
         {
             return (crc >> 8) ^ Crc32Table[(crc ^ data) & 0xFF];
         }

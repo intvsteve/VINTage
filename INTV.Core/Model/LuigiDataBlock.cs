@@ -232,7 +232,10 @@ namespace INTV.Core.Model
             return Length;
         }
 
-        private void ValidateHeaderCrc()
+        /// <summary>
+        /// Validates the header of a LUIGI data block by comparing the parsed checksum with the actual computed checksum.
+        /// </summary>
+        protected void ValidateHeaderCrc()
         {
             var headerCrc = Crc8.Update(Crc8.InitialValue, (byte)Type);
             foreach (var value in BitConverter.GetBytes(Length))
@@ -245,7 +248,11 @@ namespace INTV.Core.Model
             }
         }
 
-        private void ValidatePayloadCrc(byte[] payload)
+        /// <summary>
+        /// Validates the data payload of a LUIGI data block by comparing the parsed checksum with the actual computed checksum.
+        /// </summary>
+        /// <param name="payload">The payload data whose checksum is to be validated.</param>
+        protected void ValidatePayloadCrc(byte[] payload)
         {
             var payloadCrc = Crc32.OfBlock(payload, Crc32Polynomial.Castagnoli);
             if (payloadCrc != PayloadCrc)

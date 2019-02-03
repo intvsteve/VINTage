@@ -216,9 +216,14 @@ namespace INTV.Core.Model
         /// <remarks>The default implementation merely advances the reader without parsing or even reading
         /// any of the payload into memory. Specific subclasses may override this implementation if
         /// any specific data from the payload is desired.</remarks>
+        /// <exception cref="System.IO.EndOfStreamException">Thrown if the data stream does not contain enough data as specified by payload length.</exception>
         protected virtual int DeserializePayload(Core.Utility.BinaryReader reader)
         {
             reader.BaseStream.Seek(Length, System.IO.SeekOrigin.Current);
+            if (reader.BaseStream.Position > reader.BaseStream.Length)
+            {
+                throw new System.IO.EndOfStreamException();
+            }
             return Length;
         }
     }

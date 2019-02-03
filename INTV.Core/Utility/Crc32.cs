@@ -28,6 +28,27 @@ using System.Linq;
 namespace INTV.Core.Utility
 {
     /// <summary>
+    /// Different 32-bit CRC polynomials supported.
+    /// </summary>
+    public enum Crc32Polynomial
+    {
+        /// <summary>
+        /// The standard CRC-32 (ZIP) polynomial: 0xEDB88320, right-shifting, inverted; see e.g. https://www.scadacore.com/tools/programming-calculators/online-checksum-calculator/
+        /// </summary>
+        Zip,
+
+        /// <summary>
+        /// The CRC-32C (Castagnoli) polynomial: 0x82F63B78, right-shifting, inverted; see e.g. https://www.scadacore.com/tools/programming-calculators/online-checksum-calculator/
+        /// </summary>
+        Castagnoli,
+
+        /// <summary>
+        /// The default CRC-32 polynomial to use.
+        /// </summary>
+        Default = Zip
+    }
+
+    /// <summary>
     /// Provides methods to compute a 32-bit CRC value as specified by the ZIP compression standard.
     /// </summary>
     public static class Crc32

@@ -217,17 +217,18 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="reader">The binary reader containing the data to deserialize to create the object.</param>
         /// <returns>The number of bytes deserialized.</returns>
-        /// <remarks>The default implementation merely advances the reader without parsing or even reading
-        /// any of the payload into memory. Specific subclasses may override this implementation if
+        /// <remarks>The default implementation merely validates that the payload is correct. Specific subclasses may override this implementation if
         /// any specific data from the payload is desired.</remarks>
         /// <exception cref="System.IO.EndOfStreamException">Thrown if the data stream does not contain enough data as specified by payload length.</exception>
+        /// <exception cref="System.IO.InvalidDataException">Thrown if the payload checksum differs from the expected checksum.</exception>
         protected virtual int DeserializePayload(Core.Utility.BinaryReader reader)
         {
-            reader.BaseStream.Seek(Length, System.IO.SeekOrigin.Current);
-            if (reader.BaseStream.Position > reader.BaseStream.Length)
+            var payload = reader.ReadBytes(Length);
+            if (payload.Length < Length)
             {
                 throw new System.IO.EndOfStreamException();
             }
+            ValidatePayloadCrc(payload);
             return Length;
         }
 
@@ -241,6 +242,15 @@ namespace INTV.Core.Model
             if (headerCrc != HeaderCrc)
             {
                 throw new System.IO.InvalidDataException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, headerCrc, HeaderCrc));
+            }
+        }
+
+        private void ValidatePayloadCrc(byte[] payload)
+        {
+            var payloadCrc = Crc32.OfBlock(payload, Crc32Polynomial.Castagnoli);
+            if (payloadCrc != PayloadCrc)
+            {
+                throw new System.IO.InvalidDataException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, payloadCrc, PayloadCrc));
             }
         }
     }

@@ -1,5 +1,5 @@
-﻿// <copyright file="Crc32.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// <copyright file="Crc32.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -17,6 +17,8 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
+
+////#define ENABLE_TABLE_GENERATOR
 
 using System;
 using System.Collections.Generic;
@@ -105,6 +107,43 @@ namespace INTV.Core.Utility
             0x5D681B02, 0x2A6F2B94, 0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B,
             0x2D02EF8D
         };
+
+        /// <summary>
+        /// Populates a 256-element lookup table for a right-shifted CRC32 polynomial.
+        /// </summary>
+        /// <param name="polynomial">The polynomial to use to populate the table.</param>
+        /// <param name="table">Receives the table.</param>
+        /// <param name="stringTable">Receives the table represented as a formatted string, suitable for use in source code.</param>
+        [System.Diagnostics.Conditional("ENABLE_TABLE_GENERATOR")]
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        public static void BuildCrc32Table(uint polynomial, uint[] table, ref string stringTable)
+        {
+            var tableBuilder = new System.Text.StringBuilder();
+            uint crc;
+            for (int i = 0; i < 256; i++)
+            {
+                crc = (uint)i;
+                for (int j = 8; j > 0; j--)
+                {
+                    if ((crc & 1) == 1)
+                    {
+                        crc = (crc >> 1) ^ polynomial;
+                    }
+                    else
+                    {
+                        crc >>= 1;
+                    }
+                }
+
+                table[i] = crc;
+                if (i % 5 == 0)
+                {
+                    tableBuilder.AppendLine();
+                }
+                tableBuilder.AppendFormat("0x{0:X8}, ", crc);
+            }
+            stringTable = tableBuilder.ToString();
+        }
 
         /// <summary>
         /// Compute a CRC value for a file.

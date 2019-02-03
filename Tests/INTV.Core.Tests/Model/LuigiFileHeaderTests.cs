@@ -76,6 +76,188 @@ namespace INTV.Core.Tests.Model
         }
 
         [Fact]
+        public void LuigiFileHeader_DeserializeWithTruncatedMagicKey_ThrowsUnexpectedFileTypeException()
+        {
+            var bogusHeaderMagic = "LT";
+            using (var stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(bogusHeaderMagic)))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    Assert.Throws<UnexpectedFileTypeException>(() => LuigiFileHeader.Inflate(reader));
+                }
+            }
+        }
+
+        [Fact]
+        public void LuigiFileHeader_DeserializeWithFutureVersion_ThrowsInvalidOperationException()
+        {
+            var futureHeader = new byte[]
+            {
+                0x4C, 0x54, 0x4F, 0xD0, // LTO, version -- bogus instead of 0x01
+                0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // features (v1)
+                0x81, 0x93, 0x43, 0xB0, 0x0C, 0x47, 0x3F, 0x12, // UID
+                0x00, 0x00, 0x00, // reserved
+                0x8B // CRC
+            };
+            using (var stream = new System.IO.MemoryStream(futureHeader))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    Assert.Throws<InvalidOperationException>(() => LuigiFileHeader.Inflate(reader));
+                }
+            }
+        }
+
+        [Fact]
+        public void LuigiFileHeader_DeserializeWithBogusCrc_ThrowsInvalidDataException()
+        {
+            var badCrcHeader = new byte[]
+            {
+                0x4C, 0x54, 0x4F, 0x01, // LTO, version
+                0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // features (v1)
+                0x81, 0x93, 0x43, 0xB0, 0x0C, 0x47, 0x3F, 0x12, // UID
+                0x00, 0x00, 0x00, // reserved
+                0x22 // CRC - should be 0x8B
+            };
+            using (var stream = new System.IO.MemoryStream(badCrcHeader))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    var exception = Assert.Throws<System.IO.InvalidDataException>(() => LuigiFileHeader.Inflate(reader));
+                    var expectedMessage = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, 0x8B, 0x22);
+                    Assert.Equal(expectedMessage, exception.Message);
+                }
+            }
+        }
+
+        [Fact]
+        public void LuigiFileHeader_DeserializeWithCorruptedFeatures_ThrowsInvalidDataException()
+        {
+            var badCrcHeader = new byte[]
+            {
+                0x4C, 0x54, 0x4F, 0x01, // LTO, version
+                0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // features (v1) (corrupted)
+                0x81, 0x93, 0x43, 0xB0, 0x0C, 0x47, 0x3F, 0x12, // UID
+                0x00, 0x00, 0x00, // reserved
+                0x8B // CRC
+            };
+            using (var stream = new System.IO.MemoryStream(badCrcHeader))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    var exception = Assert.Throws<System.IO.InvalidDataException>(() => LuigiFileHeader.Inflate(reader));
+                    var expectedMessage = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, 0x61, 0x8B);
+                    Assert.Equal(expectedMessage, exception.Message);
+                }
+            }
+        }
+
+        [Fact]
+        public void LuigiFileHeader_DeserializeWithTruncatedHeaderAfterKey_ThrowsEndOfStreamException()
+        {
+            var truncatedHeader = new byte[]
+            {
+                0x4C, 0x54, 0x4F // LTO
+            };
+            using (var stream = new System.IO.MemoryStream(truncatedHeader))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    Assert.Throws<System.IO.EndOfStreamException>(() => LuigiFileHeader.Inflate(reader));
+                }
+            }
+        }
+
+        [Fact]
+        public void LuigiFileHeader_DeserializeWithTruncatedHeaderInFeatures_ThrowsEndOfStreamException()
+        {
+            var truncatedHeader = new byte[]
+            {
+                0x4C, 0x54, 0x4F, 0x01, // LTO, version
+                0x55, 0x00, 0x00, 0x00, 0x00, 0x00 // features (v1)
+            };
+            using (var stream = new System.IO.MemoryStream(truncatedHeader))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    Assert.Throws<System.IO.EndOfStreamException>(() => LuigiFileHeader.Inflate(reader));
+                }
+            }
+        }
+
+        [Fact]
+        public void LuigiFileHeader_DeserializeWithTruncatedHeaderInFeatures2_ThrowsEndOfStreamException()
+        {
+            var truncatedHeader = new byte[]
+            {
+                0x4C, 0x54, 0x4F, 0x01, // LTO, version
+                0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // features (v1)
+            };
+            using (var stream = new System.IO.MemoryStream(truncatedHeader))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    Assert.Throws<System.IO.EndOfStreamException>(() => LuigiFileHeader.Inflate(reader));
+                }
+            }
+        }
+
+        [Fact]
+        public void LuigiFileHeader_DeserializeWithTruncatedHeaderInUid_ThrowsEndOfStreamException()
+        {
+            var truncatedHeader = new byte[]
+            {
+                0x4C, 0x54, 0x4F, 0x01, // LTO, version
+                0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // features (v1)
+            };
+            using (var stream = new System.IO.MemoryStream(truncatedHeader))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    Assert.Throws<System.IO.EndOfStreamException>(() => LuigiFileHeader.Inflate(reader));
+                }
+            }
+        }
+
+        [Fact]
+        public void LuigiFileHeader_DeserializeWithTruncatedHeaderInReservedData_ThrowsEndOfStreamException()
+        {
+            var truncatedHeader = new byte[]
+            {
+                0x4C, 0x54, 0x4F, 0x01, // LTO, version
+                0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // features (v1)
+                0x81, 0x93, 0x43, 0xB0, 0x0C, 0x47, 0x3F, 0x12, // UID
+                0x00, 0x00, // reserved
+            };
+            using (var stream = new System.IO.MemoryStream(truncatedHeader))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    Assert.Throws<System.IO.EndOfStreamException>(() => LuigiFileHeader.Inflate(reader));
+                }
+            }
+        }
+
+        [Fact]
+        public void LuigiFileHeader_DeserializeWithTruncatedHeader_ThrowsEndOfStreamException()
+        {
+            var truncatedHeader = new byte[]
+            {
+                0x4C, 0x54, 0x4F, 0x01, // LTO, version
+                0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // features (v1)
+                0x81, 0x93, 0x43, 0xB0, 0x0C, 0x47, 0x3F, 0x12, // UID
+                0x00, 0x00, 0x00 // reserved
+            };
+            using (var stream = new System.IO.MemoryStream(truncatedHeader))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    Assert.Throws<System.IO.EndOfStreamException>(() => LuigiFileHeader.Inflate(reader));
+                }
+            }
+        }
+
+        [Fact]
         public void LuigiFileHeader_GetFromValidLuigiRom_DoesNotThrowAndReportsExpectedVersion()
         {
             IReadOnlyList<string> paths;
@@ -86,6 +268,7 @@ namespace INTV.Core.Tests.Model
                 var header = LuigiFileHeader.Inflate(reader);
 
                 Assert.Equal(1, header.Version);
+                Assert.Equal(32, header.DeserializeByteCount);
             }
         }
 

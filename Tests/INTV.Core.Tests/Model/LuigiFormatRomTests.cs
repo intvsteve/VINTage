@@ -189,6 +189,24 @@ namespace INTV.Core.Tests.Model
             Assert.Equal(expectedNumberOfExcludeRanges, rangesToIgnore.Count());
         }
 
+        [Fact]
+        public void LuigiFormatRom_LoadScrambledForAnyLuigiWithoutMetadataRequestMetadata_VerifyNoMetadataPresent()
+        {
+            var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForAnyDevicePath).First();
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, null));
+
+            Assert.Null(rom.LocateDataBlock<LuigiMetadataBlock>());
+        }
+
+        [Fact]
+        public void LuigiFormatRom_LoadScrambledForAnyLuigiWithMetadataRequestTestBlock_VerifyTestBlockNotFound()
+        {
+            var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiWithMetadatdaScrambledForAnyDevicePath).First();
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, null));
+
+            Assert.Null(rom.LocateDataBlock<LuigiTestDataBlock>());
+        }
+
         private void VerifyExpectedMetadata(IProgramMetadata metadata)
         {
             var expectedLongNames = new[] { "Tag-A-Long Todd" };
@@ -275,6 +293,16 @@ namespace INTV.Core.Tests.Model
 
         private class LuigiFormatRomTestStorageAccess : CachedResourceStorageAccess<LuigiFormatRomTestStorageAccess>
         {
+        }
+
+        private class LuigiTestDataBlock : LuigiDataBlock
+        {
+            public const LuigiDataBlockType BlockType = (LuigiDataBlockType)0xFD;
+
+            public LuigiTestDataBlock()
+                : base(BlockType)
+            {
+            }
         }
     }
 }

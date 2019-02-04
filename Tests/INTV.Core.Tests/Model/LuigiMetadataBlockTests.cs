@@ -39,7 +39,7 @@ namespace INTV.Core.Tests.Model
                 var headerCrc = Crc8.OfBlock(rawMetadataBlock.ToArray());
                 rawMetadataBlock.WriteByte(headerCrc);
                 var payload = new byte[] { 0xED, 2 };
-                var payloadCrc = Crc32.OfBlock(payload);
+                var payloadCrc = Crc32.OfBlock(payload, Crc32Polynomial.Castagnoli);
                 var payloadCrcBytes = BitConverter.GetBytes(payloadCrc);
                 rawMetadataBlock.Write(payloadCrcBytes, 0, payloadCrcBytes.Length);
                 rawMetadataBlock.Write(payload, 0, payload.Length);

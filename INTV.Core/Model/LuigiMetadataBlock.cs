@@ -236,6 +236,10 @@ namespace INTV.Core.Model
         /// <inheritdoc/>
         protected override int DeserializePayload(Core.Utility.BinaryReader reader)
         {
+            // This is inefficient, but simple. Read and walk the payload twice. First time validates its checksum. Second pass actually parses it.
+            base.DeserializePayload(reader);
+            reader.BaseStream.Seek(-Length, System.IO.SeekOrigin.Current);
+
             var runningBytesRead = 0;
             while (runningBytesRead < Length)
             {

@@ -1,5 +1,5 @@
 ﻿// <copyright file="MetadataHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -176,6 +176,27 @@ namespace INTV.Core.Model
             }
 
             return new MetadataDateTime(date, dateTimeFlags);
+        }
+
+        /// <summary>
+        /// Parses string metadata, checking for invalid content.
+        /// </summary>
+        /// <param name="reader">A binary reader to use to get the data.</param>
+        /// <param name="payloadLength">Payload length of the metadata to parse, in bytes.</param>
+        /// <param name="allowLineBreaks">If <c>true</c>, line breaks are allowed in the string and preserved; otherwise, line breaks are considered invalid and a string containing one is rejected.</param>
+        /// <returns>The string as parsed. If invalid characters are found, an empty string is returned.</returns>
+        public static string ParseStringFromMetadata(this INTV.Core.Utility.BinaryReader reader, uint payloadLength, bool allowLineBreaks)
+        {
+            // PCLs only support UTF8...
+            // LUIGI documentation indicates this could be ASCII or UTF-8 (LUIGI)...
+            // ROM metadata spec says ASCII. Let's hope we don't run into anything *too* weird.
+            var bytes = reader.ReadBytes((int)payloadLength);
+            var stringResult = System.Text.Encoding.UTF8.GetString(bytes, 0, (int)payloadLength).Trim('\0');
+            if (stringResult.ContainsInvalidCharacters(allowLineBreaks))
+            {
+                stringResult = string.Empty;
+            }
+            return stringResult;
         }
     }
 }

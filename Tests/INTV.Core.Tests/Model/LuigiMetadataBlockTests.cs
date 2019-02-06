@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiMetadataBlockTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Utility;
 using Xunit;
@@ -27,6 +28,38 @@ namespace INTV.Core.Tests.Model
 {
     public class LuigiMetadataBlockTests
     {
+        [Fact]
+        public void LuigiMetadataBlock_InflateStringWithBadCharacters_ProducesEmptyStringMetadata()
+        {
+            using (var metadataStream = new System.IO.MemoryStream())
+            {
+                var stringPayload = new byte[255]; // put the values 1..255 as a "string" in a name metadata
+                for (var i = 0; i < 255; ++i)
+                {
+                    stringPayload[i] = (byte)(256 - i);
+                }
+                var metadataPayload = new System.IO.MemoryStream();
+                metadataPayload.WriteByte((byte)LuigiMetadataIdTag.Name);
+                metadataPayload.WriteByte((byte)stringPayload.Length);
+                metadataPayload.Write(stringPayload, 0, stringPayload.Length);
+                var payload = metadataPayload.ToArray();
+                metadataStream.WriteByte((byte)LuigiDataBlockType.Metadata);
+                var payloadLengthBytes = BitConverter.GetBytes((ushort)payload.Length);
+                metadataStream.Write(payloadLengthBytes, 0, payloadLengthBytes.Length);
+                var headerCrc = Crc8.OfBlock(metadataStream.ToArray());
+                metadataStream.WriteByte(headerCrc);
+                var payloadCrc = Crc32.OfBlock(payload, Crc32Polynomial.Castagnoli);
+                var payloadCrcBytes = BitConverter.GetBytes(payloadCrc);
+                metadataStream.Write(payloadCrcBytes, 0, payloadCrcBytes.Length);
+                metadataStream.Write(payload, 0, payload.Length);
+                metadataStream.Seek(0, System.IO.SeekOrigin.Begin);
+
+                var metadataBlock = LuigiMetadataBlock.Inflate(metadataStream) as LuigiMetadataBlock;
+
+                Assert.True(string.IsNullOrEmpty(metadataBlock.LongNames.First()));
+            }
+        }
+
         [Fact]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This is ensuring the behavior of 'LeaveOpen' in 'BinaryReader' works correctly.")]
         public void LuigiMetadataBlock_InflateUnknownBlock_ProducesBaseMetadataBlock()

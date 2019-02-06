@@ -1,5 +1,5 @@
 ﻿// <copyright file="StringUtilities.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -117,6 +118,81 @@ namespace INTV.Core.Utility
                 encodedHtmlString = _htmlEncoder(rawString);
             }
             return encodedHtmlString;
+        }
+
+        /// <summary>
+        /// Inspects a string for unacceptable characters.
+        /// </summary>
+        /// <param name="stringToCheck">The string to check.</param>
+        /// <param name="allowLineBreaks">If <c>true</c>, line and paragraph break characters are allowed.</param>
+        /// <returns><c>true</c> if any invalid character is found. <c>null</c> and empty strings will return <c>false</c>.</returns>
+        public static bool ContainsInvalidCharacters(this string stringToCheck, bool allowLineBreaks)
+        {
+            var containsInvalidCharacters = false;
+            if (!string.IsNullOrEmpty(stringToCheck))
+            {
+                foreach (var character in stringToCheck)
+                {
+                    var category = CharUnicodeInfo.GetUnicodeCategory(character);
+                    switch (category)
+                    {
+                        case UnicodeCategory.UppercaseLetter:
+                        case UnicodeCategory.LowercaseLetter:
+                        case UnicodeCategory.TitlecaseLetter:
+                        case UnicodeCategory.ModifierLetter:
+                        case UnicodeCategory.OtherLetter:
+                        case UnicodeCategory.NonSpacingMark:
+                        case UnicodeCategory.SpacingCombiningMark:
+                        case UnicodeCategory.EnclosingMark:
+                        case UnicodeCategory.DecimalDigitNumber:
+                        case UnicodeCategory.LetterNumber:
+                        case UnicodeCategory.OtherNumber:
+                        case UnicodeCategory.SpaceSeparator:
+                        case UnicodeCategory.Surrogate:
+                        case UnicodeCategory.ConnectorPunctuation:
+                        case UnicodeCategory.DashPunctuation:
+                        case UnicodeCategory.OpenPunctuation:
+                        case UnicodeCategory.ClosePunctuation:
+                        case UnicodeCategory.InitialQuotePunctuation:
+                        case UnicodeCategory.FinalQuotePunctuation:
+                        case UnicodeCategory.OtherPunctuation:
+                        case UnicodeCategory.MathSymbol:
+                        case UnicodeCategory.CurrencySymbol:
+                        case UnicodeCategory.ModifierSymbol:
+                        case UnicodeCategory.OtherSymbol:
+                            break;
+                        case UnicodeCategory.LineSeparator:
+                        case UnicodeCategory.ParagraphSeparator:
+                            containsInvalidCharacters = !allowLineBreaks;
+                            break;
+                        case UnicodeCategory.Control:
+                            if ((character == '\r') || (character == '\n'))
+                            {
+                                containsInvalidCharacters = !allowLineBreaks;
+                            }
+                            else if (character == '\t')
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                containsInvalidCharacters = true;
+                            }
+                            break;
+                        case UnicodeCategory.Format:
+                        case UnicodeCategory.PrivateUse:
+                        case UnicodeCategory.OtherNotAssigned:
+                        default:
+                            containsInvalidCharacters = true;
+                            break;
+                    }
+                    if (containsInvalidCharacters)
+                    {
+                        break;
+                    }
+                }
+            }
+            return containsInvalidCharacters;
         }
 
         #region C-style Format Specifier Support

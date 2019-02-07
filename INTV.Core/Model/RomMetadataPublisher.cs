@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataPublisher.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2017 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -94,8 +94,7 @@ namespace INTV.Core.Model
             var remainingPayload = payloadLength - sizeof(PublisherId);
             if (remainingPayload > 0)
             {
-                // PCLs only support UTF8... Spec says ASCII. Let's hope we don't run into anything *too* weird.
-                var publisherData = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(remainingPayload), 0, remainingPayload).Trim('\0');
+                var publisherData = reader.ParseStringFromMetadata((uint)remainingPayload, allowLineBreaks: false);
                 if (shouldReadMore)
                 {
                     publisher = publisherData;

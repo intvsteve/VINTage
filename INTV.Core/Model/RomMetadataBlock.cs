@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2018 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Globalization;
 namespace INTV.Core.Model
 {
     /// <summary>
@@ -137,14 +138,9 @@ namespace INTV.Core.Model
             // Re-reading the block is more expensive than having a running CRC16 but it's easier to implement. :P
             var numBytesInForCrc = metadataBlock._deserializeByteCount - CrcByteCount;
             reader.BaseStream.Seek(-numBytesInForCrc, System.IO.SeekOrigin.Current);
-            var crc16 = INTV.Core.Utility.Crc16.OfBlock(reader.ReadBytes(numBytesInForCrc), INTV.Core.Utility.Crc16.InitialValue);
+            var payload = reader.ReadBytes(numBytesInForCrc);
             metadataBlock.Crc = (ushort)(((int)reader.ReadByte() << 8) | reader.ReadByte());
-
-            if (crc16 != metadataBlock.Crc)
-            {
-                ComplainAboutBadMetadata(metadataBlock);
-                metadataBlock.Type = RomMetadataIdTag.Ignore;
-            }
+            metadataBlock.ValidatePayloadCrc(payload);
 
             return metadataBlock;
         }
@@ -199,13 +195,16 @@ namespace INTV.Core.Model
             return payloadLength;
         }
 
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        private static void ComplainAboutBadMetadata(RomMetadataBlock metadataBlock)
+        /// <summary>
+        /// Validates the data payload of a ROM metadata block by comparing the parsed checksum with the actual computed checksum.
+        /// </summary>
+        /// <param name="payload">The payload data whose checksum is to be validated.</param>
+        protected void ValidatePayloadCrc(byte[] payload)
         {
-            System.Diagnostics.Debug.WriteLine("CRC failed for metadata block of type: " + metadataBlock.Type);
-            if (System.Diagnostics.Debugger.IsAttached)
+            var payloadCrc = INTV.Core.Utility.Crc16.OfBlock(payload, INTV.Core.Utility.Crc16.InitialValue);
+            if (payloadCrc != Crc)
             {
-                System.Diagnostics.Debugger.Break();
+                throw new System.IO.InvalidDataException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, payloadCrc, Crc));
             }
         }
     }

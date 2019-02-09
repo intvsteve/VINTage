@@ -1,5 +1,5 @@
 ﻿// <copyright file="WeakKeyDictionaryTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -346,12 +346,15 @@ namespace INTV.Core.Tests.Utility
         public void WeakKeyDictionary_AddKeysAndValues_EnsureValues()
         {
             var weakKeyDictionary = new WeakKeyDictionary<DisposableTestObject, int>();
+            var keeperArounder = new List<DisposableTestObject>();
             IDictionary dictionary = weakKeyDictionary; // for code coverage
             var values = new[] { -1, 48, 62, 88, -32 };
 
             for (int i = 0; i < values.Length; ++i)
             {
-                weakKeyDictionary.Add(new DisposableTestObject(values[i].ToString()), values[i]);
+                var entry = new DisposableTestObject(values[i].ToString());
+                keeperArounder.Add(entry);
+                weakKeyDictionary.Add(entry, values[i]);
             }
 
             var dictionaryValues = weakKeyDictionary.Values;

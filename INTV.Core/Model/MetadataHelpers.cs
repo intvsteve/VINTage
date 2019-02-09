@@ -19,6 +19,8 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using INTV.Core.Utility;
 
 namespace INTV.Core.Model
@@ -252,6 +254,106 @@ namespace INTV.Core.Model
             }
             var indexes = new Range<int>(firstQuoteIndex, lastQuoteIndex);
             return indexes;
+        }
+
+        /// <summary>
+        /// Escapes the given string following the rules defined in the jzintv / SDK-1600 software stack.
+        /// </summary>
+        /// <param name="stringToEscape">The string to apply the escaping rules to.</param>
+        /// <returns>An array of bytes suitably encoded for exchange with SDK-1600.</returns>
+        /// <remarks>The details regarding how this encoding works are commented in the body of the function. This method first
+        /// produces an array of bytes using UTF-8 encoding, and then treats any bytes in the result that appear either as ASCII
+        /// control characters (having a value less than 0x20) or above 0x7E as requiring encoding as ASCII hexadecimal strings.
+        /// This function does not wrap the resulting byte array in quotation marks. If this array of bytes is re-encoded using
+        /// UTF-8, the resulting string will be the encoded version of the original string. The result is delivered as an array
+        /// of bytes for ease of use with <see cref="BinaryWriter"/> and <see cref="BinaryReader"/> implementations as well as
+        /// the underlying <see cref="System.IO.Stream"/> those classes use..</remarks>
+        public static byte[] EscapeString(this string stringToEscape)
+        {
+            /* ------------------------------------------------------------------------ */
+            /*  String quoting/escaping rules:                                          */
+            /*                                                                          */
+            /*  1.  If a string contains any of these characters: ; [ ] $ = - ,         */
+            /*      or a space character, it must be quoted.                            */
+            /*                                                                          */
+            /*  2.  If a string contains a lone double quote, it must be quoted.        */
+            /*      The double quote must be escaped with a backslash.                  */
+            /*                                                                          */
+            /*  3.  If a string contains characters with the  values 0x09, 0x0A, or     */
+            /*      0x0D, the string must be quoted and the character must be escaped.  */
+            /*      These three  characters map strictly as follows:                    */
+            /*                                                                          */
+            /*          0x09 => \t, 0x0A => \n, 0x0D => \r.                             */
+            /*                                                                          */
+            /*  4.  If a string contains any other character with a value below         */
+            /*      0x20 or a value above 0x7E, the string must be quoted, and the      */
+            /*      character must be escaped.  The character will be escaped with      */
+            /*      a hexadecimal escape.  0x00 => \x00.  0x7E => \x7E.                 */
+            /*                                                                          */
+            /*  5.  If the string gets quoted, any backslashes must be escaped with     */
+            /*      a backslash.  e.g.  foo-bar\baz => "foo-bar\\baz".                  */
+            /* ------------------------------------------------------------------------ */
+            var bytePayload = new List<byte>();
+            var bytesForString = System.Text.Encoding.UTF8.GetBytes(stringToEscape);
+            foreach (var byteCharacter in bytesForString)
+            {
+                switch ((char)byteCharacter)
+                {
+                    case '\\':
+                    case '"':
+                        bytePayload.Add((byte)'\\');
+                        bytePayload.Add(byteCharacter);
+                        break;
+                    case '\t':
+                        bytePayload.Add((byte)'\\');
+                        bytePayload.Add((byte)'t');
+                        break;
+                    case '\r':
+                        bytePayload.Add((byte)'\\');
+                        bytePayload.Add((byte)'r');
+                        break;
+                    case '\n':
+                        bytePayload.Add((byte)'\\');
+                        bytePayload.Add((byte)'n');
+                        break;
+                    default:
+                        if ((byteCharacter < 0x20) || (byteCharacter > 0x7E))
+                        {
+                            var hexDigitCharacters = new[]
+                            {
+                                (byte)'0',
+                                (byte)'1',
+                                (byte)'2',
+                                (byte)'3',
+                                (byte)'4',
+                                (byte)'5',
+                                (byte)'6',
+                                (byte)'7',
+                                (byte)'8',
+                                (byte)'9',
+                                (byte)'A',
+                                (byte)'B',
+                                (byte)'C',
+                                (byte)'D',
+                                (byte)'E',
+                                (byte)'F'
+                            };
+                            var highNybbleCharacter = hexDigitCharacters[((0xF0 & byteCharacter) >> 4)];
+                            var lowNybbleCharactger = hexDigitCharacters[0x0F & byteCharacter];
+
+                            bytePayload.Add((byte)'\\');
+                            bytePayload.Add((byte)'x');
+                            bytePayload.Add(highNybbleCharacter);
+                            bytePayload.Add(lowNybbleCharactger);
+                        }
+                        else
+                        {
+                            bytePayload.Add(byteCharacter);
+                        }
+                        break;
+                }
+            }
+            return bytePayload.ToArray();
         }
     }
 }

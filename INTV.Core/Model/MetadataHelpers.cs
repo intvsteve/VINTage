@@ -1,4 +1,4 @@
-﻿// <copyright file="MetadataHelpers.cs" company="INTV Funhouse">
+// <copyright file="MetadataHelpers.cs" company="INTV Funhouse">
 // Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -197,6 +197,61 @@ namespace INTV.Core.Model
                 stringResult = string.Empty;
             }
             return stringResult;
+        }
+
+        /// <summary>
+        /// Gets the indexes if the first and last quotation mark character in the given array of bytes.
+        /// </summary>
+        /// <param name="rawCharacterPayload">The array of bytes to inspect.</param>
+        /// <returns>A <see cref="Range{int}"/> instance which includes the index values if the first and last instance of the
+        /// ASCII quotation marks character (0x22).</returns>
+        public static Range<int> GetEnclosingQuoteCharacterIndexesFromBytePayload(this byte[] rawCharacterPayload)
+        {
+            var firstQuoteIndex = -1;
+            var lastQuoteIndex = -1;
+            var firstNonWhitespaceCharacterIndex = -1;
+            var lastNonWhitespaceCharacterIndex = -1;
+            for (int i = 0; i < rawCharacterPayload.Length; ++i)
+            {
+                char character = (char)rawCharacterPayload[i];
+                switch (character)
+                {
+                    case ' ':
+                    case '\t':
+                    case '\0':
+                        break;
+                    case '"':
+                        if (firstQuoteIndex < 0)
+                        {
+                            firstQuoteIndex = i;
+                        }
+                        lastQuoteIndex = i;
+                        if (firstNonWhitespaceCharacterIndex < 0)
+                        {
+                            firstNonWhitespaceCharacterIndex = i;
+                        }
+                        lastNonWhitespaceCharacterIndex = i;
+                        break;
+                    default:
+                        if (firstNonWhitespaceCharacterIndex < 0)
+                        {
+                            firstNonWhitespaceCharacterIndex = i;
+                        }
+                        lastNonWhitespaceCharacterIndex = i;
+                        break;
+                }
+            }
+            if (firstNonWhitespaceCharacterIndex != firstQuoteIndex)
+            {
+                firstQuoteIndex = -1;
+                lastQuoteIndex = -1;
+            }
+            if (lastNonWhitespaceCharacterIndex != lastQuoteIndex)
+            {
+                lastQuoteIndex = -1;
+            }
+            var indexes = new Range<int>(firstQuoteIndex, lastQuoteIndex);
+            return indexes;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// <copyright file="MetadataHelpersTests.cs" company="INTV Funhouse">
+// <copyright file="MetadataHelpersTests.cs" company="INTV Funhouse">
 // Copyright (c) 2018 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -362,6 +362,36 @@ namespace INTV.Core.Tests.Model
 
             var expectedMetadataDateTime = new MetadataDateTimeBuilder(year).WithMonth(month).WithDay(day).WithHour(hour).WithMinute(minute).WithSecond(second).WithOffset(offsetHours, offsetMinutes).Build();
             Assert.Equal(0, expectedMetadataDateTime.CompareTo(parsedMetadataDateTime, strict: true, compareOnlyCommonValidFields: false));
+        }
+
+        [Theory]
+        [InlineData("", -1, -1)]
+        [InlineData("\"", 0, 0)]
+        [InlineData("\"\"", 0, 1)]
+        [InlineData("\"\"\"", 0, 2)]
+        [InlineData(" \t\" a\"b ", 2, -1)]
+        [InlineData("\" a\"b \"", 0, 6)]
+        [InlineData("Kröte", -1, -1)]
+        [InlineData(" \" Kröte \" ", 1, 10)]
+        [InlineData("Kr\"öte", -1, -1)]
+        [InlineData("\"\"Kröte", 0, -1)]
+        [InlineData("\n\"\"Kröte\t\n \" ", -1, -1)]
+        [InlineData("\"子豚\"", 0, 7)]
+        [InlineData("子\"豚", -1, -1)]
+        [InlineData("子豚", -1, -1)]
+        [InlineData("\"ハウディドゥーディー\"", 0, 31)]
+        [InlineData("ハウディドゥー\"ディー", -1, -1)]
+        [InlineData("ハウディドゥー\"ディー\" ", -1, -1)]
+        [InlineData("ハウディドゥーディー", -1, -1)]
+        public void MetadataHelpers_GetEnclosingQuoteCharacterIndexesFromBytePayload_ReturnsExpectedIndexes(string stringToTest, int expectedFirstQuoteIndex, int expectedLastQuoteIndex)
+        {
+            // We're going to use raw bytes, so convert using UTF-8.
+            var payloadBytes = Encoding.UTF8.GetBytes(stringToTest);
+
+            var quoteIndexes = payloadBytes.GetEnclosingQuoteCharacterIndexesFromBytePayload();
+
+            Assert.Equal(expectedFirstQuoteIndex, quoteIndexes.Minimum);
+            Assert.Equal(expectedLastQuoteIndex, quoteIndexes.Maximum);
         }
 
         private System.IO.Stream InitializeMetadataDateTimeBuffer(out uint payloadLength, int year = -1, int month = -1, int day = -1, int hour = -1, int minute = -1, int second = -1, int? offsetHours = null, int offsetMinutes = -1, int additionalPayload = -1)

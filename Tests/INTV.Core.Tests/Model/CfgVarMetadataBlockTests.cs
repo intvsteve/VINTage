@@ -1,5 +1,5 @@
 ﻿// <copyright file="CfgVarMetadataBlockTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -250,10 +250,10 @@ short_name = wig
         [Theory]
         [InlineData("dunno", "dunno")]
         [InlineData("\"Howdy doody!\"", "Howdy doody!")]
-        [InlineData("\"", "")]
+        [InlineData("\"", "\"")]
         [InlineData("\"\"", "")]
         [InlineData("\" \"", " ")]
-        [InlineData("\"Mattel\" Electronics", "Mattel\" Electronics")]
+        [InlineData("\"Mattel\" Electronics", "\"Mattel\" Electronics")]
         public void CfgVarMetadata_InflateStringValue_GetsAppropriateString(string cfgFileValue, string expectedCfgVarMetadataStringValue)
         {
             var cfgStringValueEntry = "publisher=" + cfgFileValue;

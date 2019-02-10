@@ -1,5 +1,5 @@
 ﻿// <copyright file="CfgVarMetadataString.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -39,10 +39,18 @@ namespace INTV.Core.Model
         /// </summary>
         public string StringValue { get; private set; }
 
+        /// <inheritdoc />
+        protected override string ConvertPayloadToString(byte[] payload)
+        {
+            var quoteIndexes = payload.GetEnclosingQuoteCharacterIndexesFromBytePayload();
+            var payloadString = payload.UnescapeBytePayload(quoteIndexes);
+            return payloadString;
+        }
+
         /// <inheritdoc/>
         protected override void Parse(string payload)
         {
-            StringValue = GetCleanPayloadString(payload);
+            StringValue = payload;
         }
     }
 }

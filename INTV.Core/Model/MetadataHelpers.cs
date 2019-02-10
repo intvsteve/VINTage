@@ -268,7 +268,7 @@ namespace INTV.Core.Model
         /// UTF-8, the resulting string will be the encoded version of the original string. The result is delivered as an array
         /// of bytes for ease of use with <see cref="BinaryWriter"/> and <see cref="BinaryReader"/> implementations as well as
         /// the underlying <see cref="System.IO.Stream"/> those classes use..</remarks>
-        public static byte[] EscapeString(this string stringToEscape)
+        public static byte[] EscapeToBytePayload(this string stringToEscape)
         {
             /* ------------------------------------------------------------------------ */
             /*  String quoting/escaping rules:                                          */
@@ -367,7 +367,7 @@ namespace INTV.Core.Model
         /// <remarks>The <paramref name="enclosingQuoteIndexes"/> argument may be <c>null</c>. When <c>null</c>, the entire
         /// <paramref name="rawCharacterPayload"/> is analyzed. When <paramref name="enclosingQuoteIndexes"/> is not <c>null</c>,
         /// it must specify a valid, non-empty range.</remarks>
-        public static string UnescapeBytePayload(this byte[] rawCharacterPayload, Range<int> enclosingQuoteIndexes)
+        public static string UnescapeFromBytePayload(this byte[] rawCharacterPayload, Range<int> enclosingQuoteIndexes)
         {
             var unescapedPayload = rawCharacterPayload;
             var needsTrim = true;

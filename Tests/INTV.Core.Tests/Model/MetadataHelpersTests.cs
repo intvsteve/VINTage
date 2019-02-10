@@ -521,7 +521,7 @@ namespace INTV.Core.Tests.Model
         [MemberData("EscapeStringTestData")]
         public void MetadataHelpers_EscapeString_EscapesStringAsExpected(string stringToEscape, byte[] expectedPayloadData, string expectedPayloadAsString)
         {
-            var payloadData = stringToEscape.EscapeString();
+            var payloadData = stringToEscape.EscapeToBytePayload();
             var payloadAsString = Encoding.UTF8.GetString(payloadData);
 
             Assert.Equal(expectedPayloadData, payloadData);
@@ -544,9 +544,9 @@ namespace INTV.Core.Tests.Model
         [MemberData("EscapeUnescapeRoundTripTestData")]
         public void MetadataHelpers_EscapeStringUnescapeBytePayloadRoundTrip_ProducesOriginalString(string stringToRoundTrip)
         {
-            var escapedPayload = stringToRoundTrip.EscapeString();
+            var escapedPayload = stringToRoundTrip.EscapeToBytePayload();
 
-            var unescapedString = escapedPayload.UnescapeBytePayload(null);
+            var unescapedString = escapedPayload.UnescapeFromBytePayload(null);
 
             Assert.Equal(stringToRoundTrip, unescapedString);
         }
@@ -587,7 +587,7 @@ namespace INTV.Core.Tests.Model
         [MemberData("OctalEncodedTestData")]
         public void MetadataHelpers_UnescapeOctalEncodedStrings_ProducesExpectedString(byte[] octalEncodedString, string expectedString)
         {
-            var unescapedString = octalEncodedString.UnescapeBytePayload(null);
+            var unescapedString = octalEncodedString.UnescapeFromBytePayload(null);
 
             Assert.Equal(expectedString, unescapedString);
         }
@@ -597,7 +597,7 @@ namespace INTV.Core.Tests.Model
         {
             var escaped = new byte[] { 0x5C, 0x78, 0x30, 0x30 };
 
-            var unescapedString = escaped.UnescapeBytePayload(null);
+            var unescapedString = escaped.UnescapeFromBytePayload(null);
 
             Assert.Equal(string.Empty, unescapedString);
         }
@@ -607,7 +607,7 @@ namespace INTV.Core.Tests.Model
         {
             var escaped = new byte[] { 0x5C, 0x78 };
 
-            var unescapedString = escaped.UnescapeBytePayload(null);
+            var unescapedString = escaped.UnescapeFromBytePayload(null);
 
             Assert.Equal("x", unescapedString);
         }
@@ -617,7 +617,7 @@ namespace INTV.Core.Tests.Model
         {
             var escaped = new byte[] { 0x5C, 0x78, 0x31 };
 
-            var unescapedString = escaped.UnescapeBytePayload(null);
+            var unescapedString = escaped.UnescapeFromBytePayload(null);
 
             Assert.Equal("x", unescapedString);
         }
@@ -627,7 +627,7 @@ namespace INTV.Core.Tests.Model
         {
             var escaped = new byte[] { 0X4B, 0x72, 0x5C, 0x78, 0x63, 0x33, 0x5C, 0x78, 0x62, 0x36, 0x74, 0x65 };
 
-            var unescapedString = escaped.UnescapeBytePayload(null);
+            var unescapedString = escaped.UnescapeFromBytePayload(null);
 
             Assert.Equal("Kröte", unescapedString);
         }
@@ -637,7 +637,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x79, 0x75, 0x70 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal("yup", unescapedString);
         }
@@ -647,7 +647,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x78, 0x72, 0x38 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal("x", unescapedString);
         }
@@ -657,7 +657,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x78, 0x38, 0x72 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal("x", unescapedString);
         }
@@ -667,7 +667,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x30, 0x30, 0x30 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal(string.Empty, unescapedString);
         }
@@ -677,7 +677,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x31, 0x32 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal("1", unescapedString);
         }
@@ -687,7 +687,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x31 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal("1", unescapedString);
         }
@@ -697,7 +697,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x38, 0x31, 0x32 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal("812", unescapedString);
         }
@@ -707,7 +707,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x30, 0x38, 0x31, };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal("0", unescapedString);
         }
@@ -717,7 +717,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x30, 0x31, 0x38 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal("0", unescapedString);
         }
@@ -727,7 +727,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c, 0x00 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal(string.Empty, unescapedString);
         }
@@ -737,7 +737,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x00 };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal(string.Empty, unescapedString);
         }
@@ -747,7 +747,7 @@ namespace INTV.Core.Tests.Model
         {
             var badEscape = new byte[] { 0x5c };
 
-            var unescapedString = badEscape.UnescapeBytePayload(null);
+            var unescapedString = badEscape.UnescapeFromBytePayload(null);
 
             Assert.Equal(string.Empty, unescapedString);
         }

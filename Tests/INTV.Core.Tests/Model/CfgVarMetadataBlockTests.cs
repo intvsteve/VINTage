@@ -111,6 +111,21 @@ dooh";
         }
 
         [Fact]
+        public void CfgVarMetadata_InflateCfgVarMetadataStringWithInvalidCharacter_ReturnsEmptyString()
+        {
+            var cfg = "name = Whatta\rHeck";
+
+            using (var stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(cfg)))
+            {
+                var cfgVarMetadata = CfgVarMetadataBlock.Inflate(stream);
+
+                Assert.IsType<CfgVarMetadataString>(cfgVarMetadata);
+                Assert.True(cfgVarMetadata.DeserializeByteCount > 0);
+                Assert.Equal(string.Empty, ((CfgVarMetadataString)cfgVarMetadata).StringValue);
+            }
+        }
+
+        [Fact]
         public void CfgVarMetadata_InflateCfgVarMetadataInteger()
         {
             var expectedValue = 128;

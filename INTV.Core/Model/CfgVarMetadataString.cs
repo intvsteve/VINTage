@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Core.Utility;
+
 namespace INTV.Core.Model
 {
     /// <summary>
@@ -44,6 +46,19 @@ namespace INTV.Core.Model
         {
             var quoteIndexes = payload.GetEnclosingQuoteCharacterIndexesFromBytePayload();
             var payloadString = payload.UnescapeBytePayload(quoteIndexes);
+            var allowLineBreaks = false;
+            switch (Type)
+            {
+                case CfgVarMetadataIdTag.Description:
+                case CfgVarMetadataIdTag.License:
+                    allowLineBreaks = true;
+                    break;
+                default: break;
+            }
+            if (payloadString.ContainsInvalidCharacters(allowLineBreaks))
+            {
+                payloadString = string.Empty;
+            }
             return payloadString;
         }
 

@@ -528,6 +528,230 @@ namespace INTV.Core.Tests.Model
             Assert.Equal(expectedPayloadAsString, payloadAsString);
         }
 
+        public static IEnumerable<object> EscapeUnescapeRoundTripTestData
+        {
+            get
+            {
+                foreach (var entry in EscapeStringTestData)
+                {
+                    var entryDataArray = entry as object[];
+                    yield return new object[] { entryDataArray[0] };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("EscapeUnescapeRoundTripTestData")]
+        public void MetadataHelpers_EscapeStringUnescapeBytePayloadRoundTrip_ProducesOriginalString(string stringToRoundTrip)
+        {
+            var escapedPayload = stringToRoundTrip.EscapeString();
+
+            var unescapedString = escapedPayload.UnescapeBytePayload(null);
+
+            Assert.Equal(stringToRoundTrip, unescapedString);
+        }
+
+        public static IEnumerable<object> OctalEncodedTestData
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    new byte[] { },
+                    string.Empty
+                };
+                yield return new object[]
+                {
+                    new byte[] { 0x5C, 0x31, 0x32, 0x37, 0x5C, 0x31, 0x35, 0x30, 0x5C, 0x31, 0x34, 0x31, 0x5C, 0x31, 0x36, 0x34, 0x5C, 0x30, 0x34, 0x37, 0x5C, 0x31, 0x36, 0x33, 0x5C, 0x30, 0x34, 0x30, 0x5C, 0x31, 0x32, 0x34, 0x5C, 0x31, 0x35, 0x30, 0x5C, 0x31, 0x35, 0x31, 0x5C, 0x31, 0x36, 0x33, 0x5C, 0x30, 0x37, 0x37 },
+                    "What's This?"
+                };
+                yield return new object[]
+                {
+                    new byte[] { 0x20, 0x5C, 0x30, 0x31, 0x32, 0x77, 0x5C, 0x31, 0x35, 0x30, 0x61, 0x5C, 0x31, 0x36, 0x34, 0x5C, 0x30, 0x31, 0x35, 0x5C, 0x30, 0x31, 0x32, 0x5C, 0x31, 0x35, 0x31, 0x5C, 0x31, 0x36, 0x33, 0x5C, 0x30, 0x31, 0x32, 0x5C, 0x31, 0x32, 0x34, 0x5C, 0x31, 0x35, 0x30, 0x5C, 0x31, 0x30, 0x31, 0x5C, 0x31, 0x36, 0x34, 0x5C, 0x30, 0x37, 0x37, 0x20, 0x5C, 0x30, 0x31, 0x32, 0x5C, 0x30, 0x31, 0x31 },
+                    " \nwhat\r\nis\nThAt? \n\t"
+                };
+                yield return new object[]
+                {
+                    new byte[] { 0x5C, 0x30, 0x34, 0x32, 0x5C, 0x33, 0x34, 0x35, 0x5C, 0x32, 0x35, 0x35, 0x5C, 0x32, 0x32, 0x30, 0x5C, 0x33, 0x35, 0x30, 0x5C, 0x32, 0x36, 0x31, 0x5C, 0x32, 0x33, 0x32, 0x5C, 0x30, 0x34, 0x32 },
+                    "\"子豚\""
+                };
+                yield return new object[]
+                {
+                    new byte[] { 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x33, 0x5C, 0x32, 0x31, 0x37, 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x32, 0x5C, 0x32, 0x34, 0x36, 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x33, 0x5C, 0x32, 0x30, 0x37, 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x32, 0x5C, 0x32, 0x34, 0x33, 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x33, 0x5C, 0x32, 0x31, 0x31, 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x32, 0x5C, 0x32, 0x34, 0x35, 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x33, 0x5C, 0x32, 0x37, 0x34, 0x5C, 0x30, 0x34, 0x32, 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x33, 0x5C, 0x32, 0x30, 0x37, 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x32, 0x5C, 0x32, 0x34, 0x33, 0x5C, 0x33, 0x34, 0x33, 0x5C, 0x32, 0x30, 0x33, 0x5C, 0x32, 0x37, 0x34, 0x5C, 0x30, 0x34, 0x32,  0x5C, 0x30, 0x34, 0x30 },
+                    "ハウディドゥー\"ディー\" "
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData("OctalEncodedTestData")]
+        public void MetadataHelpers_UnescapeOctalEncodedStrings_ProducesExpectedString(byte[] octalEncodedString, string expectedString)
+        {
+            var unescapedString = octalEncodedString.UnescapeBytePayload(null);
+
+            Assert.Equal(expectedString, unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringHexNull_ProducesValidString()
+        {
+            var escaped = new byte[] { 0x5C, 0x78, 0x30, 0x30 };
+
+            var unescapedString = escaped.UnescapeBytePayload(null);
+
+            Assert.Equal(string.Empty, unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringHexTruncatedTwoCharacters_ProducesValidString()
+        {
+            var escaped = new byte[] { 0x5C, 0x78 };
+
+            var unescapedString = escaped.UnescapeBytePayload(null);
+
+            Assert.Equal("x", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringHexTruncatedOneCharacter_ProducesValidString()
+        {
+            var escaped = new byte[] { 0x5C, 0x78, 0x31 };
+
+            var unescapedString = escaped.UnescapeBytePayload(null);
+
+            Assert.Equal("x", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringLowerCaseHexEscape_ProducesValidString()
+        {
+            var escaped = new byte[] { 0X4B, 0x72, 0x5C, 0x78, 0x63, 0x33, 0x5C, 0x78, 0x62, 0x36, 0x74, 0x65 };
+
+            var unescapedString = escaped.UnescapeBytePayload(null);
+
+            Assert.Equal("Kröte", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringWithInvalidEscape_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x79, 0x75, 0x70 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal("yup", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringWithInvalidHexHighNybble_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x78, 0x72, 0x38 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal("x", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringWithInvalidHexLowNybble_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x78, 0x38, 0x72 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal("x", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringOctalNull_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x30, 0x30, 0x30 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal(string.Empty, unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringOctalTruncatedOneCharacter_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x31, 0x32 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal("1", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringOctalTruncatedTwoCharacters_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x31 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal("1", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringWithInvalidOctalHighTrybble_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x38, 0x31, 0x32 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal("812", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringWithInvalidOctalMidNybble_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x30, 0x38, 0x31, };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal("0", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringWithInvalidOctalLowNybble_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x30, 0x31, 0x38 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal("0", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringWithEscapedNull_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c, 0x00 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal(string.Empty, unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeNullString_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x00 };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal(string.Empty, unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeSolitaryBackslash_ProducesValidString()
+        {
+            var badEscape = new byte[] { 0x5c };
+
+            var unescapedString = badEscape.UnescapeBytePayload(null);
+
+            Assert.Equal(string.Empty, unescapedString);
+        }
+
         private System.IO.Stream InitializeMetadataDateTimeBuffer(out uint payloadLength, int year = -1, int month = -1, int day = -1, int hour = -1, int minute = -1, int second = -1, int? offsetHours = null, int offsetMinutes = -1, int additionalPayload = -1)
         {
             var stream = new System.IO.MemoryStream();

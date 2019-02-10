@@ -1,4 +1,4 @@
-// <copyright file="MetadataHelpers.cs" company="INTV Funhouse">
+﻿// <copyright file="MetadataHelpers.cs" company="INTV Funhouse">
 // Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -354,6 +354,126 @@ namespace INTV.Core.Model
                 }
             }
             return bytePayload.ToArray();
+        }
+
+        /// <summary>
+        /// Given a raw array of bytes intended to be converted to a UTF-8 string, and whose origins are a string,
+        /// analyze the contents and un-escape the contents to prepare for final conversion from bytes to string.
+        /// </summary>
+        /// <param name="rawCharacterPayload">The raw bytes that are to be un-escaped as necessary.</param>
+        /// <param name="enclosingQuoteIndexes">A <see cref="Range{int}"/> that describes the index of the first and
+        /// last quotation mark characters in <paramref name="rawCharacterPayload"/>.</param>
+        /// <returns>The un-escaped string.</returns>
+        /// <remarks>The <paramref name="enclosingQuoteIndexes"/> argument may be <c>null</c>. When <c>null</c>, the entire
+        /// <paramref name="rawCharacterPayload"/> is analyzed. When <paramref name="enclosingQuoteIndexes"/> is not <c>null</c>,
+        /// it must specify a valid, non-empty range.</remarks>
+        public static string UnescapeBytePayload(this byte[] rawCharacterPayload, Range<int> enclosingQuoteIndexes)
+        {
+            var unescapedPayload = rawCharacterPayload;
+            var needsTrim = true;
+            if (enclosingQuoteIndexes == null)
+            {
+                enclosingQuoteIndexes = new Range<int>(-1, rawCharacterPayload.Length);
+            }
+            if (enclosingQuoteIndexes.IsValid && (enclosingQuoteIndexes.Maximum > enclosingQuoteIndexes.Minimum))
+            {
+                /* ------------------------------------------------------------------------ */
+                /*  String unquoting/unescaping rules:                                      */
+                /*                                                                          */
+                /*  1.  If the string does not begin *and* end with double-quotes, it is    */
+                /*      returned as-is.                                                     */
+                /*                                                                          */
+                /*  2.  A backslash followed by 'x' and two hexadecimal digits gets         */
+                /*      replaced by a character whose value is represented by the digits.   */
+                /*                                                                          */
+                /*  3.  A backslash followed by three octal digits gets replaced by a       */
+                /*      character whose value is represented by the digits, masked to 8     */
+                /*      bits. (e.g. \777 and \377 both map to 0xFF.)                        */
+                /*                                                                          */
+                /*  4.  A backslash followed by 't', 'n', or 'r' gets replaced by 0x09,     */
+                /*      0x0A, or 0x0D, respectively.                                        */
+                /*                                                                          */
+                /*  5.  A backslash followed by any other character gets replaced with      */
+                /*      the character that follows the backslash.                           */
+                /* ------------------------------------------------------------------------ */
+                unescapedPayload = new byte[enclosingQuoteIndexes.Maximum - enclosingQuoteIndexes.Minimum];
+                var unescapedPayloadIndex = -1;
+
+                var firstQuoteIndex = enclosingQuoteIndexes.Minimum;
+                var lastQuoteIndex = enclosingQuoteIndexes.Maximum;
+                for (var i = firstQuoteIndex + 1; i < lastQuoteIndex; ++i)
+                {
+                    var byteCharacter = rawCharacterPayload[i];
+                    var unescapedCharacter = byteCharacter;
+                    if (byteCharacter == '\\')
+                    {
+                        // an escaped character!
+                        if (i < lastQuoteIndex)
+                        {
+                            byteCharacter = (i + 1) < lastQuoteIndex ? rawCharacterPayload[++i] : (byte)0;
+                            unescapedCharacter = byteCharacter;
+                            switch ((char)byteCharacter)
+                            {
+                                case 't': // escaped tab
+                                    unescapedCharacter = (byte)'\t';
+                                    break;
+                                case 'r': // escaped carriage return
+                                    unescapedCharacter = (byte)'\r';
+                                    break;
+                                case 'n': // escaped line feed
+                                    unescapedCharacter = (byte)'\n';
+                                    break;
+                                case 'x': // escaped hex
+                                    if ((i + 1) < lastQuoteIndex)
+                                    {
+                                        const string HexDigits = "0123456789ABCDEF";
+                                        var highNybble = HexDigits.IndexOf(char.ToUpperInvariant((char)rawCharacterPayload[++i]));
+                                        var lowNybble = (i + 1) < lastQuoteIndex ? HexDigits.IndexOf(char.ToUpperInvariant((char)rawCharacterPayload[++i])) : -1;
+                                        if ((highNybble >= 0) && (lowNybble >= 0))
+                                        {
+                                            unescapedCharacter = (byte)(((highNybble & 0x0F) << 4) | (lowNybble & 0x0F));
+                                        }
+                                    }
+                                    break;
+                                case '0': // escaped octal
+                                case '1':
+                                case '2':
+                                case '3':
+                                case '4':
+                                case '5':
+                                case '6':
+                                case '7':
+                                    if (i < lastQuoteIndex)
+                                    {
+                                        const string OctalDigits = "01234567";
+                                        var highTrybble = OctalDigits.IndexOf(char.ToUpperInvariant((char)byteCharacter));
+                                        var midTrybble = (i + 1) < lastQuoteIndex ? OctalDigits.IndexOf(char.ToUpperInvariant((char)rawCharacterPayload[++i])) : -1;
+                                        var lowTrybble = (i + 1) < lastQuoteIndex ? OctalDigits.IndexOf(char.ToUpperInvariant((char)rawCharacterPayload[++i])) : -1;
+                                        if ((midTrybble >= 0) && (lowTrybble >= 0))
+                                        {
+                                            unescapedCharacter = (byte)(((highTrybble & 0x03) << 6) | ((midTrybble & 0x07) << 3) | (lowTrybble & 0x07));
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    if (unescapedCharacter > 0)
+                    {
+                        unescapedPayload[++unescapedPayloadIndex] = unescapedCharacter;
+                    }
+                }
+                needsTrim = unescapedPayloadIndex < 0;
+            }
+
+            var unescapedPayloadString = System.Text.Encoding.UTF8.GetString(unescapedPayload, 0, unescapedPayload.Length).Trim('\0');
+            if (needsTrim)
+            {
+                unescapedPayloadString = unescapedPayloadString.Trim();
+            }
+            return unescapedPayloadString;
         }
     }
 }

@@ -545,6 +545,80 @@ namespace INTV.Core.Tests.Model
             Assert.Equal(expectedPayloadAsString, payloadAsString);
         }
 
+        [Fact]
+        public void MetadataHelpers_UnescapeFromBytePayloadWithNullDataAndNullRange_ThrowsNullReferenceException()
+        {
+            byte[] nullPayload = null;
+
+            Assert.Throws<NullReferenceException>(() => nullPayload.UnescapeFromBytePayload(null));
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeFromBytePayloadWithNullDataAndOneCharacterRange_ReturnsEmptyString()
+        {
+            byte[] nullPayload = null;
+
+            var unescapedString = nullPayload.UnescapeFromBytePayload(new Range<int>(0, 1));
+
+            Assert.Equal(0, unescapedString.Length);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeFromBytePayloadWithNullDataAndInvalidRange_ThrowsNullReferenceException()
+        {
+            byte[] nullPayload = null;
+
+            Assert.Throws<NullReferenceException>(() => nullPayload.UnescapeFromBytePayload(new Range<int>(10, 2)));
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeFromBytePayloadWithNullDataAndSpecifiedRange_ThrowsNullReferenceException()
+        {
+            byte[] nullPayload = null;
+
+            Assert.Throws<NullReferenceException>(() => nullPayload.UnescapeFromBytePayload(new Range<int>(0, 2)));
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeFromBytePayloadWithNullDataAndEmptyRange_ThrowsNullReferenceException()
+        {
+            byte[] nullPayload = null;
+
+            Assert.Throws<NullReferenceException>(() => nullPayload.UnescapeFromBytePayload(new Range<int>(1, 1)));
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeFromBytePayloadRangeFirstIndexTooLow_ThrowsIndexOutOfRangeException()
+        {
+            var payload = new byte[] { 0x31, 0x32 };
+
+            Assert.Throws<IndexOutOfRangeException>(() => payload.UnescapeFromBytePayload(new Range<int>(-2, 1)));
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeFromBytePayloadRangeLastIndexTooHigh_ThrowsIndexOutOfRangeException()
+        {
+            var payload = new byte[] { 0x31, 0x32 };
+
+            Assert.Throws<IndexOutOfRangeException>(() => payload.UnescapeFromBytePayload(new Range<int>(0, 4)));
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeFromBytePayloadRangeIndexesOutOfRangeLow_ThrowsIndexOutOfRangeException()
+        {
+            var payload = new byte[] { 0x31, 0x32 };
+
+            Assert.Throws<IndexOutOfRangeException>(() => payload.UnescapeFromBytePayload(new Range<int>(-10, -2)));
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeFromBytePayloadRangeIndexesOutOfRangeHigh_ThrowsIndexOutOfRangeException()
+        {
+            var payload = new byte[] { 0x31, 0x32 };
+
+            Assert.Throws<IndexOutOfRangeException>(() => payload.UnescapeFromBytePayload(new Range<int>(10, 20)));
+        }
+
         public static IEnumerable<object> EscapeUnescapeRoundTripTestData
         {
             get

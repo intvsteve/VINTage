@@ -369,6 +369,10 @@ namespace INTV.Core.Model
         /// <remarks>The <paramref name="enclosingQuoteIndexes"/> argument may be <c>null</c>. When <c>null</c>, the entire
         /// <paramref name="rawCharacterPayload"/> is analyzed. When <paramref name="enclosingQuoteIndexes"/> is not <c>null</c>,
         /// it must specify a valid, non-empty range.</remarks>
+        /// <exception cref="System.NullReferenceException">Thrown if <paramref name="rawCharacterPayload"/> is null and
+        /// <paramref name="enclosingQuoteIndexes"/> is <c>null</c> or specifies a range of more than one.</exception>
+        /// <exception cref="System.IndexOutOfRangeException">Thrown if <paramref name="enclosingQuoteIndexes"/> specifies
+        /// an index that is before the beginning of the array.</exception>
         public static string UnescapeFromBytePayload(this byte[] rawCharacterPayload, Range<int> enclosingQuoteIndexes)
         {
             var unescapedPayload = rawCharacterPayload;

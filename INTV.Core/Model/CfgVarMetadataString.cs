@@ -45,7 +45,7 @@ namespace INTV.Core.Model
         protected override string ConvertPayloadToString(byte[] payload)
         {
             var quoteIndexes = payload.GetEnclosingQuoteCharacterIndexesFromBytePayload();
-            var payloadString = payload.UnescapeBytePayload(quoteIndexes);
+            var payloadString = payload.UnescapeFromBytePayload(quoteIndexes);
             var allowLineBreaks = false;
             switch (Type)
             {

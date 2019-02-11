@@ -269,6 +269,7 @@ namespace INTV.Core.Model
         /// UTF-8, the resulting string will be the encoded version of the original string. The result is delivered as an array
         /// of bytes for ease of use with <see cref="BinaryWriter"/> and <see cref="BinaryReader"/> implementations as well as
         /// the underlying <see cref="System.IO.Stream"/> those classes use..</remarks>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stringToEscape"/> is <c>null</c>.</exception>
         public static byte[] EscapeToBytePayload(this string stringToEscape)
         {
             /* ------------------------------------------------------------------------ */

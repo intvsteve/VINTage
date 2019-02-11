@@ -405,7 +405,15 @@ namespace INTV.Core.Tests.Model
             Assert.Equal(expectedLastQuoteIndex, quoteIndexes.Maximum);
         }
 
-        public static IEnumerable<object> EscapeStringTestData
+        [Fact]
+        public void MetadataHelpers_EscapeToBytePayloadWithNullString_ThrowsArgumentNullException()
+        {
+            string nullStringToEscape = null;
+
+            Assert.Throws<ArgumentNullException>(() => nullStringToEscape.EscapeToBytePayload());
+        }
+
+        public static IEnumerable<object> EscapeToBytePayloadTestData
         {
             get
             {
@@ -527,8 +535,8 @@ namespace INTV.Core.Tests.Model
         }
 
         [Theory]
-        [MemberData("EscapeStringTestData")]
-        public void MetadataHelpers_EscapeString_EscapesStringAsExpected(string stringToEscape, byte[] expectedPayloadData, string expectedPayloadAsString)
+        [MemberData("EscapeToBytePayloadTestData")]
+        public void MetadataHelpers_EscapeToBytePayload_EscapesStringAsExpected(string stringToEscape, byte[] expectedPayloadData, string expectedPayloadAsString)
         {
             var payloadData = stringToEscape.EscapeToBytePayload();
             var payloadAsString = Encoding.UTF8.GetString(payloadData);
@@ -541,7 +549,7 @@ namespace INTV.Core.Tests.Model
         {
             get
             {
-                foreach (var entry in EscapeStringTestData)
+                foreach (var entry in EscapeToBytePayloadTestData)
                 {
                     var entryDataArray = entry as object[];
                     yield return new object[] { entryDataArray[0] };
@@ -551,7 +559,7 @@ namespace INTV.Core.Tests.Model
 
         [Theory]
         [MemberData("EscapeUnescapeRoundTripTestData")]
-        public void MetadataHelpers_EscapeStringUnescapeBytePayloadRoundTrip_ProducesOriginalString(string stringToRoundTrip)
+        public void MetadataHelpers_EscapeToBytePayloadUnescapeBytePayloadRoundTrip_ProducesOriginalString(string stringToRoundTrip)
         {
             var escapedPayload = stringToRoundTrip.EscapeToBytePayload();
 

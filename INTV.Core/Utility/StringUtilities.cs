@@ -1,4 +1,4 @@
-// <copyright file="StringUtilities.cs" company="INTV Funhouse">
+﻿// <copyright file="StringUtilities.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -223,6 +223,21 @@ namespace INTV.Core.Utility
             var byteArray = stringToEscape.EscapeToBytePayload();
             var escapedString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
             return escapedString;
+        }
+
+        /// <summary>
+        /// Given a string, analyze the contents and un-escape the contents.
+        /// </summary>
+        /// <param name="escapedString">A string that has had escaping applied to it.</param>
+        /// <param name="enclosingQuoteIndexes">A <see cref="Range{int}"/> that describes the index of the first and
+        /// last quotation mark characters in <paramref name="rawCharacterPayload"/>.</param>
+        /// <returns>The un-escaped string.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="escapedString"/> is <c>null</c>.</exception>
+        public static string UnescapeString(this string escapedString, Range<int> enclosingQuoteIndexes)
+        {
+            var byteArray = Encoding.UTF8.GetBytes(escapedString);
+            var unescapedString = byteArray.UnescapeFromBytePayload(enclosingQuoteIndexes);
+            return unescapedString;
         }
 
         #region C-style Format Specifier Support

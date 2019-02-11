@@ -207,6 +207,31 @@ namespace INTV.Core.Tests
 
         #endregion // EscapeString Tests
 
+        #region UnescapeString Tests
+
+        [Fact]
+        public void UnescapeString_NullString_ThrowsArgumentNullException()
+        {
+            string nullString = null;
+
+            Assert.Throws<ArgumentNullException>(() => nullString.UnescapeString(null));
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("\\\"", "\"")]
+        [InlineData("\\\\", "\\")]
+        [InlineData("x", "x")]
+        [InlineData("a\\nb", "a\nb")]
+        public void UnescapeString_WithString_ProducesExpectedUnscapedString(string stringToUnescape, string expectedUnescapedString)
+        {
+            var unescapedString = stringToUnescape.UnescapeString(null);
+
+            Assert.Equal(expectedUnescapedString, unescapedString);
+        }
+
+        #endregion // UnescapeString Tests
+
         #region C-Style Formatting Tests
 
         /// <summary>

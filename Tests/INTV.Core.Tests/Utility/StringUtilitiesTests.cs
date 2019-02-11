@@ -157,6 +157,31 @@ namespace INTV.Core.Tests
 
         #endregion // ContainsInvalidCharacters Tests
 
+        #region GetEnclosingQuoteCharacterIndexes Tests
+
+        [Fact]
+        public void GetEnclosingQuoteCharacterIndexes_NullString_ThrowsArgumentNullException()
+        {
+            string nullString = null;
+
+            Assert.Throws<ArgumentNullException>(() => nullString.GetEnclosingQuoteCharacterIndexes());
+        }
+
+        [Theory]
+        [InlineData("", -1, -1)]
+        [InlineData(" \" ", 1, 1)]
+        [InlineData("\"\"\"", 0, 2)]
+        [InlineData("asd\"f\"gh", -1, -1)]
+        public void GetEnclosingQuoteCharacterIndexes_FromString_ReturnsExpectedRange(string stringToCheck, int expectedFirstQuoteIndex, int expactedLastQuoteIndex)
+        {
+            var indexes = stringToCheck.GetEnclosingQuoteCharacterIndexes();
+
+            Assert.Equal(expectedFirstQuoteIndex, indexes.Minimum);
+            Assert.Equal(expactedLastQuoteIndex, indexes.Maximum);
+        }
+
+        #endregion // GetEnclosingQuoteCharacterIndexes Tests
+
         #region C-Style Formatting Tests
 
         /// <summary>

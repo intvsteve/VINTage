@@ -1,4 +1,4 @@
-﻿// <copyright file="StringUtilities.cs" company="INTV Funhouse">
+// <copyright file="StringUtilities.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using INTV.Core.Model;
 
 namespace INTV.Core.Utility
 {
@@ -193,6 +194,21 @@ namespace INTV.Core.Utility
                 }
             }
             return containsInvalidCharacters;
+        }
+
+        /// <summary>
+        /// Gets the indexes if the first and last quotation mark character in the given string.
+        /// </summary>
+        /// <param name="stringToCheck">The string to check for quotation marks characters.</param>
+        /// <returns>A <see cref="Range{int}"/> instance which includes the index values if the first and last instance of the
+        /// quotation marks character.</returns>
+        /// <remarks>This is a wrapper method for <see cref="INTV.Core.Model.GetEnclosingQuoteCharacterIndexesFromBytePayload(byte[])"/>.</remarks>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stringToCheck"/> is <c>null</c>.</exception>
+        public static Range<int> GetEnclosingQuoteCharacterIndexes(this string stringToCheck)
+        {
+            var byteArray = Encoding.UTF8.GetBytes(stringToCheck);
+            var indexes = byteArray.GetEnclosingQuoteCharacterIndexesFromBytePayload();
+            return indexes;
         }
 
         #region C-style Format Specifier Support

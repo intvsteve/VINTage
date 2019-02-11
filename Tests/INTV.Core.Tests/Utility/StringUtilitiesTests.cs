@@ -182,6 +182,31 @@ namespace INTV.Core.Tests
 
         #endregion // GetEnclosingQuoteCharacterIndexes Tests
 
+        #region EscapeString Tests
+
+        [Fact]
+        public void EscapeString_NullString_ThrowsArgumentNullException()
+        {
+            string nullString = null;
+
+            Assert.Throws<ArgumentNullException>(() => nullString.EscapeString());
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("\"", "\\\"")]
+        [InlineData("\\", "\\\\")]
+        [InlineData("x", "x")]
+        [InlineData("a\nb", "a\\nb")]
+        public void EscapeString_WithString_ProducesExpectedEscapedString(string stringToEscape, string expectedEscapedString)
+        {
+            var escapedString = stringToEscape.EscapeString();
+
+            Assert.Equal(expectedEscapedString, escapedString);
+        }
+
+        #endregion // EscapeString Tests
+
         #region C-Style Formatting Tests
 
         /// <summary>

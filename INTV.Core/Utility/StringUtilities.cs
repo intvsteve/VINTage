@@ -211,6 +211,20 @@ namespace INTV.Core.Utility
             return indexes;
         }
 
+        /// <summary>
+        /// Escapes the given string following the rules defined in the jzintv / SDK-1600 software stack.
+        /// </summary>
+        /// <param name="stringToEscape">The string to apply the escaping rules to.</param>
+        /// <returns>A string suitably escaped for use with various jzintv / SDK-1600 interaction.</returns>
+        /// <remarks>Acts as a wrapper for <see cref="INTV.Core.Model.EscapeToBytePayload"/>.</remarks>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stringToEscape"/> is <c>null</c>.</exception>
+        public static string EscapeString(this string stringToEscape)
+        {
+            var byteArray = stringToEscape.EscapeToBytePayload();
+            var escapedString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+            return escapedString;
+        }
+
         #region C-style Format Specifier Support
 
         // The code in this region is from http://www.codeproject.com/Articles/19274/A-printf-implementation-in-C

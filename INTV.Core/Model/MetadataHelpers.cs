@@ -207,6 +207,7 @@ namespace INTV.Core.Model
         /// <param name="rawCharacterPayload">The array of bytes to inspect.</param>
         /// <returns>A <see cref="Range{int}"/> instance which includes the index values if the first and last instance of the
         /// ASCII quotation marks character (0x22).</returns>
+        /// <exception cref="System.NullReferenceException">Thrown if <paramref name="rawCharacterPayload"/> is <c>null</c>.</exception>
         public static Range<int> GetEnclosingQuoteCharacterIndexesFromBytePayload(this byte[] rawCharacterPayload)
         {
             var firstQuoteIndex = -1;

@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using INTV.Core.Model;
@@ -364,6 +365,14 @@ namespace INTV.Core.Tests.Model
 
             var expectedMetadataDateTime = new MetadataDateTimeBuilder(year).WithMonth(month).WithDay(day).WithHour(hour).WithMinute(minute).WithSecond(second).WithOffset(offsetHours, offsetMinutes).Build();
             Assert.Equal(0, expectedMetadataDateTime.CompareTo(parsedMetadataDateTime, strict: true, compareOnlyCommonValidFields: false));
+        }
+
+        [Fact]
+        public void MetadataHelpers_GetEnclosingQuoteCharactersFromNullPayload_ThrowsNullReferenceException()
+        {
+            byte[] nullData = null;
+
+            Assert.Throws<NullReferenceException>(() => nullData.GetEnclosingQuoteCharacterIndexesFromBytePayload());
         }
 
         [Theory]

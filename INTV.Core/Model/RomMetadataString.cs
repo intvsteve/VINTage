@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataString.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -49,8 +49,17 @@ namespace INTV.Core.Model
         /// <inheritdoc/>
         protected override uint DeserializePayload(INTV.Core.Utility.BinaryReader reader)
         {
-            // PCLs only support UTF8... Spec says ASCII. Let's hope we don't run into anything *too* weird.
-            StringValue = System.Text.Encoding.UTF8.GetString(reader.ReadBytes((int)Length), 0, (int)Length).Trim('\0');
+            var allowLineBreaks = false;
+            switch (Type)
+            {
+                case RomMetadataIdTag.Description:
+                case RomMetadataIdTag.License:
+                    allowLineBreaks = true;
+                    break;
+                default:
+                    break;
+            }
+            StringValue = reader.ParseStringFromMetadata(Length, allowLineBreaks);
             return Length;
         }
 

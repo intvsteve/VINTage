@@ -1,5 +1,5 @@
 ﻿// <copyright file="Crc32Tests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.IO;
 using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
@@ -134,6 +135,37 @@ namespace INTV.Core.Tests.Utility
                 var crc32 = Crc32.OfFile(testFileName, replaceFirstByte: true, alternateFirstByte: 0x42);
                 Assert.Equal(0x066F5C62u, crc32);
             }
+        }
+
+        [Fact]
+        public void Crc32_OfBlockWithInvalidPolynomial_ThrowsInvalidOperationException()
+        {
+            var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+            Assert.Throws<InvalidOperationException>(() => Crc32.OfBlock(testData, (Crc32Polynomial)0xdf));
+        }
+
+        [Fact]
+        public void Crc32_OfBlockUsingDefaultPolynomial_IsCorrect()
+        {
+            var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+            var crc32 = Crc32.OfBlock(testData, Crc32Polynomial.Default);
+            Assert.Equal(0x6035A035u, crc32);
+        }
+
+        [Fact]
+        public void Crc32_OfBlockUsingZipPolynomial_IsCorrect()
+        {
+            var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+            var crc32 = Crc32.OfBlock(testData, Crc32Polynomial.Zip);
+            Assert.Equal(0x6035A035u, crc32);
+        }
+
+        [Fact]
+        public void Crc32_OfBlockUsingCastagnoliPolynomial_IsCorrect()
+        {
+            var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+            var crc32 = Crc32.OfBlock(testData, Crc32Polynomial.Castagnoli);
+            Assert.Equal(0x392F5AE4u, crc32);
         }
 
         private class Crc32TestStorageAccess : TestStorageAccess

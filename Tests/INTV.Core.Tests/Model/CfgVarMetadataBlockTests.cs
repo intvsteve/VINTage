@@ -1,5 +1,5 @@
 ﻿// <copyright file="CfgVarMetadataBlockTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -107,6 +107,21 @@ dooh";
                 Assert.IsType<CfgVarMetadataString>(cfgVarMetadata);
                 Assert.True(cfgVarMetadata.DeserializeByteCount > 0);
                 Assert.Equal(expectedValue, ((CfgVarMetadataString)cfgVarMetadata).StringValue);
+            }
+        }
+
+        [Fact]
+        public void CfgVarMetadata_InflateCfgVarMetadataStringWithInvalidCharacter_ReturnsEmptyString()
+        {
+            var cfg = "name = Whatta\rHeck";
+
+            using (var stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(cfg)))
+            {
+                var cfgVarMetadata = CfgVarMetadataBlock.Inflate(stream);
+
+                Assert.IsType<CfgVarMetadataString>(cfgVarMetadata);
+                Assert.True(cfgVarMetadata.DeserializeByteCount > 0);
+                Assert.Equal(string.Empty, ((CfgVarMetadataString)cfgVarMetadata).StringValue);
             }
         }
 
@@ -250,10 +265,10 @@ short_name = wig
         [Theory]
         [InlineData("dunno", "dunno")]
         [InlineData("\"Howdy doody!\"", "Howdy doody!")]
-        [InlineData("\"", "")]
+        [InlineData("\"", "\"")]
         [InlineData("\"\"", "")]
         [InlineData("\" \"", " ")]
-        [InlineData("\"Mattel\" Electronics", "Mattel\" Electronics")]
+        [InlineData("\"Mattel\" Electronics", "\"Mattel\" Electronics")]
         public void CfgVarMetadata_InflateStringValue_GetsAppropriateString(string cfgFileValue, string expectedCfgVarMetadataStringValue)
         {
             var cfgStringValueEntry = "publisher=" + cfgFileValue;

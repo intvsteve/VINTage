@@ -134,7 +134,7 @@ namespace INTV.Core.Utility
         /// <param name="crc">The current CRC value.</param>
         /// <param name="data">The new data to incorporate into the CRC.</param>
         /// <returns>The new CRC value.</returns>
-        private static uint Update(uint crc, byte data)
+        public static uint Update(uint crc, byte data)
         {
             return ((crc << 8) ^ Crc24Table[((crc >> 16) ^ data) & 0xFF]) & 0x00FFFFFF;
         }

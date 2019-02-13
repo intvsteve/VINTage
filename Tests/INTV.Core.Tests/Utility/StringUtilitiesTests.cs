@@ -1,5 +1,5 @@
 ﻿// <copyright file="StringUtilitiesTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -114,6 +114,123 @@ namespace INTV.Core.Tests
         }
 
         #endregion // HTML Encoder Tests
+
+        #region ContainsInvalidCharacters Tests
+
+        [Theory]
+        [InlineData(null, false, false)]
+        [InlineData("", true, false)]
+        [InlineData(" \t ", true, false)]
+        [InlineData("\01\02\03whoa", false, true)]
+        [InlineData("\u2400", false, false)] // other symbol
+        [InlineData("\uf000", false, true)] // private
+        [InlineData("\t", false, false)]
+        [InlineData("\r", false, true)]
+        [InlineData("\n", false, true)]
+        [InlineData("\f", false, true)]
+        [InlineData("\r\n", false, true)]
+        [InlineData("\u2028", false, true)] // line separator
+        [InlineData("\u2029", false, true)] // paragraph separator
+        [InlineData("\t", true, false)]
+        [InlineData("\r", true, false)]
+        [InlineData("\n", true, false)]
+        [InlineData("\f", true, true)]
+        [InlineData("\r\n", true, false)]
+        [InlineData("a\rb", false, true)]
+        [InlineData("a\nb", false, true)]
+        [InlineData("a\r\nb", true, false)]
+        [InlineData("a\r\nb", true, false)]
+        [InlineData("\u2028", true, false)] // line separator
+        [InlineData("\u2029", true, false)] // paragraph separator
+        [InlineData("\ufffd", true, false)] // replacement character (other symbol)
+        [InlineData("\ufffe", true, true)] // not-a-character
+        [InlineData("\uffff", true, true)] // not-a-character
+        [InlineData("∞", false, false)]
+        [InlineData("∞", true, false)]
+        [InlineData("A bòöger!{{}}])(_*@!&#)(&%)(*&%!#*+_|", false, false)]
+        [InlineData("A bòöger!{{}}])(_*@!&#)(&%)(*&%!#*+_|", true, false)]
+        public void ContainsInvalidCharacters_TestGivenString_DetectsInvalidCharacters(string stringToCheck, bool allowLineBreaks, bool expectedResult)
+        {
+            var actualResult = stringToCheck.ContainsInvalidCharacters(allowLineBreaks);
+            Assert.Equal(expectedResult, actualResult);
+        }
+
+        #endregion // ContainsInvalidCharacters Tests
+
+        #region GetEnclosingQuoteCharacterIndexes Tests
+
+        [Fact]
+        public void GetEnclosingQuoteCharacterIndexes_NullString_ThrowsArgumentNullException()
+        {
+            string nullString = null;
+
+            Assert.Throws<ArgumentNullException>(() => nullString.GetEnclosingQuoteCharacterIndexes());
+        }
+
+        [Theory]
+        [InlineData("", -1, -1)]
+        [InlineData(" \" ", 1, 1)]
+        [InlineData("\"\"\"", 0, 2)]
+        [InlineData("asd\"f\"gh", -1, -1)]
+        public void GetEnclosingQuoteCharacterIndexes_FromString_ReturnsExpectedRange(string stringToCheck, int expectedFirstQuoteIndex, int expactedLastQuoteIndex)
+        {
+            var indexes = stringToCheck.GetEnclosingQuoteCharacterIndexes();
+
+            Assert.Equal(expectedFirstQuoteIndex, indexes.Minimum);
+            Assert.Equal(expactedLastQuoteIndex, indexes.Maximum);
+        }
+
+        #endregion // GetEnclosingQuoteCharacterIndexes Tests
+
+        #region EscapeString Tests
+
+        [Fact]
+        public void EscapeString_NullString_ThrowsArgumentNullException()
+        {
+            string nullString = null;
+
+            Assert.Throws<ArgumentNullException>(() => nullString.EscapeString());
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("\"", "\\\"")]
+        [InlineData("\\", "\\\\")]
+        [InlineData("x", "x")]
+        [InlineData("a\nb", "a\\nb")]
+        public void EscapeString_WithString_ProducesExpectedEscapedString(string stringToEscape, string expectedEscapedString)
+        {
+            var escapedString = stringToEscape.EscapeString();
+
+            Assert.Equal(expectedEscapedString, escapedString);
+        }
+
+        #endregion // EscapeString Tests
+
+        #region UnescapeString Tests
+
+        [Fact]
+        public void UnescapeString_NullString_ThrowsArgumentNullException()
+        {
+            string nullString = null;
+
+            Assert.Throws<ArgumentNullException>(() => nullString.UnescapeString(null));
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("\\\"", "\"")]
+        [InlineData("\\\\", "\\")]
+        [InlineData("x", "x")]
+        [InlineData("a\\nb", "a\nb")]
+        public void UnescapeString_WithString_ProducesExpectedUnscapedString(string stringToUnescape, string expectedUnescapedString)
+        {
+            var unescapedString = stringToUnescape.UnescapeString(null);
+
+            Assert.Equal(expectedUnescapedString, unescapedString);
+        }
+
+        #endregion // UnescapeString Tests
 
         #region C-Style Formatting Tests
 

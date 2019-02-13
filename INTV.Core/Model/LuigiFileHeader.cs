@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFileHeader.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Globalization;
 using System.Linq;
 using INTV.Core.Utility;
 
@@ -320,6 +321,10 @@ namespace INTV.Core.Model
                 Features2 = (LuigiFeatureFlags2)reader.ReadUInt64();
                 bytesRead += sizeof(LuigiFeatureFlags2);
                 var uidBytes = reader.ReadBytes(VersionOneUidSize);
+                if (uidBytes.Length < sizeof(ulong))
+                {
+                    throw new System.IO.EndOfStreamException();
+                }
                 Uid = BitConverter.ToUInt64(uidBytes, 0);
                 bytesRead += sizeof(ulong);
                 var originalFormatKey = uidBytes.Skip(OriginalRomCrc32Size).Take(OriginalRomKeySize);
@@ -346,6 +351,7 @@ namespace INTV.Core.Model
             Crc = reader.ReadByte();
             bytesRead += HeaderChecksumSize;
 
+            ValidateHeaderBytesRead(bytesRead);
             ValidateHeaderCrc(reader, bytesRead);
 
             _deserializeByteCount = bytesRead;
@@ -384,18 +390,25 @@ namespace INTV.Core.Model
 
         #endregion // ByteSerializer
 
-        [System.Diagnostics.Conditional("DEBUG")]
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         private void ValidateHeaderCrc(Core.Utility.BinaryReader reader, int bytesRead)
         {
-            System.Diagnostics.Debug.Assert((bytesRead == BaseFlatSize) || (bytesRead == VersionOneFlatSize), "Invalid LUIGI header size.");
             reader.BaseStream.Seek(-bytesRead, System.IO.SeekOrigin.Current);
             var data = reader.ReadBytes(bytesRead - 1);
             var crc8 = Crc8.OfBlock(data);
             reader.BaseStream.Seek(bytesRead, System.IO.SeekOrigin.Begin);
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (crc8 != Crc)
             {
-                System.Diagnostics.Debug.Assert(crc8 == Crc, "Failed to correctly compute DOWCRC for LUIGI header!");
+                throw new System.IO.InvalidDataException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, crc8, Crc));
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        private void ValidateHeaderBytesRead(int bytesRead)
+        {
+            var valid = (bytesRead == BaseFlatSize) || (bytesRead == VersionOneFlatSize);
+            if (!valid)
+            {
+                throw new System.IO.InvalidDataException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidLuigiHeaderSizeFormat, bytesRead));
             }
         }
 

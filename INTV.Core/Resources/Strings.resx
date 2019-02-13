@@ -216,4 +216,14 @@
     <value>Website for {0}: {1}</value>
     <comment>{0} a vendor name; {1} a website URL</comment>
   </data>
+  <data name="InvalidDataBlockChecksumFormat" xml:space="preserve">
+    <value>Invalid data block checksum.
+  Expected: {0}
+  Actual: {1}</value>
+    <comment>{0}: expected checksum value; {1}: actual checksum value</comment>
+  </data>
+  <data name="InvalidLuigiHeaderSizeFormat" xml:space="preserve">
+    <value>Invalid LUIGI header size: {0}</value>
+    <comment>{0}: size of the header that was read</comment>
+  </data>
 </root>

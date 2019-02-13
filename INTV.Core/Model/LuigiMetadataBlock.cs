@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiMetadataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2018 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model
 {
@@ -35,9 +36,9 @@ namespace INTV.Core.Model
             { LuigiMetadataIdTag.Author, StringMetadataParser },
             { LuigiMetadataIdTag.Publisher, StringMetadataParser },
             { LuigiMetadataIdTag.Date, DateMetadataParser },
-            { LuigiMetadataIdTag.License, StringMetadataParser },
-            { LuigiMetadataIdTag.Description, StringMetadataParser },
-            { LuigiMetadataIdTag.Miscellaneous, StringMetadataParser },
+            { LuigiMetadataIdTag.License, (r, l) => r.ParseStringFromMetadata(l, allowLineBreaks: true) },
+            { LuigiMetadataIdTag.Description, (r, l) => r.ParseStringFromMetadata(l, allowLineBreaks: true) },
+            { LuigiMetadataIdTag.Miscellaneous, (r, l) => r.ParseStringFromMetadata(l, allowLineBreaks: true) },
             { LuigiMetadataIdTag.Graphics, StringMetadataParser },
             { LuigiMetadataIdTag.Music, StringMetadataParser },
             { LuigiMetadataIdTag.SoundEffects, StringMetadataParser },
@@ -236,6 +237,10 @@ namespace INTV.Core.Model
         /// <inheritdoc/>
         protected override int DeserializePayload(Core.Utility.BinaryReader reader)
         {
+            // This is inefficient, but simple. Read and walk the payload twice. First time validates its checksum. Second pass actually parses it.
+            base.DeserializePayload(reader);
+            reader.BaseStream.Seek(-Length, System.IO.SeekOrigin.Current);
+
             var runningBytesRead = 0;
             while (runningBytesRead < Length)
             {
@@ -279,7 +284,7 @@ namespace INTV.Core.Model
         private static object StringMetadataParser(Core.Utility.BinaryReader reader, byte payloadLength)
         {
             // Documentation indicates this could be ASCII or UTF-8...
-            var stringResult = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(payloadLength), 0, payloadLength).Trim('\0');
+            var stringResult = reader.ParseStringFromMetadata(payloadLength, allowLineBreaks: false);
             return stringResult;
         }
 

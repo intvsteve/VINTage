@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomFormatRomTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -124,15 +124,12 @@ namespace INTV.Core.Tests.Model
         }
 
         [Fact]
-        public void RomFormatRom_GetMetadataWithBadCrc_ReturnsExpectedMetadata()
+        public void RomFormatRom_GetMetadataWithBadCrc_ThowsInvalidDataException()
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomMetadataBadCrcPath).First();
-
             var rom = Rom.Create(romPath, null);
-            var metadata = rom.GetRomFileMetadata();
 
-            Assert.NotNull(metadata);
-            VerifyExpectedMetadata(metadata, lastVersionMetadataIsCorrupt: true);
+            Assert.Throws<System.IO.InvalidDataException>(() => rom.GetRomFileMetadata());
         }
 
         private void VerifyExpectedMetadata(IProgramMetadata metadata, bool lastVersionMetadataIsCorrupt)

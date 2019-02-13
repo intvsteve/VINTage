@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiDataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2018 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,8 @@
 // </copyright>
 
 using System;
+using System.Globalization;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model
 {
@@ -173,7 +175,7 @@ namespace INTV.Core.Model
                     dataBlock = new LuigiEndOfFileBlock();
                     break;
                 default:
-                    dataBlock = new LuigiDataBlock(LuigiDataBlockType.UnknownBlockType); // TODO: should this preserve block type?
+                    dataBlock = new LuigiDataBlock((LuigiDataBlockType)blockType);
                     break;
             }
             dataBlock._deserializeByteCount = BlockTypeSize;
@@ -197,6 +199,8 @@ namespace INTV.Core.Model
             var bytesRead = PayloadLengthSize;
             HeaderCrc = reader.ReadByte();
             bytesRead += HeaderChecksumSize;
+            ValidateHeaderCrc();
+
             if (Length > 0)
             {
                 PayloadCrc = reader.ReadUInt32();
@@ -213,13 +217,48 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="reader">The binary reader containing the data to deserialize to create the object.</param>
         /// <returns>The number of bytes deserialized.</returns>
-        /// <remarks>The default implementation merely advances the reader without parsing or even reading
-        /// any of the payload into memory. Specific subclasses may override this implementation if
+        /// <remarks>The default implementation merely validates that the payload is correct. Specific subclasses may override this implementation if
         /// any specific data from the payload is desired.</remarks>
+        /// <exception cref="System.IO.EndOfStreamException">Thrown if the data stream does not contain enough data as specified by payload length.</exception>
+        /// <exception cref="System.IO.InvalidDataException">Thrown if the payload checksum differs from the expected checksum.</exception>
         protected virtual int DeserializePayload(Core.Utility.BinaryReader reader)
         {
-            reader.BaseStream.Seek(Length, System.IO.SeekOrigin.Current);
+            var payload = reader.ReadBytes(Length);
+            if (payload.Length < Length)
+            {
+                throw new System.IO.EndOfStreamException();
+            }
+            ValidatePayloadCrc(payload);
             return Length;
+        }
+
+        /// <summary>
+        /// Validates the header of a LUIGI data block by comparing the parsed checksum with the actual computed checksum.
+        /// </summary>
+        protected void ValidateHeaderCrc()
+        {
+            var headerCrc = Crc8.Update(Crc8.InitialValue, (byte)Type);
+            foreach (var value in BitConverter.GetBytes(Length))
+            {
+                headerCrc = Crc8.Update(headerCrc, value);
+            }
+            if (headerCrc != HeaderCrc)
+            {
+                throw new System.IO.InvalidDataException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, headerCrc, HeaderCrc));
+            }
+        }
+
+        /// <summary>
+        /// Validates the data payload of a LUIGI data block by comparing the parsed checksum with the actual computed checksum.
+        /// </summary>
+        /// <param name="payload">The payload data whose checksum is to be validated.</param>
+        protected void ValidatePayloadCrc(byte[] payload)
+        {
+            var payloadCrc = Crc32.OfBlock(payload, Crc32Polynomial.Castagnoli);
+            if (payloadCrc != PayloadCrc)
+            {
+                throw new System.IO.InvalidDataException(string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, payloadCrc, PayloadCrc));
+            }
         }
     }
 }

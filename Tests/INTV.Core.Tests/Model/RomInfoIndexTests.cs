@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomInfoIndexTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using INTV.Core.Model;
 using Xunit;
 
@@ -60,6 +61,24 @@ namespace INTV.Core.Tests.Model
             var testValues = new[] { "  The  Show    Must   Go     ONNNNNNNNNNN!         ", "@Copr 1978" };
 
             Assert.Equal("The Show Must Go ONNNNNNNNNNN!", testValues.GetRomInfoString(RomInfoIndex.Name));
+        }
+
+        [Theory]
+        [InlineData(RomInfoIndex.Name)]
+        [InlineData(RomInfoIndex.Copyright)]
+        [InlineData(RomInfoIndex.ShortName)]
+        public void RomInfoEnumerable_TotallyInvalidData_ReturnsEmptyStrings(RomInfoIndex romInfoIndex)
+        {
+            var badStringBytes = new byte[255];
+            for (var i = 0; i < 255; ++i)
+            {
+                badStringBytes[i] = (byte)(255 - i);
+            }
+            var badString = System.Text.Encoding.UTF8.GetString(badStringBytes, 0, badStringBytes.Length);
+
+            var testValues = Enumerable.Repeat(badString, (int)RomInfoIndex.NumEntries).ToArray();
+
+            Assert.True(string.IsNullOrEmpty(testValues.GetRomInfoString(romInfoIndex)));
         }
     }
 }

@@ -193,7 +193,7 @@ namespace INTV.Core.Model
             // LUIGI documentation indicates this could be ASCII or UTF-8 (LUIGI)...
             // ROM metadata spec says ASCII. Let's hope we don't run into anything *too* weird.
             var bytes = reader.ReadBytes((int)payloadLength);
-            var stringResult = System.Text.Encoding.UTF8.GetString(bytes, 0, (int)payloadLength).Trim('\0');
+            var stringResult = bytes.UnescapeFromBytePayload(null);
             if (stringResult.ContainsInvalidCharacters(allowLineBreaks))
             {
                 stringResult = string.Empty;

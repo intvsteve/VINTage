@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiDataBlockTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Globalization;
 using System.IO;
 using INTV.Core.Model;
 using INTV.Core.Utility;
@@ -114,9 +115,83 @@ namespace INTV.Core.Tests.Model
 
                 var luigiDataBlock = LuigiDataBlock.Inflate(fakeLuigiBlockData);
 
-                Assert.Equal(LuigiDataBlockType.UnknownBlockType, luigiDataBlock.Type);
+                Assert.Equal(LuigiTestDataBlock.BlockType, luigiDataBlock.Type);
                 Assert.Equal(crc, luigiDataBlock.HeaderCrc);
                 Assert.Equal(0u, luigiDataBlock.PayloadCrc);
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializeEmptyBlock_ThrowsEndOfStreamException()
+        {
+            var truncatedDataBlock = new byte[0];
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializeTruncatedPayloadLengthBlock_ThrowsEndOfStreamException()
+        {
+            var truncatedDataBlock = new byte[] { 0x00, 0x10 };
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializeTruncatedHeaderCrcBlock_ThrowsEndOfStreamException()
+        {
+            var truncatedDataBlock = new byte[] { 0x00, 0x01, 0x00 };
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializeTruncatedPayloadCrcBlock_ThrowsEndOfStreamException()
+        {
+            var truncatedDataBlock = new byte[] { 0x00, 0x01, 0x00, 0xe5, 0x22 };
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializeTruncatedPayloadBlock_ThrowsEndOfStreamException()
+        {
+            var truncatedDataBlock = new byte[] { (byte)LuigiTestDataBlock.BlockType, 0x01, 0x00, 0x77, 0x22, 0x33, 0x44, 0x55 };
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                Assert.Throws<System.IO.EndOfStreamException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializePayloadWithCorruptedCrc_ThrowsInvalidDataException()
+        {
+            var truncatedDataBlock = new byte[] { (byte)LuigiTestDataBlock.BlockType, 0x01, 0x00, 0xe4, 0x44, 0x33, 0x22, 0x11 };
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                var exception = Assert.Throws<System.IO.InvalidDataException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+                var expectedMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, 0x77, 0xe4);
+                Assert.Equal(expectedMessage, exception.Message);
+            }
+        }
+
+        [Fact]
+        public void LuigiDataBlock_DeserializePayloadWithCorruptedPayloadCrc_ThrowsInvalidDataException()
+        {
+            var truncatedDataBlock = new byte[] { (byte)LuigiTestDataBlock.BlockType, 0x01, 0x00, 0x77, 0x44, 0x33, 0x22, 0x11, 0xee };
+            using (var truncatedLuigiBlockStream = new MemoryStream(truncatedDataBlock))
+            {
+                var exception = Assert.Throws<System.IO.InvalidDataException>(() => LuigiDataBlock.Inflate(truncatedLuigiBlockStream));
+                var expectedMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.InvalidDataBlockChecksumFormat, 0x4F48173D, 0x11223344);
+                Assert.Equal(expectedMessage, exception.Message);
             }
         }
 

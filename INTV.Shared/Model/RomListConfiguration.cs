@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListConfiguration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -232,6 +232,19 @@ namespace INTV.Shared.Model
                 if (!string.IsNullOrWhiteSpace(results))
                 {
                     intvNameData = System.Text.RegularExpressions.Regex.Split(results, "\r\n|\r|\n");
+                    for (int i = 0; i < intvNameData.Length; ++i)
+                    {
+                        var rawEntry = intvNameData[i];
+                        var unescapedEntry = INTV.Core.Utility.StringUtilities.UnescapeString(rawEntry, null);
+                        if (INTV.Core.Utility.StringUtilities.ContainsInvalidCharacters(unescapedEntry, allowLineBreaks: false))
+                        {
+                            intvNameData[i] = string.Empty;
+                        }
+                        else
+                        {
+                            intvNameData[i] = unescapedEntry;
+                        }
+                    }
                     if (intvNameData.Length > 0)
                     {
                         intvNameData[0] = System.Text.RegularExpressions.Regex.Replace(intvNameData[0], @"\s+", " ").Trim();

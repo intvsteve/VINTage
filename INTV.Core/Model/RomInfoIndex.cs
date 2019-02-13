@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomInfoIndex.cs" company="INTV Funhouse">
-// Copyright (c) 2016-2017 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model
 {
@@ -83,9 +84,17 @@ namespace INTV.Core.Model
                     result = results.ElementAt((int)index);
                 }
             }
+
             if (!string.IsNullOrEmpty(result))
             {
-                result = System.Text.RegularExpressions.Regex.Replace(result, @"\s+", " ").Trim();
+                if (result.ContainsInvalidCharacters(allowLineBreaks: false))
+                {
+                    result = string.Empty;
+                }
+                else
+                {
+                    result = System.Text.RegularExpressions.Regex.Replace(result, @"\s+", " ").Trim();
+                }
             }
             return result;
         }

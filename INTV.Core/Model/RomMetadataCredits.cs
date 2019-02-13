@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataCredits.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model
 {
@@ -31,7 +32,7 @@ namespace INTV.Core.Model
         private const int NumberOfCreditFlags = 8;
 
         /// <summary>
-        /// A dictionary of predefined authors, as reasearched by Joe Zbiciak. This is transcribed from
+        /// A dictionary of predefined authors, as researched by Joe Zbiciak. This is transcribed from
         /// the 'authors' file included in the jzIntv source's doc/rom_fmt/.
         /// </summary>
         private static readonly Dictionary<byte, string> Authors = new Dictionary<byte, string>()
@@ -312,6 +313,10 @@ namespace INTV.Core.Model
 
                 // PCLs only support UTF8. Spec says ASCIIZ. We shouldn't run into anything *too* weird here...
                 name = System.Text.Encoding.UTF8.GetString(nameBuffer.ToArray(), 0, nameBuffer.Count).Trim('\0');
+                if (name.ContainsInvalidCharacters(allowLineBreaks: false))
+                {
+                    name = string.Empty;
+                }
             }
 
             for (int i = 0; i < NumberOfCreditFlags; ++i)

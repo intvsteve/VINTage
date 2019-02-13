@@ -124,6 +124,26 @@ namespace INTV.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid data block checksum.
+        ///  Expected: {0}
+        ///  Actual: {1}.
+        /// </summary>
+        internal static string InvalidDataBlockChecksumFormat {
+            get {
+                return ResourceManager.GetString("InvalidDataBlockChecksumFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid LUIGI header size: {0}.
+        /// </summary>
+        internal static string InvalidLuigiHeaderSizeFormat {
+            get {
+                return ResourceManager.GetString("InvalidLuigiHeaderSizeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to JLP03.
         /// </summary>
         internal static string JlpHardwareVersion_03 {

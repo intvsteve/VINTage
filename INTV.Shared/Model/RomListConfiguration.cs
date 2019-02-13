@@ -234,9 +234,15 @@ namespace INTV.Shared.Model
                     intvNameData = System.Text.RegularExpressions.Regex.Split(results, "\r\n|\r|\n");
                     for (int i = 0; i < intvNameData.Length; ++i)
                     {
-                        if (INTV.Core.Utility.StringUtilities.ContainsInvalidCharacters(intvNameData[i], allowLineBreaks: false))
+                        var rawEntry = intvNameData[i];
+                        var unescapedEntry = INTV.Core.Utility.StringUtilities.UnescapeString(rawEntry, null);
+                        if (INTV.Core.Utility.StringUtilities.ContainsInvalidCharacters(unescapedEntry, allowLineBreaks: false))
                         {
                             intvNameData[i] = string.Empty;
+                        }
+                        else
+                        {
+                            intvNameData[i] = unescapedEntry;
                         }
                     }
                     if (intvNameData.Length > 0)

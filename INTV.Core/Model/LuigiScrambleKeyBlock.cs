@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiScrambleKeyBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -48,6 +48,12 @@ namespace INTV.Core.Model
         /// <inheritdoc/>
         protected override int DeserializePayload(Core.Utility.BinaryReader reader)
         {
+            // Verify we're not going to be truncated.
+            if ((reader.BaseStream.Length - reader.BaseStream.Position) < Length)
+            {
+                throw new System.IO.EndOfStreamException();
+            }
+
             // Get the clear portion of the key - the DRUID.
             var responseBuffer = new byte[UniqueIdSize];
             reader.Read(responseBuffer, 0, UniqueIdSize);
@@ -57,6 +63,8 @@ namespace INTV.Core.Model
 
             // Skip past the rest of it - we've got all we care about.
             reader.BaseStream.Seek(Length - UniqueIdSize, System.IO.SeekOrigin.Current);
+
+            // NOTE: Scrambled blocks *CANNOT* be validated by a CRC check!
             return Length;
         }
     }

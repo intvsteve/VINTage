@@ -303,19 +303,28 @@ namespace INTV.Core.Model
                     {
                         if (file.Length > 0)
                         {
-                            var blockType = LuigiDataBlock.GetBlockType<T>();
+                            var desiredBlockType = LuigiDataBlock.GetBlockType<T>();
                             var luigiHeader = LuigiFileHeader.Inflate(file);
                             var bytesRead = luigiHeader.DeserializeByteCount;
 
                             // Start looking for desired block immediately after header.
                             var block = LuigiDataBlock.Inflate(file);
                             bytesRead += block.DeserializeByteCount;
-                            while ((bytesRead < file.Length) && (block.Type != blockType) && (block.Type != LuigiDataBlockType.EndOfFile))
+                            if (StopIfScrambleKeyBlockFound(desiredBlockType, block.Type))
+                            {
+                                // Stop looking. If we hit the scramble key, there's nothing more to be looked at.
+                                bytesRead = (int)file.Length;
+                            }
+                            while ((bytesRead < file.Length) && (block.Type != desiredBlockType) && (block.Type != LuigiDataBlockType.EndOfFile))
                             {
                                 block = LuigiDataBlock.Inflate(file);
                                 bytesRead += block.DeserializeByteCount;
+                                if (StopIfScrambleKeyBlockFound(desiredBlockType, block.Type))
+                                {
+                                    break;
+                                }
                             }
-                            if (block.Type == blockType)
+                            if (block.Type == desiredBlockType)
                             {
                                 dataBlock = block as T;
                             }
@@ -324,6 +333,12 @@ namespace INTV.Core.Model
                 }
             }
             return dataBlock;
+        }
+
+        private bool StopIfScrambleKeyBlockFound(LuigiDataBlockType desiredBlockType, LuigiDataBlockType currentBlockType)
+        {
+            var stop = (currentBlockType == LuigiDataBlockType.SetScrambleKey) && (desiredBlockType != LuigiDataBlockType.SetScrambleKey);
+            return stop;
         }
 
         private class LuigiUniqueIdMemo : FileMemo<string>

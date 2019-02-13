@@ -1,5 +1,5 @@
 ﻿// <copyright file="StringUtilities.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,9 +19,11 @@
 // </copyright>
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using INTV.Core.Model;
 
 namespace INTV.Core.Utility
 {
@@ -117,6 +119,125 @@ namespace INTV.Core.Utility
                 encodedHtmlString = _htmlEncoder(rawString);
             }
             return encodedHtmlString;
+        }
+
+        /// <summary>
+        /// Inspects a string for unacceptable characters.
+        /// </summary>
+        /// <param name="stringToCheck">The string to check.</param>
+        /// <param name="allowLineBreaks">If <c>true</c>, line and paragraph break characters are allowed.</param>
+        /// <returns><c>true</c> if any invalid character is found. <c>null</c> and empty strings will return <c>false</c>.</returns>
+        public static bool ContainsInvalidCharacters(this string stringToCheck, bool allowLineBreaks)
+        {
+            var containsInvalidCharacters = false;
+            if (!string.IsNullOrEmpty(stringToCheck))
+            {
+                foreach (var character in stringToCheck)
+                {
+                    var category = CharUnicodeInfo.GetUnicodeCategory(character);
+                    switch (category)
+                    {
+                        case UnicodeCategory.UppercaseLetter:
+                        case UnicodeCategory.LowercaseLetter:
+                        case UnicodeCategory.TitlecaseLetter:
+                        case UnicodeCategory.ModifierLetter:
+                        case UnicodeCategory.OtherLetter:
+                        case UnicodeCategory.NonSpacingMark:
+                        case UnicodeCategory.SpacingCombiningMark:
+                        case UnicodeCategory.EnclosingMark:
+                        case UnicodeCategory.DecimalDigitNumber:
+                        case UnicodeCategory.LetterNumber:
+                        case UnicodeCategory.OtherNumber:
+                        case UnicodeCategory.SpaceSeparator:
+                        case UnicodeCategory.Surrogate:
+                        case UnicodeCategory.ConnectorPunctuation:
+                        case UnicodeCategory.DashPunctuation:
+                        case UnicodeCategory.OpenPunctuation:
+                        case UnicodeCategory.ClosePunctuation:
+                        case UnicodeCategory.InitialQuotePunctuation:
+                        case UnicodeCategory.FinalQuotePunctuation:
+                        case UnicodeCategory.OtherPunctuation:
+                        case UnicodeCategory.MathSymbol:
+                        case UnicodeCategory.CurrencySymbol:
+                        case UnicodeCategory.ModifierSymbol:
+                        case UnicodeCategory.OtherSymbol:
+                            break;
+                        case UnicodeCategory.LineSeparator:
+                        case UnicodeCategory.ParagraphSeparator:
+                            containsInvalidCharacters = !allowLineBreaks;
+                            break;
+                        case UnicodeCategory.Control:
+                            if ((character == '\r') || (character == '\n'))
+                            {
+                                containsInvalidCharacters = !allowLineBreaks;
+                            }
+                            else if (character == '\t')
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                containsInvalidCharacters = true;
+                            }
+                            break;
+                        case UnicodeCategory.Format:
+                        case UnicodeCategory.PrivateUse:
+                        case UnicodeCategory.OtherNotAssigned:
+                        default:
+                            containsInvalidCharacters = true;
+                            break;
+                    }
+                    if (containsInvalidCharacters)
+                    {
+                        break;
+                    }
+                }
+            }
+            return containsInvalidCharacters;
+        }
+
+        /// <summary>
+        /// Gets the indexes if the first and last quotation mark character in the given string.
+        /// </summary>
+        /// <param name="stringToCheck">The string to check for quotation marks characters.</param>
+        /// <returns>A <see cref="Range{int}"/> instance which includes the index values if the first and last instance of the
+        /// quotation marks character.</returns>
+        /// <remarks>This is a wrapper method for <see cref="INTV.Core.Model.GetEnclosingQuoteCharacterIndexesFromBytePayload(byte[])"/>.</remarks>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stringToCheck"/> is <c>null</c>.</exception>
+        public static Range<int> GetEnclosingQuoteCharacterIndexes(this string stringToCheck)
+        {
+            var byteArray = Encoding.UTF8.GetBytes(stringToCheck);
+            var indexes = byteArray.GetEnclosingQuoteCharacterIndexesFromBytePayload();
+            return indexes;
+        }
+
+        /// <summary>
+        /// Escapes the given string following the rules defined in the jzintv / SDK-1600 software stack.
+        /// </summary>
+        /// <param name="stringToEscape">The string to apply the escaping rules to.</param>
+        /// <returns>A string suitably escaped for use with various jzintv / SDK-1600 interaction.</returns>
+        /// <remarks>Acts as a wrapper for <see cref="INTV.Core.Model.EscapeToBytePayload"/>.</remarks>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stringToEscape"/> is <c>null</c>.</exception>
+        public static string EscapeString(this string stringToEscape)
+        {
+            var byteArray = stringToEscape.EscapeToBytePayload();
+            var escapedString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+            return escapedString;
+        }
+
+        /// <summary>
+        /// Given a string, analyze the contents and un-escape the contents.
+        /// </summary>
+        /// <param name="escapedString">A string that has had escaping applied to it.</param>
+        /// <param name="enclosingQuoteIndexes">A <see cref="Range{int}"/> that describes the index of the first and
+        /// last quotation mark characters in <paramref name="rawCharacterPayload"/>.</param>
+        /// <returns>The un-escaped string.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="escapedString"/> is <c>null</c>.</exception>
+        public static string UnescapeString(this string escapedString, Range<int> enclosingQuoteIndexes)
+        {
+            var byteArray = Encoding.UTF8.GetBytes(escapedString);
+            var unescapedString = byteArray.UnescapeFromBytePayload(enclosingQuoteIndexes);
+            return unescapedString;
         }
 
         #region C-style Format Specifier Support

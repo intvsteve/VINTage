@@ -86,6 +86,7 @@
     <Compile Include="Model\LuigiFileHeaderTests.cs" />
     <Compile Include="Model\LuigiFormatRomTests.cs" />
     <Compile Include="Model\LuigiMetadataBlockTests.cs" />
+    <Compile Include="Model\LuigiScrambleKeyBlockTests.cs" />
     <Compile Include="Model\MetadataDateTimeBuilderTests.cs" />
     <Compile Include="Model\MetadataDateTimeTests.cs" />
     <Compile Include="Model\MetadataHelpersTests.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Model\RomInfoIndexTests.cs" />
     <Compile Include="Model\RomMetadataBlockTests.cs" />
     <Compile Include="Model\RomMetadataControllerBindingsTests.cs" />
+    <Compile Include="Model\RomMetadataCreditsTests.cs" />
     <Compile Include="Model\RomMetadataDateTests.cs" />
     <Compile Include="Model\RomMetadataFeaturesTests.cs" />
     <Compile Include="Model\RomMetadataPublisherTests.cs" />

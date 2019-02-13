@@ -1,5 +1,5 @@
 ﻿// <copyright file="CfgVarMetadataBlock.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -81,7 +81,6 @@ namespace INTV.Core.Model
             var cfgFileBytes = new byte[cfgFileSize];
             if (stream.Read(cfgFileBytes, 0, cfgFileSize) == cfgFileSize)
             {
-                // PCLs only support UTF8... Spec says ASCII. Let's hope we don't run into anything *too* weird.
                 var cfgFileContents = System.Text.Encoding.UTF8.GetString(cfgFileBytes, 0, cfgFileBytes.Length).Trim('\0');
                 var cfgFileLines = cfgFileContents.Split(new[] { "\n", "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries);
                 var currentSection = string.Empty;
@@ -214,12 +213,23 @@ namespace INTV.Core.Model
             catch (System.IO.EndOfStreamException)
             {
             }
-            var payload = System.Text.Encoding.UTF8.GetString(data, 0, data.Length).Trim('\0');
+            var payload = ConvertPayloadToString(data);
             Parse(payload);
             return deserializedPayloadLength;
         }
 
         #endregion // ByteSerializer
+
+        /// <summary>
+        /// Converts the given bytes to a C# string.
+        /// </summary>
+        /// <param name="payload">The byte array to convert to a string.</param>
+        /// <returns>The bytes converted to a string.</returns>
+        protected virtual string ConvertPayloadToString(byte[] payload)
+        {
+            var payloadString = System.Text.Encoding.UTF8.GetString(payload, 0, payload.Length).Trim('\0');
+            return payloadString;
+        }
 
         /// <summary>
         /// Parse the specified payload.

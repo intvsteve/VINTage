@@ -311,8 +311,7 @@ namespace INTV.Core.Model
                     ++runningTotal;
                 }
 
-                // PCLs only support UTF8. Spec says ASCIIZ. We shouldn't run into anything *too* weird here...
-                name = System.Text.Encoding.UTF8.GetString(nameBuffer.ToArray(), 0, nameBuffer.Count).Trim('\0');
+                name = nameBuffer.ToArray().UnescapeFromBytePayload(null);
                 if (name.ContainsInvalidCharacters(allowLineBreaks: false))
                 {
                     name = string.Empty;

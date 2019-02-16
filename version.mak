@@ -164,11 +164,15 @@ ifneq ($(SVN_DIRTY),0)
 # ------------------------------------------------------------------------- #
 # This is simply a fancy multi-line string error message.
 # ------------------------------------------------------------------------- #
+SVN_DIRTY_REPO = $(SVN_REPO)
+ifeq (,)
+  SVN_DIRTY_REPO = $(GIT_REPO)
+endif
 define DIRTY_FILES_ERROR
 
 ERROR
 -----------------------------------------------------------------------------
-SVN repo: '$(SVN_REPO)'
+SVN repo: '$(SVN_DIRTY_REPO)'
 has $(SVN_DIRTY) modified file(s).
 Skipping version update.
 

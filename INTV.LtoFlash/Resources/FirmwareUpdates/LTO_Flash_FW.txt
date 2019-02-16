@@ -1,4 +1,20 @@
 ==============================================================================
+    Firmware 4416
+------------------------------------------------------------------------------
+ -- Update copyright year on title screen to 2019.
+ -- Further tweaks to make LTO Flash! work on Keyboard Component. (Untested)
+ -- Fix word wrapping bug for long names with no spaces.
+
+==============================================================================
+    Firmware 3994
+------------------------------------------------------------------------------
+
+ -- Update copyright year on title screen to 2018.
+ -- Config bit 54 disables config menu on cart (WIP).
+ -- Fix rare crashes on homebrew games with stack in RAM.
+ -- Tweaks to make LTO Flash! work on Keyboard Component. (Untested)
+
+==============================================================================
     Firmware 2893
 ------------------------------------------------------------------------------
 
@@ -40,3 +56,4 @@
 ------------------------------------------------------------------------------
 
 Initial production release.
+

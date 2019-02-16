@@ -38,6 +38,16 @@ cd %1..\..
 call custom_bat_rule.bat
 
 rem # --------------------------------------------------------------------- #
+rem # Due to problems either with GitHub's svn support (see this page:      #
+rem # https://github.community/t5/GitHub-API-Development-and/Subversion-Bridge-Not-Supported-With-Latest-Subversion-Client/m-p/15454#M366 ) #
+rem # or a problem with MSYS2's build of svn or some supporting library,    #
+rem # support for an alternate version of MSYS has been added via the       #
+rem # MSYS_PATH_ALT variable. If it has been defined, the value overrides   #
+rem # MSYS_PATH for this build only.                                        #
+rem # --------------------------------------------------------------------- #
+if [%MSYS_PATH_ALT%] NEQ [] (set MSYS_PATH=%MSYS_PATH_ALT%)
+
+rem # --------------------------------------------------------------------- #
 rem # If MSYS_PATH is empty, there is nothing to do.
 rem # --------------------------------------------------------------------- #
 if [%MSYS_PATH%] == [] goto SkipBuild

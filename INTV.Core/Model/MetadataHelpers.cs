@@ -191,11 +191,11 @@ namespace INTV.Core.Model
         /// <returns>The string as parsed. If invalid characters are found, an empty string is returned.</returns>
         public static string ParseStringFromMetadata(this INTV.Core.Utility.BinaryReader reader, uint payloadLength, bool allowLineBreaks)
         {
-            // PCLs only support UTF8...
+            // PCLs only support UTF-8...
             // LUIGI documentation indicates this could be ASCII or UTF-8 (LUIGI)...
-            // ROM metadata spec says ASCII. Let's hope we don't run into anything *too* weird.
+            // ROM metadata spec supports UTF-8 as of jzintv version 1843 and later. Let's hope we don't run into anything *too* weird.
             var bytes = reader.ReadBytes((int)payloadLength);
-            var stringResult = bytes.UnescapeFromBytePayload(null);
+            var stringResult = System.Text.Encoding.UTF8.GetString(bytes, 0, bytes.Length).Trim('\0');
             if (stringResult.ContainsInvalidCharacters(allowLineBreaks))
             {
                 stringResult = string.Empty;

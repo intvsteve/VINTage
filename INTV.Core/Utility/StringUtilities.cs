@@ -211,6 +211,7 @@ namespace INTV.Core.Utility
             return indexes;
         }
 
+#if ESCAPE_FOR_CFGVAR_SUPPORT
         /// <summary>
         /// Escapes the given string following the rules defined in the jzintv / SDK-1600 software stack.
         /// </summary>
@@ -224,6 +225,7 @@ namespace INTV.Core.Utility
             var escapedString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
             return escapedString;
         }
+#endif // ESCAPE_FOR_CFGVAR_SUPPORT
 
         /// <summary>
         /// Given a string, analyze the contents and un-escape the contents.

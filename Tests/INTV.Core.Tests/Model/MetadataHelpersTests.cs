@@ -405,6 +405,7 @@ namespace INTV.Core.Tests.Model
             Assert.Equal(expectedLastQuoteIndex, quoteIndexes.Maximum);
         }
 
+#if ESCAPE_FOR_CFGVAR_SUPPORT
         [Fact]
         public void MetadataHelpers_EscapeToBytePayloadWithNullString_ThrowsArgumentNullException()
         {
@@ -544,6 +545,7 @@ namespace INTV.Core.Tests.Model
             Assert.Equal(expectedPayloadData, payloadData);
             Assert.Equal(expectedPayloadAsString, payloadAsString);
         }
+#endif // ESCAPE_FOR_CFGVAR_SUPPORT
 
         [Fact]
         public void MetadataHelpers_UnescapeFromBytePayloadWithNullDataAndNullRange_ThrowsNullReferenceException()
@@ -619,6 +621,7 @@ namespace INTV.Core.Tests.Model
             Assert.Throws<IndexOutOfRangeException>(() => payload.UnescapeFromBytePayload(new Range<int>(10, 20)));
         }
 
+#if ESCAPE_FOR_CFGVAR_SUPPORT
         public static IEnumerable<object> EscapeUnescapeRoundTripTestData
         {
             get
@@ -641,6 +644,7 @@ namespace INTV.Core.Tests.Model
 
             Assert.Equal(stringToRoundTrip, unescapedString);
         }
+#endif // ESCAPE_FOR_CFGVAR_SUPPORT
 
         public static IEnumerable<object> OctalEncodedTestData
         {
@@ -721,6 +725,26 @@ namespace INTV.Core.Tests.Model
             var unescapedString = escaped.UnescapeFromBytePayload(null);
 
             Assert.Equal("Kröte", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringWithTab_ProducesValidString()
+        {
+            var escaped = new byte[] { 0X54, 0x6F, 0x5C, 0x74, 0x61, 0x64 };
+
+            var unescapedString = escaped.UnescapeFromBytePayload(null);
+
+            Assert.Equal("To\tad", unescapedString);
+        }
+
+        [Fact]
+        public void MetadataHelpers_UnescapeStringWithCarriageReturn_ProducesValidString()
+        {
+            var escaped = new byte[] { 0X54, 0x6F, 0x5C, 0x72, 0x61, 0x64 };
+
+            var unescapedString = escaped.UnescapeFromBytePayload(null);
+
+            Assert.Equal("To\rad", unescapedString);
         }
 
         [Fact]

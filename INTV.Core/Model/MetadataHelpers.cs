@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define ESCAPE_FOR_CFGVAR_SUPPORT
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -257,6 +259,9 @@ namespace INTV.Core.Model
             return indexes;
         }
 
+#if ESCAPE_FOR_CFGVAR_SUPPORT
+        // go look at SVN changes 1841-1849 for relevant information.
+
         /// <summary>
         /// Escapes the given string following the rules defined in the jzintv / SDK-1600 software stack.
         /// </summary>
@@ -287,12 +292,15 @@ namespace INTV.Core.Model
             /*                                                                          */
             /*          0x09 => \t, 0x0A => \n, 0x0D => \r.                             */
             /*                                                                          */
-            /*  4.  If a string contains any other character with a value below         */
+            /*  4.  If a string contains a valid UTF-8 encoded character, it is         */
+            /*      /not/ quoted, and is passed through unmodified.                     */
+            /*                                                                          */
+            /*  5.  If a string contains any other character with a value below         */
             /*      0x20 or a value above 0x7E, the string must be quoted, and the      */
             /*      character must be escaped.  The character will be escaped with      */
             /*      a hexadecimal escape.  0x00 => \x00.  0x7E => \x7E.                 */
             /*                                                                          */
-            /*  5.  If the string gets quoted, any backslashes must be escaped with     */
+            /*  6.  If the string gets quoted, any backslashes must be escaped with     */
             /*      a backslash.  e.g.  foo-bar\baz => "foo-bar\\baz".                  */
             /* ------------------------------------------------------------------------ */
             var bytePayload = new List<byte>();
@@ -357,6 +365,7 @@ namespace INTV.Core.Model
             }
             return bytePayload.ToArray();
         }
+#endif // ESCAPE_FOR_CFGVAR_SUPPORT
 
         /// <summary>
         /// Given a raw array of bytes intended to be converted to a UTF-8 string, and whose origins are a string,

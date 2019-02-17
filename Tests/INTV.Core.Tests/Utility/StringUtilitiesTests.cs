@@ -182,6 +182,7 @@ namespace INTV.Core.Tests
 
         #endregion // GetEnclosingQuoteCharacterIndexes Tests
 
+#if ESCAPE_FOR_CFGVAR_SUPPORT
         #region EscapeString Tests
 
         [Fact]
@@ -206,6 +207,7 @@ namespace INTV.Core.Tests
         }
 
         #endregion // EscapeString Tests
+#endif // ESCAPE_FOR_CFGVAR_SUPPORT
 
         #region UnescapeString Tests
 

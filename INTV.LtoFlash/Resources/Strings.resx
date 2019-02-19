@@ -2475,7 +2475,7 @@ is too small ({1} bytes)</value>
     <value>Attempted to add ROM using file '{0}' but attempted to use file '{1}'</value>
   </data>
   <data name="RomToLuigiFailed_FilePathsDoNotMatchMessage" xml:space="preserve">
-    <value>An error occured when attempting to finding location for ROM.</value>
+    <value>An error occurred when attempting to finding location for ROM.</value>
   </data>
   <data name="DeviceCommandFailed_SimpleFormat" xml:space="preserve">
     <value>Command failed: {0}</value>

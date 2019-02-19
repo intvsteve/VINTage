@@ -326,7 +326,7 @@
     <value>Yellow-Green</value>
   </data>
   <data name="ReportDialog_Apology" xml:space="preserve">
-    <value>An error has occured and the application must close. Please include the information below, and a description of what caused the problem.</value>
+    <value>An error has occurred and the application must close. Please include the information below, and a description of what caused the problem.</value>
   </data>
   <data name="ReportDialog_CopyToClipboard" xml:space="preserve">
     <value>Copy to Clipboard</value>

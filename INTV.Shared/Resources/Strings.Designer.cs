@@ -3320,7 +3320,7 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error has occured and the application must close. Please include the information below, and a description of what caused the problem..
+        ///   Looks up a localized string similar to An error has occurred and the application must close. Please include the information below, and a description of what caused the problem..
         /// </summary>
         internal static string ReportDialog_Apology {
             get {

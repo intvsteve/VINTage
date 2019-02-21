@@ -28,14 +28,16 @@ namespace INTV.Core.Tests.Model
     {
         [Fact]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "Uses the behavior of 'LeaveOpen' in 'BinaryReader' -- works correctly.")]
-        public void RomMetadataCredits_ContainsInvalidCharacters_IsEmpty()
+        public void RomMetadataCredits_ContainsEvilBytes_ProducesExpectedUnicodeString()
         {
             using (var metadataCreditsStream = new System.IO.MemoryStream())
             {
+                var bytes = new byte[255];
                 metadataCreditsStream.WriteByte(1); // Programmer credit
                 for (var i = 1; i <= 255; ++i)
                 {
                     metadataCreditsStream.WriteByte((byte)i);
+                    bytes[i - 1] = (byte)i;
                 }
                 metadataCreditsStream.Seek(0, System.IO.SeekOrigin.Begin);
                 using (var reader = new INTV.Core.Utility.BinaryReader(metadataCreditsStream))
@@ -44,8 +46,10 @@ namespace INTV.Core.Tests.Model
                     var credits = new RomMetadataCredits((uint)streamLength);
                     var bytesDecoded = credits.Deserialize(reader);
 
+                    // The first byte is 0x01 -- which is stuffed in credits parsing, so "stuff" it here.
+                    var expectedString = System.Text.Encoding.UTF8.GetString(bytes, 1, 254);
                     Assert.Equal(streamLength, bytesDecoded);
-                    Assert.True(string.IsNullOrEmpty(credits.Programming.First()));
+                    Assert.Equal(expectedString, credits.Programming.First());
                 }
             }
         }

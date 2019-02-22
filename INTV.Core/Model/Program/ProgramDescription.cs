@@ -30,6 +30,13 @@ namespace INTV.Core.Model.Program
     /// </summary>
     public class ProgramDescription : INTV.Core.ComponentModel.ModelBase, IProgramDescription
     {
+        #region Property Names
+
+        public const string NamePropertyName = "Name";
+        public const string ShortNamePropertyName = "ShortName";
+
+        #endregion // Property Names
+
         /// <summary>
         /// Maximum length for a program name.
         /// </summary>
@@ -59,7 +66,9 @@ namespace INTV.Core.Model.Program
             _rom = rom;
             _programInfo = new UserSpecifiedProgramInformation(programInfo);
             _name = _programInfo.GetNameForCrc(crc);
+            _xmlName = new MetadataString() { Text = _name };
             _shortName = programInfo.ShortName;
+            _xmlShortName = new MetadataString() { Text = _shortName };
             _programFiles = new ProgramSupportFiles(rom);
             var allIncompatibilities = _programInfo.Crcs.Select(c => c.Incompatibilities);
             var crcData = _programInfo.Crcs.First(c => c.Crc == crc);
@@ -119,6 +128,8 @@ namespace INTV.Core.Model.Program
         private IProgramInformation _programInfo;
 
         /// <inheritdoc />
+        /// <remarks>For purposes of XML serialization, the XmlName property is used.</remarks>
+        [System.Xml.Serialization.XmlIgnore]
         public string Name
         {
             get
@@ -130,13 +141,15 @@ namespace INTV.Core.Model.Program
             {
                 if (!string.IsNullOrWhiteSpace(value))
                 {
-                    this.AssignAndUpdateProperty("Name", value.EnforceNameLength(MaxProgramNameLength, false), ref _name, (p, v) => UpdateNameFromXml(v));
+                    this.AssignAndUpdateProperty(NamePropertyName, value.EnforceNameLength(MaxProgramNameLength, false), ref _name, (p, v) => UpdateNameFromXml(v));
                 }
             }
         }
         private string _name;
 
         /// <inheritdoc />
+        /// <remarks>For purposes of XML serialization, the XmlShortName property is used.</remarks>
+        [System.Xml.Serialization.XmlIgnore]
         public string ShortName
         {
             get
@@ -146,7 +159,7 @@ namespace INTV.Core.Model.Program
 
             set
             {
-                this.AssignAndUpdateProperty("ShortName", value.EnforceNameLength(RomInfoIndexHelpers.MaxShortNameLength, false), ref _shortName, (p, v) => UpdateShortNameFromXml(v));
+                this.AssignAndUpdateProperty(ShortNamePropertyName, value.EnforceNameLength(RomInfoIndexHelpers.MaxShortNameLength, false), ref _shortName, (p, v) => UpdateShortNameFromXml(v));
             }
         }
         private string _shortName;
@@ -213,6 +226,46 @@ namespace INTV.Core.Model.Program
         }
 #endif // false
 
+        /// <summary>
+        /// XML-safe version of the <see cref="Name"/> property.
+        /// </summary>
+        /// <remarks>This should only be accessed via the XmlSerializer.</remarks>
+        [System.Xml.Serialization.XmlElement(NamePropertyName)]
+        public MetadataString XmlName
+        {
+            get
+            {
+                return _xmlName;
+            }
+
+            set
+            {
+                _xmlName = value;
+                Name = _xmlName.Text;
+            }
+        }
+        private MetadataString _xmlName;
+
+        /// <summary>
+        /// XML-safe version of the <see cref="Name"/> property.
+        /// </summary>
+        /// <remarks>This should only be accessed via the XmlSerializer.</remarks>
+        [System.Xml.Serialization.XmlElement(ShortNamePropertyName)]
+        public MetadataString XmlShortName
+        {
+            get
+            {
+                return _xmlShortName;
+            }
+
+            set
+            {
+                _xmlShortName = value;
+                ShortName = _xmlShortName.Text;
+            }
+        }
+        private MetadataString _xmlShortName;
+
         #endregion // Properties
 
         /// <summary>
@@ -277,7 +330,9 @@ namespace INTV.Core.Model.Program
         {
             var description = new ProgramDescription(Crc, Rom, ProgramInformation);
             description._name = _name;
+            description._xmlName = new MetadataString() { Text = _name };
             description._shortName = _shortName;
+            description._xmlShortName = new MetadataString() { Text = _shortName };
             description._programFiles = _programFiles.Copy();
             return description;
         }
@@ -345,6 +400,7 @@ namespace INTV.Core.Model.Program
 
         private void UpdateNameFromXml(string name)
         {
+            XmlName.Text = name;
             var info = _programInfo as UserSpecifiedProgramInformation;
             if (info != null)
             {
@@ -354,6 +410,7 @@ namespace INTV.Core.Model.Program
 
         private void UpdateShortNameFromXml(string shortName)
         {
+            XmlShortName.Text = shortName;
             var info = _programInfo as UserSpecifiedProgramInformation;
             if (info != null)
             {

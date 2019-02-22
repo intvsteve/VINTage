@@ -1,4 +1,4 @@
-﻿// <copyright file="ProgramDescriptionTests.cs" company="INTV Funhouse">
+// <copyright file="ProgramDescriptionTests.cs" company="INTV Funhouse">
 // Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -622,6 +622,7 @@ namespace INTV.Core.Tests.Model.Program
 
             Assert.NotNull(description);
             Assert.Equal("Tagalong Todd!", description.Name);
+            Assert.Null(description.ShortName);
             Assert.Equal("Zbiciak Electronics", description.Vendor);
             Assert.Equal("1999", description.Year);
             Assert.Equal(TestRomResources.TestBinCrc, description.Crc);

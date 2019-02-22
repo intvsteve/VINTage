@@ -67,7 +67,7 @@ namespace INTV.Core.Tests.Model
         [InlineData(RomInfoIndex.Name)]
         [InlineData(RomInfoIndex.Copyright)]
         [InlineData(RomInfoIndex.ShortName)]
-        public void RomInfoEnumerable_TotallyInvalidData_ReturnsEmptyStrings(RomInfoIndex romInfoIndex)
+        public void RomInfoEnumerable_BogusDataData_ValuesAreRetained(RomInfoIndex romInfoIndex)
         {
             var badStringBytes = new byte[255];
             for (var i = 0; i < 255; ++i)
@@ -78,7 +78,8 @@ namespace INTV.Core.Tests.Model
 
             var testValues = Enumerable.Repeat(badString, (int)RomInfoIndex.NumEntries).ToArray();
 
-            Assert.True(string.IsNullOrEmpty(testValues.GetRomInfoString(romInfoIndex)));
+            var expectedResult = System.Text.RegularExpressions.Regex.Replace(badString, @"\s+", " ").Trim();
+            Assert.Equal(expectedResult, testValues.GetRomInfoString(romInfoIndex));
         }
     }
 }

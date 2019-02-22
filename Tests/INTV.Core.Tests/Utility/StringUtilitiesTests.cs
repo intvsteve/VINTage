@@ -115,48 +115,6 @@ namespace INTV.Core.Tests
 
         #endregion // HTML Encoder Tests
 
-        #region ContainsInvalidCharacters Tests
-
-        [Theory]
-        [InlineData(null, false, false)]
-        [InlineData("", true, false)]
-        [InlineData(" \t ", true, false)]
-        [InlineData("\01\02\03whoa", false, true)]
-        [InlineData("\u2400", false, false)] // other symbol
-        [InlineData("\uf000", false, true)] // private
-        [InlineData("\t", false, false)]
-        [InlineData("\r", false, true)]
-        [InlineData("\n", false, true)]
-        [InlineData("\f", false, true)]
-        [InlineData("\r\n", false, true)]
-        [InlineData("\u2028", false, true)] // line separator
-        [InlineData("\u2029", false, true)] // paragraph separator
-        [InlineData("\t", true, false)]
-        [InlineData("\r", true, false)]
-        [InlineData("\n", true, false)]
-        [InlineData("\f", true, true)]
-        [InlineData("\r\n", true, false)]
-        [InlineData("a\rb", false, true)]
-        [InlineData("a\nb", false, true)]
-        [InlineData("a\r\nb", true, false)]
-        [InlineData("a\r\nb", true, false)]
-        [InlineData("\u2028", true, false)] // line separator
-        [InlineData("\u2029", true, false)] // paragraph separator
-        [InlineData("\ufffd", true, false)] // replacement character (other symbol)
-        [InlineData("\ufffe", true, true)] // not-a-character
-        [InlineData("\uffff", true, true)] // not-a-character
-        [InlineData("∞", false, false)]
-        [InlineData("∞", true, false)]
-        [InlineData("A bòöger!{{}}])(_*@!&#)(&%)(*&%!#*+_|", false, false)]
-        [InlineData("A bòöger!{{}}])(_*@!&#)(&%)(*&%!#*+_|", true, false)]
-        public void ContainsInvalidCharacters_TestGivenString_DetectsInvalidCharacters(string stringToCheck, bool allowLineBreaks, bool expectedResult)
-        {
-            var actualResult = stringToCheck.ContainsInvalidCharacters(allowLineBreaks);
-            Assert.Equal(expectedResult, actualResult);
-        }
-
-        #endregion // ContainsInvalidCharacters Tests
-
         #region GetEnclosingQuoteCharacterIndexes Tests
 
         [Fact]

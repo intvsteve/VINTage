@@ -196,10 +196,6 @@ namespace INTV.Core.Model
             // ROM metadata spec supports UTF-8 as of jzintv version 1843 and later. Let's hope we don't run into anything *too* weird.
             var bytes = reader.ReadBytes((int)payloadLength);
             var stringResult = System.Text.Encoding.UTF8.GetString(bytes, 0, bytes.Length).Trim('\0');
-            if (stringResult.ContainsInvalidCharacters(allowLineBreaks))
-            {
-                stringResult = string.Empty;
-            }
             return stringResult;
         }
 

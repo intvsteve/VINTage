@@ -194,6 +194,7 @@
     <Compile Include="Utility\ResourceHelpers.cs" />
     <Compile Include="Model\RomMetadataDate.cs" />
     <Compile Include="Model\MetadataHelpers.cs" />
+    <Compile Include="Model\MetadataString.cs" />
     <Compile Include="Model\CfgVarMetadataIdTag.cs" />
     <Compile Include="Model\LuigiMetadataIdTag.cs" />
     <Compile Include="Model\MetadataDateTimeFlags.cs" />

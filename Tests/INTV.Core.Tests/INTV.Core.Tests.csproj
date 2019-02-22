@@ -90,6 +90,7 @@
     <Compile Include="Model\MetadataDateTimeBuilderTests.cs" />
     <Compile Include="Model\MetadataDateTimeTests.cs" />
     <Compile Include="Model\MetadataHelpersTests.cs" />
+    <Compile Include="Model\MetadataStringTests.cs" />
     <Compile Include="Model\PeripheralTests.cs" />
     <Compile Include="Model\Program\CfgFileMetadataProgramInformationTests.cs" />
     <Compile Include="Model\Program\CrcDataTests.cs" />

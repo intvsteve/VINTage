@@ -776,6 +776,71 @@ namespace INTV.Core.Tests.Model.Program
             Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath);
         }
 
+        [Fact]
+        public void ProgramDescription_ParseFromXmlWithBinHexVendor_ProducesValidProgramDescription()
+        {
+            ProgramDescriptionTestStorage.Initialize(null);
+            var xmlProgramDescription = @"<?xml version=""1.0""?>
+  <ProgramDescription>
+    <Crc>3971627767</Crc>
+    <Name>546167616C6F6E67200720546F646421</Name>
+    <ShortName Escaped=""false"">546167616C6F6E67200720546F646421</ShortName>
+    <Vendor Escaped=""true"">546167616C6F6E67200720546F646421</Vendor>
+    <Year>1999</Year>
+    <Features>
+      <Ntsc>Tolerates</Ntsc>
+      <Pal>Tolerates</Pal>
+      <GeneralFeatures>None</GeneralFeatures>
+      <KeyboardComponent>Tolerates</KeyboardComponent>
+      <SuperVideoArcade>Tolerates</SuperVideoArcade>
+      <Intellivoice>Tolerates</Intellivoice>
+      <IntellivisionII>Tolerates</IntellivisionII>
+      <Ecs>Tolerates</Ecs>
+      <Tutorvision>Tolerates</Tutorvision>
+      <Intellicart>Tolerates</Intellicart>
+      <CuttleCart3>Tolerates</CuttleCart3>
+      <Jlp>Incompatible</Jlp>
+      <JlpHardwareVersion>None</JlpHardwareVersion>
+      <JlpFlashMinimumSaveSectors>0</JlpFlashMinimumSaveSectors>
+      <LtoFlash>Incompatible</LtoFlash>
+      <Bee3>Incompatible</Bee3>
+      <Hive>Incompatible</Hive>
+    </Features>
+    <Files>
+      <RomImagePath>\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin</RomImagePath>
+      <RomConfigurationFilePath>/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg</RomConfigurationFilePath>
+      <AlternateRomImagePaths />
+      <AlternateRomConfigurationFilePaths />
+    </Files>
+  </ProgramDescription>
+";
+            ProgramDescription description;
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlProgramDescription)))
+            {
+                var serializer = new XmlSerializer(typeof(ProgramDescription));
+                description = serializer.Deserialize(stream) as ProgramDescription;
+            }
+
+            Assert.NotNull(description);
+            Assert.Equal("546167616C6F6E67200720546F646421", description.Name);
+            Assert.Equal("546167616C6F6E6720", description.ShortName);
+            Assert.Equal("Tagalong \a Todd!", description.Vendor);
+            Assert.Equal("1999", description.Year);
+            Assert.Equal(TestRomResources.TestBinCrc, description.Crc);
+            Assert.Equal(ProgramFeatures.DefaultFeatures, description.Features);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.RomImagePath);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.RomConfigurationFilePath);
+            Assert.Empty(description.Files.AlternateRomImagePaths);
+            Assert.Empty(description.Files.AlternateRomConfigurationFilePaths);
+            Assert.NotNull(description.Rom);
+            Assert.True(description.Rom is XmlRom);
+            Assert.Null(((XmlRom)description.Rom).ResolvedRom);
+            Assert.Equal(0u, description.Rom.Crc);
+            Assert.Equal(0u, description.Rom.CfgCrc);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath);
+        }
+
         private void VerifyProgramInformation(IProgramInformation information0, IProgramInformation information1)
         {
             Assert.Equal(information0.DataOrigin, information1.DataOrigin);

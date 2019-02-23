@@ -1,5 +1,5 @@
 // <copyright file="VersionInfo.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -31,7 +31,7 @@ namespace INTV
         /// <summary>
         /// The full version string.
         /// </summary>
-        public const string FullVersionString = "1.0.0.3865";
+        public const string FullVersionString = "1.0.0.4484";
 
         /// <summary>
         /// The short version string.
@@ -41,11 +41,11 @@ namespace INTV
         /// <summary>
         /// The build version string.
         /// </summary>
-        public const string BuildVersionString = "Build 3865";
+        public const string BuildVersionString = "Build 4484";
 
         /// <summary>
         /// The current copyright year string.
         /// </summary>
-        public const string CurrentCopyrightYear = "2018";
+        public const string CurrentCopyrightYear = "2019";
     }
 }

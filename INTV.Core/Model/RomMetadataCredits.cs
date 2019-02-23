@@ -319,11 +319,7 @@ namespace INTV.Core.Model
                     ++runningTotal;
                 }
 
-                name = nameBuffer.ToArray().UnescapeFromBytePayload(null);
-                if (name.ContainsInvalidCharacters(allowLineBreaks: false))
-                {
-                    name = string.Empty;
-                }
+                name = System.Text.Encoding.UTF8.GetString(nameBuffer.ToArray(), 0, nameBuffer.Count).Trim('\0');
             }
 
             for (int i = 0; i < NumberOfCreditFlags; ++i)

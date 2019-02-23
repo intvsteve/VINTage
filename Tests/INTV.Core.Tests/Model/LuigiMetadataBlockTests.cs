@@ -29,7 +29,7 @@ namespace INTV.Core.Tests.Model
     public class LuigiMetadataBlockTests
     {
         [Fact]
-        public void LuigiMetadataBlock_InflateStringWithBadCharacters_ProducesEmptyStringMetadata()
+        public void LuigiMetadataBlock_InflateStringWithBadCharacters_ProducesExpectedStringMetadata()
         {
             using (var metadataStream = new System.IO.MemoryStream())
             {
@@ -56,7 +56,8 @@ namespace INTV.Core.Tests.Model
 
                 var metadataBlock = LuigiMetadataBlock.Inflate(metadataStream) as LuigiMetadataBlock;
 
-                Assert.True(string.IsNullOrEmpty(metadataBlock.LongNames.First()));
+                var expectedString = System.Text.Encoding.UTF8.GetString(stringPayload).Trim('\0');
+                Assert.Equal(expectedString, metadataBlock.LongNames.First());
             }
         }
 

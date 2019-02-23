@@ -236,14 +236,7 @@ namespace INTV.Shared.Model
                     {
                         var rawEntry = intvNameData[i];
                         var unescapedEntry = INTV.Core.Utility.StringUtilities.UnescapeString(rawEntry, null);
-                        if (INTV.Core.Utility.StringUtilities.ContainsInvalidCharacters(unescapedEntry, allowLineBreaks: false))
-                        {
-                            intvNameData[i] = string.Empty;
-                        }
-                        else
-                        {
-                            intvNameData[i] = unescapedEntry;
-                        }
+                        intvNameData[i] = unescapedEntry;
                     }
                     if (intvNameData.Length > 0)
                     {

@@ -87,14 +87,7 @@ namespace INTV.Core.Model
 
             if (!string.IsNullOrEmpty(result))
             {
-                if (result.ContainsInvalidCharacters(allowLineBreaks: false))
-                {
-                    result = string.Empty;
-                }
-                else
-                {
-                    result = System.Text.RegularExpressions.Regex.Replace(result, @"\s+", " ").Trim();
-                }
+                result = System.Text.RegularExpressions.Regex.Replace(result, @"\s+", " ").Trim();
             }
             return result;
         }

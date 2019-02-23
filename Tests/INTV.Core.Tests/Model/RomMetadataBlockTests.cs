@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomMetadataBlockTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Utility;
 using Xunit;
@@ -105,6 +106,99 @@ namespace INTV.Core.Tests.Model
 
                     Assert.NotNull(metadataBlock);
                     Assert.Equal(RomMetadataIdTag.ControllerBindings, metadataBlock.Type);
+                }
+            }
+        }
+
+        [Fact]
+        public void RomMetadataBlock_InflateUtf8TestMetadata_ProducesExpectedMetadata()
+        {
+            var rawData = new byte[]
+            {
+                0x14, 0x01, 0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20, 0x30, 0x30, 0x20, 0xF0, 0x90,
+                0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x9B, 0xBA, 0x15, 0x02, 0xFF, 0xF0, 0x90, 0x80, 0x80, 0xF0,
+                0x90, 0x80, 0x81, 0x20, 0x30, 0x36, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x1C,
+                0xCC, 0x4F, 0x03, 0x03, 0x01, 0x01, 0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20, 0x31,
+                0x30, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x00, 0xFF, 0x01, 0xF0, 0x90, 0x80,
+                0x80, 0xF0, 0x90, 0x80, 0x81, 0x20, 0x32, 0x30, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF,
+                0xBF, 0x00, 0x02, 0x01, 0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20, 0x31, 0x31, 0x20,
+                0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x00, 0x04, 0x01, 0xF0, 0x90, 0x80, 0x80, 0xF0,
+                0x90, 0x80, 0x81, 0x20, 0x31, 0x32, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x00,
+                0x08, 0x01, 0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20, 0x31, 0x33, 0x20, 0xF0, 0x90,
+                0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x00, 0x10, 0x01, 0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80,
+                0x81, 0x20, 0x31, 0x34, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x00, 0x20, 0x01,
+                0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20, 0x31, 0x35, 0x20, 0xF0, 0x90, 0x80, 0x83,
+                0xF4, 0x8F, 0xBF, 0xBF, 0x00, 0x40, 0x01, 0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20,
+                0x31, 0x36, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x00, 0x80, 0x01, 0xF0, 0x90,
+                0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20, 0x31, 0x37, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F,
+                0xBF, 0xBF, 0x00, 0x3C, 0x36, 0x14, 0x04, 0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20,
+                0x30, 0x35, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0xEB, 0x87, 0x14, 0x08, 0xF0,
+                0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20, 0x30, 0x31, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4,
+                0x8F, 0xBF, 0xBF, 0xEE, 0x7F, 0x14, 0x09, 0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20,
+                0x30, 0x32, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x8A, 0x46, 0x14, 0x0A, 0xF0,
+                0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20, 0x30, 0x33, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4,
+                0x8F, 0xBF, 0xBF, 0x8B, 0x38, 0x14, 0x0C, 0xF0, 0x90, 0x80, 0x80, 0xF0, 0x90, 0x80, 0x81, 0x20,
+                0x30, 0x34, 0x20, 0xF0, 0x90, 0x80, 0x83, 0xF4, 0x8F, 0xBF, 0xBF, 0x4B, 0xB4
+            };
+
+            using (var dataStream = new System.IO.MemoryStream(rawData, writable: false))
+            {
+                while (dataStream.Position < dataStream.Length)
+                {
+                    var metadataBlock = RomMetadataBlock.Inflate(dataStream);
+
+                    Assert.NotNull(metadataBlock);
+                    var stringMetadata = metadataBlock as RomMetadataString;
+                    switch (metadataBlock.Type)
+                    {
+                        case RomMetadataIdTag.Title:
+                            Assert.True(stringMetadata.StringValue.Contains(" 00 "));
+                            break;
+                        case RomMetadataIdTag.Publisher:
+                            var publisherMetadata = metadataBlock as RomMetadataPublisher;
+                            Assert.True(publisherMetadata.Publisher.Contains(" 06 "));
+                            break;
+                        case RomMetadataIdTag.Credits:
+                            var creditsMetadata = metadataBlock as RomMetadataCredits;
+                            Assert.NotNull(creditsMetadata.Programming.First(s => s.Contains(" 10 ")));
+                            Assert.NotNull(creditsMetadata.Graphics.First(s => s.Contains(" 11 ")));
+                            Assert.NotNull(creditsMetadata.Music.First(s => s.Contains(" 12 ")));
+                            Assert.NotNull(creditsMetadata.SoundEffects.First(s => s.Contains(" 13 ")));
+                            Assert.NotNull(creditsMetadata.VoiceActing.First(s => s.Contains(" 14 ")));
+                            Assert.NotNull(creditsMetadata.Documentation.First(s => s.Contains(" 15 ")));
+                            Assert.NotNull(creditsMetadata.GameConceptDesign.First(s => s.Contains(" 16 ")));
+                            Assert.NotNull(creditsMetadata.BoxOrOtherArtwork.First(s => s.Contains(" 17 ")));
+                            Assert.NotNull(creditsMetadata.Programming.First(s => s.Contains(" 20 ")));
+                            Assert.NotNull(creditsMetadata.Graphics.First(s => s.Contains(" 20 ")));
+                            Assert.NotNull(creditsMetadata.Music.First(s => s.Contains(" 20 ")));
+                            Assert.NotNull(creditsMetadata.SoundEffects.First(s => s.Contains(" 20 ")));
+                            Assert.NotNull(creditsMetadata.VoiceActing.First(s => s.Contains(" 20 ")));
+                            Assert.NotNull(creditsMetadata.Documentation.First(s => s.Contains(" 20 ")));
+                            Assert.NotNull(creditsMetadata.GameConceptDesign.First(s => s.Contains(" 20 ")));
+                            Assert.NotNull(creditsMetadata.BoxOrOtherArtwork.First(s => s.Contains(" 20 ")));
+                            break;
+                        case RomMetadataIdTag.UrlContactInfo:
+                            Assert.True(stringMetadata.StringValue.Contains(" 05 "));
+                            break;
+                        case RomMetadataIdTag.ShortTitle:
+                            Assert.True(stringMetadata.StringValue.Contains(" 01 "));
+                            break;
+                        case RomMetadataIdTag.License:
+                            Assert.True(stringMetadata.StringValue.Contains(" 02 "));
+                            break;
+                        case RomMetadataIdTag.Description:
+                            Assert.True(stringMetadata.StringValue.Contains(" 03 "));
+                            break;
+                        case RomMetadataIdTag.Version:
+                            Assert.True(stringMetadata.StringValue.Contains(" 04 "));
+                            break;
+                        case RomMetadataIdTag.ReleaseDate:
+                        case RomMetadataIdTag.BuildDate:
+                        case RomMetadataIdTag.Features:
+                        case RomMetadataIdTag.ControllerBindings:
+                        default:
+                            throw new InvalidOperationException("Invalid metadata in test");
+                    }
                 }
             }
         }

@@ -4960,7 +4960,7 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occured when attempting to finding location for ROM..
+        ///   Looks up a localized string similar to An error occurred when attempting to finding location for ROM..
         /// </summary>
         internal static string RomToLuigiFailed_FilePathsDoNotMatchMessage {
             get {

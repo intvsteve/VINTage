@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define ESCAPE_FOR_CFGVAR_SUPPORT
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -189,15 +191,11 @@ namespace INTV.Core.Model
         /// <returns>The string as parsed. If invalid characters are found, an empty string is returned.</returns>
         public static string ParseStringFromMetadata(this INTV.Core.Utility.BinaryReader reader, uint payloadLength, bool allowLineBreaks)
         {
-            // PCLs only support UTF8...
+            // PCLs only support UTF-8...
             // LUIGI documentation indicates this could be ASCII or UTF-8 (LUIGI)...
-            // ROM metadata spec says ASCII. Let's hope we don't run into anything *too* weird.
+            // ROM metadata spec supports UTF-8 as of jzintv version 1843 and later. Let's hope we don't run into anything *too* weird.
             var bytes = reader.ReadBytes((int)payloadLength);
-            var stringResult = bytes.UnescapeFromBytePayload(null);
-            if (stringResult.ContainsInvalidCharacters(allowLineBreaks))
-            {
-                stringResult = string.Empty;
-            }
+            var stringResult = System.Text.Encoding.UTF8.GetString(bytes, 0, bytes.Length).Trim('\0');
             return stringResult;
         }
 
@@ -257,6 +255,9 @@ namespace INTV.Core.Model
             return indexes;
         }
 
+#if ESCAPE_FOR_CFGVAR_SUPPORT
+        // go look at SVN changes 1841-1849 for relevant information.
+
         /// <summary>
         /// Escapes the given string following the rules defined in the jzintv / SDK-1600 software stack.
         /// </summary>
@@ -287,12 +288,15 @@ namespace INTV.Core.Model
             /*                                                                          */
             /*          0x09 => \t, 0x0A => \n, 0x0D => \r.                             */
             /*                                                                          */
-            /*  4.  If a string contains any other character with a value below         */
+            /*  4.  If a string contains a valid UTF-8 encoded character, it is         */
+            /*      /not/ quoted, and is passed through unmodified.                     */
+            /*                                                                          */
+            /*  5.  If a string contains any other character with a value below         */
             /*      0x20 or a value above 0x7E, the string must be quoted, and the      */
             /*      character must be escaped.  The character will be escaped with      */
             /*      a hexadecimal escape.  0x00 => \x00.  0x7E => \x7E.                 */
             /*                                                                          */
-            /*  5.  If the string gets quoted, any backslashes must be escaped with     */
+            /*  6.  If the string gets quoted, any backslashes must be escaped with     */
             /*      a backslash.  e.g.  foo-bar\baz => "foo-bar\\baz".                  */
             /* ------------------------------------------------------------------------ */
             var bytePayload = new List<byte>();
@@ -357,6 +361,7 @@ namespace INTV.Core.Model
             }
             return bytePayload.ToArray();
         }
+#endif // ESCAPE_FOR_CFGVAR_SUPPORT
 
         /// <summary>
         /// Given a raw array of bytes intended to be converted to a UTF-8 string, and whose origins are a string,

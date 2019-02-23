@@ -205,7 +205,7 @@
     <value>{0} Items</value>
   </data>
   <data name="CrashDialog_Apology" xml:space="preserve">
-    <value>An error has occured and the application must close. Please include the information below, and a description of what caused the problem.</value>
+    <value>An error has occurred and the application must close. Please include the information below, and a description of what caused the problem.</value>
   </data>
   <data name="CrashDialog_CopyToClipboard" xml:space="preserve">
     <value>Copy to Clipboard</value>

@@ -633,7 +633,7 @@ namespace INTV.Core.Model
                         programMetadata = rom.GetRomFileMetadata();
                         break;
                     case RomFormat.Luigi:
-                        programMetadata = programMetadata = rom.GetLuigiFileMetadata();
+                        programMetadata = rom.GetLuigiFileMetadata();
                         break;
                 }
             }

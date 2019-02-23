@@ -34,6 +34,7 @@ namespace INTV.Core.Model.Program
 
         public const string NamePropertyName = "Name";
         public const string ShortNamePropertyName = "ShortName";
+        public const string VendorPropertyName = "Vendor";
 
         #endregion // Property Names
 
@@ -65,6 +66,7 @@ namespace INTV.Core.Model.Program
             _crc = crc;
             _rom = rom;
             _programInfo = new UserSpecifiedProgramInformation(programInfo);
+            _xmlVendorName = new MetadataString() { Text = _programInfo.Vendor };
             _name = _programInfo.GetNameForCrc(crc);
             _xmlName = new MetadataString() { Text = _name };
             _shortName = programInfo.ShortName;
@@ -165,6 +167,9 @@ namespace INTV.Core.Model.Program
         private string _shortName;
 
         /// <inheritdoc />
+        /// <inheritdoc />
+        /// <remarks>For purposes of XML serialization, the XmlVendorName property is used.</remarks>
+        [System.Xml.Serialization.XmlIgnore]
         public string Vendor
         {
             get
@@ -174,8 +179,13 @@ namespace INTV.Core.Model.Program
 
             set
             {
-                _programInfo.Vendor = value.EnforceNameLength(MaxVendorNameLength, false);
-                RaisePropertyChanged("Vendor");
+                var newVendor = value.EnforceNameLength(MaxVendorNameLength, false);
+                if (_programInfo.Vendor != newVendor)
+                {
+                    XmlVendorName.Text = newVendor;
+                    _programInfo.Vendor = newVendor;
+                    RaisePropertyChanged(VendorPropertyName);
+                }
             }
         }
 
@@ -227,7 +237,7 @@ namespace INTV.Core.Model.Program
 #endif // false
 
         /// <summary>
-        /// XML-safe version of the <see cref="Name"/> property.
+        /// Gets or sets the XML-safe version of the <see cref="Name"/> property.
         /// </summary>
         /// <remarks>This should only be accessed via the XmlSerializer.</remarks>
         [System.Xml.Serialization.XmlElement(NamePropertyName)]
@@ -247,7 +257,27 @@ namespace INTV.Core.Model.Program
         private MetadataString _xmlName;
 
         /// <summary>
-        /// XML-safe version of the <see cref="Name"/> property.
+        /// Gets or sets XML-safe version of the <see cref="Name"/> property.
+        /// </summary>
+        /// <remarks>This should only be accessed via the XmlSerializer.</remarks>
+        [System.Xml.Serialization.XmlElement(VendorPropertyName)]
+        public MetadataString XmlVendorName
+        {
+            get
+            {
+                return _xmlVendorName;
+            }
+
+            set
+            {
+                _xmlVendorName = value;
+                Vendor = _xmlVendorName.Text;
+            }
+        }
+        private MetadataString _xmlVendorName;
+
+        /// <summary>
+        /// Gets or sets XML-safe version of the <see cref="Name"/> property.
         /// </summary>
         /// <remarks>This should only be accessed via the XmlSerializer.</remarks>
         [System.Xml.Serialization.XmlElement(ShortNamePropertyName)]

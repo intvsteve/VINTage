@@ -38,6 +38,9 @@ if exist custom.bat (
     echo rem # project build system and the MSYS / MSYS2 environment used to execute #>> custom.bat
     echo rem # makefiles in Windows. This is achieved by specifying the absolute     #>> custom.bat
     echo rem # to your MSYS environment in the MSYS_PATH environment variable.       #>> custom.bat
+    echo rem # Some projects support the use of the MSYS_PATH_ALT environment        #>> custom.bat
+    echo rem # variable, which will supersede MSYS_PATH. One such project is the     #>> custom.bat
+    echo rem # Installer.source project in Windows.                                  #>> custom.bat
     echo rem #                                                                       #>> custom.bat
     echo rem # NOTE: The path must be absolute, and to the MSYS 'bin' directory.     #>> custom.bat
     echo rem #########################################################################>> custom.bat

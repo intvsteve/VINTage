@@ -122,81 +122,6 @@ namespace INTV.Core.Utility
         }
 
         /// <summary>
-        /// Inspects a string for unacceptable characters.
-        /// </summary>
-        /// <param name="stringToCheck">The string to check.</param>
-        /// <param name="allowLineBreaks">If <c>true</c>, line and paragraph break characters are allowed.</param>
-        /// <returns><c>true</c> if any invalid character is found. <c>null</c> and empty strings will return <c>false</c>.</returns>
-        public static bool ContainsInvalidCharacters(this string stringToCheck, bool allowLineBreaks)
-        {
-            var containsInvalidCharacters = false;
-            if (!string.IsNullOrEmpty(stringToCheck))
-            {
-                foreach (var character in stringToCheck)
-                {
-                    var category = CharUnicodeInfo.GetUnicodeCategory(character);
-                    switch (category)
-                    {
-                        case UnicodeCategory.UppercaseLetter:
-                        case UnicodeCategory.LowercaseLetter:
-                        case UnicodeCategory.TitlecaseLetter:
-                        case UnicodeCategory.ModifierLetter:
-                        case UnicodeCategory.OtherLetter:
-                        case UnicodeCategory.NonSpacingMark:
-                        case UnicodeCategory.SpacingCombiningMark:
-                        case UnicodeCategory.EnclosingMark:
-                        case UnicodeCategory.DecimalDigitNumber:
-                        case UnicodeCategory.LetterNumber:
-                        case UnicodeCategory.OtherNumber:
-                        case UnicodeCategory.SpaceSeparator:
-                        case UnicodeCategory.Surrogate:
-                        case UnicodeCategory.ConnectorPunctuation:
-                        case UnicodeCategory.DashPunctuation:
-                        case UnicodeCategory.OpenPunctuation:
-                        case UnicodeCategory.ClosePunctuation:
-                        case UnicodeCategory.InitialQuotePunctuation:
-                        case UnicodeCategory.FinalQuotePunctuation:
-                        case UnicodeCategory.OtherPunctuation:
-                        case UnicodeCategory.MathSymbol:
-                        case UnicodeCategory.CurrencySymbol:
-                        case UnicodeCategory.ModifierSymbol:
-                        case UnicodeCategory.OtherSymbol:
-                            break;
-                        case UnicodeCategory.LineSeparator:
-                        case UnicodeCategory.ParagraphSeparator:
-                            containsInvalidCharacters = !allowLineBreaks;
-                            break;
-                        case UnicodeCategory.Control:
-                            if ((character == '\r') || (character == '\n'))
-                            {
-                                containsInvalidCharacters = !allowLineBreaks;
-                            }
-                            else if (character == '\t')
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                containsInvalidCharacters = true;
-                            }
-                            break;
-                        case UnicodeCategory.Format:
-                        case UnicodeCategory.PrivateUse:
-                        case UnicodeCategory.OtherNotAssigned:
-                        default:
-                            containsInvalidCharacters = true;
-                            break;
-                    }
-                    if (containsInvalidCharacters)
-                    {
-                        break;
-                    }
-                }
-            }
-            return containsInvalidCharacters;
-        }
-
-        /// <summary>
         /// Gets the indexes if the first and last quotation mark character in the given string.
         /// </summary>
         /// <param name="stringToCheck">The string to check for quotation marks characters.</param>
@@ -211,6 +136,7 @@ namespace INTV.Core.Utility
             return indexes;
         }
 
+#if ESCAPE_FOR_CFGVAR_SUPPORT
         /// <summary>
         /// Escapes the given string following the rules defined in the jzintv / SDK-1600 software stack.
         /// </summary>
@@ -224,6 +150,7 @@ namespace INTV.Core.Utility
             var escapedString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
             return escapedString;
         }
+#endif // ESCAPE_FOR_CFGVAR_SUPPORT
 
         /// <summary>
         /// Given a string, analyze the contents and un-escape the contents.

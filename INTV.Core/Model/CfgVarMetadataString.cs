@@ -46,19 +46,6 @@ namespace INTV.Core.Model
         {
             var quoteIndexes = payload.GetEnclosingQuoteCharacterIndexesFromBytePayload();
             var payloadString = payload.UnescapeFromBytePayload(quoteIndexes);
-            var allowLineBreaks = false;
-            switch (Type)
-            {
-                case CfgVarMetadataIdTag.Description:
-                case CfgVarMetadataIdTag.License:
-                    allowLineBreaks = true;
-                    break;
-                default: break;
-            }
-            if (payloadString.ContainsInvalidCharacters(allowLineBreaks))
-            {
-                payloadString = string.Empty;
-            }
             return payloadString;
         }
 

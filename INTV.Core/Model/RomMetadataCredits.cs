@@ -287,7 +287,7 @@ namespace INTV.Core.Model
         {
             // The format of the Credits block consists of:
             // 1 byte bit-field describing which credits apply to the subsequent name
-            // EITHER a 1-byte shorthand for the name (0x80-0xFF), or, a NULL-terminated ASCII string for the name.
+            // EITHER a 1-byte shorthand for the name (0x80-0xFF), or, a NULL-terminated UTF-8 string for the name.
             var bytesParsed = 0u;
             var creditFlags = (CreditFlags)reader.ReadByte();
             ++bytesParsed;
@@ -300,6 +300,14 @@ namespace INTV.Core.Model
 
             if (!Authors.TryGetValue(character, out name))
             {
+                // Discard the "stuffing" byte that indicates  UTF-8 or 0x01 should follow.
+                if (character == 0x01)
+                {
+                    character = reader.ReadByte();
+                    ++bytesParsed;
+                    ++runningTotal;
+                }
+
                 var nameBuffer = new List<byte>();
                 nameBuffer.Add(character);
 
@@ -311,11 +319,7 @@ namespace INTV.Core.Model
                     ++runningTotal;
                 }
 
-                name = nameBuffer.ToArray().UnescapeFromBytePayload(null);
-                if (name.ContainsInvalidCharacters(allowLineBreaks: false))
-                {
-                    name = string.Empty;
-                }
+                name = System.Text.Encoding.UTF8.GetString(nameBuffer.ToArray(), 0, nameBuffer.Count).Trim('\0');
             }
 
             for (int i = 0; i < NumberOfCreditFlags; ++i)

@@ -564,6 +564,7 @@ namespace INTV.Core.Tests.Model.Program
 
             var description0 = new ProgramDescription(crc, null, information);
             description0.ShortName = "A\aa";
+            description0.Vendor = "V\vv";
             var description1 = description0.Copy();
 
             Assert.Equal(description0.Name, description1.Name);
@@ -571,11 +572,16 @@ namespace INTV.Core.Tests.Model.Program
             Assert.Equal(description0.Vendor, description1.Vendor);
             Assert.Equal(description0.Year, description1.Year);
             Assert.Equal(description0.Features, description1.Features);
+            Assert.False(object.ReferenceEquals(description0.XmlName, description1.XmlName));
             Assert.Equal(description0.XmlName.XmlText, description1.XmlName.XmlText);
             Assert.Equal(description0.XmlName.Escaped, description1.XmlName.Escaped);
+            Assert.False(object.ReferenceEquals(description0.XmlShortName, description1.XmlShortName));
             Assert.Equal(description0.XmlShortName.XmlText, description1.XmlShortName.XmlText);
             Assert.Equal(description0.XmlShortName.Escaped, description1.XmlShortName.Escaped);
             Assert.Equal(description0.Vendor, description1.Vendor);
+            Assert.False(object.ReferenceEquals(description0.XmlVendor, description1.XmlVendor));
+            Assert.Equal(description0.XmlVendor.XmlText, description1.XmlVendor.XmlText);
+            Assert.Equal(description0.XmlVendor.Escaped, description1.XmlVendor.Escaped);
             Assert.True(object.ReferenceEquals(description0.Rom, description1.Rom));
             VerifyProgramInformation(description0.ProgramInformation, description1.ProgramInformation);
             VerifyProgramSupportFiles(description0.Files, description1.Files);

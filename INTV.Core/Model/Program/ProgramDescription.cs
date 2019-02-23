@@ -66,7 +66,7 @@ namespace INTV.Core.Model.Program
             _crc = crc;
             _rom = rom;
             _programInfo = new UserSpecifiedProgramInformation(programInfo);
-            _xmlVendorName = new MetadataString() { Text = _programInfo.Vendor };
+            _xmlVendor = new MetadataString() { Text = _programInfo.Vendor };
             _name = _programInfo.GetNameForCrc(crc);
             _xmlName = new MetadataString() { Text = _name };
             _shortName = programInfo.ShortName;
@@ -182,7 +182,7 @@ namespace INTV.Core.Model.Program
                 var newVendor = value.EnforceNameLength(MaxVendorNameLength, false);
                 if (_programInfo.Vendor != newVendor)
                 {
-                    XmlVendorName.Text = newVendor;
+                    XmlVendor.Text = newVendor;
                     _programInfo.Vendor = newVendor;
                     RaisePropertyChanged(VendorPropertyName);
                 }
@@ -261,20 +261,20 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <remarks>This should only be accessed via the XmlSerializer.</remarks>
         [System.Xml.Serialization.XmlElement(VendorPropertyName)]
-        public MetadataString XmlVendorName
+        public MetadataString XmlVendor
         {
             get
             {
-                return _xmlVendorName;
+                return _xmlVendor;
             }
 
             set
             {
-                _xmlVendorName = value;
-                Vendor = _xmlVendorName.Text;
+                _xmlVendor = value;
+                Vendor = _xmlVendor.Text;
             }
         }
-        private MetadataString _xmlVendorName;
+        private MetadataString _xmlVendor;
 
         /// <summary>
         /// Gets or sets XML-safe version of the <see cref="Name"/> property.

@@ -1,5 +1,5 @@
 ﻿// <copyright file="FirmwareCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -356,10 +356,6 @@ namespace INTV.LtoFlash.Commands
             }
         }
 
-        private const long FirmwareUpdateVersionOffset = 0xC0;
-        private const int FirmwareVersionSizeInBytes = 3;
-        private const int FirmwareVersionUnreleasedFlag = 1 << 0;
-        private const int FirmwareRevisionNeedsDoublingAfter = 0x08A2;
         private const int MinimumFirmwareUpdateFileSize = 0x1E004;
 
         /// <summary>
@@ -375,14 +371,7 @@ namespace INTV.LtoFlash.Commands
             {
                 using (var fileStream = FileUtilities.OpenFileStream(filePath))
                 {
-                    fileStream.Seek(FirmwareUpdateVersionOffset, System.IO.SeekOrigin.Begin);
-                    var versionBuffer = new byte[4];
-                    fileStream.Read(versionBuffer, 0, FirmwareVersionSizeInBytes);
-                    updateVersion = System.BitConverter.ToInt32(versionBuffer, 0);
-                    if (updateVersion > FirmwareRevisionNeedsDoublingAfter)
-                    {
-                        updateVersion *= 2;
-                    }
+                    updateVersion = FirmwareRevisions.GetFirmwareVersionFromBinaryImage(fileStream);
                 }
                 isValidFirmwareFile = true;
             }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="FirmwareRevisions.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -61,6 +61,11 @@ namespace INTV.LtoFlash.Model
         /// Used to indicate that firmware information is not available from a Locutus device.
         /// </summary>
         public static readonly FirmwareRevisions Unavailable = new FirmwareRevisions();
+
+        private const long FirmwareUpdateVersionOffset = 0xC0;
+        private const int FirmwareVersionSizeInBytes = 3;
+        private const int FirmwareVersionUnreleasedFlag = 1 << 0;
+        private const int FirmwareRevisionNeedsDoublingAfter = 0x08A2;
 
         #endregion // Constants
 
@@ -137,6 +142,24 @@ namespace INTV.LtoFlash.Model
                 versionString = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.FirmwareRevision_ToStringFormat, valueToConvert, secondarySuffix, unreleasedSuffix);
             }
             return versionString;
+        }
+
+        /// <summary>
+        /// Extracts the version of the firmware from its data stream.
+        /// </summary>
+        /// <param name="firmwareImageDataStream">A data stream that contains a firmware image for a Locutus device.</param>
+        /// <returns>The firmware version.</returns>
+        public static int GetFirmwareVersionFromBinaryImage(System.IO.Stream firmwareImageDataStream)
+        {
+            firmwareImageDataStream.Seek(FirmwareUpdateVersionOffset, System.IO.SeekOrigin.Begin);
+            var versionBuffer = new byte[4];
+            firmwareImageDataStream.Read(versionBuffer, 0, FirmwareVersionSizeInBytes);
+            var firmwareVersion = System.BitConverter.ToInt32(versionBuffer, 0);
+            if (firmwareVersion > FirmwareRevisionNeedsDoublingAfter)
+            {
+                firmwareVersion *= 2;
+            }
+            return firmwareVersion;
         }
 
         #region ByteSerializer

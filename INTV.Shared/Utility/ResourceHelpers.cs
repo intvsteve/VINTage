@@ -1,5 +1,5 @@
 ﻿// <copyright file="ResourceHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 #if WIN
@@ -127,8 +128,9 @@ namespace INTV.Shared.Utility
         /// <param name="resourcesToExtract">Names of the resources to extract.</param>
         /// <param name="resourcePrefix">Resource prefix to strip to create a file name. Text remaining after this prefix will be used as the file name</param>
         /// <param name="destinationDirectory">Destination directory in which to create files containing the resource data.</param>
+        /// <param name="getFileNameForResource">An optional delegate to call to get the file name to use for the resource to extract to a file.</param>
         /// <returns>An enumerable of absolute paths to the files containing the given resources that were extracted.</returns>
-        public static IEnumerable<string> ExtractResourcesToFiles(this Type typeForLocatingResources, IEnumerable<string> resourcesToExtract, string resourcePrefix, string destinationDirectory)
+        public static IEnumerable<string> ExtractResourcesToFiles(this Type typeForLocatingResources, IEnumerable<string> resourcesToExtract, string resourcePrefix, string destinationDirectory, Func<string, Stream, string> getFileNameForResource = null)
         {
             var extractedResourceFiles = new List<string>();
             if (resourcesToExtract.Any())
@@ -138,18 +140,21 @@ namespace INTV.Shared.Utility
                     var assembly = typeForLocatingResources.Assembly;
                     foreach (var resource in resourcesToExtract)
                     {
-                        var fileName = resource.Substring(resourcePrefix.Length);
-                        var filePath = System.IO.Path.Combine(destinationDirectory, fileName);
-                        if (!System.IO.File.Exists(filePath))
+                        using (var resourceStream = assembly.GetManifestResourceStream(resource))
                         {
-                            using (var resourceStream = assembly.GetManifestResourceStream(resource))
-                            using (var fileStream = System.IO.File.Create(filePath))
+                            var fileName = getFileNameForResource == null ? resource.Substring(resourcePrefix.Length) : getFileNameForResource(resource, resourceStream);
+                            var filePath = System.IO.Path.Combine(destinationDirectory, fileName);
+                            if (!System.IO.File.Exists(filePath))
                             {
-                                resourceStream.CopyTo(fileStream);
+                                using (var fileStream = System.IO.File.Create(filePath))
+                                {
+                                    resourceStream.Seek(0, SeekOrigin.Begin);
+                                    resourceStream.CopyTo(fileStream);
+                                }
                             }
+                            extractedResourceFiles.Add(filePath);
+                            System.Diagnostics.Debug.WriteLine(fileName);
                         }
-                        extractedResourceFiles.Add(filePath);
-                        System.Diagnostics.Debug.WriteLine(fileName);
                     }
                 }
             }

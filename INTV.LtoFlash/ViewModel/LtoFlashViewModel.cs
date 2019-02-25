@@ -69,6 +69,8 @@ namespace INTV.LtoFlash.ViewModel
 
         public const string ShowFileSystemsDifferIconPropertyName = "ShowFileSystemsDifferIcon";
 
+        private const string FirmwareUpdateResourcePrefix = "INTV.LtoFlash.Resources.FirmwareUpdates.";
+
         #endregion // Constants
 
         private static readonly MenuLayout EmptyMenuLayout = new MenuLayout(new FileSystem(FileSystemOrigin.None), string.Empty);
@@ -1070,11 +1072,55 @@ namespace INTV.LtoFlash.ViewModel
             UpdateFileSystemsInSync(Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu);
         }
 
+        private int? GetEmbeddedFirmwareImageResourceVersion()
+        {
+            int? firmwareVersion = null;
+            try
+            {
+                var firmwareImageResource = FirmwareUpdateResourcePrefix + "LTO_Flash_FW.upg";
+                var assembly = typeof(LtoFlashViewModel).Assembly;
+                using (var resourceStream = assembly.GetManifestResourceStream(firmwareImageResource))
+                {
+                    firmwareVersion = LtoFlash.Model.FirmwareRevisions.GetFirmwareVersionFromBinaryImage(resourceStream);
+                }
+            }
+            catch (System.Exception)
+            {
+                // Don't care what kind of error happens -- if this does happen, this assembly was built wrong.
+            }
+            return firmwareVersion;
+        }
+
+        private string GetFirmwareUpgradeFileSuffix()
+        {
+            var suffix = string.Empty;
+            var firmwareUpgradeVersion = GetEmbeddedFirmwareImageResourceVersion();
+            if (firmwareUpgradeVersion.HasValue)
+            {
+                suffix = "_" + LtoFlash.Model.FirmwareRevisions.FirmwareVersionToString(firmwareUpgradeVersion.Value, useRawValue: false);
+            }
+            return suffix;
+        }
+
+        private string GetFirmwareUpdateFileName(string resourceName, string firmwareVersionSuffix)
+        {
+            var defaultFileName = resourceName.Substring(FirmwareUpdateResourcePrefix.Length);
+            var fileName = defaultFileName;
+            if (!string.IsNullOrEmpty(firmwareVersionSuffix))
+            {
+                var fileSuffix = System.IO.Path.GetExtension(defaultFileName);
+                var baseFileName = System.IO.Path.GetFileNameWithoutExtension(defaultFileName);
+                baseFileName += firmwareVersionSuffix;
+                fileName = baseFileName + fileSuffix;
+            }
+            return fileName;
+        }
+
         private void PromptForFirmwareUpgrade(DeviceViewModel newDevice)
         {
-            var firmwareUpdatePrefix = "INTV.LtoFlash.Resources.FirmwareUpdates.";
-            var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(firmwareUpdatePrefix);
-            typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, firmwareUpdatePrefix, Configuration.Instance.FirmwareUpdatesDirectory);
+            var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(FirmwareUpdateResourcePrefix);
+            var firmwareVersionSuffix = GetFirmwareUpgradeFileSuffix();
+            typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, FirmwareUpdateResourcePrefix, Configuration.Instance.FirmwareUpdatesDirectory, (n, s) => GetFirmwareUpdateFileName(n, firmwareVersionSuffix));
             if (newDevice.IsValid && Properties.Settings.Default.PromptForFirmwareUpgrade && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(this))
             {
                 if (System.IO.Directory.Exists(Configuration.Instance.FirmwareUpdatesDirectory))

@@ -1,5 +1,5 @@
 ﻿// <copyright file="Device.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,6 +23,7 @@
 ////#define REPORT_PERFORMANCE
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using INTV.Core.Model;
 using INTV.Core.Model.Device;
@@ -47,6 +48,15 @@ namespace INTV.LtoFlash.Model
         /// <param name="exception">The exception that caused the error, if applicable.</param>
         /// <returns><c>true</c> if the error was handled and should not be passed along.</returns>
         public delegate bool DeviceErrorHandler(DeviceStatusFlagsLo deviceStatusFlags, ProtocolCommandId commandId, string errorMessage, Exception exception);
+
+        /// <summary>
+        /// This delegate can be used to execute custom actions that are associated with the device that can be controlled via user settings.
+        /// </summary>
+        /// <param name="activity">The activity the delegate is related to.</param>
+        /// <param name="device">The device upon which the activity is happening or is to be executed.</param>
+        /// <param name="customState">Custom state passed to the delegate when registered with a specific device.</param>
+        /// <returns>Should return <c>true</c> if the activity should be repeated at the next available opportunity. If <c>false</c>, no further attempts are made.</returns>
+        internal delegate bool DeviceActivityDelegate(DeviceActivity activity, Device device, object customState);
 
         #region Constants
 
@@ -162,6 +172,7 @@ namespace INTV.LtoFlash.Model
 
         private object _lock = new object();
         private bool _dummyDevice;
+        private ConcurrentDictionary<DeviceActivity, Tuple<DeviceActivityDelegate, object>> _deviceActivities;
 
         #region Constructors
 
@@ -194,6 +205,7 @@ namespace INTV.LtoFlash.Model
             UpdateLogger();
             DeviceStatusUpdatePeriod = DefaultGarbageCollectionPeriod;
             _firmwareRevisions = FirmwareRevisions.Unavailable;
+            _deviceActivities = new ConcurrentDictionary<DeviceActivity, Tuple<DeviceActivityDelegate, object>>();
             ValidateDevice();
             _showTitleScreen = ShowTitleScreenFlags.Default;
             _keyclicks = false;
@@ -652,6 +664,35 @@ namespace INTV.LtoFlash.Model
         #endregion // IDisposable
 
         /// <summary>
+        /// Adds the given activity delegate for the specified activity.
+        /// </summary>
+        /// <param name="activity">The activity to which the delegate pertains.</param>
+        /// <param name="activityDelegate">The delegate to call when the activity is determined to have occurred.</param>
+        /// <param name="customState">State information to pass to the delegate.</param>
+        /// <returns><c>true</c> if the delegate for the specified activity was successfully registered, <c>false</c> otherwise.</returns>
+        internal bool RegisterDeviceActivityDelegate(DeviceActivity activity, DeviceActivityDelegate activityDelegate, object customState)
+        {
+            if (activityDelegate == null)
+            {
+                throw new ArgumentNullException("activityDelegate");
+            }
+            var addedActivity = _deviceActivities.TryAdd(activity, new Tuple<DeviceActivityDelegate, object>(activityDelegate, customState));
+            return addedActivity;
+        }
+
+        /// <summary>
+        /// Removes the activity delegate for the specified activity.
+        /// </summary>
+        /// <param name="activity">The activity whose delegate is to be removed.</param>
+        /// <returns><c>true</c> if the activity delegate was removed, <c>false</c> otherwise.</returns>
+        internal bool UnregisterDeviceActivityDelegate(DeviceActivity activity)
+        {
+            Tuple<DeviceActivityDelegate, object> dontCare;
+            var removedActivity = _deviceActivities.TryRemove(activity, out dontCare);
+            return removedActivity;
+        }
+
+        /// <summary>
         /// Updates the ECS configuration.
         /// </summary>
         /// <param name="newEcsConfiguration">New ECS configuration.</param>
@@ -915,21 +956,10 @@ namespace INTV.LtoFlash.Model
                         {
                             _infoUpdatePosted = true;
                             SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new Action(() =>
-                            {
-                                if (newDeviceStatus != null)
                                 {
-                                    device.UpdateDeviceStatus(newDeviceStatus);
-                                }
-                                if (newDeviceFileSystemStatistics != null)
-                                {
-                                    device.FileSystemStatistics = newDeviceFileSystemStatistics;
-                                }
-                                if (raiseConnectionStateChange)
-                                {
-                                    device.RaisePropertyChanged(ConnectionStatePropertyName);
-                                }
-                                _infoUpdatePosted = false;
-                            }));
+                                    UpdateDeviceStatusOnMainThread(device, newDeviceStatus, newDeviceFileSystemStatistics, raiseConnectionStateChange);
+                                    _infoUpdatePosted = false;
+                                }));
                         }
 
                         // Restart the timer.
@@ -976,6 +1006,43 @@ namespace INTV.LtoFlash.Model
                     // LogPortMessage is a null-safe extension method.
                     device.Port.LogPortMessage(">>>> TIMER PROC EXIT" + " on thread: " + threadId);
                 }
+            }
+        }
+
+        private static void UpdateDeviceStatusOnMainThread(Device device, DeviceStatusResponse newDeviceStatus, FileSystemStatistics newDeviceFileSystemStatistics, bool raiseConnectionStateChange)
+        {
+            if (newDeviceStatus != null)
+            {
+                device.UpdateDeviceStatus(newDeviceStatus);
+            }
+            if (newDeviceFileSystemStatistics != null)
+            {
+                device.FileSystemStatistics = newDeviceFileSystemStatistics;
+            }
+            if (raiseConnectionStateChange)
+            {
+                device.RaisePropertyChanged(ConnectionStatePropertyName);
+            }
+            var activitiesToRemove = new List<DeviceActivity>();
+            foreach (var deviceActivity in device._deviceActivities)
+            {
+                var activity = deviceActivity.Key;
+                switch (activity)
+                {
+                    case DeviceActivity.None:
+                        break;
+                    default:
+                        var activityDelegate = deviceActivity.Value.Item1;
+                        if (!activityDelegate(deviceActivity.Key, device, deviceActivity.Value.Item2))
+                        {
+                            activitiesToRemove.Add(activity);
+                        }
+                        break;
+                }
+            }
+            foreach (var activityToRemove in activitiesToRemove)
+            {
+                device.UnregisterDeviceActivityDelegate(activityToRemove);
             }
         }
 
@@ -1431,6 +1498,7 @@ namespace INTV.LtoFlash.Model
                     finally
                     {
                         _statusUpdateTimer = null;
+                        _deviceActivities.Clear();
                     }
                 }
             }

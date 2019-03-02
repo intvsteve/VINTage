@@ -458,6 +458,9 @@
     <EmbeddedResource Include="Commands\Resources\UpdateFirmwareCommand_MenuItem.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\CheckForFirmwareUpdateCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Page Include="View\FileSystemStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

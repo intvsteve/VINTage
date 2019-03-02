@@ -1,5 +1,5 @@
 ﻿// <copyright file="LtoFlashViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -542,6 +542,63 @@ namespace INTV.LtoFlash.ViewModel
             return report;
         }
 
+        private static bool ReconcileLocalAndDeviceMenuLayoutOnDeviceConnect(DeviceActivity activity, Device device, object customState)
+        {
+            var viewModel = customState as LtoFlashViewModel;
+            if (viewModel != null)
+            {
+                viewModel.UpdateFileSystemsInSync(doFileSystemCompare: Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu);
+            }
+            return false;
+        }
+
+        private static bool PromptForFirmwareUpdateOnDeviceConnect(DeviceActivity activity, Device device, object customState)
+        {
+            var retry = device.FirmwareRevisions.Current > LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion;
+            if (retry)
+            {
+                var viewModel = customState as LtoFlashViewModel;
+                var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(FirmwareUpdateResourcePrefix);
+                var firmwareVersionSuffix = viewModel.GetFirmwareUpgradeFileSuffix();
+                typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, FirmwareUpdateResourcePrefix, Configuration.Instance.FirmwareUpdatesDirectory, (n, s) => viewModel.GetFirmwareUpdateFileName(n, firmwareVersionSuffix));
+                if (device.IsValid && Properties.Settings.Default.PromptForFirmwareUpgrade && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(viewModel))
+                {
+                    retry = false;
+                    if (System.IO.Directory.Exists(Configuration.Instance.FirmwareUpdatesDirectory))
+                    {
+                        string newestFirmwareFile = null;
+                        var newestVersion = INTV.LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion;
+                        foreach (var firmwareUpdateFile in System.IO.Directory.EnumerateFiles(Configuration.Instance.FirmwareUpdatesDirectory, "*.*").Where(f => FirmwareCommandGroup.UpgradeFileExtensions.Contains(System.IO.Path.GetExtension(f))))
+                        {
+                            var isValid = false;
+                            var version = FirmwareCommandGroup.ExtractFirmwareUpdateVersion(firmwareUpdateFile, out isValid);
+                            if (isValid && (version > newestVersion))
+                            {
+                                newestVersion = version;
+                                newestFirmwareFile = firmwareUpdateFile;
+                            }
+                        }
+
+                        // Strip off the secondary FW version bit -- we don't really care about that.
+                        var currentVersion = device.FirmwareRevisions.Current & ~INTV.LtoFlash.Model.FirmwareRevisions.SecondaryMask;
+                        if ((newestVersion > currentVersion) && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(viewModel))
+                        {
+                            var newerFirmwareFound = Resources.Strings.FirmwareUpdateAvailable_MessagePrefix;
+                            var disablePrompt = Resources.Strings.FirmwareUpdateAvailable_MessageSuffix;
+                            SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() =>
+                            {
+                                if (FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(viewModel))
+                                {
+                                    FirmwareCommandGroup.UpdateFirmware(device, newestFirmwareFile, newerFirmwareFound, disablePrompt);
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+            return retry;
+        }
+
         [System.Diagnostics.Conditional("ENABLE_DEVICE_DETECTION_TRACE")]
         private static void DebugDeviceDetectionOutput(object message)
         {
@@ -550,7 +607,7 @@ namespace INTV.LtoFlash.ViewModel
 
         private void ImportStarterRoms()
         {
-            // This is a one-shot deal, unless soneone resets the preference.
+            // This is a one-shot deal, unless someone resets the preference.
             Properties.Settings.Default.PromptToImportStarterRoms = false;
 
             // Look for ROMs embedded in the app build. Specifically, they must be in *this* assembly.
@@ -654,7 +711,7 @@ namespace INTV.LtoFlash.ViewModel
                 {
                     _cachedFileSystemsCompareResult = 1;
                 }
-                UpdateFileSystemsInSync(true); // always do the refresh after a save
+                UpdateFileSystemsInSync(doFileSystemCompare: true); // always do the refresh after a save
             }
             else
             {
@@ -843,6 +900,7 @@ namespace INTV.LtoFlash.ViewModel
             }
             if ((newDevice != null) && (newDevice.Device != null))
             {
+                RegisterOnDeviceConnectActivityHandlers(newDevice);
                 if ((newDevice.Device.Port != null) && !newDevice.Device.Port.IsOpen && (newDevice.Device.CreationInfo.ActivationMode == ActivationMode.ForceActivate))
                 {
                     newDevice.Device.ValidateDevice();
@@ -865,6 +923,21 @@ namespace INTV.LtoFlash.ViewModel
             UpdateItemStatesAsNecessary(newDevice);
             OSDeviceArrivalDepartureActiveChanged();
             return newDevice;
+        }
+
+        private void RegisterOnDeviceConnectActivityHandlers(DeviceViewModel newDevice)
+        {
+            if (newDevice.Device.Port != null)
+            {
+                if (Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu)
+                {
+                    newDevice.Device.RegisterDeviceActivityDelegate(DeviceActivity.ReconcileMenuOnConnect, ReconcileLocalAndDeviceMenuLayoutOnDeviceConnect, this);
+                }
+                if (Properties.Settings.Default.PromptForFirmwareUpgrade)
+                {
+                    newDevice.Device.RegisterDeviceActivityDelegate(DeviceActivity.PromptForFirmwareUpdateOnConnect, PromptForFirmwareUpdateOnDeviceConnect, this);
+                }
+            }
         }
 
         private void HandleDeviceAdded(object sender, DeviceChangeEventArgs e)
@@ -923,10 +996,6 @@ namespace INTV.LtoFlash.ViewModel
                     {
                         INTV.LtoFlash.Properties.Settings.Default.LastActiveDevicePort = device.Device.Port.Name;
                         INTV.LtoFlash.Properties.Settings.Default.Save();
-                        if (device.Device.FirmwareRevisions.Current > LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion)
-                        {
-                            PromptForFirmwareUpgrade(device);
-                        }
                     }
                     if (_cachedFileSystemsCompareResult.HasValue && ((device == null) || !device.IsValid))
                     {
@@ -992,7 +1061,7 @@ namespace INTV.LtoFlash.ViewModel
                     {
                         Model = EmptyMenuLayout;
                     }
-                    UpdateFileSystemsInSync(true); // always do after file system changes
+                    UpdateFileSystemsInSync(doFileSystemCompare: true); // always do after file system changes
                     break;
                 case Device.FileSystemStatisticsPropertyName:
                     FileSystemStatistics.FileSystemStatistics = ActiveLtoFlashDevice.Device.FileSystemStatistics;
@@ -1067,9 +1136,10 @@ namespace INTV.LtoFlash.ViewModel
             }
             if ((newDevice == null) || !newDevice.IsValid)
             {
+                ResetCachedFileSystemsCompareResult();
                 HostPCMenuLayout.ClearItemStates(AttachedPeripherals);
             }
-            UpdateFileSystemsInSync(Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu);
+            UpdateFileSystemsInSync(doFileSystemCompare: false);
         }
 
         private int? GetEmbeddedFirmwareImageResourceVersion()
@@ -1114,46 +1184,6 @@ namespace INTV.LtoFlash.ViewModel
                 fileName = baseFileName + fileSuffix;
             }
             return fileName;
-        }
-
-        private void PromptForFirmwareUpgrade(DeviceViewModel newDevice)
-        {
-            var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(FirmwareUpdateResourcePrefix);
-            var firmwareVersionSuffix = GetFirmwareUpgradeFileSuffix();
-            typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, FirmwareUpdateResourcePrefix, Configuration.Instance.FirmwareUpdatesDirectory, (n, s) => GetFirmwareUpdateFileName(n, firmwareVersionSuffix));
-            if (newDevice.IsValid && Properties.Settings.Default.PromptForFirmwareUpgrade && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(this))
-            {
-                if (System.IO.Directory.Exists(Configuration.Instance.FirmwareUpdatesDirectory))
-                {
-                    string newestFirmwareFile = null;
-                    var newestVersion = INTV.LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion;
-                    foreach (var firmwareUpdateFile in System.IO.Directory.EnumerateFiles(Configuration.Instance.FirmwareUpdatesDirectory, "*.*").Where(f => FirmwareCommandGroup.UpgradeFileExtensions.Contains(System.IO.Path.GetExtension(f))))
-                    {
-                        var isValid = false;
-                        var version = FirmwareCommandGroup.ExtractFirmwareUpdateVersion(firmwareUpdateFile, out isValid);
-                        if (isValid && (version > newestVersion))
-                        {
-                            newestVersion = version;
-                            newestFirmwareFile = firmwareUpdateFile;
-                        }
-                    }
-
-                    // Strip off the secondary FW version bit -- we don't really care about that.
-                    var currentVersion = newDevice.Device.FirmwareRevisions.Current & ~INTV.LtoFlash.Model.FirmwareRevisions.SecondaryMask;
-                    if ((newestVersion > currentVersion) && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(this))
-                    {
-                        var newerFirmwareFound = Resources.Strings.FirmwareUpdateAvailable_MessagePrefix;
-                        var disablePrompt = Resources.Strings.FirmwareUpdateAvailable_MessageSuffix;
-                        SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() =>
-                            {
-                                if (FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(this))
-                                {
-                                    FirmwareCommandGroup.UpdateFirmware(newDevice.Device, newestFirmwareFile, newerFirmwareFound, disablePrompt);
-                                }
-                            });
-                    }
-                }
-            }
         }
 
         private void UpdateSystemContentsUsage(INTV.Shared.Utility.IFixedSizeCollection collection)
@@ -1214,23 +1244,35 @@ namespace INTV.LtoFlash.ViewModel
         // UNDONE Not sure what the plan was here...
         private void HandlePreferenceChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ReconcileDeviceMenuWithLocalMenu")
+            switch (e.PropertyName)
             {
-                System.Diagnostics.Debug.WriteLine("ReconcileDeviceMenuWithLocalMenu CHANGED");
-            }
-            if (e.PropertyName == "VerifyVIDandPIDBeforeConnecting")
-            {
-                var newPotentialPorts = DeviceConnectionViewModel.GetAvailableConnections(this);
-                var itemsToRemove = _potentialDevicePorts.Where(p => !newPotentialPorts.Select(n => n.Name).Contains(p.Name)).ToList();
-                foreach (var itemToRemove in itemsToRemove)
-                {
-                    _potentialDevicePorts.Remove(itemToRemove);
-                }
-                var itemsToAdd = newPotentialPorts.Where(n => !_potentialDevicePorts.Select(p => p.Name).Contains(n.Name)).ToList();
-                foreach (var itemToAdd in itemsToAdd)
-                {
-                    _potentialDevicePorts.Add(itemToAdd);
-                }
+                case Properties.Settings.ReconcileDeviceMenuWithLocalMenuSettingName:
+                    if ((ActiveLtoFlashDevice.Device != null) && (ActiveLtoFlashDevice.Device.Port != null) && !Properties.Settings.Default.ReconcileDeviceMenuWithLocalMenu)
+                    {
+                        ActiveLtoFlashDevice.Device.UnregisterDeviceActivityDelegate(DeviceActivity.ReconcileMenuOnConnect);
+                    }
+                    break;
+                case Properties.Settings.PromptForFirmwareUpgradeSettingName:
+                    if ((ActiveLtoFlashDevice.Device != null) && (ActiveLtoFlashDevice.Device.Port != null) && !Properties.Settings.Default.PromptForFirmwareUpgrade)
+                    {
+                        ActiveLtoFlashDevice.Device.UnregisterDeviceActivityDelegate(DeviceActivity.PromptForFirmwareUpdateOnConnect);
+                    }
+                    break;
+                case Properties.Settings.VerifyVIDandPIDBeforeConnectingSettingName:
+                    var newPotentialPorts = DeviceConnectionViewModel.GetAvailableConnections(this);
+                    var itemsToRemove = _potentialDevicePorts.Where(p => !newPotentialPorts.Select(n => n.Name).Contains(p.Name)).ToList();
+                    foreach (var itemToRemove in itemsToRemove)
+                    {
+                        _potentialDevicePorts.Remove(itemToRemove);
+                    }
+                    var itemsToAdd = newPotentialPorts.Where(n => !_potentialDevicePorts.Select(p => p.Name).Contains(n.Name)).ToList();
+                    foreach (var itemToAdd in itemsToAdd)
+                    {
+                        _potentialDevicePorts.Add(itemToAdd);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 

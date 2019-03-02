@@ -73,6 +73,8 @@
     <EmbeddedResource Include="Resources\Images\background_gc_16xMD.png" />
     <EmbeddedResource Include="Resources\Images\backup_16xLG.png" />
     <EmbeddedResource Include="Resources\Images\backup_32xLG.png" />
+    <EmbeddedResource Include="Resources\Images\check-for-firmware-update_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\check-for-firmware-update_32xLG.png" />
     <EmbeddedResource Include="Resources\Images\color_palette_16xLG.png" />
     <EmbeddedResource Include="Resources\Images\color_picker_16xLG.png" />
     <EmbeddedResource Include="Resources\Images\connected_16x16.png" />
@@ -363,6 +365,7 @@
     <Compile Include="Model\ControllerKeyValidationFlags.cs" />
     <Compile Include="Model\CrashLog.cs" />
     <Compile Include="Model\Device.cs" />
+    <Compile Include="Model\DeviceActivity.cs" />
     <Compile Include="Model\DeviceCommandAvailability.cs" />
     <Compile Include="Model\DeviceCreationInfo.cs" />
     <Compile Include="Model\DeviceHelpers.BackupFileSystem.cs" />

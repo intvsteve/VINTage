@@ -686,6 +686,8 @@
     <Resource Include="Resources\Images\settings_32xMD.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\check-for-firmware-update_16xLG.png" />
+    <Resource Include="Resources\Images\check-for-firmware-update_32xLG.png" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />
     <Resource Include="Resources\Images\document_devicespecific_Black_16xLG.png" />
     <Resource Include="Resources\Images\document_devicespecific_Blue_16xLG.png" />

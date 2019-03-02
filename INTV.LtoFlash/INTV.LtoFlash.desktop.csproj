@@ -126,6 +126,7 @@
     <Compile Include="Model\ControllerKeyValidationFlags.cs" />
     <Compile Include="Model\CrashLog.cs" />
     <Compile Include="Model\Device.cs" />
+    <Compile Include="Model\DeviceActivity.cs" />
     <Compile Include="Model\DeviceCommandAvailability.cs" />
     <Compile Include="Model\DeviceCreationInfo.cs" />
     <Compile Include="Model\DeviceHelpers.cs" />

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Device;
@@ -516,6 +517,15 @@ namespace INTV.LtoFlash.ViewModel
         }
 
         /// <summary>
+        /// Checks current active device against latest locally available firmware update file, prompting the user to either
+        /// update the firmware, or that the device is up to date as far as we're able to determine.
+        /// </summary>
+        internal void CheckAndPromptForFirmwareUpdate()
+        {
+            CheckAndPromptForFirmwareUpdate(this, ActiveLtoFlashDevice.Device, showUpToDateDialog: true);
+        }
+
+        /// <summary>
         /// Reset the cached result of a file system comparison to ensure a re-do of comparison can be done.
         /// </summary>
         internal void ResetCachedFileSystemsCompareResult()
@@ -558,51 +568,85 @@ namespace INTV.LtoFlash.ViewModel
             if (retry)
             {
                 var viewModel = customState as LtoFlashViewModel;
-                var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(FirmwareUpdateResourcePrefix);
-                var firmwareVersionSuffix = viewModel.GetFirmwareUpgradeFileSuffix();
-                typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, FirmwareUpdateResourcePrefix, Configuration.Instance.FirmwareUpdatesDirectory, (n, s) => viewModel.GetFirmwareUpdateFileName(n, firmwareVersionSuffix));
                 if (device.IsValid && Properties.Settings.Default.PromptForFirmwareUpgrade && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(viewModel))
                 {
                     retry = false;
-                    if (System.IO.Directory.Exists(Configuration.Instance.FirmwareUpdatesDirectory))
-                    {
-                        string newestFirmwareFile = null;
-                        var newestVersion = INTV.LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion;
-                        foreach (var firmwareUpdateFile in System.IO.Directory.EnumerateFiles(Configuration.Instance.FirmwareUpdatesDirectory, "*.*").Where(f => FirmwareCommandGroup.UpgradeFileExtensions.Contains(System.IO.Path.GetExtension(f))))
-                        {
-                            var isValid = false;
-                            var version = FirmwareCommandGroup.ExtractFirmwareUpdateVersion(firmwareUpdateFile, out isValid);
-                            if (isValid && (version > newestVersion))
-                            {
-                                newestVersion = version;
-                                newestFirmwareFile = firmwareUpdateFile;
-                            }
-                        }
-
-                        // Strip off the secondary FW version bit -- we don't really care about that.
-                        var currentVersion = device.FirmwareRevisions.Current & ~INTV.LtoFlash.Model.FirmwareRevisions.SecondaryMask;
-                        if ((newestVersion > currentVersion) && FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(viewModel))
-                        {
-                            var newerFirmwareFound = Resources.Strings.FirmwareUpdateAvailable_MessagePrefix;
-                            var disablePrompt = Resources.Strings.FirmwareUpdateAvailable_MessageSuffix;
-                            SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() =>
-                            {
-                                if (FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(viewModel))
-                                {
-                                    FirmwareCommandGroup.UpdateFirmware(device, newestFirmwareFile, newerFirmwareFound, disablePrompt);
-                                }
-                            });
-                        }
-                    }
+                    CheckAndPromptForFirmwareUpdate(viewModel, device, showUpToDateDialog: false);
                 }
             }
             return retry;
+        }
+
+        private static string GetNewestFirmwareUpdateFile(LtoFlashViewModel viewModel, out int newestFirmwareVersion)
+        {
+            var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(FirmwareUpdateResourcePrefix);
+            var firmwareVersionSuffix = viewModel.GetFirmwareUpgradeFileSuffix();
+            typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, FirmwareUpdateResourcePrefix, Configuration.Instance.FirmwareUpdatesDirectory, (n, s) => viewModel.GetFirmwareUpdateFileName(n, firmwareVersionSuffix));
+
+            newestFirmwareVersion = INTV.LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion;
+            var firmwareUpdateFile = string.Empty;
+            if (System.IO.Directory.Exists(Configuration.Instance.FirmwareUpdatesDirectory))
+            {
+                foreach (var firmwareFile in System.IO.Directory.EnumerateFiles(Configuration.Instance.FirmwareUpdatesDirectory, "*.*").Where(f => FirmwareCommandGroup.UpgradeFileExtensions.Contains(System.IO.Path.GetExtension(f))))
+                {
+                    var isValid = false;
+                    var version = FirmwareCommandGroup.ExtractFirmwareUpdateVersion(firmwareFile, out isValid);
+                    if (isValid && (version > newestFirmwareVersion))
+                    {
+                        newestFirmwareVersion = version;
+                        firmwareUpdateFile = firmwareFile;
+                    }
+                }
+            }
+            return firmwareUpdateFile;
+        }
+
+        private static void CheckAndPromptForFirmwareUpdate(LtoFlashViewModel viewModel, Device device, bool showUpToDateDialog)
+        {
+            if ((device != null) && device.IsValid)
+            {
+                var newestVersion = INTV.LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion;
+                var newestFirmwareFile = GetNewestFirmwareUpdateFile(viewModel, out newestVersion);
+
+                // Strip off the secondary FW version bit -- we don't really care about that.
+                var currentVersion = device.FirmwareRevisions.Current & ~INTV.LtoFlash.Model.FirmwareRevisions.SecondaryMask;
+                if (newestVersion > currentVersion)
+                {
+                    viewModel.PromptForFirmwareUpdate(device, newestFirmwareFile);
+                }
+                else if (showUpToDateDialog)
+                {
+                    var firmwareVersionString = LtoFlash.Model.FirmwareRevisions.FirmwareVersionToString(currentVersion, useRawValue: false);
+                    var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CheckForFirmwareUpdateCommand_AlreadyUpToDateMessageFormat, firmwareVersionString);
+                    OSMessageBox.Show(message, Resources.Strings.CheckForFirmwareUpdateCommand_AlreadyUpToDateTitle);
+                }
+            }
+            else
+            {
+                if (showUpToDateDialog)
+                {
+                    OSMessageBox.Show(Resources.Strings.CheckForFirmwareUpdateCommand_NoDeviceConnectedMessage, Resources.Strings.CheckForFirmwareUpdateCommand_NoDeviceConnectedTitle);
+                }
+            }
         }
 
         [System.Diagnostics.Conditional("ENABLE_DEVICE_DETECTION_TRACE")]
         private static void DebugDeviceDetectionOutput(object message)
         {
             System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        private void PromptForFirmwareUpdate(Device device, string firmwareUpdateFile)
+        {
+            var newerFirmwareFound = Resources.Strings.FirmwareUpdateAvailable_MessagePrefix;
+            var disablePrompt = Resources.Strings.FirmwareUpdateAvailable_MessageSuffix;
+            SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(() =>
+            {
+                if (FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(this))
+                {
+                    FirmwareCommandGroup.UpdateFirmware(device, firmwareUpdateFile, newerFirmwareFound, disablePrompt);
+                }
+            });
         }
 
         private void ImportStarterRoms()
@@ -619,7 +663,7 @@ namespace INTV.LtoFlash.ViewModel
                 var starterRoms = typeof(LtoFlashViewModel).ExtractResourcesToFiles(starterRomResources, starterRomsResourcePrefix, starterRomsDirectory);
                 if (starterRoms.Any())
                 {
-                    var message = string.Format(Resources.Strings.PromptToAddStarterRoms_MessageFormat, starterRomsDirectory);
+                    var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PromptToAddStarterRoms_MessageFormat, starterRomsDirectory);
                     var addStarterRoms = INTV.Shared.View.OSMessageBox.Show(message, Resources.Strings.PromptToAddStarterRoms_Title, INTV.Shared.View.OSMessageBoxButton.YesNo);
                     if (addStarterRoms == INTV.Shared.View.OSMessageBoxResult.Yes)
                     {
@@ -1207,7 +1251,7 @@ namespace INTV.LtoFlash.ViewModel
             int numEntriesUsed = collection.ItemsInUse;
             int totalNumEntries = collection.Size;
             int numEntriesRemaining = collection.ItemsRemaining;
-            var status = string.Format(System.Globalization.CultureInfo.CurrentCulture, formatString, numEntriesUsed, totalNumEntries, numEntriesRemaining);
+            var status = string.Format(CultureInfo.CurrentCulture, formatString, numEntriesUsed, totalNumEntries, numEntriesRemaining);
             string propertyChangedName = null;
             if (isFolderTable)
             {

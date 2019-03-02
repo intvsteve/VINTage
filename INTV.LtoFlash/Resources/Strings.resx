@@ -2506,4 +2506,27 @@ is too small ({1} bytes)</value>
   <data name="ToolsDirectoryMissingMessage" xml:space="preserve">
     <value>Tools directory missing!</value>
   </data>
+  <data name="CheckForFirmwareUpdateCommand_AlreadyUpToDateMessageFormat" xml:space="preserve">
+    <value>Your LTO Flash! firmware appears to be up to date.
+
+Version: {0}</value>
+    <comment>{0} is a firmware version number</comment>
+  </data>
+  <data name="CheckForFirmwareUpdateCommand_AlreadyUpToDateTitle" xml:space="preserve">
+    <value>Check for Firmware Update: No Update Available</value>
+  </data>
+  <data name="CheckForFirmwareUpdateCommand_NoDeviceConnectedMessage" xml:space="preserve">
+    <value>Unable to check for firmware update. It appears that no LTO Flash! device is connected to your computer.
+
+In order to determine if a firmware update is available for your device, please ensure that it is connected</value>
+  </data>
+  <data name="CheckForFirmwareUpdateCommand_NoDeviceConnectedTitle" xml:space="preserve">
+    <value>Check for Firmware Update</value>
+  </data>
+  <data name="CheckForFirmwareUpdateCommand_TipDescription" xml:space="preserve">
+    <value>Check to see if there is a firmware update available for the connected device.</value>
+  </data>
+  <data name="Firmware_CheckForFirmwareUpdateCommand_MenuItemName" xml:space="preserve">
+    <value>Check for Firmware Update...</value>
+  </data>
 </root>

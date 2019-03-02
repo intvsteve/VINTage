@@ -458,6 +458,9 @@
     <EmbeddedResource Include="Commands\Resources\UpdateFirmwareCommand_MenuItem.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\CheckForFirmwareUpdateCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Page Include="View\FileSystemStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -520,6 +523,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\lto_flash_contents_not_in_sync_16xLG.png" />
+    <Resource Include="Resources\Images\check-for-firmware-update_16xLG.png" />
+    <Resource Include="Resources\Images\check-for-firmware-update_32xLG.png" />
     <Resource Include="Resources\Images\connected_16x16.png" />
     <Resource Include="Resources\Images\delete_document_16xLG.png" />
     <Resource Include="Resources\Images\delete_folder.png" />

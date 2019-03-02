@@ -589,6 +589,55 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your LTO Flash! firmware appears to be up to date.
+        ///
+        ///Version: {0}.
+        /// </summary>
+        internal static string CheckForFirmwareUpdateCommand_AlreadyUpToDateMessageFormat {
+            get {
+                return ResourceManager.GetString("CheckForFirmwareUpdateCommand_AlreadyUpToDateMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check for Firmware Update: No Update Available.
+        /// </summary>
+        internal static string CheckForFirmwareUpdateCommand_AlreadyUpToDateTitle {
+            get {
+                return ResourceManager.GetString("CheckForFirmwareUpdateCommand_AlreadyUpToDateTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to check for firmware update. It appears that no LTO Flash! device is connected to your computer.
+        ///
+        ///In order to determine if a firmware update is available for your device, please ensure that it is connected.
+        /// </summary>
+        internal static string CheckForFirmwareUpdateCommand_NoDeviceConnectedMessage {
+            get {
+                return ResourceManager.GetString("CheckForFirmwareUpdateCommand_NoDeviceConnectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check for Firmware Update.
+        /// </summary>
+        internal static string CheckForFirmwareUpdateCommand_NoDeviceConnectedTitle {
+            get {
+                return ResourceManager.GetString("CheckForFirmwareUpdateCommand_NoDeviceConnectedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check to see if there is a firmware update available for the connected device..
+        /// </summary>
+        internal static string CheckForFirmwareUpdateCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("CheckForFirmwareUpdateCommand_TipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contents of the ROMs cache directory have been deleted..
         /// </summary>
         internal static string ClearCacheCommand_CompleteMessage {
@@ -2266,6 +2315,15 @@ namespace INTV.LtoFlash.Resources {
         internal static string FileSystemStatisticsView_VirtualToPhysicalMapVersion {
             get {
                 return ResourceManager.GetString("FileSystemStatisticsView_VirtualToPhysicalMapVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check for Firmware Update....
+        /// </summary>
+        internal static string Firmware_CheckForFirmwareUpdateCommand_MenuItemName {
+            get {
+                return ResourceManager.GetString("Firmware_CheckForFirmwareUpdateCommand_MenuItemName", resourceCulture);
             }
         }
         

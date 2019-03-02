@@ -1,5 +1,5 @@
 ﻿// <copyright file="FirmwareCommandGroup.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -49,6 +49,7 @@ namespace INTV.LtoFlash.Commands
         {
             FirmwareGroupCommand.MenuParent = LtoFlashCommandGroup.LtoFlashGroupCommand;
             RestoreFirmwareCommand.Weight = 0.1;
+            CommandList.Add(CheckForFirmwareUpdateCommand.CreateSeparator(CommandLocation.Before));
             CommandList.Add(FirmwareGroupCommand.CreateSeparator(CommandLocation.After));
         }
 

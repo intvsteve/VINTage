@@ -64,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\Device.cs" />
+    <Compile Include="Model\DeviceActivity.cs" />
     <Compile Include="Model\Directory.cs" />
     <Compile Include="Model\FileNode.cs" />
     <Compile Include="Model\FileSystem.cs" />
@@ -303,6 +304,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.upg" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />
+    <EmbeddedResource Include="Resources\Images\check-for-firmware-update_16xLG.png">
+        <LogicalName>Resources/Images/check-for-firmware-update_16xLG.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\check-for-firmware-update_32xLG.png">
+        <LogicalName>Resources/Images/check-for-firmware-update_32xLG.png</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Images\connected_16x16.png">
       <LogicalName>Resources/Images/connected_16x16.png</LogicalName>
     </EmbeddedResource>

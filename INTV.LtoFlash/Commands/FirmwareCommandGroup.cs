@@ -489,6 +489,41 @@ namespace INTV.LtoFlash.Commands
 
         #endregion // RestoreFirmware Command
 
+        #region CheckForFirmwareUpdate Command
+
+        /// <summary>
+        /// The command to restore firmware to the factory default.
+        /// </summary>
+        public static readonly VisualDeviceCommand CheckForFirmwareUpdateCommand = new VisualDeviceCommand(OnCheckForFirmwareUpdate, CanCheckForFirmwareUpdate)
+        {
+            UniqueId = UniqueNameBase + ".CheckForFirmwareUpdateCommand",
+            Name = Resources.Strings.Firmware_CheckForFirmwareUpdateCommand_MenuItemName,
+            ToolTip = Resources.Strings.CheckForFirmwareUpdateCommand_TipDescription,
+            LargeIcon = typeof(FirmwareCommandGroup).LoadImageResource("Resources/Images/check-for-firmware-update_32xLG.png"),
+            SmallIcon = typeof(FirmwareCommandGroup).LoadImageResource("Resources/Images/check-for-firmware-update_16xLG.png"),
+            Weight = 0.5,
+            MenuParent = FirmwareGroupCommand,
+            PreferredParameterType = typeof(LtoFlashViewModel),
+            RequiredProtocolCommands = DeviceHelpers.UpdateFirmwareProtocolCommands
+        };
+
+        private static void OnCheckForFirmwareUpdate(object parameter)
+        {
+            var ltoFlashViewModel = parameter as LtoFlashViewModel;
+            if ((ltoFlashViewModel != null) && ltoFlashViewModel.CanExecuteCommand(CheckForFirmwareUpdateCommand))
+            {
+                ltoFlashViewModel.CheckAndPromptForFirmwareUpdate();
+            }
+        }
+
+        private static bool CanCheckForFirmwareUpdate(object parameter)
+        {
+            var ltoFlashViewModel = parameter as LtoFlashViewModel;
+            return ltoFlashViewModel.CanExecuteCommand(CheckForFirmwareUpdateCommand);
+        }
+
+        #endregion // CheckForFirmwareUpdate Command
+
         /// <summary>
         /// Report firmware command errors to the user.
         /// </summary>
@@ -539,6 +574,7 @@ namespace INTV.LtoFlash.Commands
         {
             CommandList.Add(UpdateFirmwareCommand);
             CommandList.Add(RestoreFirmwareCommand);
+            CommandList.Add(CheckForFirmwareUpdateCommand);
             AddPlatformCommands();
         }
 

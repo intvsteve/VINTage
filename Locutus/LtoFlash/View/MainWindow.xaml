@@ -191,7 +191,7 @@
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="Steve Orth and "/>
                                     <TextBlock>
-                                        <Hyperlink NavigateUri="http://www.intvfunhouse.com"
+                                        <Hyperlink NavigateUri="https://www.intvfunhouse.com"
                                                    Command="{x:Static behaviors:ClickHyperlinkBehavior.ClickHyperlinkCommand}"
                                                    CommandParameter="{Binding Path=NavigateUri, RelativeSource={RelativeSource Self}}">
                                             INTV Funhouse
@@ -209,7 +209,7 @@
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
-                                <TextBlock HorizontalAlignment="Center" Text="are not affiliated with Intellivision Productions."/>
+                                <TextBlock HorizontalAlignment="Center" Text="are not affiliated with Intellivision Entertainment, LLC."/>
                                 <TextBlock HorizontalAlignment="Center" >
                                     <Hyperlink NavigateUri="{x:Static locutusViewModel:MainWindowViewModel.CreditsFilePath}"
                                                Command="{x:Static behaviors:ClickHyperlinkBehavior.ClickHyperlinkCommand}"
@@ -224,10 +224,10 @@
                             <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
                                 <TextBlock Text="of "/>
                                 <TextBlock>
-                                    <Hyperlink NavigateUri="http://www.intellivisionlives.com"
+                                    <Hyperlink NavigateUri="https://www.intellivisionentertainment.com"
                                                Command="{x:Static behaviors:ClickHyperlinkBehavior.ClickHyperlinkCommand}"
                                                CommandParameter="{Binding Path=NavigateUri, RelativeSource={RelativeSource Self}}">
-                                        Intellivision Productions, Inc.
+                                        Intellivision Entertainment, LLC.
                                     </Hyperlink>
                                 </TextBlock>
                             </StackPanel>

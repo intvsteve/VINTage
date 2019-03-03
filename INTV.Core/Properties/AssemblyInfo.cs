@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("INTVFunhouse")]
 [assembly: AssemblyProduct("VINTage")]
 [assembly: AssemblyCopyright("Copyright © INTV Funhouse 2013-" + INTV.VersionInfo.CurrentCopyrightYear)]
-[assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. Steve Orth and INTV Funhouse are not affiliated with Intellivision Productions.")]
+[assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Entertainment, LLC. Steve Orth and INTV Funhouse are not affiliated with Intellivision Entertainment, LLC.")]
 [assembly: AssemblyCulture("")]
 ////[assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.AuthorKey, "Steven A. Orth")]
 [assembly: NeutralResourcesLanguage("en")]

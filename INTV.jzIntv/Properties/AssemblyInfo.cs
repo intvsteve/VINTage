@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("INTVFunhouse")]
 [assembly: AssemblyProduct("VINTage")]
 [assembly: AssemblyCopyright("Copyright © INTV Funhouse 2013-" + INTV.VersionInfo.CurrentCopyrightYear)]
-[assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. Steve Orth and INTV Funhouse, and Joe Zbiciak and Left Turn Only, LLC are not affiliated with Intellivision Productions.")]
+[assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Entertainment, LLC. Steve Orth and INTV Funhouse, and Joe Zbiciak and Left Turn Only, LLC are not affiliated with Intellivision Entertainment, LLC.")]
 //// Stupid xp... .NET 4.5 or later required for AssemblyMetadataAttribute
 #if !WIN
 [assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.AuthorKey, "Steven A. Orth")]

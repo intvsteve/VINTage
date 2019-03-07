@@ -500,7 +500,7 @@ namespace INTV.LtoFlash.Model
 
         private DeviceStatusFlagsLo DeviceStatusFlagsLo
         {
-            get { return this.ComposeStatusFlags(); }
+            get { return this.ComposeStatusFlagsLo(); }
         }
 
         private DeviceStatusFlagsHi DeviceStatusFlagsHi { get; set; }
@@ -789,7 +789,7 @@ namespace INTV.LtoFlash.Model
         {
             if (sendToHardware)
             {
-                var newConfigurationLo = this.ComposeStatusFlags();
+                var newConfigurationLo = this.ComposeStatusFlagsLo();
                 if (newBackgroundGC)
                 {
                     newConfigurationLo |= DeviceStatusFlagsLo.BackgroundGC;
@@ -819,7 +819,7 @@ namespace INTV.LtoFlash.Model
         {
             if (sendToHardware)
             {
-                var newConfigurationLo = this.ComposeStatusFlags();
+                var newConfigurationLo = this.ComposeStatusFlagsLo();
                 if (newKeyclicks)
                 {
                     newConfigurationLo |= DeviceStatusFlagsLo.Keyclicks;

@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceStatusFlagsLo.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -380,7 +380,7 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         /// <param name="device">The <see cref="Device"/> from which a set of <see cref="DeviceStatusFlagsLo"/> is to be composed.</param>
         /// <returns>Status flags properly composed into <see cref="DeviceStatusFlagsLo"/>.</returns>
-        internal static DeviceStatusFlagsLo ComposeStatusFlags(this Device device)
+        internal static DeviceStatusFlagsLo ComposeStatusFlagsLo(this Device device)
         {
             var deviceStatusFlagsLo = (device.IntvIICompatibility | IntellivisionIIStatusFlags.ReservedMask).ToDeviceStatusFlagsLo() |
                                       (device.EcsCompatibility | EcsStatusFlags.ReservedMask).ToDeviceStatusFlagsLo() |

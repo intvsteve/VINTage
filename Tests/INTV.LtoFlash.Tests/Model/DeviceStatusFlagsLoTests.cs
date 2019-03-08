@@ -199,5 +199,28 @@ namespace INTV.LtoFlash.Tests.Model
 
             Assert.Equal(expectedBackgroundGC, actualBackgroundGC);
         }
+
+        public static IEnumerable<object[]> DeviceStatusFlagsLoToKeyclicksTestData
+        {
+            get
+            {
+                yield return new object[] { (object)DeviceStatusFlagsLo.None, (object)false };
+                for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
+                {
+                    var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
+                    var expectedKeyclicks = i == DeviceStatusFlagsLoHelpers.KeyclicksBitsOffset;
+                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedKeyclicks };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("DeviceStatusFlagsLoToKeyclicksTestData")]
+        public void DeviceStatusFlagsLo_ToKeyclicks_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, bool expectedKeyclicks)
+        {
+            var actualKeyclicks = statusFlagsLo.ToKeyclicks();
+
+            Assert.Equal(expectedKeyclicks, actualKeyclicks);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿// <copyright file="DeviceStatusFlagsLoTests.cs" company="INTV Funhouse">
+// <copyright file="DeviceStatusFlagsLoTests.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -53,6 +53,35 @@ namespace INTV.LtoFlash.Tests.Model
             var actualHardwareStatusFlags = statusFlagsLo.ToHardwareStatusFlags();
 
             Assert.Equal(expectedHardwareStatusFlags, actualHardwareStatusFlags);
+        }
+
+        public static IEnumerable<object[]> DeviceStatusFlagsLoToIntellivisionIIStatusFlagsTestData
+        {
+            get
+            {
+                yield return new object[] { (object)DeviceStatusFlagsLo.None, (object)IntellivisionIIStatusFlags.None };
+                for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
+                {
+                    var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
+                    var expectedIntellivisionIIFlags = IntellivisionIIStatusFlags.None;
+                    if ((i >= DeviceStatusFlagsLoHelpers.IntellivisionIIStatusBitsOffset) && (i < DeviceStatusFlagsLoHelpers.IntellivisionIIStatusBitsOffset + (sizeof(IntellivisionIIStatusFlags) * 8)))
+                    {
+                        expectedIntellivisionIIFlags = (IntellivisionIIStatusFlags)(1u << (i - DeviceStatusFlagsLoHelpers.IntellivisionIIStatusBitsOffset));
+                    }
+                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedIntellivisionIIFlags };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("DeviceStatusFlagsLoToIntellivisionIIStatusFlagsTestData")]
+        public void DeviceStatusFlagsLo_ToIntellivisionIICompatibilityFlags_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, IntellivisionIIStatusFlags expectedIntellivisionIIStatusFlags)
+        {
+            var actualIntellivisionIIStatusFlags = statusFlagsLo.ToIntellivisionIICompatibilityFlags();
+
+            // NOTE: Implementation currently suppresses the reserved bits. Replicate this here.
+            expectedIntellivisionIIStatusFlags &= ~IntellivisionIIStatusFlags.ReservedMask;
+            Assert.Equal(expectedIntellivisionIIStatusFlags, actualIntellivisionIIStatusFlags);
         }
     }
 }

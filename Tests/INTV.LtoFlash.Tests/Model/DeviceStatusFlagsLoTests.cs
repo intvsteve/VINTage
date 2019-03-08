@@ -176,5 +176,28 @@ namespace INTV.LtoFlash.Tests.Model
             }
             Assert.Equal(expectedSaveMenuPositionFlags, actualSaveMenuPositionFlags);
         }
+
+        public static IEnumerable<object[]> DeviceStatusFlagsLoToBackgroundGCTestData
+        {
+            get
+            {
+                yield return new object[] { (object)DeviceStatusFlagsLo.None, (object)false };
+                for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
+                {
+                    var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
+                    var expectedBackgroundGC = i == DeviceStatusFlagsLoHelpers.BackgroundGCBitsOffset;
+                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedBackgroundGC };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("DeviceStatusFlagsLoToBackgroundGCTestData")]
+        public void DeviceStatusFlagsLo_ToBackgroundGC_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, bool expectedBackgroundGC)
+        {
+            var actualBackgroundGC = statusFlagsLo.ToBackgroundGC();
+
+            Assert.Equal(expectedBackgroundGC, actualBackgroundGC);
+        }
     }
 }

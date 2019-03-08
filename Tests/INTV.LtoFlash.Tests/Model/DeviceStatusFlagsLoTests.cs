@@ -222,5 +222,28 @@ namespace INTV.LtoFlash.Tests.Model
 
             Assert.Equal(expectedKeyclicks, actualKeyclicks);
         }
+
+        public static IEnumerable<object[]> DeviceStatusFlagsLoToEnableOnboardConfigMenuTestData
+        {
+            get
+            {
+                yield return new object[] { (object)DeviceStatusFlagsLo.None, (object)false };
+                for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
+                {
+                    var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
+                    var expectedEnableOnboardConfigMenu = i == DeviceStatusFlagsLoHelpers.EnableCartConfigBitsOffset;
+                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedEnableOnboardConfigMenu };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("DeviceStatusFlagsLoToEnableOnboardConfigMenuTestData")]
+        public void DeviceStatusFlagsLo_ToEnableOnboardConfigMenu_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, bool expectedEnableOnboardConfigMenu)
+        {
+            var actualEnableOnboardConfigMenu = statusFlagsLo.ToEnableOnboardConfigMenu();
+
+            Assert.Equal(expectedEnableOnboardConfigMenu, actualEnableOnboardConfigMenu);
+        }
     }
 }

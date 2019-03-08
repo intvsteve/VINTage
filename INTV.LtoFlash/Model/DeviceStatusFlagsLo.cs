@@ -162,6 +162,15 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Keyclicks
 
+        #region Configuration Menu on Cartridge
+
+        /// <summary>
+        /// When set, the configuration menu on the cartridge can be accessed - which is the default.
+        /// </summary>
+        EnableCartConfig = 1ul << DeviceStatusFlagsLoHelpers.EnableCartConfigBitsOffset,
+
+        #endregion // Configuration Menu on Cartridge
+
         /// <summary>
         /// This mask captures all reserved status bits.
         /// </summary>
@@ -259,6 +268,17 @@ namespace INTV.LtoFlash.Model
         private const int KeyclicksBitCount = 1;
 
         #endregion // Keyclicks Bits
+
+        #region Enable Cartridge Configuration Menu Bits
+
+        /// <summary>
+        /// Location in the bit array where the bit to enable or disable on-cartridge configuration menu is set.
+        /// </summary>
+        internal const int EnableCartConfigBitsOffset = KeyclicksBitsOffset + KeyclicksBitCount; // (54)
+
+        private const int EnableCartConfigBitCount = 1;
+
+        #endregion // Enable Cartridge Configuration Menu Bits
 
         #endregion // User-Configurable Flags
 
@@ -362,6 +382,17 @@ namespace INTV.LtoFlash.Model
         {
             var keyclicks = deviceStatusLo.HasFlag(DeviceStatusFlagsLo.Keyclicks);
             return keyclicks;
+        }
+
+        /// <summary>
+        /// Gets whether the on-cartridge configuration menu can be accessed out of <see cref="DeviceStatusFlagsLo"/>;.
+        /// </summary>
+        /// <param name="deviceStatusLo">The device status flags to get the onboard configuration menu access from.</param>
+        /// <returns>If <c>true</c>, onboard configuration menu can be accessed.</returns>
+        internal static bool ToEnableOnboardConfigMenu(this DeviceStatusFlagsLo deviceStatusLo)
+        {
+            var enableOnboardConfigMenu = deviceStatusLo.HasFlag(DeviceStatusFlagsLo.EnableCartConfig);
+            return enableOnboardConfigMenu;
         }
 
         /// <summary>

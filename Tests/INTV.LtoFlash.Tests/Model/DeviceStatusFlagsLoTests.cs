@@ -144,5 +144,37 @@ namespace INTV.LtoFlash.Tests.Model
             }
             Assert.Equal(expectedShowTitleScreenFlags, actualShowTitleScreenFlags);
         }
+
+        public static IEnumerable<object[]> DeviceStatusFlagsLoToSaveMenuPositionFlagsTestData
+        {
+            get
+            {
+                yield return new object[] { (object)DeviceStatusFlagsLo.None, (object)SaveMenuPositionFlags.Never };
+                for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
+                {
+                    var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
+                    var expectedSaveMenuPositionFlags = SaveMenuPositionFlags.Never;
+                    if ((i >= DeviceStatusFlagsLoHelpers.SaveMenuPositionBitsOffset) && (i < DeviceStatusFlagsLoHelpers.SaveMenuPositionBitsOffset + 2))
+                    {
+                        expectedSaveMenuPositionFlags = (SaveMenuPositionFlags)(1u << (i - DeviceStatusFlagsLoHelpers.SaveMenuPositionBitsOffset));
+                    }
+                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedSaveMenuPositionFlags };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("DeviceStatusFlagsLoToSaveMenuPositionFlagsTestData")]
+        public void DeviceStatusFlagsLo_ToSaveMenuPositionFlags_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, SaveMenuPositionFlags expectedSaveMenuPositionFlags)
+        {
+            var actualSaveMenuPositionFlags = statusFlagsLo.ToSaveMenuPositionFlags();
+
+            // NOTE: Implementation coerces 'reserved' to during session only'. Replicate this here.
+            if (expectedSaveMenuPositionFlags == SaveMenuPositionFlags.Reserved)
+            {
+                expectedSaveMenuPositionFlags = SaveMenuPositionFlags.DuringSessionOnly;
+            }
+            Assert.Equal(expectedSaveMenuPositionFlags, actualSaveMenuPositionFlags);
+        }
     }
 }

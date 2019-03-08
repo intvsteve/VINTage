@@ -83,5 +83,34 @@ namespace INTV.LtoFlash.Tests.Model
             expectedIntellivisionIIStatusFlags &= ~IntellivisionIIStatusFlags.ReservedMask;
             Assert.Equal(expectedIntellivisionIIStatusFlags, actualIntellivisionIIStatusFlags);
         }
+
+        public static IEnumerable<object[]> DeviceStatusFlagsLoToEcsStatusFlagsTestData
+        {
+            get
+            {
+                yield return new object[] { (object)DeviceStatusFlagsLo.None, (object)EcsStatusFlags.None };
+                for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
+                {
+                    var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
+                    var expectedEcsFlags = EcsStatusFlags.None;
+                    if ((i >= DeviceStatusFlagsLoHelpers.EcsStatusBitsOffset) && (i < DeviceStatusFlagsLoHelpers.EcsStatusBitsOffset + (sizeof(EcsStatusFlags) * 8)))
+                    {
+                        expectedEcsFlags = (EcsStatusFlags)(1u << (i - DeviceStatusFlagsLoHelpers.EcsStatusBitsOffset));
+                    }
+                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedEcsFlags };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("DeviceStatusFlagsLoToEcsStatusFlagsTestData")]
+        public void DeviceStatusFlagsLo_ToEcsCompatibilityFlags_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, EcsStatusFlags expectedEcsStatusFlags)
+        {
+            var actualEcsStatusFlags = statusFlagsLo.ToEcsCompatibilityFlags();
+
+            // NOTE: Implementation currently suppresses the reserved bits. Replicate this here.
+            expectedEcsStatusFlags &= ~EcsStatusFlags.ReservedMask;
+            Assert.Equal(expectedEcsStatusFlags, actualEcsStatusFlags);
+        }
     }
 }

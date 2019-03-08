@@ -171,6 +171,15 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Configuration Menu on Cartridge
 
+        #region Zero JLP RAM on Program Launch
+
+        /// <summary>
+        /// When set, the RAM for programs using JLP additional RAM is zeroed - which is the default. Otherwise, it is randomized.
+        /// </summary>
+        ZeroJlpRam = 1ul << DeviceStatusFlagsLoHelpers.ZeroJlpRamBitsOffset,
+
+        #endregion // Zero JLP RAM on Program Launch
+
         /// <summary>
         /// This mask captures all reserved status bits.
         /// </summary>
@@ -279,6 +288,17 @@ namespace INTV.LtoFlash.Model
         private const int EnableCartConfigBitCount = 1;
 
         #endregion // Enable Cartridge Configuration Menu Bits
+
+        #region Zero JLP RAM
+
+        /// <summary>
+        /// Location in the bit array where the bit to enable or disable on-cartridge JLP RAM randomization / zeroing is set.
+        /// </summary>
+        internal const int ZeroJlpRamBitsOffset = EnableCartConfigBitsOffset + EnableCartConfigBitCount; // (55)
+
+        private const int ZerJlpRamBitCount = 1;
+
+        #endregion // Zero JLP RAM
 
         #endregion // User-Configurable Flags
 
@@ -393,6 +413,17 @@ namespace INTV.LtoFlash.Model
         {
             var enableOnboardConfigMenu = deviceStatusLo.HasFlag(DeviceStatusFlagsLo.EnableCartConfig);
             return enableOnboardConfigMenu;
+        }
+
+        /// <summary>
+        /// Gets whether the on-cartridge JLP RAM is zeroed out or randomized out of <see cref="DeviceStatusFlagsLo"/>;.
+        /// </summary>
+        /// <param name="deviceStatusLo">The device status flags to get the JLP RAM zeroing setting from.</param>
+        /// <returns>If <c>true</c>, onboard JLP RAM is initialized to zero on program launch, otherwise it is randomized.</returns>
+        internal static bool ToZeroJlpRam(this DeviceStatusFlagsLo deviceStatusLo)
+        {
+            var zeroJlpRam = deviceStatusLo.HasFlag(DeviceStatusFlagsLo.ZeroJlpRam);
+            return zeroJlpRam;
         }
 
         /// <summary>

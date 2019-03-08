@@ -245,5 +245,28 @@ namespace INTV.LtoFlash.Tests.Model
 
             Assert.Equal(expectedEnableOnboardConfigMenu, actualEnableOnboardConfigMenu);
         }
+
+        public static IEnumerable<object[]> DeviceStatusFlagsLoToZeroJlpRamTestData
+        {
+            get
+            {
+                yield return new object[] { (object)DeviceStatusFlagsLo.None, (object)false };
+                for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
+                {
+                    var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
+                    var expectedZeroJlpRam = i == DeviceStatusFlagsLoHelpers.ZeroJlpRamBitsOffset;
+                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedZeroJlpRam };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("DeviceStatusFlagsLoToZeroJlpRamTestData")]
+        public void DeviceStatusFlagsLo_ToZeroJlpRam_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, bool expectedZeroJlpRam)
+        {
+            var actualZeroJlpRam = statusFlagsLo.ToZeroJlpRam();
+
+            Assert.Equal(expectedZeroJlpRam, actualZeroJlpRam);
+        }
     }
 }

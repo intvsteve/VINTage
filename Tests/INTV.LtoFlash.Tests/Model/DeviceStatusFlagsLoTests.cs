@@ -112,5 +112,37 @@ namespace INTV.LtoFlash.Tests.Model
             expectedEcsStatusFlags &= ~EcsStatusFlags.ReservedMask;
             Assert.Equal(expectedEcsStatusFlags, actualEcsStatusFlags);
         }
+
+        public static IEnumerable<object[]> DeviceStatusFlagsLoToShowTitleScreenFlagsTestData
+        {
+            get
+            {
+                yield return new object[] { (object)DeviceStatusFlagsLo.None, (object)ShowTitleScreenFlags.Never };
+                for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
+                {
+                    var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
+                    var expectedShowTitleScreenFlags = ShowTitleScreenFlags.Never;
+                    if ((i >= DeviceStatusFlagsLoHelpers.ShowTitleScreenBitsOffset) && (i < DeviceStatusFlagsLoHelpers.ShowTitleScreenBitsOffset + 2))
+                    {
+                        expectedShowTitleScreenFlags = (ShowTitleScreenFlags)(1u << (i - DeviceStatusFlagsLoHelpers.ShowTitleScreenBitsOffset));
+                    }
+                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedShowTitleScreenFlags };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("DeviceStatusFlagsLoToShowTitleScreenFlagsTestData")]
+        public void DeviceStatusFlagsLo_ToShowTitleScreenFlags_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, ShowTitleScreenFlags expectedShowTitleScreenFlags)
+        {
+            var actualShowTitleScreenFlags = statusFlagsLo.ToShowTitleScreenFlags();
+
+            // NOTE: Implementation coerces 'reserved' to 'on power up'. Replicate this here.
+            if (expectedShowTitleScreenFlags == ShowTitleScreenFlags.Reserved)
+            {
+                expectedShowTitleScreenFlags = ShowTitleScreenFlags.OnPowerUp;
+            }
+            Assert.Equal(expectedShowTitleScreenFlags, actualShowTitleScreenFlags);
+        }
     }
 }

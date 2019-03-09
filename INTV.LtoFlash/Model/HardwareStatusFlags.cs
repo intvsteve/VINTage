@@ -1,5 +1,5 @@
 ﻿// <copyright file="HardwareStatusFlags.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -34,22 +34,29 @@ namespace INTV.LtoFlash.Model
         /// <summary>
         /// When set, indicates that Locutus is plugged into an Intellivision console that is in the powered on state.
         /// </summary>
-        ConsolePowerOn = 1 << 0,
+        ConsolePowerOn = 1u << 0,
 
         /// <summary>
         /// When set, indicates that a new error log is available on the device.
         /// </summary>
         /// <remarks>NOTE: This is only available in firmware 1438 and later.</remarks>
-        NewErrorLogAvailable = 1 << 1,
+        NewErrorLogAvailable = 1u << 1,
 
         /// <summary>
         /// When set, indicates that a crash log is available on the device.
         /// </summary>
         /// <remarks>NOTE: This is only available in firmware 1438 and later.</remarks>
-        NewCrashLogAvailable = 1 << 2,
+        NewCrashLogAvailable = 1u << 2,
 
         /// <summary>
-        /// This mask indentifies which hardware status flags are reserved for future use.
+        /// When set, indicates that a powered-on console has been instructed to allow updating the file system
+        /// via the serial port.
+        /// </summary>
+        /// <remarks>Not implemented.</remarks>
+        GrabbedForMenuUpdate = 1u << 3,
+
+        /// <summary>
+        /// This mask identifies which hardware status flags are reserved for future use.
         /// </summary>
         ReservedMask = 0xFFFFFFF8,
 

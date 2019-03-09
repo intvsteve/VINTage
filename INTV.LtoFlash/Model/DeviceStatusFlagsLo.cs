@@ -1,4 +1,4 @@
-// <copyright file="DeviceStatusFlagsLo.cs" company="INTV Funhouse">
+﻿// <copyright file="DeviceStatusFlagsLo.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -340,7 +340,7 @@ namespace INTV.LtoFlash.Model
         /// <returns>The ECS flags.</returns>
         internal static EcsStatusFlags ToEcsCompatibilityFlags(this DeviceStatusFlagsLo deviceStatusLo)
         {
-            var ecsFlags = (EcsStatusFlags)((ulong)(deviceStatusLo & (DeviceStatusFlagsLo.EcsStatusMask ^ DeviceStatusFlagsLo.EcsStatusReservedMask)) >> EcsStatusBitsOffset);
+            var ecsFlags = (EcsStatusFlags)((ulong)(deviceStatusLo & DeviceStatusFlagsLo.EcsStatusMask) >> EcsStatusBitsOffset);
 
             // If all the flags are set, we must be connected to a new, uninitialized device.
             // Set the flags to the default.
@@ -349,7 +349,7 @@ namespace INTV.LtoFlash.Model
             {
                 ecsFlags = EcsStatusFlags.Default;
             }
-            return ecsFlags;
+            return ecsFlags & ~EcsStatusFlags.ReservedMask;
         }
 
         /// <summary>

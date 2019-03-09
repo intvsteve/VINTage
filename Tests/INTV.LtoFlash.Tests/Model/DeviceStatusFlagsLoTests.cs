@@ -124,6 +124,16 @@ namespace INTV.LtoFlash.Tests.Model
             Assert.Equal(expectedEcsStatusFlags, actualEcsStatusFlags);
         }
 
+        [Theory]
+        [InlineData((DeviceStatusFlagsLo)0xFFFFFFFFFFFFFFFF, EcsStatusFlags.Default)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusMask, EcsStatusFlags.Default)]
+        public void DeviceStatusFlagsLo_AllEcsFlagsToEcsCompatibiltyFlags_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, EcsStatusFlags expectedEcsStatusFlags)
+        {
+            var actualEcsStatusFlags = statusFlagsLo.ToEcsCompatibilityFlags();
+
+            Assert.Equal(expectedEcsStatusFlags, actualEcsStatusFlags);
+        }
+
         public static IEnumerable<object[]> DeviceStatusFlagsLoToShowTitleScreenFlagsTestData
         {
             get

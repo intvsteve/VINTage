@@ -320,7 +320,7 @@ namespace INTV.LtoFlash.Model
         /// <returns>The Intellivision II flags.</returns>
         internal static IntellivisionIIStatusFlags ToIntellivisionIICompatibilityFlags(this DeviceStatusFlagsLo deviceStatusLo)
         {
-            var intellivisionIIFlags = (IntellivisionIIStatusFlags)((ulong)(deviceStatusLo & (DeviceStatusFlagsLo.IntellivisionIIStatusMask ^ DeviceStatusFlagsLo.IntellivisionIIStatusReservedMask)) >> IntellivisionIIStatusBitsOffset);
+            var intellivisionIIFlags = (IntellivisionIIStatusFlags)((ulong)(deviceStatusLo & DeviceStatusFlagsLo.IntellivisionIIStatusMask) >> IntellivisionIIStatusBitsOffset);
 
             // For Intellivision II, there are only three valid values. If both 'Conservative' and 'Aggressive' are
             // set, treat it as 'Aggressive'. Or, if the flags are all set, it's an uninitialized, new device
@@ -330,7 +330,7 @@ namespace INTV.LtoFlash.Model
             {
                 intellivisionIIFlags = IntellivisionIIStatusFlags.Default;
             }
-            return intellivisionIIFlags;
+            return intellivisionIIFlags & ~IntellivisionIIStatusFlags.ReservedMask;
         }
 
         /// <summary>

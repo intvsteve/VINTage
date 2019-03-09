@@ -84,6 +84,17 @@ namespace INTV.LtoFlash.Tests.Model
             Assert.Equal(expectedIntellivisionIIStatusFlags, actualIntellivisionIIStatusFlags);
         }
 
+        [Theory]
+        [InlineData((DeviceStatusFlagsLo)0xFFFFFFFFFFFFFFFF, IntellivisionIIStatusFlags.Default)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusMask, IntellivisionIIStatusFlags.Default)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive | DeviceStatusFlagsLo.IntellivisionIIStatusConservative, IntellivisionIIStatusFlags.Default)]
+        public static void DeviceStatusFlagsLo_MultipleFlagsSetToIntellivisionIICompatibiltyFlags_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, IntellivisionIIStatusFlags expectedIntellivisionIIStatusFlags)
+        {
+            var actualIntellivisionIIStatusFlags = statusFlagsLo.ToIntellivisionIICompatibilityFlags();
+
+            Assert.Equal(expectedIntellivisionIIStatusFlags, actualIntellivisionIIStatusFlags);
+        }
+
         public static IEnumerable<object[]> DeviceStatusFlagsLoToEcsStatusFlagsTestData
         {
             get

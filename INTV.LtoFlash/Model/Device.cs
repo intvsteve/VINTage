@@ -1,4 +1,4 @@
-﻿// <copyright file="Device.cs" company="INTV Funhouse">
+// <copyright file="Device.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -273,7 +273,7 @@ namespace INTV.LtoFlash.Model
         public EcsStatusFlags EcsCompatibility
         {
             get { return _ecsCompatibility; }
-            set { AssignAndUpdateProperty(EcsCompatibilityPropertyName, value, ref _ecsCompatibility, (p, v) => UpdateEcsConfiguration(v, true)); }
+            set { AssignAndUpdateProperty(EcsCompatibilityPropertyName, value, ref _ecsCompatibility, (p, v) => UpdateEcsConfiguration(v, sendToHardware: true)); }
         }
         private EcsStatusFlags _ecsCompatibility;
 
@@ -283,7 +283,7 @@ namespace INTV.LtoFlash.Model
         public IntellivisionIIStatusFlags IntvIICompatibility
         {
             get { return _intvIICompatibility; }
-            set { AssignAndUpdateProperty(IntvIICompatibilityPropertyName, value, ref _intvIICompatibility, (p, v) => UpdateIntellivisionIIConfiguration(v, true)); }
+            set { AssignAndUpdateProperty(IntvIICompatibilityPropertyName, value, ref _intvIICompatibility, (p, v) => UpdateIntellivisionIIConfiguration(v, sendToHardware: true)); }
         }
         private IntellivisionIIStatusFlags _intvIICompatibility;
 
@@ -293,7 +293,7 @@ namespace INTV.LtoFlash.Model
         public ShowTitleScreenFlags ShowTitleScreen
         {
             get { return _showTitleScreen; }
-            set { AssignAndUpdateProperty(ShowTitleScreenPropertyName, value, ref _showTitleScreen, (p, v) => UpdateShowTitleScreen(v, true)); }
+            set { AssignAndUpdateProperty(ShowTitleScreenPropertyName, value, ref _showTitleScreen, (p, v) => UpdateShowTitleScreen(v, sendToHardware: true)); }
         }
         private ShowTitleScreenFlags _showTitleScreen;
 
@@ -303,7 +303,7 @@ namespace INTV.LtoFlash.Model
         public SaveMenuPositionFlags SaveMenuPosition
         {
             get { return _saveMenuPosition; }
-            set { AssignAndUpdateProperty(SaveMenuPositionPropertyName, value, ref _saveMenuPosition, (p, v) => UpdateSaveMenuPosition(v, true)); }
+            set { AssignAndUpdateProperty(SaveMenuPositionPropertyName, value, ref _saveMenuPosition, (p, v) => UpdateSaveMenuPosition(v, sendToHardware: true)); }
         }
         private SaveMenuPositionFlags _saveMenuPosition;
 
@@ -313,7 +313,7 @@ namespace INTV.LtoFlash.Model
         public bool BackgroundGC
         {
             get { return _backgroundGC; }
-            set { AssignAndUpdateProperty(BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => UpdateBackgroundGC(v, true)); }
+            set { AssignAndUpdateProperty(BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => UpdateBackgroundGC(v, sendToHardware: true)); }
         }
         private bool _backgroundGC;
 
@@ -323,7 +323,7 @@ namespace INTV.LtoFlash.Model
         public bool Keyclicks
         {
             get { return _keyclicks; }
-            set { AssignAndUpdateProperty(KeyclicksPropertyName, value, ref _keyclicks, (p, v) => UpdateKeyclicks(v, true)); }
+            set { AssignAndUpdateProperty(KeyclicksPropertyName, value, ref _keyclicks, (p, v) => UpdateKeyclicks(v, sendToHardware: true)); }
         }
         private bool _keyclicks;
 
@@ -1315,12 +1315,12 @@ namespace INTV.LtoFlash.Model
             }
             UpdateUniqueId(newUniqueId);
             UpdateHardwareFlags(newHardwareStatus);
-            UpdateIntellivisionIIConfiguration(newIntyIIStatus, false);
-            UpdateEcsConfiguration(newEcsStatus, false);
-            UpdateShowTitleScreen(newShowTitleScreenStatus, false);
-            UpdateSaveMenuPosition(newSaveMenuPositionStatus, false);
-            UpdateBackgroundGC(newBackgroundGCStatus, false);
-            UpdateKeyclicks(newKeyclicksStatus, false);
+            UpdateIntellivisionIIConfiguration(newIntyIIStatus, sendToHardware: false);
+            UpdateEcsConfiguration(newEcsStatus, sendToHardware: false);
+            UpdateShowTitleScreen(newShowTitleScreenStatus, sendToHardware: false);
+            UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
+            UpdateBackgroundGC(newBackgroundGCStatus, sendToHardware: false);
+            UpdateKeyclicks(newKeyclicksStatus, sendToHardware: false);
             DeviceStatusFlagsHi = newDeviceStatusFlagsHigh;
         }
 

@@ -1,4 +1,4 @@
-// <copyright file="Device.cs" company="INTV Funhouse">
+﻿// <copyright file="Device.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -211,6 +211,7 @@ namespace INTV.LtoFlash.Model
             _keyclicks = false;
             _backgroundGC = true;
             _saveMenuPosition = SaveMenuPositionFlags.Default;
+            ReservedDeviceStatusFlagsLo = DeviceStatusFlagsLo.ReservedMask; // these are presumed set by default
             DeviceStatusFlagsHi = DeviceStatusFlagsHi.Default;
             UpdateFileSystemStatsDuringHeartbeat = Properties.Settings.Default.ShowFileSystemDetails;
         }
@@ -498,10 +499,11 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         internal bool UpdateFileSystemStatsDuringHeartbeat { get; set; }
 
-        private DeviceStatusFlagsLo DeviceStatusFlagsLo
-        {
-            get { return this.ComposeStatusFlagsLo(); }
-        }
+        /// <summary>
+        /// Gets or sets reserved status flags from the low 64 bits of the status.
+        /// </summary>
+        /// <remarks>These are preserved as-is in case firmware is using them and the UI is not in sync with it regarding features related thereto.</remarks>
+        internal DeviceStatusFlagsLo ReservedDeviceStatusFlagsLo { get; set; }
 
         private DeviceStatusFlagsHi DeviceStatusFlagsHi { get; set; }
 
@@ -837,6 +839,18 @@ namespace INTV.LtoFlash.Model
                     _keyclicks = newKeyclicks;
                     RaisePropertyChanged(KeyclicksPropertyName);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Updates the reserved status flags.
+        /// </summary>
+        /// <param name="newReservedDeviceStatusFlagsLo"></param>
+        internal void UpdateReservedDeviceStatusFlagsLo(DeviceStatusFlagsLo newReservedDeviceStatusFlagsLo)
+        {
+            if (ReservedDeviceStatusFlagsLo != newReservedDeviceStatusFlagsLo)
+            {
+                ReservedDeviceStatusFlagsLo = newReservedDeviceStatusFlagsLo;
             }
         }
 
@@ -1300,6 +1314,7 @@ namespace INTV.LtoFlash.Model
             var newSaveMenuPositionStatus = SaveMenuPosition;
             var newKeyclicksStatus = Keyclicks;
             var newBackgroundGCStatus = BackgroundGC;
+            var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
             var newDeviceStatusFlagsHigh = DeviceStatusFlagsHi;
             if (newDeviceStatus != null)
             {
@@ -1311,6 +1326,7 @@ namespace INTV.LtoFlash.Model
                 newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
                 newKeyclicksStatus = newDeviceStatus.Keyclicks;
                 newBackgroundGCStatus = newDeviceStatus.BackgroundGC;
+                newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusLow & DeviceStatusFlagsLo.ReservedMask;
                 newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusHigh;
             }
             UpdateUniqueId(newUniqueId);
@@ -1321,6 +1337,7 @@ namespace INTV.LtoFlash.Model
             UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
             UpdateBackgroundGC(newBackgroundGCStatus, sendToHardware: false);
             UpdateKeyclicks(newKeyclicksStatus, sendToHardware: false);
+            UpdateReservedDeviceStatusFlagsLo(newReservedDeviceStatusFlagsLo);
             DeviceStatusFlagsHi = newDeviceStatusFlagsHigh;
         }
 

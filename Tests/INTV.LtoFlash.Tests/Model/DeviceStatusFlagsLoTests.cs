@@ -18,9 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using INTV.LtoFlash.Model;
 using Xunit;
 
@@ -28,6 +26,8 @@ namespace INTV.LtoFlash.Tests.Model
 {
     public class DeviceStatusFlagsLoTests
     {
+        #region Individual Hardware Status Flag Tests
+
         public static IEnumerable<object[]> DeviceStatusFlagsLoToHardwareStatusFlagsTestData
         {
             get
@@ -54,6 +54,10 @@ namespace INTV.LtoFlash.Tests.Model
 
             Assert.Equal(expectedHardwareStatusFlags, actualHardwareStatusFlags);
         }
+
+        #endregion // Individual Hardware Status Flag Tests
+
+        #region Individual Intellivision II Compatibility Flag Tests
 
         public static IEnumerable<object[]> DeviceStatusFlagsLoToIntellivisionIIStatusFlagsTestData
         {
@@ -88,12 +92,16 @@ namespace INTV.LtoFlash.Tests.Model
         [InlineData((DeviceStatusFlagsLo)0xFFFFFFFFFFFFFFFF, IntellivisionIIStatusFlags.Default)]
         [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusMask, IntellivisionIIStatusFlags.Default)]
         [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive | DeviceStatusFlagsLo.IntellivisionIIStatusConservative, IntellivisionIIStatusFlags.Default)]
-        public static void DeviceStatusFlagsLo_MultipleFlagsSetToIntellivisionIICompatibiltyFlags_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, IntellivisionIIStatusFlags expectedIntellivisionIIStatusFlags)
+        public void DeviceStatusFlagsLo_MultipleFlagsSetToIntellivisionIICompatibiltyFlags_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, IntellivisionIIStatusFlags expectedIntellivisionIIStatusFlags)
         {
             var actualIntellivisionIIStatusFlags = statusFlagsLo.ToIntellivisionIICompatibilityFlags();
 
             Assert.Equal(expectedIntellivisionIIStatusFlags, actualIntellivisionIIStatusFlags);
         }
+
+        #endregion // Individual Intellivision II Compatibility Flag Tests
+
+        #region Individual ECS Compatibility Flag Tests
 
         public static IEnumerable<object[]> DeviceStatusFlagsLoToEcsStatusFlagsTestData
         {
@@ -134,6 +142,10 @@ namespace INTV.LtoFlash.Tests.Model
             Assert.Equal(expectedEcsStatusFlags, actualEcsStatusFlags);
         }
 
+        #endregion // Individual ECS Compatibility Flag Tests
+
+        #region Show Title Screen Flags Tests
+
         public static IEnumerable<object[]> DeviceStatusFlagsLoToShowTitleScreenFlagsTestData
         {
             get
@@ -165,6 +177,10 @@ namespace INTV.LtoFlash.Tests.Model
             }
             Assert.Equal(expectedShowTitleScreenFlags, actualShowTitleScreenFlags);
         }
+
+        #endregion // Show Title Screen Flags Tests
+
+        #region Save Menu Position Flags Tests
 
         public static IEnumerable<object[]> DeviceStatusFlagsLoToSaveMenuPositionFlagsTestData
         {
@@ -198,6 +214,10 @@ namespace INTV.LtoFlash.Tests.Model
             Assert.Equal(expectedSaveMenuPositionFlags, actualSaveMenuPositionFlags);
         }
 
+        #endregion // Save Menu Position Flags Tests
+
+        #region Background Garbage Collect Flag Tests
+
         public static IEnumerable<object[]> DeviceStatusFlagsLoToBackgroundGCTestData
         {
             get
@@ -220,6 +240,10 @@ namespace INTV.LtoFlash.Tests.Model
 
             Assert.Equal(expectedBackgroundGC, actualBackgroundGC);
         }
+
+        #endregion // Background Garbage Collect Flag Tests
+
+        #region Keyclicks Flag Tests
 
         public static IEnumerable<object[]> DeviceStatusFlagsLoToKeyclicksTestData
         {
@@ -244,6 +268,10 @@ namespace INTV.LtoFlash.Tests.Model
             Assert.Equal(expectedKeyclicks, actualKeyclicks);
         }
 
+        #endregion // Keyclicks Flag Tests
+
+        #region Enable Onboard Configuration Menu Flag Tests
+
         public static IEnumerable<object[]> DeviceStatusFlagsLoToEnableOnboardConfigMenuTestData
         {
             get
@@ -267,6 +295,10 @@ namespace INTV.LtoFlash.Tests.Model
             Assert.Equal(expectedEnableOnboardConfigMenu, actualEnableOnboardConfigMenu);
         }
 
+        #endregion // Enable Onboard Configuration Menu Flag Tests
+
+        #region Enable JLP RAM Zeroing Flag Tests
+
         public static IEnumerable<object[]> DeviceStatusFlagsLoToZeroJlpRamTestData
         {
             get
@@ -289,5 +321,7 @@ namespace INTV.LtoFlash.Tests.Model
 
             Assert.Equal(expectedZeroJlpRam, actualZeroJlpRam);
         }
+
+        #endregion // Enable JLP RAM Zeroing Flag Tests
     }
 }

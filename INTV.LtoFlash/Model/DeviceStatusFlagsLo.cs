@@ -1,4 +1,4 @@
-﻿// <copyright file="DeviceStatusFlagsLo.cs" company="INTV Funhouse">
+// <copyright file="DeviceStatusFlagsLo.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -41,7 +41,7 @@ namespace INTV.LtoFlash.Model
         HardwareStatusFlagsMask = (ulong)HardwareStatusFlags.AllFlags << DeviceStatusFlagsLoHelpers.HardwareFlagsOffset,
 
         /// <summary>
-        /// This mask indentifies which hardware status flags are reserved for future use.
+        /// This mask identifies which hardware status flags are reserved for future use.
         /// </summary>
         HardwareStatusFlagsReservedMask = (ulong)HardwareStatusFlags.ReservedMask << DeviceStatusFlagsLoHelpers.HardwareFlagsOffset,
 

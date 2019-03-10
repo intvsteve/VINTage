@@ -323,5 +323,17 @@ namespace INTV.LtoFlash.Tests.Model
         }
 
         #endregion // Enable JLP RAM Zeroing Flag Tests
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, 0u)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, 0u)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.IntellivisionIIStatusAggressive | DeviceStatusFlagsLo.ConsolePowerOn, 0x00200002u)]
+        [InlineData(DeviceStatusFlagsLo.ZeroJlpRam | (DeviceStatusFlagsLo)0x8000000000000000ul | DeviceStatusFlagsLo.SaveMenuPositionMask | DeviceStatusFlagsLo.EcsStatusDisabled, 0x808C0300u)]
+        public void DeviceStatusFlagsLo_ToConfigurationFlags_ReturnsExpectedBits(DeviceStatusFlagsLo statusFlagsLo, uint expectedConfigurationBits)
+        {
+            var actualConfigurationBits = statusFlagsLo.ToConfigurationFlags();
+
+            Assert.Equal(expectedConfigurationBits, actualConfigurationBits);
+        }
     }
 }

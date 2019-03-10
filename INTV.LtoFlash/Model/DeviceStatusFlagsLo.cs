@@ -433,7 +433,7 @@ namespace INTV.LtoFlash.Model
         /// <returns>The configuration flags.</returns>
         internal static uint ToConfigurationFlags(this DeviceStatusFlagsLo deviceStatusLo)
         {
-            var flags = (ulong)(deviceStatusLo | DeviceStatusFlagsLo.ReservedMask) & ConfigurableFlagsMask;
+            var flags = (ulong)deviceStatusLo & ConfigurableFlagsMask;
             return (uint)(((ulong)flags >> ConfigurableFlagsOffset) & 0x00000000FFFFFFFF);
         }
 
@@ -444,10 +444,11 @@ namespace INTV.LtoFlash.Model
         /// <returns>Status flags properly composed into <see cref="DeviceStatusFlagsLo"/>.</returns>
         internal static DeviceStatusFlagsLo ComposeStatusFlagsLo(this Device device)
         {
-            var deviceStatusFlagsLo = (device.IntvIICompatibility | IntellivisionIIStatusFlags.ReservedMask).ToDeviceStatusFlagsLo() |
-                                      (device.EcsCompatibility | EcsStatusFlags.ReservedMask).ToDeviceStatusFlagsLo() |
-                                       device.ShowTitleScreen.ToDeviceStatusFlagsLo() | device.SaveMenuPosition.ToDeviceStatusFlagsLo() |
-                                      (device.HardwareStatus | HardwareStatusFlags.ReservedMask).ToDeviceStatusFlagsLo();
+            var deviceStatusFlagsLo = device.IntvIICompatibility.ToDeviceStatusFlagsLo()
+                | device.EcsCompatibility.ToDeviceStatusFlagsLo()
+                | device.ShowTitleScreen.ToDeviceStatusFlagsLo()
+                | device.SaveMenuPosition.ToDeviceStatusFlagsLo()
+                | device.HardwareStatus.ToDeviceStatusFlagsLo();
             if (device.BackgroundGC)
             {
                 deviceStatusFlagsLo |= DeviceStatusFlagsLo.BackgroundGC;
@@ -456,6 +457,7 @@ namespace INTV.LtoFlash.Model
             {
                 deviceStatusFlagsLo |= DeviceStatusFlagsLo.Keyclicks;
             }
+            deviceStatusFlagsLo |= device.ReservedDeviceStatusFlagsLo;
             return deviceStatusFlagsLo;
         }
     }

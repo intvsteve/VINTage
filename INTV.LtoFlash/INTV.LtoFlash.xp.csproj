@@ -702,6 +702,7 @@
     <Resource Include="Resources\Images\save_menu_position_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\randomize_jlp_ram_16xLG.png" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />
     <Resource Include="Resources\Images\document_devicespecific_Black_16xLG.png" />
     <Resource Include="Resources\Images\document_devicespecific_Blue_16xLG.png" />

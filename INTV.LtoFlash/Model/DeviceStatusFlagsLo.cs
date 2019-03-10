@@ -457,6 +457,10 @@ namespace INTV.LtoFlash.Model
             {
                 deviceStatusFlagsLo |= DeviceStatusFlagsLo.Keyclicks;
             }
+            if (device.ZeroJlpRam)
+            {
+                deviceStatusFlagsLo |= DeviceStatusFlagsLo.ZeroJlpRam;
+            }
             deviceStatusFlagsLo |= device.ReservedDeviceStatusFlagsLo;
             return deviceStatusFlagsLo;
         }

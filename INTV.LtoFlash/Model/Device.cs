@@ -106,6 +106,7 @@ namespace INTV.LtoFlash.Model
         public const string SaveMenuPositionPropertyName = "SaveMenuPosition";
         public const string BackgroundGCPropertyName = "BackgroundGC";
         public const string KeyclicksPropertyName = "Keyclicks";
+        public const string ZeroJlpRamPropertyName = "ZeroJlpRam";
         public const string DeviceStatusUpdatePeriodPropertyName = "DeviceStatusUpdatePeriod";
 
         #endregion // Property Names
@@ -208,9 +209,10 @@ namespace INTV.LtoFlash.Model
             _deviceActivities = new ConcurrentDictionary<DeviceActivity, Tuple<DeviceActivityDelegate, object>>();
             ValidateDevice();
             _showTitleScreen = ShowTitleScreenFlags.Default;
-            _keyclicks = false;
-            _backgroundGC = true;
             _saveMenuPosition = SaveMenuPositionFlags.Default;
+            _backgroundGC = true;
+            _keyclicks = false;
+            _zeroJlpRam = true;
             ReservedDeviceStatusFlagsLo = DeviceStatusFlagsLo.ReservedMask; // these are presumed set by default
             DeviceStatusFlagsHi = DeviceStatusFlagsHi.Default;
             UpdateFileSystemStatsDuringHeartbeat = Properties.Settings.Default.ShowFileSystemDetails;
@@ -327,6 +329,16 @@ namespace INTV.LtoFlash.Model
             set { AssignAndUpdateProperty(KeyclicksPropertyName, value, ref _keyclicks, (p, v) => UpdateKeyclicks(v, sendToHardware: true)); }
         }
         private bool _keyclicks;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to zero the JLP RAM on the Locutus device when a ROM is loaded and run.
+        /// </summary>
+        public bool ZeroJlpRam
+        {
+            get { return _zeroJlpRam; }
+            set { AssignAndUpdateProperty(ZeroJlpRamPropertyName, value, ref _zeroJlpRam, (p, v) => UpdateZeroJlpRam(v, sendToHardware: true)); }
+        }
+        private bool _zeroJlpRam;
 
         /// <summary>
         /// Gets a value indicating whether this is a valid Locutus device.
@@ -843,9 +855,39 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
+        /// Update the zero JLP RAM setting.
+        /// </summary>
+        /// <param name="newZeroJlpRam">If set to <c>true</c> JLP RAM is set to zero when ROM is loaded.</param>
+        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
+        internal void UpdateZeroJlpRam(bool newZeroJlpRam, bool sendToHardware)
+        {
+            if (sendToHardware)
+            {
+                var newConfigurationLo = this.ComposeStatusFlagsLo();
+                if (newZeroJlpRam)
+                {
+                    newConfigurationLo |= DeviceStatusFlagsLo.ZeroJlpRam;
+                }
+                else
+                {
+                    newConfigurationLo &= ~DeviceStatusFlagsLo.ZeroJlpRam;
+                }
+                this.SetConfiguration(newConfigurationLo, DeviceStatusFlagsHi, (m, e) => ErrorHandler(DeviceStatusFlagsLo.ZeroJlpRam, ProtocolCommandId.SetConfiguration, m, e));
+            }
+            else
+            {
+                if (_zeroJlpRam != newZeroJlpRam)
+                {
+                    _zeroJlpRam = newZeroJlpRam;
+                    RaisePropertyChanged(ZeroJlpRamPropertyName);
+                }
+            }
+        }
+
+        /// <summary>
         /// Updates the reserved status flags.
         /// </summary>
-        /// <param name="newReservedDeviceStatusFlagsLo"></param>
+        /// <param name="newReservedDeviceStatusFlagsLo">The new reserved bits.</param>
         internal void UpdateReservedDeviceStatusFlagsLo(DeviceStatusFlagsLo newReservedDeviceStatusFlagsLo)
         {
             if (ReservedDeviceStatusFlagsLo != newReservedDeviceStatusFlagsLo)
@@ -1312,8 +1354,9 @@ namespace INTV.LtoFlash.Model
             var newEcsStatus = EcsCompatibility;
             var newShowTitleScreenStatus = ShowTitleScreen;
             var newSaveMenuPositionStatus = SaveMenuPosition;
-            var newKeyclicksStatus = Keyclicks;
             var newBackgroundGCStatus = BackgroundGC;
+            var newKeyclicksStatus = Keyclicks;
+            var newZeroJlpRam = ZeroJlpRam;
             var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
             var newDeviceStatusFlagsHigh = DeviceStatusFlagsHi;
             if (newDeviceStatus != null)
@@ -1326,6 +1369,7 @@ namespace INTV.LtoFlash.Model
                 newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
                 newKeyclicksStatus = newDeviceStatus.Keyclicks;
                 newBackgroundGCStatus = newDeviceStatus.BackgroundGC;
+                newZeroJlpRam = newDeviceStatus.ZeroJlpRam;
                 newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusLow & DeviceStatusFlagsLo.ReservedMask;
                 newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusHigh;
             }
@@ -1337,6 +1381,7 @@ namespace INTV.LtoFlash.Model
             UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
             UpdateBackgroundGC(newBackgroundGCStatus, sendToHardware: false);
             UpdateKeyclicks(newKeyclicksStatus, sendToHardware: false);
+            UpdateZeroJlpRam(newZeroJlpRam, sendToHardware: false);
             UpdateReservedDeviceStatusFlagsLo(newReservedDeviceStatusFlagsLo);
             DeviceStatusFlagsHi = newDeviceStatusFlagsHigh;
         }

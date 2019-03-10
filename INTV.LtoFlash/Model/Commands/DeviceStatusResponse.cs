@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceStatusResponse.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -110,6 +110,14 @@ namespace INTV.LtoFlash.Model.Commands
             get { return DeviceStatusLow.ToKeyclicks(); }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether or not the device sets JLP RAM to zero when loading a ROM.
+        /// </summary>
+        public bool ZeroJlpRam
+        {
+            get { return DeviceStatusLow.ToZeroJlpRam(); }
+        }
+
         #region ByteSerializer Properties
 
         /// <inheritdoc />
@@ -157,6 +165,7 @@ namespace INTV.LtoFlash.Model.Commands
             DeviceStatusLow = (DeviceStatusFlagsLo)reader.ReadUInt64();
             DeviceStatusHigh = (DeviceStatusFlagsHi)reader.ReadUInt64();
             numRead += StatusBytesSize;
+            // TODO: throw here?
             System.Diagnostics.Debug.Assert(numRead == DeserializeByteCount, "Failed to deserialize correct number of bytes in DeviceStatusResponse.");
             return numRead;
         }

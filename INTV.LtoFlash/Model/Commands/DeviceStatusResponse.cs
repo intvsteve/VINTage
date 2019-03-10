@@ -165,6 +165,7 @@ namespace INTV.LtoFlash.Model.Commands
             DeviceStatusLow = (DeviceStatusFlagsLo)reader.ReadUInt64();
             DeviceStatusHigh = (DeviceStatusFlagsHi)reader.ReadUInt64();
             numRead += StatusBytesSize;
+
             // TODO: throw here?
             System.Diagnostics.Debug.Assert(numRead == DeserializeByteCount, "Failed to deserialize correct number of bytes in DeviceStatusResponse.");
             return numRead;

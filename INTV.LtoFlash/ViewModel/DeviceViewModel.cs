@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -39,6 +39,7 @@ namespace INTV.LtoFlash.ViewModel
 
         public const string IsConfigurablePropertyName = "IsConfigurable";
         public const string DisplayNamePropertyName = "DisplayName";
+        public const string RandomizeJlpRamPropertyName = "RandomizeJlpRam";
 
         #endregion // Constants
 
@@ -66,6 +67,7 @@ namespace INTV.LtoFlash.ViewModel
                 _saveMenuPosition = SaveMenuPositionFlags.Default;
                 _backgroundGC = true;
                 _keyclicks = false;
+                _randomizeJlpRam = false;
                 _displayName = NoDevice;
             }
             else
@@ -76,6 +78,7 @@ namespace INTV.LtoFlash.ViewModel
                 _saveMenuPosition = device.SaveMenuPosition;
                 _backgroundGC = device.BackgroundGC;
                 _keyclicks = device.Keyclicks;
+                _randomizeJlpRam = !device.ZeroJlpRam; // NOTE! Hardware flag is for zeroing memory; we expose as randomizing
                 _device.ErrorHandler = ErrorHandler;
                 _device.PropertyChanged += DevicePropertyChanged;
                 UpdateDisplayName();
@@ -87,6 +90,7 @@ namespace INTV.LtoFlash.ViewModel
             UpdateSaveMenuPosition(SaveMenuPosition);
             UpdateBackgroundGC(BackgroundGC);
             UpdateKeyclicks(Keyclicks);
+            UpdateRandomizeJlpRam(RandomizeJlpRam);
         }
 
         #endregion // Constructors
@@ -369,6 +373,16 @@ namespace INTV.LtoFlash.ViewModel
         private bool _keyclicks;
 
         /// <summary>
+        /// Gets or sets a value indicating whether to randomize JLP RAM before loading a ROM.
+        /// </summary>
+        public bool RandomizeJlpRam
+        {
+            get { return (Device == null) ? _randomizeJlpRam : !Device.ZeroJlpRam; }
+            set { AssignAndUpdateProperty(RandomizeJlpRamPropertyName, value, ref _randomizeJlpRam, (p, v) => UpdateRandomizeJlpRam(v)); }
+        }
+        private bool _randomizeJlpRam;
+
+        /// <summary>
         /// Gets a value indicating whether the device is in a state that allows configuration changes to be applied.
         /// </summary>
         public bool IsConfigurable
@@ -484,6 +498,10 @@ namespace INTV.LtoFlash.ViewModel
                         case DeviceStatusFlagsLo.Keyclicks:
                             title = Resources.Strings.SetConfigurationCommand_Keyclicks_Failed_Title;
                             messageFormat = Resources.Strings.SetConfigurationCommand_Keyclicks_Failed_Message_Format;
+                            break;
+                        case DeviceStatusFlagsLo.ZeroJlpRam:
+                            title = Resources.Strings.SetConfigurationCommand_RandomizeJlpRam_Failed_Title;
+                            messageFormat = Resources.Strings.SetConfigurationCommand_RandomizeJlpRam_Failed_Message_Format;
                             break;
                     }
                     break;
@@ -623,6 +641,14 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
+        private void UpdateRandomizeJlpRam(bool randomizeJlpRam)
+        {
+            if (Device != null)
+            {
+                Device.ZeroJlpRam = !randomizeJlpRam;
+            }
+        }
+
         private void UpdatePowerState()
         {
             var powerState = Resources.Strings.ConsolePowerState_Unknown;
@@ -691,6 +717,10 @@ namespace INTV.LtoFlash.ViewModel
                 case Device.KeyclicksPropertyName:
                     _keyclicks = Device.Keyclicks;
                     RaisePropertyChanged(e.PropertyName);
+                    break;
+                case Device.ZeroJlpRamPropertyName:
+                    _randomizeJlpRam = !Device.ZeroJlpRam;
+                    RaisePropertyChanged(RandomizeJlpRamPropertyName);
                     break;
                 case Device.UniqueIdPropertyName:
                 case Device.FileSystemPropertyName:

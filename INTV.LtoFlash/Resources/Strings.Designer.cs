@@ -5496,6 +5496,26 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A problem occurred when setting JLP RAM randomize mode. The error was:
+        ///
+        ///{0}.
+        /// </summary>
+        internal static string SetConfigurationCommand_RandomizeJlpRam_Failed_Message_Format {
+            get {
+                return ResourceManager.GetString("SetConfigurationCommand_RandomizeJlpRam_Failed_Message_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to Set Randomize JLP RAM Mode.
+        /// </summary>
+        internal static string SetConfigurationCommand_RandomizeJlpRam_Failed_Title {
+            get {
+                return ResourceManager.GetString("SetConfigurationCommand_RandomizeJlpRam_Failed_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when setting save menu position mode. The error was:
         ///
         ///{0}.

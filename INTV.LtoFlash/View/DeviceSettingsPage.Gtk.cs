@@ -64,6 +64,7 @@ namespace INTV.LtoFlash.View
             InitializeSaveMenuPositionComboBox();
             _keyClicks.Active = false;
             _backgroundGC.Active = true;
+            _randomizeJlpRam.Active = false;
             CommandManager.RequerySuggested += HandleRequerySuggested;
         }
 
@@ -114,6 +115,7 @@ namespace INTV.LtoFlash.View
                 _saveMenuPositionSetting.Active = _saveMenuPositionSetting.GetIndexOfValue(ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
                 _keyClicks.Active = ViewModel.ActiveLtoFlashDevice.Keyclicks;
                 _backgroundGC.Active = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
+                _randomizeJlpRam.Active = ViewModel.ActiveLtoFlashDevice.RandomizeJlpRam;
             }
             finally
             {
@@ -207,6 +209,20 @@ namespace INTV.LtoFlash.View
         }
 
         /// <summary>
+        /// Handles the randomize JLP RAM changed.
+        /// </summary>
+        /// <param name="sender">The Randomize JLP RAM checkbox.</param>
+        /// <param name="e">Not applicable.</param>
+        protected void HandleRandomizeJlpRamChanged (object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.Assert (object.ReferenceEquals (sender, _randomizeJlpRam), "Got value change from wrong control! Expected Randomize JLP RAM.");
+            if ((ViewModel != null) && !_updating)
+            {
+                ViewModel.ActiveLtoFlashDevice.RandomizeJlpRam = _randomizeJlpRam.Active;
+            }
+        }
+
+        /// <summary>
         /// Handles the do background GC setting changed.
         /// </summary>
         /// <param name="sender">The do background GC checkbox.</param>
@@ -251,6 +267,11 @@ namespace INTV.LtoFlash.View
             if (_backgroundGC.Sensitive != canEdit)
             {
                 _backgroundGC.Sensitive = canEdit;
+            }
+            canEdit = DeviceCommandGroup.SetRandomizeJlpRamCommand.CanExecute(ViewModel);
+            if (_randomizeJlpRam.Sensitive != canEdit)
+            {
+                _randomizeJlpRam.Sensitive = canEdit;
             }
         }
 

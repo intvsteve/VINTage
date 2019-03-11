@@ -5729,6 +5729,33 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Randomize JLP RAM at ROM start.
+        /// </summary>
+        internal static string SetRandomizeJlpRamCommand_Name {
+            get {
+                return ResourceManager.GetString("SetRandomizeJlpRamCommand_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled, the contents of RAM provided by JLP cartridge technology will be randomized. When not enabled, the contents of JLP RAM will be set to zero. This setting only affects ROMs that use the extra RAM provided by JLP..
+        /// </summary>
+        internal static string SetRandomizeJlpRamCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("SetRandomizeJlpRamCommand_TipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomize JLP RAM at ROM Launch.
+        /// </summary>
+        internal static string SetRandomizeJlpRamCommand_TipTitle {
+            get {
+                return ResourceManager.GetString("SetRandomizeJlpRamCommand_TipTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set Save Data....
         /// </summary>
         internal static string SetSaveDataCommand_MenuItemName {

@@ -146,6 +146,12 @@ namespace INTV.LtoFlash.Commands
             SetBackgroundGarbageCollectCommand.UseXamlResource = true;
             SetBackgroundGarbageCollectCommand.Weight = 0.15;
 
+            CommandList.Add(SetBackgroundGarbageCollectCommand.CreateRibbonSeparator(CommandLocation.After));
+
+            SetRandomizeJlpRamCommand.VisualParent = DeviceSettingsRibbonGroupCommand;
+            SetRandomizeJlpRamCommand.UseXamlResource = true;
+            SetRandomizeJlpRamCommand.Weight = 0.16;
+
             SetDeviceNameCommand.VisualParent = ActiveDeviceRibbonGroupCommand;
             SetDeviceNameCommand.UseXamlResource = true;
             SetDeviceNameCommand.Weight = 0;
@@ -166,6 +172,7 @@ namespace INTV.LtoFlash.Commands
             CommandList.Add(SetSaveMenuPositionCommand);
             CommandList.Add(SetKeyclicksCommand);
             CommandList.Add(SetBackgroundGarbageCollectCommand);
+            CommandList.Add(SetRandomizeJlpRamCommand);
             CommandList.Add(SetDeviceNameCommand);
             CommandList.Add(SetDeviceOwnerCommand);
             CommandList.Add(DeviceUniqueIdCommand);

@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -412,6 +412,32 @@ namespace INTV.LtoFlash.Commands
         }
 
         #endregion // SetKeyclicksCommand
+
+        #region SetRandomizeJlpRamCommand
+
+        /// <summary>
+        /// The command to set whether or not to randomize JLP RAM when launching a ROM that uses it.
+        /// </summary>
+        public static readonly VisualDeviceCommand SetRandomizeJlpRamCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetRandomizeJlpRamCommand)
+        {
+            UniqueId = UniqueNameBase + ".SetRandomizeJlpRamCommand",
+            Name = Resources.Strings.SetRandomizeJlpRamCommand_Name,
+            SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/randomize_jlp_ram_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetRandomizeJlpRamCommand_TipTitle,
+            ToolTipDescription = Resources.Strings.SetRandomizeJlpRamCommand_TipDescription,
+            ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            PreferredParameterType = typeof(LtoFlashViewModel),
+            RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
+        };
+
+        private static bool CanSetRandomizeJlpRamCommand(object parameter)
+        {
+            var viewModel = parameter as LtoFlashViewModel;
+            var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            return device.CanExecuteCommand(SetRandomizeJlpRamCommand);
+        }
+
+        #endregion // SetRandomizeJlpRamCommand
 
         #region SetDeviceOwnerCommand
 

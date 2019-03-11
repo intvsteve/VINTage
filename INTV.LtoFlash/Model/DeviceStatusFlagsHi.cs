@@ -34,7 +34,7 @@ namespace INTV.LtoFlash.Model
         /// <summary>
         /// This flag is used internally by Locutus to indicate that the file system menu position data should be
         /// considered invalid. The UI should not manipulate this flag directly, and it should always be set.
-        /// Because of this, it is still considered part of <see cref=">ReservedMask"/>.
+        /// Because of this, it is still considered part of <see cref="ReservedMask"/>.
         /// </summary>
         ResetMenuHistory = 1ul << 62,
 

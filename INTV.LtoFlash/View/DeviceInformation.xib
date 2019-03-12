@@ -600,6 +600,26 @@
 												</object>
 												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
+											<object class="NSTextField" id="305548038">
+												<reference key="NSNextResponder" ref="123026772"/>
+												<int key="NSvFlags">268</int>
+												<string key="NSFrame">{{14, 86}, {130, 17}}</string>
+												<reference key="NSSuperview" ref="123026772"/>
+												<reference key="NSNextKeyView" ref="132847728"/>
+												<string key="NSReuseIdentifierKey">_NS:1535</string>
+												<bool key="NSEnabled">YES</bool>
+												<object class="NSTextFieldCell" key="NSCell" id="241809336">
+													<int key="NSCellFlags">68157504</int>
+													<int key="NSCellFlags2">272630784</int>
+													<string key="NSContents">Save Menu Position:</string>
+													<reference key="NSSupport" ref="122314012"/>
+													<string key="NSCellIdentifier">_NS:1535</string>
+													<reference key="NSControlView" ref="305548038"/>
+													<reference key="NSBackgroundColor" ref="80289940"/>
+													<reference key="NSTextColor" ref="937263315"/>
+												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+											</object>
 											<object class="NSButton" id="612488991">
 												<reference key="NSNextResponder" ref="123026772"/>
 												<int key="NSvFlags">268</int>
@@ -723,26 +743,6 @@
 													<bool key="NSUsesItemFromMenu">YES</bool>
 													<bool key="NSAltersState">YES</bool>
 													<int key="NSArrowPosition">2</int>
-												</object>
-												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-											</object>
-											<object class="NSTextField" id="305548038">
-												<reference key="NSNextResponder" ref="123026772"/>
-												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{14, 86}, {130, 17}}</string>
-												<reference key="NSSuperview" ref="123026772"/>
-												<reference key="NSNextKeyView" ref="132847728"/>
-												<string key="NSReuseIdentifierKey">_NS:1535</string>
-												<bool key="NSEnabled">YES</bool>
-												<object class="NSTextFieldCell" key="NSCell" id="241809336">
-													<int key="NSCellFlags">68157504</int>
-													<int key="NSCellFlags2">272630784</int>
-													<string key="NSContents">Save Menu Position:</string>
-													<reference key="NSSupport" ref="122314012"/>
-													<string key="NSCellIdentifier">_NS:1535</string>
-													<reference key="NSControlView" ref="305548038"/>
-													<reference key="NSBackgroundColor" ref="80289940"/>
-													<reference key="NSTextColor" ref="937263315"/>
 												</object>
 												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
@@ -3222,11 +3222,11 @@
 							<reference ref="69739813"/>
 							<reference ref="231240686"/>
 							<reference ref="132847728"/>
-							<reference ref="305548038"/>
 							<reference ref="71439940"/>
 							<reference ref="901328225"/>
 							<reference ref="82975549"/>
 							<reference ref="744273736"/>
+							<reference ref="305548038"/>
 							<reference ref="612488991"/>
 						</array>
 						<reference key="parent" ref="24666558"/>

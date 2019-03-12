@@ -324,6 +324,26 @@
 										<nil key="NSNextResponder"/>
 										<int key="NSvFlags">256</int>
 										<array class="NSMutableArray" key="NSSubviews">
+											<object class="NSTextField" id="901328225">
+												<reference key="NSNextResponder" ref="123026772"/>
+												<int key="NSvFlags">268</int>
+												<string key="NSFrame">{{14, 179}, {119, 17}}</string>
+												<reference key="NSSuperview" ref="123026772"/>
+												<reference key="NSNextKeyView" ref="231240686"/>
+												<string key="NSReuseIdentifierKey">_NS:1535</string>
+												<bool key="NSEnabled">YES</bool>
+												<object class="NSTextFieldCell" key="NSCell" id="505260526">
+													<int key="NSCellFlags">68157504</int>
+													<int key="NSCellFlags2">272630784</int>
+													<string key="NSContents">Show TItle Screen:</string>
+													<reference key="NSSupport" ref="122314012"/>
+													<string key="NSCellIdentifier">_NS:1535</string>
+													<reference key="NSControlView" ref="901328225"/>
+													<reference key="NSBackgroundColor" ref="80289940"/>
+													<reference key="NSTextColor" ref="937263315"/>
+												</object>
+												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+											</object>
 											<object class="NSPopUpButton" id="231240686">
 												<reference key="NSNextResponder" ref="123026772"/>
 												<int key="NSvFlags">268</int>
@@ -399,26 +419,6 @@
 													<bool key="NSUsesItemFromMenu">YES</bool>
 													<bool key="NSAltersState">YES</bool>
 													<int key="NSArrowPosition">2</int>
-												</object>
-												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
-											</object>
-											<object class="NSTextField" id="901328225">
-												<reference key="NSNextResponder" ref="123026772"/>
-												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{14, 179}, {119, 17}}</string>
-												<reference key="NSSuperview" ref="123026772"/>
-												<reference key="NSNextKeyView" ref="231240686"/>
-												<string key="NSReuseIdentifierKey">_NS:1535</string>
-												<bool key="NSEnabled">YES</bool>
-												<object class="NSTextFieldCell" key="NSCell" id="505260526">
-													<int key="NSCellFlags">68157504</int>
-													<int key="NSCellFlags2">272630784</int>
-													<string key="NSContents">Show TItle Screen:</string>
-													<reference key="NSSupport" ref="122314012"/>
-													<string key="NSCellIdentifier">_NS:1535</string>
-													<reference key="NSControlView" ref="901328225"/>
-													<reference key="NSBackgroundColor" ref="80289940"/>
-													<reference key="NSTextColor" ref="937263315"/>
 												</object>
 												<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											</object>
@@ -3218,7 +3218,6 @@
 						<int key="objectID">262</int>
 						<reference key="object" ref="123026772"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="901328225"/>
 							<reference ref="940990648"/>
 							<reference ref="69739813"/>
 							<reference ref="82975549"/>
@@ -3227,6 +3226,7 @@
 							<reference ref="132847728"/>
 							<reference ref="305548038"/>
 							<reference ref="71439940"/>
+							<reference ref="901328225"/>
 							<reference ref="612488991"/>
 						</array>
 						<reference key="parent" ref="24666558"/>

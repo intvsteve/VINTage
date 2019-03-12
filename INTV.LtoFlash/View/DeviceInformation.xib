@@ -3357,6 +3357,7 @@
 							<reference ref="152119698"/>
 						</array>
 						<reference key="parent" ref="123026772"/>
+						<string key="objectName">Enable Keyclicks Check Box</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">335</int>

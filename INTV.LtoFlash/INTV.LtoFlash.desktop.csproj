@@ -461,7 +461,7 @@
     <EmbeddedResource Include="Commands\Resources\CheckForFirmwareUpdateCommand_MenuItem.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Resources\SetRandomizeJlpRamCommand.xaml">
+    <EmbeddedResource Include="Commands\Resources\SetRandomizeLtoFlashRamCommand.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Page Include="View\FileSystemStatisticsView.xaml">
@@ -692,7 +692,7 @@
     <Resource Include="Resources\Images\settings_32xMD.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\randomize_jlp_ram_16xLG.png" />
+    <Resource Include="Resources\Images\randomize_ram_16xLG.png" />
     <Resource Include="Resources\Images\check-for-firmware-update_16xLG.png" />
     <Resource Include="Resources\Images\check-for-firmware-update_32xLG.png" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />

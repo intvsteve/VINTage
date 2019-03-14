@@ -266,7 +266,7 @@
     <EmbeddedResource Include="Resources\Images\menu_layout_32xMD.png" />
     <EmbeddedResource Include="Resources\Images\new_folder.png" />
     <EmbeddedResource Include="Resources\Images\new_folder_32xMD.png" />
-    <EmbeddedResource Include="Resources\Images\randomize_jlp_ram_16xLG.png" />
+    <EmbeddedResource Include="Resources\Images\randomize_ram_16xLG.png" />
     <EmbeddedResource Include="Resources\Images\reformat_16x.png" />
     <EmbeddedResource Include="Resources\Images\reformat_32x.png" />
     <EmbeddedResource Include="Resources\Images\refresh_16xLG.png" />

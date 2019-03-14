@@ -306,8 +306,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.upg" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />
-    <EmbeddedResource Include="Resources\Images\randomize_jlp_ram_16xLG.png">
-      <LogicalName>Resources/Images/randomize_jlp_ram_16xLG.png</LogicalName>
+    <EmbeddedResource Include="Resources\Images\randomize_ram_16xLG.png">
+      <LogicalName>Resources/Images/randomize_ram_16xLG.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Images\check-for-firmware-update_16xLG.png">
       <LogicalName>Resources/Images/check-for-firmware-update_16xLG.png</LogicalName>

@@ -422,7 +422,7 @@ namespace INTV.LtoFlash.Commands
         {
             UniqueId = UniqueNameBase + ".SetRandomizeLtoFlashRamCommand",
             Name = Resources.Strings.SetRandomizeLtoFlashRamCommand_Name,
-            SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/randomize_jlp_ram_16xLG.png"),
+            SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/randomize_ram_16xLG.png"),
             ToolTipTitle = Resources.Strings.SetRandomizeLtoFlashRamCommand_TipTitle,
             ToolTipDescription = Resources.Strings.SetRandomizeLtoFlashRamCommand_TipDescription,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,

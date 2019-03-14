@@ -30,7 +30,7 @@ namespace INTV.LtoFlash.View
 
 		private global::Gtk.CheckButton _backgroundGC;
 
-		private global::Gtk.CheckButton _randomizeJlpRam;
+        private global::Gtk.CheckButton _randomizeLtoFlashRam;
 
 		protected virtual void Build()
 		{
@@ -171,14 +171,14 @@ namespace INTV.LtoFlash.View
 			w12.Expand = false;
 			w12.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this._randomizeJlpRam = new global::Gtk.CheckButton();
-			this._randomizeJlpRam.CanFocus = true;
-			this._randomizeJlpRam.Name = "_randomizeJlpRam";
-			this._randomizeJlpRam.Label = global::Mono.Unix.Catalog.GetString("Randomize JLP RAM at ROM start");
-			this._randomizeJlpRam.DrawIndicator = true;
-			this._randomizeJlpRam.UseUnderline = true;
-			this.vbox2.Add(this._randomizeJlpRam);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this._randomizeJlpRam]));
+            this._randomizeLtoFlashRam = new global::Gtk.CheckButton();
+            this._randomizeLtoFlashRam.CanFocus = true;
+            this._randomizeLtoFlashRam.Name = "_randomizeLtoFlashRam";
+            this._randomizeLtoFlashRam.Label = global::Mono.Unix.Catalog.GetString("Randomize LTO Flash! RAM before loading ROM");
+            this._randomizeLtoFlashRam.DrawIndicator = true;
+            this._randomizeLtoFlashRam.UseUnderline = true;
+            this.vbox2.Add(this._randomizeLtoFlashRam);
+            global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this._randomizeLtoFlashRam]));
 			w13.Position = 3;
 			w13.Expand = false;
 			w13.Fill = false;
@@ -194,7 +194,7 @@ namespace INTV.LtoFlash.View
 			this._ecsCompatibility.Changed += new global::System.EventHandler(this.HandleEcsCompatibilityChanged);
 			this._keyClicks.Toggled += new global::System.EventHandler(this.HandleKeyclicksChanged);
 			this._backgroundGC.Toggled += new global::System.EventHandler(this.HandleBackgroundGCChanged);
-			this._randomizeJlpRam.Toggled += new global::System.EventHandler(this.HandleRandomizeJlpRamChanged);
+            this._randomizeLtoFlashRam.Toggled += new global::System.EventHandler(this.HandleRandomizeLtoFlashRamChanged);
 		}
 	}
 }

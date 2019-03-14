@@ -106,7 +106,7 @@ namespace INTV.LtoFlash.Model
         public const string SaveMenuPositionPropertyName = "SaveMenuPosition";
         public const string BackgroundGCPropertyName = "BackgroundGC";
         public const string KeyclicksPropertyName = "Keyclicks";
-        public const string ZeroJlpRamPropertyName = "ZeroJlpRam";
+        public const string ZeroLtoFlashRamPropertyName = "ZeroLtoFlashRam";
         public const string DeviceStatusUpdatePeriodPropertyName = "DeviceStatusUpdatePeriod";
 
         #endregion // Property Names
@@ -212,7 +212,7 @@ namespace INTV.LtoFlash.Model
             _saveMenuPosition = SaveMenuPositionFlags.Default;
             _backgroundGC = true;
             _keyclicks = false;
-            _zeroJlpRam = true;
+            _zeroLtoFlashRam = true;
             ReservedDeviceStatusFlagsLo = DeviceStatusFlagsLo.ReservedMask; // these are presumed set by default
             DeviceStatusFlagsHi = DeviceStatusFlagsHi.Default;
             UpdateFileSystemStatsDuringHeartbeat = Properties.Settings.Default.ShowFileSystemDetails;
@@ -331,14 +331,14 @@ namespace INTV.LtoFlash.Model
         private bool _keyclicks;
 
         /// <summary>
-        /// Gets or sets a value indicating whether to zero the JLP RAM on the Locutus device when a ROM is loaded and run.
+        /// Gets or sets a value indicating whether to zero the RAM on the Locutus device when a ROM is loaded and run.
         /// </summary>
-        public bool ZeroJlpRam
+        public bool ZeroLtoFlashRam
         {
-            get { return _zeroJlpRam; }
-            set { AssignAndUpdateProperty(ZeroJlpRamPropertyName, value, ref _zeroJlpRam, (p, v) => UpdateZeroJlpRam(v, sendToHardware: true)); }
+            get { return _zeroLtoFlashRam; }
+            set { AssignAndUpdateProperty(ZeroLtoFlashRamPropertyName, value, ref _zeroLtoFlashRam, (p, v) => UpdateZeroLtoFlashRam(v, sendToHardware: true)); }
         }
-        private bool _zeroJlpRam;
+        private bool _zeroLtoFlashRam;
 
         /// <summary>
         /// Gets a value indicating whether this is a valid Locutus device.
@@ -855,31 +855,31 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Update the zero JLP RAM setting.
+        /// Update the zero LTO Flash! RAM setting.
         /// </summary>
-        /// <param name="newZeroJlpRam">If set to <c>true</c> JLP RAM is set to zero when ROM is loaded.</param>
+        /// <param name="newZeroLtoFlashRam">If set to <c>true</c>, RAM is set to zero when ROM is loaded.</param>
         /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
-        internal void UpdateZeroJlpRam(bool newZeroJlpRam, bool sendToHardware)
+        internal void UpdateZeroLtoFlashRam(bool newZeroLtoFlashRam, bool sendToHardware)
         {
             if (sendToHardware)
             {
                 var newConfigurationLo = this.ComposeStatusFlagsLo();
-                if (newZeroJlpRam)
+                if (newZeroLtoFlashRam)
                 {
-                    newConfigurationLo |= DeviceStatusFlagsLo.ZeroJlpRam;
+                    newConfigurationLo |= DeviceStatusFlagsLo.ZeroRamBeforeLoad;
                 }
                 else
                 {
-                    newConfigurationLo &= ~DeviceStatusFlagsLo.ZeroJlpRam;
+                    newConfigurationLo &= ~DeviceStatusFlagsLo.ZeroRamBeforeLoad;
                 }
-                this.SetConfiguration(newConfigurationLo, DeviceStatusFlagsHi, (m, e) => ErrorHandler(DeviceStatusFlagsLo.ZeroJlpRam, ProtocolCommandId.SetConfiguration, m, e));
+                this.SetConfiguration(newConfigurationLo, DeviceStatusFlagsHi, (m, e) => ErrorHandler(DeviceStatusFlagsLo.ZeroRamBeforeLoad, ProtocolCommandId.SetConfiguration, m, e));
             }
             else
             {
-                if (_zeroJlpRam != newZeroJlpRam)
+                if (_zeroLtoFlashRam != newZeroLtoFlashRam)
                 {
-                    _zeroJlpRam = newZeroJlpRam;
-                    RaisePropertyChanged(ZeroJlpRamPropertyName);
+                    _zeroLtoFlashRam = newZeroLtoFlashRam;
+                    RaisePropertyChanged(ZeroLtoFlashRamPropertyName);
                 }
             }
         }
@@ -1356,7 +1356,7 @@ namespace INTV.LtoFlash.Model
             var newSaveMenuPositionStatus = SaveMenuPosition;
             var newBackgroundGCStatus = BackgroundGC;
             var newKeyclicksStatus = Keyclicks;
-            var newZeroJlpRam = ZeroJlpRam;
+            var newZeroLtoFlashRam = ZeroLtoFlashRam;
             var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
             var newDeviceStatusFlagsHigh = DeviceStatusFlagsHi;
             if (newDeviceStatus != null)
@@ -1369,7 +1369,7 @@ namespace INTV.LtoFlash.Model
                 newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
                 newKeyclicksStatus = newDeviceStatus.Keyclicks;
                 newBackgroundGCStatus = newDeviceStatus.BackgroundGC;
-                newZeroJlpRam = newDeviceStatus.ZeroJlpRam;
+                newZeroLtoFlashRam = newDeviceStatus.ZeroLtoFlashRam;
                 newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusLow & DeviceStatusFlagsLo.ReservedMask;
                 newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusHigh;
             }
@@ -1381,7 +1381,7 @@ namespace INTV.LtoFlash.Model
             UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
             UpdateBackgroundGC(newBackgroundGCStatus, sendToHardware: false);
             UpdateKeyclicks(newKeyclicksStatus, sendToHardware: false);
-            UpdateZeroJlpRam(newZeroJlpRam, sendToHardware: false);
+            UpdateZeroLtoFlashRam(newZeroLtoFlashRam, sendToHardware: false);
             UpdateReservedDeviceStatusFlagsLo(newReservedDeviceStatusFlagsLo);
             DeviceStatusFlagsHi = newDeviceStatusFlagsHigh;
         }

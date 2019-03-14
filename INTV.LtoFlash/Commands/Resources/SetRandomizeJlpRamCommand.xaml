@@ -1,5 +1,5 @@
 <!--
-    <copyright file="SetRandomizeJlpRamCommand.xaml" company="INTV Funhouse">
+    <copyright file="SetRandomizeLtoFlashRamCommand.xaml" company="INTV Funhouse">
     Copyright (c) 2019 All Rights Reserved
     <author>Steven A. Orth</author>
 
@@ -25,10 +25,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Ribbon="clr-namespace:INTV.Ribbon;assembly=INTV.Ribbon"
         xmlns:ltoFlashCommands="clr-namespace:INTV.LtoFlash.Commands;assembly=INTV.LtoFlash"
-    Margin="2,-2,0,0" Label="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeJlpRamCommand}, Mode=OneTime}"
-    SmallImageSource="{Binding Path=SmallIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeJlpRamCommand}, Mode=OneTime}"
-    IsChecked="{Binding LtoFlash.ActiveLtoFlashDevice.RandomizeJlpRam}"
+    Margin="2,-2,0,0" Label="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"
+    SmallImageSource="{Binding Path=SmallIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"
+    IsChecked="{Binding LtoFlash.ActiveLtoFlashDevice.RandomizeLtoFlashRam}"
     IsEnabled="{Binding Path=LtoFlash.ActiveLtoFlashDevice.IsConfigurable}"
-    ToolTipTitle="{Binding Path=ToolTipTitle, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeJlpRamCommand}, Mode=OneTime}"
-    ToolTipDescription="{Binding Path=ToolTipDescription, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeJlpRamCommand}, Mode=OneTime}"
-    ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeJlpRamCommand}, Mode=OneTime}"/>
+    ToolTipTitle="{Binding Path=ToolTipTitle, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"
+    ToolTipDescription="{Binding Path=ToolTipDescription, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"
+    ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"/>

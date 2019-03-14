@@ -413,31 +413,31 @@ namespace INTV.LtoFlash.Commands
 
         #endregion // SetKeyclicksCommand
 
-        #region SetRandomizeJlpRamCommand
+        #region SetRandomizeLtoFlashRamCommand
 
         /// <summary>
-        /// The command to set whether or not to randomize JLP RAM when launching a ROM that uses it.
+        /// The command to set whether or not to randomize LTO Flash! RAM when launching a ROM  .
         /// </summary>
-        public static readonly VisualDeviceCommand SetRandomizeJlpRamCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetRandomizeJlpRamCommand)
+        public static readonly VisualDeviceCommand SetRandomizeLtoFlashRamCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetRandomizeLtoFlashRamCommand)
         {
-            UniqueId = UniqueNameBase + ".SetRandomizeJlpRamCommand",
-            Name = Resources.Strings.SetRandomizeJlpRamCommand_Name,
+            UniqueId = UniqueNameBase + ".SetRandomizeLtoFlashRamCommand",
+            Name = Resources.Strings.SetRandomizeLtoFlashRamCommand_Name,
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/randomize_jlp_ram_16xLG.png"),
-            ToolTipTitle = Resources.Strings.SetRandomizeJlpRamCommand_TipTitle,
-            ToolTipDescription = Resources.Strings.SetRandomizeJlpRamCommand_TipDescription,
+            ToolTipTitle = Resources.Strings.SetRandomizeLtoFlashRamCommand_TipTitle,
+            ToolTipDescription = Resources.Strings.SetRandomizeLtoFlashRamCommand_TipDescription,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
 
-        private static bool CanSetRandomizeJlpRamCommand(object parameter)
+        private static bool CanSetRandomizeLtoFlashRamCommand(object parameter)
         {
             var viewModel = parameter as LtoFlashViewModel;
             var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
-            return device.CanExecuteCommand(SetRandomizeJlpRamCommand);
+            return device.CanExecuteCommand(SetRandomizeLtoFlashRamCommand);
         }
 
-        #endregion // SetRandomizeJlpRamCommand
+        #endregion // SetRandomizeLtoFlashRamCommand
 
         #region SetDeviceOwnerCommand
 

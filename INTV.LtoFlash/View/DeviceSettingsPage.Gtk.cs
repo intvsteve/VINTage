@@ -64,7 +64,7 @@ namespace INTV.LtoFlash.View
             InitializeSaveMenuPositionComboBox();
             _keyClicks.Active = false;
             _backgroundGC.Active = true;
-            _randomizeJlpRam.Active = false;
+            _randomizeLtoFlashRam.Active = false;
             CommandManager.RequerySuggested += HandleRequerySuggested;
         }
 
@@ -115,7 +115,7 @@ namespace INTV.LtoFlash.View
                 _saveMenuPositionSetting.Active = _saveMenuPositionSetting.GetIndexOfValue(ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
                 _keyClicks.Active = ViewModel.ActiveLtoFlashDevice.Keyclicks;
                 _backgroundGC.Active = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
-                _randomizeJlpRam.Active = ViewModel.ActiveLtoFlashDevice.RandomizeJlpRam;
+                _randomizeLtoFlashRam.Active = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
             }
             finally
             {
@@ -209,16 +209,16 @@ namespace INTV.LtoFlash.View
         }
 
         /// <summary>
-        /// Handles the randomize JLP RAM changed.
+        /// Handles the randomize LTO Flash! RAM changed event.
         /// </summary>
-        /// <param name="sender">The Randomize JLP RAM checkbox.</param>
+        /// <param name="sender">The Randomize RAM checkbox.</param>
         /// <param name="e">Not applicable.</param>
-        protected void HandleRandomizeJlpRamChanged (object sender, EventArgs e)
+        protected void HandleRandomizeLtoFlashRamChanged (object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.Assert (object.ReferenceEquals (sender, _randomizeJlpRam), "Got value change from wrong control! Expected Randomize JLP RAM.");
+            System.Diagnostics.Debug.Assert (object.ReferenceEquals (sender, _randomizeLtoFlashRam), "Got value change from wrong control! Expected Randomize LTO Flash! RAM.");
             if ((ViewModel != null) && !_updating)
             {
-                ViewModel.ActiveLtoFlashDevice.RandomizeJlpRam = _randomizeJlpRam.Active;
+                ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam = _randomizeLtoFlashRam.Active;
             }
         }
 
@@ -268,10 +268,10 @@ namespace INTV.LtoFlash.View
             {
                 _backgroundGC.Sensitive = canEdit;
             }
-            canEdit = DeviceCommandGroup.SetRandomizeJlpRamCommand.CanExecute(ViewModel);
-            if (_randomizeJlpRam.Sensitive != canEdit)
+            canEdit = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.CanExecute(ViewModel);
+            if (_randomizeLtoFlashRam.Sensitive != canEdit)
             {
-                _randomizeJlpRam.Sensitive = canEdit;
+                _randomizeLtoFlashRam.Sensitive = canEdit;
             }
         }
 

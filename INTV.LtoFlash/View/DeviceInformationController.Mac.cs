@@ -430,15 +430,15 @@ namespace INTV.LtoFlash.View
         private bool _keyclicks;
 
         /// <summary>
-        /// Gets or sets a value indicating whether to randomize JLP RAM when launching a program from Locutus.
+        /// Gets or sets a value indicating whether to randomize RAM when launching a program from Locutus.
         /// </summary>
-        [INTV.Shared.Utility.OSExport(DeviceViewModel.RandomizeJlpRamPropertyName)]
-        public bool RandomizeJlpRam
+        [INTV.Shared.Utility.OSExport(DeviceViewModel.RandomizeLtoFlashRamPropertyName)]
+        public bool RandomizeLtoFlashRam
         {
-            get { return ViewModel.ActiveLtoFlashDevice.RandomizeJlpRam; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, DeviceViewModel.RandomizeJlpRamPropertyName, value, ref _randomizeJlpRam, (p, v) => ViewModel.ActiveLtoFlashDevice.RandomizeJlpRam = v); }
+            get { return ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, DeviceViewModel.RandomizeLtoFlashRamPropertyName, value, ref _randomizeLtoFlashRam, (p, v) => ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam = v); }
         }
-        private bool _randomizeJlpRam;
+        private bool _randomizeLtoFlashRam;
 
         /// <summary>
         /// Gets or sets the selected controller button to hold for reset to menu.
@@ -674,7 +674,7 @@ namespace INTV.LtoFlash.View
             SaveMenuPositionSelection = (int)ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
             BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
             Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
-            RandomizeJlpRam = ViewModel.ActiveLtoFlashDevice.RandomizeJlpRam;
+            RandomizeLtoFlashRam = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
 
             _blockWhenBusy[DeviceCommandGroup.SetDeviceNameCommand] = DeviceCommandGroup.SetDeviceNameCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetDeviceOwnerCommand] = DeviceCommandGroup.SetDeviceOwnerCommand.BlockWhenAppIsBusy;
@@ -682,7 +682,7 @@ namespace INTV.LtoFlash.View
             _blockWhenBusy[DeviceCommandGroup.SetEcsCompatibilityCommand] = DeviceCommandGroup.SetEcsCompatibilityCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetIntellivisionIICompatibilityCommand] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetKeyclicksCommand] = DeviceCommandGroup.SetKeyclicksCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetRandomizeJlpRamCommand] = DeviceCommandGroup.SetRandomizeJlpRamCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetRandomizeLtoFlashRamCommand] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[FirmwareCommandGroup.UpdateFirmwareCommand] = FirmwareCommandGroup.UpdateFirmwareCommand.BlockWhenAppIsBusy;
@@ -855,7 +855,7 @@ namespace INTV.LtoFlash.View
             SaveMenuPositionButton.Enabled = DeviceCommandGroup.SetSaveMenuPositionCommand.CanExecute(ViewModel);
             KeyclicksCheckBox.Enabled = DeviceCommandGroup.SetKeyclicksCommand.CanExecute(ViewModel);
             BackgroundGCCheckBox.Enabled = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.CanExecute(ViewModel);
-            RandomizeJlpRamCheckBox.Enabled = DeviceCommandGroup.SetRandomizeJlpRamCommand.CanExecute(ViewModel);
+            RandomizeLtoFlashRamCheckBox.Enabled = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.CanExecute(ViewModel);
             UpdateFirmwareButton.Enabled = FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(ViewModel);
         }
 
@@ -915,8 +915,8 @@ namespace INTV.LtoFlash.View
                 case Device.KeyclicksPropertyName:
                     Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
                     break;
-                case DeviceViewModel.RandomizeJlpRamPropertyName:
-                    RandomizeJlpRam = ViewModel.ActiveLtoFlashDevice.RandomizeJlpRam;
+                case DeviceViewModel.RandomizeLtoFlashRamPropertyName:
+                    RandomizeLtoFlashRam = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
                     break;
                 default:
                     break;

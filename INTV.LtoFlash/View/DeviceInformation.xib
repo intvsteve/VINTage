@@ -2022,7 +2022,7 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">RandomizeJlpRamCheckBox</string>
+						<string key="label">RandomizeLtoFlashRamCheckBox</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="859901598"/>
 					</object>
@@ -2623,15 +2623,15 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: RandomizeJlpRam</string>
+						<string key="label">value: RandomizeLtoFlashRam</string>
 						<reference key="source" ref="859901598"/>
 						<reference key="destination" ref="1001"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="859901598"/>
 							<reference key="NSDestination" ref="1001"/>
-							<string key="NSLabel">value: RandomizeJlpRam</string>
+							<string key="NSLabel">value: RandomizeLtoFlashRam</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">RandomizeJlpRam</string>
+							<string key="NSKeyPath">RandomizeLtoFlashRam</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
@@ -3758,7 +3758,7 @@
 							<reference ref="685824442"/>
 						</array>
 						<reference key="parent" ref="123026772"/>
-						<string key="objectName">Randomize JLP RAM Check Box</string>
+						<string key="objectName">Randomize RAM Check Box</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">434</int>
@@ -4035,7 +4035,7 @@ dD7igKg</bytes>
 						<string key="ECSCompatibilityButton">NSPopUpButton</string>
 						<string key="IntellivisionIICompatibilityButton">NSPopUpButton</string>
 						<string key="KeyclicksCheckBox">NSButton</string>
-						<string key="RandomizeJlpRamCheckBox">NSButton</string>
+						<string key="RandomizeLtoFlashRamCheckBox">NSButton</string>
 						<string key="RememberMenuPositionCheckBox">NSButton</string>
 						<string key="SaveMenuPositionButton">NSPopUpButton</string>
 						<string key="ShowTitleScreenButton">NSPopUpButton</string>
@@ -4082,8 +4082,8 @@ dD7igKg</bytes>
 							<string key="name">KeyclicksCheckBox</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="RandomizeJlpRamCheckBox">
-							<string key="name">RandomizeJlpRamCheckBox</string>
+						<object class="IBToOneOutletInfo" key="RandomizeLtoFlashRamCheckBox">
+							<string key="name">RandomizeLtoFlashRamCheckBox</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="RememberMenuPositionCheckBox">

@@ -2529,21 +2529,21 @@ In order to determine if a firmware update is available for your device, please 
   <data name="Firmware_CheckForFirmwareUpdateCommand_MenuItemName" xml:space="preserve">
     <value>Check for Firmware Update...</value>
   </data>
-  <data name="SetConfigurationCommand_RandomizeJlpRam_Failed_Message_Format" xml:space="preserve">
+  <data name="SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Message_Format" xml:space="preserve">
     <value>A problem occurred when setting JLP RAM randomize mode. The error was:
 
 {0}</value>
   </data>
-  <data name="SetConfigurationCommand_RandomizeJlpRam_Failed_Title" xml:space="preserve">
+  <data name="SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Title" xml:space="preserve">
     <value>Failed to Set Randomize JLP RAM Mode</value>
   </data>
-  <data name="SetRandomizeJlpRamCommand_Name" xml:space="preserve">
+  <data name="SetRandomizeLtoFlashRamCommand_Name" xml:space="preserve">
     <value>Randomize JLP RAM at ROM start</value>
   </data>
-  <data name="SetRandomizeJlpRamCommand_TipDescription" xml:space="preserve">
+  <data name="SetRandomizeLtoFlashRamCommand_TipDescription" xml:space="preserve">
     <value>When enabled, the contents of RAM provided by JLP cartridge technology will be randomized. When not enabled, the contents of JLP RAM will be set to zero. This setting only affects ROMs that use the extra RAM provided by JLP.</value>
   </data>
-  <data name="SetRandomizeJlpRamCommand_TipTitle" xml:space="preserve">
+  <data name="SetRandomizeLtoFlashRamCommand_TipTitle" xml:space="preserve">
     <value>Randomize JLP RAM at ROM Launch</value>
   </data>
 </root>

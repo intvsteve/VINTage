@@ -111,11 +111,11 @@ namespace INTV.LtoFlash.Model.Commands
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not the device sets JLP RAM to zero when loading a ROM.
+        /// Gets a value indicating whether or not the device sets LTO Flash! RAM to zero when loading a ROM.
         /// </summary>
-        public bool ZeroJlpRam
+        public bool ZeroLtoFlashRam
         {
-            get { return DeviceStatusLow.ToZeroJlpRam(); }
+            get { return DeviceStatusLow.ToZeroLtoFlashRam(); }
         }
 
         #region ByteSerializer Properties

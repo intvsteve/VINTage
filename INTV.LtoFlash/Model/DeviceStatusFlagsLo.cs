@@ -171,14 +171,14 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Configuration Menu on Cartridge
 
-        #region Zero JLP RAM on Program Launch
+        #region Zero LTO Flash! RAM on Program Launch
 
         /// <summary>
-        /// When set, the RAM for programs using JLP additional RAM is zeroed - which is the default. Otherwise, it is randomized.
+        /// When set, zero out the contents of RAM before loading a programs - which is the default. Otherwise, it is randomized.
         /// </summary>
-        ZeroJlpRam = 1ul << DeviceStatusFlagsLoHelpers.ZeroJlpRamBitsOffset,
+        ZeroRamBeforeLoad = 1ul << DeviceStatusFlagsLoHelpers.ZeroRamBeforeLoadBitsOffset,
 
-        #endregion // Zero JLP RAM on Program Launch
+        #endregion // Zero LTO Flash! RAM on Program Launch
 
         /// <summary>
         /// This mask captures all reserved status bits.
@@ -289,16 +289,16 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Enable Cartridge Configuration Menu Bits
 
-        #region Zero JLP RAM
+        #region Zero LTO Flash! RAM
 
         /// <summary>
-        /// Location in the bit array where the bit to enable or disable on-cartridge JLP RAM randomization / zeroing is set.
+        /// Location in the bit array where the bit to enable or disable on-cartridge RAM randomization / zeroing is set.
         /// </summary>
-        internal const int ZeroJlpRamBitsOffset = EnableCartConfigBitsOffset + EnableCartConfigBitCount; // (55)
+        internal const int ZeroRamBeforeLoadBitsOffset = EnableCartConfigBitsOffset + EnableCartConfigBitCount; // (55)
 
-        private const int ZerJlpRamBitCount = 1;
+        private const int ZeroRamBeforeLoadBitCount = 1;
 
-        #endregion // Zero JLP RAM
+        #endregion // Zero LTO Flash! RAM
 
         #endregion // User-Configurable Flags
 
@@ -416,14 +416,14 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Gets whether the on-cartridge JLP RAM is zeroed out or randomized out of <see cref="DeviceStatusFlagsLo"/>;.
+        /// Gets whether the on-cartridge RAM is zeroed out or randomized out of <see cref="DeviceStatusFlagsLo"/>;.
         /// </summary>
-        /// <param name="deviceStatusLo">The device status flags to get the JLP RAM zeroing setting from.</param>
-        /// <returns>If <c>true</c>, onboard JLP RAM is initialized to zero on program launch, otherwise it is randomized.</returns>
-        internal static bool ToZeroJlpRam(this DeviceStatusFlagsLo deviceStatusLo)
+        /// <param name="deviceStatusLo">The device status flags to get the RAM zeroing setting from.</param>
+        /// <returns>If <c>true</c>, onboard RAM is initialized to zero on program launch, otherwise it is randomized.</returns>
+        internal static bool ToZeroLtoFlashRam(this DeviceStatusFlagsLo deviceStatusLo)
         {
-            var zeroJlpRam = deviceStatusLo.HasFlag(DeviceStatusFlagsLo.ZeroJlpRam);
-            return zeroJlpRam;
+            var zeroLtlFlashRam = deviceStatusLo.HasFlag(DeviceStatusFlagsLo.ZeroRamBeforeLoad);
+            return zeroLtlFlashRam;
         }
 
         /// <summary>
@@ -457,9 +457,9 @@ namespace INTV.LtoFlash.Model
             {
                 deviceStatusFlagsLo |= DeviceStatusFlagsLo.Keyclicks;
             }
-            if (device.ZeroJlpRam)
+            if (device.ZeroLtoFlashRam)
             {
-                deviceStatusFlagsLo |= DeviceStatusFlagsLo.ZeroJlpRam;
+                deviceStatusFlagsLo |= DeviceStatusFlagsLo.ZeroRamBeforeLoad;
             }
             deviceStatusFlagsLo |= device.ReservedDeviceStatusFlagsLo;
             return deviceStatusFlagsLo;

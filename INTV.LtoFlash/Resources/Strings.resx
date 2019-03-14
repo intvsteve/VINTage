@@ -2538,12 +2538,12 @@ In order to determine if a firmware update is available for your device, please 
     <value>Failed to Set Randomize JLP RAM Mode</value>
   </data>
   <data name="SetRandomizeLtoFlashRamCommand_Name" xml:space="preserve">
-    <value>Randomize JLP RAM at ROM start</value>
+    <value>Randomize RAM before loading ROM</value>
   </data>
   <data name="SetRandomizeLtoFlashRamCommand_TipDescription" xml:space="preserve">
-    <value>When enabled, the contents of RAM provided by JLP cartridge technology will be randomized. When not enabled, the contents of JLP RAM will be set to zero. This setting only affects ROMs that use the extra RAM provided by JLP.</value>
+    <value>When enabled, the contents of LTO Flash! RAM will be randomized prior to loading a ROM. When not enabled, the contents of LTO Flash! RAM will be set to zero. This setting only affects ROMs that use the extra RAM.</value>
   </data>
   <data name="SetRandomizeLtoFlashRamCommand_TipTitle" xml:space="preserve">
-    <value>Randomize JLP RAM at ROM Launch</value>
+    <value>Randomize LTO Flash! RAM Before Loading ROM</value>
   </data>
 </root>

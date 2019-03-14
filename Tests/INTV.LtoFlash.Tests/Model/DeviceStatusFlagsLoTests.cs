@@ -307,7 +307,7 @@ namespace INTV.LtoFlash.Tests.Model
                 for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
                 {
                     var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
-                    var expectedZeroLtoFlashRam = i == DeviceStatusFlagsLoHelpers.ZeroLtoFlashRamBitsOffset;
+                    var expectedZeroLtoFlashRam = i == DeviceStatusFlagsLoHelpers.ZeroRamBeforeLoadBitsOffset;
                     yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedZeroLtoFlashRam };
                 }
             }
@@ -328,7 +328,7 @@ namespace INTV.LtoFlash.Tests.Model
         [InlineData(DeviceStatusFlagsLo.None, 0u)]
         [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, 0u)]
         [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.IntellivisionIIStatusAggressive | DeviceStatusFlagsLo.ConsolePowerOn, 0x00200002u)]
-        [InlineData(DeviceStatusFlagsLo.ZeroLtoFlashRam | (DeviceStatusFlagsLo)0x8000000000000000ul | DeviceStatusFlagsLo.SaveMenuPositionMask | DeviceStatusFlagsLo.EcsStatusDisabled, 0x808C0300u)]
+        [InlineData(DeviceStatusFlagsLo.ZeroRamBeforeLoad | (DeviceStatusFlagsLo)0x8000000000000000ul | DeviceStatusFlagsLo.SaveMenuPositionMask | DeviceStatusFlagsLo.EcsStatusDisabled, 0x808C0300u)]
         public void DeviceStatusFlagsLo_ToConfigurationFlags_ReturnsExpectedBits(DeviceStatusFlagsLo statusFlagsLo, uint expectedConfigurationBits)
         {
             var actualConfigurationBits = statusFlagsLo.ToConfigurationFlags();

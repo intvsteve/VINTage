@@ -297,9 +297,9 @@ namespace INTV.LtoFlash.Tests.Model
 
         #endregion // Enable Onboard Configuration Menu Flag Tests
 
-        #region Enable JLP RAM Zeroing Flag Tests
+        #region Enable RAM Zeroing Flag Tests
 
-        public static IEnumerable<object[]> DeviceStatusFlagsLoToZeroJlpRamTestData
+        public static IEnumerable<object[]> DeviceStatusFlagsLoToZeroLtoFlashRamTestData
         {
             get
             {
@@ -307,28 +307,28 @@ namespace INTV.LtoFlash.Tests.Model
                 for (var i = 0; i < sizeof(DeviceStatusFlagsLo) * 8; ++i)
                 {
                     var deviceStatusFlagsLo = (DeviceStatusFlagsLo)(1ul << i);
-                    var expectedZeroJlpRam = i == DeviceStatusFlagsLoHelpers.ZeroJlpRamBitsOffset;
-                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedZeroJlpRam };
+                    var expectedZeroLtoFlashRam = i == DeviceStatusFlagsLoHelpers.ZeroLtoFlashRamBitsOffset;
+                    yield return new object[] { (object)deviceStatusFlagsLo, (object)expectedZeroLtoFlashRam };
                 }
             }
         }
 
         [Theory]
-        [MemberData("DeviceStatusFlagsLoToZeroJlpRamTestData")]
-        public void DeviceStatusFlagsLo_ToZeroJlpRam_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, bool expectedZeroJlpRam)
+        [MemberData("DeviceStatusFlagsLoToZeroLtoFlashRamTestData")]
+        public void DeviceStatusFlagsLo_ToZeroLtoFlashRam_ReturnsExpectedFlags(DeviceStatusFlagsLo statusFlagsLo, bool expectedZeroLtoFlashRam)
         {
-            var actualZeroJlpRam = statusFlagsLo.ToZeroJlpRam();
+            var actualZeroLtoFlashRam = statusFlagsLo.ToZeroLtoFlashRam();
 
-            Assert.Equal(expectedZeroJlpRam, actualZeroJlpRam);
+            Assert.Equal(expectedZeroLtoFlashRam, actualZeroLtoFlashRam);
         }
 
-        #endregion // Enable JLP RAM Zeroing Flag Tests
+        #endregion // Enable RAM Zeroing Flag Tests
 
         [Theory]
         [InlineData(DeviceStatusFlagsLo.None, 0u)]
         [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, 0u)]
         [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.IntellivisionIIStatusAggressive | DeviceStatusFlagsLo.ConsolePowerOn, 0x00200002u)]
-        [InlineData(DeviceStatusFlagsLo.ZeroJlpRam | (DeviceStatusFlagsLo)0x8000000000000000ul | DeviceStatusFlagsLo.SaveMenuPositionMask | DeviceStatusFlagsLo.EcsStatusDisabled, 0x808C0300u)]
+        [InlineData(DeviceStatusFlagsLo.ZeroLtoFlashRam | (DeviceStatusFlagsLo)0x8000000000000000ul | DeviceStatusFlagsLo.SaveMenuPositionMask | DeviceStatusFlagsLo.EcsStatusDisabled, 0x808C0300u)]
         public void DeviceStatusFlagsLo_ToConfigurationFlags_ReturnsExpectedBits(DeviceStatusFlagsLo statusFlagsLo, uint expectedConfigurationBits)
         {
             var actualConfigurationBits = statusFlagsLo.ToConfigurationFlags();

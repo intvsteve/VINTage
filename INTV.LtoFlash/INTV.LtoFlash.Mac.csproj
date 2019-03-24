@@ -155,6 +155,7 @@
     <Compile Include="Model\DeviceCommandAvailability.cs" />
     <Compile Include="Model\DeviceCreationInfo.cs" />
     <Compile Include="Model\DeviceHelpers.cs" />
+    <Compile Include="Model\DeviceStatusFlags.cs" />
     <Compile Include="Model\DeviceStatusFlagsHi.cs" />
     <Compile Include="Model\DeviceStatusFlagsLo.cs" />
     <Compile Include="Model\EcsStatusFlags.cs" />

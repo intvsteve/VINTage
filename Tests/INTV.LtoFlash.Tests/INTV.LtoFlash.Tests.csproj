@@ -63,6 +63,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Model\DeviceStatusFlagsLoTests.cs" />
+    <Compile Include="Model\DeviceStatusFlagsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

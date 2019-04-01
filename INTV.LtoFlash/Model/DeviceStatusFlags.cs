@@ -258,6 +258,124 @@ namespace INTV.LtoFlash.Model
 
         #endregion //  Bitwise XOR operators
 
+        #region Equality operators
+
+        /// <summary>
+        /// Equality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal.</returns>
+        public static bool operator ==(DeviceStatusFlags lhs, DeviceStatusFlags rhs)
+        {
+            return (lhs.Lo == rhs.Lo) && (lhs.Hi == rhs.Hi);
+        }
+
+        /// <summary>
+        /// Equality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal. Note that this implies that <see cref="DeviceStatusFlags.Hi"/> is <see cref="DeviceStatusFlagsHi.None"/>.</returns>
+        public static bool operator ==(DeviceStatusFlags lhs, DeviceStatusFlagsLo rhs)
+        {
+            return (lhs.Lo == rhs) && (lhs.Hi == DeviceStatusFlagsHi.None);
+        }
+
+        /// <summary>
+        /// Equality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal. Note that this implies that <see cref="DeviceStatusFlags.Hi"/> is <see cref="DeviceStatusFlagsHi.None"/>.</returns>
+        public static bool operator ==(DeviceStatusFlagsLo lhs, DeviceStatusFlags rhs)
+        {
+            return rhs == lhs;
+        }
+
+        /// <summary>
+        /// Equality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal. Note that this implies that <see cref="DeviceStatusFlags.Lo"/> is <see cref="DeviceStatusFlagsLo.None"/>.</returns>
+        public static bool operator ==(DeviceStatusFlags lhs, DeviceStatusFlagsHi rhs)
+        {
+            return (lhs.Lo == DeviceStatusFlagsLo.None) && (lhs.Hi == rhs);
+        }
+
+        /// <summary>
+        /// Equality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal. Note that this implies that <see cref="DeviceStatusFlags.Lo"/> is <see cref="DeviceStatusFlagsLo.None"/>.</returns>
+        public static bool operator ==(DeviceStatusFlagsHi lhs, DeviceStatusFlags rhs)
+        {
+            return rhs == lhs;
+        }
+
+        #endregion // Equality operators
+
+        #region Inequality operators
+
+        /// <summary>
+        /// Inequality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal.</returns>
+        public static bool operator !=(DeviceStatusFlags lhs, DeviceStatusFlags rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        /// <summary>
+        /// Inequality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal. Note that this implies that <see cref="DeviceStatusFlags.Hi"/> is <see cref="DeviceStatusFlagsHi.None"/>.</returns>
+        public static bool operator !=(DeviceStatusFlags lhs, DeviceStatusFlagsLo rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        /// <summary>
+        /// Inequality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal. Note that this implies that <see cref="DeviceStatusFlags.Hi"/> is <see cref="DeviceStatusFlagsHi.None"/>.</returns>
+        public static bool operator !=(DeviceStatusFlagsLo lhs, DeviceStatusFlags rhs)
+        {
+            return !(rhs == lhs);
+        }
+
+        /// <summary>
+        /// Inequality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal. Note that this implies that <see cref="DeviceStatusFlags.Lo"/> is <see cref="DeviceStatusFlagsLo.None"/>.</returns>
+        public static bool operator !=(DeviceStatusFlags lhs, DeviceStatusFlagsHi rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        /// <summary>
+        /// Inequality operator for <see cref="DeviceStatusFlags"/>.
+        /// </summary>
+        /// <param name="lhs">Left side value provided to operator.</param>
+        /// <param name="rhs">Right side value provided to operator.</param>
+        /// <returns><c>true</c> if all flags in both instances are equal. Note that this implies that <see cref="DeviceStatusFlags.Lo"/> is <see cref="DeviceStatusFlagsLo.None"/>.</returns>
+        public static bool operator !=(DeviceStatusFlagsHi lhs, DeviceStatusFlags rhs)
+        {
+            return !(rhs == lhs);
+        }
+
+        #endregion // Inequality operators
+
         #region Bitwise Complement operator
 
         /// <summary>
@@ -381,7 +499,30 @@ namespace INTV.LtoFlash.Model
             return flagsString;
         }
 
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            var equals = obj is DeviceStatusFlags;
+            if (equals)
+            {
+                var other = (DeviceStatusFlags)obj;
+                equals = (Lo == other.Lo) && (Hi == other.Hi);
+            }
+            return equals;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return CombineHashCodes(Lo.GetHashCode(), Hi.GetHashCode());
+        }
+
         #endregion // object overrides
+
+        private static int CombineHashCodes(int h1, int h2)
+        {
+            return ((h1 << 5) + h1) ^ h2;
+        }
 
         private static FlagsStringPart ValidateStringPartsForParse(string[] parts, bool validatePartsType)
         {

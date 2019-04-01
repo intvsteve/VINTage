@@ -298,6 +298,142 @@ namespace INTV.LtoFlash.Tests.Model
         }
 
         [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, true)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory, false)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, false)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks, DeviceStatusFlagsHi.FlagsHaveBeenSet, false)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.ResetMenuHistory | DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.FlagsHaveBeenSet | DeviceStatusFlagsHi.ResetMenuHistory, true)]
+        public void DeviceStatusFlags_Equality_ReturnsExpectedResult(DeviceStatusFlagsLo lhsLoFlags, DeviceStatusFlagsHi lhsHiFlags, DeviceStatusFlagsLo rhsLoFlags, DeviceStatusFlagsHi rhsHiFlags, bool expectedResult)
+        {
+            var lhsFlags = new DeviceStatusFlags(lhsLoFlags, lhsHiFlags);
+            var rhsFlags = new DeviceStatusFlags(rhsLoFlags, rhsHiFlags);
+
+            var result0 = lhsFlags == rhsFlags;
+            var result1 = rhsFlags == lhsFlags;
+
+            Assert.Equal(expectedResult, result0);
+            Assert.Equal(expectedResult, result1);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, true)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.HardwareStatusFlagsMask, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, DeviceStatusFlagsLo.None, false)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, false)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, false)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsLo.EcsStatusDisabled, false)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks, false)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.ResetMenuHistory | DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, false)]
+        public void DeviceStatusFlags_EqualityLoFlags_ReturnsExpectedResult(DeviceStatusFlagsLo lhsLoFlags, DeviceStatusFlagsHi lhsHiFlags, DeviceStatusFlagsLo rhsLoFlags, bool expectedResult)
+        {
+            var lhsFlags = new DeviceStatusFlags(lhsLoFlags, lhsHiFlags);
+
+            var result0 = lhsFlags == rhsLoFlags;
+            var result1 = rhsLoFlags == lhsFlags;
+
+            Assert.Equal(expectedResult, result0);
+            Assert.Equal(expectedResult, result1);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, DeviceStatusFlagsHi.ReservedMask, true)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.ResetMenuHistory, false)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.FlagsHaveBeenSet, false)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsHi.FlagsHaveBeenSet, false)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.ResetMenuHistory | DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsHi.FlagsHaveBeenSet | DeviceStatusFlagsHi.ResetMenuHistory, false)]
+        public void DeviceStatusFlags_EqualityHiFlags_ReturnsExpectedResult(DeviceStatusFlagsLo lhsLoFlags, DeviceStatusFlagsHi lhsHiFlags, DeviceStatusFlagsHi rhsHiFlags, bool expectedResult)
+        {
+            var lhsFlags = new DeviceStatusFlags(lhsLoFlags, lhsHiFlags);
+
+            var result0 = lhsFlags == rhsHiFlags;
+            var result1 = rhsHiFlags == lhsFlags;
+
+            Assert.Equal(expectedResult, result0);
+            Assert.Equal(expectedResult, result1);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, false)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory, true)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, true)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks, DeviceStatusFlagsHi.FlagsHaveBeenSet, true)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.ResetMenuHistory | DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.FlagsHaveBeenSet | DeviceStatusFlagsHi.ResetMenuHistory, false)]
+        public void DeviceStatusFlags_Inequality_ReturnsExpectedResult(DeviceStatusFlagsLo lhsLoFlags, DeviceStatusFlagsHi lhsHiFlags, DeviceStatusFlagsLo rhsLoFlags, DeviceStatusFlagsHi rhsHiFlags, bool expectedResult)
+        {
+            var lhsFlags = new DeviceStatusFlags(lhsLoFlags, lhsHiFlags);
+            var rhsFlags = new DeviceStatusFlags(rhsLoFlags, rhsHiFlags);
+
+            var result0 = lhsFlags != rhsFlags;
+            var result1 = rhsFlags != lhsFlags;
+
+            Assert.Equal(expectedResult, result0);
+            Assert.Equal(expectedResult, result1);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, false)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.HardwareStatusFlagsMask, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, DeviceStatusFlagsLo.None, true)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, true)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, true)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsLo.EcsStatusDisabled, true)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks, true)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.ResetMenuHistory | DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, true)]
+        public void DeviceStatusFlags_InequalityLoFlags_ReturnsExpectedResult(DeviceStatusFlagsLo lhsLoFlags, DeviceStatusFlagsHi lhsHiFlags, DeviceStatusFlagsLo rhsLoFlags, bool expectedResult)
+        {
+            var lhsFlags = new DeviceStatusFlags(lhsLoFlags, lhsHiFlags);
+
+            var result0 = lhsFlags != rhsLoFlags;
+            var result1 = rhsLoFlags != lhsFlags;
+
+            Assert.Equal(expectedResult, result0);
+            Assert.Equal(expectedResult, result1);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, DeviceStatusFlagsHi.ReservedMask, false)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.ResetMenuHistory, true)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.None, DeviceStatusFlagsHi.FlagsHaveBeenSet, true)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsHi.FlagsHaveBeenSet, true)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.ResetMenuHistory | DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsHi.FlagsHaveBeenSet | DeviceStatusFlagsHi.ResetMenuHistory, true)]
+        public void DeviceStatusFlags_InequalityHiFlags_ReturnsExpectedResult(DeviceStatusFlagsLo lhsLoFlags, DeviceStatusFlagsHi lhsHiFlags, DeviceStatusFlagsHi rhsHiFlags, bool expectedResult)
+        {
+            var lhsFlags = new DeviceStatusFlags(lhsLoFlags, lhsHiFlags);
+
+            var result0 = lhsFlags != rhsHiFlags;
+            var result1 = rhsHiFlags != lhsFlags;
+
+            Assert.Equal(expectedResult, result0);
+            Assert.Equal(expectedResult, result1);
+        }
+
+        [Theory]
         [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, ~DeviceStatusFlagsLo.None, ~DeviceStatusFlagsHi.None)]
         [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, ~DeviceStatusFlagsLo.HardwareStatusFlagsMask, ~DeviceStatusFlagsHi.None)]
         [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, ~DeviceStatusFlagsLo.None, ~DeviceStatusFlagsHi.ReservedMask)]
@@ -417,6 +553,67 @@ namespace INTV.LtoFlash.Tests.Model
             Assert.Equal(expectedSuccess, success);
             var expectedFlags = new DeviceStatusFlags(expectedLowFlags, expectedHighFlags);
             Assert.Equal(expectedFlags, flags);
+        }
+
+        [Fact]
+        public void DeviceStatusFlags_EqualsNull_ReturnsFalse()
+        {
+            var flags = new DeviceStatusFlags();
+
+            var equal = flags.Equals(null);
+
+            Assert.False(equal);
+        }
+
+        [Fact]
+        public void DeviceStatusFlags_EqualsNonDeviceStatusFlagsObject_ReturnsFalse()
+        {
+            var flags = new DeviceStatusFlags();
+
+            var equal = flags.Equals(this);
+
+            Assert.False(equal);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None, true)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask, true)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory, false)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.IntellivisionIIStatusAggressive, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.ResetMenuHistory, DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.None, false)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.None, DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, false)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks, DeviceStatusFlagsHi.FlagsHaveBeenSet, false)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.ResetMenuHistory | DeviceStatusFlagsHi.FlagsHaveBeenSet, DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.FlagsHaveBeenSet | DeviceStatusFlagsHi.ResetMenuHistory, true)]
+        public void DeviceStatusFlags_EqualsDeviceStatusFlagsAsObject_ReturnsExpectedResult(DeviceStatusFlagsLo lowFlags, DeviceStatusFlagsHi highFlags, DeviceStatusFlagsLo objectLowFlags, DeviceStatusFlagsHi objectHighFlags, bool expectedResult)
+        {
+            var flags = new DeviceStatusFlags(lowFlags, highFlags);
+            object objectFlags = new DeviceStatusFlags(objectLowFlags, objectHighFlags);
+
+            var result = flags.Equals(objectFlags);
+
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask, DeviceStatusFlagsHi.None)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ReservedMask)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled, DeviceStatusFlagsHi.ResetMenuHistory)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.ResetMenuHistory | DeviceStatusFlagsHi.FlagsHaveBeenSet)]
+        public void DeviceStatusFlags_GetHashCode_ProducesExpectedResult(DeviceStatusFlagsLo lowFlags, DeviceStatusFlagsHi highFlags)
+        {
+            var flags = new DeviceStatusFlags(lowFlags, highFlags);
+            var hash = flags.GetHashCode();
+
+            var lowHash = lowFlags.GetHashCode();
+            var highHash = highFlags.GetHashCode();
+            var expectedHash = ((lowHash << 5) + lowHash) ^ highHash;
+
+            Assert.Equal(expectedHash, hash);
         }
     }
 }

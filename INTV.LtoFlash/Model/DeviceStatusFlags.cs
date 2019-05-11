@@ -490,6 +490,53 @@ namespace INTV.LtoFlash.Model
 
         #endregion // HasFlag
 
+        /// <summary>
+        /// Gets the minimum required firmware version for the given configurable feature.
+        /// </summary>
+        /// <returns>The minimum firmware version required for the feature; or <c>0</c> if the feature is available in all firmware versions.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> specified more than one configurable feature, or hardware status.</exception>
+        public int GetMinimumRequiredFirmareVersionForFeature()
+        {
+            if ((Lo != DeviceStatusFlagsLo.None) && (Hi != DeviceStatusFlagsHi.None))
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            var minimumRequireFirmwareVersion = 0;
+            if (Lo != DeviceStatusFlagsLo.None)
+            {
+                minimumRequireFirmwareVersion = Lo.GetMinimumRequiredFirmareVersionForFeature();
+            }
+            else if (Hi != DeviceStatusFlagsHi.None)
+            {
+                minimumRequireFirmwareVersion = Hi.GetMinimumRequiredFirmareVersionForFeature();
+            }
+            return minimumRequireFirmwareVersion;
+        }
+
+        /// <summary>
+        /// Determines if the given configurable feature is available in the specified firmware revision.
+        /// </summary>
+        /// <param name="currentFirmwareVersion">Current firmware version.</param>
+        /// <returns><c>true</c> if the configurable feature is available for the specified firmware version; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> has multiple configurable features specified.</exception>
+        public bool IsConfigurableFeatureAvailable(int currentFirmwareVersion)
+        {
+            if ((Lo != DeviceStatusFlagsLo.None) && (Hi != DeviceStatusFlagsHi.None))
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            var featureAvailable = currentFirmwareVersion > 0;
+            if (Lo != DeviceStatusFlagsLo.None)
+            {
+                featureAvailable = Lo.IsConfigurableFeatureAvailable(currentFirmwareVersion);
+            }
+            else if (Hi != DeviceStatusFlagsHi.None)
+            {
+                featureAvailable = Hi.IsConfigurableFeatureAvailable(currentFirmwareVersion);
+            }
+            return featureAvailable;
+        }
+
         #region object overrides
 
         /// <inheritdoc />

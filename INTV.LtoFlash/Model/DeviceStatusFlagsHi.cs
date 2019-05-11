@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceStatusFlagsHi.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -17,6 +17,8 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
+
+using System.Collections.Generic;
 
 namespace INTV.LtoFlash.Model
 {
@@ -61,6 +63,45 @@ namespace INTV.LtoFlash.Model
     internal static class DeviceStatusFlagsHiHelpers
     {
         /// <summary>
+        /// The firmware-version-specific configurable features.
+        /// </summary>
+        /// <remarks>Only configurable features introduced after the initial product release are included in this dictionary.</remarks>
+        private static readonly Dictionary<DeviceStatusFlagsHi, int> VersionSpecificConfigurableFeatures = new Dictionary<DeviceStatusFlagsHi, int>()
+        {
+        };
+
+        /// <summary>
+        /// Gets the minimum required firmware version for the given configurable feature.
+        /// </summary>
+        /// <param name="feature">The feature whose minimum required firmware version is desired.</param>
+        /// <returns>The minimum firmware version required for the feature; or <c>0</c> if the feature is available in all firmware versions.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> specified more than one configurable feature, or hardware status.</exception>
+        internal static int GetMinimumRequiredFirmareVersionForFeature(this DeviceStatusFlagsHi feature)
+        {
+            ValidateFeatureBits(feature);
+            int requiredFirmwareVersion;
+            if (!VersionSpecificConfigurableFeatures.TryGetValue(feature, out requiredFirmwareVersion))
+            {
+                requiredFirmwareVersion = 0;
+            }
+            return requiredFirmwareVersion;
+        }
+
+        /// <summary>
+        /// Determines if the given configurable feature is available in the specified firmware revision.
+        /// </summary>
+        /// <param name="feature">The feature whose availability is desired.</param>
+        /// <param name="currentFirmwareVersion">Current firmware version.</param>
+        /// <returns><c>true</c> if the configurable feature is available for the specified firmware version; otherwise, <c>false</c>.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> specified more than one configurable feature, or hardware status.</exception>
+        internal static bool IsConfigurableFeatureAvailable(this DeviceStatusFlagsHi feature, int currentFirmwareVersion)
+        {
+            ValidateFeatureBits(feature);
+            var featureAvailable = (currentFirmwareVersion > 0) && (VersionSpecificConfigurableFeatures.Count > 0) && (currentFirmwareVersion >= feature.GetMinimumRequiredFirmareVersionForFeature());
+            return featureAvailable;
+        }
+
+        /// <summary>
         /// Gets the low 32 bits from the status.
         /// </summary>
         /// <param name="deviceStatusHi">The device status flags to get the low part from.</param>
@@ -78,6 +119,26 @@ namespace INTV.LtoFlash.Model
         internal static uint GetHighBits(this DeviceStatusFlagsHi deviceStatusHi)
         {
             return (uint)(((ulong)deviceStatusHi >> 32) & 0x00000000FFFFFFFF);
+        }
+
+        private static void ValidateFeatureBits(DeviceStatusFlagsHi feature)
+        {
+            var numFeatures = 0;
+            if (feature != DeviceStatusFlagsHi.None)
+            {
+                if ((feature & DeviceStatusFlagsHi.ResetMenuHistory) != DeviceStatusFlagsHi.None)
+                {
+                    numFeatures += 2; // Totally bogus - should not have this flag!
+                }
+                if ((feature & DeviceStatusFlagsHi.FlagsHaveBeenSet) != DeviceStatusFlagsHi.None)
+                {
+                    numFeatures += 2; // Totally bogus - should not have this flag!
+                }
+            }
+            if (numFeatures > 1)
+            {
+                throw new System.ArgumentOutOfRangeException();
+            }
         }
     }
 }

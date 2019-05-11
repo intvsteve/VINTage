@@ -335,5 +335,39 @@ namespace INTV.LtoFlash.Tests.Model
 
             Assert.Equal(expectedConfigurationBits, actualConfigurationBits);
         }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, 0, false)]
+        [InlineData(DeviceStatusFlagsLo.None, 1, true)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks, 0, false)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks, -1, false)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks, 1000000, true)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusMask, 1, true)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusMask, 10, true)]
+        [InlineData(DeviceStatusFlagsLo.ShowTitleScreenMask, 369, true)]
+        [InlineData(DeviceStatusFlagsLo.SaveMenuPositionMask, 2058, true)]
+        [InlineData(DeviceStatusFlagsLo.BackgroundGC, 698, true)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, 3993, false)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, 3994, true)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, 3995, true)]
+        [InlineData(DeviceStatusFlagsLo.ZeroRamBeforeLoad, 4416, false)]
+        [InlineData(DeviceStatusFlagsLo.ZeroRamBeforeLoad, 4600, false)] // TODO: UPDATE when released
+        [InlineData(DeviceStatusFlagsLo.ZeroRamBeforeLoad, 10000, true)]
+        public void DeviceStatusFlagsLo_IsConfigurableFeatureAvailableForFirmwareVersion_ReturnsExpectedResult(DeviceStatusFlagsLo feature, int firmwareVersion, bool expectedAvailability)
+        {
+            var isAvailable = feature.IsConfigurableFeatureAvailable(firmwareVersion);
+
+            Assert.Equal(expectedAvailability, isAvailable);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.ConsolePowerOn)]
+        [InlineData(DeviceStatusFlagsLo.HardwareStatusFlagsMask)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks | DeviceStatusFlagsLo.BackgroundGC)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusDisabled | DeviceStatusFlagsLo.IntellivisionIIStatusAggressive)]
+        public void DeviceStatusFlagsLo_IsConfigurableFeatureAvailableForFirmwareVersion_ThrowsArgumentOutOfRangeException(DeviceStatusFlagsLo features)
+        {
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => features.IsConfigurableFeatureAvailable(0));
+        }
     }
 }

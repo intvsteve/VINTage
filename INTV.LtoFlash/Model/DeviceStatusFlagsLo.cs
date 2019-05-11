@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Generic;
+
 namespace INTV.LtoFlash.Model
 {
     /// <summary>
@@ -289,7 +291,7 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Enable Cartridge Configuration Menu Bits
 
-        #region Zero LTO Flash! RAM
+        #region Zero LTO Flash! RAM Bits
 
         /// <summary>
         /// Location in the bit array where the bit to enable or disable on-cartridge RAM randomization / zeroing is set.
@@ -298,9 +300,50 @@ namespace INTV.LtoFlash.Model
 
         private const int ZeroRamBeforeLoadBitCount = 1;
 
-        #endregion // Zero LTO Flash! RAM
+        #endregion // Zero LTO Flash! RAM Bits
 
         #endregion // User-Configurable Flags
+
+        /// <summary>
+        /// The firmware-version-specific configurable features.
+        /// </summary>
+        /// <remarks>Only configurable features introduced after the initial product release are included in this dictionary.</remarks>
+        private static readonly Dictionary<DeviceStatusFlagsLo, int> VersionSpecificConfigurableFeatures = new Dictionary<DeviceStatusFlagsLo, int>()
+        {
+            { DeviceStatusFlagsLo.EnableCartConfig, 3994 }, // based on FW release notes
+            { DeviceStatusFlagsLo.ZeroRamBeforeLoad, 10000 },
+        };
+
+        /// <summary>
+        /// Gets the minimum required firmware version for the given configurable feature.
+        /// </summary>
+        /// <param name="feature">The feature whose minimum required firmware version is desired.</param>
+        /// <returns>The minimum firmware version required for the feature; or <c>0</c> if the feature is available in all firmware versions.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> specified more than one configurable feature, or hardware status.</exception>
+        internal static int GetMinimumRequiredFirmareVersionForFeature(this DeviceStatusFlagsLo feature)
+        {
+            ValidateFeatureBits(feature);
+            int requiredFirmwareVersion;
+            if (!VersionSpecificConfigurableFeatures.TryGetValue(feature, out requiredFirmwareVersion))
+            {
+                requiredFirmwareVersion = 0;
+            }
+            return requiredFirmwareVersion;
+        }
+
+        /// <summary>
+        /// Determines if the given configurable feature is available in the specified firmware revision.
+        /// </summary>
+        /// <param name="feature">The feature whose availability is desired.</param>
+        /// <param name="currentFirmwareVersion">Current firmware version.</param>
+        /// <returns><c>true</c> if the configurable feature is available for the specified firmware version; otherwise, <c>false</c>.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> specified more than one configurable feature, or hardware status.</exception>
+        internal static bool IsConfigurableFeatureAvailable(this DeviceStatusFlagsLo feature, int currentFirmwareVersion)
+        {
+            ValidateFeatureBits(feature);
+            var featureAvailable = (currentFirmwareVersion > 0) && currentFirmwareVersion >= feature.GetMinimumRequiredFirmareVersionForFeature();
+            return featureAvailable;
+        }
 
         /// <summary>
         /// Gets the hardware status flags out of <see cref="DeviceStatusFlagsLo"/>.
@@ -463,6 +506,54 @@ namespace INTV.LtoFlash.Model
             }
             deviceStatusFlagsLo |= device.ReservedDeviceStatusFlagsLo;
             return deviceStatusFlagsLo;
+        }
+
+        private static void ValidateFeatureBits(DeviceStatusFlagsLo feature)
+        {
+            var numFeatures = 0;
+            if (feature != DeviceStatusFlagsLo.None)
+            {
+                if ((feature & DeviceStatusFlagsLo.HardwareStatusFlagsMask) != DeviceStatusFlagsLo.None)
+                {
+                    numFeatures += 32; // Totally bogus - should not have hardware flags!
+                }
+                if ((feature & DeviceStatusFlagsLo.IntellivisionIIStatusMask) != DeviceStatusFlagsLo.None)
+                {
+                    ++numFeatures;
+                }
+                if ((feature & DeviceStatusFlagsLo.EcsStatusMask) != DeviceStatusFlagsLo.None)
+                {
+                    ++numFeatures;
+                }
+                if ((feature & DeviceStatusFlagsLo.ShowTitleScreenMask) != DeviceStatusFlagsLo.None)
+                {
+                    ++numFeatures;
+                }
+                if ((feature & DeviceStatusFlagsLo.SaveMenuPositionMask) != DeviceStatusFlagsLo.None)
+                {
+                    ++numFeatures;
+                }
+                if (feature.ToBackgroundGC())
+                {
+                    ++numFeatures;
+                }
+                if (feature.ToKeyclicks())
+                {
+                    ++numFeatures;
+                }
+                if (feature.ToEnableOnboardConfigMenu())
+                {
+                    ++numFeatures;
+                }
+                if (feature.ToZeroLtoFlashRam())
+                {
+                    ++numFeatures;
+                }
+            }
+            if (numFeatures > 1)
+            {
+                throw new System.ArgumentOutOfRangeException();
+            }
         }
     }
 }

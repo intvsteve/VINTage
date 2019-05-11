@@ -615,5 +615,65 @@ namespace INTV.LtoFlash.Tests.Model
 
             Assert.Equal(expectedHash, hash);
         }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, 0)]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusMask, DeviceStatusFlagsHi.None, 0)]
+        [InlineData(DeviceStatusFlagsLo.EcsStatusMask, DeviceStatusFlagsHi.None, 0)]
+        [InlineData(DeviceStatusFlagsLo.ShowTitleScreenMask, DeviceStatusFlagsHi.None, 0)]
+        [InlineData(DeviceStatusFlagsLo.SaveMenuPositionMask, DeviceStatusFlagsHi.None, 0)]
+        [InlineData(DeviceStatusFlagsLo.BackgroundGC, DeviceStatusFlagsHi.None, 0)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks, DeviceStatusFlagsHi.None, 0)]
+        [InlineData(DeviceStatusFlagsLo.EnableCartConfig, DeviceStatusFlagsHi.None, 3994)]
+        [InlineData(DeviceStatusFlagsLo.ZeroRamBeforeLoad, DeviceStatusFlagsHi.None, 10000)]
+        [InlineData(DeviceStatusFlagsLo.None, (DeviceStatusFlagsHi)1, 0)] // BOGUS
+        public void DeviceStatusFlags_GetMinimumRequiredFirmareVersionForFeature_ReturnsExpectedResult(DeviceStatusFlagsLo lowFlags, DeviceStatusFlagsHi highFlags, int expectedMinimumRequiredFirmwareVersion)
+        {
+            var feature = new DeviceStatusFlags(lowFlags, highFlags);
+
+            var minimumRequiredFirmwareVersion = feature.GetMinimumRequiredFirmareVersionForFeature();
+
+            Assert.Equal(expectedMinimumRequiredFirmwareVersion, minimumRequiredFirmwareVersion);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusMask, DeviceStatusFlagsHi.FlagsHaveBeenSet)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks, DeviceStatusFlagsHi.ResetMenuHistory)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.FlagsHaveBeenSet)]
+        public void DeviceStatusFlags_GetMinimumRequiredFirmareVersionForFeature_ThrowsArgumentOutOfRangeException(DeviceStatusFlagsLo lowFlags, DeviceStatusFlagsHi highFlags)
+        {
+            var features = new DeviceStatusFlags(lowFlags, highFlags);
+
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => features.GetMinimumRequiredFirmareVersionForFeature());
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, 0, false)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.None, 1, true)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks, DeviceStatusFlagsHi.None, 0, false)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks, DeviceStatusFlagsHi.None, 1, true)]
+        [InlineData(DeviceStatusFlagsLo.None, (DeviceStatusFlagsHi)1, 0, false)] // BOGUS
+        [InlineData(DeviceStatusFlagsLo.None, (DeviceStatusFlagsHi)1, 1, false)] // BOGUS
+        public void DeviceStatusFlags_IsConfigurableFeatureAvailable_ReturnsExpectedResult(DeviceStatusFlagsLo lowFlags, DeviceStatusFlagsHi highFlags, int firmwareVersion, bool expectedAvailability)
+        {
+            var feature = new DeviceStatusFlags(lowFlags, highFlags);
+
+            var isAvailable = feature.IsConfigurableFeatureAvailable(firmwareVersion);
+
+            Assert.Equal(expectedAvailability, isAvailable);
+        }
+
+        [Theory]
+        [InlineData(DeviceStatusFlagsLo.IntellivisionIIStatusMask, DeviceStatusFlagsHi.FlagsHaveBeenSet)]
+        [InlineData(DeviceStatusFlagsLo.Keyclicks, DeviceStatusFlagsHi.ResetMenuHistory)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.ResetMenuHistory)]
+        [InlineData(DeviceStatusFlagsLo.None, DeviceStatusFlagsHi.FlagsHaveBeenSet)]
+        public void DeviceStatusFlags_IsConfigurableFeatureAvailableForFirmwareVersion_ThrowsArgumentOutOfRangeException(DeviceStatusFlagsLo lowFlags, DeviceStatusFlagsHi highFlags)
+        {
+            var features = new DeviceStatusFlags(lowFlags, highFlags);
+
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => features.IsConfigurableFeatureAvailable(0));
+        }
     }
 }

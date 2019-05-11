@@ -1,4 +1,4 @@
-// <copyright file="Device.cs" company="INTV Funhouse">
+﻿// <copyright file="Device.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -510,6 +510,14 @@ namespace INTV.LtoFlash.Model
         /// Gets or sets a value indicating whether the heartbeat actions also collect file system information.
         /// </summary>
         internal bool UpdateFileSystemStatsDuringHeartbeat { get; set; }
+
+        /// <summary>
+        /// Gets the current device status flags.
+        /// </summary>
+        internal DeviceStatusFlags DeviceStatusFlags
+        {
+            get { return new DeviceStatusFlags(this.ComposeStatusFlagsLo(), DeviceStatusFlagsHi); }
+        }
 
         /// <summary>
         /// Gets or sets reserved status flags from the low 64 bits of the status.

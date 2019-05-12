@@ -418,7 +418,7 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// The command to set whether or not to randomize LTO Flash! RAM when launching a ROM  .
         /// </summary>
-        public static readonly VisualDeviceCommand SetRandomizeLtoFlashRamCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetRandomizeLtoFlashRamCommand)
+        public static readonly VisualDeviceCommand SetRandomizeLtoFlashRamCommand = new VisualDeviceCommand(OnSetRandomizeLtoFlashRamCommand, CanSetRandomizeLtoFlashRamCommand)
         {
             UniqueId = UniqueNameBase + ".SetRandomizeLtoFlashRamCommand",
             Name = Resources.Strings.SetRandomizeLtoFlashRamCommand_Name,
@@ -427,8 +427,15 @@ namespace INTV.LtoFlash.Commands
             ToolTipDescription = Resources.Strings.SetRandomizeLtoFlashRamCommand_TipDescription,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             PreferredParameterType = typeof(LtoFlashViewModel),
-            RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
+            RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands,
+            ConfigurationBits = new DeviceStatusFlags(DeviceStatusFlagsLo.ZeroRamBeforeLoad)
         };
+
+        private static void OnSetRandomizeLtoFlashRamCommand(object parameter)
+        {
+            var ltoFlashViewModel = parameter as LtoFlashViewModel;
+            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
+        }
 
         private static bool CanSetRandomizeLtoFlashRamCommand(object parameter)
         {

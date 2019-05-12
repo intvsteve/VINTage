@@ -28,7 +28,8 @@
     Margin="2,-2,0,0" Label="{Binding Path=Name, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"
     SmallImageSource="{Binding Path=SmallIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"
     IsChecked="{Binding LtoFlash.ActiveLtoFlashDevice.RandomizeLtoFlashRam}"
-    IsEnabled="{Binding Path=LtoFlash.ActiveLtoFlashDevice.IsConfigurable}"
+    Command="{x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}"
+    CommandParameter="{Binding Path=LtoFlash}"
     ToolTipTitle="{Binding Path=ToolTipTitle, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"
-    ToolTipDescription="{Binding Path=ToolTipDescription, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"
+    ToolTipDescription="{Binding Path=ToolTipDescription, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneWay}"
     ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetRandomizeLtoFlashRamCommand}, Mode=OneTime}"/>

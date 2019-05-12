@@ -2546,4 +2546,8 @@ In order to determine if a firmware update is available for your device, please 
   <data name="SetRandomizeLtoFlashRamCommand_TipTitle" xml:space="preserve">
     <value>Randomize LTO Flash! RAM Before Loading ROM</value>
   </data>
+  <data name="ConfigurableFeatureUnavailable_Message_Format" xml:space="preserve">
+    <value>NOTE: This feature requires Firmware version {0} or newer to be installed on your LTO Flash! and is not available in Firmware version {1}.</value>
+    <comment>{0} and {1} are firmware version numbers</comment>
+  </data>
 </root>

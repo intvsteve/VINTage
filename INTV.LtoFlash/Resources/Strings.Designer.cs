@@ -701,6 +701,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NOTE: This feature requires Firmware version {0} or newer to be installed on your LTO Flash! and is not available in Firmware version {1}..
+        /// </summary>
+        internal static string ConfigurableFeatureUnavailable_Message_Format {
+            get {
+                return ResourceManager.GetString("ConfigurableFeatureUnavailable_Message_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect.
         /// </summary>
         internal static string Connect {

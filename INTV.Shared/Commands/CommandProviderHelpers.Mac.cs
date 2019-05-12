@@ -301,6 +301,7 @@ namespace INTV.Shared.Commands
                 if (menuItem != null)
                 {
                     menuItem.RepresentedObject = new NSObjectWrapper<ICommand>(command);
+                    menuItem.ToolTip = command.ToolTip;
                     if (requiresParentMenu)
                     {
                         var menuCommand = (VisualRelayCommand)command.MenuParent;
@@ -395,6 +396,11 @@ namespace INTV.Shared.Commands
                 menuItem.RepresentedObject = new NSObjectWrapper<ICommand>(command);
                 menuItem.Tag = itemTags[i];
                 menuItem.ToolTip = itemToolTips[i];
+            }
+            var visualCommand = command as VisualRelayCommand;
+            if (visualCommand != null)
+            {
+                button.Bind("toolTip", visualCommand, "ToolTipDescription", null);
             }
         }
 

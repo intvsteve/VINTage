@@ -81,6 +81,7 @@
     <Compile Include="ComponentModel\ModelBase.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifier.cs" />
     <Compile Include="ComponentModel\RelayCommandBase.cs" />
+    <Compile Include="ComponentModel\RelayCommandBase.Mac.cs" />
     <Compile Include="Resources\Strings.Designer.cs">
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>

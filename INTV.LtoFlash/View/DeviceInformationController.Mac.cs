@@ -571,6 +571,8 @@ namespace INTV.LtoFlash.View
 
         private DeviceViewModel _device;
 
+        private Dictionary<NSControl, VisualRelayCommand> _controlCommandMap = new Dictionary<NSControl, VisualRelayCommand>();
+
         /// <inheritdoc />
         public override void AwakeFromNib()
         {
@@ -658,11 +660,12 @@ namespace INTV.LtoFlash.View
             DeviceNameEntry.RefusesFirstResponder = true;
             DeviceOwnerEntry.RefusesFirstResponder = true;
 
-            var x = Resources.Strings.FactoryFirmwareCommand_TipDescription;
             DeviceNameEntry.TextShouldBeginEditing = ShouldBeginEditingDeviceName;
             DeviceNameEntry.TextShouldEndEditing = ShouldEndEditingDeviceName;
+            DeviceNameEntry.ToolTip = DeviceCommandGroup.SetDeviceNameCommand.ToolTipDescription;
             DeviceOwnerEntry.TextShouldBeginEditing = ShouldBeginEditingDeviceOwner;
             DeviceOwnerEntry.TextShouldEndEditing = ShouldEndEditingDeviceOwner;
+            DeviceOwnerEntry.ToolTip = DeviceCommandGroup.SetDeviceOwnerCommand.ToolTipDescription;
 
             DeviceCommandGroup.PopulateEcsCompatibilityMenu(ECSCompatibilityButton);
             DeviceCommandGroup.PopulateIntellivisionIICompatibilityMenu(IntellivisionIICompatibilityButton);
@@ -686,6 +689,23 @@ namespace INTV.LtoFlash.View
             _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[FirmwareCommandGroup.UpdateFirmwareCommand] = FirmwareCommandGroup.UpdateFirmwareCommand.BlockWhenAppIsBusy;
+
+            _controlCommandMap[ECSCompatibilityButton] = DeviceCommandGroup.SetEcsCompatibilityCommand;
+            _controlCommandMap[IntellivisionIICompatibilityButton] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand;
+            _controlCommandMap[ShowTitleScreenButton] = DeviceCommandGroup.SetShowTitleScreenCommand;
+            _controlCommandMap[SaveMenuPositionButton] = DeviceCommandGroup.SetSaveMenuPositionCommand;
+            _controlCommandMap[KeyclicksCheckBox] = DeviceCommandGroup.SetKeyclicksCommand;
+            _controlCommandMap[BackgroundGCCheckBox] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand;
+            _controlCommandMap[RandomizeLtoFlashRamCheckBox] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand;
+            _controlCommandMap[UpdateFirmwareButton] = FirmwareCommandGroup.UpdateFirmwareCommand;
+
+            foreach (var controlCommand in _controlCommandMap)
+            {
+                controlCommand.Key.ToolTip = controlCommand.Value.ToolTipDescription;
+            }
+            RandomizeLtoFlashRamCheckBox.Bind("toolTip", DeviceCommandGroup.SetRandomizeLtoFlashRamCommand, "ToolTipDescription", null);
+            var druidControl = Window.ContentView.FindChild<NSTextField>(t => t.Tag == 3);
+            druidControl.ToolTip = DeviceCommandGroup.DeviceUniqueIdCommand.ToolTipDescription;
 
             CommandManager.RequerySuggested += HandleRequerySuggested;
             HandleRequerySuggested(this, System.EventArgs.Empty);
@@ -849,14 +869,10 @@ namespace INTV.LtoFlash.View
                 DeviceOwnerEntry.Editable = canEdit;
             }
 
-            ECSCompatibilityButton.Enabled = DeviceCommandGroup.SetEcsCompatibilityCommand.CanExecute(ViewModel);
-            IntellivisionIICompatibilityButton.Enabled = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.CanExecute(ViewModel);
-            ShowTitleScreenButton.Enabled = DeviceCommandGroup.SetShowTitleScreenCommand.CanExecute(ViewModel);
-            SaveMenuPositionButton.Enabled = DeviceCommandGroup.SetSaveMenuPositionCommand.CanExecute(ViewModel);
-            KeyclicksCheckBox.Enabled = DeviceCommandGroup.SetKeyclicksCommand.CanExecute(ViewModel);
-            BackgroundGCCheckBox.Enabled = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.CanExecute(ViewModel);
-            RandomizeLtoFlashRamCheckBox.Enabled = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.CanExecute(ViewModel);
-            UpdateFirmwareButton.Enabled = FirmwareCommandGroup.UpdateFirmwareCommand.CanExecute(ViewModel);
+            foreach (var controlCommand in _controlCommandMap)
+            {
+                controlCommand.Key.Enabled = controlCommand.Value.CanExecute(ViewModel);
+            }
         }
 
         private void HandleViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

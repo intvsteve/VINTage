@@ -83,6 +83,10 @@ namespace INTV.Shared.ComponentModel
         public VisualRelayCommand(Action<object> onExecute, Func<object, bool> canExecute, object parameter)
             : base(onExecute, canExecute, parameter)
         {
+            _name = string.Empty;
+            _menuItemName = string.Empty;
+            _contextMenuItemName = string.Empty;
+            ToolTip = string.Empty;
             Initialize();
         }
 
@@ -121,17 +125,18 @@ namespace INTV.Shared.ComponentModel
         /// <summary>
         /// Gets or sets the display name of the command.
         /// </summary>
+        [OSExport("Name")]
         public string Name
         {
             get { return _name; }
             set { this.AssignAndUpdateProperty(PropertyChanged, "Name", value, ref _name); }
         }
-
         private string _name;
 
         /// <summary>
         /// Gets or sets the display name for use in a menu.
         /// </summary>
+        [OSExport("MenuItemName")]
         public string MenuItemName
         {
             get
@@ -154,6 +159,7 @@ namespace INTV.Shared.ComponentModel
         /// <summary>
         /// Gets or sets the display name when used in a context menu.
         /// </summary>
+        [OSExport("ContextMenuItemName")]
         public string ContextMenuItemName
         {
             get
@@ -177,11 +183,13 @@ namespace INTV.Shared.ComponentModel
         /// Gets or sets a simple tool tip for the command.
         /// </summary>
         /// <remarks>TODO: Have the tool tip setter update the actual menu item if present</remarks>
+        [OSExport("ToolTip")]
         public string ToolTip { get; set; }
 
         /// <summary>
         /// Gets or sets a title for a rich tool tip.
         /// </summary>
+        [OSExport("ToolTipTitle")]
         public string ToolTipTitle
         {
             get { return string.IsNullOrEmpty(_toolTipTitle) ? Name : _toolTipTitle; }
@@ -192,6 +200,7 @@ namespace INTV.Shared.ComponentModel
         /// <summary>
         /// Gets or sets the descriptive content for a rich tool tip.
         /// </summary>
+        [OSExport("ToolTipDescription")]
         public string ToolTipDescription
         {
             get { return string.IsNullOrEmpty(_toolTipDescription) ? ToolTip : _toolTipDescription; }
@@ -202,6 +211,7 @@ namespace INTV.Shared.ComponentModel
         /// <summary>
         /// Gets or sets the icon to display for a rich tool tip.
         /// </summary>
+        [OSExport("ToolTipIcon")]
         public NativeImage ToolTipIcon
         {
             get { return _toolTipIcon == null ? DefaultToolTipIcon : _toolTipIcon; }
@@ -212,11 +222,13 @@ namespace INTV.Shared.ComponentModel
         /// <summary>
         /// Gets or sets a small graphical image to display for the command, typically a 16x16 icon.
         /// </summary>
+        [OSExport("SmallIcon")]
         public NativeImage SmallIcon { get; set; }
 
         /// <summary>
         /// Gets or sets a graphical image to display for the command, typically a 32x32 icon.
         /// </summary>
+        [OSExport("LargeIcon")]
         public NativeImage LargeIcon { get; set; }
 
         /// <summary>

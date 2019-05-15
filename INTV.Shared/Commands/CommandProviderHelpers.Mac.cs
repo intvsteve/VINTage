@@ -295,7 +295,7 @@ namespace INTV.Shared.Commands
                         // exists with the same one! Bleargh!
                         menuItem.KeyEquivalent = command.KeyboardShortcutKey;
                         var modifiers = command.KeyboardShortcutModifiers;
-                        menuItem.KeyEquivalentModifierMask  = (NSEventModifierMask)modifiers;
+                        menuItem.KeyEquivalentModifierMask = (NSEventModifierMask)modifiers;
                     }
                 }
                 if (menuItem != null)
@@ -345,7 +345,11 @@ namespace INTV.Shared.Commands
         public static int FindMenuInsertLocation(this VisualRelayCommand command, NSMenu menu)
         {
             int index = -1;
+#if __UNIFIED__
+            var items = menu.Items;
+#else
             var items = menu.ItemArray();
+#endif // __UNIFIED__
             for (int i = 0; i < menu.Count; ++i)
             {
                 var item = items[i];
@@ -400,7 +404,11 @@ namespace INTV.Shared.Commands
             var visualCommand = command as VisualRelayCommand;
             if (visualCommand != null)
             {
+#if __UNIFIED__
+                button.Bind((NSString)"toolTip", visualCommand, "ToolTipDescription", null);
+#else
                 button.Bind("toolTip", visualCommand, "ToolTipDescription", null);
+#endif // __UNIFIED__
             }
         }
 
@@ -491,7 +499,11 @@ namespace INTV.Shared.Commands
             public override void MenuWillOpen(NSMenu menu)
             {
                 var groups = GetCommandGroups();
+#if __UNIFIED__
+                var items = menu.Items.Where(i => (i.RepresentedObject as NSObjectWrapper<ICommand>) != null);
+#else
                 var items = menu.ItemArray().Where(i => (i.RepresentedObject as NSObjectWrapper<ICommand>) != null);
+#endif // __UNIFIED__
                 foreach (var item in items)
                 {
                     var commandWrapper = item.RepresentedObject as NSObjectWrapper<ICommand>;

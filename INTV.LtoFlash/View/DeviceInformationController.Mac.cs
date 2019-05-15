@@ -703,7 +703,11 @@ namespace INTV.LtoFlash.View
             {
                 controlCommand.Key.ToolTip = controlCommand.Value.ToolTipDescription;
             }
+#if __UNIFIED__
+            RandomizeLtoFlashRamCheckBox.Bind((NSString)"toolTip", DeviceCommandGroup.SetRandomizeLtoFlashRamCommand, "ToolTipDescription", null);
+#else
             RandomizeLtoFlashRamCheckBox.Bind("toolTip", DeviceCommandGroup.SetRandomizeLtoFlashRamCommand, "ToolTipDescription", null);
+#endif // __UNIFIED__
             var druidControl = Window.ContentView.FindChild<NSTextField>(t => t.Tag == 3);
             druidControl.ToolTip = DeviceCommandGroup.DeviceUniqueIdCommand.ToolTipDescription;
 

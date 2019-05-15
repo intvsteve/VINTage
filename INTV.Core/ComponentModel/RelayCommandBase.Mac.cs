@@ -19,6 +19,7 @@
 // </copyright>
 
 #if __UNIFIED__
+using Foundation;
 using CommandBase = Foundation.NSObject;
 #else
 using CommandBase = MonoMac.Foundation.NSObject;

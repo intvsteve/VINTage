@@ -198,6 +198,7 @@ ifeq ($(TARGET_OS),MAC)
 #   $(2) : the product copyright date
 #   $(3) : the short version number
 #   $(4) : the user-friendly build string
+#   $(5) : the macOS minimum OS deployment target version
 # ------------------------------------------------------------------------- #
 define EmitInfoPList
 <?xml version="1.0" encoding="UTF-8"?>
@@ -223,7 +224,7 @@ All Rights Reserved.</string>
 	<key>CFBundleVersion</key>
 	<string>$(4)</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.7</string>
+	<string>$(5)</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -245,7 +246,7 @@ endef
 # make prior to 4.0 do not support the 'file' function, export the contents
 # to an environment variable, which is then consumed by update_info_plist.
 # ------------------------------------------------------------------------- #
-INFO_PLIST_CONTENT = $(call EmitInfoPList,$(PRODUCT_NAME_FRIENDLY),$(COPYRIGHT_DATE),$(VERSION_SHORT),$(BUILD_REVISION))
+INFO_PLIST_CONTENT = $(call EmitInfoPList,$(PRODUCT_NAME_FRIENDLY),$(COPYRIGHT_DATE),$(VERSION_SHORT),$(BUILD_REVISION),$(MACOS_DEPLOYMENT_TARGET))
 export INFO_PLIST_CONTENT
 
 # ------------------------------------------------------------------------- #

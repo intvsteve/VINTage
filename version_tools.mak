@@ -186,7 +186,6 @@ ifeq ($(TARGET_OS),MAC)
       PREV_SVN_INFO_PLIST_REVISION = -undefined-
     endif
 
-
 # ------------------------------------------------------------------------- #
 # OLDEST_MACOS32_DEPLOYMENT_TARGET is the oldest version of macOS that can
 # be built. This can only be created using old versions of Xamarin Studio,

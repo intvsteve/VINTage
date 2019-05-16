@@ -5664,6 +5664,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selects how your LTO Flash! behaves when loading a ROM with the ECS attached, and when the ECS ROM is enabled. (Default: ECS Games).
+        /// </summary>
+        internal static string SetEcsCompatibilityCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("SetEcsCompatibilityCommand_TipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when updating the file system status. The error was:
         ///
         ///{0}.

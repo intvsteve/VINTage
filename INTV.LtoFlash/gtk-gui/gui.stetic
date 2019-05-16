@@ -1168,14 +1168,13 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.CheckButton" id="_randomizeJlpRam">
+          <widget class="Gtk.CheckButton" id="_randomizeLtoFlashRam">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="Label" translatable="yes" context="yes">Randomize JLP RAM at ROM start|Randomize JLP RAM at ROM start</property>
+            <property name="Label" translatable="yes" context="yes">Randomize JLP RAM at ROM start|Randomize LTO Flash! RAM before loading ROM</property>
             <property name="DrawIndicator">True</property>
             <property name="HasLabel">True</property>
             <property name="UseUnderline">True</property>
-            <signal name="Toggled" handler="HandleRandomizeJlpRamChanged" />
           </widget>
           <packing>
             <property name="Position">3</property>

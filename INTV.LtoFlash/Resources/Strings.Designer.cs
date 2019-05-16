@@ -5693,6 +5693,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selects how your LTO Flash! decides to avoid Intellivision II compatibility problems. (Default: Always).
+        /// </summary>
+        internal static string SetIntellivisionIICompatibilityCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("SetIntellivisionIICompatibilityCommand_TipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable keyclicks.
         /// </summary>
         internal static string SetKeyclicksCommand_Name {

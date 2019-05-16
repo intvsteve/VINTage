@@ -2550,6 +2550,9 @@ In order to determine if a firmware update is available for your device, please 
     <value>NOTE: This feature requires Firmware version {0} or newer to be installed on your LTO Flash! and is not available in Firmware version {1}.</value>
     <comment>{0} and {1} are firmware version numbers</comment>
   </data>
+  <data name="SetIntellivisionIICompatibilityCommand_TipDescription" xml:space="preserve">
+    <value>Selects how your LTO Flash! decides to avoid Intellivision II compatibility problems. (Default: Always)</value>
+  </data>
   <data name="SetShowTitleScreenCommand_TipDescription" xml:space="preserve">
     <value>Selects when your LTO Flash! displays the title screen. (Default: Always)</value>
   </data>

@@ -1548,7 +1548,7 @@ Would you like to proceed?</value>
     <value>Enable Keyclicks</value>
   </data>
   <data name="SetSaveMenuPositionCommand_TipDescription" xml:space="preserve">
-    <value>When enabled, your LTO Flash! will resume at the last selected menu selection.</value>
+    <value>Selects whether your LTO Flash! saves the last selected menu position. (Default: Only During Session)</value>
   </data>
   <data name="SetSaveMenuPositionCommand_TipTitle" xml:space="preserve">
     <value>Remember Menu Position</value>
@@ -2549,5 +2549,8 @@ In order to determine if a firmware update is available for your device, please 
   <data name="ConfigurableFeatureUnavailable_Message_Format" xml:space="preserve">
     <value>NOTE: This feature requires Firmware version {0} or newer to be installed on your LTO Flash! and is not available in Firmware version {1}.</value>
     <comment>{0} and {1} are firmware version numbers</comment>
+  </data>
+  <data name="SetShowTitleScreenCommand_TipDescription" xml:space="preserve">
+    <value>Selects when your LTO Flash! displays the title screen. (Default: Always)</value>
   </data>
 </root>

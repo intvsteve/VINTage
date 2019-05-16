@@ -5801,7 +5801,7 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When enabled, your LTO Flash! will resume at the last selected menu selection..
+        ///   Looks up a localized string similar to Selects whether your LTO Flash! saves the last selected menu position. (Default: Only During Session).
         /// </summary>
         internal static string SetSaveMenuPositionCommand_TipDescription {
             get {
@@ -5824,6 +5824,15 @@ namespace INTV.LtoFlash.Resources {
         internal static string SetShowTitleScreenCommand_Name {
             get {
                 return ResourceManager.GetString("SetShowTitleScreenCommand_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selects when your LTO Flash! displays the title screen. (Default: Always).
+        /// </summary>
+        internal static string SetShowTitleScreenCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("SetShowTitleScreenCommand_TipDescription", resourceCulture);
             }
         }
         

@@ -1,5 +1,5 @@
 ﻿// <copyright file="AssemblyInfo.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2019 All Rights Reserved
+// Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -22,22 +22,16 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: InternalsVisibleTo("INTV.LtoFlash.Tests")]
-
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Interface library for LTO Flash!")]
-[assembly: AssemblyDescription("This class library provides software models for working with the LTO Flash! product from Joe Zbiciak and Left Turn Only, LLC. It includes user interfaces for configuration and management of LTO Flash! devices.")]
+[assembly: AssemblyTitle("INTV.LtoFlash.Tests")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("INTVFunhouse")]
-[assembly: AssemblyProduct("VINTage")]
-[assembly: AssemblyCopyright("Copyright © INTV Funhouse 2014-" + INTV.VersionInfo.CurrentCopyrightYear)]
-[assembly: AssemblyTrademark("LTO Flash! is a product from Joe Zbiciak and Left Turn Only, LLC.")]
-//// Stupid xp... .NET 4.5 or later required for AssemblyMetadataAttribute
-#if !WIN
-[assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.AuthorKey, "Steven A. Orth")]
-#endif // !WIN
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("INTV.LtoFlash.Tests")]
+[assembly: AssemblyCopyright("Copyright © 2019")]
+[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -46,7 +40,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8cd24362-4aa1-448e-be00-d56873751378")]
+[assembly: Guid("9abbd6a9-5f95-442a-88db-3fc1ebf374a7")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -55,5 +49,8 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
+// You can specify all the values or you can default the Build and Revision Numbers 
+// by using the '*' as shown below:
+// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion(INTV.VersionInfo.FullVersionString)]
+[assembly: AssemblyFileVersion("1.0.0.0")]

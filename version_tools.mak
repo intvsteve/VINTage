@@ -16,15 +16,17 @@ ifneq ($(MAKECMDGOALS),clean)
 # This makefile includes version.mak, which determines the values of the
 # following variables, either directly or indirectly:
 #
-#   VERSION                     : the version as major.minor.build.revision
-#   BUILD_REVISION              : the user-friendly build information
-#   CUSTOM_BUILD                : the custom build string (usually empty)
-#   COPYRIGHT_DATE              : the copyright date to use
-#   VERSION_CS_CLASS_NAME       : name of a C# class to generate
-#   VERSION_CS_CLASS_NAMESPACE  : namespace for the class
-#   VERSION_CS_CLASS_OUTPUT_DIR : the directory in which to generate class
-#   VERSION_CS                  : name of the file containing C# class
-#   INFO_PLIST_PATH             : Mac only - the Info.plist file to generate
+#   VERSION                          : version - major.minor.build.revision
+#   BUILD_REVISION                   : user-friendly build information
+#   CUSTOM_BUILD                     : custom build string (usually empty)
+#   COPYRIGHT_DATE                   : copyright date to use
+#   VERSION_CS_CLASS_NAME            : name of a C# class to generate
+#   VERSION_CS_CLASS_NAMESPACE       : namespace for the class
+#   VERSION_CS_CLASS_OUTPUT_DIR      : directory in which to generate class
+#   VERSION_CS                       : name of the file containing C# class
+#   INFO_PLIST_PATH                  : Mac only - Info.plist file to generate
+#   OLDEST_MACOS32_DEPLOYMENT_TARGET : Mac only - oldest OS target for 32-bit
+#   OLDEST_MACOS64_DEPLOYMENT_TARGET : Mac only - oldest OS target for 64-bit
 #
 # These variables must be properly assigned for the tools to work correctly.
 # ------------------------------------------------------------------------- #
@@ -185,6 +187,32 @@ ifeq ($(TARGET_OS),MAC)
     endif
 
 # ------------------------------------------------------------------------- #
+# OLDEST_MACOS32_DEPLOYMENT_TARGET is the oldest version of macOS that can
+# be built. This can only be created using old versions of Xamarin Studio,
+# such as version 5.8.3 (build 1), and must be built using MonoMac. The
+# application will run as a 32-bit process and on modern versions of macOS
+# cause a warning that it is not optimized for the machine. At some point,
+# Apple will drop 32-bit app support in macOS completely.
+# ------------------------------------------------------------------------- #
+OLDEST_MACOS32_DEPLOYMENT_TARGET = 10.7
+
+# ------------------------------------------------------------------------- #
+# OLDEST_MACOS64_DEPLOYMENT_TARGET is the oldest version of macOS that can
+# be built, as of Xamarin Studio Community 6.3 (build 864) with Xamarin.Mac
+# version 5.8.0.0. This is also the oldest macOS target supported by Visual
+# Studio for Mac - the replacement of Xamarin Studio.
+# ------------------------------------------------------------------------- #
+OLDEST_MACOS64_DEPLOYMENT_TARGET = 10.9
+
+# ------------------------------------------------------------------------- #
+# MACOS_DEPLOYMENT_TARGET is usually specified in the custom.mak file. That
+# said, it was added in May 2019, so some custom.mak files may not have
+# been created from the template that includes it. If not defined, assume
+# the oldest supported version.
+# ------------------------------------------------------------------------- #
+MACOS_DEPLOYMENT_TARGET ?= $(OLDEST_MACOS32_DEPLOYMENT_TARGET)
+
+# ------------------------------------------------------------------------- #
 # Function: EmitInfoPList                                            #
 # ------------------------------------------------------------------------- #
 # This function generates an Info.plist file which will contain product and
@@ -198,6 +226,7 @@ ifeq ($(TARGET_OS),MAC)
 #   $(2) : the product copyright date
 #   $(3) : the short version number
 #   $(4) : the user-friendly build string
+#   $(5) : the macOS minimum OS deployment target version
 # ------------------------------------------------------------------------- #
 define EmitInfoPList
 <?xml version="1.0" encoding="UTF-8"?>
@@ -223,7 +252,7 @@ All Rights Reserved.</string>
 	<key>CFBundleVersion</key>
 	<string>$(4)</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.7</string>
+	<string>$(5)</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -245,7 +274,7 @@ endef
 # make prior to 4.0 do not support the 'file' function, export the contents
 # to an environment variable, which is then consumed by update_info_plist.
 # ------------------------------------------------------------------------- #
-INFO_PLIST_CONTENT = $(call EmitInfoPList,$(PRODUCT_NAME_FRIENDLY),$(COPYRIGHT_DATE),$(VERSION_SHORT),$(BUILD_REVISION))
+INFO_PLIST_CONTENT = $(call EmitInfoPList,$(PRODUCT_NAME_FRIENDLY),$(COPYRIGHT_DATE),$(VERSION_SHORT),$(BUILD_REVISION),$(MACOS_DEPLOYMENT_TARGET))
 export INFO_PLIST_CONTENT
 
 # ------------------------------------------------------------------------- #

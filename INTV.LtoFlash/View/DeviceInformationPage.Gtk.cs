@@ -57,10 +57,13 @@ namespace INTV.LtoFlash.View
                 blockWhenBusy.Key.BlockWhenAppIsBusy = false;
             }
             this.Build();
+            _deviceName.TooltipText = DeviceCommandGroup.SetDeviceNameCommand.ToolTipDescription;
             _nameEditor = new TextCellInPlaceEditor(_deviceName, FileSystemConstants.MaxShortNameLength) { IsValidCharacter = INTV.Core.Model.Grom.Characters.Contains };
             _nameEditor.EditorClosed += DeviceNameEditorClosed;
+            _deviceOwner.TooltipText = DeviceCommandGroup.SetDeviceOwnerCommand.ToolTipDescription;
             _ownerEditor = new TextCellInPlaceEditor(_deviceOwner, FileSystemConstants.MaxLongNameLength) { IsValidCharacter = INTV.Core.Model.Grom.Characters.Contains };
             _ownerEditor.EditorClosed += DeviceOwnerEditorClosed;
+            _deviceUniqueId.TooltipText = DeviceCommandGroup.DeviceUniqueIdCommand.ToolTipDescription;
             CommandManager.RequerySuggested += HandleRequerySuggested;
         }
 

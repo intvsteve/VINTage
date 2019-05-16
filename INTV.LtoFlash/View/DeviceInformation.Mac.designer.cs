@@ -50,6 +50,9 @@ namespace INTV.LtoFlash.View
 		NSButton KeyclicksCheckBox { get; set; }
 
 		[Outlet]
+        NSButton RandomizeLtoFlashRamCheckBox { get; set; }
+
+		[Outlet]
 		NSButton RememberMenuPositionCheckBox { get; set; }
 
 		[Outlet]
@@ -69,14 +72,14 @@ namespace INTV.LtoFlash.View
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (CloseButtonControl != null) {
-				CloseButtonControl.Dispose ();
-				CloseButtonControl = null;
-			}
-
 			if (BackgroundGCCheckBox != null) {
 				BackgroundGCCheckBox.Dispose ();
 				BackgroundGCCheckBox = null;
+			}
+
+			if (CloseButtonControl != null) {
+				CloseButtonControl.Dispose ();
+				CloseButtonControl = null;
 			}
 
 			if (CollectionViewItemController != null) {
@@ -117,6 +120,11 @@ namespace INTV.LtoFlash.View
 			if (KeyclicksCheckBox != null) {
 				KeyclicksCheckBox.Dispose ();
 				KeyclicksCheckBox = null;
+			}
+
+            if (RandomizeLtoFlashRamCheckBox != null) {
+                RandomizeLtoFlashRamCheckBox.Dispose ();
+                RandomizeLtoFlashRamCheckBox = null;
 			}
 
 			if (RememberMenuPositionCheckBox != null) {

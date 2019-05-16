@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -83,6 +83,7 @@ namespace INTV.LtoFlash.Commands
             Name = Resources.Strings.SetEcsCompatibilityCommand_Name,
             SmallIcon = typeof(INTV.Shared.Commands.CommandGroup).LoadImageResource("ViewModel/Resources/Images/ecs_16xLG.png"),
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            ToolTipDescription = Resources.Strings.SetEcsCompatibilityCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
@@ -159,6 +160,7 @@ namespace INTV.LtoFlash.Commands
             Name = Resources.Strings.SetIntellivisionIICompatibilityCommand_Name,
             SmallIcon = typeof(INTV.Shared.Commands.CommandGroup).LoadImageResource("ViewModel/Resources/Images/intv_ii_16xLG.png"),
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            ToolTipDescription = Resources.Strings.SetIntellivisionIICompatibilityCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
@@ -224,6 +226,7 @@ namespace INTV.LtoFlash.Commands
             Name = Resources.Strings.SetShowTitleScreenCommand_Name,
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/lto_flash_title_16xLG.png"),
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            ToolTipDescription = Resources.Strings.SetShowTitleScreenCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
@@ -412,6 +415,39 @@ namespace INTV.LtoFlash.Commands
         }
 
         #endregion // SetKeyclicksCommand
+
+        #region SetRandomizeLtoFlashRamCommand
+
+        /// <summary>
+        /// The command to set whether or not to randomize LTO Flash! RAM when launching a ROM  .
+        /// </summary>
+        public static readonly VisualDeviceCommand SetRandomizeLtoFlashRamCommand = new VisualDeviceCommand(OnSetRandomizeLtoFlashRamCommand, CanSetRandomizeLtoFlashRamCommand)
+        {
+            UniqueId = UniqueNameBase + ".SetRandomizeLtoFlashRamCommand",
+            Name = Resources.Strings.SetRandomizeLtoFlashRamCommand_Name,
+            SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/randomize_ram_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetRandomizeLtoFlashRamCommand_TipTitle,
+            ToolTipDescription = Resources.Strings.SetRandomizeLtoFlashRamCommand_TipDescription,
+            ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            PreferredParameterType = typeof(LtoFlashViewModel),
+            RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands,
+            ConfigurationBits = new DeviceStatusFlags(DeviceStatusFlagsLo.ZeroRamBeforeLoad)
+        };
+
+        private static void OnSetRandomizeLtoFlashRamCommand(object parameter)
+        {
+            var ltoFlashViewModel = parameter as LtoFlashViewModel;
+            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
+        }
+
+        private static bool CanSetRandomizeLtoFlashRamCommand(object parameter)
+        {
+            var viewModel = parameter as LtoFlashViewModel;
+            var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            return device.CanExecuteCommand(SetRandomizeLtoFlashRamCommand);
+        }
+
+        #endregion // SetRandomizeLtoFlashRamCommand
 
         #region SetDeviceOwnerCommand
 

@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceStatusFlagsLo.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -17,6 +17,8 @@
 // or write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
+
+using System.Collections.Generic;
 
 namespace INTV.LtoFlash.Model
 {
@@ -41,7 +43,7 @@ namespace INTV.LtoFlash.Model
         HardwareStatusFlagsMask = (ulong)HardwareStatusFlags.AllFlags << DeviceStatusFlagsLoHelpers.HardwareFlagsOffset,
 
         /// <summary>
-        /// This mask indentifies which hardware status flags are reserved for future use.
+        /// This mask identifies which hardware status flags are reserved for future use.
         /// </summary>
         HardwareStatusFlagsReservedMask = (ulong)HardwareStatusFlags.ReservedMask << DeviceStatusFlagsLoHelpers.HardwareFlagsOffset,
 
@@ -162,6 +164,24 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Keyclicks
 
+        #region Configuration Menu on Cartridge
+
+        /// <summary>
+        /// When set, the configuration menu on the cartridge can be accessed - which is the default.
+        /// </summary>
+        EnableCartConfig = 1ul << DeviceStatusFlagsLoHelpers.EnableCartConfigBitsOffset,
+
+        #endregion // Configuration Menu on Cartridge
+
+        #region Zero LTO Flash! RAM on Program Launch
+
+        /// <summary>
+        /// When set, zero out the contents of RAM before loading a programs - which is the default. Otherwise, it is randomized.
+        /// </summary>
+        ZeroRamBeforeLoad = 1ul << DeviceStatusFlagsLoHelpers.ZeroRamBeforeLoadBitsOffset,
+
+        #endregion // Zero LTO Flash! RAM on Program Launch
+
         /// <summary>
         /// This mask captures all reserved status bits.
         /// </summary>
@@ -260,7 +280,70 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Keyclicks Bits
 
+        #region Enable Cartridge Configuration Menu Bits
+
+        /// <summary>
+        /// Location in the bit array where the bit to enable or disable on-cartridge configuration menu is set.
+        /// </summary>
+        internal const int EnableCartConfigBitsOffset = KeyclicksBitsOffset + KeyclicksBitCount; // (54)
+
+        private const int EnableCartConfigBitCount = 1;
+
+        #endregion // Enable Cartridge Configuration Menu Bits
+
+        #region Zero LTO Flash! RAM Bits
+
+        /// <summary>
+        /// Location in the bit array where the bit to enable or disable on-cartridge RAM randomization / zeroing is set.
+        /// </summary>
+        internal const int ZeroRamBeforeLoadBitsOffset = EnableCartConfigBitsOffset + EnableCartConfigBitCount; // (55)
+
+        private const int ZeroRamBeforeLoadBitCount = 1;
+
+        #endregion // Zero LTO Flash! RAM Bits
+
         #endregion // User-Configurable Flags
+
+        /// <summary>
+        /// The firmware-version-specific configurable features.
+        /// </summary>
+        /// <remarks>Only configurable features introduced after the initial product release are included in this dictionary.</remarks>
+        private static readonly Dictionary<DeviceStatusFlagsLo, int> VersionSpecificConfigurableFeatures = new Dictionary<DeviceStatusFlagsLo, int>()
+        {
+            { DeviceStatusFlagsLo.EnableCartConfig, 3994 }, // based on FW release notes
+            { DeviceStatusFlagsLo.ZeroRamBeforeLoad, 10000 },
+        };
+
+        /// <summary>
+        /// Gets the minimum required firmware version for the given configurable feature.
+        /// </summary>
+        /// <param name="feature">The feature whose minimum required firmware version is desired.</param>
+        /// <returns>The minimum firmware version required for the feature; or <c>0</c> if the feature is available in all firmware versions.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> specified more than one configurable feature, or hardware status.</exception>
+        internal static int GetMinimumRequiredFirmareVersionForFeature(this DeviceStatusFlagsLo feature)
+        {
+            ValidateFeatureBits(feature);
+            int requiredFirmwareVersion;
+            if (!VersionSpecificConfigurableFeatures.TryGetValue(feature, out requiredFirmwareVersion))
+            {
+                requiredFirmwareVersion = 0;
+            }
+            return requiredFirmwareVersion;
+        }
+
+        /// <summary>
+        /// Determines if the given configurable feature is available in the specified firmware revision.
+        /// </summary>
+        /// <param name="feature">The feature whose availability is desired.</param>
+        /// <param name="currentFirmwareVersion">Current firmware version.</param>
+        /// <returns><c>true</c> if the configurable feature is available for the specified firmware version; otherwise, <c>false</c>.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> specified more than one configurable feature, or hardware status.</exception>
+        internal static bool IsConfigurableFeatureAvailable(this DeviceStatusFlagsLo feature, int currentFirmwareVersion)
+        {
+            ValidateFeatureBits(feature);
+            var featureAvailable = (currentFirmwareVersion > 0) && currentFirmwareVersion >= feature.GetMinimumRequiredFirmareVersionForFeature();
+            return featureAvailable;
+        }
 
         /// <summary>
         /// Gets the hardware status flags out of <see cref="DeviceStatusFlagsLo"/>.
@@ -280,7 +363,7 @@ namespace INTV.LtoFlash.Model
         /// <returns>The Intellivision II flags.</returns>
         internal static IntellivisionIIStatusFlags ToIntellivisionIICompatibilityFlags(this DeviceStatusFlagsLo deviceStatusLo)
         {
-            var intellivisionIIFlags = (IntellivisionIIStatusFlags)((ulong)(deviceStatusLo & (DeviceStatusFlagsLo.IntellivisionIIStatusMask ^ DeviceStatusFlagsLo.IntellivisionIIStatusReservedMask)) >> IntellivisionIIStatusBitsOffset);
+            var intellivisionIIFlags = (IntellivisionIIStatusFlags)((ulong)(deviceStatusLo & DeviceStatusFlagsLo.IntellivisionIIStatusMask) >> IntellivisionIIStatusBitsOffset);
 
             // For Intellivision II, there are only three valid values. If both 'Conservative' and 'Aggressive' are
             // set, treat it as 'Aggressive'. Or, if the flags are all set, it's an uninitialized, new device
@@ -290,7 +373,7 @@ namespace INTV.LtoFlash.Model
             {
                 intellivisionIIFlags = IntellivisionIIStatusFlags.Default;
             }
-            return intellivisionIIFlags;
+            return intellivisionIIFlags & ~IntellivisionIIStatusFlags.ReservedMask;
         }
 
         /// <summary>
@@ -300,7 +383,7 @@ namespace INTV.LtoFlash.Model
         /// <returns>The ECS flags.</returns>
         internal static EcsStatusFlags ToEcsCompatibilityFlags(this DeviceStatusFlagsLo deviceStatusLo)
         {
-            var ecsFlags = (EcsStatusFlags)((ulong)(deviceStatusLo & (DeviceStatusFlagsLo.EcsStatusMask ^ DeviceStatusFlagsLo.EcsStatusReservedMask)) >> EcsStatusBitsOffset);
+            var ecsFlags = (EcsStatusFlags)((ulong)(deviceStatusLo & DeviceStatusFlagsLo.EcsStatusMask) >> EcsStatusBitsOffset);
 
             // If all the flags are set, we must be connected to a new, uninitialized device.
             // Set the flags to the default.
@@ -309,7 +392,7 @@ namespace INTV.LtoFlash.Model
             {
                 ecsFlags = EcsStatusFlags.Default;
             }
-            return ecsFlags;
+            return ecsFlags & ~EcsStatusFlags.ReservedMask;
         }
 
         /// <summary>
@@ -365,13 +448,35 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
+        /// Gets whether the on-cartridge configuration menu can be accessed out of <see cref="DeviceStatusFlagsLo"/>;.
+        /// </summary>
+        /// <param name="deviceStatusLo">The device status flags to get the onboard configuration menu access from.</param>
+        /// <returns>If <c>true</c>, onboard configuration menu can be accessed.</returns>
+        internal static bool ToEnableOnboardConfigMenu(this DeviceStatusFlagsLo deviceStatusLo)
+        {
+            var enableOnboardConfigMenu = deviceStatusLo.HasFlag(DeviceStatusFlagsLo.EnableCartConfig);
+            return enableOnboardConfigMenu;
+        }
+
+        /// <summary>
+        /// Gets whether the on-cartridge RAM is zeroed out or randomized out of <see cref="DeviceStatusFlagsLo"/>;.
+        /// </summary>
+        /// <param name="deviceStatusLo">The device status flags to get the RAM zeroing setting from.</param>
+        /// <returns>If <c>true</c>, onboard RAM is initialized to zero on program launch, otherwise it is randomized.</returns>
+        internal static bool ToZeroLtoFlashRam(this DeviceStatusFlagsLo deviceStatusLo)
+        {
+            var zeroLtlFlashRam = deviceStatusLo.HasFlag(DeviceStatusFlagsLo.ZeroRamBeforeLoad);
+            return zeroLtlFlashRam;
+        }
+
+        /// <summary>
         /// Gets the configuration flags out of <see cref="DeviceStatusFlagsLo"/>.
         /// </summary>
         /// <param name="deviceStatusLo">The device status flags to get the configuration flags part from.</param>
         /// <returns>The configuration flags.</returns>
         internal static uint ToConfigurationFlags(this DeviceStatusFlagsLo deviceStatusLo)
         {
-            var flags = (ulong)(deviceStatusLo | DeviceStatusFlagsLo.ReservedMask) & ConfigurableFlagsMask;
+            var flags = (ulong)deviceStatusLo & ConfigurableFlagsMask;
             return (uint)(((ulong)flags >> ConfigurableFlagsOffset) & 0x00000000FFFFFFFF);
         }
 
@@ -380,12 +485,13 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         /// <param name="device">The <see cref="Device"/> from which a set of <see cref="DeviceStatusFlagsLo"/> is to be composed.</param>
         /// <returns>Status flags properly composed into <see cref="DeviceStatusFlagsLo"/>.</returns>
-        internal static DeviceStatusFlagsLo ComposeStatusFlags(this Device device)
+        internal static DeviceStatusFlagsLo ComposeStatusFlagsLo(this Device device)
         {
-            var deviceStatusFlagsLo = (device.IntvIICompatibility | IntellivisionIIStatusFlags.ReservedMask).ToDeviceStatusFlagsLo() |
-                                      (device.EcsCompatibility | EcsStatusFlags.ReservedMask).ToDeviceStatusFlagsLo() |
-                                       device.ShowTitleScreen.ToDeviceStatusFlagsLo() | device.SaveMenuPosition.ToDeviceStatusFlagsLo() |
-                                      (device.HardwareStatus | HardwareStatusFlags.ReservedMask).ToDeviceStatusFlagsLo();
+            var deviceStatusFlagsLo = device.IntvIICompatibility.ToDeviceStatusFlagsLo()
+                | device.EcsCompatibility.ToDeviceStatusFlagsLo()
+                | device.ShowTitleScreen.ToDeviceStatusFlagsLo()
+                | device.SaveMenuPosition.ToDeviceStatusFlagsLo()
+                | device.HardwareStatus.ToDeviceStatusFlagsLo();
             if (device.BackgroundGC)
             {
                 deviceStatusFlagsLo |= DeviceStatusFlagsLo.BackgroundGC;
@@ -394,7 +500,60 @@ namespace INTV.LtoFlash.Model
             {
                 deviceStatusFlagsLo |= DeviceStatusFlagsLo.Keyclicks;
             }
+            if (device.ZeroLtoFlashRam)
+            {
+                deviceStatusFlagsLo |= DeviceStatusFlagsLo.ZeroRamBeforeLoad;
+            }
+            deviceStatusFlagsLo |= device.ReservedDeviceStatusFlagsLo;
             return deviceStatusFlagsLo;
+        }
+
+        private static void ValidateFeatureBits(DeviceStatusFlagsLo feature)
+        {
+            var numFeatures = 0;
+            if (feature != DeviceStatusFlagsLo.None)
+            {
+                if ((feature & DeviceStatusFlagsLo.HardwareStatusFlagsMask) != DeviceStatusFlagsLo.None)
+                {
+                    numFeatures += 32; // Totally bogus - should not have hardware flags!
+                }
+                if ((feature & DeviceStatusFlagsLo.IntellivisionIIStatusMask) != DeviceStatusFlagsLo.None)
+                {
+                    ++numFeatures;
+                }
+                if ((feature & DeviceStatusFlagsLo.EcsStatusMask) != DeviceStatusFlagsLo.None)
+                {
+                    ++numFeatures;
+                }
+                if ((feature & DeviceStatusFlagsLo.ShowTitleScreenMask) != DeviceStatusFlagsLo.None)
+                {
+                    ++numFeatures;
+                }
+                if ((feature & DeviceStatusFlagsLo.SaveMenuPositionMask) != DeviceStatusFlagsLo.None)
+                {
+                    ++numFeatures;
+                }
+                if (feature.ToBackgroundGC())
+                {
+                    ++numFeatures;
+                }
+                if (feature.ToKeyclicks())
+                {
+                    ++numFeatures;
+                }
+                if (feature.ToEnableOnboardConfigMenu())
+                {
+                    ++numFeatures;
+                }
+                if (feature.ToZeroLtoFlashRam())
+                {
+                    ++numFeatures;
+                }
+            }
+            if (numFeatures > 1)
+            {
+                throw new System.ArgumentOutOfRangeException();
+            }
         }
     }
 }

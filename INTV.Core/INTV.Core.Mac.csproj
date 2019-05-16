@@ -233,6 +233,7 @@
     <Compile Include="Model\Program\XmlRomInformationDatabaseColumnName.cs" />
     <Compile Include="Model\Program\XmlRomInformationHelpers.cs" />
     <Compile Include="Model\Program\XmlRomInformationToProgramRomInformationConverter.cs" />
+    <Compile Include="ComponentModel\RelayCommandBase.Mac.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

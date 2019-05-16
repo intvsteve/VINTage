@@ -31,7 +31,7 @@ namespace INTV.LtoFlash.Model.Commands
     internal sealed class ContiguousFileSystemEntries<T> : Tuple<uint, IList<T>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.LtoFlash.Model.Commands.ContiguousFileSystemEntries`1"/> class.
+        /// Initializes a new instance of the <see cref="INTV.LtoFlash.Model.Commands.ContiguousFileSystemEntries{T}"/> class.
         /// </summary>
         /// <param name="addressInRam">Address in RAM to start the contiguous entries.</param>
         /// <param name="contiguousEntries">The contiguous entries.</param>

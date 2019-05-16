@@ -1,5 +1,5 @@
 ﻿// <copyright file="IntellivisionIIStatusFlags.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -92,7 +92,7 @@ namespace INTV.LtoFlash.Model
         /// <returns>A new set of <see cref="DeviceStatusFlagsLo"/> with updated IntellivisionIIStatusFlags for <paramref name="device"/>.</returns>
         internal static DeviceStatusFlagsLo UpdateStatusFlags(this Device device, IntellivisionIIStatusFlags newIntellivisionIIFlags)
         {
-            var deviceStatusFlags = device.ComposeStatusFlags() & ~DeviceStatusFlagsLo.IntellivisionIIStatusMask;
+            var deviceStatusFlags = device.ComposeStatusFlagsLo() & ~DeviceStatusFlagsLo.IntellivisionIIStatusMask;
             deviceStatusFlags |= newIntellivisionIIFlags.ToDeviceStatusFlagsLo();
             return deviceStatusFlags;
         }

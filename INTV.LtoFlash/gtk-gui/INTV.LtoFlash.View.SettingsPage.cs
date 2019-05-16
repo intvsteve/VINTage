@@ -5,203 +5,204 @@ namespace INTV.LtoFlash.View
 	public partial class SettingsPage
 	{
 		private global::Gtk.VBox vbox1;
-		
+
 		private global::Gtk.CheckButton _searchForDevicesAtStartup;
-		
+
 		private global::Gtk.CheckButton _automaticallyConnectToDevices;
-		
+
 		private global::Gtk.CheckButton _validateVIDandPIDBeforeConnecting;
-		
+
 		private global::Gtk.CheckButton _runGarbageCollector;
-		
+
 		private global::Gtk.CheckButton _promptToAddRoms;
-		
+
 		private global::Gtk.CheckButton _addRomsToMenu;
-		
+
 		private global::Gtk.CheckButton _validateMenuLayoutAtStartup;
-		
+
 		private global::Gtk.CheckButton _reconcileDeviceMenuAndLocalMenu;
-		
+
 		private global::Gtk.CheckButton _showFileSystemDetails;
-		
+
 		private global::Gtk.CheckButton _enableSerialPortLogging;
-		
+
 		private global::Gtk.CheckButton _promptForFirmwareUpgrade;
-		
+
 		private global::Gtk.CheckButton _showAdvancedFeatures;
 
-		protected virtual void Build ()
+		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget INTV.LtoFlash.View.SettingsPage
-			global::Stetic.BinContainer.Attach (this);
+			global::Stetic.BinContainer.Attach(this);
 			this.Name = "INTV.LtoFlash.View.SettingsPage";
 			// Container child INTV.LtoFlash.View.SettingsPage.Gtk.Container+ContainerChild
-			this.vbox1 = new global::Gtk.VBox ();
+			this.vbox1 = new global::Gtk.VBox();
 			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._searchForDevicesAtStartup = new global::Gtk.CheckButton ();
+			this._searchForDevicesAtStartup = new global::Gtk.CheckButton();
 			this._searchForDevicesAtStartup.CanFocus = true;
 			this._searchForDevicesAtStartup.Name = "_searchForDevicesAtStartup";
-			this._searchForDevicesAtStartup.Label = global::Mono.Unix.Catalog.GetString ("checkbutton1");
+			this._searchForDevicesAtStartup.Label = global::Mono.Unix.Catalog.GetString("checkbutton1");
 			this._searchForDevicesAtStartup.DrawIndicator = true;
 			this._searchForDevicesAtStartup.UseUnderline = true;
-			this.vbox1.Add (this._searchForDevicesAtStartup);
-			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._searchForDevicesAtStartup]));
+			this.vbox1.Add(this._searchForDevicesAtStartup);
+			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._searchForDevicesAtStartup]));
 			w1.Position = 0;
 			w1.Expand = false;
 			w1.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._automaticallyConnectToDevices = new global::Gtk.CheckButton ();
+			this._automaticallyConnectToDevices = new global::Gtk.CheckButton();
 			this._automaticallyConnectToDevices.CanFocus = true;
 			this._automaticallyConnectToDevices.Name = "_automaticallyConnectToDevices";
-			this._automaticallyConnectToDevices.Label = global::Mono.Unix.Catalog.GetString ("checkbutton2");
+			this._automaticallyConnectToDevices.Label = global::Mono.Unix.Catalog.GetString("checkbutton2");
 			this._automaticallyConnectToDevices.DrawIndicator = true;
 			this._automaticallyConnectToDevices.UseUnderline = true;
-			this.vbox1.Add (this._automaticallyConnectToDevices);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._automaticallyConnectToDevices]));
+			this.vbox1.Add(this._automaticallyConnectToDevices);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._automaticallyConnectToDevices]));
 			w2.Position = 1;
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._validateVIDandPIDBeforeConnecting = new global::Gtk.CheckButton ();
+			this._validateVIDandPIDBeforeConnecting = new global::Gtk.CheckButton();
 			this._validateVIDandPIDBeforeConnecting.CanFocus = true;
 			this._validateVIDandPIDBeforeConnecting.Name = "_validateVIDandPIDBeforeConnecting";
-			this._validateVIDandPIDBeforeConnecting.Label = global::Mono.Unix.Catalog.GetString ("checkbutton3");
+			this._validateVIDandPIDBeforeConnecting.Label = global::Mono.Unix.Catalog.GetString("checkbutton3");
 			this._validateVIDandPIDBeforeConnecting.DrawIndicator = true;
 			this._validateVIDandPIDBeforeConnecting.UseUnderline = true;
-			this.vbox1.Add (this._validateVIDandPIDBeforeConnecting);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._validateVIDandPIDBeforeConnecting]));
+			this.vbox1.Add(this._validateVIDandPIDBeforeConnecting);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._validateVIDandPIDBeforeConnecting]));
 			w3.Position = 2;
 			w3.Expand = false;
 			w3.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._runGarbageCollector = new global::Gtk.CheckButton ();
+			this._runGarbageCollector = new global::Gtk.CheckButton();
 			this._runGarbageCollector.CanFocus = true;
 			this._runGarbageCollector.Name = "_runGarbageCollector";
-			this._runGarbageCollector.Label = global::Mono.Unix.Catalog.GetString ("checkbutton4");
+			this._runGarbageCollector.Label = global::Mono.Unix.Catalog.GetString("checkbutton4");
 			this._runGarbageCollector.DrawIndicator = true;
 			this._runGarbageCollector.UseUnderline = true;
-			this.vbox1.Add (this._runGarbageCollector);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._runGarbageCollector]));
+			this.vbox1.Add(this._runGarbageCollector);
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._runGarbageCollector]));
 			w4.Position = 3;
 			w4.Expand = false;
 			w4.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._promptToAddRoms = new global::Gtk.CheckButton ();
+			this._promptToAddRoms = new global::Gtk.CheckButton();
 			this._promptToAddRoms.CanFocus = true;
 			this._promptToAddRoms.Name = "_promptToAddRoms";
-			this._promptToAddRoms.Label = global::Mono.Unix.Catalog.GetString ("checkbutton5");
+			this._promptToAddRoms.Label = global::Mono.Unix.Catalog.GetString("checkbutton5");
 			this._promptToAddRoms.DrawIndicator = true;
 			this._promptToAddRoms.UseUnderline = true;
-			this.vbox1.Add (this._promptToAddRoms);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._promptToAddRoms]));
+			this.vbox1.Add(this._promptToAddRoms);
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._promptToAddRoms]));
 			w5.Position = 4;
 			w5.Expand = false;
 			w5.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._addRomsToMenu = new global::Gtk.CheckButton ();
+			this._addRomsToMenu = new global::Gtk.CheckButton();
 			this._addRomsToMenu.CanFocus = true;
 			this._addRomsToMenu.Name = "_addRomsToMenu";
-			this._addRomsToMenu.Label = global::Mono.Unix.Catalog.GetString ("checkbutton6");
+			this._addRomsToMenu.Label = global::Mono.Unix.Catalog.GetString("checkbutton6");
 			this._addRomsToMenu.DrawIndicator = true;
 			this._addRomsToMenu.UseUnderline = true;
-			this.vbox1.Add (this._addRomsToMenu);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._addRomsToMenu]));
+			this.vbox1.Add(this._addRomsToMenu);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._addRomsToMenu]));
 			w6.Position = 5;
 			w6.Expand = false;
 			w6.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._validateMenuLayoutAtStartup = new global::Gtk.CheckButton ();
+			this._validateMenuLayoutAtStartup = new global::Gtk.CheckButton();
 			this._validateMenuLayoutAtStartup.CanFocus = true;
 			this._validateMenuLayoutAtStartup.Name = "_validateMenuLayoutAtStartup";
-			this._validateMenuLayoutAtStartup.Label = global::Mono.Unix.Catalog.GetString ("checkbutton7");
+			this._validateMenuLayoutAtStartup.Label = global::Mono.Unix.Catalog.GetString("checkbutton7");
 			this._validateMenuLayoutAtStartup.DrawIndicator = true;
 			this._validateMenuLayoutAtStartup.UseUnderline = true;
-			this.vbox1.Add (this._validateMenuLayoutAtStartup);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._validateMenuLayoutAtStartup]));
+			this.vbox1.Add(this._validateMenuLayoutAtStartup);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._validateMenuLayoutAtStartup]));
 			w7.Position = 6;
 			w7.Expand = false;
 			w7.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._reconcileDeviceMenuAndLocalMenu = new global::Gtk.CheckButton ();
+			this._reconcileDeviceMenuAndLocalMenu = new global::Gtk.CheckButton();
 			this._reconcileDeviceMenuAndLocalMenu.CanFocus = true;
 			this._reconcileDeviceMenuAndLocalMenu.Name = "_reconcileDeviceMenuAndLocalMenu";
-			this._reconcileDeviceMenuAndLocalMenu.Label = global::Mono.Unix.Catalog.GetString ("checkbutton8");
+			this._reconcileDeviceMenuAndLocalMenu.Label = global::Mono.Unix.Catalog.GetString("checkbutton8");
 			this._reconcileDeviceMenuAndLocalMenu.DrawIndicator = true;
 			this._reconcileDeviceMenuAndLocalMenu.UseUnderline = true;
-			this.vbox1.Add (this._reconcileDeviceMenuAndLocalMenu);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._reconcileDeviceMenuAndLocalMenu]));
+			this.vbox1.Add(this._reconcileDeviceMenuAndLocalMenu);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._reconcileDeviceMenuAndLocalMenu]));
 			w8.Position = 7;
 			w8.Expand = false;
 			w8.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._showFileSystemDetails = new global::Gtk.CheckButton ();
+			this._showFileSystemDetails = new global::Gtk.CheckButton();
 			this._showFileSystemDetails.CanFocus = true;
 			this._showFileSystemDetails.Name = "_showFileSystemDetails";
-			this._showFileSystemDetails.Label = global::Mono.Unix.Catalog.GetString ("checkbutton9");
+			this._showFileSystemDetails.Label = global::Mono.Unix.Catalog.GetString("checkbutton9");
 			this._showFileSystemDetails.DrawIndicator = true;
 			this._showFileSystemDetails.UseUnderline = true;
-			this.vbox1.Add (this._showFileSystemDetails);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._showFileSystemDetails]));
+			this.vbox1.Add(this._showFileSystemDetails);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._showFileSystemDetails]));
 			w9.Position = 8;
 			w9.Expand = false;
 			w9.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._enableSerialPortLogging = new global::Gtk.CheckButton ();
+			this._enableSerialPortLogging = new global::Gtk.CheckButton();
 			this._enableSerialPortLogging.CanFocus = true;
 			this._enableSerialPortLogging.Name = "_enableSerialPortLogging";
-			this._enableSerialPortLogging.Label = global::Mono.Unix.Catalog.GetString ("checkbutton10");
+			this._enableSerialPortLogging.Label = global::Mono.Unix.Catalog.GetString("checkbutton10");
 			this._enableSerialPortLogging.DrawIndicator = true;
 			this._enableSerialPortLogging.UseUnderline = true;
-			this.vbox1.Add (this._enableSerialPortLogging);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._enableSerialPortLogging]));
+			this.vbox1.Add(this._enableSerialPortLogging);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._enableSerialPortLogging]));
 			w10.Position = 9;
 			w10.Expand = false;
 			w10.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._promptForFirmwareUpgrade = new global::Gtk.CheckButton ();
+			this._promptForFirmwareUpgrade = new global::Gtk.CheckButton();
 			this._promptForFirmwareUpgrade.CanFocus = true;
 			this._promptForFirmwareUpgrade.Name = "_promptForFirmwareUpgrade";
-			this._promptForFirmwareUpgrade.Label = global::Mono.Unix.Catalog.GetString ("checkbutton11");
+			this._promptForFirmwareUpgrade.Label = global::Mono.Unix.Catalog.GetString("checkbutton11");
 			this._promptForFirmwareUpgrade.DrawIndicator = true;
 			this._promptForFirmwareUpgrade.UseUnderline = true;
-			this.vbox1.Add (this._promptForFirmwareUpgrade);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._promptForFirmwareUpgrade]));
+			this.vbox1.Add(this._promptForFirmwareUpgrade);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._promptForFirmwareUpgrade]));
 			w11.Position = 10;
 			w11.Expand = false;
 			w11.Fill = false;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this._showAdvancedFeatures = new global::Gtk.CheckButton ();
+			this._showAdvancedFeatures = new global::Gtk.CheckButton();
 			this._showAdvancedFeatures.CanFocus = true;
 			this._showAdvancedFeatures.Name = "_showAdvancedFeatures";
-			this._showAdvancedFeatures.Label = global::Mono.Unix.Catalog.GetString ("checkbutton12");
+			this._showAdvancedFeatures.Label = global::Mono.Unix.Catalog.GetString("checkbutton12");
 			this._showAdvancedFeatures.DrawIndicator = true;
 			this._showAdvancedFeatures.UseUnderline = true;
-			this.vbox1.Add (this._showAdvancedFeatures);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this._showAdvancedFeatures]));
+			this.vbox1.Add(this._showAdvancedFeatures);
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox1[this._showAdvancedFeatures]));
 			w12.Position = 11;
 			w12.Expand = false;
 			w12.Fill = false;
-			this.Add (this.vbox1);
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+			this.Add(this.vbox1);
+			if ((this.Child != null))
+			{
+				this.Child.ShowAll();
 			}
-			this._showAdvancedFeatures.Hide ();
-			this.Hide ();
-			this._searchForDevicesAtStartup.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._automaticallyConnectToDevices.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._validateVIDandPIDBeforeConnecting.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._runGarbageCollector.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._promptToAddRoms.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._addRomsToMenu.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._validateMenuLayoutAtStartup.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._reconcileDeviceMenuAndLocalMenu.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._showFileSystemDetails.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._enableSerialPortLogging.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._promptForFirmwareUpgrade.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
-			this._showAdvancedFeatures.Toggled += new global::System.EventHandler (this.HandlePreferenceToggled);
+			this._showAdvancedFeatures.Hide();
+			this.Hide();
+			this._searchForDevicesAtStartup.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._automaticallyConnectToDevices.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._validateVIDandPIDBeforeConnecting.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._runGarbageCollector.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._promptToAddRoms.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._addRomsToMenu.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._validateMenuLayoutAtStartup.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._reconcileDeviceMenuAndLocalMenu.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._showFileSystemDetails.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._enableSerialPortLogging.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._promptForFirmwareUpgrade.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
+			this._showAdvancedFeatures.Toggled += new global::System.EventHandler(this.HandlePreferenceToggled);
 		}
 	}
 }

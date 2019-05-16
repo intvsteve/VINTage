@@ -106,6 +106,7 @@ namespace INTV.LtoFlash.Model
         public const string SaveMenuPositionPropertyName = "SaveMenuPosition";
         public const string BackgroundGCPropertyName = "BackgroundGC";
         public const string KeyclicksPropertyName = "Keyclicks";
+        public const string ZeroLtoFlashRamPropertyName = "ZeroLtoFlashRam";
         public const string DeviceStatusUpdatePeriodPropertyName = "DeviceStatusUpdatePeriod";
 
         #endregion // Property Names
@@ -208,9 +209,11 @@ namespace INTV.LtoFlash.Model
             _deviceActivities = new ConcurrentDictionary<DeviceActivity, Tuple<DeviceActivityDelegate, object>>();
             ValidateDevice();
             _showTitleScreen = ShowTitleScreenFlags.Default;
-            _keyclicks = false;
-            _backgroundGC = true;
             _saveMenuPosition = SaveMenuPositionFlags.Default;
+            _backgroundGC = true;
+            _keyclicks = false;
+            _zeroLtoFlashRam = true;
+            ReservedDeviceStatusFlagsLo = DeviceStatusFlagsLo.ReservedMask; // these are presumed set by default
             DeviceStatusFlagsHi = DeviceStatusFlagsHi.Default;
             UpdateFileSystemStatsDuringHeartbeat = Properties.Settings.Default.ShowFileSystemDetails;
         }
@@ -273,7 +276,7 @@ namespace INTV.LtoFlash.Model
         public EcsStatusFlags EcsCompatibility
         {
             get { return _ecsCompatibility; }
-            set { AssignAndUpdateProperty(EcsCompatibilityPropertyName, value, ref _ecsCompatibility, (p, v) => UpdateEcsConfiguration(v, true)); }
+            set { AssignAndUpdateProperty(EcsCompatibilityPropertyName, value, ref _ecsCompatibility, (p, v) => UpdateEcsConfiguration(v, sendToHardware: true)); }
         }
         private EcsStatusFlags _ecsCompatibility;
 
@@ -283,7 +286,7 @@ namespace INTV.LtoFlash.Model
         public IntellivisionIIStatusFlags IntvIICompatibility
         {
             get { return _intvIICompatibility; }
-            set { AssignAndUpdateProperty(IntvIICompatibilityPropertyName, value, ref _intvIICompatibility, (p, v) => UpdateIntellivisionIIConfiguration(v, true)); }
+            set { AssignAndUpdateProperty(IntvIICompatibilityPropertyName, value, ref _intvIICompatibility, (p, v) => UpdateIntellivisionIIConfiguration(v, sendToHardware: true)); }
         }
         private IntellivisionIIStatusFlags _intvIICompatibility;
 
@@ -293,7 +296,7 @@ namespace INTV.LtoFlash.Model
         public ShowTitleScreenFlags ShowTitleScreen
         {
             get { return _showTitleScreen; }
-            set { AssignAndUpdateProperty(ShowTitleScreenPropertyName, value, ref _showTitleScreen, (p, v) => UpdateShowTitleScreen(v, true)); }
+            set { AssignAndUpdateProperty(ShowTitleScreenPropertyName, value, ref _showTitleScreen, (p, v) => UpdateShowTitleScreen(v, sendToHardware: true)); }
         }
         private ShowTitleScreenFlags _showTitleScreen;
 
@@ -303,7 +306,7 @@ namespace INTV.LtoFlash.Model
         public SaveMenuPositionFlags SaveMenuPosition
         {
             get { return _saveMenuPosition; }
-            set { AssignAndUpdateProperty(SaveMenuPositionPropertyName, value, ref _saveMenuPosition, (p, v) => UpdateSaveMenuPosition(v, true)); }
+            set { AssignAndUpdateProperty(SaveMenuPositionPropertyName, value, ref _saveMenuPosition, (p, v) => UpdateSaveMenuPosition(v, sendToHardware: true)); }
         }
         private SaveMenuPositionFlags _saveMenuPosition;
 
@@ -313,7 +316,7 @@ namespace INTV.LtoFlash.Model
         public bool BackgroundGC
         {
             get { return _backgroundGC; }
-            set { AssignAndUpdateProperty(BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => UpdateBackgroundGC(v, true)); }
+            set { AssignAndUpdateProperty(BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => UpdateBackgroundGC(v, sendToHardware: true)); }
         }
         private bool _backgroundGC;
 
@@ -323,9 +326,19 @@ namespace INTV.LtoFlash.Model
         public bool Keyclicks
         {
             get { return _keyclicks; }
-            set { AssignAndUpdateProperty(KeyclicksPropertyName, value, ref _keyclicks, (p, v) => UpdateKeyclicks(v, true)); }
+            set { AssignAndUpdateProperty(KeyclicksPropertyName, value, ref _keyclicks, (p, v) => UpdateKeyclicks(v, sendToHardware: true)); }
         }
         private bool _keyclicks;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to zero the RAM on the Locutus device when a ROM is loaded and run.
+        /// </summary>
+        public bool ZeroLtoFlashRam
+        {
+            get { return _zeroLtoFlashRam; }
+            set { AssignAndUpdateProperty(ZeroLtoFlashRamPropertyName, value, ref _zeroLtoFlashRam, (p, v) => UpdateZeroLtoFlashRam(v, sendToHardware: true)); }
+        }
+        private bool _zeroLtoFlashRam;
 
         /// <summary>
         /// Gets a value indicating whether this is a valid Locutus device.
@@ -498,10 +511,19 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         internal bool UpdateFileSystemStatsDuringHeartbeat { get; set; }
 
-        private DeviceStatusFlagsLo DeviceStatusFlagsLo
+        /// <summary>
+        /// Gets the current device status flags.
+        /// </summary>
+        internal DeviceStatusFlags DeviceStatusFlags
         {
-            get { return this.ComposeStatusFlags(); }
+            get { return new DeviceStatusFlags(this.ComposeStatusFlagsLo(), DeviceStatusFlagsHi); }
         }
+
+        /// <summary>
+        /// Gets or sets reserved status flags from the low 64 bits of the status.
+        /// </summary>
+        /// <remarks>These are preserved as-is in case firmware is using them and the UI is not in sync with it regarding features related thereto.</remarks>
+        internal DeviceStatusFlagsLo ReservedDeviceStatusFlagsLo { get; set; }
 
         private DeviceStatusFlagsHi DeviceStatusFlagsHi { get; set; }
 
@@ -789,7 +811,7 @@ namespace INTV.LtoFlash.Model
         {
             if (sendToHardware)
             {
-                var newConfigurationLo = this.ComposeStatusFlags();
+                var newConfigurationLo = this.ComposeStatusFlagsLo();
                 if (newBackgroundGC)
                 {
                     newConfigurationLo |= DeviceStatusFlagsLo.BackgroundGC;
@@ -819,7 +841,7 @@ namespace INTV.LtoFlash.Model
         {
             if (sendToHardware)
             {
-                var newConfigurationLo = this.ComposeStatusFlags();
+                var newConfigurationLo = this.ComposeStatusFlagsLo();
                 if (newKeyclicks)
                 {
                     newConfigurationLo |= DeviceStatusFlagsLo.Keyclicks;
@@ -837,6 +859,48 @@ namespace INTV.LtoFlash.Model
                     _keyclicks = newKeyclicks;
                     RaisePropertyChanged(KeyclicksPropertyName);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Update the zero LTO Flash! RAM setting.
+        /// </summary>
+        /// <param name="newZeroLtoFlashRam">If set to <c>true</c>, RAM is set to zero when ROM is loaded.</param>
+        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
+        internal void UpdateZeroLtoFlashRam(bool newZeroLtoFlashRam, bool sendToHardware)
+        {
+            if (sendToHardware)
+            {
+                var newConfigurationLo = this.ComposeStatusFlagsLo();
+                if (newZeroLtoFlashRam)
+                {
+                    newConfigurationLo |= DeviceStatusFlagsLo.ZeroRamBeforeLoad;
+                }
+                else
+                {
+                    newConfigurationLo &= ~DeviceStatusFlagsLo.ZeroRamBeforeLoad;
+                }
+                this.SetConfiguration(newConfigurationLo, DeviceStatusFlagsHi, (m, e) => ErrorHandler(DeviceStatusFlagsLo.ZeroRamBeforeLoad, ProtocolCommandId.SetConfiguration, m, e));
+            }
+            else
+            {
+                if (_zeroLtoFlashRam != newZeroLtoFlashRam)
+                {
+                    _zeroLtoFlashRam = newZeroLtoFlashRam;
+                    RaisePropertyChanged(ZeroLtoFlashRamPropertyName);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the reserved status flags.
+        /// </summary>
+        /// <param name="newReservedDeviceStatusFlagsLo">The new reserved bits.</param>
+        internal void UpdateReservedDeviceStatusFlagsLo(DeviceStatusFlagsLo newReservedDeviceStatusFlagsLo)
+        {
+            if (ReservedDeviceStatusFlagsLo != newReservedDeviceStatusFlagsLo)
+            {
+                ReservedDeviceStatusFlagsLo = newReservedDeviceStatusFlagsLo;
             }
         }
 
@@ -1298,8 +1362,10 @@ namespace INTV.LtoFlash.Model
             var newEcsStatus = EcsCompatibility;
             var newShowTitleScreenStatus = ShowTitleScreen;
             var newSaveMenuPositionStatus = SaveMenuPosition;
-            var newKeyclicksStatus = Keyclicks;
             var newBackgroundGCStatus = BackgroundGC;
+            var newKeyclicksStatus = Keyclicks;
+            var newZeroLtoFlashRam = ZeroLtoFlashRam;
+            var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
             var newDeviceStatusFlagsHigh = DeviceStatusFlagsHi;
             if (newDeviceStatus != null)
             {
@@ -1311,16 +1377,20 @@ namespace INTV.LtoFlash.Model
                 newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
                 newKeyclicksStatus = newDeviceStatus.Keyclicks;
                 newBackgroundGCStatus = newDeviceStatus.BackgroundGC;
+                newZeroLtoFlashRam = newDeviceStatus.ZeroLtoFlashRam;
+                newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusLow & DeviceStatusFlagsLo.ReservedMask;
                 newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusHigh;
             }
             UpdateUniqueId(newUniqueId);
             UpdateHardwareFlags(newHardwareStatus);
-            UpdateIntellivisionIIConfiguration(newIntyIIStatus, false);
-            UpdateEcsConfiguration(newEcsStatus, false);
-            UpdateShowTitleScreen(newShowTitleScreenStatus, false);
-            UpdateSaveMenuPosition(newSaveMenuPositionStatus, false);
-            UpdateBackgroundGC(newBackgroundGCStatus, false);
-            UpdateKeyclicks(newKeyclicksStatus, false);
+            UpdateIntellivisionIIConfiguration(newIntyIIStatus, sendToHardware: false);
+            UpdateEcsConfiguration(newEcsStatus, sendToHardware: false);
+            UpdateShowTitleScreen(newShowTitleScreenStatus, sendToHardware: false);
+            UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
+            UpdateBackgroundGC(newBackgroundGCStatus, sendToHardware: false);
+            UpdateKeyclicks(newKeyclicksStatus, sendToHardware: false);
+            UpdateZeroLtoFlashRam(newZeroLtoFlashRam, sendToHardware: false);
+            UpdateReservedDeviceStatusFlagsLo(newReservedDeviceStatusFlagsLo);
             DeviceStatusFlagsHi = newDeviceStatusFlagsHigh;
         }
 
@@ -1381,7 +1451,7 @@ namespace INTV.LtoFlash.Model
 
         private void UpdateFirmwareVersion(FirmwareRevisions firmwareRevisions)
         {
-            var newFirmwareVersion = firmwareRevisions == null ? 0 : firmwareRevisions.Current >> 2;
+            var newFirmwareVersion = firmwareRevisions == null ? 0 : FirmwareRevisions.GetFirmwareVersion(firmwareRevisions.Current);
             CommandAvailability.UpdateCommandAvailabilityForFirmwareVersion(newFirmwareVersion);
         }
 

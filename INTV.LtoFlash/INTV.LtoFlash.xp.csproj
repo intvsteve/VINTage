@@ -151,6 +151,7 @@
     <Compile Include="Model\DeviceHelpers.UpdateDeviceName.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateDeviceOwner.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateFirmware.cs" />
+    <Compile Include="Model\DeviceStatusFlags.cs" />
     <Compile Include="Model\DeviceStatusFlagsHi.cs" />
     <Compile Include="Model\DeviceStatusFlagsLo.cs" />
     <Compile Include="Model\Directory.cs" />
@@ -461,6 +462,9 @@
     <EmbeddedResource Include="Commands\Resources\CheckForFirmwareUpdateCommand_MenuItem.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetRandomizeLtoFlashRamCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Page Include="View\FileSystemStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -702,6 +706,7 @@
     <Resource Include="Resources\Images\save_menu_position_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\randomize_ram_16xLG.png" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />
     <Resource Include="Resources\Images\document_devicespecific_Black_16xLG.png" />
     <Resource Include="Resources\Images\document_devicespecific_Blue_16xLG.png" />

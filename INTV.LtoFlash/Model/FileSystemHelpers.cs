@@ -557,7 +557,7 @@ namespace INTV.LtoFlash.Model
         /// <returns>If the two file systems should be considered equivalent, returns 0. A nonzero return value indicates the two file systems are different in some way.</returns>
         /// <remarks>This comparison may not be completely accurate. For example, if in-memory data differs from what is current in the file system,
         /// results will be inaccurate in some circumstances. Consider a case in which a device file system was populated with a .bin format ROM, but locally, the
-        /// .cfg file of that ROM has changed after the application was started. This comparison will NOT detect such a change. The fully-featured <see cref="FileSystemHelpers.CompareTo"/>
+        /// .cfg file of that ROM has changed after the application was started. This comparison will NOT detect such a change. The fully-featured <see cref="FileSystemHelpers.CompareTo()"/>
         /// method will detect such a change. However, that comparison method can be orders of magnitude slower, due to necessary access to the file system.</remarks>
         public static int SimpleCompare(this FileSystem referenceFileSystem, FileSystem otherFileSystem, Device targetDevice)
         {
@@ -823,13 +823,13 @@ namespace INTV.LtoFlash.Model
         /// data on the target file system is retained. Missing "modified" forks may also be "repaired". The idea here is that the modifications
         /// are a precursor to re-comparing the two file systems.
         /// </summary>
-        /// <param name="referenceFileSystem">The file system whose error-prone entries are to be removed or repaired. This should be the reference file system used in a call to <see cref="CompareTo"/>.</param>
+        /// <param name="referenceFileSystem">The file system whose error-prone entries are to be removed or repaired. This should be the reference file system used in a call to <see cref="CompareTo()"/>.</param>
         /// <param name="targetFileSystem">The target file system from the comparison that produced the differences. Used to repair unwanted changes.</param>
         /// <param name="differences">A difference computed between two <see cref="FileSystem"/> instances.</param>
-        /// <param name="shouldRemoveInvalidEntry">If <c>null</c>, all entries reporting an error in <paramref name="differences"/> are removed; otherwise only errors that pass the provided predicate are removed from <paramref name="fileSystem"/>.</param>
+        /// <param name="shouldRemoveInvalidEntry">If <c>null</c>, all entries reporting an error in <paramref name="differences"/> are removed; otherwise only errors that pass the provided predicate are removed from <paramref name="referenceFileSystem"/>.</param>
         /// <param name="errorFilter">If <c>null</c>, all errors reported in <paramref name="differences"/> are included; otherwise only errors that pass the provided filter are included in the return value.</param>
         /// <returns>A dictionary containing all errors satisfy the provided <paramref name="errorFilter"/>.</returns>
-        /// <remarks>Note that <paramref name="errorFilter"/> has no effect on which error-inducing entries are purged from <paramref name="fileSystem"/>! It only
+        /// <remarks>Note that <paramref name="errorFilter"/> has no effect on which error-inducing entries are purged from <paramref name="referenceFileSystem"/>! It only
         /// filters the results included in the return value. Similarly, the predicate <paramref name="shouldRemoveInvalidEntry"/> only determines which entries should
         /// be removed from <paramref name="referenceFileSystem"/>.
         /// It is also assumed that modifications to <paramref name="referenceFileSystem"/> are safe to do. BE CAUTIOUS in this regard -- you

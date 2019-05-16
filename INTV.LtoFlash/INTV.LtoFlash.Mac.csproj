@@ -155,6 +155,7 @@
     <Compile Include="Model\DeviceCommandAvailability.cs" />
     <Compile Include="Model\DeviceCreationInfo.cs" />
     <Compile Include="Model\DeviceHelpers.cs" />
+    <Compile Include="Model\DeviceStatusFlags.cs" />
     <Compile Include="Model\DeviceStatusFlagsHi.cs" />
     <Compile Include="Model\DeviceStatusFlagsLo.cs" />
     <Compile Include="Model\EcsStatusFlags.cs" />
@@ -306,11 +307,14 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.upg" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />
+    <EmbeddedResource Include="Resources\Images\randomize_ram_16xLG.png">
+      <LogicalName>Resources/Images/randomize_ram_16xLG.png</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Images\check-for-firmware-update_16xLG.png">
-        <LogicalName>Resources/Images/check-for-firmware-update_16xLG.png</LogicalName>
+      <LogicalName>Resources/Images/check-for-firmware-update_16xLG.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Images\check-for-firmware-update_32xLG.png">
-        <LogicalName>Resources/Images/check-for-firmware-update_32xLG.png</LogicalName>
+      <LogicalName>Resources/Images/check-for-firmware-update_32xLG.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Images\connected_16x16.png">
       <LogicalName>Resources/Images/connected_16x16.png</LogicalName>

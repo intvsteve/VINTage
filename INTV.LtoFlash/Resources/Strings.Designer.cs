@@ -701,6 +701,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NOTE: This feature requires Firmware version {0} or newer to be installed on your LTO Flash! and is not available in Firmware version {1}..
+        /// </summary>
+        internal static string ConfigurableFeatureUnavailable_Message_Format {
+            get {
+                return ResourceManager.GetString("ConfigurableFeatureUnavailable_Message_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect.
         /// </summary>
         internal static string Connect {
@@ -5496,6 +5505,26 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A problem occurred when setting JLP RAM randomize mode. The error was:
+        ///
+        ///{0}.
+        /// </summary>
+        internal static string SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Message_Format {
+            get {
+                return ResourceManager.GetString("SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Message_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to Set Randomize JLP RAM Mode.
+        /// </summary>
+        internal static string SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Title {
+            get {
+                return ResourceManager.GetString("SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when setting save menu position mode. The error was:
         ///
         ///{0}.
@@ -5635,6 +5664,15 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selects how your LTO Flash! behaves when loading a ROM with the ECS attached, and when the ECS ROM is enabled. (Default: ECS Games).
+        /// </summary>
+        internal static string SetEcsCompatibilityCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("SetEcsCompatibilityCommand_TipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when updating the file system status. The error was:
         ///
         ///{0}.
@@ -5660,6 +5698,15 @@ namespace INTV.LtoFlash.Resources {
         internal static string SetIntellivisionIICompatibilityCommand_Name {
             get {
                 return ResourceManager.GetString("SetIntellivisionIICompatibilityCommand_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selects how your LTO Flash! decides to avoid Intellivision II compatibility problems. (Default: Always).
+        /// </summary>
+        internal static string SetIntellivisionIICompatibilityCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("SetIntellivisionIICompatibilityCommand_TipDescription", resourceCulture);
             }
         }
         
@@ -5709,6 +5756,33 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Randomize RAM before loading ROM.
+        /// </summary>
+        internal static string SetRandomizeLtoFlashRamCommand_Name {
+            get {
+                return ResourceManager.GetString("SetRandomizeLtoFlashRamCommand_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled, the contents of LTO Flash! RAM will be randomized prior to loading a ROM. When not enabled, the contents of LTO Flash! RAM will be set to zero. This setting only affects ROMs that use the extra RAM. (Factory Default: OFF).
+        /// </summary>
+        internal static string SetRandomizeLtoFlashRamCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("SetRandomizeLtoFlashRamCommand_TipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomize LTO Flash! RAM Before Loading ROM.
+        /// </summary>
+        internal static string SetRandomizeLtoFlashRamCommand_TipTitle {
+            get {
+                return ResourceManager.GetString("SetRandomizeLtoFlashRamCommand_TipTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set Save Data....
         /// </summary>
         internal static string SetSaveDataCommand_MenuItemName {
@@ -5745,7 +5819,7 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When enabled, your LTO Flash! will resume at the last selected menu selection..
+        ///   Looks up a localized string similar to Selects whether your LTO Flash! saves the last selected menu position. (Default: Only During Session).
         /// </summary>
         internal static string SetSaveMenuPositionCommand_TipDescription {
             get {
@@ -5768,6 +5842,15 @@ namespace INTV.LtoFlash.Resources {
         internal static string SetShowTitleScreenCommand_Name {
             get {
                 return ResourceManager.GetString("SetShowTitleScreenCommand_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selects when your LTO Flash! displays the title screen. (Default: Always).
+        /// </summary>
+        internal static string SetShowTitleScreenCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("SetShowTitleScreenCommand_TipDescription", resourceCulture);
             }
         }
         

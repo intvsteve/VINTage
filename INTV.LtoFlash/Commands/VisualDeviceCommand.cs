@@ -1,5 +1,5 @@
 ﻿// <copyright file="VisualDeviceCommand.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using INTV.LtoFlash.Model;
 using INTV.LtoFlash.Model.Commands;
 
 namespace INTV.LtoFlash.Commands
@@ -56,5 +57,10 @@ namespace INTV.LtoFlash.Commands
         /// Gets or sets the underlying device protocol commands required to carry out this user-initiated command.
         /// </summary>
         internal IEnumerable<ProtocolCommandId> RequiredProtocolCommands { get; set; }
+
+        /// <summary>
+        /// Gets or sets the configuration bits for device protocol commands that can affect Locutus device configuration.
+        /// </summary>
+        internal DeviceStatusFlags ConfigurationBits { get; set; }
     }
 }

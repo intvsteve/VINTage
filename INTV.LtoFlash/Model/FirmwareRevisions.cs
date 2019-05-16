@@ -58,13 +58,17 @@ namespace INTV.LtoFlash.Model
         public const int BaseVersionMask = ~(SecondaryMask | UnofficialReleaseMask);
 
         /// <summary>
+        /// Number of descriptive bits in firmware version number (least significant bits).
+        /// </summary>
+        public const int BaseVersionBitOffset = 2;
+
+        /// <summary>
         /// Used to indicate that firmware information is not available from a Locutus device.
         /// </summary>
         public static readonly FirmwareRevisions Unavailable = new FirmwareRevisions();
 
         private const long FirmwareUpdateVersionOffset = 0xC0;
         private const int FirmwareVersionSizeInBytes = 3;
-        private const int FirmwareVersionUnreleasedFlag = 1 << 0;
         private const int FirmwareRevisionNeedsDoublingAfter = 0x08A2;
 
         #endregion // Constants
@@ -84,16 +88,19 @@ namespace INTV.LtoFlash.Model
         /// <summary>
         /// Gets the primary firmware version number. This is the 'factory' firmware.
         /// </summary>
+        /// <remarks>NOTE: This value includes secondary and unofficial release information flags.</remarks>
         public int Primary { get; private set; }
 
         /// <summary>
-        /// Gets the secondary firmware version number. This is the 'udpated' firmware, if applicable.
+        /// Gets the secondary firmware version number. This is the 'updated' firmware, if applicable.
         /// </summary>
+        /// <remarks>NOTE: This value includes secondary and unofficial release information flags.</remarks>
         public int Secondary { get; private set; }
 
         /// <summary>
         /// Gets the currently running firmware.
         /// </summary>
+        /// <remarks>NOTE: This value includes secondary and unofficial release information flags.</remarks>
         public int Current { get; private set; }
 
         #region ByteSerializer Properties
@@ -114,6 +121,12 @@ namespace INTV.LtoFlash.Model
 
         #endregion // Properties
 
+        public static int GetFirmwareVersion(int rawFirmwareVersion)
+        {
+            var version = (rawFirmwareVersion & BaseVersionMask) >> BaseVersionBitOffset;
+            return version;
+        }
+
         /// <summary>
         /// Converts a raw firmware revision value to a display string.
         /// </summary>
@@ -122,7 +135,7 @@ namespace INTV.LtoFlash.Model
         /// <returns>The version as a string.</returns>
         public static string FirmwareVersionToString(int version, bool useRawValue)
         {
-            var valueToConvert = useRawValue ? (version & FirmwareRevisions.BaseVersionMask) >> 2 : (version & FirmwareRevisions.BaseVersionMask) >> 2; // version;
+            var valueToConvert = useRawValue ? version : GetFirmwareVersion(version);
             var versionString = Resources.Strings.FileSystemStatisticsView_Unavailable;
             if (version != LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion)
             {

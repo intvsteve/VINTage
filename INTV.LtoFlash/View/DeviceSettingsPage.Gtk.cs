@@ -57,15 +57,20 @@ namespace INTV.LtoFlash.View
                 blockWhenBusy.Key.BlockWhenAppIsBusy = false;
             }
             this.Build();
-            var x = ViewModel;
             InitializeShowTitleScreenComboBox();
             InitializeIntellivisionIICompatibilityComboBox();
             InitializeEcsCompatibilityComboBox();
             InitializeSaveMenuPositionComboBox();
             _keyClicks.Active = false;
+            _keyClicks.TooltipText = DeviceCommandGroup.SetKeyclicksCommand.ToolTipDescription;
             _backgroundGC.Active = true;
+            _backgroundGC.TooltipText = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.ToolTipDescription;
+            _randomizeLtoFlashRam.Active = false;
+            _randomizeLtoFlashRam.TooltipText = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.ToolTipDescription;
+            DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.PropertyChanged += HandleSetRandomizeLtoFlashRamCommandPropertyChanged;
             CommandManager.RequerySuggested += HandleRequerySuggested;
         }
+
 
         /// <summary>
         /// Gets the view model.
@@ -114,6 +119,7 @@ namespace INTV.LtoFlash.View
                 _saveMenuPositionSetting.Active = _saveMenuPositionSetting.GetIndexOfValue(ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
                 _keyClicks.Active = ViewModel.ActiveLtoFlashDevice.Keyclicks;
                 _backgroundGC.Active = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
+                _randomizeLtoFlashRam.Active = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
             }
             finally
             {
@@ -207,6 +213,20 @@ namespace INTV.LtoFlash.View
         }
 
         /// <summary>
+        /// Handles the randomize LTO Flash! RAM changed event.
+        /// </summary>
+        /// <param name="sender">The Randomize RAM checkbox.</param>
+        /// <param name="e">Not applicable.</param>
+        protected void HandleRandomizeLtoFlashRamChanged (object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.Assert (object.ReferenceEquals (sender, _randomizeLtoFlashRam), "Got value change from wrong control! Expected Randomize LTO Flash! RAM.");
+            if ((ViewModel != null) && !_updating)
+            {
+                ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam = _randomizeLtoFlashRam.Active;
+            }
+        }
+
+        /// <summary>
         /// Handles the do background GC setting changed.
         /// </summary>
         /// <param name="sender">The do background GC checkbox.</param>
@@ -217,6 +237,15 @@ namespace INTV.LtoFlash.View
             if ((ViewModel != null) && !_updating)
             {
                 ViewModel.ActiveLtoFlashDevice.BackgroundGC = _backgroundGC.Active;
+            }
+        }
+
+        private void HandleSetRandomizeLtoFlashRamCommandPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ToolTipDescription")
+            {
+                var visualRelayCommand = sender as VisualRelayCommand;
+                _randomizeLtoFlashRam.TooltipText = visualRelayCommand.ToolTipDescription;
             }
         }
 
@@ -252,28 +281,37 @@ namespace INTV.LtoFlash.View
             {
                 _backgroundGC.Sensitive = canEdit;
             }
+            canEdit = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.CanExecute(ViewModel);
+            if (_randomizeLtoFlashRam.Sensitive != canEdit)
+            {
+                _randomizeLtoFlashRam.Sensitive = canEdit;
+            }
         }
 
         private void InitializeShowTitleScreenComboBox()
         {
+            _titleScreenSetting.TooltipText = DeviceCommandGroup.SetShowTitleScreenCommand.ToolTipDescription;
             var options = new[] { ShowTitleScreenFlags.Always, ShowTitleScreenFlags.OnPowerUp, ShowTitleScreenFlags.Never };
             InitializeComboBox(_titleScreenSetting, options, ShowTitleScreenFlags.Default, ShowTitleScreenFlagsHelpers.ToDisplayString);
         }
 
         private void InitializeIntellivisionIICompatibilityComboBox()
         {
+            _intellivisionIICompatibility.TooltipText = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.ToolTipDescription;
             var options = new[] { IntellivisionIIStatusFlags.None, IntellivisionIIStatusFlags.Conservative, IntellivisionIIStatusFlags.Aggressive };
             InitializeComboBox(_intellivisionIICompatibility, options, IntellivisionIIStatusFlags.Default, IntellivisionIIStatusFlagsHelpers.ToDisplayString);
         }
 
         private void InitializeEcsCompatibilityComboBox()
         {
+            _ecsCompatibility.TooltipText = DeviceCommandGroup.SetEcsCompatibilityCommand.ToolTipDescription;
             var options = new[] { EcsStatusFlags.None, EcsStatusFlags.EnabledForRequiredAndOptional, EcsStatusFlags.EnabledForRequired, EcsStatusFlags.Disabled };
             InitializeComboBox(_ecsCompatibility, options, EcsStatusFlags.Default, EcsStatusFlagsHelpers.ToDisplayString);
         }
 
         private void InitializeSaveMenuPositionComboBox()
         {
+            _saveMenuPositionSetting.TooltipText = DeviceCommandGroup.SetSaveMenuPositionCommand.ToolTipDescription;
             var options = new[] { SaveMenuPositionFlags.Always, SaveMenuPositionFlags.DuringSessionOnly, SaveMenuPositionFlags.Never };
             InitializeComboBox(_saveMenuPositionSetting, options, SaveMenuPositionFlags.Default, SaveMenuPositionFlagsHelpers.ToDisplayString);
         }

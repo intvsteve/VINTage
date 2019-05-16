@@ -83,6 +83,7 @@ namespace INTV.LtoFlash.Commands
             Name = Resources.Strings.SetEcsCompatibilityCommand_Name,
             SmallIcon = typeof(INTV.Shared.Commands.CommandGroup).LoadImageResource("ViewModel/Resources/Images/ecs_16xLG.png"),
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            ToolTipDescription = Resources.Strings.SetEcsCompatibilityCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
@@ -159,6 +160,7 @@ namespace INTV.LtoFlash.Commands
             Name = Resources.Strings.SetIntellivisionIICompatibilityCommand_Name,
             SmallIcon = typeof(INTV.Shared.Commands.CommandGroup).LoadImageResource("ViewModel/Resources/Images/intv_ii_16xLG.png"),
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            ToolTipDescription = Resources.Strings.SetIntellivisionIICompatibilityCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
@@ -224,6 +226,7 @@ namespace INTV.LtoFlash.Commands
             Name = Resources.Strings.SetShowTitleScreenCommand_Name,
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/lto_flash_title_16xLG.png"),
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            ToolTipDescription = Resources.Strings.SetShowTitleScreenCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };

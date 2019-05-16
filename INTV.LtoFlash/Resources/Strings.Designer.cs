@@ -5747,7 +5747,7 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When enabled, the contents of LTO Flash! RAM will be randomized prior to loading a ROM. When not enabled, the contents of LTO Flash! RAM will be set to zero. This setting only affects ROMs that use the extra RAM..
+        ///   Looks up a localized string similar to When enabled, the contents of LTO Flash! RAM will be randomized prior to loading a ROM. When not enabled, the contents of LTO Flash! RAM will be set to zero. This setting only affects ROMs that use the extra RAM. (Factory Default: OFF).
         /// </summary>
         internal static string SetRandomizeLtoFlashRamCommand_TipDescription {
             get {

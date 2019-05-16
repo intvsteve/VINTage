@@ -2541,7 +2541,7 @@ In order to determine if a firmware update is available for your device, please 
     <value>Randomize RAM before loading ROM</value>
   </data>
   <data name="SetRandomizeLtoFlashRamCommand_TipDescription" xml:space="preserve">
-    <value>When enabled, the contents of LTO Flash! RAM will be randomized prior to loading a ROM. When not enabled, the contents of LTO Flash! RAM will be set to zero. This setting only affects ROMs that use the extra RAM.</value>
+    <value>When enabled, the contents of LTO Flash! RAM will be randomized prior to loading a ROM. When not enabled, the contents of LTO Flash! RAM will be set to zero. This setting only affects ROMs that use the extra RAM. (Factory Default: OFF)</value>
   </data>
   <data name="SetRandomizeLtoFlashRamCommand_TipTitle" xml:space="preserve">
     <value>Randomize LTO Flash! RAM Before Loading ROM</value>

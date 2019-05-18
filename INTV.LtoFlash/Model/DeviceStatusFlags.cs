@@ -119,6 +119,9 @@ namespace INTV.LtoFlash.Model
         /// <summary>Title screen flag indicating that Locutus will always show the title screen, even when soft reset.</summary>
         public static readonly DeviceStatusFlags ShowTitleScreenAlways = new DeviceStatusFlags(DeviceStatusFlagsLo.ShowTitleScreenAlways);
 
+        /// <summary>Title screen flags mask.</summary>
+        public static readonly DeviceStatusFlags ShowTitleScreenMask = new DeviceStatusFlags(DeviceStatusFlagsLo.ShowTitleScreenMask);
+
         /// <summary>Save menu position flag indicating that Locutus will retain menu position only while console power is on.</summary>
         public static readonly DeviceStatusFlags SaveMenuPositionDuringSessionOnly = new DeviceStatusFlags(DeviceStatusFlagsLo.SaveMenuPositionDuringSessionOnly);
 

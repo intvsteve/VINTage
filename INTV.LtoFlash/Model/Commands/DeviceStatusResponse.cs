@@ -111,6 +111,14 @@ namespace INTV.LtoFlash.Model.Commands
         }
 
         /// <summary>
+        /// Gets a value indicating whether or not the device allows access to its onboard configuration menu.
+        /// </summary>
+        public bool EnableConfigMenuOnCart
+        {
+            get { return DeviceStatusLow.ToEnableOnboardConfigMenu(); }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether or not the device sets LTO Flash! RAM to zero when loading a ROM.
         /// </summary>
         public bool ZeroLtoFlashRam

@@ -29,6 +29,8 @@ namespace INTV.LtoFlash.Model
     /// </summary>
     public struct DeviceStatusFlags
     {
+        #region Constructors
+
         /// <summary>
         /// Initialize a new instance with only <see cref="Lo"/> flags set.
         /// </summary>
@@ -55,27 +57,38 @@ namespace INTV.LtoFlash.Model
         public DeviceStatusFlags(DeviceStatusFlagsLo lo, DeviceStatusFlagsHi hi)
             : this()
         {
-            Lo = lo;
-            Hi = hi;
+            _lo = lo;
+            _hi = hi;
         }
 
+        #endregion // Constructors
+
+        #region Defined flag values
+
         /// <summary>
-        /// Gets empty flags.
+        /// Empty status flags.
         /// </summary>
-        public static DeviceStatusFlags None
+        public static readonly DeviceStatusFlags None = new DeviceStatusFlags();
+
+        #endregion // Defined flag values
+
+        /// <summary>
+        /// Gets the first 64 bits of device status flags.
+        /// </summary>
+        public DeviceStatusFlagsLo Lo
         {
-            get { return new DeviceStatusFlags(); }
+            get { return _lo; }
         }
+        private readonly DeviceStatusFlagsLo _lo;
 
         /// <summary>
-        /// Gets or sets the first 64 bits of device status flags.
+        /// Gets the second 64 bits of device status flags.
         /// </summary>
-        public DeviceStatusFlagsLo Lo { get; set; }
-
-        /// <summary>
-        /// Gets or sets the second 64 bits of device status flags.
-        /// </summary>
-        public DeviceStatusFlagsHi Hi { get; set; }
+        public DeviceStatusFlagsHi Hi
+        {
+            get { return _hi; }
+        }
+        private readonly DeviceStatusFlagsHi _hi;
 
         #region Bitwise AND operators
 

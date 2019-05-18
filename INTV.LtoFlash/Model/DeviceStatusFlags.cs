@@ -149,6 +149,9 @@ namespace INTV.LtoFlash.Model
         /// <summary>Flag used by Locutus to indicate that other configuration flags are configured. Setting to zero forces a factory reset of configuration.</summary>
         public static readonly DeviceStatusFlags FlagsHaveBeenSet = new DeviceStatusFlags(DeviceStatusFlagsHi.FlagsHaveBeenSet);
 
+        /// <summary>Reserved flags. Note that some flags individually available are also considered reserved.</summary>
+        public static readonly DeviceStatusFlags Reserved = new DeviceStatusFlags(DeviceStatusFlagsLo.ReservedMask, DeviceStatusFlagsHi.ReservedMask);
+
         #endregion // Defined flag values
 
         /// <summary>

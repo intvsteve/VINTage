@@ -1,4 +1,4 @@
-﻿// <copyright file="DeviceStatusFlags.cs" company="INTV Funhouse">
+// <copyright file="DeviceStatusFlags.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -118,6 +118,9 @@ namespace INTV.LtoFlash.Model
 
         /// <summary>Flag indicating that Locutus should zero out the contents of RAM before loading a programs. Otherwise, it RAM contents is randomized.</summary>
         public static readonly DeviceStatusFlags ZeroRamBeforeLoad = new DeviceStatusFlags(DeviceStatusFlagsLo.ZeroRamBeforeLoad);
+
+        /// <summary>Internal flag used by Locutus to indicate menu position data should be considered invalid. Do not change this flag.</summary>
+        public static readonly DeviceStatusFlags ResetMenuHistory = new DeviceStatusFlags(DeviceStatusFlagsHi.ResetMenuHistory);
 
         #endregion // Defined flag values
 

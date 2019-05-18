@@ -128,6 +128,9 @@ namespace INTV.LtoFlash.Model
         /// <summary>Save menu position flag indicating that Locutus will always retain menu position.</summary>
         public static readonly DeviceStatusFlags SaveMenuPositionAlways = new DeviceStatusFlags(DeviceStatusFlagsLo.SaveMenuPositionAlways);
 
+        /// <summary>Save menu position flags mask.</summary>
+        public static readonly DeviceStatusFlags SaveMenuPositionMask = new DeviceStatusFlags(DeviceStatusFlagsLo.SaveMenuPositionMask);
+
         /// <summary>Flag indicating that Locutus will execute garbage collection in the background while at the menu.</summary>
         public static readonly DeviceStatusFlags BackgroundGC = new DeviceStatusFlags(DeviceStatusFlagsLo.BackgroundGC);
 

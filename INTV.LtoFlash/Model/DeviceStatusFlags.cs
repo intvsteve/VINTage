@@ -80,6 +80,9 @@ namespace INTV.LtoFlash.Model
         /// <summary>Hardware status flag indicating file system updates are allowed while console power is on.</summary>
         public static readonly DeviceStatusFlags GrabbedForMenuUpdate = new DeviceStatusFlags(HardwareStatusFlags.GrabbedForMenuUpdate.ToDeviceStatusFlagsLo());
 
+        /// <summary>Mask for all hardware status flags.</summary>
+        public static readonly DeviceStatusFlags HardwareStatusFlagsMask = new DeviceStatusFlags(DeviceStatusFlagsLo.HardwareStatusFlagsMask);
+
         /// <summary>Intellivision II compatibility flag indicating that Locutus should attempt to patch only ROMs known to have compatibility problems with the Intellivision II.</summary>
         public static readonly DeviceStatusFlags IntellivisionIIStatusConservative = new DeviceStatusFlags(DeviceStatusFlagsLo.IntellivisionIIStatusConservative);
 

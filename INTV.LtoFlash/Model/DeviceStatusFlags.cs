@@ -110,6 +110,9 @@ namespace INTV.LtoFlash.Model
         /// <summary>Flag indicating that Locutus will execute garbage collection in the background while at the menu.</summary>
         public static readonly DeviceStatusFlags BackgroundGC = new DeviceStatusFlags(DeviceStatusFlagsLo.BackgroundGC);
 
+        /// <summary>Flag indicating that Locutus will emit keyclicks when navigated.</summary>
+        public static readonly DeviceStatusFlags Keyclicks = new DeviceStatusFlags(DeviceStatusFlagsLo.Keyclicks);
+
         #endregion // Defined flag values
 
         /// <summary>

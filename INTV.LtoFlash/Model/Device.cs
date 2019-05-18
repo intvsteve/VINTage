@@ -106,6 +106,7 @@ namespace INTV.LtoFlash.Model
         public const string SaveMenuPositionPropertyName = "SaveMenuPosition";
         public const string BackgroundGCPropertyName = "BackgroundGC";
         public const string KeyclicksPropertyName = "Keyclicks";
+        public const string EnableConfigMenuOnCartPropertyName = "EnableConfigMenuOnCart";
         public const string ZeroLtoFlashRamPropertyName = "ZeroLtoFlashRam";
         public const string DeviceStatusUpdatePeriodPropertyName = "DeviceStatusUpdatePeriod";
 
@@ -212,6 +213,7 @@ namespace INTV.LtoFlash.Model
             _saveMenuPosition = SaveMenuPositionFlags.Default;
             _backgroundGC = true;
             _keyclicks = false;
+            _enableConfigMenuOnCart = true;
             _zeroLtoFlashRam = true;
             ReservedDeviceStatusFlagsLo = DeviceStatusFlagsLo.ReservedMask; // these are presumed set by default
             DeviceStatusFlagsHi = DeviceStatusFlagsHi.Default;
@@ -329,6 +331,16 @@ namespace INTV.LtoFlash.Model
             set { AssignAndUpdateProperty(KeyclicksPropertyName, value, ref _keyclicks, (p, v) => UpdateKeyclicks(v, sendToHardware: true)); }
         }
         private bool _keyclicks;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the Locutus device allows access to the on-cartridge configuration menu.
+        /// </summary>
+        public bool EnableConfigMenuOnCart
+        {
+            get { return _enableConfigMenuOnCart; }
+            set { AssignAndUpdateProperty(EnableConfigMenuOnCartPropertyName, value, ref _enableConfigMenuOnCart, (p, v) => UpdateEnableConfigMenuOnCart(v, sendToHardware: true)); }
+        }
+        private bool _enableConfigMenuOnCart;
 
         /// <summary>
         /// Gets or sets a value indicating whether to zero the RAM on the Locutus device when a ROM is loaded and run.
@@ -863,6 +875,36 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
+        /// Updates whether to enable access to configuration menu on the cartridge.
+        /// </summary>
+        /// <param name="newEnableOnboardConfigMenu">If set to <c>true</c>, enable onboard configuration menu.</param>
+        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
+        internal void UpdateEnableConfigMenuOnCart(bool newEnableOnboardConfigMenu, bool sendToHardware)
+        {
+            if (sendToHardware)
+            {
+                var newConfigurationLo = this.ComposeStatusFlagsLo();
+                if (newEnableOnboardConfigMenu)
+                {
+                    newConfigurationLo |= DeviceStatusFlagsLo.EnableCartConfig;
+                }
+                else
+                {
+                    newConfigurationLo &= ~DeviceStatusFlagsLo.EnableCartConfig;
+                }
+                this.SetConfiguration(newConfigurationLo, DeviceStatusFlagsHi, (m, e) => ErrorHandler(DeviceStatusFlagsLo.EnableCartConfig, ProtocolCommandId.SetConfiguration, m, e));
+            }
+            else
+            {
+                if (_enableConfigMenuOnCart != newEnableOnboardConfigMenu)
+                {
+                    _enableConfigMenuOnCart = newEnableOnboardConfigMenu;
+                    RaisePropertyChanged(EnableConfigMenuOnCartPropertyName);
+                }
+            }
+        }
+
+        /// <summary>
         /// Update the zero LTO Flash! RAM setting.
         /// </summary>
         /// <param name="newZeroLtoFlashRam">If set to <c>true</c>, RAM is set to zero when ROM is loaded.</param>
@@ -1364,6 +1406,7 @@ namespace INTV.LtoFlash.Model
             var newSaveMenuPositionStatus = SaveMenuPosition;
             var newBackgroundGCStatus = BackgroundGC;
             var newKeyclicksStatus = Keyclicks;
+            var newEnableConfigMenuOnCartStatus = EnableConfigMenuOnCart;
             var newZeroLtoFlashRam = ZeroLtoFlashRam;
             var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
             var newDeviceStatusFlagsHigh = DeviceStatusFlagsHi;
@@ -1377,6 +1420,7 @@ namespace INTV.LtoFlash.Model
                 newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
                 newKeyclicksStatus = newDeviceStatus.Keyclicks;
                 newBackgroundGCStatus = newDeviceStatus.BackgroundGC;
+                newEnableConfigMenuOnCartStatus = newDeviceStatus.EnableConfigMenuOnCart;
                 newZeroLtoFlashRam = newDeviceStatus.ZeroLtoFlashRam;
                 newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusLow & DeviceStatusFlagsLo.ReservedMask;
                 newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusHigh;
@@ -1389,6 +1433,7 @@ namespace INTV.LtoFlash.Model
             UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
             UpdateBackgroundGC(newBackgroundGCStatus, sendToHardware: false);
             UpdateKeyclicks(newKeyclicksStatus, sendToHardware: false);
+            UpdateEnableConfigMenuOnCart(newEnableConfigMenuOnCartStatus, sendToHardware: false);
             UpdateZeroLtoFlashRam(newZeroLtoFlashRam, sendToHardware: false);
             UpdateReservedDeviceStatusFlagsLo(newReservedDeviceStatusFlagsLo);
             DeviceStatusFlagsHi = newDeviceStatusFlagsHigh;

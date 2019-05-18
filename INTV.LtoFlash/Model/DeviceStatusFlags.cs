@@ -95,6 +95,12 @@ namespace INTV.LtoFlash.Model
         /// <summary>ECS compatibility flag indicating that Locutus will always disable the ECS ROMs.</summary>
         public static readonly DeviceStatusFlags EcsStatusDisabled = new DeviceStatusFlags(DeviceStatusFlagsLo.EcsStatusDisabled);
 
+        /// <summary>Title screen flag indicating that Locutus will show the title screen on initial power up, no other times.</summary>
+        public static readonly DeviceStatusFlags ShowTitleScreenOnPowerUp = new DeviceStatusFlags(DeviceStatusFlagsLo.ShowTitleScreenOnPowerUp);
+
+        /// <summary>Title screen flag indicating that Locutus will always show the title screen, even when soft reset.</summary>
+        public static readonly DeviceStatusFlags ShowTitleScreenAlways = new DeviceStatusFlags(DeviceStatusFlagsLo.ShowTitleScreenAlways);
+
         #endregion // Defined flag values
 
         /// <summary>

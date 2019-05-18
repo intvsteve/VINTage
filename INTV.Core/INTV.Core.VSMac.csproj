@@ -90,6 +90,8 @@
     <Compile Include="Model\Device\CartridgePort.cs" />
     <Compile Include="Model\Device\Connection.cs" />
     <Compile Include="Model\Device\ConnectionType.cs" />
+    <Compile Include="Model\Device\IConfigurableFeature.cs" />
+    <Compile Include="Model\Device\IConfigurableFeature`T.cs" />
     <Compile Include="Model\Device\IConnection.cs" />
     <Compile Include="Model\Device\IPeripheral.cs" />
     <Compile Include="Model\Device\MemoryMap.cs" />

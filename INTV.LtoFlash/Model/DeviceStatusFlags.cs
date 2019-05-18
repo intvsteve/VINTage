@@ -86,6 +86,15 @@ namespace INTV.LtoFlash.Model
         /// <summary>Intellivision II compatibility flag indicating that Locutus will always attempt to bypass the Intellivision II lockout check.</summary>
         public static readonly DeviceStatusFlags IntellivisionIIStatusAggressive = new DeviceStatusFlags(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive);
 
+        /// <summary>ECS compatibility flag indicating that Locutus will enable the ECS ROMs only for program ROMs that indicate the ECS is required or optional (enhances behavior of program).</summary>
+        public static readonly DeviceStatusFlags EcsStatusEnabledForRequiredAndOptional = new DeviceStatusFlags(DeviceStatusFlagsLo.EcsStatusEnabledForRequiredAndOptional);
+
+        /// <summary>ECS compatibility flag indicating that Locutus will enable the ECS ROMs only for program ROMs that indicate the ECS is required.</summary>
+        public static readonly DeviceStatusFlags EcsStatusEnabledForRequired = new DeviceStatusFlags(DeviceStatusFlagsLo.EcsStatusEnabledForRequired);
+
+        /// <summary>ECS compatibility flag indicating that Locutus will always disable the ECS ROMs.</summary>
+        public static readonly DeviceStatusFlags EcsStatusDisabled = new DeviceStatusFlags(DeviceStatusFlagsLo.EcsStatusDisabled);
+
         #endregion // Defined flag values
 
         /// <summary>

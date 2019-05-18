@@ -83,6 +83,9 @@ namespace INTV.LtoFlash.Model
         /// <summary>Mask for all hardware status flags.</summary>
         public static readonly DeviceStatusFlags HardwareStatusFlagsMask = new DeviceStatusFlags(DeviceStatusFlagsLo.HardwareStatusFlagsMask);
 
+        /// <summary>Mask for reserved hardware status flags.</summary>
+        public static readonly DeviceStatusFlags HardwareStatusFlagsReservedMask = new DeviceStatusFlags(DeviceStatusFlagsLo.HardwareStatusFlagsReservedMask);
+
         /// <summary>Intellivision II compatibility flag indicating that Locutus should attempt to patch only ROMs known to have compatibility problems with the Intellivision II.</summary>
         public static readonly DeviceStatusFlags IntellivisionIIStatusConservative = new DeviceStatusFlags(DeviceStatusFlagsLo.IntellivisionIIStatusConservative);
 

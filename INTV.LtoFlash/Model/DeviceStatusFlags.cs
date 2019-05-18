@@ -113,6 +113,9 @@ namespace INTV.LtoFlash.Model
         /// <summary>Flag indicating that Locutus will emit keyclicks when navigated.</summary>
         public static readonly DeviceStatusFlags Keyclicks = new DeviceStatusFlags(DeviceStatusFlagsLo.Keyclicks);
 
+        /// <summary>Flag indicating that Locutus the configuration menu on the cartridge can be accessed.</summary>
+        public static readonly DeviceStatusFlags EnableCartConfig = new DeviceStatusFlags(DeviceStatusFlagsLo.EnableCartConfig);
+
         #endregion // Defined flag values
 
         /// <summary>

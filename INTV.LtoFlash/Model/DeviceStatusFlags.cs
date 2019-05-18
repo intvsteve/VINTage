@@ -65,10 +65,20 @@ namespace INTV.LtoFlash.Model
 
         #region Defined flag values
 
-        /// <summary>
-        /// Empty status flags.
-        /// </summary>
+        /// <summary>Empty status flags.</summary>
         public static readonly DeviceStatusFlags None = new DeviceStatusFlags();
+
+        /// <summary>Hardware status flag for console power on.</summary>
+        public static readonly DeviceStatusFlags ConsolePowerOn = new DeviceStatusFlags(HardwareStatusFlags.ConsolePowerOn.ToDeviceStatusFlagsLo());
+
+        /// <summary>Hardware status flag for new error log available.</summary>
+        public static readonly DeviceStatusFlags NewErrorLogAvailable = new DeviceStatusFlags(HardwareStatusFlags.NewErrorLogAvailable.ToDeviceStatusFlagsLo());
+
+        /// <summary>Hardware status flag for new crash log available.</summary>
+        public static readonly DeviceStatusFlags NewCrashLogAvailable = new DeviceStatusFlags(HardwareStatusFlags.NewCrashLogAvailable.ToDeviceStatusFlagsLo());
+
+        /// <summary>Hardware status flag indicating file system updates are allowed while console power is on.</summary>
+        public static readonly DeviceStatusFlags GrabbedForMenuUpdate = new DeviceStatusFlags(HardwareStatusFlags.GrabbedForMenuUpdate.ToDeviceStatusFlagsLo());
 
         #endregion // Defined flag values
 

@@ -116,6 +116,9 @@ namespace INTV.LtoFlash.Model
         /// <summary>Flag indicating that Locutus the configuration menu on the cartridge can be accessed.</summary>
         public static readonly DeviceStatusFlags EnableCartConfig = new DeviceStatusFlags(DeviceStatusFlagsLo.EnableCartConfig);
 
+        /// <summary>Flag indicating that Locutus should zero out the contents of RAM before loading a programs. Otherwise, it RAM contents is randomized.</summary>
+        public static readonly DeviceStatusFlags ZeroRamBeforeLoad = new DeviceStatusFlags(DeviceStatusFlagsLo.ZeroRamBeforeLoad);
+
         #endregion // Defined flag values
 
         /// <summary>

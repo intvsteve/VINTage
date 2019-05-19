@@ -45,7 +45,7 @@ namespace INTV.LtoFlash.Model
             {
                 var executeCommandTaskData = new ExecuteDeviceCommandAsyncTaskData(device, ProtocolCommandId.SetConfiguration)
                 {
-                    Data = new Tuple<DeviceStatusFlagsLo, DeviceStatusFlagsHi>(lowStatusFlags, highStatusFlags),
+                    Data = new DeviceStatusFlags(lowStatusFlags, highStatusFlags),
                     OnFailure = errorHandler
                 };
                 executeCommandTaskData.StartTask(SetConfiguration);
@@ -64,8 +64,8 @@ namespace INTV.LtoFlash.Model
         {
             var data = (ExecuteDeviceCommandAsyncTaskData)taskData;
             var device = data.Device;
-            var flags = (Tuple<DeviceStatusFlagsLo, DeviceStatusFlagsHi>)data.Data;
-            data.Succeeded = Commands.SetConfiguration.Create(flags.Item1, flags.Item2).Execute<bool>(device.Port, data);
+            var flags = (DeviceStatusFlags)data.Data;
+            data.Succeeded = Commands.SetConfiguration.Create(flags).Execute<bool>(device.Port, data);
         }
 
         #endregion // SetConfiguration

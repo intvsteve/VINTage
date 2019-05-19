@@ -24,18 +24,24 @@ namespace INTV.Core.Model.Device
     /// Strongly type interface for <see cref="IConfigurableFeature"/>.
     /// </summary>
     /// <typeparam name="T">The data type of the value on the device.</typeparam>
-    public interface IConfigurableFeature<T> : IConfigurableFeature
+    public interface IConfigurableFeature<T>
     {
+        /// <inheritdoc cref="IConfigurableFeature.DisplayName"/>
+        string DisplayName { get; }
+
+        /// <inheritdoc cref="IConfigurableFeature.UniqueId"/>
+        string UniqueId { get; }
+
         /// <inheritdoc cref="IConfigurableFeature.FactoryDefaultValue"/>
-        T FactoryDefault { get; }
+        T FactoryDefaultValue { get; }
 
-        /// <inheritdoc cref="IConfigurableFeature.Value"/>
-        T Value { get; }
+        /// <inheritdoc cref="IConfigurableFeature.CurrentValue"/>
+        T CurrentValue { get; }
 
-        /// <inheritdoc cref="IConfigurableFeature.GetFeatureValueFromDevice(IPeripheral)"/>
+        /// <inheritdoc cref="IConfigurableFeature.GetValueFromDevice(IPeripheral)"/>
         T GetValueFromDevice(IPeripheral device);
 
-        /// <inheritdoc cref="IConfigurableFeature.SetFeatureValueOnDevice(IPeripheral, object)"/>
+        /// <inheritdoc cref="IConfigurableFeature.SetValueOnDevice(IPeripheral, object)"/>
         void SetValueOnDevice(IPeripheral device, T newValue);
     }
 }

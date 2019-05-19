@@ -50,13 +50,13 @@ namespace INTV.Core.Model.Device
         /// </summary>
         /// <param name="device">The device to get the configured value from.</param>
         /// <returns>The value on the device.</returns>
-        object GetFeatureValueFromDevice(IPeripheral device);
+        object GetValueFromDevice(IPeripheral device);
 
         /// <summary>
         /// Set the value of the feature on the device itself.
         /// </summary>
         /// <param name="device">The device to set the configured value on.</param>
         /// <param name="newValue">The new value to set on the device.</param>
-        void SetFeatureValueOnDevice(IPeripheral device, object newValue);
+        void SetValueOnDevice(IPeripheral device, object newValue);
     }
 }

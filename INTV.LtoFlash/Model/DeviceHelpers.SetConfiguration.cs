@@ -36,16 +36,15 @@ namespace INTV.LtoFlash.Model
         /// Updates the device configuration settings.
         /// </summary>
         /// <param name="device">The target Locutus device whose configuration is to be set.</param>
-        /// <param name="lowStatusFlags">The lower 64 bits of configuration data.</param>
-        /// <param name="highStatusFlags">The upper 64 bits of configuration data.</param>
+        /// <param name="newConfigurationFlags">The new configuration data.</param>
         /// <param name="errorHandler">Error handler, used to report errors to the user.</param>
-        public static void SetConfiguration(this Device device, DeviceStatusFlagsLo lowStatusFlags, DeviceStatusFlagsHi highStatusFlags, DeviceCommandErrorHandler errorHandler)
+        public static void SetConfiguration(this Device device, DeviceStatusFlags newConfigurationFlags, DeviceCommandErrorHandler errorHandler)
         {
             if (device.IsSafeToStartCommand())
             {
                 var executeCommandTaskData = new ExecuteDeviceCommandAsyncTaskData(device, ProtocolCommandId.SetConfiguration)
                 {
-                    Data = new DeviceStatusFlags(lowStatusFlags, highStatusFlags),
+                    Data = newConfigurationFlags,
                     OnFailure = errorHandler
                 };
                 executeCommandTaskData.StartTask(SetConfiguration);

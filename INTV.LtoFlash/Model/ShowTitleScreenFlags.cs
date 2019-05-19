@@ -84,14 +84,14 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Produce <see cref="DeviceStatusFlagsLo"/> containing updated <see cref="ShowTitleScreenFlags"/> for a given <see cref="Device"/>.
+        /// Produce <see cref="DeviceStatusFlags"/> containing updated <see cref="ShowTitleScreenFlags"/> for a given <see cref="Device"/>.
         /// </summary>
         /// <param name="device">The <see cref="Device"/> whose updated flags are desired.</param>
         /// <param name="newTitleScreenFlags">New <see cref="ShowTitleScreenFlags"/> to apply to <paramref name="device"/>.</param>
-        /// <returns>A new set of <see cref="DeviceStatusFlagsLo"/> with updated ShowTitleScreenFlags for <paramref name="device"/>.</returns>
-        internal static DeviceStatusFlagsLo UpdateStatusFlags(this Device device, ShowTitleScreenFlags newTitleScreenFlags)
+        /// <returns>A new set of <see cref="DeviceStatusFlags"/> with updated ShowTitleScreenFlags for <paramref name="device"/>.</returns>
+        internal static DeviceStatusFlags UpdateStatusFlags(this Device device, ShowTitleScreenFlags newTitleScreenFlags)
         {
-            var deviceStatusFlags = device.ComposeStatusFlagsLo() & ~DeviceStatusFlagsLo.ShowTitleScreenMask;
+            var deviceStatusFlags = device.DeviceStatusFlags & ~DeviceStatusFlags.ShowTitleScreenMask;
             deviceStatusFlags |= newTitleScreenFlags.ToDeviceStatusFlagsLo();
             return deviceStatusFlags;
         }

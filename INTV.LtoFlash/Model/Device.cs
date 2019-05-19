@@ -47,7 +47,7 @@ namespace INTV.LtoFlash.Model
         /// <param name="errorMessage">An error message describing the nature of the failure.</param>
         /// <param name="exception">The exception that caused the error, if applicable.</param>
         /// <returns><c>true</c> if the error was handled and should not be passed along.</returns>
-        public delegate bool DeviceErrorHandler(DeviceStatusFlagsLo deviceStatusFlags, ProtocolCommandId commandId, string errorMessage, Exception exception);
+        public delegate bool DeviceErrorHandler(DeviceStatusFlags deviceStatusFlags, ProtocolCommandId commandId, string errorMessage, Exception exception);
 
         /// <summary>
         /// This delegate can be used to execute custom actions that are associated with the device that can be controlled via user settings.
@@ -742,7 +742,7 @@ namespace INTV.LtoFlash.Model
             if (sendToHardware)
             {
                 var newConfiguration = this.UpdateStatusFlags(newEcsConfiguration);
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlagsLo.EcsStatusMask, ProtocolCommandId.SetConfiguration, m, e));
+                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.EcsStatusMask, ProtocolCommandId.SetConfiguration, m, e));
             }
             else
             {
@@ -764,7 +764,7 @@ namespace INTV.LtoFlash.Model
             if (sendToHardware)
             {
                 var newConfiguration = this.UpdateStatusFlags(newIntellivisionIIConfiguration);
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlagsLo.IntellivisionIIStatusMask, ProtocolCommandId.SetConfiguration, m, e));
+                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.IntellivisionIIStatusMask, ProtocolCommandId.SetConfiguration, m, e));
             }
             else
             {
@@ -786,7 +786,7 @@ namespace INTV.LtoFlash.Model
             if (sendToHardware)
             {
                 var newConfiguration = this.UpdateStatusFlags(newShowTitleScreen);
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlagsLo.ShowTitleScreenMask, ProtocolCommandId.SetConfiguration, m, e));
+                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.ShowTitleScreenMask, ProtocolCommandId.SetConfiguration, m, e));
             }
             else
             {
@@ -808,7 +808,7 @@ namespace INTV.LtoFlash.Model
             if (sendToHardware)
             {
                 var newConfiguration = this.UpdateStatusFlags(newSaveMenuPosition);
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlagsLo.SaveMenuPositionMask, ProtocolCommandId.SetConfiguration, m, e));
+                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.SaveMenuPositionMask, ProtocolCommandId.SetConfiguration, m, e));
             }
             else
             {
@@ -838,7 +838,7 @@ namespace INTV.LtoFlash.Model
                 {
                     newConfiguration &= ~DeviceStatusFlags.BackgroundGC;
                 }
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlagsLo.BackgroundGC, ProtocolCommandId.SetConfiguration, m, e));
+                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.BackgroundGC, ProtocolCommandId.SetConfiguration, m, e));
             }
             else
             {
@@ -868,7 +868,7 @@ namespace INTV.LtoFlash.Model
                 {
                     newConfiguration &= ~DeviceStatusFlags.Keyclicks;
                 }
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlagsLo.Keyclicks, ProtocolCommandId.SetConfiguration, m, e));
+                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.Keyclicks, ProtocolCommandId.SetConfiguration, m, e));
             }
             else
             {
@@ -898,7 +898,7 @@ namespace INTV.LtoFlash.Model
                 {
                     newConfiguration &= ~DeviceStatusFlags.EnableCartConfig;
                 }
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlagsLo.EnableCartConfig, ProtocolCommandId.SetConfiguration, m, e));
+                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.EnableCartConfig, ProtocolCommandId.SetConfiguration, m, e));
             }
             else
             {
@@ -928,7 +928,7 @@ namespace INTV.LtoFlash.Model
                 {
                     newConfiguration &= ~DeviceStatusFlags.ZeroRamBeforeLoad;
                 }
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlagsLo.ZeroRamBeforeLoad, ProtocolCommandId.SetConfiguration, m, e));
+                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.ZeroRamBeforeLoad, ProtocolCommandId.SetConfiguration, m, e));
             }
             else
             {
@@ -1357,7 +1357,7 @@ namespace INTV.LtoFlash.Model
             var errorHandled = true;
             if (device.CreationInfo.ReportValidationError)
             {
-                errorHandled = device.ErrorHandler(DeviceStatusFlagsLo.None, ProtocolCommandId.UnknownCommand, errorMessage, exception);
+                errorHandled = device.ErrorHandler(DeviceStatusFlags.None, ProtocolCommandId.UnknownCommand, errorMessage, exception);
             }
             return errorHandled;
         }

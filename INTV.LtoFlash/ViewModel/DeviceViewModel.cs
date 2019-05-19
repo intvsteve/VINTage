@@ -470,7 +470,7 @@ namespace INTV.LtoFlash.ViewModel
 
         #endregion // IPeripheral
 
-        private bool ErrorHandler(DeviceStatusFlagsLo deviceStatusFlags, ProtocolCommandId commandId, string errorMessage, System.Exception exception)
+        private bool ErrorHandler(DeviceStatusFlags deviceStatusFlags, ProtocolCommandId commandId, string errorMessage, System.Exception exception)
         {
             bool handled = false;
             var title = string.Empty;
@@ -481,7 +481,7 @@ namespace INTV.LtoFlash.ViewModel
                 case ProtocolCommandId.SetConfiguration:
                     handled = true;
                     showMessageBox = handled;
-                    switch (deviceStatusFlags)
+                    switch (deviceStatusFlags.Lo)
                     {
                         case DeviceStatusFlagsLo.IntellivisionIIStatusMask:
                             title = Resources.Strings.SetConfigurationCommand_IntellivisionII_Failed_Title;
@@ -768,7 +768,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             if (IsValid && (Device.HardwareStatus.HasFlag(HardwareStatusFlags.NewErrorLogAvailable) || Device.HardwareStatus.HasFlag(HardwareStatusFlags.NewCrashLogAvailable)))
             {
-                Device.GetErrorAndCrashLogs(GetDeviceErrorAndCrashLogsComplete, (m, e) => ErrorHandler(DeviceStatusFlagsLo.None, ProtocolCommandId.DownloadCrashLog, m, e));
+                Device.GetErrorAndCrashLogs(GetDeviceErrorAndCrashLogsComplete, (m, e) => ErrorHandler(DeviceStatusFlags.None, ProtocolCommandId.DownloadCrashLog, m, e));
             }
         }
 

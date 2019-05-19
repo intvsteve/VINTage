@@ -86,6 +86,7 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="Model\Device\CartridgePort.cs" />
+    <Compile Include="Model\Device\ConfigurableFeature`T.cs" />
     <Compile Include="Model\Device\Connection.cs" />
     <Compile Include="Model\Device\ConnectionType.cs" />
     <Compile Include="Model\Device\IConfigurableFeature.cs" />

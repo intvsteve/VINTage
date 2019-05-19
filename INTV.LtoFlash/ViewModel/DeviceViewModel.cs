@@ -21,19 +21,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.Model;
+using INTV.Core.Model.Device;
 using INTV.Core.Model.Program;
 using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.Model.Commands;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
+using INTV.Shared.ViewModel;
 
 namespace INTV.LtoFlash.ViewModel
 {
     /// <summary>
     /// ViewModel for Locutus device.
     /// </summary>
-    public partial class DeviceViewModel : INTV.Shared.ViewModel.ViewModelBase, INTV.Core.Model.Device.IPeripheral
+    public partial class DeviceViewModel : ViewModelBase, IPeripheral
     {
         #region Constants
 
@@ -422,7 +424,13 @@ namespace INTV.LtoFlash.ViewModel
         /// <inheritdoc />
         public IEnumerable<INTV.Core.Model.Device.IConnection> Connections
         {
-            get { return (Device == null) ? Enumerable.Empty<INTV.Core.Model.Device.IConnection>() : _device.Connections; }
+            get { return (Device == null) ? Enumerable.Empty<IConnection>() : _device.Connections; }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<IConfigurableFeature> ConfigurableFeatures
+        {
+            get { return (Device == null) ? Enumerable.Empty<IConfigurableFeature>() : _device.ConfigurableFeatures; }
         }
 
         #endregion // IPeripheral Properties

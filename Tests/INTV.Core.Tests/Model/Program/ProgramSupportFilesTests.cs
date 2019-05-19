@@ -1449,6 +1449,11 @@ namespace INTV.Core.Tests.Model.Program
                 }
             }
 
+            public override IEnumerable<IConfigurableFeature> ConfigurableFeatures
+            {
+                get { yield break; }
+            }
+
             public override bool IsRomCompatible(IProgramDescription programDescription)
             {
                 var isCompatible = true;

@@ -1,5 +1,5 @@
 ﻿// <copyright file="IPeripheral.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -37,6 +37,11 @@ namespace INTV.Core.Model.Device
         /// Gets the connections the peripheral uses or offers.
         /// </summary>
         IEnumerable<IConnection> Connections { get; }
+
+        /// <summary>
+        /// Gets the configurable features the peripheral has.
+        /// </summary>
+        IEnumerable<IConfigurableFeature> ConfigurableFeatures { get; }
 
         /// <summary>
         /// Determines whether this peripheral compatible with the specified rom.

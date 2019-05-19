@@ -37,7 +37,7 @@ namespace INTV.LtoFlash.Model
     /// <summary>
     /// Defines a model for a Locutus device.
     /// </summary>
-    public sealed class Device : INTV.Core.Model.Device.Peripheral, IDisposable
+    public sealed class Device : Peripheral, IDisposable
     {
         /// <summary>
         /// This delegate can be used to report errors to an interested party that occur for various reasons.
@@ -584,6 +584,12 @@ namespace INTV.LtoFlash.Model
             {
                 throw new InvalidOperationException();
             }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<IConfigurableFeature> ConfigurableFeatures
+        {
+            get { yield break; }
         }
 
         #endregion // IPeripheral

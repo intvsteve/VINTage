@@ -121,6 +121,7 @@
     <Compile Include="Model\Commands\UpdateGlobalFileTable.cs" />
     <Compile Include="Model\Commands\UploadDataBlockToRam.cs" />
     <Compile Include="Model\Commands\ValidateFirmwareImageInRam.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashFeature`T.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\ConnectionState.cs" />
     <Compile Include="Model\ControllerKeyValidationFlags.cs" />

@@ -20,6 +20,9 @@
 
 namespace INTV.LtoFlash.Model
 {
+    /// <summary>
+    /// Implements a configurable feature for Locutus's show title screen behavior setting.
+    /// </summary>
     public class ConfigurableLtoFlashShowTitleScreenFeature : ConfigurableLtoFlashFeature<ShowTitleScreenFlags>
     {
         /// <summary>

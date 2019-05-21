@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\ConfigurableLtoFlashBooleanFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashFeatures.cs" />
     <Compile Include="Model\ConfigurableLtoFlashFeature`T.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\Device.cs" />

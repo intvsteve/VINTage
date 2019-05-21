@@ -1,4 +1,4 @@
-﻿// <copyright file="Device.cs" company="INTV Funhouse">
+// <copyright file="Device.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -1428,8 +1428,8 @@ namespace INTV.LtoFlash.Model
                 newBackgroundGCStatus = newDeviceStatus.BackgroundGC;
                 newEnableConfigMenuOnCartStatus = newDeviceStatus.EnableConfigMenuOnCart;
                 newZeroLtoFlashRam = newDeviceStatus.ZeroLtoFlashRam;
-                newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusLow & DeviceStatusFlagsLo.ReservedMask;
-                newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusHigh;
+                newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusFlags.Lo & DeviceStatusFlagsLo.ReservedMask;
+                newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusFlags.Hi;
             }
             UpdateUniqueId(newUniqueId);
             UpdateHardwareFlags(newHardwareStatus);

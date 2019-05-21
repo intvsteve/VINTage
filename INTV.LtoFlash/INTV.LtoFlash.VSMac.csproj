@@ -66,6 +66,7 @@
     <Compile Include="Model\ConfigurableLtoFlashEcsCompatibilityFeature.cs" />
     <Compile Include="Model\ConfigurableLtoFlashFeatures.cs" />
     <Compile Include="Model\ConfigurableLtoFlashFeature`T.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashIntellivisionIICompatibilityFeature.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\Device.cs" />
     <Compile Include="Model\DeviceActivity.cs" />

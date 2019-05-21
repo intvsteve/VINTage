@@ -283,10 +283,9 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public IntellivisionIIStatusFlags IntvIICompatibility
         {
-            get { return _intvIICompatibility; }
-            set { AssignAndUpdateProperty(IntvIICompatibilityPropertyName, value, ref _intvIICompatibility, (p, v) => UpdateIntellivisionIIConfiguration(v, sendToHardware: true)); }
+            get { return _configurableFeatures.GetCurrentValue<IntellivisionIIStatusFlags>(IntvIICompatibilityPropertyName); }
+            set { UpdateConfigurableValue(IntvIICompatibilityPropertyName, value); }
         }
-        private IntellivisionIIStatusFlags _intvIICompatibility;
 
         /// <summary>
         /// Gets or sets a value indicating when the Locutus device shows its titles screen when rebooting.
@@ -723,28 +722,6 @@ namespace INTV.LtoFlash.Model
             Tuple<DeviceActivityDelegate, object> dontCare;
             var removedActivity = _deviceActivities.TryRemove(activity, out dontCare);
             return removedActivity;
-        }
-
-        /// <summary>
-        /// Updates the Intellivision II configuration.
-        /// </summary>
-        /// <param name="newIntellivisionIIConfiguration">New Intellivision II configuration.</param>
-        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
-        internal void UpdateIntellivisionIIConfiguration(IntellivisionIIStatusFlags newIntellivisionIIConfiguration, bool sendToHardware)
-        {
-            if (sendToHardware)
-            {
-                var newConfiguration = this.UpdateStatusFlags(newIntellivisionIIConfiguration);
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.IntellivisionIIStatusMask, ProtocolCommandId.SetConfiguration, m, e));
-            }
-            else
-            {
-                if (_intvIICompatibility != newIntellivisionIIConfiguration)
-                {
-                    _intvIICompatibility = newIntellivisionIIConfiguration;
-                    RaisePropertyChanged(IntvIICompatibilityPropertyName);
-                }
-            }
         }
 
         /// <summary>
@@ -1265,7 +1242,6 @@ namespace INTV.LtoFlash.Model
         {
             var newUniqueId = UniqueId;
             var newHardwareStatus = HardwareStatus;
-            var newIntyIIStatus = IntvIICompatibility;
             var newShowTitleScreenStatus = ShowTitleScreen;
             var newSaveMenuPositionStatus = SaveMenuPosition;
             var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
@@ -1274,7 +1250,6 @@ namespace INTV.LtoFlash.Model
             {
                 newUniqueId = newDeviceStatus.UniqueId;
                 newHardwareStatus = newDeviceStatus.HardwareStatus & ~HardwareStatusFlags.ReservedMask;
-                newIntyIIStatus = newDeviceStatus.IntellivisionIIStatus & ~IntellivisionIIStatusFlags.ReservedMask;
                 newShowTitleScreenStatus = newDeviceStatus.ShowTitleScreen;
                 newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
                 newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusFlags.Lo & DeviceStatusFlagsLo.ReservedMask;
@@ -1282,7 +1257,6 @@ namespace INTV.LtoFlash.Model
             }
             UpdateUniqueId(newUniqueId);
             UpdateHardwareFlags(newHardwareStatus);
-            UpdateIntellivisionIIConfiguration(newIntyIIStatus, sendToHardware: false);
             UpdateShowTitleScreen(newShowTitleScreenStatus, sendToHardware: false);
             UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
             foreach (var changedFeatureValueName in _configurableFeatures.UpdateConfigurablePropertiesFromDeviceStatus(newDeviceStatus))

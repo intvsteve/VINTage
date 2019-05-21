@@ -500,6 +500,10 @@ namespace INTV.LtoFlash.Model
             {
                 deviceStatusFlagsLo |= DeviceStatusFlagsLo.Keyclicks;
             }
+            if (device.EnableConfigMenuOnCart)
+            {
+                deviceStatusFlagsLo |= DeviceStatusFlagsLo.EnableCartConfig;
+            }
             if (device.ZeroLtoFlashRam)
             {
                 deviceStatusFlagsLo |= DeviceStatusFlagsLo.ZeroRamBeforeLoad;

@@ -210,7 +210,6 @@ namespace INTV.LtoFlash.Model
             _deviceActivities = new ConcurrentDictionary<DeviceActivity, Tuple<DeviceActivityDelegate, object>>();
             ValidateDevice();
             _configurableFeatures = new ConfigurableLtoFlashFeatures();
-            _showTitleScreen = ShowTitleScreenFlags.Default;
             _saveMenuPosition = SaveMenuPositionFlags.Default;
             ReservedDeviceStatusFlagsLo = DeviceStatusFlagsLo.ReservedMask; // these are presumed set by default
             DeviceStatusFlagsHi = DeviceStatusFlagsHi.Default;
@@ -292,10 +291,9 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public ShowTitleScreenFlags ShowTitleScreen
         {
-            get { return _showTitleScreen; }
-            set { AssignAndUpdateProperty(ShowTitleScreenPropertyName, value, ref _showTitleScreen, (p, v) => UpdateShowTitleScreen(v, sendToHardware: true)); }
+            get { return _configurableFeatures.GetCurrentValue<ShowTitleScreenFlags>(ShowTitleScreenPropertyName); }
+            set { UpdateConfigurableValue(ShowTitleScreenPropertyName, value); }
         }
-        private ShowTitleScreenFlags _showTitleScreen;
 
         /// <summary>
         /// Gets or sets a value indicating how the Locutus device saves menu position data.
@@ -722,28 +720,6 @@ namespace INTV.LtoFlash.Model
             Tuple<DeviceActivityDelegate, object> dontCare;
             var removedActivity = _deviceActivities.TryRemove(activity, out dontCare);
             return removedActivity;
-        }
-
-        /// <summary>
-        /// Updates the show title screen setting.
-        /// </summary>
-        /// <param name="newShowTitleScreen">New show title screen setting.</param>
-        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
-        internal void UpdateShowTitleScreen(ShowTitleScreenFlags newShowTitleScreen, bool sendToHardware)
-        {
-            if (sendToHardware)
-            {
-                var newConfiguration = this.UpdateStatusFlags(newShowTitleScreen);
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.ShowTitleScreenMask, ProtocolCommandId.SetConfiguration, m, e));
-            }
-            else
-            {
-                if (_showTitleScreen != newShowTitleScreen)
-                {
-                    _showTitleScreen = newShowTitleScreen;
-                    RaisePropertyChanged(ShowTitleScreenPropertyName);
-                }
-            }
         }
 
         /// <summary>
@@ -1242,7 +1218,6 @@ namespace INTV.LtoFlash.Model
         {
             var newUniqueId = UniqueId;
             var newHardwareStatus = HardwareStatus;
-            var newShowTitleScreenStatus = ShowTitleScreen;
             var newSaveMenuPositionStatus = SaveMenuPosition;
             var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
             var newDeviceStatusFlagsHigh = DeviceStatusFlagsHi;
@@ -1250,14 +1225,12 @@ namespace INTV.LtoFlash.Model
             {
                 newUniqueId = newDeviceStatus.UniqueId;
                 newHardwareStatus = newDeviceStatus.HardwareStatus & ~HardwareStatusFlags.ReservedMask;
-                newShowTitleScreenStatus = newDeviceStatus.ShowTitleScreen;
                 newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
                 newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusFlags.Lo & DeviceStatusFlagsLo.ReservedMask;
                 newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusFlags.Hi;
             }
             UpdateUniqueId(newUniqueId);
             UpdateHardwareFlags(newHardwareStatus);
-            UpdateShowTitleScreen(newShowTitleScreenStatus, sendToHardware: false);
             UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
             foreach (var changedFeatureValueName in _configurableFeatures.UpdateConfigurablePropertiesFromDeviceStatus(newDeviceStatus))
             {

@@ -90,11 +90,14 @@ namespace INTV.LtoFlash.Model
         internal IEnumerable<string> UpdateConfigurablePropertiesFromDeviceStatus(DeviceStatusResponse newDeviceStatus)
         {
             var changedFeatures = new List<string>();
-            foreach (var configurableFeature in _configurableFeatures.Values)
+            if (newDeviceStatus != null)
             {
-                if (configurableFeature.UpdateCurrentValue(newDeviceStatus.DeviceStatusFlags))
+                foreach (var configurableFeature in _configurableFeatures.Values)
                 {
-                    changedFeatures.Add(configurableFeature.UniqueId);
+                    if (configurableFeature.UpdateCurrentValue(newDeviceStatus.DeviceStatusFlags))
+                    {
+                        changedFeatures.Add(configurableFeature.UniqueId);
+                    }
                 }
             }
             return changedFeatures;
@@ -106,6 +109,7 @@ namespace INTV.LtoFlash.Model
             {
                 new ConfigurableLtoFlashEcsCompatibilityFeature(),
                 new ConfigurableLtoFlashIntellivisionIICompatibilityFeature(),
+                new ConfigurableLtoFlashShowTitleScreenFeature(),
                 new ConfigurableLtoFlashBooleanFeature(Device.BackgroundGCPropertyName, Resources.Strings.SetBackgroundGarbageCollectCommand_Name, true, DeviceStatusFlags.BackgroundGC),
                 new ConfigurableLtoFlashBooleanFeature(Device.KeyclicksPropertyName, Resources.Strings.SetKeyclicksCommand_Name, false, DeviceStatusFlags.Keyclicks),
                 new ConfigurableLtoFlashBooleanFeature(Device.EnableConfigMenuOnCartPropertyName, Resources.Strings.SetEnableConfigMenuOnCartCommand_Name, true, DeviceStatusFlags.EnableCartConfig),

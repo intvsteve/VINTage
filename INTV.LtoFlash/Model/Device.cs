@@ -272,8 +272,8 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public EcsStatusFlags EcsCompatibility
         {
-            get { return _configurableFeatures.GetCurrentValue<EcsStatusFlags>(EcsCompatibilityPropertyName); }
-            set { UpdateConfigurableValue(EcsCompatibilityPropertyName, value); }
+            get { return GetConfigurableFeatureValue<EcsStatusFlags>(EcsCompatibilityPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(EcsCompatibilityPropertyName, value); }
         }
 
         /// <summary>
@@ -281,8 +281,8 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public IntellivisionIIStatusFlags IntvIICompatibility
         {
-            get { return _configurableFeatures.GetCurrentValue<IntellivisionIIStatusFlags>(IntvIICompatibilityPropertyName); }
-            set { UpdateConfigurableValue(IntvIICompatibilityPropertyName, value); }
+            get { return GetConfigurableFeatureValue<IntellivisionIIStatusFlags>(IntvIICompatibilityPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(IntvIICompatibilityPropertyName, value); }
         }
 
         /// <summary>
@@ -290,8 +290,8 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public ShowTitleScreenFlags ShowTitleScreen
         {
-            get { return _configurableFeatures.GetCurrentValue<ShowTitleScreenFlags>(ShowTitleScreenPropertyName); }
-            set { UpdateConfigurableValue(ShowTitleScreenPropertyName, value); }
+            get { return GetConfigurableFeatureValue<ShowTitleScreenFlags>(ShowTitleScreenPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(ShowTitleScreenPropertyName, value); }
         }
 
         /// <summary>
@@ -299,8 +299,8 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public SaveMenuPositionFlags SaveMenuPosition
         {
-            get { return _configurableFeatures.GetCurrentValue<SaveMenuPositionFlags>(SaveMenuPositionPropertyName); }
-            set { UpdateConfigurableValue(SaveMenuPositionPropertyName, value); }
+            get { return GetConfigurableFeatureValue<SaveMenuPositionFlags>(SaveMenuPositionPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(SaveMenuPositionPropertyName, value); }
         }
 
         /// <summary>
@@ -308,8 +308,8 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public bool BackgroundGC
         {
-            get { return _configurableFeatures.GetCurrentValue<bool>(BackgroundGCPropertyName); }
-            set { UpdateConfigurableValue(BackgroundGCPropertyName, value); }
+            get { return GetConfigurableFeatureValue<bool>(BackgroundGCPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(BackgroundGCPropertyName, value); }
         }
 
         /// <summary>
@@ -317,8 +317,8 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public bool Keyclicks
         {
-            get { return _configurableFeatures.GetCurrentValue<bool>(KeyclicksPropertyName); }
-            set { UpdateConfigurableValue(KeyclicksPropertyName, value); }
+            get { return GetConfigurableFeatureValue<bool>(KeyclicksPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(KeyclicksPropertyName, value); }
         }
 
         /// <summary>
@@ -326,8 +326,8 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public bool EnableConfigMenuOnCart
         {
-            get { return _configurableFeatures.GetCurrentValue<bool>(EnableConfigMenuOnCartPropertyName); }
-            set { UpdateConfigurableValue(EnableConfigMenuOnCartPropertyName, value); }
+            get { return GetConfigurableFeatureValue<bool>(EnableConfigMenuOnCartPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(EnableConfigMenuOnCartPropertyName, value); }
         }
 
         /// <summary>
@@ -335,8 +335,8 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public bool ZeroLtoFlashRam
         {
-            get { return _configurableFeatures.GetCurrentValue<bool>(ZeroLtoFlashRamPropertyName); }
-            set { UpdateConfigurableValue(ZeroLtoFlashRamPropertyName, value); }
+            get { return GetConfigurableFeatureValue<bool>(ZeroLtoFlashRamPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(ZeroLtoFlashRamPropertyName, value); }
         }
 
         /// <summary>
@@ -1170,7 +1170,14 @@ namespace INTV.LtoFlash.Model
             }
         }
 
-        private void UpdateConfigurableValue<T>(string configurableFeatureUniqueId, T newValue)
+        private T GetConfigurableFeatureValue<T>(string configurableFeatureUniqueId)
+        {
+            var configurableFeature = _configurableFeatures[configurableFeatureUniqueId] as ConfigurableLtoFlashFeature<T>;
+            var currentValue = configurableFeature.CurrentValue;
+            return currentValue;
+        }
+
+        private void SetConfigurableFeatureValueOnDevice<T>(string configurableFeatureUniqueId, T newValue)
         {
             var configurableFeature = _configurableFeatures[configurableFeatureUniqueId] as ConfigurableLtoFlashFeature<T>;
             var currentValue = configurableFeature.CurrentValue;

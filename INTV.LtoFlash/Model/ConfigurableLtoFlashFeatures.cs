@@ -68,21 +68,6 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Gets the current value of the feature with the given unique identifier.
-        /// </summary>
-        /// <typeparam name="T">The data type of the feature.</typeparam>
-        /// <param name="feature">The unique identifier of the requested feature.</param>
-        /// <returns>The feature's current value.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="feature"/> is <c>null</c>.</exception>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">There is no configurable feature with the unique identifier <paramref name="feature"/>.</exception>
-        public T GetCurrentValue<T>(string feature)
-        {
-            var configurableFeature = this[feature] as ConfigurableLtoFlashFeature<T>;
-            var currentValue = configurableFeature.CurrentValue;
-            return currentValue;
-        }
-
-        /// <summary>
         /// Update all applicable features whose values can be determined from <paramref name="newDeviceStatus"/>.
         /// </summary>
         /// <param name="newDeviceStatus">Status flags from a Locutus device that provide configurable feature values.</param>

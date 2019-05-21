@@ -71,7 +71,6 @@ namespace INTV.LtoFlash.View
             CommandManager.RequerySuggested += HandleRequerySuggested;
         }
 
-
         /// <summary>
         /// Gets the view model.
         /// </summary>

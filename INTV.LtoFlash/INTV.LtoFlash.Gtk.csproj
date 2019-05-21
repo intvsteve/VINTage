@@ -366,6 +366,7 @@
     <Compile Include="Model\ConfigurableLtoFlashFeatures.cs" />
     <Compile Include="Model\ConfigurableLtoFlashFeature`T.cs" />
     <Compile Include="Model\ConfigurableLtoFlashIntellivisionIICompatibilityFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashSaveMenuPositionFeature.cs" />
     <Compile Include="Model\ConfigurableLtoFlashShowTitleScreenFeature.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\ConnectionState.cs" />

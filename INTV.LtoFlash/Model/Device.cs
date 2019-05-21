@@ -210,7 +210,6 @@ namespace INTV.LtoFlash.Model
             _deviceActivities = new ConcurrentDictionary<DeviceActivity, Tuple<DeviceActivityDelegate, object>>();
             ValidateDevice();
             _configurableFeatures = new ConfigurableLtoFlashFeatures();
-            _saveMenuPosition = SaveMenuPositionFlags.Default;
             ReservedDeviceStatusFlagsLo = DeviceStatusFlagsLo.ReservedMask; // these are presumed set by default
             DeviceStatusFlagsHi = DeviceStatusFlagsHi.Default;
             UpdateFileSystemStatsDuringHeartbeat = Properties.Settings.Default.ShowFileSystemDetails;
@@ -300,10 +299,9 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public SaveMenuPositionFlags SaveMenuPosition
         {
-            get { return _saveMenuPosition; }
-            set { AssignAndUpdateProperty(SaveMenuPositionPropertyName, value, ref _saveMenuPosition, (p, v) => UpdateSaveMenuPosition(v, sendToHardware: true)); }
+            get { return _configurableFeatures.GetCurrentValue<SaveMenuPositionFlags>(SaveMenuPositionPropertyName); }
+            set { UpdateConfigurableValue(SaveMenuPositionPropertyName, value); }
         }
-        private SaveMenuPositionFlags _saveMenuPosition;
 
         /// <summary>
         /// Gets or sets a value indicating whether the Locutus device runs background garbage collection at the menu screen.
@@ -720,28 +718,6 @@ namespace INTV.LtoFlash.Model
             Tuple<DeviceActivityDelegate, object> dontCare;
             var removedActivity = _deviceActivities.TryRemove(activity, out dontCare);
             return removedActivity;
-        }
-
-        /// <summary>
-        /// Updates the setting to save menu position.
-        /// </summary>
-        /// <param name="newSaveMenuPosition">New save menu position setting.</param>
-        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
-        internal void UpdateSaveMenuPosition(SaveMenuPositionFlags newSaveMenuPosition, bool sendToHardware)
-        {
-            if (sendToHardware)
-            {
-                var newConfiguration = this.UpdateStatusFlags(newSaveMenuPosition);
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.SaveMenuPositionMask, ProtocolCommandId.SetConfiguration, m, e));
-            }
-            else
-            {
-                if (_saveMenuPosition != newSaveMenuPosition)
-                {
-                    _saveMenuPosition = newSaveMenuPosition;
-                    RaisePropertyChanged(SaveMenuPositionPropertyName);
-                }
-            }
         }
 
 #if DEBUG
@@ -1218,20 +1194,17 @@ namespace INTV.LtoFlash.Model
         {
             var newUniqueId = UniqueId;
             var newHardwareStatus = HardwareStatus;
-            var newSaveMenuPositionStatus = SaveMenuPosition;
             var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
             var newDeviceStatusFlagsHigh = DeviceStatusFlagsHi;
             if (newDeviceStatus != null)
             {
                 newUniqueId = newDeviceStatus.UniqueId;
                 newHardwareStatus = newDeviceStatus.HardwareStatus & ~HardwareStatusFlags.ReservedMask;
-                newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
                 newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusFlags.Lo & DeviceStatusFlagsLo.ReservedMask;
                 newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusFlags.Hi;
             }
             UpdateUniqueId(newUniqueId);
             UpdateHardwareFlags(newHardwareStatus);
-            UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
             foreach (var changedFeatureValueName in _configurableFeatures.UpdateConfigurablePropertiesFromDeviceStatus(newDeviceStatus))
             {
                 RaisePropertyChanged(changedFeatureValueName);

@@ -178,6 +178,7 @@
     <Compile Include="Model\GlobalFileTable.cs" />
     <Compile Include="Model\GlobalForkTable.cs" />
     <Compile Include="Model\HardwareStatusFlags.cs" />
+    <Compile Include="Model\IConfigurableLtoFlashFeature.cs" />
     <Compile Include="Model\IDirectory.cs" />
     <Compile Include="Model\IFile.cs" />
     <Compile Include="Model\IFileContainer.cs" />

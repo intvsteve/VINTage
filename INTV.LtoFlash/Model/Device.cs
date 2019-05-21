@@ -274,10 +274,9 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public EcsStatusFlags EcsCompatibility
         {
-            get { return _ecsCompatibility; }
-            set { AssignAndUpdateProperty(EcsCompatibilityPropertyName, value, ref _ecsCompatibility, (p, v) => UpdateEcsConfiguration(v, sendToHardware: true)); }
+            get { return _configurableFeatures.GetCurrentValue<EcsStatusFlags>(EcsCompatibilityPropertyName); }
+            set { UpdateConfigurableValue(EcsCompatibilityPropertyName, value); }
         }
-        private EcsStatusFlags _ecsCompatibility;
 
         /// <summary>
         /// Gets or sets a value indicating how the Locutus device treats programs with known Intellivision II compatibility problems.
@@ -727,28 +726,6 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Updates the ECS configuration.
-        /// </summary>
-        /// <param name="newEcsConfiguration">New ECS configuration.</param>
-        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
-        internal void UpdateEcsConfiguration(EcsStatusFlags newEcsConfiguration, bool sendToHardware)
-        {
-            if (sendToHardware)
-            {
-                var newConfiguration = this.UpdateStatusFlags(newEcsConfiguration);
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.EcsStatusMask, ProtocolCommandId.SetConfiguration, m, e));
-            }
-            else
-            {
-                if (_ecsCompatibility != newEcsConfiguration)
-                {
-                    _ecsCompatibility = newEcsConfiguration;
-                    RaisePropertyChanged(EcsCompatibilityPropertyName);
-                }
-            }
-        }
-
-        /// <summary>
         /// Updates the Intellivision II configuration.
         /// </summary>
         /// <param name="newIntellivisionIIConfiguration">New Intellivision II configuration.</param>
@@ -813,8 +790,6 @@ namespace INTV.LtoFlash.Model
                 }
             }
         }
-
-
 
 #if DEBUG
 
@@ -1291,7 +1266,6 @@ namespace INTV.LtoFlash.Model
             var newUniqueId = UniqueId;
             var newHardwareStatus = HardwareStatus;
             var newIntyIIStatus = IntvIICompatibility;
-            var newEcsStatus = EcsCompatibility;
             var newShowTitleScreenStatus = ShowTitleScreen;
             var newSaveMenuPositionStatus = SaveMenuPosition;
             var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
@@ -1301,7 +1275,6 @@ namespace INTV.LtoFlash.Model
                 newUniqueId = newDeviceStatus.UniqueId;
                 newHardwareStatus = newDeviceStatus.HardwareStatus & ~HardwareStatusFlags.ReservedMask;
                 newIntyIIStatus = newDeviceStatus.IntellivisionIIStatus & ~IntellivisionIIStatusFlags.ReservedMask;
-                newEcsStatus = newDeviceStatus.EcsStatus & ~EcsStatusFlags.ReservedMask;
                 newShowTitleScreenStatus = newDeviceStatus.ShowTitleScreen;
                 newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
                 newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusFlags.Lo & DeviceStatusFlagsLo.ReservedMask;
@@ -1310,7 +1283,6 @@ namespace INTV.LtoFlash.Model
             UpdateUniqueId(newUniqueId);
             UpdateHardwareFlags(newHardwareStatus);
             UpdateIntellivisionIIConfiguration(newIntyIIStatus, sendToHardware: false);
-            UpdateEcsConfiguration(newEcsStatus, sendToHardware: false);
             UpdateShowTitleScreen(newShowTitleScreenStatus, sendToHardware: false);
             UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
             foreach (var changedFeatureValueName in _configurableFeatures.UpdateConfigurablePropertiesFromDeviceStatus(newDeviceStatus))

@@ -104,6 +104,7 @@ namespace INTV.LtoFlash.Model
         {
             var configurableFeatures = new IConfigurableLtoFlashFeature[]
             {
+                new ConfigurableLtoFlashEcsCompatibilityFeature(),
                 new ConfigurableLtoFlashBooleanFeature(Device.BackgroundGCPropertyName, Resources.Strings.SetBackgroundGarbageCollectCommand_Name, true, DeviceStatusFlags.BackgroundGC),
                 new ConfigurableLtoFlashBooleanFeature(Device.KeyclicksPropertyName, Resources.Strings.SetKeyclicksCommand_Name, false, DeviceStatusFlags.Keyclicks),
                 new ConfigurableLtoFlashBooleanFeature(Device.EnableConfigMenuOnCartPropertyName, Resources.Strings.SetEnableConfigMenuOnCartCommand_Name, true, DeviceStatusFlags.EnableCartConfig),

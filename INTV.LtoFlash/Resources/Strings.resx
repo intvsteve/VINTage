@@ -2506,6 +2506,16 @@ is too small ({1} bytes)</value>
   <data name="ToolsDirectoryMissingMessage" xml:space="preserve">
     <value>Tools directory missing!</value>
   </data>
+  <data name="SetEnableConfigMenuOnCartCommand_Name" xml:space="preserve">
+    <value>Enable configuration menu</value>
+  </data>
+  <data name="SetEnableConfigMenuOnCartCommand_TipDescription" xml:space="preserve">
+    <value>When enabled, the 'Config' menu option on the LTO Flash! cartridge is available when at the menu screen on the Intellivision console.
+When disabled, the 'Config' menu is not accessible from the menu on the console. (Factory Default: ON)</value>
+  </data>
+  <data name="SetEnableConfigMenuOnCartCommand_TipTitle" xml:space="preserve">
+    <value>Enable Configuration Menu on Cartridge</value>
+  </data>
   <data name="CheckForFirmwareUpdateCommand_AlreadyUpToDateMessageFormat" xml:space="preserve">
     <value>Your LTO Flash! firmware appears to be up to date.
 

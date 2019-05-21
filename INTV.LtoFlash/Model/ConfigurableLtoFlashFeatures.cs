@@ -106,7 +106,7 @@ namespace INTV.LtoFlash.Model
             {
                 new ConfigurableLtoFlashBooleanFeature(Device.BackgroundGCPropertyName, Resources.Strings.SetBackgroundGarbageCollectCommand_Name, true, DeviceStatusFlags.BackgroundGC),
                 new ConfigurableLtoFlashBooleanFeature(Device.KeyclicksPropertyName, Resources.Strings.SetKeyclicksCommand_Name, false, DeviceStatusFlags.Keyclicks),
-                new ConfigurableLtoFlashBooleanFeature(Device.EnableConfigMenuOnCartPropertyName, /*Resources.Strings.SetEnableConfigMenuOnCartCommand_Name*/"Enable cfg oncart", true, DeviceStatusFlags.EnableCartConfig),
+                new ConfigurableLtoFlashBooleanFeature(Device.EnableConfigMenuOnCartPropertyName, Resources.Strings.SetEnableConfigMenuOnCartCommand_Name, true, DeviceStatusFlags.EnableCartConfig),
                 new ConfigurableLtoFlashBooleanFeature(Device.ZeroLtoFlashRamPropertyName, Resources.Strings.SetRandomizeLtoFlashRamCommand_Name, true, DeviceStatusFlags.ZeroRamBeforeLoad),
             };
             var configurableFeaturesDictionary = configurableFeatures.ToDictionary(f => f.UniqueId);

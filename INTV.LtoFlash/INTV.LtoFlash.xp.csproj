@@ -467,6 +467,9 @@
     <EmbeddedResource Include="Commands\Resources\UpdateFirmwareCommand_MenuItem.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetEnableConfigMenuOnCartCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Commands\Resources\CheckForFirmwareUpdateCommand_MenuItem.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>

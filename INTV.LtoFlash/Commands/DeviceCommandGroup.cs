@@ -416,10 +416,43 @@ namespace INTV.LtoFlash.Commands
 
         #endregion // SetKeyclicksCommand
 
+        #region SetEnableConfigMenuOnCartCommand
+
+        /// <summary>
+        /// The command to set whether the on-cartridge configuration menu is accessible from the console.
+        /// </summary>
+        public static readonly VisualDeviceCommand SetEnableConfigMenuOnCartCommand = new VisualDeviceCommand(OnSetEnableConfigMenuOnCartCommand, CanSetEnableConfigMenuOnCartCommand)
+        {
+            UniqueId = UniqueNameBase + ".SetEnableConfigMenuOnCartCommand",
+            Name = Resources.Strings.SetEnableConfigMenuOnCartCommand_Name,
+            SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/settings_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetEnableConfigMenuOnCartCommand_TipTitle,
+            ToolTipDescription = Resources.Strings.SetEnableConfigMenuOnCartCommand_TipDescription,
+            ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            PreferredParameterType = typeof(LtoFlashViewModel),
+            RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands,
+            ConfigurationBits = DeviceStatusFlags.EnableCartConfig
+        };
+
+        private static void OnSetEnableConfigMenuOnCartCommand(object parameter)
+        {
+            var ltoFlashViewModel = parameter as LtoFlashViewModel;
+            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
+        }
+
+        private static bool CanSetEnableConfigMenuOnCartCommand(object parameter)
+        {
+            var viewModel = parameter as LtoFlashViewModel;
+            var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            return device.CanExecuteCommand(SetEnableConfigMenuOnCartCommand);
+        }
+
+        #endregion // SetEnableConfigMenuOnCartCommand
+
         #region SetRandomizeLtoFlashRamCommand
 
         /// <summary>
-        /// The command to set whether or not to randomize LTO Flash! RAM when launching a ROM  .
+        /// The command to set whether or not to randomize LTO Flash! RAM when launching a ROM.
         /// </summary>
         public static readonly VisualDeviceCommand SetRandomizeLtoFlashRamCommand = new VisualDeviceCommand(OnSetRandomizeLtoFlashRamCommand, CanSetRandomizeLtoFlashRamCommand)
         {
@@ -431,7 +464,7 @@ namespace INTV.LtoFlash.Commands
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands,
-            ConfigurationBits = new DeviceStatusFlags(DeviceStatusFlagsLo.ZeroRamBeforeLoad)
+            ConfigurationBits = DeviceStatusFlags.ZeroRamBeforeLoad
         };
 
         private static void OnSetRandomizeLtoFlashRamCommand(object parameter)

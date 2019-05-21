@@ -1,4 +1,4 @@
-// <copyright file="Device.cs" company="INTV Funhouse">
+﻿// <copyright file="Device.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -209,12 +209,9 @@ namespace INTV.LtoFlash.Model
             _firmwareRevisions = FirmwareRevisions.Unavailable;
             _deviceActivities = new ConcurrentDictionary<DeviceActivity, Tuple<DeviceActivityDelegate, object>>();
             ValidateDevice();
+            _configurableFeatures = new ConfigurableLtoFlashFeatures();
             _showTitleScreen = ShowTitleScreenFlags.Default;
             _saveMenuPosition = SaveMenuPositionFlags.Default;
-            _backgroundGC = true;
-            _keyclicks = false;
-            _enableConfigMenuOnCart = true;
-            _zeroLtoFlashRam = true;
             ReservedDeviceStatusFlagsLo = DeviceStatusFlagsLo.ReservedMask; // these are presumed set by default
             DeviceStatusFlagsHi = DeviceStatusFlagsHi.Default;
             UpdateFileSystemStatsDuringHeartbeat = Properties.Settings.Default.ShowFileSystemDetails;
@@ -317,40 +314,36 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public bool BackgroundGC
         {
-            get { return _backgroundGC; }
-            set { AssignAndUpdateProperty(BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => UpdateBackgroundGC(v, sendToHardware: true)); }
+            get { return _configurableFeatures.GetCurrentValue<bool>(BackgroundGCPropertyName); }
+            set { UpdateConfigurableValue(BackgroundGCPropertyName, value); }
         }
-        private bool _backgroundGC;
 
         /// <summary>
         /// Gets or sets a value indicating whether the Locutus device makes 'key click' sounds when navigating the menu.
         /// </summary>
         public bool Keyclicks
         {
-            get { return _keyclicks; }
-            set { AssignAndUpdateProperty(KeyclicksPropertyName, value, ref _keyclicks, (p, v) => UpdateKeyclicks(v, sendToHardware: true)); }
+            get { return _configurableFeatures.GetCurrentValue<bool>(KeyclicksPropertyName); }
+            set { UpdateConfigurableValue(KeyclicksPropertyName, value); }
         }
-        private bool _keyclicks;
 
         /// <summary>
         /// Gets or sets a value indicating whether the Locutus device allows access to the on-cartridge configuration menu.
         /// </summary>
         public bool EnableConfigMenuOnCart
         {
-            get { return _enableConfigMenuOnCart; }
-            set { AssignAndUpdateProperty(EnableConfigMenuOnCartPropertyName, value, ref _enableConfigMenuOnCart, (p, v) => UpdateEnableConfigMenuOnCart(v, sendToHardware: true)); }
+            get { return _configurableFeatures.GetCurrentValue<bool>(EnableConfigMenuOnCartPropertyName); }
+            set { UpdateConfigurableValue(EnableConfigMenuOnCartPropertyName, value); }
         }
-        private bool _enableConfigMenuOnCart;
 
         /// <summary>
         /// Gets or sets a value indicating whether to zero the RAM on the Locutus device when a ROM is loaded and run.
         /// </summary>
         public bool ZeroLtoFlashRam
         {
-            get { return _zeroLtoFlashRam; }
-            set { AssignAndUpdateProperty(ZeroLtoFlashRamPropertyName, value, ref _zeroLtoFlashRam, (p, v) => UpdateZeroLtoFlashRam(v, sendToHardware: true)); }
+            get { return _configurableFeatures.GetCurrentValue<bool>(ZeroLtoFlashRamPropertyName); }
+            set { UpdateConfigurableValue(ZeroLtoFlashRamPropertyName, value); }
         }
-        private bool _zeroLtoFlashRam;
 
         /// <summary>
         /// Gets a value indicating whether this is a valid Locutus device.
@@ -589,8 +582,9 @@ namespace INTV.LtoFlash.Model
         /// <inheritdoc />
         public override IEnumerable<IConfigurableFeature> ConfigurableFeatures
         {
-            get { yield break; }
+            get { return _configurableFeatures.Features; }
         }
+        private ConfigurableLtoFlashFeatures _configurableFeatures;
 
         #endregion // IPeripheral
 
@@ -820,137 +814,7 @@ namespace INTV.LtoFlash.Model
             }
         }
 
-        /// <summary>
-        /// Updates the whether to run background garbage collection.
-        /// </summary>
-        /// <param name="newBackgroundGC">If set to <c>true</c> background garbage collection is enabled.</param>
-        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
-        internal void UpdateBackgroundGC(bool newBackgroundGC, bool sendToHardware)
-        {
-            if (sendToHardware)
-            {
-                var newConfiguration = DeviceStatusFlags;
-                if (newBackgroundGC)
-                {
-                    newConfiguration |= DeviceStatusFlags.BackgroundGC;
-                }
-                else
-                {
-                    newConfiguration &= ~DeviceStatusFlags.BackgroundGC;
-                }
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.BackgroundGC, ProtocolCommandId.SetConfiguration, m, e));
-            }
-            else
-            {
-                if (_backgroundGC != newBackgroundGC)
-                {
-                    _backgroundGC = newBackgroundGC;
-                    RaisePropertyChanged(BackgroundGCPropertyName);
-                }
-            }
-        }
 
-        /// <summary>
-        /// Updates the keyclicks setting.
-        /// </summary>
-        /// <param name="newKeyclicks">If set to <c>true</c> keyclicks are enabled.</param>
-        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
-        internal void UpdateKeyclicks(bool newKeyclicks, bool sendToHardware)
-        {
-            if (sendToHardware)
-            {
-                var newConfiguration = DeviceStatusFlags;
-                if (newKeyclicks)
-                {
-                    newConfiguration |= DeviceStatusFlags.Keyclicks;
-                }
-                else
-                {
-                    newConfiguration &= ~DeviceStatusFlags.Keyclicks;
-                }
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.Keyclicks, ProtocolCommandId.SetConfiguration, m, e));
-            }
-            else
-            {
-                if (_keyclicks != newKeyclicks)
-                {
-                    _keyclicks = newKeyclicks;
-                    RaisePropertyChanged(KeyclicksPropertyName);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Updates whether to enable access to configuration menu on the cartridge.
-        /// </summary>
-        /// <param name="newEnableOnboardConfigMenu">If set to <c>true</c>, enable onboard configuration menu.</param>
-        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
-        internal void UpdateEnableConfigMenuOnCart(bool newEnableOnboardConfigMenu, bool sendToHardware)
-        {
-            if (sendToHardware)
-            {
-                var newConfiguration = DeviceStatusFlags;
-                if (newEnableOnboardConfigMenu)
-                {
-                    newConfiguration |= DeviceStatusFlags.EnableCartConfig;
-                }
-                else
-                {
-                    newConfiguration &= ~DeviceStatusFlags.EnableCartConfig;
-                }
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.EnableCartConfig, ProtocolCommandId.SetConfiguration, m, e));
-            }
-            else
-            {
-                if (_enableConfigMenuOnCart != newEnableOnboardConfigMenu)
-                {
-                    _enableConfigMenuOnCart = newEnableOnboardConfigMenu;
-                    RaisePropertyChanged(EnableConfigMenuOnCartPropertyName);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Update the zero LTO Flash! RAM setting.
-        /// </summary>
-        /// <param name="newZeroLtoFlashRam">If set to <c>true</c>, RAM is set to zero when ROM is loaded.</param>
-        /// <param name="sendToHardware">If set to <c>true</c> send to Locutus.</param>
-        internal void UpdateZeroLtoFlashRam(bool newZeroLtoFlashRam, bool sendToHardware)
-        {
-            if (sendToHardware)
-            {
-                var newConfiguration = DeviceStatusFlags;
-                if (newZeroLtoFlashRam)
-                {
-                    newConfiguration |= DeviceStatusFlags.ZeroRamBeforeLoad;
-                }
-                else
-                {
-                    newConfiguration &= ~DeviceStatusFlags.ZeroRamBeforeLoad;
-                }
-                this.SetConfiguration(newConfiguration, (m, e) => ErrorHandler(DeviceStatusFlags.ZeroRamBeforeLoad, ProtocolCommandId.SetConfiguration, m, e));
-            }
-            else
-            {
-                if (_zeroLtoFlashRam != newZeroLtoFlashRam)
-                {
-                    _zeroLtoFlashRam = newZeroLtoFlashRam;
-                    RaisePropertyChanged(ZeroLtoFlashRamPropertyName);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Updates the reserved status flags.
-        /// </summary>
-        /// <param name="newReservedDeviceStatusFlagsLo">The new reserved bits.</param>
-        internal void UpdateReservedDeviceStatusFlagsLo(DeviceStatusFlagsLo newReservedDeviceStatusFlagsLo)
-        {
-            if (ReservedDeviceStatusFlagsLo != newReservedDeviceStatusFlagsLo)
-            {
-                ReservedDeviceStatusFlagsLo = newReservedDeviceStatusFlagsLo;
-            }
-        }
 
 #if DEBUG
 
@@ -1402,6 +1266,26 @@ namespace INTV.LtoFlash.Model
             }
         }
 
+        private void UpdateConfigurableValue<T>(string configurableFeatureUniqueId, T newValue)
+        {
+            var configurableFeature = _configurableFeatures[configurableFeatureUniqueId] as ConfigurableLtoFlashFeature<T>;
+            var currentValue = configurableFeature.CurrentValue;
+            configurableFeature.SetCurrentValue(newValue);
+            UpdateProperty<T>(configurableFeatureUniqueId, newValue, currentValue, (p, v) => configurableFeature.SetValueOnDevice(this, v));
+        }
+
+        /// <summary>
+        /// Updates the reserved status flags.
+        /// </summary>
+        /// <param name="newReservedDeviceStatusFlagsLo">The new reserved bits.</param>
+        private void UpdateReservedDeviceStatusFlagsLo(DeviceStatusFlagsLo newReservedDeviceStatusFlagsLo)
+        {
+            if (ReservedDeviceStatusFlagsLo != newReservedDeviceStatusFlagsLo)
+            {
+                ReservedDeviceStatusFlagsLo = newReservedDeviceStatusFlagsLo;
+            }
+        }
+
         private void UpdateDeviceStatus(DeviceStatusResponse newDeviceStatus)
         {
             var newUniqueId = UniqueId;
@@ -1410,10 +1294,6 @@ namespace INTV.LtoFlash.Model
             var newEcsStatus = EcsCompatibility;
             var newShowTitleScreenStatus = ShowTitleScreen;
             var newSaveMenuPositionStatus = SaveMenuPosition;
-            var newBackgroundGCStatus = BackgroundGC;
-            var newKeyclicksStatus = Keyclicks;
-            var newEnableConfigMenuOnCartStatus = EnableConfigMenuOnCart;
-            var newZeroLtoFlashRam = ZeroLtoFlashRam;
             var newReservedDeviceStatusFlagsLo = ReservedDeviceStatusFlagsLo;
             var newDeviceStatusFlagsHigh = DeviceStatusFlagsHi;
             if (newDeviceStatus != null)
@@ -1424,10 +1304,6 @@ namespace INTV.LtoFlash.Model
                 newEcsStatus = newDeviceStatus.EcsStatus & ~EcsStatusFlags.ReservedMask;
                 newShowTitleScreenStatus = newDeviceStatus.ShowTitleScreen;
                 newSaveMenuPositionStatus = newDeviceStatus.SaveMenuPosition;
-                newKeyclicksStatus = newDeviceStatus.Keyclicks;
-                newBackgroundGCStatus = newDeviceStatus.BackgroundGC;
-                newEnableConfigMenuOnCartStatus = newDeviceStatus.EnableConfigMenuOnCart;
-                newZeroLtoFlashRam = newDeviceStatus.ZeroLtoFlashRam;
                 newReservedDeviceStatusFlagsLo = newDeviceStatus.DeviceStatusFlags.Lo & DeviceStatusFlagsLo.ReservedMask;
                 newDeviceStatusFlagsHigh = newDeviceStatus.DeviceStatusFlags.Hi;
             }
@@ -1437,10 +1313,10 @@ namespace INTV.LtoFlash.Model
             UpdateEcsConfiguration(newEcsStatus, sendToHardware: false);
             UpdateShowTitleScreen(newShowTitleScreenStatus, sendToHardware: false);
             UpdateSaveMenuPosition(newSaveMenuPositionStatus, sendToHardware: false);
-            UpdateBackgroundGC(newBackgroundGCStatus, sendToHardware: false);
-            UpdateKeyclicks(newKeyclicksStatus, sendToHardware: false);
-            UpdateEnableConfigMenuOnCart(newEnableConfigMenuOnCartStatus, sendToHardware: false);
-            UpdateZeroLtoFlashRam(newZeroLtoFlashRam, sendToHardware: false);
+            foreach (var changedFeatureValueName in _configurableFeatures.UpdateConfigurablePropertiesFromDeviceStatus(newDeviceStatus))
+            {
+                RaisePropertyChanged(changedFeatureValueName);
+            }
             UpdateReservedDeviceStatusFlagsLo(newReservedDeviceStatusFlagsLo);
             DeviceStatusFlagsHi = newDeviceStatusFlagsHigh;
         }

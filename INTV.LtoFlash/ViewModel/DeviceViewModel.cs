@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Device;
@@ -69,6 +70,7 @@ namespace INTV.LtoFlash.ViewModel
                 _saveMenuPosition = SaveMenuPositionFlags.Default;
                 _backgroundGC = true;
                 _keyclicks = false;
+                _enableConfigMenuOnCart = true;
                 _randomizeLtoFlashRam = false;
                 _displayName = NoDevice;
             }
@@ -80,6 +82,7 @@ namespace INTV.LtoFlash.ViewModel
                 _saveMenuPosition = device.SaveMenuPosition;
                 _backgroundGC = device.BackgroundGC;
                 _keyclicks = device.Keyclicks;
+                _enableConfigMenuOnCart = device.EnableConfigMenuOnCart;
                 _randomizeLtoFlashRam = !device.ZeroLtoFlashRam; // NOTE! Hardware flag is for zeroing memory; we expose as randomizing
                 _device.ErrorHandler = ErrorHandler;
                 _device.PropertyChanged += DevicePropertyChanged;
@@ -92,6 +95,7 @@ namespace INTV.LtoFlash.ViewModel
             UpdateSaveMenuPosition(SaveMenuPosition);
             UpdateBackgroundGC(BackgroundGC);
             UpdateKeyclicks(Keyclicks);
+            UpdateEnableConfigMenuOnCart(EnableConfigMenuOnCart);
             UpdateRandomizeLtoFlashRam(RandomizeLtoFlashRam);
         }
 
@@ -375,6 +379,16 @@ namespace INTV.LtoFlash.ViewModel
         private bool _keyclicks;
 
         /// <summary>
+        /// Gets or sets a value indicating whether the Locutus device allows access to the on-cartridge configuration menu.
+        /// </summary>
+        public bool EnableConfigMenuOnCart
+        {
+            get { return _enableConfigMenuOnCart; }
+            set { AssignAndUpdateProperty(Device.EnableConfigMenuOnCartPropertyName, value, ref _enableConfigMenuOnCart, (p, v) => UpdateEnableConfigMenuOnCart(v)); }
+        }
+        private bool _enableConfigMenuOnCart;
+
+        /// <summary>
         /// Gets or sets a value indicating whether to randomize RAM before loading a ROM.
         /// </summary>
         public bool RandomizeLtoFlashRam
@@ -529,7 +543,7 @@ namespace INTV.LtoFlash.ViewModel
                         {
                             portName = Device.Port.Name;
                         }
-                        var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.DeviceValidation_Failed_Message_Format, portName);
+                        var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.DeviceValidation_Failed_Message_Format, portName);
                         var dialog = INTV.Shared.View.ReportDialog.Create(Resources.Strings.DeviceValidation_Failed_Title, message);
                         dialog.ReportText = errorMessage;
                         dialog.ShowSendEmailButton = false;
@@ -542,7 +556,7 @@ namespace INTV.LtoFlash.ViewModel
             }
             if (showMessageBox && handled)
             {
-                var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, messageFormat, errorMessage);
+                var message = string.Format(CultureInfo.CurrentCulture, messageFormat, errorMessage);
                 OSMessageBox.Show(message, title, SingleInstanceApplication.SharedSettings.ShowDetailedErrors ? exception : null, (r) => { });
             }
             return handled;
@@ -556,7 +570,7 @@ namespace INTV.LtoFlash.ViewModel
             {
                 if (Device.IsValid)
                 {
-                    displayName = string.Format("{0} ({1})", Device.Name, port);
+                    displayName = string.Format(CultureInfo.CurrentCulture, "{0} ({1})", Device.Name, port);
                 }
                 else
                 {
@@ -593,7 +607,7 @@ namespace INTV.LtoFlash.ViewModel
                 case DeviceStatusCategory.Ecs:
                     var ecsFlags = (EcsStatusFlags)compatibilityMode;
                     EcsCompatibilityInfo = EcsCompatiblityInfoTable[ecsFlags];
-                    EcsCompatibilityInfoTitle = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.EcsCompatibilityMode_ToolTipTitleFormat, ecsFlags.ToDisplayString());
+                    EcsCompatibilityInfoTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.EcsCompatibilityMode_ToolTipTitleFormat, ecsFlags.ToDisplayString());
                     if (Device != null)
                     {
                         Device.EcsCompatibility = ecsFlags;
@@ -602,7 +616,7 @@ namespace INTV.LtoFlash.ViewModel
                 case DeviceStatusCategory.IntvII:
                     var intvIIFlags = (IntellivisionIIStatusFlags)compatibilityMode;
                     IntvIICompatibilityInfo = IntvIICompatiblityInfoTable[intvIIFlags];
-                    IntvIICompatibilityInfoTitle = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.IntellivisionIICompatibilityMode_ToolTipTitleFormat, intvIIFlags.ToDisplayString());
+                    IntvIICompatibilityInfoTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.IntellivisionIICompatibilityMode_ToolTipTitleFormat, intvIIFlags.ToDisplayString());
                     if (Device != null)
                     {
                         Device.IntvIICompatibility = intvIIFlags;
@@ -620,7 +634,7 @@ namespace INTV.LtoFlash.ViewModel
                 Device.ShowTitleScreen = showTitleScreen;
             }
             ShowTitleScreenInfo = ShowTitleScreenInfoTable[showTitleScreen];
-            ShowTitleScreenInfoTitle = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.ShowTitleScreen_ToolTipTitleFormat, showTitleScreen.ToDisplayString());
+            ShowTitleScreenInfoTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.ShowTitleScreen_ToolTipTitleFormat, showTitleScreen.ToDisplayString());
         }
 
         private void UpdateSaveMenuPosition(SaveMenuPositionFlags saveMenuPosition)
@@ -630,7 +644,7 @@ namespace INTV.LtoFlash.ViewModel
                 Device.SaveMenuPosition = saveMenuPosition;
             }
             SaveMenuPositionInfo = SaveMenuPositionInfoTable[saveMenuPosition];
-            SaveMenuPositionInfoTitle = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.SaveMenuPosition_ToolTipTitleFormat, saveMenuPosition.ToDisplayString());
+            SaveMenuPositionInfoTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.SaveMenuPosition_ToolTipTitleFormat, saveMenuPosition.ToDisplayString());
         }
 
         private void UpdateBackgroundGC(bool backgroundGC)
@@ -646,6 +660,14 @@ namespace INTV.LtoFlash.ViewModel
             if (Device != null)
             {
                 Device.Keyclicks = keyclicks;
+            }
+        }
+
+        private void UpdateEnableConfigMenuOnCart(bool enableConfigMenuOnCart)
+        {
+            if (Device != null)
+            {
+                Device.EnableConfigMenuOnCart = enableConfigMenuOnCart;
             }
         }
 
@@ -666,7 +688,7 @@ namespace INTV.LtoFlash.ViewModel
                 powerOn = Device.IsConnectedToIntellivision;
                 powerState = Device.IsConnectedToIntellivision ? Resources.Strings.ConsolePowerState_On : Resources.Strings.ConsolePowerState_Off;
             }
-            PowerState = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.ConsolePowerState_Format, powerState);
+            PowerState = string.Format(CultureInfo.CurrentCulture, Resources.Strings.ConsolePowerState_Format, powerState);
             INTV.Shared.Model.Program.ProgramCollection.Roms.CanEditElements = !powerOn;
         }
 
@@ -724,6 +746,10 @@ namespace INTV.LtoFlash.ViewModel
                     break;
                 case Device.KeyclicksPropertyName:
                     _keyclicks = Device.Keyclicks;
+                    RaisePropertyChanged(e.PropertyName);
+                    break;
+                case Device.EnableConfigMenuOnCartPropertyName:
+                    _enableConfigMenuOnCart = Device.EnableConfigMenuOnCart;
                     RaisePropertyChanged(e.PropertyName);
                     break;
                 case Device.ZeroLtoFlashRamPropertyName:

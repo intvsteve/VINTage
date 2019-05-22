@@ -1,4 +1,4 @@
-﻿// <copyright file="IConfigurableFeature`T.cs" company="INTV Funhouse">
+﻿// <copyright file=".cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -21,27 +21,24 @@
 namespace INTV.Core.Model.Device
 {
     /// <summary>
-    /// Strongly typed interface for <see cref="IConfigurableFeature"/>.
+    /// Strongly typed interface for <see cref="IReadOnlyConfigurableFeature"/>.
     /// </summary>
-    /// <typeparam name="T">The data type of the value on the device.</typeparam>
-    public interface IConfigurableFeature<T>
+    /// <typeparam name="T"></typeparam>
+    public interface IReadOnlyConfigurableFeature<T>
     {
-        /// <inheritdoc cref="IConfigurableFeature.DisplayName"/>
+        /// <inheritdoc cref="IReadOnlyConfigurableFeature.DisplayName"/>
         string DisplayName { get; }
 
-        /// <inheritdoc cref="IConfigurableFeature.UniqueId"/>
+        /// <inheritdoc cref="IReadOnlyConfigurableFeature.UniqueId"/>
         string UniqueId { get; }
 
-        /// <inheritdoc cref="IConfigurableFeature.FactoryDefaultValue"/>
+        /// <inheritdoc cref="IReadOnlyConfigurableFeature.FactoryDefaultValue"/>
         T FactoryDefaultValue { get; }
 
-        /// <inheritdoc cref="IConfigurableFeature.CurrentValue"/>
+        /// <inheritdoc cref="IReadOnlyConfigurableFeature.CurrentValue"/>
         T CurrentValue { get; }
 
-        /// <inheritdoc cref="IConfigurableFeature.GetValueFromDevice(IPeripheral)"/>
+        /// <inheritdoc cref="IReadOnlyConfigurableFeature.GetValueFromDevice(IPeripheral)"/>
         T GetValueFromDevice(IPeripheral device);
-
-        /// <inheritdoc cref="IConfigurableFeature.SetValueOnDevice(IPeripheral, object)"/>
-        void SetValueOnDevice(IPeripheral device, T newValue);
     }
 }

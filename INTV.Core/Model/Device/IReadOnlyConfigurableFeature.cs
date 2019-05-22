@@ -1,4 +1,4 @@
-﻿// <copyright file="IConfigurableFeature`T.cs" company="INTV Funhouse">
+﻿// <copyright file="IReadOnlyConfigurableFeature.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -21,10 +21,9 @@
 namespace INTV.Core.Model.Device
 {
     /// <summary>
-    /// Strongly typed interface for <see cref="IConfigurableFeature"/>.
+    /// Read-only version of <see cref="IConfigurableFeature"/>.
     /// </summary>
-    /// <typeparam name="T">The data type of the value on the device.</typeparam>
-    public interface IConfigurableFeature<T>
+    public interface IReadOnlyConfigurableFeature
     {
         /// <inheritdoc cref="IConfigurableFeature.DisplayName"/>
         string DisplayName { get; }
@@ -33,15 +32,12 @@ namespace INTV.Core.Model.Device
         string UniqueId { get; }
 
         /// <inheritdoc cref="IConfigurableFeature.FactoryDefaultValue"/>
-        T FactoryDefaultValue { get; }
+        object FactoryDefaultValue { get; }
 
         /// <inheritdoc cref="IConfigurableFeature.CurrentValue"/>
-        T CurrentValue { get; }
+        object CurrentValue { get; }
 
         /// <inheritdoc cref="IConfigurableFeature.GetValueFromDevice(IPeripheral)"/>
-        T GetValueFromDevice(IPeripheral device);
-
-        /// <inheritdoc cref="IConfigurableFeature.SetValueOnDevice(IPeripheral, object)"/>
-        void SetValueOnDevice(IPeripheral device, T newValue);
+        object GetValueFromDevice(IPeripheral device);
     }
 }

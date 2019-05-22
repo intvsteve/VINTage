@@ -1,4 +1,4 @@
-﻿// <copyright file=".cs" company="INTV Funhouse">
+﻿// <copyright file="IReadOnlyConfigurableFeature`T.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -23,7 +23,7 @@ namespace INTV.Core.Model.Device
     /// <summary>
     /// Strongly typed interface for <see cref="IReadOnlyConfigurableFeature"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The data type of the value for the feature.</typeparam>
     public interface IReadOnlyConfigurableFeature<T>
     {
         /// <inheritdoc cref="IReadOnlyConfigurableFeature.DisplayName"/>

@@ -23,7 +23,7 @@ namespace INTV.Core.Model.Device
     /// <summary>
     /// Strongly typed interface for <see cref="IConfigurableFeature"/>.
     /// </summary>
-    /// <typeparam name="T">The data type of the value on the device.</typeparam>
+    /// <typeparam name="T">The data type of the value for the feature.</typeparam>
     public interface IConfigurableFeature<T>
     {
         /// <inheritdoc cref="IConfigurableFeature.DisplayName"/>

@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using INTV.LtoFlash.Model.Commands;
@@ -29,14 +30,33 @@ namespace INTV.LtoFlash.Model
     /// </summary>
     public class ConfigurableLtoFlashFeatures
     {
+        private static readonly Lazy<ConfigurableLtoFlashFeatures> DefaultFeatures = new Lazy<ConfigurableLtoFlashFeatures>(() => new ConfigurableLtoFlashFeatures(readOnly: true));
+
         private readonly Dictionary<string, IConfigurableLtoFlashFeature> _configurableFeatures;
 
         /// <summary>
         /// Initializes a new instance of <see cref="ConfigurableLtoFlashFeatures"/>
         /// </summary>
         public ConfigurableLtoFlashFeatures()
+            : this(readOnly: false)
         {
-            _configurableFeatures = InitializeConfigurableFeatures();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="ConfigurableLtoFlashFeatures"/>
+        /// </summary>
+        /// <param name="readOnly">If <c>true</c>, non-modifiable features are create.</param>
+        private ConfigurableLtoFlashFeatures(bool readOnly)
+        {
+            _configurableFeatures = InitializeConfigurableFeatures(readOnly);
+        }
+
+        /// <summary>
+        /// Gets a read-only copy of configurable features of LTO Flash! supported by the application.
+        /// </summary>
+        public static ConfigurableLtoFlashFeatures Default
+        {
+            get { return DefaultFeatures.Value; }
         }
 
         /// <summary>
@@ -88,18 +108,18 @@ namespace INTV.LtoFlash.Model
             return changedFeatures;
         }
 
-        private static Dictionary<string, IConfigurableLtoFlashFeature> InitializeConfigurableFeatures()
+        private static Dictionary<string, IConfigurableLtoFlashFeature> InitializeConfigurableFeatures(bool readOnly)
         {
             var configurableFeatures = new IConfigurableLtoFlashFeature[]
             {
-                new ConfigurableLtoFlashEcsCompatibilityFeature(),
-                new ConfigurableLtoFlashIntellivisionIICompatibilityFeature(),
-                new ConfigurableLtoFlashShowTitleScreenFeature(),
-                new ConfigurableLtoFlashSaveMenuPositionFeature(),
-                new ConfigurableLtoFlashBooleanFeature(Device.BackgroundGCPropertyName, Resources.Strings.SetBackgroundGarbageCollectCommand_Name, true, DeviceStatusFlags.BackgroundGC),
-                new ConfigurableLtoFlashBooleanFeature(Device.KeyclicksPropertyName, Resources.Strings.SetKeyclicksCommand_Name, false, DeviceStatusFlags.Keyclicks),
-                new ConfigurableLtoFlashBooleanFeature(Device.EnableConfigMenuOnCartPropertyName, Resources.Strings.SetEnableConfigMenuOnCartCommand_Name, true, DeviceStatusFlags.EnableCartConfig),
-                new ConfigurableLtoFlashBooleanFeature(Device.ZeroLtoFlashRamPropertyName, Resources.Strings.SetRandomizeLtoFlashRamCommand_Name, true, DeviceStatusFlags.ZeroRamBeforeLoad),
+                ConfigurableLtoFlashEcsCompatibilityFeature.Create(readOnly),
+                ConfigurableLtoFlashIntellivisionIICompatibilityFeature.Create(readOnly),
+                ConfigurableLtoFlashShowTitleScreenFeature.Create(readOnly),
+                ConfigurableLtoFlashSaveMenuPositionFeature.Create(readOnly),
+                ConfigurableLtoFlashBooleanFeature.Create(Device.BackgroundGCPropertyName, Resources.Strings.SetBackgroundGarbageCollectCommand_Name, true, DeviceStatusFlags.BackgroundGC, readOnly),
+                ConfigurableLtoFlashBooleanFeature.Create(Device.KeyclicksPropertyName, Resources.Strings.SetKeyclicksCommand_Name, false, DeviceStatusFlags.Keyclicks, readOnly),
+                ConfigurableLtoFlashBooleanFeature.Create(Device.EnableConfigMenuOnCartPropertyName, Resources.Strings.SetEnableConfigMenuOnCartCommand_Name, true, DeviceStatusFlags.EnableCartConfig, readOnly),
+                ConfigurableLtoFlashBooleanFeature.Create(Device.ZeroLtoFlashRamPropertyName, Resources.Strings.SetRandomizeLtoFlashRamCommand_Name, true, DeviceStatusFlags.ZeroRamBeforeLoad, readOnly),
             };
             var configurableFeaturesDictionary = configurableFeatures.ToDictionary(f => f.UniqueId);
             return configurableFeaturesDictionary;

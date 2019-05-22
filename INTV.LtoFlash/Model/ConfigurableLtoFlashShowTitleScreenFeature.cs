@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
+using INTV.Core.Model.Device;
+
 namespace INTV.LtoFlash.Model
 {
     /// <summary>
@@ -25,12 +28,33 @@ namespace INTV.LtoFlash.Model
     /// </summary>
     public class ConfigurableLtoFlashShowTitleScreenFeature : ConfigurableLtoFlashFeature<ShowTitleScreenFlags>
     {
+        private static readonly Lazy<IConfigurableLtoFlashFeature> Default = new Lazy<IConfigurableLtoFlashFeature>(() => new ReadOnlyConfigurableLtoFlashFeature(Device.ShowTitleScreenPropertyName, Resources.Strings.SetShowTitleScreenCommand_Name, ShowTitleScreenFlags.Default, DeviceStatusFlags.ShowTitleScreenMask));
+
         /// <summary>
         /// Initialize a new instance of <see cref="ConfigurableLtoFlashEcsCompatibilityFeature"/>.
         /// </summary>
-        public ConfigurableLtoFlashShowTitleScreenFeature()
+        protected ConfigurableLtoFlashShowTitleScreenFeature()
             : base(Device.ShowTitleScreenPropertyName, Resources.Strings.SetShowTitleScreenCommand_Name, ShowTitleScreenFlags.Default, DeviceStatusFlags.ShowTitleScreenMask)
         {
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="ConfigurableLtoFlashShowTitleScreenFeature"/>.
+        /// </summary>
+        /// <param name="readOnly">If <c>true</c>, the feature is read-only and will throw a <see cref="System.InvalidOperationException"/> if modified.</param>
+        /// <returns>A new configurable LTO Flash! feature.</returns>
+        public static IConfigurableLtoFlashFeature Create(bool readOnly)
+        {
+            IConfigurableLtoFlashFeature configurableFeature;
+            if (readOnly)
+            {
+                configurableFeature = Default.Value;
+            }
+            else
+            {
+                configurableFeature = new ConfigurableLtoFlashShowTitleScreenFeature();
+            }
+            return configurableFeature;
         }
 
         /// <inheritdoc />

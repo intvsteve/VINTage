@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Core.Model.Device;
+
 namespace INTV.LtoFlash.Model
 {
     /// <summary>
@@ -32,9 +34,32 @@ namespace INTV.LtoFlash.Model
         /// <param name="displayName">The user-friendly display name of the feature.</param>
         /// <param name="defaultValue">The factory default value for the feature.</param>
         /// <param name="featureFlagsMask">The flags mask for the feature.</param>
-        public ConfigurableLtoFlashBooleanFeature(string uniqueId, string displayName, bool defaultValue, DeviceStatusFlags featureFlagsMask)
+        protected ConfigurableLtoFlashBooleanFeature(string uniqueId, string displayName, bool defaultValue, DeviceStatusFlags featureFlagsMask)
             : base(uniqueId, displayName, defaultValue, featureFlagsMask)
         {
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="ConfigurableLtoFlashBooleanFeature"/>.
+        /// </summary>
+        /// <param name="uniqueId">The unique identifier of the configurable feature.</param>
+        /// <param name="displayName">The user-friendly display name of the feature.</param>
+        /// <param name="defaultValue">The factory default value for the feature.</param>
+        /// <param name="featureFlagsMask">The flags mask for the feature.</param>
+        /// <param name="readOnly">If <c>true</c>, the feature is read-only and will throw a <see cref="System.InvalidOperationException"/> if modified.</param>
+        /// <returns>A new configurable LTO Flash! feature.</returns>
+        public static IConfigurableLtoFlashFeature Create(string uniqueId, string displayName, bool defaultValue, DeviceStatusFlags featureFlagsMask, bool readOnly)
+        {
+            IConfigurableLtoFlashFeature configurableFeature;
+            if (readOnly)
+            {
+                configurableFeature = new ReadOnlyConfigurableLtoFlashFeature(uniqueId, displayName, defaultValue, featureFlagsMask);
+            }
+            else
+            {
+                configurableFeature = new ConfigurableLtoFlashBooleanFeature(uniqueId, displayName, defaultValue, featureFlagsMask);
+            }
+            return configurableFeature;
         }
 
         /// <inheritdoc />

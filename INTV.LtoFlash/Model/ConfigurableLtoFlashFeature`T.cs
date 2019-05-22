@@ -65,6 +65,7 @@ namespace INTV.LtoFlash.Model
         /// <inheritdoc />
         public override void SetValueOnDevice(IPeripheral device, T newValue)
         {
+            this.VerifyWriteAccess<T>(); // throws if read-only
             var locutus = (Device)device;
             var newConfiguration = GetUpdatedConfigurationFlags(locutus, newValue);
             locutus.SetConfiguration(newConfiguration, (m, e) => locutus.ErrorHandler(DeviceStatusFlags.ZeroRamBeforeLoad, ProtocolCommandId.SetConfiguration, m, e));
@@ -77,6 +78,7 @@ namespace INTV.LtoFlash.Model
         /// <inheritdoc />
         public bool UpdateCurrentValue(DeviceStatusFlags currentConfiguration)
         {
+            this.VerifyWriteAccess<T>(); // throws if read-only
             var newValue = ConvertDeviceStatusFlagsToValue(currentConfiguration);
             var valueChanged = INotifyPropertyChangedHelpers.SafeDidValueChangeCompare(newValue, CurrentValue);
             CurrentValue = newValue;
@@ -91,6 +93,7 @@ namespace INTV.LtoFlash.Model
         /// <param name="newValue">The new value to unconditionally assign to <see cref="CurrentValue"/>.</param>
         public void SetCurrentValue(T newValue)
         {
+            this.VerifyWriteAccess<T>(); // throws if read-only
             CurrentValue = newValue;
         }
 
@@ -113,6 +116,27 @@ namespace INTV.LtoFlash.Model
             var configuration = device.DeviceStatusFlags & ~FeatureFlagsMask;
             configuration |= ConvertValueToDeviceStatusFlags(newValue);
             return configuration;
+        }
+
+        /// <summary>
+        /// Provides a stock implementation for read-only features.
+        /// </summary>
+        protected class ReadOnlyConfigurableLtoFlashFeature : ConfigurableLtoFlashFeature<T>, IReadOnlyConfigurableFeature<T>
+        {
+            public ReadOnlyConfigurableLtoFlashFeature(string uniqueId, string displayName, T defaultValue, DeviceStatusFlags featureFlagsMask)
+                : base(uniqueId, displayName, defaultValue, featureFlagsMask)
+            {
+            }
+
+            protected override DeviceStatusFlags ConvertValueToDeviceStatusFlags(T newValue)
+            {
+                throw new System.InvalidOperationException();
+            }
+
+            protected override T ConvertDeviceStatusFlagsToValue(DeviceStatusFlags currentConfiguration)
+            {
+                throw new System.InvalidOperationException();
+            }
         }
     }
 }

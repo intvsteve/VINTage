@@ -80,6 +80,7 @@
     <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
     <Compile Include="Model\Device\IPeripheral.cs" />
     <Compile Include="Model\Device\IReadOnlyConfigurableFeature.cs" />
+    <Compile Include="Model\Device\IConfigurableFeatureExtensions.cs" />
     <Compile Include="Model\Device\IReadOnlyConfigurableFeature`T.cs" />
     <Compile Include="Model\Device\MemoryMap.cs" />
     <Compile Include="Model\Device\MemoryMap`T.cs" />

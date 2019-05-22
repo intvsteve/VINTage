@@ -72,6 +72,7 @@
     <Compile Include="Model\Device\ControllerKeys.cs" />
     <Compile Include="Model\Device\IConfigurableFeature.cs" />
     <Compile Include="Model\Device\IConfigurableFeature`T.cs" />
+    <Compile Include="Model\Device\IConfigurableFeatureExtensions.cs" />
     <Compile Include="Model\Device\IConnection.cs" />
     <Compile Include="Model\Device\IConnectionSharingPolicy.cs" />
     <Compile Include="Model\Device\IPeripheral.cs" />

@@ -23,7 +23,7 @@ namespace INTV.Core.Model.Device
     /// <summary>
     /// Provides a basic abstract class for implementing IConfigurableFeature{T}.
     /// </summary>
-    /// <typeparam name="T">The data type of the value on the device.</typeparam>
+    /// <typeparam name="T">The data type of the value for the feature.</typeparam>
     public abstract class ConfigurableFeature<T> : IConfigurableFeature, IConfigurableFeature<T>
     {
         /// <summary>
@@ -46,7 +46,7 @@ namespace INTV.Core.Model.Device
             UniqueId = uniqueId;
             DisplayName = displayName;
             FactoryDefaultValue = factoryDefaultValue;
-            CurrentValue = factoryDefaultValue;
+            _currentValue = factoryDefaultValue;
         }
 
         #region Properties
@@ -79,7 +79,20 @@ namespace INTV.Core.Model.Device
         public T FactoryDefaultValue { get; private set; }
 
         /// <inheritdoc />
-        public T CurrentValue { get; protected set; }
+        public T CurrentValue
+        {
+            get
+            {
+                return _currentValue;
+            }
+
+            protected set
+            {
+                this.VerifyWriteAccess<T>();
+                _currentValue = value;
+            }
+        }
+        private T _currentValue;
 
         #endregion // IConfigurableFeature<T> Properties
 
@@ -96,6 +109,7 @@ namespace INTV.Core.Model.Device
         /// <inheritdoc />
         void IConfigurableFeature.SetValueOnDevice(IPeripheral device, object newValue)
         {
+            this.VerifyWriteAccess<T>(); // throws if read-only
             SetValueOnDevice(device, (T)newValue);
         }
 
@@ -107,6 +121,7 @@ namespace INTV.Core.Model.Device
         public abstract T GetValueFromDevice(IPeripheral device);
 
         /// <inheritdoc />
+        /// <remarks>Implementations should be sure to verify write access for read-only properties.</remarks>
         public abstract void SetValueOnDevice(IPeripheral device, T newValue);
 
         #endregion // IConfigurableFeature<T> Methods

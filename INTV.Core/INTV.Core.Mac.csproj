@@ -82,6 +82,7 @@
     <Compile Include="Model\Device\ConnectionType.cs" />
     <Compile Include="Model\Device\IConfigurableFeature.cs" />
     <Compile Include="Model\Device\IConfigurableFeature`T.cs" />
+    <Compile Include="Model\Device\IConfigurableFeatureExtensions.cs" />
     <Compile Include="Model\Device\IConnection.cs" />
     <Compile Include="Model\Device\IPeripheral.cs" />
     <Compile Include="Model\Device\IReadOnlyConfigurableFeature.cs" />

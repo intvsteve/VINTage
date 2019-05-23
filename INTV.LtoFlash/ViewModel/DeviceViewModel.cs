@@ -1,4 +1,4 @@
-// <copyright file="DeviceViewModel.cs" company="INTV Funhouse">
+﻿// <copyright file="DeviceViewModel.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -68,10 +68,6 @@ namespace INTV.LtoFlash.ViewModel
                 _intvIICompatibility = IntellivisionIIStatusFlags.Default;
                 _showTitleScreen = ShowTitleScreenFlags.Default;
                 _saveMenuPosition = SaveMenuPositionFlags.Default;
-                _backgroundGC = true;
-                _keyclicks = false;
-                _enableConfigMenuOnCart = true;
-                _randomizeLtoFlashRam = false;
                 _displayName = NoDevice;
             }
             else
@@ -80,10 +76,6 @@ namespace INTV.LtoFlash.ViewModel
                 _intvIICompatibility = device.IntvIICompatibility;
                 _showTitleScreen = device.ShowTitleScreen;
                 _saveMenuPosition = device.SaveMenuPosition;
-                _backgroundGC = device.BackgroundGC;
-                _keyclicks = device.Keyclicks;
-                _enableConfigMenuOnCart = device.EnableConfigMenuOnCart;
-                _randomizeLtoFlashRam = !device.ZeroLtoFlashRam; // NOTE! Hardware flag is for zeroing memory; we expose as randomizing
                 _device.ErrorHandler = ErrorHandler;
                 _device.PropertyChanged += DevicePropertyChanged;
                 UpdateDisplayName();
@@ -93,10 +85,6 @@ namespace INTV.LtoFlash.ViewModel
             UpdateCompatibilityMode(DeviceStatusCategory.IntvII, (byte)IntvIICompatibility);
             UpdateShowTitleScreen(ShowTitleScreen);
             UpdateSaveMenuPosition(SaveMenuPosition);
-            UpdateBackgroundGC(BackgroundGC);
-            UpdateKeyclicks(Keyclicks);
-            UpdateEnableConfigMenuOnCart(EnableConfigMenuOnCart);
-            UpdateRandomizeLtoFlashRam(RandomizeLtoFlashRam);
         }
 
         #endregion // Constructors
@@ -364,9 +352,8 @@ namespace INTV.LtoFlash.ViewModel
         public bool BackgroundGC
         {
             get { return GetConfigurableFeatureValue<bool>(Device.BackgroundGCPropertyName); }
-            set { AssignAndUpdateProperty(Device.BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => UpdateBackgroundGC(v)); }
+            set { SetConfigurableFeatureValueOnDevice(Device.BackgroundGCPropertyName, value); }
         }
-        private bool _backgroundGC;
 
         /// <summary>
         /// Gets or sets a value indicating whether the menu program on Locutus emits key click sounds when navigating.
@@ -374,9 +361,8 @@ namespace INTV.LtoFlash.ViewModel
         public bool Keyclicks
         {
             get { return GetConfigurableFeatureValue<bool>(Device.KeyclicksPropertyName); }
-            set { AssignAndUpdateProperty(Device.KeyclicksPropertyName, value, ref _keyclicks, (p, v) => UpdateKeyclicks(v)); }
+            set { SetConfigurableFeatureValueOnDevice(Device.KeyclicksPropertyName, value); }
         }
-        private bool _keyclicks;
 
         /// <summary>
         /// Gets or sets a value indicating whether the Locutus device allows access to the on-cartridge configuration menu.
@@ -384,19 +370,18 @@ namespace INTV.LtoFlash.ViewModel
         public bool EnableConfigMenuOnCart
         {
             get { return GetConfigurableFeatureValue<bool>(Device.EnableConfigMenuOnCartPropertyName); }
-            set { AssignAndUpdateProperty(Device.EnableConfigMenuOnCartPropertyName, value, ref _enableConfigMenuOnCart, (p, v) => UpdateEnableConfigMenuOnCart(v)); }
+            set { SetConfigurableFeatureValueOnDevice(Device.EnableConfigMenuOnCartPropertyName, value); }
         }
-        private bool _enableConfigMenuOnCart;
 
         /// <summary>
         /// Gets or sets a value indicating whether to randomize RAM before loading a ROM.
         /// </summary>
+        /// <remarks>NOTE! Hardware flag is for zeroing memory; we expose as randomizing, so it's logically inverted.</remarks>
         public bool RandomizeLtoFlashRam
         {
             get { return !GetConfigurableFeatureValue<bool>(Device.ZeroLtoFlashRamPropertyName); }
-            set { AssignAndUpdateProperty(RandomizeLtoFlashRamPropertyName, value, ref _randomizeLtoFlashRam, (p, v) => UpdateRandomizeLtoFlashRam(v)); }
+            set { SetConfigurableFeatureValueOnDevice(Device.ZeroLtoFlashRamPropertyName, !value); }
         }
-        private bool _randomizeLtoFlashRam;
 
         /// <summary>
         /// Gets a value indicating whether the device is in a state that allows configuration changes to be applied.
@@ -652,38 +637,6 @@ namespace INTV.LtoFlash.ViewModel
             SaveMenuPositionInfoTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.SaveMenuPosition_ToolTipTitleFormat, saveMenuPosition.ToDisplayString());
         }
 
-        private void UpdateBackgroundGC(bool backgroundGC)
-        {
-            if (Device != null)
-            {
-                Device.BackgroundGC = backgroundGC;
-            }
-        }
-
-        private void UpdateKeyclicks(bool keyclicks)
-        {
-            if (Device != null)
-            {
-                Device.Keyclicks = keyclicks;
-            }
-        }
-
-        private void UpdateEnableConfigMenuOnCart(bool enableConfigMenuOnCart)
-        {
-            if (Device != null)
-            {
-                Device.EnableConfigMenuOnCart = enableConfigMenuOnCart;
-            }
-        }
-
-        private void UpdateRandomizeLtoFlashRam(bool randomizeLtoFlashRam)
-        {
-            if (Device != null)
-            {
-                Device.ZeroLtoFlashRam = !randomizeLtoFlashRam;
-            }
-        }
-
         private void UpdatePowerState()
         {
             var powerState = Resources.Strings.ConsolePowerState_Unknown;
@@ -702,6 +655,17 @@ namespace INTV.LtoFlash.ViewModel
             var configurableFeature = ConfigurableLtoFlashFeatures[configurableFeatureUniqueId] as ConfigurableLtoFlashFeature<T>;
             var currentValue = configurableFeature.CurrentValue;
             return currentValue;
+        }
+
+        private void SetConfigurableFeatureValueOnDevice<T>(string configurableFeatureUniqueId, T newValue)
+        {
+            if (Device != null)
+            {
+                var configurableFeature = ConfigurableLtoFlashFeatures[configurableFeatureUniqueId] as ConfigurableLtoFlashFeature<T>;
+                var currentValue = configurableFeature.CurrentValue;
+                configurableFeature.SetCurrentValue(newValue);
+                UpdateProperty<T>(configurableFeatureUniqueId, newValue, currentValue, (p, v) => configurableFeature.SetValueOnDevice(Device, v));
+            }
         }
 
         private void DevicePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -753,19 +717,11 @@ namespace INTV.LtoFlash.ViewModel
                     UpdateSaveMenuPosition(_saveMenuPosition);
                     break;
                 case Device.BackgroundGCPropertyName:
-                    _backgroundGC = Device.BackgroundGC;
-                    RaisePropertyChanged(e.PropertyName);
-                    break;
                 case Device.KeyclicksPropertyName:
-                    _keyclicks = Device.Keyclicks;
-                    RaisePropertyChanged(e.PropertyName);
-                    break;
                 case Device.EnableConfigMenuOnCartPropertyName:
-                    _enableConfigMenuOnCart = Device.EnableConfigMenuOnCart;
                     RaisePropertyChanged(e.PropertyName);
                     break;
                 case Device.ZeroLtoFlashRamPropertyName:
-                    _randomizeLtoFlashRam = !Device.ZeroLtoFlashRam;
                     RaisePropertyChanged(RandomizeLtoFlashRamPropertyName);
                     break;
                 case Device.UniqueIdPropertyName:

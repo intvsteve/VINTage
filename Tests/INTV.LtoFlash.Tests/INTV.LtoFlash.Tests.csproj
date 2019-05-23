@@ -62,6 +62,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Model\ConfigurableLtoFlashFeatureTests.cs" />
     <Compile Include="Model\DeviceStatusFlagsHiTests.cs" />
     <Compile Include="Model\DeviceStatusFlagsLoTests.cs" />
     <Compile Include="Model\DeviceStatusFlagsTests.cs" />

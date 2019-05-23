@@ -186,6 +186,7 @@ namespace INTV.LtoFlash.Model
         internal Device(string uniqueId)
         {
             UniqueId = uniqueId;
+            _configurableFeatures = ConfigurableLtoFlashFeatures.Default;
             _dummyDevice = true;
         }
 

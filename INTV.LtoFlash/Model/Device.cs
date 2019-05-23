@@ -421,6 +421,14 @@ namespace INTV.LtoFlash.Model
         private CrashLog _crashLog;
 
         /// <summary>
+        /// Gets the configurable Locutus features.
+        /// </summary>
+        internal ConfigurableLtoFlashFeatures ConfigurableLtoFlashFeatures
+        {
+            get { return _configurableFeatures; }
+        }
+
+        /// <summary>
         /// Gets or sets a custom error handler, typically installed by the ViewModel.
         /// </summary>
         internal DeviceErrorHandler ErrorHandler { get; set; }

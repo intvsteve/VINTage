@@ -67,18 +67,15 @@ namespace INTV.LtoFlash.ViewModel
             _device = device;
             if (_device == null)
             {
-                _saveMenuPosition = SaveMenuPositionFlags.Default;
                 _displayName = NoDevice;
             }
             else
             {
-                _saveMenuPosition = device.SaveMenuPosition;
                 _device.ErrorHandler = ErrorHandler;
                 _device.PropertyChanged += DevicePropertyChanged;
                 UpdateDisplayName();
             }
             UpdatePowerState();
-            UpdateSaveMenuPosition(SaveMenuPosition);
         }
 
         #endregion // Constructors
@@ -97,25 +94,6 @@ namespace INTV.LtoFlash.ViewModel
         {
             get { return ConfigurableFeatureCommandsToRefreshMapInstance.Value; }
         }
-
-        private static Dictionary<SaveMenuPositionFlags, string> SaveMenuPositionInfoTable
-        {
-            get
-            {
-                if (_saveMenuPositionInfoTable == null)
-                {
-                    _saveMenuPositionInfoTable = new Dictionary<SaveMenuPositionFlags, string>()
-                        {
-                            { SaveMenuPositionFlags.Always, Resources.Strings.SaveMenuPosition_Always_ToolTipDescription },
-                            { SaveMenuPositionFlags.DuringSessionOnly, Resources.Strings.SaveMenuPosition_SessionOnly_ToolTipDescription },
-                            { SaveMenuPositionFlags.Reserved, Resources.Strings.SaveMenuPosition_SessionOnly_ToolTipDescription },
-                            { SaveMenuPositionFlags.Never, Resources.Strings.SaveMenuPosition_Never_ToolTipDescription }
-                        };
-                }
-                return _saveMenuPositionInfoTable;
-            }
-        }
-        private static Dictionary<SaveMenuPositionFlags, string> _saveMenuPositionInfoTable;
 
         /// <summary>
         /// Gets a value indicating whether this ViewModel is associated with a valid device.
@@ -189,39 +167,14 @@ namespace INTV.LtoFlash.ViewModel
             set { SetConfigurableFeatureValueOnDevice(Device.ShowTitleScreenPropertyName, value); }
         }
 
-        #region Save Menu Position Setting
-
         /// <summary>
         /// Gets or sets whether LTO FLash! remembers its previous menu position when reset.
         /// </summary>
         public SaveMenuPositionFlags SaveMenuPosition
         {
             get { return GetConfigurableFeatureValue<SaveMenuPositionFlags>(Device.SaveMenuPositionPropertyName); }
-            set { AssignAndUpdateProperty(Device.SaveMenuPositionPropertyName, value, ref _saveMenuPosition, (p, v) => UpdateSaveMenuPosition(v)); }
+            set { SetConfigurableFeatureValueOnDevice(Device.SaveMenuPositionPropertyName, value); }
         }
-        private SaveMenuPositionFlags _saveMenuPosition;
-
-        /// <summary>
-        /// Gets the tool tip title for Show title screen at launch mode.
-        /// </summary>
-        public string SaveMenuPositionInfoTitle
-        {
-            get { return _saveMenuPositionInfoTitle; }
-            private set { AssignAndUpdateProperty("SaveMenuPositionInfoTitle", value, ref _saveMenuPositionInfoTitle); }
-        }
-        private string _saveMenuPositionInfoTitle;
-
-        /// <summary>
-        /// Gets the detailed information for Show title screen at launch mode tool tip.
-        /// </summary>
-        public string SaveMenuPositionInfo
-        {
-            get { return _saveMenuPositionInfo; }
-            private set { AssignAndUpdateProperty("SaveMenuPositionInfo", value, ref _saveMenuPositionInfo); }
-        }
-        private string _saveMenuPositionInfo;
-
-        #endregion // Save Menu Position Setting
 
         /// <summary>
         /// Gets or sets a value indicating whether Locutus does background file system garbage collection when at the menu on the console.
@@ -357,7 +310,8 @@ namespace INTV.LtoFlash.ViewModel
             {
                 { Device.EcsCompatibilityPropertyName, DeviceCommandGroup.SetEcsCompatibilityCommand },
                 { Device.IntvIICompatibilityPropertyName, DeviceCommandGroup.SetIntellivisionIICompatibilityCommand },
-                { Device.ShowTitleScreenPropertyName, DeviceCommandGroup.SetShowTitleScreenCommand }
+                { Device.ShowTitleScreenPropertyName, DeviceCommandGroup.SetShowTitleScreenCommand },
+                { Device.SaveMenuPositionPropertyName, DeviceCommandGroup.SetSaveMenuPositionCommand },
             };
             return configurableFeatureCommandsToRefresh;
         }
@@ -488,16 +442,6 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
-        private void UpdateSaveMenuPosition(SaveMenuPositionFlags saveMenuPosition)
-        {
-            if (Device != null)
-            {
-                Device.SaveMenuPosition = saveMenuPosition;
-            }
-            SaveMenuPositionInfo = SaveMenuPositionInfoTable[saveMenuPosition];
-            SaveMenuPositionInfoTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.SaveMenuPosition_ToolTipTitleFormat, saveMenuPosition.ToDisplayString());
-        }
-
         private void UpdatePowerState()
         {
             var powerState = Resources.Strings.ConsolePowerState_Unknown;
@@ -561,13 +505,7 @@ namespace INTV.LtoFlash.ViewModel
                 case Device.EcsCompatibilityPropertyName:
                 case Device.IntvIICompatibilityPropertyName:
                 case Device.ShowTitleScreenPropertyName:
-                    RaisePropertyChanged(e.PropertyName);
-                    break;
                 case Device.SaveMenuPositionPropertyName:
-                    _saveMenuPosition = Device.SaveMenuPosition;
-                    RaisePropertyChanged(e.PropertyName);
-                    UpdateSaveMenuPosition(_saveMenuPosition);
-                    break;
                 case Device.BackgroundGCPropertyName:
                 case Device.KeyclicksPropertyName:
                 case Device.EnableConfigMenuOnCartPropertyName:

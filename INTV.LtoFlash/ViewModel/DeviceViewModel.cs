@@ -67,14 +67,12 @@ namespace INTV.LtoFlash.ViewModel
             _device = device;
             if (_device == null)
             {
-                _intvIICompatibility = IntellivisionIIStatusFlags.Default;
                 _showTitleScreen = ShowTitleScreenFlags.Default;
                 _saveMenuPosition = SaveMenuPositionFlags.Default;
                 _displayName = NoDevice;
             }
             else
             {
-                _intvIICompatibility = device.IntvIICompatibility;
                 _showTitleScreen = device.ShowTitleScreen;
                 _saveMenuPosition = device.SaveMenuPosition;
                 _device.ErrorHandler = ErrorHandler;
@@ -82,7 +80,6 @@ namespace INTV.LtoFlash.ViewModel
                 UpdateDisplayName();
             }
             UpdatePowerState();
-            UpdateCompatibilityMode(DeviceStatusCategory.IntvII, (byte)IntvIICompatibility);
             UpdateShowTitleScreen(ShowTitleScreen);
             UpdateSaveMenuPosition(SaveMenuPosition);
         }
@@ -213,39 +210,14 @@ namespace INTV.LtoFlash.ViewModel
             set { SetConfigurableFeatureValueOnDevice(Device.EcsCompatibilityPropertyName, value); }
         }
 
-        #region Intellivision II Setting
-
         /// <summary>
         /// Gets or sets a value indicating how the Locutus device treats programs with known Intellivision II compatibility problems.
         /// </summary>
         public IntellivisionIIStatusFlags IntvIICompatibility
         {
             get { return GetConfigurableFeatureValue<IntellivisionIIStatusFlags>(Device.IntvIICompatibilityPropertyName); }
-            set { AssignAndUpdateProperty(Device.IntvIICompatibilityPropertyName, value, ref _intvIICompatibility, (p, v) => UpdateCompatibilityMode(DeviceStatusCategory.IntvII, (byte)v)); }
+            set { SetConfigurableFeatureValueOnDevice(Device.IntvIICompatibilityPropertyName, value); }
         }
-        private IntellivisionIIStatusFlags _intvIICompatibility;
-
-        /// <summary>
-        /// Gets the tool tip info title for Intellivision II compatibility mode.
-        /// </summary>
-        public string IntvIICompatibilityInfoTitle
-        {
-            get { return _intvIICompatibilityInfoTitle; }
-            private set { AssignAndUpdateProperty("IntvIICompatibilityInfoTitle", value, ref _intvIICompatibilityInfoTitle); }
-        }
-        private string _intvIICompatibilityInfoTitle;
-
-        /// <summary>
-        /// Gets the detailed information for Intellivision II compatibility mode tool tip.
-        /// </summary>
-        public string IntvIICompatibilityInfo
-        {
-            get { return _intvIICompatibilityInfo; }
-            private set { AssignAndUpdateProperty("IntvIICompatibilityInfo", value, ref _intvIICompatibilityInfo); }
-        }
-        private string _intvIICompatibilityInfo;
-
-        #endregion // Intellivision II Setting
 
         #region Show Title Screen Setting
 
@@ -447,7 +419,8 @@ namespace INTV.LtoFlash.ViewModel
         {
             var configurableFeatureCommandsToRefresh = new Dictionary<string, VisualDeviceCommand>
             {
-                { Device.EcsCompatibilityPropertyName, DeviceCommandGroup.SetEcsCompatibilityCommand }
+                { Device.EcsCompatibilityPropertyName, DeviceCommandGroup.SetEcsCompatibilityCommand },
+                { Device.IntvIICompatibilityPropertyName, DeviceCommandGroup.SetIntellivisionIICompatibilityCommand },
             };
             return configurableFeatureCommandsToRefresh;
         }
@@ -578,24 +551,6 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
-        private void UpdateCompatibilityMode(DeviceStatusCategory which, byte compatibilityMode)
-        {
-            switch (which)
-            {
-                case DeviceStatusCategory.IntvII:
-                    var intvIIFlags = (IntellivisionIIStatusFlags)compatibilityMode;
-                    IntvIICompatibilityInfo = IntvIICompatiblityInfoTable[intvIIFlags];
-                    IntvIICompatibilityInfoTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.IntellivisionIICompatibilityMode_ToolTipTitleFormat, intvIIFlags.ToDisplayString());
-                    if (Device != null)
-                    {
-                        Device.IntvIICompatibility = intvIIFlags;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
         private void UpdateShowTitleScreen(ShowTitleScreenFlags showTitleScreen)
         {
             if (Device != null)
@@ -677,12 +632,8 @@ namespace INTV.LtoFlash.ViewModel
                     }
                     break;
                 case Device.EcsCompatibilityPropertyName:
-                    RaisePropertyChanged(e.PropertyName);
-                    break;
                 case Device.IntvIICompatibilityPropertyName:
-                    _intvIICompatibility = Device.IntvIICompatibility;
                     RaisePropertyChanged(e.PropertyName);
-                    UpdateCompatibilityMode(DeviceStatusCategory.IntvII, (byte)_intvIICompatibility);
                     break;
                 case Device.ShowTitleScreenPropertyName:
                     _showTitleScreen = Device.ShowTitleScreen;
@@ -949,29 +900,6 @@ namespace INTV.LtoFlash.ViewModel
             {
                 configurableCommandToRefresh.CanExecute(parameter);
             }
-        }
-
-        private enum DeviceStatusCategory
-        {
-            /// <summary>
-            /// No category.
-            /// </summary>
-            None,
-
-            /// <summary>
-            /// Hardware category.
-            /// </summary>
-            Hardware,
-
-            /// <summary>
-            /// ECS device category.
-            /// </summary>
-            Ecs,
-
-            /// <summary>
-            /// Intellivision II device category.
-            /// </summary>
-            IntvII
         }
     }
 }

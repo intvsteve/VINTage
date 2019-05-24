@@ -1,4 +1,4 @@
-// <copyright file="DeviceViewModel.cs" company="INTV Funhouse">
+﻿// <copyright file="DeviceViewModel.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -67,7 +67,6 @@ namespace INTV.LtoFlash.ViewModel
             _device = device;
             if (_device == null)
             {
-                _ecsCompatibility = EcsStatusFlags.Default;
                 _intvIICompatibility = IntellivisionIIStatusFlags.Default;
                 _showTitleScreen = ShowTitleScreenFlags.Default;
                 _saveMenuPosition = SaveMenuPositionFlags.Default;
@@ -75,7 +74,6 @@ namespace INTV.LtoFlash.ViewModel
             }
             else
             {
-                _ecsCompatibility = device.EcsCompatibility;
                 _intvIICompatibility = device.IntvIICompatibility;
                 _showTitleScreen = device.ShowTitleScreen;
                 _saveMenuPosition = device.SaveMenuPosition;
@@ -84,7 +82,6 @@ namespace INTV.LtoFlash.ViewModel
                 UpdateDisplayName();
             }
             UpdatePowerState();
-            UpdateCompatibilityMode(DeviceStatusCategory.Ecs, (byte)EcsCompatibility);
             UpdateCompatibilityMode(DeviceStatusCategory.IntvII, (byte)IntvIICompatibility);
             UpdateShowTitleScreen(ShowTitleScreen);
             UpdateSaveMenuPosition(SaveMenuPosition);
@@ -106,25 +103,6 @@ namespace INTV.LtoFlash.ViewModel
         {
             get { return ConfigurableFeatureCommandsToRefreshMapInstance.Value; }
         }
-
-        private static Dictionary<EcsStatusFlags, string> EcsCompatiblityInfoTable
-        {
-            get
-            {
-                if (_ecsCompatiblityInfoTable == null)
-                {
-                    _ecsCompatiblityInfoTable = new Dictionary<EcsStatusFlags, string>()
-                    {
-                        { EcsStatusFlags.None, Resources.Strings.EcsCompatibilityMode_Enabled_ToolTipDescription },
-                        { EcsStatusFlags.EnabledForRequiredAndOptional, Resources.Strings.EcsCompatibilityMode_Limited_ToolTipDescription },
-                        { EcsStatusFlags.EnabledForRequired, Resources.Strings.EcsCompatibilityMode_Strict_ToolTipDescription },
-                        { EcsStatusFlags.Disabled, Resources.Strings.EcsCompatibilityMode_Disabled_ToolTipDescription }
-                    };
-                }
-                return _ecsCompatiblityInfoTable;
-            }
-        }
-        private static Dictionary<EcsStatusFlags, string> _ecsCompatiblityInfoTable;
 
         private static Dictionary<IntellivisionIIStatusFlags, string> IntvIICompatiblityInfoTable
         {
@@ -226,39 +204,14 @@ namespace INTV.LtoFlash.ViewModel
             get { return (Device == null) ? NoDevice : Device.UniqueId; }
         }
 
-        #region ECS Setting
-
         /// <summary>
         /// Gets or sets a value indicating how the Locutus device treats programs with known ECS compatibility problems.
         /// </summary>
         public EcsStatusFlags EcsCompatibility
         {
             get { return GetConfigurableFeatureValue<EcsStatusFlags>(Device.EcsCompatibilityPropertyName); }
-            set { AssignAndUpdateProperty(Device.EcsCompatibilityPropertyName, value, ref _ecsCompatibility, (p, v) => UpdateCompatibilityMode(DeviceStatusCategory.Ecs, (byte)v)); }
+            set { SetConfigurableFeatureValueOnDevice(Device.EcsCompatibilityPropertyName, value); }
         }
-        private EcsStatusFlags _ecsCompatibility;
-
-        /// <summary>
-        /// Gets the tool tip info title for ECS compatibility mode.
-        /// </summary>
-        public string EcsCompatibilityInfoTitle
-        {
-            get { return _ecsCompatibilityInfoTitle; }
-            private set { AssignAndUpdateProperty("EcsCompatibilityInfoTitle", value, ref _ecsCompatibilityInfoTitle); }
-        }
-        private string _ecsCompatibilityInfoTitle;
-
-        /// <summary>
-        /// Gets the detailed information for ECS compatibility mode tool tip.
-        /// </summary>
-        public string EcsCompatibilityInfo
-        {
-            get { return _ecsCompatibilityInfo; }
-            private set { AssignAndUpdateProperty("EcsCompatibilityInfo", value, ref _ecsCompatibilityInfo); }
-        }
-        private string _ecsCompatibilityInfo;
-
-        #endregion // ECS Setting
 
         #region Intellivision II Setting
 
@@ -494,6 +447,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             var configurableFeatureCommandsToRefresh = new Dictionary<string, VisualDeviceCommand>
             {
+                { Device.EcsCompatibilityPropertyName, DeviceCommandGroup.SetEcsCompatibilityCommand }
             };
             return configurableFeatureCommandsToRefresh;
         }
@@ -628,15 +582,6 @@ namespace INTV.LtoFlash.ViewModel
         {
             switch (which)
             {
-                case DeviceStatusCategory.Ecs:
-                    var ecsFlags = (EcsStatusFlags)compatibilityMode;
-                    EcsCompatibilityInfo = EcsCompatiblityInfoTable[ecsFlags];
-                    EcsCompatibilityInfoTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.EcsCompatibilityMode_ToolTipTitleFormat, ecsFlags.ToDisplayString());
-                    if (Device != null)
-                    {
-                        Device.EcsCompatibility = ecsFlags;
-                    }
-                    break;
                 case DeviceStatusCategory.IntvII:
                     var intvIIFlags = (IntellivisionIIStatusFlags)compatibilityMode;
                     IntvIICompatibilityInfo = IntvIICompatiblityInfoTable[intvIIFlags];
@@ -732,9 +677,7 @@ namespace INTV.LtoFlash.ViewModel
                     }
                     break;
                 case Device.EcsCompatibilityPropertyName:
-                    _ecsCompatibility = Device.EcsCompatibility;
                     RaisePropertyChanged(e.PropertyName);
-                    UpdateCompatibilityMode(DeviceStatusCategory.Ecs, (byte)_ecsCompatibility);
                     break;
                 case Device.IntvIICompatibilityPropertyName:
                     _intvIICompatibility = Device.IntvIICompatibility;

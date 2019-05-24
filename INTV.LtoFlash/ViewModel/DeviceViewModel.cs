@@ -67,20 +67,17 @@ namespace INTV.LtoFlash.ViewModel
             _device = device;
             if (_device == null)
             {
-                _showTitleScreen = ShowTitleScreenFlags.Default;
                 _saveMenuPosition = SaveMenuPositionFlags.Default;
                 _displayName = NoDevice;
             }
             else
             {
-                _showTitleScreen = device.ShowTitleScreen;
                 _saveMenuPosition = device.SaveMenuPosition;
                 _device.ErrorHandler = ErrorHandler;
                 _device.PropertyChanged += DevicePropertyChanged;
                 UpdateDisplayName();
             }
             UpdatePowerState();
-            UpdateShowTitleScreen(ShowTitleScreen);
             UpdateSaveMenuPosition(SaveMenuPosition);
         }
 
@@ -100,24 +97,6 @@ namespace INTV.LtoFlash.ViewModel
         {
             get { return ConfigurableFeatureCommandsToRefreshMapInstance.Value; }
         }
-
-        private static Dictionary<ShowTitleScreenFlags, string> ShowTitleScreenInfoTable
-        {
-            get
-            {
-                if (_showTitleScreenInfoTable == null)
-                {
-                    _showTitleScreenInfoTable = new Dictionary<ShowTitleScreenFlags, string>()
-                        {
-                            { ShowTitleScreenFlags.Always, Resources.Strings.ShowTitleScreen_Always_ToolTipDescription },
-                            { ShowTitleScreenFlags.OnPowerUp, Resources.Strings.ShowTitleScreen_OnPowerUp_ToolTipDescription },
-                            { ShowTitleScreenFlags.Never, Resources.Strings.ShowTitleScreen_Never_ToolTipDescription }
-                        };
-                }
-                return _showTitleScreenInfoTable;
-            }
-        }
-        private static Dictionary<ShowTitleScreenFlags, string> _showTitleScreenInfoTable;
 
         private static Dictionary<SaveMenuPositionFlags, string> SaveMenuPositionInfoTable
         {
@@ -201,39 +180,14 @@ namespace INTV.LtoFlash.ViewModel
             set { SetConfigurableFeatureValueOnDevice(Device.IntvIICompatibilityPropertyName, value); }
         }
 
-        #region Show Title Screen Setting
-
         /// <summary>
         /// Gets or sets the behavior of showing the title screen when resetting the console with Locutus plugged in.
         /// </summary>
         public ShowTitleScreenFlags ShowTitleScreen
         {
             get { return GetConfigurableFeatureValue<ShowTitleScreenFlags>(Device.ShowTitleScreenPropertyName); }
-            set { AssignAndUpdateProperty(Device.ShowTitleScreenPropertyName, value, ref _showTitleScreen, (p, v) => UpdateShowTitleScreen(v)); }
+            set { SetConfigurableFeatureValueOnDevice(Device.ShowTitleScreenPropertyName, value); }
         }
-        private ShowTitleScreenFlags _showTitleScreen;
-
-        /// <summary>
-        /// Gets the tool tip title for Show title screen at launch mode.
-        /// </summary>
-        public string ShowTitleScreenInfoTitle
-        {
-            get { return _showTitleScreenInfoTitle; }
-            private set { AssignAndUpdateProperty("ShowTitleScreenInfoTitle", value, ref _showTitleScreenInfoTitle); }
-        }
-        private string _showTitleScreenInfoTitle;
-
-        /// <summary>
-        /// Gets the detailed information for Show title screen at launch mode tool tip.
-        /// </summary>
-        public string ShowTitleScreenInfo
-        {
-            get { return _showTitleScreenInfo; }
-            private set { AssignAndUpdateProperty("ShowTitleScreenInfo", value, ref _showTitleScreenInfo); }
-        }
-        private string _showTitleScreenInfo;
-
-        #endregion // Show Title Screen Setting
 
         #region Save Menu Position Setting
 
@@ -403,6 +357,7 @@ namespace INTV.LtoFlash.ViewModel
             {
                 { Device.EcsCompatibilityPropertyName, DeviceCommandGroup.SetEcsCompatibilityCommand },
                 { Device.IntvIICompatibilityPropertyName, DeviceCommandGroup.SetIntellivisionIICompatibilityCommand },
+                { Device.ShowTitleScreenPropertyName, DeviceCommandGroup.SetShowTitleScreenCommand }
             };
             return configurableFeatureCommandsToRefresh;
         }
@@ -533,16 +488,6 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
-        private void UpdateShowTitleScreen(ShowTitleScreenFlags showTitleScreen)
-        {
-            if (Device != null)
-            {
-                Device.ShowTitleScreen = showTitleScreen;
-            }
-            ShowTitleScreenInfo = ShowTitleScreenInfoTable[showTitleScreen];
-            ShowTitleScreenInfoTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.ShowTitleScreen_ToolTipTitleFormat, showTitleScreen.ToDisplayString());
-        }
-
         private void UpdateSaveMenuPosition(SaveMenuPositionFlags saveMenuPosition)
         {
             if (Device != null)
@@ -615,12 +560,8 @@ namespace INTV.LtoFlash.ViewModel
                     break;
                 case Device.EcsCompatibilityPropertyName:
                 case Device.IntvIICompatibilityPropertyName:
-                    RaisePropertyChanged(e.PropertyName);
-                    break;
                 case Device.ShowTitleScreenPropertyName:
-                    _showTitleScreen = Device.ShowTitleScreen;
                     RaisePropertyChanged(e.PropertyName);
-                    UpdateShowTitleScreen(_showTitleScreen);
                     break;
                 case Device.SaveMenuPositionPropertyName:
                     _saveMenuPosition = Device.SaveMenuPosition;

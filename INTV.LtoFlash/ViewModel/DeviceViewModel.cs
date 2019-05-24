@@ -101,24 +101,6 @@ namespace INTV.LtoFlash.ViewModel
             get { return ConfigurableFeatureCommandsToRefreshMapInstance.Value; }
         }
 
-        private static Dictionary<IntellivisionIIStatusFlags, string> IntvIICompatiblityInfoTable
-        {
-            get
-            {
-                if (_intvIICompatiblityInfoTable == null)
-                {
-                    _intvIICompatiblityInfoTable = new Dictionary<IntellivisionIIStatusFlags, string>()
-                        {
-                            { IntellivisionIIStatusFlags.None, Resources.Strings.IntellivisionIICompatibilityMode_Disabled_ToolTipDescription },
-                            { IntellivisionIIStatusFlags.Conservative, Resources.Strings.IntellivisionIICompatibilityMode_Limited_ToolTipDescription },
-                            { IntellivisionIIStatusFlags.Aggressive, Resources.Strings.IntellivisionIICompatibilityMode_Full_ToolTipDescription }
-                        };
-                }
-                return _intvIICompatiblityInfoTable;
-            }
-        }
-        private static Dictionary<IntellivisionIIStatusFlags, string> _intvIICompatiblityInfoTable;
-
         private static Dictionary<ShowTitleScreenFlags, string> ShowTitleScreenInfoTable
         {
             get

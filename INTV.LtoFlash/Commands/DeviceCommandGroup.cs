@@ -255,29 +255,45 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// The command to set whether or not to show the title screen.
         /// </summary>
-        public static readonly VisualDeviceCommand SetShowTitleScreenCommand = new VisualDeviceCommand(OnSetShowTitleScreenCommand, CanSetShowTitleScreenCommand)
+        public static readonly VisualDeviceCommand SetShowTitleScreenCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetShowTitleScreenCommand)
         {
             UniqueId = UniqueNameBase + ".SetShowTitleScreenCommand",
             Name = Resources.Strings.SetShowTitleScreenCommand_Name,
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/lto_flash_title_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetShowTitleScreenCommand_Name,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             ToolTipDescription = Resources.Strings.SetShowTitleScreenCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
 
-        // TODO Remove this, and have command use a No-Op. This is essentially a 'grouper' for the dropdown ring.
-        private static void OnSetShowTitleScreenCommand(object parameter)
-        {
-            var ltoFlashViewModel = parameter as LtoFlashViewModel;
-            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
-            System.Diagnostics.Debug.WriteLine("SetShowTitleScreenCommand");
-        }
-
         private static bool CanSetShowTitleScreenCommand(object parameter)
         {
             var viewModel = parameter as LtoFlashViewModel;
             var device = (viewModel != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            var toolTipTitle = Resources.Strings.SetShowTitleScreenCommand_Name;
+            var toolTipDescription = Resources.Strings.SetShowTitleScreenCommand_TipDescription;
+            if ((viewModel != null) && (viewModel.ActiveLtoFlashDevice != null) && (device != null) && device.IsValid)
+            {
+                var showTitleScreen = viewModel.ActiveLtoFlashDevice.ShowTitleScreen;
+                toolTipTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.ShowTitleScreen_ToolTipTitleFormat, showTitleScreen.ToDisplayString());
+                switch (showTitleScreen)
+                {
+                    case ShowTitleScreenFlags.Always:
+                        toolTipDescription = Resources.Strings.ShowTitleScreen_Always_ToolTipDescription;
+                        break;
+                    case ShowTitleScreenFlags.OnPowerUp:
+                        toolTipDescription = Resources.Strings.ShowTitleScreen_OnPowerUp_ToolTipDescription;
+                        break;
+                    case ShowTitleScreenFlags.Never:
+                        toolTipDescription = Resources.Strings.ShowTitleScreen_Never_ToolTipDescription;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            SetShowTitleScreenCommand.ToolTipTitle = toolTipTitle;
+            SetShowTitleScreenCommand.ToolTipDescription = toolTipDescription;
             return (device != null) && device.CanExecuteCommand(SetShowTitleScreenCommand);
         }
 

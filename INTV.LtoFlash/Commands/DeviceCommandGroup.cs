@@ -173,29 +173,45 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// The command to set Intellivision II compatibility mode.
         /// </summary>
-        public static readonly VisualDeviceCommand SetIntellivisionIICompatibilityCommand = new VisualDeviceCommand(OnSetIntellivisionIICompatibility, CanSetIntellivisionIICompatibility)
+        public static readonly VisualDeviceCommand SetIntellivisionIICompatibilityCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetIntellivisionIICompatibility)
         {
             UniqueId = UniqueNameBase + ".SetIntellivisionIICompatibilityCommand",
             Name = Resources.Strings.SetIntellivisionIICompatibilityCommand_Name,
             SmallIcon = typeof(INTV.Shared.Commands.CommandGroup).LoadImageResource("ViewModel/Resources/Images/intv_ii_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetIntellivisionIICompatibilityCommand_Name,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             ToolTipDescription = Resources.Strings.SetIntellivisionIICompatibilityCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
 
-        // TODO Remove this, and have command use a No-Op. This is essentially a 'grouper' for the dropdown ring.
-        private static void OnSetIntellivisionIICompatibility(object parameter)
-        {
-            var ltoFlashViewModel = parameter as LtoFlashViewModel;
-            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
-            System.Diagnostics.Debug.WriteLine("SetIntellivisionIICompatibilityCommand");
-        }
-
         private static bool CanSetIntellivisionIICompatibility(object parameter)
         {
             var viewModel = parameter as LtoFlashViewModel;
             var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            var toolTipTitle = Resources.Strings.SetIntellivisionIICompatibilityCommand_Name;
+            var toolTipDescription = Resources.Strings.SetIntellivisionIICompatibilityCommand_TipDescription;
+            if ((viewModel != null) && (viewModel.ActiveLtoFlashDevice != null) && (device != null) && device.IsValid)
+            {
+                var intellivisionIICompatibility = viewModel.ActiveLtoFlashDevice.IntvIICompatibility;
+                toolTipTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.IntellivisionIICompatibilityMode_ToolTipTitleFormat, intellivisionIICompatibility.ToDisplayString());
+                switch (intellivisionIICompatibility)
+                {
+                    case IntellivisionIIStatusFlags.None:
+                        toolTipDescription = Resources.Strings.IntellivisionIICompatibilityMode_Disabled_ToolTipDescription;
+                        break;
+                    case IntellivisionIIStatusFlags.Conservative:
+                        toolTipDescription = Resources.Strings.IntellivisionIICompatibilityMode_Limited_ToolTipDescription;
+                        break;
+                    case IntellivisionIIStatusFlags.Aggressive:
+                        toolTipDescription = Resources.Strings.IntellivisionIICompatibilityMode_Full_ToolTipDescription;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            SetIntellivisionIICompatibilityCommand.ToolTipTitle = toolTipTitle;
+            SetIntellivisionIICompatibilityCommand.ToolTipDescription = toolTipDescription;
             return device.CanExecuteCommand(SetIntellivisionIICompatibilityCommand);
         }
 

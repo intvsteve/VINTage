@@ -1,4 +1,4 @@
-﻿// <copyright file="DeviceViewModel.cs" company="INTV Funhouse">
+// <copyright file="DeviceViewModel.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -51,7 +52,7 @@ namespace INTV.LtoFlash.ViewModel
         public static readonly string ConnectedDevices = ResourceHelpers.CreatePackedResourceString(typeof(DeviceViewModel), "Resources/Images/connected_16x16.png");
         public static readonly string PowerStatusTip = Resources.Strings.ConsolePowerState_Tip;
 
-        public static readonly DeviceViewModel InvalidDevice = new DeviceViewModel(null);
+        private static readonly Lazy<DeviceViewModel> InvalidDeviceInstance = new Lazy<DeviceViewModel>(() => new DeviceViewModel(null));
 
         #region Constructors
 
@@ -90,6 +91,14 @@ namespace INTV.LtoFlash.ViewModel
         #endregion // Constructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets the invalid device ViewModel.
+        /// </summary>
+        public static DeviceViewModel InvalidDevice
+        {
+            get { return InvalidDeviceInstance.Value; }
+        }
 
         private static Dictionary<EcsStatusFlags, string> EcsCompatiblityInfoTable
         {

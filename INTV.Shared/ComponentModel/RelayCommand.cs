@@ -1,5 +1,5 @@
 ﻿// <copyright file="RelayCommand.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -97,7 +97,7 @@ namespace INTV.Shared.ComponentModel
                     blockIfBusy = application.IsBusy;
                 }
             }
-            return !blockIfBusy && OnCanExecute(parameter);
+            return OnCanExecute(parameter) && !blockIfBusy;
         }
 
         /// <inheritdoc/>

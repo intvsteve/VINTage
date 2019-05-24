@@ -77,29 +77,48 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// The command to set ECS compatibility mode.
         /// </summary>
-        public static readonly VisualDeviceCommand SetEcsCompatibilityCommand = new VisualDeviceCommand(OnSetEcsCompatibilityCommand, CanSetEcsCompatibilityCommand)
+        public static readonly VisualDeviceCommand SetEcsCompatibilityCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetEcsCompatibilityCommand)
         {
             UniqueId = UniqueNameBase + ".SetEcsCompatibilityCommand",
             Name = Resources.Strings.SetEcsCompatibilityCommand_Name,
             SmallIcon = typeof(INTV.Shared.Commands.CommandGroup).LoadImageResource("ViewModel/Resources/Images/ecs_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetEcsCompatibilityCommand_Name,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             ToolTipDescription = Resources.Strings.SetEcsCompatibilityCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
 
-        // TODO Remove this, and have command use a No-Op. This is essentially a 'grouper' for the dropdown ring / submenu.
-        private static void OnSetEcsCompatibilityCommand(object parameter)
-        {
-            var ltoFlashViewModel = parameter as LtoFlashViewModel;
-            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
-            System.Diagnostics.Debug.WriteLine("SetEcsCompatibilityCommand");
-        }
-
         private static bool CanSetEcsCompatibilityCommand(object parameter)
         {
             var viewModel = parameter as LtoFlashViewModel;
             var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            var toolTipTitle = Resources.Strings.SetEcsCompatibilityCommand_Name;
+            var toolTipDescription = Resources.Strings.SetEcsCompatibilityCommand_TipDescription;
+            if ((viewModel != null) && (viewModel.ActiveLtoFlashDevice != null) && (device != null) && device.IsValid)
+            {
+                var ecsCompatibility = viewModel.ActiveLtoFlashDevice.EcsCompatibility;
+                toolTipTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.EcsCompatibilityMode_ToolTipTitleFormat, ecsCompatibility.ToDisplayString());
+                switch (ecsCompatibility)
+                {
+                    case EcsStatusFlags.None:
+                        toolTipDescription = Resources.Strings.EcsCompatibilityMode_Enabled_ToolTipDescription;
+                        break;
+                    case EcsStatusFlags.EnabledForRequiredAndOptional:
+                        toolTipDescription = Resources.Strings.EcsCompatibilityMode_Limited_ToolTipDescription;
+                        break;
+                    case EcsStatusFlags.EnabledForRequired:
+                        toolTipDescription = Resources.Strings.EcsCompatibilityMode_Strict_ToolTipDescription;
+                        break;
+                    case EcsStatusFlags.Disabled:
+                        toolTipDescription = Resources.Strings.EcsCompatibilityMode_Disabled_ToolTipDescription;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            SetEcsCompatibilityCommand.ToolTipTitle = toolTipTitle;
+            SetEcsCompatibilityCommand.ToolTipDescription = toolTipDescription;
             return device.CanExecuteCommand(SetEcsCompatibilityCommand);
         }
 

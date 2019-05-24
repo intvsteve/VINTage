@@ -337,7 +337,7 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// The command to set whether to retain last selected menu position.
         /// </summary>
-        public static readonly VisualDeviceCommand SetSaveMenuPositionCommand = new VisualDeviceCommand(OnSetSaveMenuPositionCommand, CanSetSaveMenuPositionCommand)
+        public static readonly VisualDeviceCommand SetSaveMenuPositionCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetSaveMenuPositionCommand)
         {
             UniqueId = UniqueNameBase + ".SetSaveMenuPositionCommand",
             Name = Resources.Strings.SetSaveMenuPositionCommand_Name,
@@ -349,18 +349,34 @@ namespace INTV.LtoFlash.Commands
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
 
-        // TODO Remove this, and have command use a No-Op. This is essentially a 'grouper' for the dropdown ring.
-        private static void OnSetSaveMenuPositionCommand(object parameter)
-        {
-            var ltoFlashViewModel = parameter as LtoFlashViewModel;
-            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
-            System.Diagnostics.Debug.WriteLine("SetSaveMenuPositionCommand");
-        }
-
         private static bool CanSetSaveMenuPositionCommand(object parameter)
         {
             var viewModel = parameter as LtoFlashViewModel;
             var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            var toolTipTitle = Resources.Strings.SetSaveMenuPositionCommand_TipTitle;
+            var toolTipDescription = Resources.Strings.SetSaveMenuPositionCommand_TipDescription;
+            if ((viewModel != null) && (viewModel.ActiveLtoFlashDevice != null) && (device != null) && device.IsValid)
+            {
+                var saveMenuPosition = viewModel.ActiveLtoFlashDevice.SaveMenuPosition;
+                toolTipTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.SaveMenuPosition_ToolTipTitleFormat, saveMenuPosition.ToDisplayString());
+                switch (saveMenuPosition)
+                {
+                    case SaveMenuPositionFlags.Always:
+                        toolTipDescription = Resources.Strings.SaveMenuPosition_Always_ToolTipDescription;
+                        break;
+                    case SaveMenuPositionFlags.DuringSessionOnly:
+                    case SaveMenuPositionFlags.Reserved:
+                        toolTipDescription = Resources.Strings.SaveMenuPosition_SessionOnly_ToolTipDescription;
+                        break;
+                    case SaveMenuPositionFlags.Never:
+                        toolTipDescription = Resources.Strings.SaveMenuPosition_Never_ToolTipDescription;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            SetSaveMenuPositionCommand.ToolTipTitle = toolTipTitle;
+            SetSaveMenuPositionCommand.ToolTipDescription = toolTipDescription;
             return device.CanExecuteCommand(SetSaveMenuPositionCommand);
         }
 

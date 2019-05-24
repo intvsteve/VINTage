@@ -54,6 +54,8 @@ namespace INTV.LtoFlash.ViewModel
 
         private static readonly Lazy<DeviceViewModel> InvalidDeviceInstance = new Lazy<DeviceViewModel>(() => new DeviceViewModel(null));
 
+        private static readonly Lazy<IDictionary<string, VisualDeviceCommand>> ConfigurableFeatureCommandsToRefreshMapInstance = new Lazy<IDictionary<string, VisualDeviceCommand>>(InitializeConfigurableFeatureCommandsMapToRefresh);
+
         #region Constructors
 
         /// <summary>
@@ -98,6 +100,11 @@ namespace INTV.LtoFlash.ViewModel
         public static DeviceViewModel InvalidDevice
         {
             get { return InvalidDeviceInstance.Value; }
+        }
+
+        private static IDictionary<string, VisualDeviceCommand> ConfigurableFeatureCommandsToRefreshMap
+        {
+            get { return ConfigurableFeatureCommandsToRefreshMapInstance.Value; }
         }
 
         private static Dictionary<EcsStatusFlags, string> EcsCompatiblityInfoTable
@@ -483,6 +490,24 @@ namespace INTV.LtoFlash.ViewModel
 
         #endregion // IPeripheral
 
+        private static IDictionary<string, VisualDeviceCommand> InitializeConfigurableFeatureCommandsMapToRefresh()
+        {
+            var configurableFeatureCommandsToRefresh = new Dictionary<string, VisualDeviceCommand>
+            {
+            };
+            return configurableFeatureCommandsToRefresh;
+        }
+
+        private static void RefreshConfigurableFeatureCommand(string configurableFeature)
+        {
+            VisualDeviceCommand commandToRefresh;
+            if (ConfigurableFeatureCommandsToRefreshMap.TryGetValue(configurableFeature, out commandToRefresh))
+            {
+                var parameter = LtoFlashCommandGroup.LtoFlashViewModel;
+                commandToRefresh.CanExecute(parameter);
+            }
+        }
+
         private bool ErrorHandler(DeviceStatusFlags deviceStatusFlags, ProtocolCommandId commandId, string errorMessage, System.Exception exception)
         {
             bool handled = false;
@@ -674,6 +699,7 @@ namespace INTV.LtoFlash.ViewModel
                 var currentValue = configurableFeature.CurrentValue;
                 configurableFeature.SetCurrentValue(newValue);
                 UpdateProperty<T>(configurableFeatureUniqueId, newValue, currentValue, (p, v) => configurableFeature.SetValueOnDevice(Device, v));
+                RefreshConfigurableFeatureCommand(configurableFeatureUniqueId);
             }
         }
 
@@ -968,6 +994,18 @@ namespace INTV.LtoFlash.ViewModel
                 INTV.Shared.View.OSMessageBox.Show(messageStringBuilder.ToString(), Resources.Strings.FileSystem_Inconsistent_Title, corruptFileSystemException, reportText, (r) => { });
             }
             return reportProblems;
+        }
+
+        /// <summary>
+        /// Induce a refresh of configurable commands.
+        /// </summary>
+        internal void RefreshConfigurableFeatureCommands()
+        {
+            var parameter = LtoFlashCommandGroup.LtoFlashViewModel;
+            foreach (var configurableCommandToRefresh in ConfigurableFeatureCommandsToRefreshMap.Values)
+            {
+                configurableCommandToRefresh.CanExecute(parameter);
+            }
         }
 
         private enum DeviceStatusCategory

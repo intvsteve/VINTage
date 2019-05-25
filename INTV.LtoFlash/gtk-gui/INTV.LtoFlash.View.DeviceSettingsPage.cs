@@ -194,6 +194,7 @@ namespace INTV.LtoFlash.View
 			this._ecsCompatibility.Changed += new global::System.EventHandler(this.HandleEcsCompatibilityChanged);
 			this._keyClicks.Toggled += new global::System.EventHandler(this.HandleKeyclicksChanged);
 			this._backgroundGC.Toggled += new global::System.EventHandler(this.HandleBackgroundGCChanged);
+			this._randomizeLtoFlashRam.Toggled += new global::System.EventHandler(this.HandleRandomizeLtoFlashRamChanged);
 		}
 	}
 }

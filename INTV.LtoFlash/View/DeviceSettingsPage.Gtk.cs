@@ -1,4 +1,4 @@
-﻿// <copyright file="DeviceSettingsPage.Gtk.cs" company="INTV Funhouse">
+// <copyright file="DeviceSettingsPage.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -216,7 +216,7 @@ namespace INTV.LtoFlash.View
         /// </summary>
         /// <param name="sender">The Randomize RAM checkbox.</param>
         /// <param name="e">Not applicable.</param>
-        protected void HandleRandomizeLtoFlashRamChanged (object sender, EventArgs e)
+        protected void HandleRandomizeLtoFlashRamChanged(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.Assert (object.ReferenceEquals (sender, _randomizeLtoFlashRam), "Got value change from wrong control! Expected Randomize LTO Flash! RAM.");
             if ((ViewModel != null) && !_updating)

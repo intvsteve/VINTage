@@ -62,11 +62,12 @@ namespace INTV.LtoFlash.View
             InitializeIntellivisionIICompatibilityComboBox();
             InitializeEcsCompatibilityComboBox();
             InitializeSaveMenuPositionComboBox();
-            _keyClicks.Active = false;
+            _keyClicks.Active = (bool)ConfigurableLtoFlashFeatures.Default[Device.KeyclicksPropertyName].FactoryDefaultValue;
             _keyClicks.TooltipText = DeviceCommandGroup.SetKeyclicksCommand.ToolTipDescription;
-            _backgroundGC.Active = true;
+            _backgroundGC.Active = (bool)ConfigurableLtoFlashFeatures.Default[Device.BackgroundGCPropertyName].FactoryDefaultValue;
             _backgroundGC.TooltipText = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.ToolTipDescription;
             _randomizeLtoFlashRam.Active = false;
+            _randomizeLtoFlashRam.Active = !(bool)ConfigurableLtoFlashFeatures.Default[Device.ZeroLtoFlashRamPropertyName].FactoryDefaultValue;
             _randomizeLtoFlashRam.TooltipText = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.ToolTipDescription;
             DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.PropertyChanged += HandleSetRandomizeLtoFlashRamCommandPropertyChanged;
             CommandManager.RequerySuggested += HandleRequerySuggested;

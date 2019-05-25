@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
@@ -1168,6 +1168,23 @@
           </packing>
         </child>
         <child>
+          <widget class="Gtk.CheckButton" id="_enableCartConfigMenu">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Enable configuration menu</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+            <signal name="Toggled" handler="HandleEnableConfigMenuChanged" />
+          </widget>
+          <packing>
+            <property name="Position">3</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
           <widget class="Gtk.CheckButton" id="_randomizeLtoFlashRam">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
@@ -1178,7 +1195,7 @@
             <signal name="Toggled" handler="HandleRandomizeLtoFlashRamChanged" />
           </widget>
           <packing>
-            <property name="Position">3</property>
+            <property name="Position">4</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>

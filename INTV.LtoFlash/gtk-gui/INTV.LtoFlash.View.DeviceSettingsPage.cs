@@ -30,6 +30,8 @@ namespace INTV.LtoFlash.View
 
 		private global::Gtk.CheckButton _backgroundGC;
 
+		private global::Gtk.CheckButton _enableCartConfigMenu;
+
 		private global::Gtk.CheckButton _randomizeLtoFlashRam;
 
 		protected virtual void Build()
@@ -171,6 +173,18 @@ namespace INTV.LtoFlash.View
 			w12.Expand = false;
 			w12.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
+			this._enableCartConfigMenu = new global::Gtk.CheckButton();
+			this._enableCartConfigMenu.CanFocus = true;
+			this._enableCartConfigMenu.Name = "_enableCartConfigMenu";
+			this._enableCartConfigMenu.Label = global::Mono.Unix.Catalog.GetString("Enable configuration menu");
+			this._enableCartConfigMenu.DrawIndicator = true;
+			this._enableCartConfigMenu.UseUnderline = true;
+			this.vbox2.Add(this._enableCartConfigMenu);
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this._enableCartConfigMenu]));
+			w13.Position = 3;
+			w13.Expand = false;
+			w13.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
 			this._randomizeLtoFlashRam = new global::Gtk.CheckButton();
 			this._randomizeLtoFlashRam.CanFocus = true;
 			this._randomizeLtoFlashRam.Name = "_randomizeLtoFlashRam";
@@ -178,10 +192,10 @@ namespace INTV.LtoFlash.View
 			this._randomizeLtoFlashRam.DrawIndicator = true;
 			this._randomizeLtoFlashRam.UseUnderline = true;
 			this.vbox2.Add(this._randomizeLtoFlashRam);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this._randomizeLtoFlashRam]));
-			w13.Position = 3;
-			w13.Expand = false;
-			w13.Fill = false;
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox2[this._randomizeLtoFlashRam]));
+			w14.Position = 4;
+			w14.Expand = false;
+			w14.Fill = false;
 			this.Add(this.vbox2);
 			if ((this.Child != null))
 			{
@@ -194,6 +208,7 @@ namespace INTV.LtoFlash.View
 			this._ecsCompatibility.Changed += new global::System.EventHandler(this.HandleEcsCompatibilityChanged);
 			this._keyClicks.Toggled += new global::System.EventHandler(this.HandleKeyclicksChanged);
 			this._backgroundGC.Toggled += new global::System.EventHandler(this.HandleBackgroundGCChanged);
+			this._enableCartConfigMenu.Toggled += new global::System.EventHandler(this.HandleEnableConfigMenuChanged);
 			this._randomizeLtoFlashRam.Toggled += new global::System.EventHandler(this.HandleRandomizeLtoFlashRamChanged);
 		}
 	}

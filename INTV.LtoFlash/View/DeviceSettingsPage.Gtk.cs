@@ -1,4 +1,4 @@
-// <copyright file="DeviceSettingsPage.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="DeviceSettingsPage.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -52,6 +52,7 @@ namespace INTV.LtoFlash.View
             _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetKeyclicksCommand] = DeviceCommandGroup.SetKeyclicksCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetEnableConfigMenuOnCartCommand] = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetRandomizeLtoFlashRamCommand] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.BlockWhenAppIsBusy;
             foreach (var blockWhenBusy in _blockWhenBusy)
             {
@@ -66,7 +67,9 @@ namespace INTV.LtoFlash.View
             _keyClicks.TooltipText = DeviceCommandGroup.SetKeyclicksCommand.ToolTipDescription;
             _backgroundGC.Active = (bool)ConfigurableLtoFlashFeatures.Default[Device.BackgroundGCPropertyName].FactoryDefaultValue;
             _backgroundGC.TooltipText = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.ToolTipDescription;
-            _randomizeLtoFlashRam.Active = false;
+            _enableCartConfigMenu.Active = (bool)ConfigurableLtoFlashFeatures.Default[Device.EnableConfigMenuOnCartPropertyName].FactoryDefaultValue;
+            _enableCartConfigMenu.TooltipText = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.ToolTipDescription;
+            DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.PropertyChanged += HandleSetEnableConfigMenuOnCartCommandPropertyChanged;
             _randomizeLtoFlashRam.Active = !(bool)ConfigurableLtoFlashFeatures.Default[Device.ZeroLtoFlashRamPropertyName].FactoryDefaultValue;
             _randomizeLtoFlashRam.TooltipText = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.ToolTipDescription;
             DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.PropertyChanged += HandleSetRandomizeLtoFlashRamCommandPropertyChanged;
@@ -120,6 +123,7 @@ namespace INTV.LtoFlash.View
                 _saveMenuPositionSetting.Active = _saveMenuPositionSetting.GetIndexOfValue(ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
                 _keyClicks.Active = ViewModel.ActiveLtoFlashDevice.Keyclicks;
                 _backgroundGC.Active = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
+                _enableCartConfigMenu.Active = ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart;
                 _randomizeLtoFlashRam.Active = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
             }
             finally
@@ -137,6 +141,7 @@ namespace INTV.LtoFlash.View
             }
             CommandManager.RequerySuggested -= HandleRequerySuggested;
             DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.PropertyChanged -= HandleSetRandomizeLtoFlashRamCommandPropertyChanged;
+            DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.PropertyChanged -= HandleSetEnableConfigMenuOnCartCommandPropertyChanged;
             base.OnDestroyed();
         }
 
@@ -229,6 +234,20 @@ namespace INTV.LtoFlash.View
         }
 
         /// <summary>
+        /// Handles the enable config menu changed event.
+        /// </summary>
+        /// <param name="sender">The Enable configuration menu checkbox.</param>
+        /// <param name="e">Not applicable.</param>
+        protected void HandleEnableConfigMenuChanged(object sender, EventArgs e)
+        {
+            System.Diagnostics.Debug.Assert (object.ReferenceEquals (sender, _enableCartConfigMenu), "Got value change from wrong control! Expected Enable configuration menu.");
+            if ((ViewModel != null) && !_updating)
+            {
+                ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart = _enableCartConfigMenu.Active;
+            }
+        }
+
+        /// <summary>
         /// Handles the do background GC setting changed.
         /// </summary>
         /// <param name="sender">The do background GC checkbox.</param>
@@ -239,6 +258,14 @@ namespace INTV.LtoFlash.View
             if ((ViewModel != null) && !_updating)
             {
                 ViewModel.ActiveLtoFlashDevice.BackgroundGC = _backgroundGC.Active;
+            }
+        }
+
+        private void HandleSetEnableConfigMenuOnCartCommandPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ToolTipDescription") {
+                var visualRelayCommand = sender as VisualRelayCommand;
+                _enableCartConfigMenu.TooltipText = visualRelayCommand.ToolTipDescription;
             }
         }
 
@@ -282,6 +309,11 @@ namespace INTV.LtoFlash.View
             if (_backgroundGC.Sensitive != canEdit)
             {
                 _backgroundGC.Sensitive = canEdit;
+            }
+            canEdit = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.CanExecute (ViewModel);
+            if (_enableCartConfigMenu.Sensitive != canEdit)
+            {
+                _enableCartConfigMenu.Sensitive = canEdit;
             }
             canEdit = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.CanExecute(ViewModel);
             if (_randomizeLtoFlashRam.Sensitive != canEdit)

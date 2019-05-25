@@ -52,6 +52,7 @@ namespace INTV.LtoFlash.View
             _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetKeyclicksCommand] = DeviceCommandGroup.SetKeyclicksCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetRandomizeLtoFlashRamCommand] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.BlockWhenAppIsBusy;
             foreach (var blockWhenBusy in _blockWhenBusy)
             {
                 blockWhenBusy.Key.BlockWhenAppIsBusy = false;
@@ -134,6 +135,7 @@ namespace INTV.LtoFlash.View
                 blockWhenBusy.Key.BlockWhenAppIsBusy = blockWhenBusy.Value;
             }
             CommandManager.RequerySuggested -= HandleRequerySuggested;
+            DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.PropertyChanged -= HandleSetRandomizeLtoFlashRamCommandPropertyChanged;
             base.OnDestroyed();
         }
 

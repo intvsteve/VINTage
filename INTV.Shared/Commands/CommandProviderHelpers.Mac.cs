@@ -401,15 +401,28 @@ namespace INTV.Shared.Commands
                 menuItem.Tag = itemTags[i];
                 menuItem.ToolTip = itemToolTips[i];
             }
-            var visualCommand = command as VisualRelayCommand;
-            if (visualCommand != null)
-            {
-#if __UNIFIED__
-                button.Bind((NSString)"toolTip", visualCommand, "ToolTipDescription", null);
-#else
-                button.Bind("toolTip", visualCommand, "ToolTipDescription", null);
-#endif // __UNIFIED__
-            }
+        }
+
+        /// <summary>
+        /// Binds the command visual's tool tip property to tool tip description using a Cocoa binding.
+        /// </summary>
+        /// <param name="visualCommand">The <see cref="VisualRelayCommand"/> whose <see cref="VisualRelayCommand.ToolTipDescription"/> is bound to.</param>
+        /// <param name="commandVisual">The visual associated with <paramref name="visualCommand"/>.</param>
+        /// <remarks>To avoid retention-related leaks, be sure to call <see cref="UnbindCommandVisualFromToolTipDescription(NSView)"/> when the command visual is no longer needed.</remarks>
+        public static void BindCommandVisualToToolTipDescription(this VisualRelayCommand visualCommand, NSView commandVisual)
+        {
+            var toolTip = new NSString("toolTip");
+            commandVisual.Bind(toolTip, visualCommand, "ToolTipDescription", null);
+        }
+
+        /// <summary>
+        /// Unbinds the command visual's tool tip from its source.
+        /// </summary>
+        /// <param name="commandVisual">The command visual whose tool tip property is unbound.</param>
+        public static void UnbindCommandVisualFromToolTipDescription(this NSView commandVisual)
+        {
+            var toolTip = new NSString("toolTip");
+            commandVisual.Unbind(toolTip);
         }
 
         private static string[] BugWorkaround(NSToolbar toolbar)

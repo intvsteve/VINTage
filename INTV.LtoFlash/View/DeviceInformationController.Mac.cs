@@ -631,10 +631,8 @@ namespace INTV.LtoFlash.View
 
             DeviceNameEntry.TextShouldBeginEditing = ShouldBeginEditingDeviceName;
             DeviceNameEntry.TextShouldEndEditing = ShouldEndEditingDeviceName;
-            DeviceNameEntry.ToolTip = DeviceCommandGroup.SetDeviceNameCommand.ToolTipDescription;
             DeviceOwnerEntry.TextShouldBeginEditing = ShouldBeginEditingDeviceOwner;
             DeviceOwnerEntry.TextShouldEndEditing = ShouldEndEditingDeviceOwner;
-            DeviceOwnerEntry.ToolTip = DeviceCommandGroup.SetDeviceOwnerCommand.ToolTipDescription;
 
             DeviceCommandGroup.PopulateEcsCompatibilityMenu(ECSCompatibilityButton);
             DeviceCommandGroup.PopulateIntellivisionIICompatibilityMenu(IntellivisionIICompatibilityButton);

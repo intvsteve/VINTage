@@ -385,9 +385,8 @@ namespace INTV.LtoFlash.View
         public bool BackgroundGC
         {
             get { return ViewModel.ActiveLtoFlashDevice.BackgroundGC; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, Device.BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => ViewModel.ActiveLtoFlashDevice.BackgroundGC = v); }
+            set { ViewModel.ActiveLtoFlashDevice.BackgroundGC = value; }
         }
-        private bool _backgroundGC;
 
         /// <summary>
         /// Gets or sets a value indicating whether the keyclick sound is enabled in the menu.
@@ -396,17 +395,15 @@ namespace INTV.LtoFlash.View
         public bool Keyclicks
         {
             get { return ViewModel.ActiveLtoFlashDevice.Keyclicks; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, Device.KeyclicksPropertyName, value, ref _keyclicks, (p, v) => ViewModel.ActiveLtoFlashDevice.Keyclicks = v); }
+            set { ViewModel.ActiveLtoFlashDevice.Keyclicks = value; }
         }
-        private bool _keyclicks;
 
         [INTV.Shared.Utility.OSExport(Device.EnableConfigMenuOnCartPropertyName)]
         public bool EnableConfigMenuOnCart
         {
             get { return ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, Device.EnableConfigMenuOnCartPropertyName, value, ref _enableConfigMenu, (p, v) => ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart = v); }
+            set { ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart = value; }
         }
-        private bool _enableConfigMenu;
 
         /// <summary>
         /// Gets or sets a value indicating whether to randomize RAM when launching a program from Locutus.
@@ -415,9 +412,8 @@ namespace INTV.LtoFlash.View
         public bool RandomizeLtoFlashRam
         {
             get { return ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, DeviceViewModel.RandomizeLtoFlashRamPropertyName, value, ref _randomizeLtoFlashRam, (p, v) => ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam = v); }
+            set { ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam = value; }
         }
-        private bool _randomizeLtoFlashRam;
 
         /// <summary>
         /// Gets or sets the selected controller button to hold for reset to menu.
@@ -533,11 +529,6 @@ namespace INTV.LtoFlash.View
             {
                 _selectedPageIndex = value;
                 _lastSelectedPageIndex = value;
-                foreach (var blockWhenBusy in _blockWhenBusy)
-                {
-                    blockWhenBusy.Key.BlockWhenAppIsBusy = ((_selectedPageIndex == 0) || (_selectedPageIndex == 1) || (_selectedPageIndex == 2)) ? false : blockWhenBusy.Value;
-                }
-                HandleRequerySuggested(this, System.EventArgs.Empty);
             }
         }
         private int _selectedPageIndex;
@@ -545,7 +536,7 @@ namespace INTV.LtoFlash.View
 
         private TextCellInPlaceEditor InPlaceEditor { get; set; }
 
-        private Dictionary<RelayCommand, bool> _blockWhenBusy = new Dictionary<RelayCommand, bool>();
+        private Dictionary<VisualRelayCommand, bool> _blockWhenBusy = new Dictionary<VisualRelayCommand, bool>();
 
         private DeviceViewModel _device;
 
@@ -653,10 +644,6 @@ namespace INTV.LtoFlash.View
             IntellivisionIICompatibilitySelection = (int)IntellivisionIICompatibilityButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.IntvIICompatibility);
             TitleScreenSelection = (int)ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.ShowTitleScreen);
             SaveMenuPositionSelection = (int)ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
-            BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
-            Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
-            EnableConfigMenuOnCart = ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart;
-            RandomizeLtoFlashRam = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
 
             InitializeCommandVisualsToCommandsMap();
 
@@ -681,6 +668,14 @@ namespace INTV.LtoFlash.View
                 _device.PropertyChanged -= HandleDevicePropertyChanged;
             }
             CommandManager.RequerySuggested -= HandleRequerySuggested;
+
+            // Restore the block when busy settings.
+            foreach (var blockWhenBusyEntry in _blockWhenBusy)
+            {
+                var command = blockWhenBusyEntry.Key;
+                var blockWhenBusy = blockWhenBusyEntry.Value;
+                command.BlockWhenAppIsBusy = blockWhenBusy;
+            }
 
             // Unbind the Cocoa binding for the ToolTip text we added in AwakeFromNib.
             foreach (var controlCommandMapEntry in _controlCommandMap.Reverse())
@@ -778,6 +773,11 @@ namespace INTV.LtoFlash.View
                 {
                     controlCommand.BindCommandVisualToToolTipDescription(commandVisual);
                 }
+            }
+
+            foreach (var command in _blockWhenBusy.Keys)
+            {
+                command.BlockWhenAppIsBusy = false;
             }
         }
 
@@ -919,7 +919,8 @@ namespace INTV.LtoFlash.View
                 var commandVisual = controlCommand.Key;
                 if (!AdditionalToolTipsMap.Value.ContainsKey((DeviceInfoFieldToolTipTag)commandVisual.Tag))
                 {
-                    commandVisual.Enabled = controlCommand.Value.CanExecute(ViewModel);
+                    var enable = controlCommand.Value.CanExecute(ViewModel);
+                    commandVisual.Enabled = enable;
                 }
             }
         }
@@ -975,16 +976,10 @@ namespace INTV.LtoFlash.View
                     SaveMenuPositionButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
                     break;
                 case Device.BackgroundGCPropertyName:
-                    BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
-                    break;
                 case Device.KeyclicksPropertyName:
-                    Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
-                    break;
                 case Device.EnableConfigMenuOnCartPropertyName:
-                    EnableConfigMenuOnCart = ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart;
-                    break;
                 case DeviceViewModel.RandomizeLtoFlashRamPropertyName:
-                    RandomizeLtoFlashRam = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
+                    this.RaiseChangeValueForKey(e.PropertyName);
                     break;
                 default:
                     break;

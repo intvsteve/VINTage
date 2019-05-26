@@ -28,6 +28,7 @@ using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.Behavior;
+using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
@@ -429,6 +430,14 @@ namespace INTV.LtoFlash.View
         }
         private bool _keyclicks;
 
+        [INTV.Shared.Utility.OSExport(Device.EnableConfigMenuOnCartPropertyName)]
+        public bool EnableConfigMenuOnCart
+        {
+            get { return ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart; }
+            set { this.AssignAndUpdateProperty(PropertyChanged, Device.EnableConfigMenuOnCartPropertyName, value, ref _enableConfigMenu, (p, v) => ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart = v); }
+        }
+        private bool _enableConfigMenu;
+
         /// <summary>
         /// Gets or sets a value indicating whether to randomize RAM when launching a program from Locutus.
         /// </summary>
@@ -677,6 +686,7 @@ namespace INTV.LtoFlash.View
             SaveMenuPositionSelection = (int)ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
             BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
             Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
+            EnableConfigMenuOnCart = ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart;
             RandomizeLtoFlashRam = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
 
             _blockWhenBusy[DeviceCommandGroup.SetDeviceNameCommand] = DeviceCommandGroup.SetDeviceNameCommand.BlockWhenAppIsBusy;
@@ -685,6 +695,7 @@ namespace INTV.LtoFlash.View
             _blockWhenBusy[DeviceCommandGroup.SetEcsCompatibilityCommand] = DeviceCommandGroup.SetEcsCompatibilityCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetIntellivisionIICompatibilityCommand] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetKeyclicksCommand] = DeviceCommandGroup.SetKeyclicksCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetEnableConfigMenuOnCartCommand] = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetRandomizeLtoFlashRamCommand] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
@@ -696,18 +707,17 @@ namespace INTV.LtoFlash.View
             _controlCommandMap[SaveMenuPositionButton] = DeviceCommandGroup.SetSaveMenuPositionCommand;
             _controlCommandMap[KeyclicksCheckBox] = DeviceCommandGroup.SetKeyclicksCommand;
             _controlCommandMap[BackgroundGCCheckBox] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand;
+            _controlCommandMap[EnableConfigMenuOnCartCheckBox] = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand;
             _controlCommandMap[RandomizeLtoFlashRamCheckBox] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand;
             _controlCommandMap[UpdateFirmwareButton] = FirmwareCommandGroup.UpdateFirmwareCommand;
 
-            foreach (var controlCommand in _controlCommandMap)
+            foreach (var controlCommandMapEntry in _controlCommandMap)
             {
-                controlCommand.Key.ToolTip = controlCommand.Value.ToolTipDescription;
+                var commandVisual = controlCommandMapEntry.Key;
+                var controlCommand = controlCommandMapEntry.Value;
+                controlCommand.BindCommandVisualToToolTipDescription(commandVisual);
             }
-#if __UNIFIED__
-            RandomizeLtoFlashRamCheckBox.Bind((NSString)"toolTip", DeviceCommandGroup.SetRandomizeLtoFlashRamCommand, "ToolTipDescription", null);
-#else
-            RandomizeLtoFlashRamCheckBox.Bind("toolTip", DeviceCommandGroup.SetRandomizeLtoFlashRamCommand, "ToolTipDescription", null);
-#endif // __UNIFIED__
+
             var druidControl = Window.ContentView.FindChild<NSTextField>(t => t.Tag == 3);
             druidControl.ToolTip = DeviceCommandGroup.DeviceUniqueIdCommand.ToolTipDescription;
 
@@ -732,6 +742,14 @@ namespace INTV.LtoFlash.View
                 _device.PropertyChanged -= HandleDevicePropertyChanged;
             }
             CommandManager.RequerySuggested -= HandleRequerySuggested;
+
+            // Unbind the Cocoa binding for the ToolTip text we added in AwakeFromNib.
+            foreach (var controlCommandMapEntry in _controlCommandMap.Reverse())
+            {
+                var commandVisual = controlCommandMapEntry.Key;
+                commandVisual.UnbindCommandVisualFromToolTipDescription();
+            }
+
             ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
 
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
@@ -934,6 +952,9 @@ namespace INTV.LtoFlash.View
                     break;
                 case Device.KeyclicksPropertyName:
                     Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
+                    break;
+                case Device.EnableConfigMenuOnCartPropertyName:
+                    EnableConfigMenuOnCart = ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart;
                     break;
                 case DeviceViewModel.RandomizeLtoFlashRamPropertyName:
                     RandomizeLtoFlashRam = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;

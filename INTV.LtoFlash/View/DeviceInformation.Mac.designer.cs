@@ -44,16 +44,16 @@ namespace INTV.LtoFlash.View
 		NSPopUpButton ECSCompatibilityButton { get; set; }
 
 		[Outlet]
+		NSButton EnableConfigMenuOnCartCheckBox { get; set; }
+
+		[Outlet]
 		NSPopUpButton IntellivisionIICompatibilityButton { get; set; }
 
 		[Outlet]
 		NSButton KeyclicksCheckBox { get; set; }
 
 		[Outlet]
-        NSButton RandomizeLtoFlashRamCheckBox { get; set; }
-
-		[Outlet]
-		NSButton RememberMenuPositionCheckBox { get; set; }
+		NSButton RandomizeLtoFlashRamCheckBox { get; set; }
 
 		[Outlet]
 		NSPopUpButton SaveMenuPositionButton { get; set; }
@@ -112,6 +112,11 @@ namespace INTV.LtoFlash.View
 				ECSCompatibilityButton = null;
 			}
 
+			if (EnableConfigMenuOnCartCheckBox != null) {
+				EnableConfigMenuOnCartCheckBox.Dispose ();
+				EnableConfigMenuOnCartCheckBox = null;
+			}
+
 			if (IntellivisionIICompatibilityButton != null) {
 				IntellivisionIICompatibilityButton.Dispose ();
 				IntellivisionIICompatibilityButton = null;
@@ -122,14 +127,9 @@ namespace INTV.LtoFlash.View
 				KeyclicksCheckBox = null;
 			}
 
-            if (RandomizeLtoFlashRamCheckBox != null) {
-                RandomizeLtoFlashRamCheckBox.Dispose ();
-                RandomizeLtoFlashRamCheckBox = null;
-			}
-
-			if (RememberMenuPositionCheckBox != null) {
-				RememberMenuPositionCheckBox.Dispose ();
-				RememberMenuPositionCheckBox = null;
+			if (RandomizeLtoFlashRamCheckBox != null) {
+				RandomizeLtoFlashRamCheckBox.Dispose ();
+				RandomizeLtoFlashRamCheckBox = null;
 			}
 
 			if (SaveMenuPositionButton != null) {

@@ -65,7 +65,7 @@ namespace INTV.Shared.View
         /// <param name="visual">The visual whose parent of a specific type is desired.</param>
         /// <param name="filter">A filter to be applied to determine if a parent of the requested type shall be accepted. If <c>null</c>, the first parent of the requested type matches.</param>
         /// <returns>The first ancestor in the visual tree of the requested type that also satisfies the condition of the filter.</returns>
-        public static T GetParent<T>(this NativeVisual visual, Func<T, bool> filter) where T : NativeVisual
+        public static T GetParent<T>(this NativeVisual visual, Predicate<T> filter) where T : NativeVisual
         {
             T parentOfType = null;
             var current = visual;
@@ -84,22 +84,22 @@ namespace INTV.Shared.View
         /// <summary>
         /// Finds a child visual of the given type.
         /// </summary>
-        /// <typeparam name="T">The data type of the parent visual to locate.</typeparam>
+        /// <typeparam name="T">The data type of the child visual to locate.</typeparam>
         /// <param name="visual">The visual whose child of a specific type is desired.</param>
         /// <returns>The first child in the visual tree of the requested type.</returns>
         public static T FindChild<T>(this NativeVisual visual) where T : NativeVisual
         {
-            return FindChild<T>(visual, null);
+            return FindChild<T>(visual, filter: null);
         }
 
         /// <summary>
         /// Finds a child visual of the given type, applying a filter.
         /// </summary>
-        /// <typeparam name="T">The data type of the parent visual to locate.</typeparam>
+        /// <typeparam name="T">The data type of the child visual to locate.</typeparam>
         /// <param name="visual">The visual whose child of a specific type is desired.</param>
         /// <param name="filter">A filter to be applied to determine if a child of the requested type shall be accepted. If <c>null</c>, the first child of the requested type matches.</param>
         /// <returns>The first child in the visual tree of the requested type that also satisfies the condition of the filter.</returns>
-        public static T FindChild<T>(this NativeVisual visual, Func<T, bool> filter) where T : NativeVisual
+        public static T FindChild<T>(this NativeVisual visual, Predicate<T> filter) where T : NativeVisual
         {
             var child = default(T);
             var numChildren = visual.GetChildVisualCount();
@@ -119,6 +119,44 @@ namespace INTV.Shared.View
                 }
             }
             return child;
+        }
+
+        /// <summary>
+        /// Finds the child visuals of the given type.
+        /// </summary>
+        /// <typeparam name="T">The data type of the child visuals to locate.</typeparam>
+        /// <param name="visual">The visual whose children of a specific type is desired.</param>
+        /// <returns>The child visuals that match the desired type.</returns>
+        public static IEnumerable<T> FindChildren<T>(this NativeVisual visual) where T : NativeVisual
+        {
+            return visual.FindChildren<T>(filter: null);
+        }
+
+        /// <summary>
+        /// Finds the child visuals of the given type based on the supplied filter functon.
+        /// </summary>
+        /// <typeparam name="T">The data type of the child visuals to locate.</typeparam>
+        /// <param name="visual">The visual whose children of a specific type is desired.</param>
+        /// <param name="filter">A filter to be applied to determine if a child of the requested type shall be accepted. If <c>null</c>, all children of the requested type match.</param>
+        /// <returns>The child visuals that satisfy the given <paramref name="filter"/>.</returns>
+        public static IEnumerable<T> FindChildren<T>(this NativeVisual visual, Predicate<T> filter) where T : NativeVisual
+        {
+            var children = new List<T>();
+            var numChildren = visual.GetChildVisualCount();
+            for (int i = 0; i < numChildren; ++i)
+            {
+                var child = visual.GetChildAtIndex<NativeVisual>(i);
+                var typedChild = child as T;
+                if ((typedChild != null) && ((filter == null) || filter(typedChild)))
+                {
+                    children.Add(typedChild);
+                }
+                if (child != null)
+                {
+                    children.AddRange(child.FindChildren<T>(filter));
+                }
+            }
+            return children;
         }
 
         /// <summary>

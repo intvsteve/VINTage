@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceSettingsPage.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.Model;
@@ -39,6 +40,8 @@ namespace INTV.LtoFlash.View
     public partial class DeviceSettingsPage : Gtk.Bin, IFakeDependencyObject
     {
         private Dictionary<RelayCommand, bool> _blockWhenBusy = new Dictionary<RelayCommand, bool>();
+        private Dictionary<Gtk.Widget, VisualRelayCommand> _controlCommandMap = new Dictionary<Gtk.Widget, VisualRelayCommand>();
+
         private bool _updating;
 
         /// <summary>
@@ -46,33 +49,17 @@ namespace INTV.LtoFlash.View
         /// </summary>
         public DeviceSettingsPage()
         {
-            _blockWhenBusy[DeviceCommandGroup.SetShowTitleScreenCommand] = DeviceCommandGroup.SetShowTitleScreenCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetIntellivisionIICompatibilityCommand] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetEcsCompatibilityCommand] = DeviceCommandGroup.SetEcsCompatibilityCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetKeyclicksCommand] = DeviceCommandGroup.SetKeyclicksCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetEnableConfigMenuOnCartCommand] = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetRandomizeLtoFlashRamCommand] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.BlockWhenAppIsBusy;
-            foreach (var blockWhenBusy in _blockWhenBusy)
-            {
-                blockWhenBusy.Key.BlockWhenAppIsBusy = false;
-            }
             this.Build();
+
             InitializeShowTitleScreenComboBox();
             InitializeIntellivisionIICompatibilityComboBox();
             InitializeEcsCompatibilityComboBox();
             InitializeSaveMenuPositionComboBox();
             _keyClicks.Active = (bool)ConfigurableLtoFlashFeatures.Default[Device.KeyclicksPropertyName].FactoryDefaultValue;
-            _keyClicks.TooltipText = DeviceCommandGroup.SetKeyclicksCommand.ToolTipDescription;
             _backgroundGC.Active = (bool)ConfigurableLtoFlashFeatures.Default[Device.BackgroundGCPropertyName].FactoryDefaultValue;
-            _backgroundGC.TooltipText = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.ToolTipDescription;
             _enableCartConfigMenu.Active = (bool)ConfigurableLtoFlashFeatures.Default[Device.EnableConfigMenuOnCartPropertyName].FactoryDefaultValue;
-            _enableCartConfigMenu.TooltipText = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.ToolTipDescription;
-            DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.PropertyChanged += HandleSetEnableConfigMenuOnCartCommandPropertyChanged;
             _randomizeLtoFlashRam.Active = !(bool)ConfigurableLtoFlashFeatures.Default[Device.ZeroLtoFlashRamPropertyName].FactoryDefaultValue;
-            _randomizeLtoFlashRam.TooltipText = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.ToolTipDescription;
-            DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.PropertyChanged += HandleSetRandomizeLtoFlashRamCommandPropertyChanged;
+            InitializeCommandVisualsToCommandsMap();
             CommandManager.RequerySuggested += HandleRequerySuggested;
         }
 
@@ -135,13 +122,15 @@ namespace INTV.LtoFlash.View
         /// <inheritdoc/>
         protected override void OnDestroyed()
         {
+            CommandManager.RequerySuggested -= HandleRequerySuggested;
+            foreach (var command in _controlCommandMap.Values.Reverse())
+            {
+                command.PropertyChanged -= HandleVisualRelayCommandPropertyChanged;
+            }
             foreach (var blockWhenBusy in _blockWhenBusy)
             {
                 blockWhenBusy.Key.BlockWhenAppIsBusy = blockWhenBusy.Value;
             }
-            CommandManager.RequerySuggested -= HandleRequerySuggested;
-            DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.PropertyChanged -= HandleSetRandomizeLtoFlashRamCommandPropertyChanged;
-            DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.PropertyChanged -= HandleSetEnableConfigMenuOnCartCommandPropertyChanged;
             base.OnDestroyed();
         }
 
@@ -261,91 +250,88 @@ namespace INTV.LtoFlash.View
             }
         }
 
-        private void HandleSetEnableConfigMenuOnCartCommandPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+
+        private void InitializeCommandVisualsToCommandsMap ()
         {
-            if (e.PropertyName == "ToolTipDescription") {
-                var visualRelayCommand = sender as VisualRelayCommand;
-                _enableCartConfigMenu.TooltipText = visualRelayCommand.ToolTipDescription;
+            _blockWhenBusy[DeviceCommandGroup.SetDeviceNameCommand] = DeviceCommandGroup.SetDeviceNameCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetDeviceOwnerCommand] = DeviceCommandGroup.SetDeviceOwnerCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetShowTitleScreenCommand] = DeviceCommandGroup.SetShowTitleScreenCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetEcsCompatibilityCommand] = DeviceCommandGroup.SetEcsCompatibilityCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetIntellivisionIICompatibilityCommand] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetKeyclicksCommand] = DeviceCommandGroup.SetKeyclicksCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetEnableConfigMenuOnCartCommand] = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetRandomizeLtoFlashRamCommand] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
+
+            foreach (var command in _blockWhenBusy.Keys) {
+                command.BlockWhenAppIsBusy = false;
+            }
+
+            _controlCommandMap[_ecsCompatibility] = DeviceCommandGroup.SetEcsCompatibilityCommand;
+            _controlCommandMap[_intellivisionIICompatibility] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand;
+            _controlCommandMap[_titleScreenSetting] = DeviceCommandGroup.SetShowTitleScreenCommand;
+            _controlCommandMap[_saveMenuPositionSetting] = DeviceCommandGroup.SetSaveMenuPositionCommand;
+            _controlCommandMap[_keyClicks] = DeviceCommandGroup.SetKeyclicksCommand;
+            _controlCommandMap[_backgroundGC] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand;
+            _controlCommandMap[_enableCartConfigMenu] = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand;
+            _controlCommandMap[_randomizeLtoFlashRam] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand;
+
+            _ecsCompatibilityLabel.TooltipText = Resources.Strings.SetEcsCompatibilityCommand_TipDescription;
+            _intellivisionIICompatibilityLabel.TooltipText = Resources.Strings.SetIntellivisionIICompatibilityCommand_TipDescription;
+            _titleScreenSettingLabel.TooltipText = Resources.Strings.SetShowTitleScreenCommand_TipDescription;
+            _saveMenuPositionSettingLabel.TooltipText = Resources.Strings.SetSaveMenuPositionCommand_TipDescription;
+
+            foreach (var controlCommandMapEntry in _controlCommandMap) {
+                var commandVisual = controlCommandMapEntry.Key;
+                var controlCommand = controlCommandMapEntry.Value;
+                commandVisual.TooltipText = controlCommand.ToolTipDescription;
+                controlCommand.PropertyChanged += HandleVisualRelayCommandPropertyChanged;
             }
         }
 
-        private void HandleSetRandomizeLtoFlashRamCommandPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void HandleVisualRelayCommandPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ToolTipDescription")
+            var command = sender as VisualRelayCommand;
+            if ((sender != null) && (e.PropertyName == "ToolTipDescription"))
             {
-                var visualRelayCommand = sender as VisualRelayCommand;
-                _randomizeLtoFlashRam.TooltipText = visualRelayCommand.ToolTipDescription;
+                foreach (var entry in _controlCommandMap.Where(c => c.Value.UniqueId == command.UniqueId))
+                {
+                    entry.Key.TooltipText = command.ToolTipDescription;
+                }
             }
         }
 
         private void HandleRequerySuggested(object sender, System.EventArgs args)
         {
-            var canEdit = DeviceCommandGroup.SetShowTitleScreenCommand.CanExecute(ViewModel);
-            if (_titleScreenSetting.Sensitive != canEdit)
+            foreach (var controlCommandMapEntry in _controlCommandMap)
             {
-                _titleScreenSetting.Sensitive = canEdit;
-            }
-            canEdit = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.CanExecute(ViewModel);
-            if (_intellivisionIICompatibility.Sensitive != canEdit)
-            {
-                _intellivisionIICompatibility.Sensitive = canEdit;
-            }
-            canEdit = DeviceCommandGroup.SetEcsCompatibilityCommand.CanExecute(ViewModel);
-            if (_ecsCompatibility.Sensitive != canEdit)
-            {
-                _ecsCompatibility.Sensitive = canEdit;
-            }
-            canEdit = DeviceCommandGroup.SetSaveMenuPositionCommand.CanExecute(ViewModel);
-            if (_saveMenuPositionSetting.Sensitive != canEdit)
-            {
-                _saveMenuPositionSetting.Sensitive = canEdit;
-            }
-            canEdit = DeviceCommandGroup.SetKeyclicksCommand.CanExecute(ViewModel);
-            if (_keyClicks.Sensitive != canEdit)
-            {
-                _keyClicks.Sensitive = canEdit;
-            }
-            canEdit = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.CanExecute(ViewModel);
-            if (_backgroundGC.Sensitive != canEdit)
-            {
-                _backgroundGC.Sensitive = canEdit;
-            }
-            canEdit = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.CanExecute (ViewModel);
-            if (_enableCartConfigMenu.Sensitive != canEdit)
-            {
-                _enableCartConfigMenu.Sensitive = canEdit;
-            }
-            canEdit = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.CanExecute(ViewModel);
-            if (_randomizeLtoFlashRam.Sensitive != canEdit)
-            {
-                _randomizeLtoFlashRam.Sensitive = canEdit;
+                var commandVisual = controlCommandMapEntry.Key;
+                var command = controlCommandMapEntry.Value;
+                commandVisual.Sensitive = command.CanExecute(ViewModel);
             }
         }
 
         private void InitializeShowTitleScreenComboBox()
         {
-            _titleScreenSetting.TooltipText = DeviceCommandGroup.SetShowTitleScreenCommand.ToolTipDescription;
             var options = new[] { ShowTitleScreenFlags.Always, ShowTitleScreenFlags.OnPowerUp, ShowTitleScreenFlags.Never };
             InitializeComboBox(_titleScreenSetting, options, ShowTitleScreenFlags.Default, ShowTitleScreenFlagsHelpers.ToDisplayString);
         }
 
         private void InitializeIntellivisionIICompatibilityComboBox()
         {
-            _intellivisionIICompatibility.TooltipText = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.ToolTipDescription;
             var options = new[] { IntellivisionIIStatusFlags.None, IntellivisionIIStatusFlags.Conservative, IntellivisionIIStatusFlags.Aggressive };
             InitializeComboBox(_intellivisionIICompatibility, options, IntellivisionIIStatusFlags.Default, IntellivisionIIStatusFlagsHelpers.ToDisplayString);
         }
 
         private void InitializeEcsCompatibilityComboBox()
         {
-            _ecsCompatibility.TooltipText = DeviceCommandGroup.SetEcsCompatibilityCommand.ToolTipDescription;
             var options = new[] { EcsStatusFlags.None, EcsStatusFlags.EnabledForRequiredAndOptional, EcsStatusFlags.EnabledForRequired, EcsStatusFlags.Disabled };
             InitializeComboBox(_ecsCompatibility, options, EcsStatusFlags.Default, EcsStatusFlagsHelpers.ToDisplayString);
         }
 
         private void InitializeSaveMenuPositionComboBox()
         {
-            _saveMenuPositionSetting.TooltipText = DeviceCommandGroup.SetSaveMenuPositionCommand.ToolTipDescription;
             var options = new[] { SaveMenuPositionFlags.Always, SaveMenuPositionFlags.DuringSessionOnly, SaveMenuPositionFlags.Never };
             InitializeComboBox(_saveMenuPositionSetting, options, SaveMenuPositionFlags.Default, SaveMenuPositionFlagsHelpers.ToDisplayString);
         }

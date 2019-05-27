@@ -1,5 +1,5 @@
 ﻿// <copyright file="IntellicartModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -166,6 +166,12 @@ namespace INTV.Intellicart.Model
         {
             get { return Enumerable.Empty<IConnection>(); }
             protected set { }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<IConfigurableFeature> ConfigurableFeatures
+        {
+            get { yield break; }
         }
 
         #endregion // IPeripheral

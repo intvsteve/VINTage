@@ -5673,6 +5673,34 @@ namespace INTV.LtoFlash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable configuration menu.
+        /// </summary>
+        internal static string SetEnableConfigMenuOnCartCommand_Name {
+            get {
+                return ResourceManager.GetString("SetEnableConfigMenuOnCartCommand_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled, the &apos;Config&apos; menu option on the LTO Flash! cartridge is available when at the menu screen on the Intellivision console.
+        ///When disabled, the &apos;Config&apos; menu is not accessible from the menu on the console. (Factory Default: ON).
+        /// </summary>
+        internal static string SetEnableConfigMenuOnCartCommand_TipDescription {
+            get {
+                return ResourceManager.GetString("SetEnableConfigMenuOnCartCommand_TipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Configuration Menu on Cartridge.
+        /// </summary>
+        internal static string SetEnableConfigMenuOnCartCommand_TipTitle {
+            get {
+                return ResourceManager.GetString("SetEnableConfigMenuOnCartCommand_TipTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when updating the file system status. The error was:
         ///
         ///{0}.

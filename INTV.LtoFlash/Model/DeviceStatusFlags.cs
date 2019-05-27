@@ -29,6 +29,8 @@ namespace INTV.LtoFlash.Model
     /// </summary>
     public struct DeviceStatusFlags
     {
+        #region Constructors
+
         /// <summary>
         /// Initialize a new instance with only <see cref="Lo"/> flags set.
         /// </summary>
@@ -55,27 +57,120 @@ namespace INTV.LtoFlash.Model
         public DeviceStatusFlags(DeviceStatusFlagsLo lo, DeviceStatusFlagsHi hi)
             : this()
         {
-            Lo = lo;
-            Hi = hi;
+            _lo = lo;
+            _hi = hi;
         }
 
+        #endregion // Constructors
+
+        #region Defined flag values
+
+        /// <summary>Empty status flags.</summary>
+        public static readonly DeviceStatusFlags None = new DeviceStatusFlags();
+
+        /// <summary>Hardware status flag for console power on.</summary>
+        public static readonly DeviceStatusFlags ConsolePowerOn = new DeviceStatusFlags(HardwareStatusFlags.ConsolePowerOn.ToDeviceStatusFlagsLo());
+
+        /// <summary>Hardware status flag for new error log available.</summary>
+        public static readonly DeviceStatusFlags NewErrorLogAvailable = new DeviceStatusFlags(HardwareStatusFlags.NewErrorLogAvailable.ToDeviceStatusFlagsLo());
+
+        /// <summary>Hardware status flag for new crash log available.</summary>
+        public static readonly DeviceStatusFlags NewCrashLogAvailable = new DeviceStatusFlags(HardwareStatusFlags.NewCrashLogAvailable.ToDeviceStatusFlagsLo());
+
+        /// <summary>Hardware status flag indicating file system updates are allowed while console power is on.</summary>
+        public static readonly DeviceStatusFlags GrabbedForMenuUpdate = new DeviceStatusFlags(HardwareStatusFlags.GrabbedForMenuUpdate.ToDeviceStatusFlagsLo());
+
+        /// <summary>Mask for all hardware status flags.</summary>
+        public static readonly DeviceStatusFlags HardwareStatusFlagsMask = new DeviceStatusFlags(DeviceStatusFlagsLo.HardwareStatusFlagsMask);
+
+        /// <summary>Mask for reserved hardware status flags.</summary>
+        public static readonly DeviceStatusFlags HardwareStatusFlagsReservedMask = new DeviceStatusFlags(DeviceStatusFlagsLo.HardwareStatusFlagsReservedMask);
+
+        /// <summary>Intellivision II compatibility flag indicating that Locutus should attempt to patch only ROMs known to have compatibility problems with the Intellivision II.</summary>
+        public static readonly DeviceStatusFlags IntellivisionIIStatusConservative = new DeviceStatusFlags(DeviceStatusFlagsLo.IntellivisionIIStatusConservative);
+
+        /// <summary>Intellivision II compatibility flag indicating that Locutus will always attempt to bypass the Intellivision II lockout check.</summary>
+        public static readonly DeviceStatusFlags IntellivisionIIStatusAggressive = new DeviceStatusFlags(DeviceStatusFlagsLo.IntellivisionIIStatusAggressive);
+
+        /// <summary>Intellivision II flags mask.</summary>
+        public static readonly DeviceStatusFlags IntellivisionIIStatusMask = new DeviceStatusFlags(DeviceStatusFlagsLo.IntellivisionIIStatusMask);
+
+        /// <summary>Intellivision II reserved flags mask.</summary>
+        public static readonly DeviceStatusFlags IntellivisionIIStatusReservedMask = new DeviceStatusFlags(DeviceStatusFlagsLo.IntellivisionIIStatusReservedMask);
+
+        /// <summary>ECS compatibility flag indicating that Locutus will enable the ECS ROMs only for program ROMs that indicate the ECS is required or optional (enhances behavior of program).</summary>
+        public static readonly DeviceStatusFlags EcsStatusEnabledForRequiredAndOptional = new DeviceStatusFlags(DeviceStatusFlagsLo.EcsStatusEnabledForRequiredAndOptional);
+
+        /// <summary>ECS compatibility flag indicating that Locutus will enable the ECS ROMs only for program ROMs that indicate the ECS is required.</summary>
+        public static readonly DeviceStatusFlags EcsStatusEnabledForRequired = new DeviceStatusFlags(DeviceStatusFlagsLo.EcsStatusEnabledForRequired);
+
+        /// <summary>ECS compatibility flag indicating that Locutus will always disable the ECS ROMs.</summary>
+        public static readonly DeviceStatusFlags EcsStatusDisabled = new DeviceStatusFlags(DeviceStatusFlagsLo.EcsStatusDisabled);
+
+        /// <summary>ECS flags mask.</summary>
+        public static readonly DeviceStatusFlags EcsStatusMask = new DeviceStatusFlags(DeviceStatusFlagsLo.EcsStatusMask);
+
+        /// <summary>ECS reserved flags mask.</summary>
+        public static readonly DeviceStatusFlags EcsStatusReservedMask = new DeviceStatusFlags(DeviceStatusFlagsLo.EcsStatusReservedMask);
+
+        /// <summary>Title screen flag indicating that Locutus will show the title screen on initial power up, no other times.</summary>
+        public static readonly DeviceStatusFlags ShowTitleScreenOnPowerUp = new DeviceStatusFlags(DeviceStatusFlagsLo.ShowTitleScreenOnPowerUp);
+
+        /// <summary>Title screen flag indicating that Locutus will always show the title screen, even when soft reset.</summary>
+        public static readonly DeviceStatusFlags ShowTitleScreenAlways = new DeviceStatusFlags(DeviceStatusFlagsLo.ShowTitleScreenAlways);
+
+        /// <summary>Title screen flags mask.</summary>
+        public static readonly DeviceStatusFlags ShowTitleScreenMask = new DeviceStatusFlags(DeviceStatusFlagsLo.ShowTitleScreenMask);
+
+        /// <summary>Save menu position flag indicating that Locutus will retain menu position only while console power is on.</summary>
+        public static readonly DeviceStatusFlags SaveMenuPositionDuringSessionOnly = new DeviceStatusFlags(DeviceStatusFlagsLo.SaveMenuPositionDuringSessionOnly);
+
+        /// <summary>Save menu position flag indicating that Locutus will always retain menu position.</summary>
+        public static readonly DeviceStatusFlags SaveMenuPositionAlways = new DeviceStatusFlags(DeviceStatusFlagsLo.SaveMenuPositionAlways);
+
+        /// <summary>Save menu position flags mask.</summary>
+        public static readonly DeviceStatusFlags SaveMenuPositionMask = new DeviceStatusFlags(DeviceStatusFlagsLo.SaveMenuPositionMask);
+
+        /// <summary>Flag indicating that Locutus will execute garbage collection in the background while at the menu.</summary>
+        public static readonly DeviceStatusFlags BackgroundGC = new DeviceStatusFlags(DeviceStatusFlagsLo.BackgroundGC);
+
+        /// <summary>Flag indicating that Locutus will emit keyclicks when navigated.</summary>
+        public static readonly DeviceStatusFlags Keyclicks = new DeviceStatusFlags(DeviceStatusFlagsLo.Keyclicks);
+
+        /// <summary>Flag indicating that Locutus the configuration menu on the cartridge can be accessed.</summary>
+        public static readonly DeviceStatusFlags EnableCartConfig = new DeviceStatusFlags(DeviceStatusFlagsLo.EnableCartConfig);
+
+        /// <summary>Flag indicating that Locutus should zero out the contents of RAM before loading a programs. Otherwise, it RAM contents is randomized.</summary>
+        public static readonly DeviceStatusFlags ZeroRamBeforeLoad = new DeviceStatusFlags(DeviceStatusFlagsLo.ZeroRamBeforeLoad);
+
+        /// <summary>Internal flag used by Locutus to indicate menu position data should be considered invalid. Do not change this flag.</summary>
+        public static readonly DeviceStatusFlags ResetMenuHistory = new DeviceStatusFlags(DeviceStatusFlagsHi.ResetMenuHistory);
+
+        /// <summary>Flag used by Locutus to indicate that other configuration flags are configured. Setting to zero forces a factory reset of configuration.</summary>
+        public static readonly DeviceStatusFlags FlagsHaveBeenSet = new DeviceStatusFlags(DeviceStatusFlagsHi.FlagsHaveBeenSet);
+
+        /// <summary>Reserved flags. Note that some flags individually available are also considered reserved.</summary>
+        public static readonly DeviceStatusFlags Reserved = new DeviceStatusFlags(DeviceStatusFlagsLo.ReservedMask, DeviceStatusFlagsHi.ReservedMask);
+
+        #endregion // Defined flag values
+
         /// <summary>
-        /// Gets empty flags.
+        /// Gets the first 64 bits of device status flags.
         /// </summary>
-        public static DeviceStatusFlags None
+        public DeviceStatusFlagsLo Lo
         {
-            get { return new DeviceStatusFlags(); }
+            get { return _lo; }
         }
+        private readonly DeviceStatusFlagsLo _lo;
 
         /// <summary>
-        /// Gets or sets the first 64 bits of device status flags.
+        /// Gets the second 64 bits of device status flags.
         /// </summary>
-        public DeviceStatusFlagsLo Lo { get; set; }
-
-        /// <summary>
-        /// Gets or sets the second 64 bits of device status flags.
-        /// </summary>
-        public DeviceStatusFlagsHi Hi { get; set; }
+        public DeviceStatusFlagsHi Hi
+        {
+            get { return _hi; }
+        }
+        private readonly DeviceStatusFlagsHi _hi;
 
         #region Bitwise AND operators
 

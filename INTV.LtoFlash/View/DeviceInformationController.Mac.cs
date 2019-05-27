@@ -20,6 +20,7 @@
 
 ////#define ENABLE_REBOOT_TO_MENU_KEY_SELECTION
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.ComponentModel;
@@ -28,6 +29,7 @@ using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.Behavior;
+using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
@@ -78,6 +80,20 @@ namespace INTV.LtoFlash.View
         private const string EcsCompatibilitySelectionPropertyName = "EcsCompatibilitySelection";
         private const string IntellivisionIICompatibilitySelectionPropertyName = "IntellivisionIICompatibilitySelection";
 
+        private static readonly IEnumerable<string> DeviceSettingsPropertyNames = new[]
+        {
+            "TitleScreenSelection",
+            "SaveMenuPositionSelection",
+            IntellivisionIICompatibilitySelectionPropertyName,
+            EcsCompatibilitySelectionPropertyName,
+            Device.BackgroundGCPropertyName,
+            Device.KeyclicksPropertyName,
+            Device.EnableConfigMenuOnCartPropertyName,
+            DeviceViewModel.RandomizeLtoFlashRamPropertyName,
+        };
+
+        private static readonly Lazy<IReadOnlyDictionary<DeviceInfoFieldToolTipTag, VisualRelayCommand>> AdditionalToolTipsMap = new Lazy<IReadOnlyDictionary<DeviceInfoFieldToolTipTag, VisualRelayCommand>>(InitializeAdditionalToolTipsMap);
+
         #region Constructors
 
         /// <summary>
@@ -122,12 +138,6 @@ namespace INTV.LtoFlash.View
             Initialize();
         }
 
-        /// <summary>Shared initialization code.</summary>
-        private void Initialize()
-        {
-            UpdateDisplay();
-        }
-
         #endregion // Constructors
 
         #region INotifyPropertyChanged
@@ -149,33 +159,6 @@ namespace INTV.LtoFlash.View
         /// Gets or sets the view model.
         /// </summary>
         public LtoFlashViewModel ViewModel { get; set; }
-
-        /// <summary>
-        /// Gets the tip strip for primary firmware version.
-        /// </summary>
-        [OSExport("PrimaryFirmwareVersionTip")]
-        public static string PrimaryFirmwareVersionTip
-        {
-            get { return Resources.Strings.FactoryFirmwareCommand_TipDescription; }
-        }
-
-        /// <summary>
-        /// Gets the tip strip for secondary firmware version.
-        /// </summary>
-        [OSExport("SecondaryFirmwareVersionTip")]
-        public static string SecondaryFirmwareVersionTip
-        {
-            get { return Resources.Strings.SecondaryFirmwareCommand_TipDescription; }
-        }
-
-        /// <summary>
-        /// Gets the tip strip for current firmware version.
-        /// </summary>
-        [OSExport("CurrentFirmwareVersionTip")]
-        public static string CurrentFirmwareVersionTip
-        {
-            get { return Resources.Strings.CurrentFirmwareCommand_TipDescription; }
-        }
 
         /// <summary>
         /// Gets the device name.
@@ -414,9 +397,8 @@ namespace INTV.LtoFlash.View
         public bool BackgroundGC
         {
             get { return ViewModel.ActiveLtoFlashDevice.BackgroundGC; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, Device.BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => ViewModel.ActiveLtoFlashDevice.BackgroundGC = v); }
+            set { ViewModel.ActiveLtoFlashDevice.BackgroundGC = value; }
         }
-        private bool _backgroundGC;
 
         /// <summary>
         /// Gets or sets a value indicating whether the keyclick sound is enabled in the menu.
@@ -425,9 +407,15 @@ namespace INTV.LtoFlash.View
         public bool Keyclicks
         {
             get { return ViewModel.ActiveLtoFlashDevice.Keyclicks; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, Device.KeyclicksPropertyName, value, ref _keyclicks, (p, v) => ViewModel.ActiveLtoFlashDevice.Keyclicks = v); }
+            set { ViewModel.ActiveLtoFlashDevice.Keyclicks = value; }
         }
-        private bool _keyclicks;
+
+        [INTV.Shared.Utility.OSExport(Device.EnableConfigMenuOnCartPropertyName)]
+        public bool EnableConfigMenuOnCart
+        {
+            get { return ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart; }
+            set { ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart = value; }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether to randomize RAM when launching a program from Locutus.
@@ -436,9 +424,8 @@ namespace INTV.LtoFlash.View
         public bool RandomizeLtoFlashRam
         {
             get { return ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam; }
-            set { this.AssignAndUpdateProperty(PropertyChanged, DeviceViewModel.RandomizeLtoFlashRamPropertyName, value, ref _randomizeLtoFlashRam, (p, v) => ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam = v); }
+            set { ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam = value; }
         }
-        private bool _randomizeLtoFlashRam;
 
         /// <summary>
         /// Gets or sets the selected controller button to hold for reset to menu.
@@ -554,20 +541,14 @@ namespace INTV.LtoFlash.View
             {
                 _selectedPageIndex = value;
                 _lastSelectedPageIndex = value;
-                foreach (var blockWhenBusy in _blockWhenBusy)
-                {
-                    blockWhenBusy.Key.BlockWhenAppIsBusy = ((_selectedPageIndex == 0) || (_selectedPageIndex == 1) || (_selectedPageIndex == 2)) ? false : blockWhenBusy.Value;
-                }
-                HandleRequerySuggested(this, System.EventArgs.Empty);
             }
         }
         private int _selectedPageIndex;
-
         private static int _lastSelectedPageIndex;
 
         private TextCellInPlaceEditor InPlaceEditor { get; set; }
 
-        private Dictionary<RelayCommand, bool> _blockWhenBusy = new Dictionary<RelayCommand, bool>();
+        private Dictionary<VisualRelayCommand, bool> _blockWhenBusy = new Dictionary<VisualRelayCommand, bool>();
 
         private DeviceViewModel _device;
 
@@ -662,10 +643,8 @@ namespace INTV.LtoFlash.View
 
             DeviceNameEntry.TextShouldBeginEditing = ShouldBeginEditingDeviceName;
             DeviceNameEntry.TextShouldEndEditing = ShouldEndEditingDeviceName;
-            DeviceNameEntry.ToolTip = DeviceCommandGroup.SetDeviceNameCommand.ToolTipDescription;
             DeviceOwnerEntry.TextShouldBeginEditing = ShouldBeginEditingDeviceOwner;
             DeviceOwnerEntry.TextShouldEndEditing = ShouldEndEditingDeviceOwner;
-            DeviceOwnerEntry.ToolTip = DeviceCommandGroup.SetDeviceOwnerCommand.ToolTipDescription;
 
             DeviceCommandGroup.PopulateEcsCompatibilityMenu(ECSCompatibilityButton);
             DeviceCommandGroup.PopulateIntellivisionIICompatibilityMenu(IntellivisionIICompatibilityButton);
@@ -675,41 +654,8 @@ namespace INTV.LtoFlash.View
             IntellivisionIICompatibilitySelection = (int)IntellivisionIICompatibilityButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.IntvIICompatibility);
             TitleScreenSelection = (int)ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.ShowTitleScreen);
             SaveMenuPositionSelection = (int)ShowTitleScreenButton.IndexOfItem((int)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
-            BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
-            Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
-            RandomizeLtoFlashRam = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
 
-            _blockWhenBusy[DeviceCommandGroup.SetDeviceNameCommand] = DeviceCommandGroup.SetDeviceNameCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetDeviceOwnerCommand] = DeviceCommandGroup.SetDeviceOwnerCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetShowTitleScreenCommand] = DeviceCommandGroup.SetShowTitleScreenCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetEcsCompatibilityCommand] = DeviceCommandGroup.SetEcsCompatibilityCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetIntellivisionIICompatibilityCommand] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetKeyclicksCommand] = DeviceCommandGroup.SetKeyclicksCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetRandomizeLtoFlashRamCommand] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
-            _blockWhenBusy[FirmwareCommandGroup.UpdateFirmwareCommand] = FirmwareCommandGroup.UpdateFirmwareCommand.BlockWhenAppIsBusy;
-
-            _controlCommandMap[ECSCompatibilityButton] = DeviceCommandGroup.SetEcsCompatibilityCommand;
-            _controlCommandMap[IntellivisionIICompatibilityButton] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand;
-            _controlCommandMap[ShowTitleScreenButton] = DeviceCommandGroup.SetShowTitleScreenCommand;
-            _controlCommandMap[SaveMenuPositionButton] = DeviceCommandGroup.SetSaveMenuPositionCommand;
-            _controlCommandMap[KeyclicksCheckBox] = DeviceCommandGroup.SetKeyclicksCommand;
-            _controlCommandMap[BackgroundGCCheckBox] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand;
-            _controlCommandMap[RandomizeLtoFlashRamCheckBox] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand;
-            _controlCommandMap[UpdateFirmwareButton] = FirmwareCommandGroup.UpdateFirmwareCommand;
-
-            foreach (var controlCommand in _controlCommandMap)
-            {
-                controlCommand.Key.ToolTip = controlCommand.Value.ToolTipDescription;
-            }
-#if __UNIFIED__
-            RandomizeLtoFlashRamCheckBox.Bind((NSString)"toolTip", DeviceCommandGroup.SetRandomizeLtoFlashRamCommand, "ToolTipDescription", null);
-#else
-            RandomizeLtoFlashRamCheckBox.Bind("toolTip", DeviceCommandGroup.SetRandomizeLtoFlashRamCommand, "ToolTipDescription", null);
-#endif // __UNIFIED__
-            var druidControl = Window.ContentView.FindChild<NSTextField>(t => t.Tag == 3);
-            druidControl.ToolTip = DeviceCommandGroup.DeviceUniqueIdCommand.ToolTipDescription;
+            InitializeCommandVisualsToCommandsMap();
 
             CommandManager.RequerySuggested += HandleRequerySuggested;
             HandleRequerySuggested(this, System.EventArgs.Empty);
@@ -732,12 +678,136 @@ namespace INTV.LtoFlash.View
                 _device.PropertyChanged -= HandleDevicePropertyChanged;
             }
             CommandManager.RequerySuggested -= HandleRequerySuggested;
+
+            // Restore the block when busy settings.
+            foreach (var blockWhenBusyEntry in _blockWhenBusy)
+            {
+                var command = blockWhenBusyEntry.Key;
+                var blockWhenBusy = blockWhenBusyEntry.Value;
+                command.BlockWhenAppIsBusy = blockWhenBusy;
+            }
+
+            // Unbind the Cocoa binding for the ToolTip text we added in AwakeFromNib.
+            foreach (var controlCommandMapEntry in _controlCommandMap.Reverse())
+            {
+                var commandVisual = controlCommandMapEntry.Key;
+                if (!AdditionalToolTipsMap.Value.ContainsKey((DeviceInfoFieldToolTipTag)commandVisual.Tag))
+                {
+                    commandVisual.UnbindCommandVisualFromToolTipDescription();
+                }
+            }
+
             ViewModel.PropertyChanged -= HandleViewModelPropertyChanged;
 
             // MonoMac has some problems w/ lifetime. This was an attempt to prevent leaking dialogs.
             // However, there are cases that result in over-release that are not easily identified.
             // So, leak it is! :(
             // base.Dispose(disposing);
+        }
+
+        private static IReadOnlyDictionary<DeviceInfoFieldToolTipTag, VisualRelayCommand> InitializeAdditionalToolTipsMap()
+        {
+            var additionalToolTipsMap = new Dictionary<DeviceInfoFieldToolTipTag, VisualRelayCommand>()
+            {
+                { DeviceInfoFieldToolTipTag.Name, DeviceCommandGroup.SetDeviceNameCommand },
+                { DeviceInfoFieldToolTipTag.Owner, DeviceCommandGroup.SetDeviceOwnerCommand },
+                { DeviceInfoFieldToolTipTag.UniqueId, DeviceCommandGroup.DeviceUniqueIdCommand },
+                { DeviceInfoFieldToolTipTag.ShowTitleScreen, DeviceCommandGroup.SetShowTitleScreenCommand },
+                { DeviceInfoFieldToolTipTag.IntellivisionIICompatibility, DeviceCommandGroup.SetIntellivisionIICompatibilityCommand },
+                { DeviceInfoFieldToolTipTag.EcsCompatibilty, DeviceCommandGroup.SetEcsCompatibilityCommand },
+                { DeviceInfoFieldToolTipTag.SaveMenuPosition, DeviceCommandGroup.SetSaveMenuPositionCommand },
+                { DeviceInfoFieldToolTipTag.FactoryFirmware, FirmwareCommandGroup.FactoryFirmwareCommand },
+                { DeviceInfoFieldToolTipTag.UpdatedFirmware, FirmwareCommandGroup.SecondaryFirmwareCommand },
+                { DeviceInfoFieldToolTipTag.CurrentFirmware, FirmwareCommandGroup.CurrentFirmwareCommand },
+            };
+            return additionalToolTipsMap;
+        }
+
+        /// <summary>Shared initialization code.</summary>
+        private void Initialize()
+        {
+            UpdateDisplay();
+        }
+
+        private void InitializeCommandVisualsToCommandsMap()
+        {
+            _blockWhenBusy[DeviceCommandGroup.SetDeviceNameCommand] = DeviceCommandGroup.SetDeviceNameCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetDeviceOwnerCommand] = DeviceCommandGroup.SetDeviceOwnerCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetShowTitleScreenCommand] = DeviceCommandGroup.SetShowTitleScreenCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetEcsCompatibilityCommand] = DeviceCommandGroup.SetEcsCompatibilityCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetIntellivisionIICompatibilityCommand] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetKeyclicksCommand] = DeviceCommandGroup.SetKeyclicksCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetEnableConfigMenuOnCartCommand] = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetRandomizeLtoFlashRamCommand] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
+            _blockWhenBusy[FirmwareCommandGroup.UpdateFirmwareCommand] = FirmwareCommandGroup.UpdateFirmwareCommand.BlockWhenAppIsBusy;
+
+            // Settings page commands
+            _controlCommandMap[ECSCompatibilityButton] = DeviceCommandGroup.SetEcsCompatibilityCommand;
+            _controlCommandMap[IntellivisionIICompatibilityButton] = DeviceCommandGroup.SetIntellivisionIICompatibilityCommand;
+            _controlCommandMap[ShowTitleScreenButton] = DeviceCommandGroup.SetShowTitleScreenCommand;
+            _controlCommandMap[SaveMenuPositionButton] = DeviceCommandGroup.SetSaveMenuPositionCommand;
+            _controlCommandMap[KeyclicksCheckBox] = DeviceCommandGroup.SetKeyclicksCommand;
+            _controlCommandMap[BackgroundGCCheckBox] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand;
+            _controlCommandMap[EnableConfigMenuOnCartCheckBox] = DeviceCommandGroup.SetEnableConfigMenuOnCartCommand;
+            _controlCommandMap[RandomizeLtoFlashRamCheckBox] = DeviceCommandGroup.SetRandomizeLtoFlashRamCommand;
+
+            // Firmware page commands
+            _controlCommandMap[UpdateFirmwareButton] = FirmwareCommandGroup.UpdateFirmwareCommand;
+
+            // Additional commands to map
+            var additionalItemsMap = AdditionalToolTipsMap.Value;
+            var tabView = Window.ContentView.FindChild<NSTabView>();
+            foreach (var tabViewItem in tabView.Items)
+            {
+                foreach (var textField in tabViewItem.View.FindChildren<NSTextField>(f => f.Tag != 0))
+                {
+                    VisualRelayCommand command;
+                    if (additionalItemsMap.TryGetValue((DeviceInfoFieldToolTipTag)textField.Tag, out command))
+                    {
+                        _controlCommandMap[textField] = command;
+                    }
+                }
+            }
+
+            foreach (var controlCommandMapEntry in _controlCommandMap)
+            {
+                var commandVisual = controlCommandMapEntry.Key;
+                var controlCommand = controlCommandMapEntry.Value;
+                var tag = (DeviceInfoFieldToolTipTag)commandVisual.Tag;
+                if (additionalItemsMap.ContainsKey(tag))
+                {
+                    var toolTip = controlCommand.ToolTipDescription;
+                    switch (tag)
+                    {
+                        case DeviceInfoFieldToolTipTag.EcsCompatibilty:
+                            toolTip = Resources.Strings.SetEcsCompatibilityCommand_TipDescription;
+                            break;
+                        case DeviceInfoFieldToolTipTag.IntellivisionIICompatibility:
+                            toolTip = Resources.Strings.SetIntellivisionIICompatibilityCommand_TipDescription;
+                            break;
+                        case DeviceInfoFieldToolTipTag.SaveMenuPosition:
+                            toolTip = Resources.Strings.SetSaveMenuPositionCommand_TipDescription;
+                            break;
+                        case DeviceInfoFieldToolTipTag.ShowTitleScreen:
+                            toolTip = Resources.Strings.SetShowTitleScreenCommand_TipDescription;
+                            break;
+                        default:
+                            break;
+                    }
+                    commandVisual.ToolTip = toolTip;
+                }
+                else
+                {
+                    controlCommand.BindCommandVisualToToolTipDescription(commandVisual);
+                }
+            }
+
+            foreach (var command in _blockWhenBusy.Keys)
+            {
+                command.BlockWhenAppIsBusy = false;
+            }
         }
 
         #region DeviceOwnerEditing
@@ -875,7 +945,12 @@ namespace INTV.LtoFlash.View
 
             foreach (var controlCommand in _controlCommandMap)
             {
-                controlCommand.Key.Enabled = controlCommand.Value.CanExecute(ViewModel);
+                var commandVisual = controlCommand.Key;
+                if (!AdditionalToolTipsMap.Value.ContainsKey((DeviceInfoFieldToolTipTag)commandVisual.Tag))
+                {
+                    var enable = controlCommand.Value.CanExecute(ViewModel);
+                    commandVisual.Enabled = enable;
+                }
             }
         }
 
@@ -903,6 +978,7 @@ namespace INTV.LtoFlash.View
 
         private void HandleDevicePropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            var raiseSettingsPropertiesChanged = true;
             switch (e.PropertyName)
             {
                 case "DisplayName":
@@ -910,12 +986,15 @@ namespace INTV.LtoFlash.View
                 case Device.OwnerPropertyName:
                 case Device.UniqueIdPropertyName:
                     UpdateInfo();
+                    raiseSettingsPropertiesChanged = false;
                     break;
                 case Device.FirmwareRevisionsPropertyName:
                     UpdateFirmwareInfo();
+                    raiseSettingsPropertiesChanged = false;
                     break;
                 case Device.FileSystemStatisticsPropertyName:
                     UpdateFileSystemInfo();
+                    raiseSettingsPropertiesChanged = false;
                     break;
                 case Device.EcsCompatibilityPropertyName:
                     ECSCompatibilityButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.EcsCompatibility);
@@ -930,16 +1009,21 @@ namespace INTV.LtoFlash.View
                     SaveMenuPositionButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.SaveMenuPosition);
                     break;
                 case Device.BackgroundGCPropertyName:
-                    BackgroundGC = ViewModel.ActiveLtoFlashDevice.BackgroundGC;
-                    break;
                 case Device.KeyclicksPropertyName:
-                    Keyclicks = ViewModel.ActiveLtoFlashDevice.Keyclicks;
-                    break;
+                case Device.EnableConfigMenuOnCartPropertyName:
                 case DeviceViewModel.RandomizeLtoFlashRamPropertyName:
-                    RandomizeLtoFlashRam = ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam;
+                    this.RaiseChangeValueForKey(e.PropertyName);
                     break;
                 default:
+                    raiseSettingsPropertiesChanged = false;
                     break;
+            }
+            if (raiseSettingsPropertiesChanged)
+            {
+                foreach (var propertyName in DeviceSettingsPropertyNames)
+                {
+                    this.RaiseChangeValueForKey(propertyName);
+                }
             }
         }
 
@@ -1034,6 +1118,78 @@ namespace INTV.LtoFlash.View
 
             /// <summary>Device owner field./// </summary>
             Owner
+        }
+
+        private enum DeviceInfoFieldToolTipTag
+        {
+            /// <summary>Not a valid tag.</summary>
+            None,
+
+            /// <summary>Tag for device name.</summary>
+            Name = 1,
+
+            /// <summary>Tag for device owner.</summary>
+            Owner,
+
+            /// <summary>Tag for DRUID.</summary>
+            UniqueId,
+
+            /// <summary>Tag for show title screen.</summary>
+            ShowTitleScreen = 101,
+
+            /// <summary>Tag for Intellivision II compatibility.</summary>
+            IntellivisionIICompatibility,
+
+            /// <summary>Tag for ECS compatibility.</summary>
+            EcsCompatibilty,
+
+            /// <summary>Tag for save menu position.</summary>
+            SaveMenuPosition,
+
+            /// <summary>Tag for factory firmware version.</summary>
+            FactoryFirmware = 201,
+
+            /// <summary>Tag for secondary firmware version.</summary>
+            UpdatedFirmware,
+
+            /// <summary>Tag for current firmware version.</summary>
+            CurrentFirmware,
+
+            /// <summary>Tag for physical blocks in use.</summary>
+            PhysicalBlocksInUse = 301,
+
+            /// <summary>Tag for physical clean blocks.</summary>
+            PhysicalCleanBlocks,
+
+            /// <summary>Tag for total physical blocks.</summary>
+            PhysicalTotalBlocks,
+
+            /// <summary>Tag for physical sector erasures.</summary>
+            PhysicalSectorErasures,
+
+            /// <summary>Tag for metadata erasures.</summary>
+            PhysicalMetadataSectorErasures,
+
+            /// <summary>Tag for V to P map version.</summary>
+            VirutalToPhysicalMapVersion,
+
+            /// <summary>Tag for virtual blcoks in use.</summary>
+            VirtualBlocksInUse,
+
+            /// <summary>Tag for total virutal blocks.</summary>
+            VirtualTotalBlocks,
+
+            /// <summary>Tag for available virtual blocks.</summary>
+            VirtualBlocksAvailable,
+
+            /// <summary>Tag for physical block erasures.</summary>
+            PhysicalBlockErasures,
+
+            /// <summary>Tag for lifetime remaining in terms of V to P wraps.</summary>
+            VirtualToPhysicalWraps,
+
+            /// <summary>Tag for lifetime remaining.</summary>
+            LifetimeRemaining
         }
 
         private class ControllerButtonsData : IKImageBrowserDataSource

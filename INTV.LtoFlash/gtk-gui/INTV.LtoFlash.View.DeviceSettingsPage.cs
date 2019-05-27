@@ -12,23 +12,25 @@ namespace INTV.LtoFlash.View
 
 		private global::Gtk.ComboBox _ecsCompatibility;
 
+		private global::Gtk.Label _ecsCompatibilityLabel;
+
 		private global::Gtk.ComboBox _intellivisionIICompatibility;
+
+		private global::Gtk.Label _intellivisionIICompatibilityLabel;
 
 		private global::Gtk.ComboBox _saveMenuPositionSetting;
 
+		private global::Gtk.Label _saveMenuPositionSettingLabel;
+
 		private global::Gtk.ComboBox _titleScreenSetting;
 
-		private global::Gtk.Label label1;
-
-		private global::Gtk.Label label2;
-
-		private global::Gtk.Label label3;
-
-		private global::Gtk.Label label4;
+		private global::Gtk.Label _titleScreenSettingLabel;
 
 		private global::Gtk.CheckButton _keyClicks;
 
 		private global::Gtk.CheckButton _backgroundGC;
+
+		private global::Gtk.CheckButton _enableCartConfigMenu;
 
 		private global::Gtk.CheckButton _randomizeLtoFlashRam;
 
@@ -64,76 +66,76 @@ namespace INTV.LtoFlash.View
 			w1.XOptions = ((global::Gtk.AttachOptions)(4));
 			w1.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this._intellivisionIICompatibility = new global::Gtk.ComboBox();
-			this._intellivisionIICompatibility.Name = "_intellivisionIICompatibility";
-			this.table1.Add(this._intellivisionIICompatibility);
-			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1[this._intellivisionIICompatibility]));
-			w2.TopAttach = ((uint)(1));
-			w2.BottomAttach = ((uint)(2));
-			w2.LeftAttach = ((uint)(1));
-			w2.RightAttach = ((uint)(2));
+			this._ecsCompatibilityLabel = new global::Gtk.Label();
+			this._ecsCompatibilityLabel.Name = "_ecsCompatibilityLabel";
+			this._ecsCompatibilityLabel.Xalign = 0F;
+			this._ecsCompatibilityLabel.LabelProp = global::Mono.Unix.Catalog.GetString("ECS ROM Enabled:");
+			this.table1.Add(this._ecsCompatibilityLabel);
+			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1[this._ecsCompatibilityLabel]));
+			w2.TopAttach = ((uint)(2));
+			w2.BottomAttach = ((uint)(3));
 			w2.XOptions = ((global::Gtk.AttachOptions)(4));
 			w2.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this._saveMenuPositionSetting = new global::Gtk.ComboBox();
-			this._saveMenuPositionSetting.Name = "_saveMenuPositionSetting";
-			this.table1.Add(this._saveMenuPositionSetting);
-			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1[this._saveMenuPositionSetting]));
-			w3.TopAttach = ((uint)(3));
-			w3.BottomAttach = ((uint)(4));
+			this._intellivisionIICompatibility = new global::Gtk.ComboBox();
+			this._intellivisionIICompatibility.Name = "_intellivisionIICompatibility";
+			this.table1.Add(this._intellivisionIICompatibility);
+			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1[this._intellivisionIICompatibility]));
+			w3.TopAttach = ((uint)(1));
+			w3.BottomAttach = ((uint)(2));
 			w3.LeftAttach = ((uint)(1));
 			w3.RightAttach = ((uint)(2));
 			w3.XOptions = ((global::Gtk.AttachOptions)(4));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this._titleScreenSetting = new global::Gtk.ComboBox();
-			this._titleScreenSetting.Name = "_titleScreenSetting";
-			this.table1.Add(this._titleScreenSetting);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1[this._titleScreenSetting]));
-			w4.LeftAttach = ((uint)(1));
-			w4.RightAttach = ((uint)(2));
+			this._intellivisionIICompatibilityLabel = new global::Gtk.Label();
+			this._intellivisionIICompatibilityLabel.Name = "_intellivisionIICompatibilityLabel";
+			this._intellivisionIICompatibilityLabel.Xalign = 0F;
+			this._intellivisionIICompatibilityLabel.LabelProp = global::Mono.Unix.Catalog.GetString("Intellivision II Compatibility:");
+			this.table1.Add(this._intellivisionIICompatibilityLabel);
+			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1[this._intellivisionIICompatibilityLabel]));
+			w4.TopAttach = ((uint)(1));
+			w4.BottomAttach = ((uint)(2));
 			w4.XOptions = ((global::Gtk.AttachOptions)(4));
 			w4.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.label1 = new global::Gtk.Label();
-			this.label1.Name = "label1";
-			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("Show Title Screen:");
-			this.table1.Add(this.label1);
-			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1[this.label1]));
+			this._saveMenuPositionSetting = new global::Gtk.ComboBox();
+			this._saveMenuPositionSetting.Name = "_saveMenuPositionSetting";
+			this.table1.Add(this._saveMenuPositionSetting);
+			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1[this._saveMenuPositionSetting]));
+			w5.TopAttach = ((uint)(3));
+			w5.BottomAttach = ((uint)(4));
+			w5.LeftAttach = ((uint)(1));
+			w5.RightAttach = ((uint)(2));
 			w5.XOptions = ((global::Gtk.AttachOptions)(4));
 			w5.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.label2 = new global::Gtk.Label();
-			this.label2.Name = "label2";
-			this.label2.Xalign = 0F;
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString("Intellivision II Compatibility:");
-			this.table1.Add(this.label2);
-			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1[this.label2]));
-			w6.TopAttach = ((uint)(1));
-			w6.BottomAttach = ((uint)(2));
+			this._saveMenuPositionSettingLabel = new global::Gtk.Label();
+			this._saveMenuPositionSettingLabel.Name = "_saveMenuPositionSettingLabel";
+			this._saveMenuPositionSettingLabel.Xalign = 0F;
+			this._saveMenuPositionSettingLabel.LabelProp = global::Mono.Unix.Catalog.GetString("Save Menu Position:");
+			this.table1.Add(this._saveMenuPositionSettingLabel);
+			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1[this._saveMenuPositionSettingLabel]));
+			w6.TopAttach = ((uint)(3));
+			w6.BottomAttach = ((uint)(4));
 			w6.XOptions = ((global::Gtk.AttachOptions)(4));
 			w6.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.label3 = new global::Gtk.Label();
-			this.label3.Name = "label3";
-			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString("ECS ROM Enabled:");
-			this.table1.Add(this.label3);
-			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1[this.label3]));
-			w7.TopAttach = ((uint)(2));
-			w7.BottomAttach = ((uint)(3));
+			this._titleScreenSetting = new global::Gtk.ComboBox();
+			this._titleScreenSetting.Name = "_titleScreenSetting";
+			this.table1.Add(this._titleScreenSetting);
+			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1[this._titleScreenSetting]));
+			w7.LeftAttach = ((uint)(1));
+			w7.RightAttach = ((uint)(2));
 			w7.XOptions = ((global::Gtk.AttachOptions)(4));
 			w7.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.label4 = new global::Gtk.Label();
-			this.label4.Name = "label4";
-			this.label4.Xalign = 0F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString("Save Menu Position:");
-			this.table1.Add(this.label4);
-			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1[this.label4]));
-			w8.TopAttach = ((uint)(3));
-			w8.BottomAttach = ((uint)(4));
+			this._titleScreenSettingLabel = new global::Gtk.Label();
+			this._titleScreenSettingLabel.Name = "_titleScreenSettingLabel";
+			this._titleScreenSettingLabel.Xalign = 0F;
+			this._titleScreenSettingLabel.LabelProp = global::Mono.Unix.Catalog.GetString("Show Title Screen:");
+			this.table1.Add(this._titleScreenSettingLabel);
+			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1[this._titleScreenSettingLabel]));
 			w8.XOptions = ((global::Gtk.AttachOptions)(4));
 			w8.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.hbox1.Add(this.table1);
@@ -171,6 +173,18 @@ namespace INTV.LtoFlash.View
 			w12.Expand = false;
 			w12.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
+			this._enableCartConfigMenu = new global::Gtk.CheckButton();
+			this._enableCartConfigMenu.CanFocus = true;
+			this._enableCartConfigMenu.Name = "_enableCartConfigMenu";
+			this._enableCartConfigMenu.Label = global::Mono.Unix.Catalog.GetString("Enable configuration menu");
+			this._enableCartConfigMenu.DrawIndicator = true;
+			this._enableCartConfigMenu.UseUnderline = true;
+			this.vbox2.Add(this._enableCartConfigMenu);
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this._enableCartConfigMenu]));
+			w13.Position = 3;
+			w13.Expand = false;
+			w13.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
 			this._randomizeLtoFlashRam = new global::Gtk.CheckButton();
 			this._randomizeLtoFlashRam.CanFocus = true;
 			this._randomizeLtoFlashRam.Name = "_randomizeLtoFlashRam";
@@ -178,10 +192,10 @@ namespace INTV.LtoFlash.View
 			this._randomizeLtoFlashRam.DrawIndicator = true;
 			this._randomizeLtoFlashRam.UseUnderline = true;
 			this.vbox2.Add(this._randomizeLtoFlashRam);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox2[this._randomizeLtoFlashRam]));
-			w13.Position = 3;
-			w13.Expand = false;
-			w13.Fill = false;
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox2[this._randomizeLtoFlashRam]));
+			w14.Position = 4;
+			w14.Expand = false;
+			w14.Fill = false;
 			this.Add(this.vbox2);
 			if ((this.Child != null))
 			{
@@ -194,6 +208,8 @@ namespace INTV.LtoFlash.View
 			this._ecsCompatibility.Changed += new global::System.EventHandler(this.HandleEcsCompatibilityChanged);
 			this._keyClicks.Toggled += new global::System.EventHandler(this.HandleKeyclicksChanged);
 			this._backgroundGC.Toggled += new global::System.EventHandler(this.HandleBackgroundGCChanged);
+			this._enableCartConfigMenu.Toggled += new global::System.EventHandler(this.HandleEnableConfigMenuChanged);
+			this._randomizeLtoFlashRam.Toggled += new global::System.EventHandler(this.HandleRandomizeLtoFlashRamChanged);
 		}
 	}
 }

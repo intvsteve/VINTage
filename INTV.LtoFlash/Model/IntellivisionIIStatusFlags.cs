@@ -85,14 +85,14 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Produce <see cref="DeviceStatusFlagsLo"/> containing updated <see cref="IntellivisionIIStatusFlags"/> for a given <see cref="Device"/>.
+        /// Produce <see cref="DeviceStatusFlags"/> containing updated <see cref="IntellivisionIIStatusFlags"/> for a given <see cref="Device"/>.
         /// </summary>
         /// <param name="device">The <see cref="Device"/> whose updated flags are desired.</param>
         /// <param name="newIntellivisionIIFlags">New <see cref="IntellivisionIIStatusFlags"/> to apply to <paramref name="device"/>.</param>
-        /// <returns>A new set of <see cref="DeviceStatusFlagsLo"/> with updated IntellivisionIIStatusFlags for <paramref name="device"/>.</returns>
-        internal static DeviceStatusFlagsLo UpdateStatusFlags(this Device device, IntellivisionIIStatusFlags newIntellivisionIIFlags)
+        /// <returns>A new set of <see cref="DeviceStatusFlags"/> with updated IntellivisionIIStatusFlags for <paramref name="device"/>.</returns>
+        internal static DeviceStatusFlags UpdateStatusFlags(this Device device, IntellivisionIIStatusFlags newIntellivisionIIFlags)
         {
-            var deviceStatusFlags = device.ComposeStatusFlagsLo() & ~DeviceStatusFlagsLo.IntellivisionIIStatusMask;
+            var deviceStatusFlags = device.DeviceStatusFlags & ~DeviceStatusFlags.IntellivisionIIStatusMask;
             deviceStatusFlags |= newIntellivisionIIFlags.ToDeviceStatusFlagsLo();
             return deviceStatusFlags;
         }

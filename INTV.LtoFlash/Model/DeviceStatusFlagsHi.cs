@@ -23,7 +23,7 @@ using System.Collections.Generic;
 namespace INTV.LtoFlash.Model
 {
     /// <summary>
-    /// These flags identify the high 8 bytes of status flags available from a Locutus device.
+    /// These flags identify the high 8 bytes (64 bits) of status flags available from a Locutus device.
     /// </summary>
     [System.Flags]
     public enum DeviceStatusFlagsHi : ulong
@@ -38,17 +38,17 @@ namespace INTV.LtoFlash.Model
         /// considered invalid. The UI should not manipulate this flag directly, and it should always be set.
         /// Because of this, it is still considered part of <see cref="ReservedMask"/>.
         /// </summary>
-        ResetMenuHistory = 1ul << 62,
+        ResetMenuHistory = 1ul << DeviceStatusFlagsHiHelpers.ResetMenuHistoryBitsOffset,
 
         /// <summary>
         /// Indicates flags have been initialized. Set to zero to force 'factory reset'.
         /// </summary>
-        FlagsHaveBeenSet = 1ul << 63,
+        FlagsHaveBeenSet = 1ul << DeviceStatusFlagsHiHelpers.FlagsHaveBeenSetBitsOffset,
 
         /// <summary>
-        /// All bits are reserved.
+        /// Reserved bits. Note that the ResetMenuHistory flag is always considered reserved.
         /// </summary>
-        ReservedMask = 0x7FFFFFFFFFFFFFFF,
+        ReservedMask = ResetMenuHistory | (DeviceStatusFlagsHiHelpers.ReservedBitsMask << DeviceStatusFlagsHiHelpers.ReservedBitsOffset),
 
         /// <summary>
         /// Default, expected flags for DeviceStatusFlagsHi. If FlagsHaveBeenSet is ever cleared and sent
@@ -62,6 +62,44 @@ namespace INTV.LtoFlash.Model
     /// </summary>
     internal static class DeviceStatusFlagsHiHelpers
     {
+        #region Reserved Bits
+
+        /// <summary>
+        /// The reserved bits mask.
+        /// </summary>
+        internal const ulong ReservedBitsMask = 0x7FFFFFFFFFFFFFFF;
+
+        /// <summary>
+        /// Location in the bit array where the reserved configuration bits begin.
+        /// </summary>
+        internal const int ReservedBitsOffset = 0; // (0 --> 64)
+
+        private const int ReservedBitsCount = 62;
+
+        #endregion // Reserved Bits
+
+        #region Reset Menu History Bits
+
+        /// <summary>
+        /// Location in the bit array where the configuration bit for reset menu history bit is stored.
+        /// </summary>
+        internal const int ResetMenuHistoryBitsOffset = ReservedBitsOffset + ReservedBitsCount; // (62 --> 126)
+
+        private const int ResetMenuHistoryBitCount = 1;
+
+        #endregion // Reset Menu History Bits
+
+        #region Flags Have Been Set Bits
+
+        /// <summary>
+        /// Location in the bit array where the configuration bit for whether configuration flags are valid is stored.
+        /// </summary>
+        internal const int FlagsHaveBeenSetBitsOffset = ResetMenuHistoryBitsOffset + ResetMenuHistoryBitCount; // (63 --> 127)
+
+        private const int FlagsHaveBeenSetBitCount = 1;
+
+        #endregion // Flags Have Been Set Bits
+
         /// <summary>
         /// The firmware-version-specific configurable features.
         /// </summary>

@@ -97,6 +97,15 @@ namespace INTV.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value of the feature &apos;{0}&apos; cannot be modified at this time..
+        /// </summary>
+        internal static string ConfigurableFeature_InvalidWriteOperationMessageFormat {
+            get {
+                return ResourceManager.GetString("ConfigurableFeature_InvalidWriteOperationMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The adjacent input range for the 16 disc directions must be less than 8..
         /// </summary>
         internal static string ControllerKeys_AdjacentDistanceTooLarge {

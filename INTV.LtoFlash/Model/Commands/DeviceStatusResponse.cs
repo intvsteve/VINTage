@@ -45,21 +45,16 @@ namespace INTV.LtoFlash.Model.Commands
         public string UniqueId { get; private set; }
 
         /// <summary>
-        /// Gets the low half of the device status bits.
+        /// Gets the device status bits.
         /// </summary>
-        public DeviceStatusFlagsLo DeviceStatusLow { get; private set; }
-
-        /// <summary>
-        /// Gets the high half of the device status bits.
-        /// </summary>
-        public DeviceStatusFlagsHi DeviceStatusHigh { get; private set; }
+        public DeviceStatusFlags DeviceStatusFlags { get; private set; }
 
         /// <summary>
         /// Gets the hardware status flags of the device.
         /// </summary>
         public HardwareStatusFlags HardwareStatus
         {
-            get { return DeviceStatusLow.ToHardwareStatusFlags(); }
+            get { return DeviceStatusFlags.Lo.ToHardwareStatusFlags(); }
         }
 
         /// <summary>
@@ -67,7 +62,7 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public IntellivisionIIStatusFlags IntellivisionIIStatus
         {
-            get { return DeviceStatusLow.ToIntellivisionIICompatibilityFlags(); }
+            get { return DeviceStatusFlags.Lo.ToIntellivisionIICompatibilityFlags(); }
         }
 
         /// <summary>
@@ -75,7 +70,7 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public EcsStatusFlags EcsStatus
         {
-            get { return DeviceStatusLow.ToEcsCompatibilityFlags(); }
+            get { return DeviceStatusFlags.Lo.ToEcsCompatibilityFlags(); }
         }
 
         /// <summary>
@@ -83,7 +78,7 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public ShowTitleScreenFlags ShowTitleScreen
         {
-            get { return DeviceStatusLow.ToShowTitleScreenFlags(); }
+            get { return DeviceStatusFlags.Lo.ToShowTitleScreenFlags(); }
         }
 
         /// <summary>
@@ -91,7 +86,7 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public SaveMenuPositionFlags SaveMenuPosition
         {
-            get { return DeviceStatusLow.ToSaveMenuPositionFlags(); }
+            get { return DeviceStatusFlags.Lo.ToSaveMenuPositionFlags(); }
         }
 
         /// <summary>
@@ -99,7 +94,7 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public bool BackgroundGC
         {
-            get { return DeviceStatusLow.ToBackgroundGC(); }
+            get { return DeviceStatusFlags.Lo.ToBackgroundGC(); }
         }
 
         /// <summary>
@@ -107,7 +102,15 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public bool Keyclicks
         {
-            get { return DeviceStatusLow.ToKeyclicks(); }
+            get { return DeviceStatusFlags.Lo.ToKeyclicks(); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether or not the device allows access to its onboard configuration menu.
+        /// </summary>
+        public bool EnableConfigMenuOnCart
+        {
+            get { return DeviceStatusFlags.Lo.ToEnableOnboardConfigMenu(); }
         }
 
         /// <summary>
@@ -115,7 +118,7 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public bool ZeroLtoFlashRam
         {
-            get { return DeviceStatusLow.ToZeroLtoFlashRam(); }
+            get { return DeviceStatusFlags.Lo.ToZeroLtoFlashRam(); }
         }
 
         #region ByteSerializer Properties
@@ -162,8 +165,9 @@ namespace INTV.LtoFlash.Model.Commands
             var lowPart = System.BitConverter.ToUInt64(responseBuffer, 0);
             var highPart = System.BitConverter.ToUInt64(responseBuffer, 8);
             UniqueId = highPart.ToString("X16") + lowPart.ToString("X16");
-            DeviceStatusLow = (DeviceStatusFlagsLo)reader.ReadUInt64();
-            DeviceStatusHigh = (DeviceStatusFlagsHi)reader.ReadUInt64();
+            var lowStatusBits = (DeviceStatusFlagsLo)reader.ReadUInt64();
+            var highStatusBits = (DeviceStatusFlagsHi)reader.ReadUInt64();
+            DeviceStatusFlags = new Model.DeviceStatusFlags(lowStatusBits, highStatusBits);
             numRead += StatusBytesSize;
 
             // TODO: throw here?

@@ -77,29 +77,48 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// The command to set ECS compatibility mode.
         /// </summary>
-        public static readonly VisualDeviceCommand SetEcsCompatibilityCommand = new VisualDeviceCommand(OnSetEcsCompatibilityCommand, CanSetEcsCompatibilityCommand)
+        public static readonly VisualDeviceCommand SetEcsCompatibilityCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetEcsCompatibilityCommand)
         {
             UniqueId = UniqueNameBase + ".SetEcsCompatibilityCommand",
             Name = Resources.Strings.SetEcsCompatibilityCommand_Name,
             SmallIcon = typeof(INTV.Shared.Commands.CommandGroup).LoadImageResource("ViewModel/Resources/Images/ecs_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetEcsCompatibilityCommand_Name,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             ToolTipDescription = Resources.Strings.SetEcsCompatibilityCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
 
-        // TODO Remove this, and have command use a No-Op. This is essentially a 'grouper' for the dropdown ring / submenu.
-        private static void OnSetEcsCompatibilityCommand(object parameter)
-        {
-            var ltoFlashViewModel = parameter as LtoFlashViewModel;
-            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
-            System.Diagnostics.Debug.WriteLine("SetEcsCompatibilityCommand");
-        }
-
         private static bool CanSetEcsCompatibilityCommand(object parameter)
         {
             var viewModel = parameter as LtoFlashViewModel;
             var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            var toolTipTitle = Resources.Strings.SetEcsCompatibilityCommand_Name;
+            var toolTipDescription = Resources.Strings.SetEcsCompatibilityCommand_TipDescription;
+            if ((viewModel != null) && (viewModel.ActiveLtoFlashDevice != null) && (device != null) && device.IsValid)
+            {
+                var ecsCompatibility = viewModel.ActiveLtoFlashDevice.EcsCompatibility;
+                toolTipTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.EcsCompatibilityMode_ToolTipTitleFormat, ecsCompatibility.ToDisplayString());
+                switch (ecsCompatibility)
+                {
+                    case EcsStatusFlags.None:
+                        toolTipDescription = Resources.Strings.EcsCompatibilityMode_Enabled_ToolTipDescription;
+                        break;
+                    case EcsStatusFlags.EnabledForRequiredAndOptional:
+                        toolTipDescription = Resources.Strings.EcsCompatibilityMode_Limited_ToolTipDescription;
+                        break;
+                    case EcsStatusFlags.EnabledForRequired:
+                        toolTipDescription = Resources.Strings.EcsCompatibilityMode_Strict_ToolTipDescription;
+                        break;
+                    case EcsStatusFlags.Disabled:
+                        toolTipDescription = Resources.Strings.EcsCompatibilityMode_Disabled_ToolTipDescription;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            SetEcsCompatibilityCommand.ToolTipTitle = toolTipTitle;
+            SetEcsCompatibilityCommand.ToolTipDescription = toolTipDescription;
             return device.CanExecuteCommand(SetEcsCompatibilityCommand);
         }
 
@@ -154,29 +173,45 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// The command to set Intellivision II compatibility mode.
         /// </summary>
-        public static readonly VisualDeviceCommand SetIntellivisionIICompatibilityCommand = new VisualDeviceCommand(OnSetIntellivisionIICompatibility, CanSetIntellivisionIICompatibility)
+        public static readonly VisualDeviceCommand SetIntellivisionIICompatibilityCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetIntellivisionIICompatibility)
         {
             UniqueId = UniqueNameBase + ".SetIntellivisionIICompatibilityCommand",
             Name = Resources.Strings.SetIntellivisionIICompatibilityCommand_Name,
             SmallIcon = typeof(INTV.Shared.Commands.CommandGroup).LoadImageResource("ViewModel/Resources/Images/intv_ii_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetIntellivisionIICompatibilityCommand_Name,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             ToolTipDescription = Resources.Strings.SetIntellivisionIICompatibilityCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
 
-        // TODO Remove this, and have command use a No-Op. This is essentially a 'grouper' for the dropdown ring.
-        private static void OnSetIntellivisionIICompatibility(object parameter)
-        {
-            var ltoFlashViewModel = parameter as LtoFlashViewModel;
-            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
-            System.Diagnostics.Debug.WriteLine("SetIntellivisionIICompatibilityCommand");
-        }
-
         private static bool CanSetIntellivisionIICompatibility(object parameter)
         {
             var viewModel = parameter as LtoFlashViewModel;
             var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            var toolTipTitle = Resources.Strings.SetIntellivisionIICompatibilityCommand_Name;
+            var toolTipDescription = Resources.Strings.SetIntellivisionIICompatibilityCommand_TipDescription;
+            if ((viewModel != null) && (viewModel.ActiveLtoFlashDevice != null) && (device != null) && device.IsValid)
+            {
+                var intellivisionIICompatibility = viewModel.ActiveLtoFlashDevice.IntvIICompatibility;
+                toolTipTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.IntellivisionIICompatibilityMode_ToolTipTitleFormat, intellivisionIICompatibility.ToDisplayString());
+                switch (intellivisionIICompatibility)
+                {
+                    case IntellivisionIIStatusFlags.None:
+                        toolTipDescription = Resources.Strings.IntellivisionIICompatibilityMode_Disabled_ToolTipDescription;
+                        break;
+                    case IntellivisionIIStatusFlags.Conservative:
+                        toolTipDescription = Resources.Strings.IntellivisionIICompatibilityMode_Limited_ToolTipDescription;
+                        break;
+                    case IntellivisionIIStatusFlags.Aggressive:
+                        toolTipDescription = Resources.Strings.IntellivisionIICompatibilityMode_Full_ToolTipDescription;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            SetIntellivisionIICompatibilityCommand.ToolTipTitle = toolTipTitle;
+            SetIntellivisionIICompatibilityCommand.ToolTipDescription = toolTipDescription;
             return device.CanExecuteCommand(SetIntellivisionIICompatibilityCommand);
         }
 
@@ -220,29 +255,45 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// The command to set whether or not to show the title screen.
         /// </summary>
-        public static readonly VisualDeviceCommand SetShowTitleScreenCommand = new VisualDeviceCommand(OnSetShowTitleScreenCommand, CanSetShowTitleScreenCommand)
+        public static readonly VisualDeviceCommand SetShowTitleScreenCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetShowTitleScreenCommand)
         {
             UniqueId = UniqueNameBase + ".SetShowTitleScreenCommand",
             Name = Resources.Strings.SetShowTitleScreenCommand_Name,
             SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/lto_flash_title_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetShowTitleScreenCommand_Name,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             ToolTipDescription = Resources.Strings.SetShowTitleScreenCommand_TipDescription,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
 
-        // TODO Remove this, and have command use a No-Op. This is essentially a 'grouper' for the dropdown ring.
-        private static void OnSetShowTitleScreenCommand(object parameter)
-        {
-            var ltoFlashViewModel = parameter as LtoFlashViewModel;
-            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
-            System.Diagnostics.Debug.WriteLine("SetShowTitleScreenCommand");
-        }
-
         private static bool CanSetShowTitleScreenCommand(object parameter)
         {
             var viewModel = parameter as LtoFlashViewModel;
             var device = (viewModel != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            var toolTipTitle = Resources.Strings.SetShowTitleScreenCommand_Name;
+            var toolTipDescription = Resources.Strings.SetShowTitleScreenCommand_TipDescription;
+            if ((viewModel != null) && (viewModel.ActiveLtoFlashDevice != null) && (device != null) && device.IsValid)
+            {
+                var showTitleScreen = viewModel.ActiveLtoFlashDevice.ShowTitleScreen;
+                toolTipTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.ShowTitleScreen_ToolTipTitleFormat, showTitleScreen.ToDisplayString());
+                switch (showTitleScreen)
+                {
+                    case ShowTitleScreenFlags.Always:
+                        toolTipDescription = Resources.Strings.ShowTitleScreen_Always_ToolTipDescription;
+                        break;
+                    case ShowTitleScreenFlags.OnPowerUp:
+                        toolTipDescription = Resources.Strings.ShowTitleScreen_OnPowerUp_ToolTipDescription;
+                        break;
+                    case ShowTitleScreenFlags.Never:
+                        toolTipDescription = Resources.Strings.ShowTitleScreen_Never_ToolTipDescription;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            SetShowTitleScreenCommand.ToolTipTitle = toolTipTitle;
+            SetShowTitleScreenCommand.ToolTipDescription = toolTipDescription;
             return (device != null) && device.CanExecuteCommand(SetShowTitleScreenCommand);
         }
 
@@ -286,7 +337,7 @@ namespace INTV.LtoFlash.Commands
         /// <summary>
         /// The command to set whether to retain last selected menu position.
         /// </summary>
-        public static readonly VisualDeviceCommand SetSaveMenuPositionCommand = new VisualDeviceCommand(OnSetSaveMenuPositionCommand, CanSetSaveMenuPositionCommand)
+        public static readonly VisualDeviceCommand SetSaveMenuPositionCommand = new VisualDeviceCommand(RelayCommand.NoOp, CanSetSaveMenuPositionCommand)
         {
             UniqueId = UniqueNameBase + ".SetSaveMenuPositionCommand",
             Name = Resources.Strings.SetSaveMenuPositionCommand_Name,
@@ -298,18 +349,34 @@ namespace INTV.LtoFlash.Commands
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands
         };
 
-        // TODO Remove this, and have command use a No-Op. This is essentially a 'grouper' for the dropdown ring.
-        private static void OnSetSaveMenuPositionCommand(object parameter)
-        {
-            var ltoFlashViewModel = parameter as LtoFlashViewModel;
-            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
-            System.Diagnostics.Debug.WriteLine("SetSaveMenuPositionCommand");
-        }
-
         private static bool CanSetSaveMenuPositionCommand(object parameter)
         {
             var viewModel = parameter as LtoFlashViewModel;
             var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            var toolTipTitle = Resources.Strings.SetSaveMenuPositionCommand_TipTitle;
+            var toolTipDescription = Resources.Strings.SetSaveMenuPositionCommand_TipDescription;
+            if ((viewModel != null) && (viewModel.ActiveLtoFlashDevice != null) && (device != null) && device.IsValid)
+            {
+                var saveMenuPosition = viewModel.ActiveLtoFlashDevice.SaveMenuPosition;
+                toolTipTitle = string.Format(CultureInfo.CurrentCulture, Resources.Strings.SaveMenuPosition_ToolTipTitleFormat, saveMenuPosition.ToDisplayString());
+                switch (saveMenuPosition)
+                {
+                    case SaveMenuPositionFlags.Always:
+                        toolTipDescription = Resources.Strings.SaveMenuPosition_Always_ToolTipDescription;
+                        break;
+                    case SaveMenuPositionFlags.DuringSessionOnly:
+                    case SaveMenuPositionFlags.Reserved:
+                        toolTipDescription = Resources.Strings.SaveMenuPosition_SessionOnly_ToolTipDescription;
+                        break;
+                    case SaveMenuPositionFlags.Never:
+                        toolTipDescription = Resources.Strings.SaveMenuPosition_Never_ToolTipDescription;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            SetSaveMenuPositionCommand.ToolTipTitle = toolTipTitle;
+            SetSaveMenuPositionCommand.ToolTipDescription = toolTipDescription;
             return device.CanExecuteCommand(SetSaveMenuPositionCommand);
         }
 
@@ -416,10 +483,43 @@ namespace INTV.LtoFlash.Commands
 
         #endregion // SetKeyclicksCommand
 
+        #region SetEnableConfigMenuOnCartCommand
+
+        /// <summary>
+        /// The command to set whether the on-cartridge configuration menu is accessible from the console.
+        /// </summary>
+        public static readonly VisualDeviceCommand SetEnableConfigMenuOnCartCommand = new VisualDeviceCommand(OnSetEnableConfigMenuOnCartCommand, CanSetEnableConfigMenuOnCartCommand)
+        {
+            UniqueId = UniqueNameBase + ".SetEnableConfigMenuOnCartCommand",
+            Name = Resources.Strings.SetEnableConfigMenuOnCartCommand_Name,
+            SmallIcon = typeof(DeviceCommandGroup).LoadImageResource("Resources/Images/settings_16xLG.png"),
+            ToolTipTitle = Resources.Strings.SetEnableConfigMenuOnCartCommand_TipTitle,
+            ToolTipDescription = Resources.Strings.SetEnableConfigMenuOnCartCommand_TipDescription,
+            ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
+            PreferredParameterType = typeof(LtoFlashViewModel),
+            RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands,
+            ConfigurationBits = DeviceStatusFlags.EnableCartConfig
+        };
+
+        private static void OnSetEnableConfigMenuOnCartCommand(object parameter)
+        {
+            var ltoFlashViewModel = parameter as LtoFlashViewModel;
+            var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
+        }
+
+        private static bool CanSetEnableConfigMenuOnCartCommand(object parameter)
+        {
+            var viewModel = parameter as LtoFlashViewModel;
+            var device = (parameter != null) ? viewModel.ActiveLtoFlashDevice.Device : null;
+            return device.CanExecuteCommand(SetEnableConfigMenuOnCartCommand);
+        }
+
+        #endregion // SetEnableConfigMenuOnCartCommand
+
         #region SetRandomizeLtoFlashRamCommand
 
         /// <summary>
-        /// The command to set whether or not to randomize LTO Flash! RAM when launching a ROM  .
+        /// The command to set whether or not to randomize LTO Flash! RAM when launching a ROM.
         /// </summary>
         public static readonly VisualDeviceCommand SetRandomizeLtoFlashRamCommand = new VisualDeviceCommand(OnSetRandomizeLtoFlashRamCommand, CanSetRandomizeLtoFlashRamCommand)
         {
@@ -431,7 +531,7 @@ namespace INTV.LtoFlash.Commands
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             PreferredParameterType = typeof(LtoFlashViewModel),
             RequiredProtocolCommands = DeviceHelpers.SetConfigurationProtocolCommands,
-            ConfigurationBits = new DeviceStatusFlags(DeviceStatusFlagsLo.ZeroRamBeforeLoad)
+            ConfigurationBits = DeviceStatusFlags.ZeroRamBeforeLoad
         };
 
         private static void OnSetRandomizeLtoFlashRamCommand(object parameter)

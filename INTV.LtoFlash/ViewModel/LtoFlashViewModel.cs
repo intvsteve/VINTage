@@ -1183,6 +1183,10 @@ namespace INTV.LtoFlash.ViewModel
                 ResetCachedFileSystemsCompareResult();
                 HostPCMenuLayout.ClearItemStates(AttachedPeripherals);
             }
+            if (newDevice != null)
+            {
+                newDevice.RefreshConfigurableFeatureCommands();
+            }
             UpdateFileSystemsInSync(doFileSystemCompare: false);
         }
 

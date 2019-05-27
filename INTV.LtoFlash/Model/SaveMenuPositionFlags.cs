@@ -85,14 +85,14 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Produce <see cref="DeviceStatusFlagsLo"/> containing updated <see cref="SaveMenuPositionFlags"/> for a given <see cref="Device"/>.
+        /// Produce <see cref="DeviceStatusFlags"/> containing updated <see cref="SaveMenuPositionFlags"/> for a given <see cref="Device"/>.
         /// </summary>
         /// <param name="device">The <see cref="Device"/> whose updated flags are desired.</param>
         /// <param name="newSaveMenuPositionFlags">New <see cref="SaveMenuPositionFlags"/> to apply to <paramref name="device"/>.</param>
-        /// <returns>A new set of <see cref="DeviceStatusFlagsLo"/> with updated SaveMenuPositionFlags for <paramref name="device"/>.</returns>
-        internal static DeviceStatusFlagsLo UpdateStatusFlags(this Device device, SaveMenuPositionFlags newSaveMenuPositionFlags)
+        /// <returns>A new set of <see cref="DeviceStatusFlags"/> with updated SaveMenuPositionFlags for <paramref name="device"/>.</returns>
+        internal static DeviceStatusFlags UpdateStatusFlags(this Device device, SaveMenuPositionFlags newSaveMenuPositionFlags)
         {
-            var deviceStatusFlags = device.ComposeStatusFlagsLo() & ~DeviceStatusFlagsLo.SaveMenuPositionMask;
+            var deviceStatusFlags = device.DeviceStatusFlags & ~DeviceStatusFlags.SaveMenuPositionMask;
             deviceStatusFlags |= newSaveMenuPositionFlags.ToDeviceStatusFlagsLo();
             return deviceStatusFlags;
         }

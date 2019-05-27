@@ -80,6 +80,18 @@ namespace INTV.LtoFlash.View
         private const string EcsCompatibilitySelectionPropertyName = "EcsCompatibilitySelection";
         private const string IntellivisionIICompatibilitySelectionPropertyName = "IntellivisionIICompatibilitySelection";
 
+        private static readonly IEnumerable<string> DeviceSettingsPropertyNames = new[]
+        {
+            "TitleScreenSelection",
+            "SaveMenuPositionSelection",
+            IntellivisionIICompatibilitySelectionPropertyName,
+            EcsCompatibilitySelectionPropertyName,
+            Device.BackgroundGCPropertyName,
+            Device.KeyclicksPropertyName,
+            Device.EnableConfigMenuOnCartPropertyName,
+            DeviceViewModel.RandomizeLtoFlashRamPropertyName,
+        };
+
         private static readonly Lazy<IReadOnlyDictionary<DeviceInfoFieldToolTipTag, VisualRelayCommand>> AdditionalToolTipsMap = new Lazy<IReadOnlyDictionary<DeviceInfoFieldToolTipTag, VisualRelayCommand>>(InitializeAdditionalToolTipsMap);
 
         #region Constructors
@@ -966,6 +978,7 @@ namespace INTV.LtoFlash.View
 
         private void HandleDevicePropertyChangedCore(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            var raiseSettingsPropertiesChanged = true;
             switch (e.PropertyName)
             {
                 case "DisplayName":
@@ -973,12 +986,15 @@ namespace INTV.LtoFlash.View
                 case Device.OwnerPropertyName:
                 case Device.UniqueIdPropertyName:
                     UpdateInfo();
+                    raiseSettingsPropertiesChanged = false;
                     break;
                 case Device.FirmwareRevisionsPropertyName:
                     UpdateFirmwareInfo();
+                    raiseSettingsPropertiesChanged = false;
                     break;
                 case Device.FileSystemStatisticsPropertyName:
                     UpdateFileSystemInfo();
+                    raiseSettingsPropertiesChanged = false;
                     break;
                 case Device.EcsCompatibilityPropertyName:
                     ECSCompatibilityButton.SelectItemWithTag((byte)ViewModel.ActiveLtoFlashDevice.EcsCompatibility);
@@ -999,7 +1015,15 @@ namespace INTV.LtoFlash.View
                     this.RaiseChangeValueForKey(e.PropertyName);
                     break;
                 default:
+                    raiseSettingsPropertiesChanged = false;
                     break;
+            }
+            if (raiseSettingsPropertiesChanged)
+            {
+                foreach (var propertyName in DeviceSettingsPropertyNames)
+                {
+                    this.RaiseChangeValueForKey(propertyName);
+                }
             }
         }
 

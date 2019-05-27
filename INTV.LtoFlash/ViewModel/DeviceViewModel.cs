@@ -461,16 +461,13 @@ namespace INTV.LtoFlash.ViewModel
             var currentValue = configurableFeature.CurrentValue;
             return currentValue;
         }
-
+            
         private void SetConfigurableFeatureValueOnDevice<T>(string configurableFeatureUniqueId, T newValue)
         {
             if (Device != null)
             {
                 var configurableFeature = ConfigurableLtoFlashFeatures[configurableFeatureUniqueId] as ConfigurableLtoFlashFeature<T>;
-                var currentValue = configurableFeature.CurrentValue;
-                configurableFeature.SetCurrentValue(newValue);
-                UpdateProperty<T>(configurableFeatureUniqueId, newValue, currentValue, (p, v) => configurableFeature.SetValueOnDevice(Device, v));
-                RefreshConfigurableFeatureCommand(configurableFeatureUniqueId);
+                configurableFeature.SetValueOnDevice(Device, newValue);
             }
         }
 

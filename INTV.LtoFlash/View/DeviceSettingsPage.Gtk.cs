@@ -215,7 +215,7 @@ namespace INTV.LtoFlash.View
         /// <param name="e">Not applicable.</param>
         protected void HandleRandomizeLtoFlashRamChanged(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.Assert (object.ReferenceEquals (sender, _randomizeLtoFlashRam), "Got value change from wrong control! Expected Randomize LTO Flash! RAM.");
+            System.Diagnostics.Debug.Assert(object.ReferenceEquals(sender, _randomizeLtoFlashRam), "Got value change from wrong control! Expected Randomize LTO Flash! RAM.");
             if ((ViewModel != null) && !_updating)
             {
                 ViewModel.ActiveLtoFlashDevice.RandomizeLtoFlashRam = _randomizeLtoFlashRam.Active;
@@ -229,7 +229,7 @@ namespace INTV.LtoFlash.View
         /// <param name="e">Not applicable.</param>
         protected void HandleEnableConfigMenuChanged(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.Assert (object.ReferenceEquals (sender, _enableCartConfigMenu), "Got value change from wrong control! Expected Enable configuration menu.");
+            System.Diagnostics.Debug.Assert(object.ReferenceEquals(sender, _enableCartConfigMenu), "Got value change from wrong control! Expected Enable configuration menu.");
             if ((ViewModel != null) && !_updating)
             {
                 ViewModel.ActiveLtoFlashDevice.EnableConfigMenuOnCart = _enableCartConfigMenu.Active;
@@ -250,8 +250,7 @@ namespace INTV.LtoFlash.View
             }
         }
 
-
-        private void InitializeCommandVisualsToCommandsMap ()
+        private void InitializeCommandVisualsToCommandsMap()
         {
             _blockWhenBusy[DeviceCommandGroup.SetDeviceNameCommand] = DeviceCommandGroup.SetDeviceNameCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetDeviceOwnerCommand] = DeviceCommandGroup.SetDeviceOwnerCommand.BlockWhenAppIsBusy;
@@ -264,7 +263,8 @@ namespace INTV.LtoFlash.View
             _blockWhenBusy[DeviceCommandGroup.SetSaveMenuPositionCommand] = DeviceCommandGroup.SetSaveMenuPositionCommand.BlockWhenAppIsBusy;
             _blockWhenBusy[DeviceCommandGroup.SetBackgroundGarbageCollectCommand] = DeviceCommandGroup.SetBackgroundGarbageCollectCommand.BlockWhenAppIsBusy;
 
-            foreach (var command in _blockWhenBusy.Keys) {
+            foreach (var command in _blockWhenBusy.Keys)
+            {
                 command.BlockWhenAppIsBusy = false;
             }
 
@@ -282,7 +282,8 @@ namespace INTV.LtoFlash.View
             _titleScreenSettingLabel.TooltipText = Resources.Strings.SetShowTitleScreenCommand_TipDescription;
             _saveMenuPositionSettingLabel.TooltipText = Resources.Strings.SetSaveMenuPositionCommand_TipDescription;
 
-            foreach (var controlCommandMapEntry in _controlCommandMap) {
+            foreach (var controlCommandMapEntry in _controlCommandMap)
+            {
                 var commandVisual = controlCommandMapEntry.Key;
                 var controlCommand = controlCommandMapEntry.Value;
                 commandVisual.TooltipText = controlCommand.ToolTipDescription;

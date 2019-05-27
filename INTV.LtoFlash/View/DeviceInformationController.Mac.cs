@@ -763,9 +763,28 @@ namespace INTV.LtoFlash.View
             {
                 var commandVisual = controlCommandMapEntry.Key;
                 var controlCommand = controlCommandMapEntry.Value;
-                if (additionalItemsMap.ContainsKey((DeviceInfoFieldToolTipTag)commandVisual.Tag))
+                var tag = (DeviceInfoFieldToolTipTag)commandVisual.Tag;
+                if (additionalItemsMap.ContainsKey(tag))
                 {
-                    commandVisual.ToolTip = controlCommand.ToolTipDescription;
+                    var toolTip = controlCommand.ToolTipDescription;
+                    switch (tag)
+                    {
+                        case DeviceInfoFieldToolTipTag.EcsCompatibilty:
+                            toolTip = Resources.Strings.SetEcsCompatibilityCommand_TipDescription;
+                            break;
+                        case DeviceInfoFieldToolTipTag.IntellivisionIICompatibility:
+                            toolTip = Resources.Strings.SetIntellivisionIICompatibilityCommand_TipDescription;
+                            break;
+                        case DeviceInfoFieldToolTipTag.SaveMenuPosition:
+                            toolTip = Resources.Strings.SetSaveMenuPositionCommand_TipDescription;
+                            break;
+                        case DeviceInfoFieldToolTipTag.ShowTitleScreen:
+                            toolTip = Resources.Strings.SetShowTitleScreenCommand_TipDescription;
+                            break;
+                        default:
+                            break;
+                    }
+                    commandVisual.ToolTip = toolTip;
                 }
                 else
                 {

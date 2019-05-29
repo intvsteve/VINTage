@@ -122,16 +122,6 @@ namespace INTV.LtoFlash.Model
         #endregion // IConfigurableLtoFlashFeature Methods
 
         /// <summary>
-        /// Directly modify the current value of the feature.
-        /// </summary>
-        /// <param name="newValue">The new value to unconditionally assign to <see cref="CurrentValue"/>.</param>
-        public void SetCurrentValue(T newValue)
-        {
-            this.VerifyWriteAccess<T>(); // throws if read-only
-            CurrentValue = newValue;
-        }
-
-        /// <summary>
         /// Converts the given new value to its corresponding device status flags.
         /// </summary>
         /// <param name="newValue">The value to convert to <see cref="DeviceStatusFlags"/>.</param>

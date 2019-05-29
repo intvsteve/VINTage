@@ -131,30 +131,11 @@ namespace INTV.LtoFlash.Tests.Model
         }
 
         [Fact]
-        public void ConfigurableLtoFlashFeature_SetCurrentValue_ChangesCurrentValue()
-        {
-            var feature = new ConfigurableTestLtoFlashIntFeature("SetCurrentValue", -1);
-
-            var newValue = 16;
-            feature.SetCurrentValue(newValue);
-
-            Assert.Equal(newValue, feature.CurrentValue);
-        }
-
-        [Fact]
         public void ReadOnlyConfigurableLtoFlashFeature_SetValueOnDevice_ThrowsInvalidOperationException()
         {
             var feature = ConfigurableTestLtoFlashIntFeature.CreateReadOnly();
 
             Assert.Throws<InvalidOperationException>(() => feature.SetValueOnDevice(null, 6));
-        }
-
-        [Fact]
-        public void ReadOnlyConfigurableLtoFlashFeature_SetCurrentValue_ThrowsInvalidOperationException()
-        {
-            var feature = ConfigurableTestLtoFlashIntFeature.CreateReadOnly() as ConfigurableLtoFlashFeature<int>;
-
-            Assert.Throws<InvalidOperationException>(() => feature.SetCurrentValue(8));
         }
 
         [Fact]

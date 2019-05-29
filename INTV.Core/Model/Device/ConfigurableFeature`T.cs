@@ -79,7 +79,7 @@ namespace INTV.Core.Model.Device
         public T FactoryDefaultValue { get; private set; }
 
         /// <inheritdoc />
-        public T CurrentValue
+        public virtual T CurrentValue
         {
             get
             {

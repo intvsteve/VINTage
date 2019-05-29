@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Device;
 using INTV.LtoFlash.Model.Commands;
@@ -28,6 +29,13 @@ namespace INTV.LtoFlash.Model
     /// Common implementation for configurable Locutus features.
     /// </summary>
     /// <typeparam name="T">The data type of the configurable feature.</typeparam>
+    /// <remarks>The BIG QUESTION here is: would it be better to scrap this and entirely base it on
+    /// ALWAYS getting the value from a Locutus instance and directly fetching from the current DeviceStatusFlags?
+    /// It would be simpler than individually tracking each feature's pending value. The Locutus model could then
+    /// simply maintain the current and pending <see cref="DeviceStatusFlags"/> and when queried for a setting's value,
+    /// the value would come from either last known or pending flags.  All changes to configurable feature values would
+    /// operate on the Pending flags, which is what the present code is effectively accomplishing, albeit via a more
+    /// explicit and obvious implementation, which consequently uses more memory.</remarks>
     public abstract class ConfigurableLtoFlashFeature<T> : ConfigurableFeature<T>, IConfigurableLtoFlashFeature
     {
         /// <summary>
@@ -43,6 +51,24 @@ namespace INTV.LtoFlash.Model
             FeatureFlagsMask = featureFlagsMask;
         }
 
+        #region ConfigurableFeature<T> Property Overrides
+
+        /// <inheritdoc />
+        public override T CurrentValue
+        {
+            get
+            {
+                var currentValue = HasPendingValue ? PendingValue : base.CurrentValue;
+                return currentValue;
+            }
+            protected set
+            {
+                base.CurrentValue = value;
+            }
+        }
+
+        #endregion // ConfigurableFeature<T> Property Overrides
+
         #region IConfigurableLtoFlashFeature Properties
 
         /// <summary>
@@ -51,6 +77,9 @@ namespace INTV.LtoFlash.Model
         public DeviceStatusFlags FeatureFlagsMask { get; private set; }
 
         #endregion // IConfigurableLtoFlashFeature Properties
+
+        private bool HasPendingValue { get; set; }
+        private T PendingValue { get; set; }
 
         #region IConfigurableFeature<T> Overrides
 
@@ -66,9 +95,14 @@ namespace INTV.LtoFlash.Model
         public override void SetValueOnDevice(IPeripheral device, T newValue)
         {
             this.VerifyWriteAccess<T>(); // throws if read-only
-            var locutus = (Device)device;
-            var newConfiguration = GetUpdatedConfigurationFlags(locutus, newValue);
-            locutus.SetConfiguration(newConfiguration, (m, e) => locutus.ErrorHandler(DeviceStatusFlags.ZeroRamBeforeLoad, ProtocolCommandId.SetConfiguration, m, e));
+            if (INotifyPropertyChangedHelpers.SafeDidValueChangeCompare(newValue, CurrentValue))
+            {
+                var locutus = (Device)device;
+                var newConfiguration = GetUpdatedConfigurationFlags(locutus, newValue);
+                HasPendingValue = true;
+                PendingValue = newValue;
+                locutus.SetConfiguration(newConfiguration, (c, p, r) => SuccessHandler(locutus, c), (m, e) => ErrorHandler(locutus, m, e));
+            }
         }
 
         #endregion // IConfigurableFeature<T> Overrides
@@ -86,16 +120,6 @@ namespace INTV.LtoFlash.Model
         }
 
         #endregion // IConfigurableLtoFlashFeature Methods
-
-        /// <summary>
-        /// Directly modify the current value of the feature.
-        /// </summary>
-        /// <param name="newValue">The new value to unconditionally assign to <see cref="CurrentValue"/>.</param>
-        public void SetCurrentValue(T newValue)
-        {
-            this.VerifyWriteAccess<T>(); // throws if read-only
-            CurrentValue = newValue;
-        }
 
         /// <summary>
         /// Converts the given new value to its corresponding device status flags.
@@ -116,6 +140,23 @@ namespace INTV.LtoFlash.Model
             var configuration = device.DeviceStatusFlags & ~FeatureFlagsMask;
             configuration |= ConvertValueToDeviceStatusFlags(newValue);
             return configuration;
+        }
+
+        private void SuccessHandler(Device locutus, bool cancelled)
+        {
+            var valueChanged = !cancelled && HasPendingValue;
+            HasPendingValue = false;
+            if (valueChanged)
+            {
+                CurrentValue = PendingValue;
+                locutus.ReportConfigurableFeatureValueUpdated(UniqueId);
+            }
+        }
+
+        private bool ErrorHandler(Device locutus, string errorMessage, Exception exception)
+        {
+            HasPendingValue = false;
+            return locutus.ErrorHandler(FeatureFlagsMask, ProtocolCommandId.SetConfiguration, errorMessage, exception);
         }
 
         /// <summary>

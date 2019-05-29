@@ -729,6 +729,17 @@ namespace INTV.LtoFlash.Model
             return removedActivity;
         }
 
+        /// <summary>
+        /// Report that the value of a configurable feature has been changed.
+        /// </summary>
+        /// <param name="configurableFeatureUniqueId">The unique identifier of the feature whose value was updated.</param>
+        internal void ReportConfigurableFeatureValueUpdated(string configurableFeatureUniqueId)
+        {
+            // does this need to be done via:
+            // SingleInstanceApplication.MainThreadDispatcher.BeginInvoke(new Action(() => );
+            this.RaisePropertyChanged(configurableFeatureUniqueId);
+        }
+
 #if DEBUG
 
         /// <summary>

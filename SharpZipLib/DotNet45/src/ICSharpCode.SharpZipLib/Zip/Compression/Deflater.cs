@@ -183,7 +183,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			}
 			else if (level < NO_COMPRESSION || level > BEST_COMPRESSION)
 			{
-				throw new ArgumentOutOfRangeException(nameof(level));
+				throw new ArgumentOutOfRangeException("level");
 			}
 
 			pending = new DeflaterPending();
@@ -354,7 +354,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			}
 			else if (level < NO_COMPRESSION || level > BEST_COMPRESSION)
 			{
-				throw new ArgumentOutOfRangeException(nameof(level));
+				throw new ArgumentOutOfRangeException("level");
 			}
 
 			if (this.level != level)

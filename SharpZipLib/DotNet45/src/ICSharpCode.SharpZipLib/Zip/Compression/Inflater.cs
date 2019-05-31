@@ -196,7 +196,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			litlenTree = null;
 			distTree = null;
 			isLastBlock = false;
-			adler?.Reset();
+			if (adler != null)
+			{
+				adler.Reset();
+			}
 		}
 
 		/// <summary>
@@ -408,9 +411,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				neededBits -= 8;
 			}
 
-			if ((int)adler?.Value != readAdler)
+			var adlerValue = adler == null ? 0 : (int)adler.Value;
+			if (adlerValue != readAdler)
 			{
-				throw new SharpZipBaseException("Adler chksum doesn't match: " + (int)adler?.Value + " vs. " + readAdler);
+				throw new SharpZipBaseException("Adler chksum doesn't match: " + adlerValue + " vs. " + readAdler);
 			}
 
 			mode = FINISHED;
@@ -590,17 +594,17 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			if (index < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(index));
+				throw new ArgumentOutOfRangeException("index");
 			}
 
 			if (count < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(count));
+				throw new ArgumentOutOfRangeException("count");
 			}
 
 			if (!IsNeedingDictionary)
@@ -608,13 +612,19 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				throw new InvalidOperationException("Dictionary is not needed");
 			}
 
-			adler?.Update(new ArraySegment<byte>(buffer, index, count));
+			if (adler != null)
+			{
+				adler.Update(new ArraySegment<byte>(buffer, index, count));
+			}
 
 			if (adler != null && (int)adler.Value != readAdler)
 			{
 				throw new SharpZipBaseException("Wrong adler checksum");
 			}
-			adler?.Reset();
+			if (adler != null)
+			{
+				adler.Reset();
+			}
 			outputWindow.CopyDict(buffer, index, count);
 			mode = DECODE_BLOCKS;
 		}
@@ -679,7 +689,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			return Inflate(buffer, 0, buffer.Length);
@@ -716,17 +726,17 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			if (count < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(count), "count cannot be negative");
+				throw new ArgumentOutOfRangeException("count", "count cannot be negative");
 			}
 
 			if (offset < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(offset), "offset cannot be negative");
+				throw new ArgumentOutOfRangeException("offset", "offset cannot be negative");
 			}
 
 			if (offset + count > buffer.Length)
@@ -760,7 +770,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					int more = outputWindow.CopyOutput(buffer, offset, count);
 					if (more > 0)
 					{
-						adler?.Update(new ArraySegment<byte>(buffer, offset, more));
+						if (adler != null)
+						{
+							adler.Update(new ArraySegment<byte>(buffer, offset, more));
+						}
 						offset += more;
 						bytesCopied += more;
 						totalOut += (long)more;

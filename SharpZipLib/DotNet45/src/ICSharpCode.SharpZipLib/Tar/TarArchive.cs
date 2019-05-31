@@ -68,7 +68,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (stream == null)
 			{
-				throw new ArgumentNullException(nameof(stream));
+				throw new ArgumentNullException("stream");
 			}
 
 			tarIn = stream;
@@ -82,7 +82,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (stream == null)
 			{
-				throw new ArgumentNullException(nameof(stream));
+				throw new ArgumentNullException("stream");
 			}
 
 			tarOut = stream;
@@ -104,7 +104,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (inputStream == null)
 			{
-				throw new ArgumentNullException(nameof(inputStream));
+				throw new ArgumentNullException("inputStream");
 			}
 
 			var tarStream = inputStream as TarInputStream;
@@ -131,7 +131,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (inputStream == null)
 			{
-				throw new ArgumentNullException(nameof(inputStream));
+				throw new ArgumentNullException("inputStream");
 			}
 
 			if (inputStream is TarInputStream)
@@ -151,7 +151,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (outputStream == null)
 			{
-				throw new ArgumentNullException(nameof(outputStream));
+				throw new ArgumentNullException("outputStream");
 			}
 
 			var tarStream = outputStream as TarOutputStream;
@@ -178,7 +178,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (outputStream == null)
 			{
-				throw new ArgumentNullException(nameof(outputStream));
+				throw new ArgumentNullException("outputStream");
 			}
 
 			if (outputStream is TarOutputStream)
@@ -695,7 +695,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (sourceEntry == null)
 			{
-				throw new ArgumentNullException(nameof(sourceEntry));
+				throw new ArgumentNullException("sourceEntry");
 			}
 
 			if (isDisposed)

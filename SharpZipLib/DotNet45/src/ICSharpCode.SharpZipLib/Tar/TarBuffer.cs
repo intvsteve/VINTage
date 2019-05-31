@@ -116,6 +116,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		/// </summary>
 		protected TarBuffer()
 		{
+			IsStreamOwner = true;
 		}
 
 		/// <summary>
@@ -127,7 +128,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (inputStream == null)
 			{
-				throw new ArgumentNullException(nameof(inputStream));
+				throw new ArgumentNullException("inputStream");
 			}
 
 			return CreateInputTarBuffer(inputStream, DefaultBlockFactor);
@@ -143,12 +144,12 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (inputStream == null)
 			{
-				throw new ArgumentNullException(nameof(inputStream));
+				throw new ArgumentNullException("inputStream");
 			}
 
 			if (blockFactor <= 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(blockFactor), "Factor cannot be negative");
+				throw new ArgumentOutOfRangeException("blockFactor", "Factor cannot be negative");
 			}
 
 			var tarBuffer = new TarBuffer();
@@ -168,7 +169,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (outputStream == null)
 			{
-				throw new ArgumentNullException(nameof(outputStream));
+				throw new ArgumentNullException("outputStream");
 			}
 
 			return CreateOutputTarBuffer(outputStream, DefaultBlockFactor);
@@ -184,12 +185,12 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (outputStream == null)
 			{
-				throw new ArgumentNullException(nameof(outputStream));
+				throw new ArgumentNullException("outputStream");
 			}
 
 			if (blockFactor <= 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(blockFactor), "Factor cannot be negative");
+				throw new ArgumentOutOfRangeException("blockFactor", "Factor cannot be negative");
 			}
 
 			var tarBuffer = new TarBuffer();
@@ -235,7 +236,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (block == null)
 			{
-				throw new ArgumentNullException(nameof(block));
+				throw new ArgumentNullException("block");
 			}
 
 			if (block.Length != BlockSize)
@@ -267,7 +268,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (block == null)
 			{
-				throw new ArgumentNullException(nameof(block));
+				throw new ArgumentNullException("block");
 			}
 
 			if (block.Length != BlockSize)
@@ -398,7 +399,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		/// When the flag is true <see cref="Close" /> will close the underlying stream also.
 		/// </summary>
 		/// <remarks>The default value is true.</remarks>
-		public bool IsStreamOwner { get; set; } = true;
+        public bool IsStreamOwner { get; set; }	
 
 		/// <summary>
 		/// Get the current block number, within the current record, zero based.
@@ -448,7 +449,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (block == null)
 			{
-				throw new ArgumentNullException(nameof(block));
+				throw new ArgumentNullException("block");
 			}
 
 			if (outputStream == null)
@@ -487,7 +488,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			if (outputStream == null)
@@ -497,7 +498,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 
 			if ((offset < 0) || (offset >= buffer.Length))
 			{
-				throw new ArgumentOutOfRangeException(nameof(offset));
+				throw new ArgumentOutOfRangeException("offset");
 			}
 
 			if ((offset + BlockSize) > buffer.Length)

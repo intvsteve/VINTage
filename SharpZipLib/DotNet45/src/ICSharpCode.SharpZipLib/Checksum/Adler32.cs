@@ -119,7 +119,7 @@ namespace ICSharpCode.SharpZipLib.Checksum
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			Update(new ArraySegment<byte>(buffer, 0, buffer.Length));

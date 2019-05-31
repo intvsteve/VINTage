@@ -12,7 +12,7 @@ namespace ICSharpCode.SharpZipLib
 		/// </summary>
 		/// <param name="nameOfValue">Name of the variable, use: nameof()</param>
 		public ValueOutOfRangeException(string nameOfValue)
-			: base($"{nameOfValue} out of range") { }
+			: base(nameOfValue + " out of range") { }
 
 		/// <summary>
 		/// Initializes a new instance of the ValueOutOfRangeException class naming the the causing variable,
@@ -34,7 +34,7 @@ namespace ICSharpCode.SharpZipLib
 		/// <param name="maxValue">Expected maximum value</param>
 		/// <param name="minValue">Expected minimum value</param>
 		public ValueOutOfRangeException(string nameOfValue, string value, string maxValue, string minValue = "0") :
-			base($"{nameOfValue} out of range: {value}, should be {minValue}..{maxValue}")
+			base(nameOfValue + " out of range: " + value + ", should be " + minValue + ".." + maxValue)
 		{ }
 
 		private ValueOutOfRangeException()

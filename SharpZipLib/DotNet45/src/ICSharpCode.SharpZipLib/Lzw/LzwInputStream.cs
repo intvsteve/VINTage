@@ -48,7 +48,7 @@ namespace ICSharpCode.SharpZipLib.Lzw
 		/// When the flag is true <see cref="Stream.Dispose()" /> will close the underlying stream also.
 		/// </summary>
 		/// <remarks>The default value is true.</remarks>
-		public bool IsStreamOwner { get; set; } = true;
+		public bool IsStreamOwner { get; set; }
 
 		/// <summary>
 		/// Creates a LzwInputStream
@@ -58,6 +58,7 @@ namespace ICSharpCode.SharpZipLib.Lzw
 		/// </param>
 		public LzwInputStream(Stream baseInputStream)
 		{
+			IsStreamOwner = true;
 			this.baseInputStream = baseInputStream;
 		}
 

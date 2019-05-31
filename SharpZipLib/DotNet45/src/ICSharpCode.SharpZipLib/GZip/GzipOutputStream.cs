@@ -97,7 +97,7 @@ namespace ICSharpCode.SharpZipLib.GZip
 		public void SetLevel(int level)
 		{
 			if (level < Deflater.NO_COMPRESSION || level > Deflater.BEST_COMPRESSION)
-				throw new ArgumentOutOfRangeException(nameof(level), "Compression level must be 0-9");
+				throw new ArgumentOutOfRangeException("level", "Compression level must be 0-9");
 
 			deflater_.SetLevel(level);
 		}

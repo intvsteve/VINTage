@@ -30,7 +30,9 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		/// </summary>
 		/// <returns>Returns whether decoding could be completed</returns>
 		public bool AttemptRead()
-			=> !state.MoveNext() || state.Current;
+		{
+			return !state.MoveNext() || state.Current;
+		}
 
 		public InflaterDynHeader(StreamManipulator input)
 		{
@@ -47,9 +49,9 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			while (!input.TryGetBits(4, ref metaCodeCount, 4)) yield return false;
 			var dataCodeCount = litLenCodeCount + distanceCodeCount;
 
-			if (litLenCodeCount > LITLEN_MAX) throw new ValueOutOfRangeException(nameof(litLenCodeCount));
-			if (distanceCodeCount > DIST_MAX) throw new ValueOutOfRangeException(nameof(distanceCodeCount));
-			if (metaCodeCount > META_MAX) throw new ValueOutOfRangeException(nameof(metaCodeCount));
+			if (litLenCodeCount > LITLEN_MAX) throw new ValueOutOfRangeException("litLenCodeCount");
+			if (distanceCodeCount > DIST_MAX) throw new ValueOutOfRangeException("distanceCodeCount");
+			if (metaCodeCount > META_MAX) throw new ValueOutOfRangeException("metaCodeCount");
 
 			// Load code lengths for the meta tree from the header bits
 			for (int i = 0; i < metaCodeCount; i++)
@@ -124,14 +126,32 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		/// </summary>
 		/// <exception cref="StreamDecodingException">If hader has not been successfully read by the state machine</exception>
 		public InflaterHuffmanTree LiteralLengthTree
-			=> litLenTree ?? throw new StreamDecodingException("Header properties were accessed before header had been successfully read");
+		{
+			get
+			{
+				if (litLenTree == null)
+				{
+					throw new StreamDecodingException("Header properties were accessed before header had been successfully read");
+				}
+				return litLenTree;
+			}
+		}
 
 		/// <summary>
 		/// Get distance huffman tree, must not be used before <see cref="AttemptRead"/> has returned true
 		/// </summary>
 		/// <exception cref="StreamDecodingException">If hader has not been successfully read by the state machine</exception>
 		public InflaterHuffmanTree DistanceTree
-			=> distTree ?? throw new StreamDecodingException("Header properties were accessed before header had been successfully read");
+		{
+			get
+			{
+				if (distTree == null)
+				{
+					throw new StreamDecodingException("Header properties were accessed before header had been successfully read");
+				}
+				return distTree;
+			}
+		}
 
 		#region Instance Fields
 

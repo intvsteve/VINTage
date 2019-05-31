@@ -275,7 +275,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 			{
 				if (value == null)
 				{
-					throw new ArgumentNullException(nameof(value));
+					throw new ArgumentNullException("value");
 				}
 				name = value;
 			}
@@ -337,7 +337,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 			{
 				if (value < 0)
 				{
-					throw new ArgumentOutOfRangeException(nameof(value), "Cannot be less than zero");
+					throw new ArgumentOutOfRangeException("value", "Cannot be less than zero");
 				}
 				size = value;
 			}
@@ -357,7 +357,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 			{
 				if (value < dateTime1970)
 				{
-					throw new ArgumentOutOfRangeException(nameof(value), "ModTime cannot be before Jan 1st 1970");
+					throw new ArgumentOutOfRangeException("value", "ModTime cannot be before Jan 1st 1970");
 				}
 				modTime = new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second);
 			}
@@ -399,7 +399,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 			{
 				if (value == null)
 				{
-					throw new ArgumentNullException(nameof(value));
+					throw new ArgumentNullException("value");
 				}
 				linkName = value;
 			}
@@ -416,7 +416,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 			{
 				if (value == null)
 				{
-					throw new ArgumentNullException(nameof(value));
+					throw new ArgumentNullException("value");
 				}
 				magic = value;
 			}
@@ -437,7 +437,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 			{
 				if (value == null)
 				{
-					throw new ArgumentNullException(nameof(value));
+					throw new ArgumentNullException("value");
 				}
 				version = value;
 			}
@@ -532,7 +532,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (header == null)
 			{
-				throw new ArgumentNullException(nameof(header));
+				throw new ArgumentNullException("header");
 			}
 
 			int offset = 0;
@@ -598,7 +598,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (outBuffer == null)
 			{
-				throw new ArgumentNullException(nameof(outBuffer));
+				throw new ArgumentNullException("outBuffer");
 			}
 
 			int offset = 0;
@@ -737,7 +737,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (header == null)
 			{
-				throw new ArgumentNullException(nameof(header));
+				throw new ArgumentNullException("header");
 			}
 
 			long result = 0;
@@ -791,22 +791,22 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (header == null)
 			{
-				throw new ArgumentNullException(nameof(header));
+				throw new ArgumentNullException("header");
 			}
 
 			if (offset < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(offset), "Cannot be less than zero");
+				throw new ArgumentOutOfRangeException("offset", "Cannot be less than zero");
 			}
 
 			if (length < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(length), "Cannot be less than zero");
+				throw new ArgumentOutOfRangeException("length", "Cannot be less than zero");
 			}
 
 			if (offset + length > header.Length)
 			{
-				throw new ArgumentException("Exceeds header size", nameof(length));
+				throw new ArgumentException("Exceeds header size", "length");
 			}
 
 			var result = new StringBuilder(length);
@@ -836,12 +836,12 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException(nameof(name));
+				throw new ArgumentNullException("name");
 			}
 
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			return GetNameBytes(name.ToString(), nameOffset, buffer, bufferOffset, length);
@@ -860,12 +860,12 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException(nameof(name));
+				throw new ArgumentNullException("name");
 			}
 
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			int i;
@@ -905,12 +905,12 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException(nameof(name));
+				throw new ArgumentNullException("name");
 			}
 
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			return GetNameBytes(name.ToString(), 0, buffer, offset, length);
@@ -928,12 +928,12 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException(nameof(name));
+				throw new ArgumentNullException("name");
 			}
 
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			return GetNameBytes(name, 0, buffer, offset, length);
@@ -952,12 +952,12 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (toAdd == null)
 			{
-				throw new ArgumentNullException(nameof(toAdd));
+				throw new ArgumentNullException("toAdd");
 			}
 
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			int i;
@@ -993,7 +993,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			int localIndex = length - 1;

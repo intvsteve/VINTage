@@ -147,17 +147,17 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			if (offset < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(offset));
+				throw new ArgumentOutOfRangeException("offset");
 			}
 
 			if (count < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(count));
+				throw new ArgumentOutOfRangeException("count");
 			}
 
 			if (inputOff < inputEnd)
@@ -172,7 +172,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			*/
 			if ((offset > end) || (end > buffer.Length))
 			{
-				throw new ArgumentOutOfRangeException(nameof(count));
+				throw new ArgumentOutOfRangeException("count");
 			}
 
 			inputBuf = buffer;
@@ -203,7 +203,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				throw new InvalidOperationException("strstart not 1");
 			}
 #endif
-			adler?.Update(new ArraySegment<byte>(buffer, offset, length));
+			if (adler != null)
+			{
+				adler.Update(new ArraySegment<byte>(buffer, offset, length));
+			}
 			if (length < DeflaterConstants.MIN_MATCH)
 			{
 				return;
@@ -234,7 +237,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		public void Reset()
 		{
 			huffman.Reset();
-			adler?.Reset();
+			if (adler != null)
+			{
+				adler.Reset();
+			}
 			blockStart = strstart = 1;
 			lookahead = 0;
 			totalIn = 0;
@@ -257,7 +263,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		/// </summary>
 		public void ResetAdler()
 		{
-			adler?.Reset();
+			if (adler != null)
+			{
+				adler.Reset();
+			}
 		}
 
 		/// <summary>
@@ -305,7 +314,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		{
 			if ((level < 0) || (level > 9))
 			{
-				throw new ArgumentOutOfRangeException(nameof(level));
+				throw new ArgumentOutOfRangeException("level");
 			}
 
 			goodLength = DeflaterConstants.GOOD_LENGTH[level];
@@ -386,8 +395,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				}
 
 				System.Array.Copy(inputBuf, inputOff, window, strstart + lookahead, more);
-				adler?.Update(new ArraySegment<byte>(inputBuf, inputOff, more));
-
+				if (adler != null)
+				{
+					adler.Update(new ArraySegment<byte>(inputBuf, inputOff, more));
+				}
 				inputOff += more;
 				totalIn += more;
 				lookahead += more;

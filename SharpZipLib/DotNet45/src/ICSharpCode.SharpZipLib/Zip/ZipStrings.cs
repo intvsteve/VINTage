@@ -50,7 +50,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 				if ((value < 0) || (value > 65535) ||
 					(value == 1) || (value == 2) || (value == 3) || (value == 42))
 				{
-					throw new ArgumentOutOfRangeException(nameof(value));
+					throw new ArgumentOutOfRangeException("value");
 				}
 
 				codePage = value;
@@ -63,7 +63,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// Attempt to get the operating system default codepage, or failing that, to
 		/// the fallback code page IBM 437.
 		/// </summary>
-		public static int SystemDefaultCodePage { get; }
+        public static int SystemDefaultCodePage { get; private set; }
 
 		/// <summary>
 		/// Get wether the default codepage is set to UTF-8. Setting this property to false will
@@ -108,9 +108,11 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// data[0]..data[count - 1] converted to a string
 		/// </returns>
 		public static string ConvertToString(byte[] data, int count)
-			=> data == null
-			? string.Empty
-			: Encoding.GetEncoding(CodePage).GetString(data, 0, count);
+		{
+			return data == null
+				? string.Empty
+				: Encoding.GetEncoding(CodePage).GetString(data, 0, count);
+		}
 
 		/// <summary>
 		/// Convert a byte array to a string using <see cref="CodePage"/>
@@ -122,10 +124,13 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// <paramref name="data">data</paramref>converted to a string
 		/// </returns>
 		public static string ConvertToString(byte[] data)
-			=> ConvertToString(data, data.Length);
+		{
+			return ConvertToString(data, data.Length);
+		}
 
 		private static Encoding EncodingFromFlag(int flags)
-			=> ((flags & (int)GeneralBitFlags.UnicodeText) != 0)
+		{
+			return ((flags & (int)GeneralBitFlags.UnicodeText) != 0)
 				? Encoding.UTF8
 				: Encoding.GetEncoding(
 					// if CodePage wasn't set manually and no utf flag present
@@ -135,6 +140,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 					codePage == AutomaticCodePage? 
 						SystemDefaultCodePage:
 						codePage);
+		}
 
 		/// <summary>
 		/// Convert a byte array to a string  using <see cref="CodePage"/>
@@ -148,9 +154,11 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// <paramref name="data">data</paramref>converted to a string
 		/// </returns>
 		public static string ConvertToStringExt(int flags, byte[] data, int count)
-			=> (data == null)
+		{
+			return (data == null)
 				? string.Empty
 				: EncodingFromFlag(flags).GetString(data, 0, count);
+		}
 
 		/// <summary>
 		/// Convert a byte array to a string using <see cref="CodePage"/>
@@ -163,7 +171,9 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// <paramref name="data">data</paramref>converted to a string
 		/// </returns>
 		public static string ConvertToStringExt(int flags, byte[] data)
-			=> ConvertToStringExt(flags, data, data.Length);
+		{
+			return ConvertToStringExt(flags, data, data.Length);
+		}
 
 		/// <summary>
 		/// Convert a string to a byte array using <see cref="CodePage"/>
@@ -173,9 +183,11 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// </param>
 		/// <returns>Converted array</returns>
 		public static byte[] ConvertToArray(string str)
-			=> str == null
-			? new byte[0]
-			: Encoding.GetEncoding(CodePage).GetBytes(str);
+		{
+			return str == null
+				? new byte[0]
+				: Encoding.GetEncoding(CodePage).GetBytes(str);
+		}
 
 		/// <summary>
 		/// Convert a string to a byte array using <see cref="CodePage"/>
@@ -186,8 +198,10 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// </param>
 		/// <returns>Converted array</returns>
 		public static byte[] ConvertToArray(int flags, string str)
-			=> (string.IsNullOrEmpty(str))
+		{
+			return (string.IsNullOrEmpty(str))
 				? new byte[0]
 				: EncodingFromFlag(flags).GetBytes(str);
+		}
 	}
 }

@@ -184,7 +184,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 		{
 			if (length < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(length));
+				throw new ArgumentOutOfRangeException("length");
 			}
 
 			if ((bitsInBuffer_ & 7) != 0)
@@ -245,17 +245,17 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			if (offset < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(offset), "Cannot be negative");
+				throw new ArgumentOutOfRangeException("offset", "Cannot be negative");
 			}
 
 			if (count < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(count), "Cannot be negative");
+				throw new ArgumentOutOfRangeException("count", "Cannot be negative");
 			}
 
 			if (windowStart_ < windowEnd_)
@@ -269,7 +269,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression.Streams
 			// Note the check also handles integer wrap around.
 			if ((offset > end) || (end > buffer.Length))
 			{
-				throw new ArgumentOutOfRangeException(nameof(count));
+				throw new ArgumentOutOfRangeException("count");
 			}
 
 			if ((count & 1) != 0)

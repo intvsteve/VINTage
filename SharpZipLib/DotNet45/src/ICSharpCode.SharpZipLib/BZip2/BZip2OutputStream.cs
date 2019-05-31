@@ -129,9 +129,9 @@ namespace ICSharpCode.SharpZipLib.BZip2
 		/// </remarks>
 		public BZip2OutputStream(Stream stream, int blockSize)
 		{
+			IsStreamOwner = true;
 			if (stream == null)
-				throw new ArgumentNullException(nameof(stream));
-
+				throw new ArgumentNullException("stream");
 			baseStream = stream;
 			bsLive = 0;
 			bsBuff = 0;
@@ -167,7 +167,7 @@ namespace ICSharpCode.SharpZipLib.BZip2
 		/// When the flag is true <see cref="Stream.Dispose()" /> will close the underlying stream also.
 		/// </summary>
 		/// <remarks>The default value is true.</remarks>
-		public bool IsStreamOwner { get; set; } = true;
+		public bool IsStreamOwner { get; set; }
 
 		/// <summary>
 		/// Gets a value indicating whether the current stream supports reading
@@ -281,17 +281,17 @@ namespace ICSharpCode.SharpZipLib.BZip2
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			if (offset < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(offset));
+				throw new ArgumentOutOfRangeException("offset");
 			}
 
 			if (count < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(count));
+				throw new ArgumentOutOfRangeException("count");
 			}
 
 			if (buffer.Length - offset < count)

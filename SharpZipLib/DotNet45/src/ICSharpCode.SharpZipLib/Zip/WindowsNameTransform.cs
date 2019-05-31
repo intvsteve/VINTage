@@ -42,7 +42,11 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// <param name="allowParentTraversal">Allow parent directory traversal in file paths (e.g. ../file)</param>
 		public WindowsNameTransform(string baseDirectory, bool allowParentTraversal = false)
 		{
-			BaseDirectory = baseDirectory ?? throw new ArgumentNullException(nameof(baseDirectory), "Directory name is invalid");
+			if (baseDirectory == null)
+			{
+				throw new ArgumentNullException("baseDirectory", "Directory name is invalid");
+			}
+            BaseDirectory = baseDirectory;
 			AllowParentTraversal = allowParentTraversal;
 		}
 
@@ -64,7 +68,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 			{
 				if (value == null)
 				{
-					throw new ArgumentNullException(nameof(value));
+					throw new ArgumentNullException("value");
 				}
 
 				_baseDirectory = Path.GetFullPath(value);
@@ -76,8 +80,8 @@ namespace ICSharpCode.SharpZipLib.Zip
 		/// </summary>
 		public bool AllowParentTraversal
 		{
-			get => _allowParentTraversal;
-			set => _allowParentTraversal = value;
+			get { return _allowParentTraversal; }
+            set { _allowParentTraversal = value; }
 		}
 
 		/// <summary>
@@ -173,7 +177,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 		{
 			if (name == null)
 			{
-				throw new ArgumentNullException(nameof(name));
+				throw new ArgumentNullException("name");
 			}
 
 			name = WindowsPathUtils.DropPathRoot(name.Replace("/", Path.DirectorySeparatorChar.ToString()));

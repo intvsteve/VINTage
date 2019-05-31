@@ -71,7 +71,10 @@ namespace ICSharpCode.SharpZipLib.Tar
 
 		private void Flush()
 		{
-			decoder.Convert(byteBuffer, 0, bbIndex, charBuffer, 0, 4, false, out int bytesUsed, out int charsUsed, out bool completed);
+			int bytesUsed;
+			int charsUsed;
+			bool completed;
+			decoder.Convert(byteBuffer, 0, bbIndex, charBuffer, 0, 4, false, out bytesUsed, out charsUsed, out completed);
 
 			sb.Append(charBuffer, 0, charsUsed);
 			ResetBuffers();

@@ -104,7 +104,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 			byte[] commentBytes = ZipStrings.ConvertToArray(comment);
 			if (commentBytes.Length > 0xffff)
 			{
-				throw new ArgumentOutOfRangeException(nameof(comment));
+				throw new ArgumentOutOfRangeException("comment");
 			}
 			zipComment = commentBytes;
 		}
@@ -210,7 +210,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 		{
 			if (entry == null)
 			{
-				throw new ArgumentNullException(nameof(entry));
+				throw new ArgumentNullException("entry");
 			}
 
 			if (entries == null)
@@ -656,17 +656,17 @@ namespace ICSharpCode.SharpZipLib.Zip
 
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			if (offset < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(offset), "Cannot be negative");
+				throw new ArgumentOutOfRangeException("offset", "Cannot be negative");
 			}
 
 			if (count < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(count), "Cannot be negative");
+				throw new ArgumentOutOfRangeException("count", "Cannot be negative");
 			}
 
 			if ((buffer.Length - offset) < count)

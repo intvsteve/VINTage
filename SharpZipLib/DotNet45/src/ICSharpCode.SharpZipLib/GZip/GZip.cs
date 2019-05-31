@@ -3,8 +3,6 @@ using System.IO;
 
 namespace ICSharpCode.SharpZipLib.GZip
 {
-	using static Zip.Compression.Deflater;
-
 	/// <summary>
 	/// An example class to demonstrate compression and decompression of GZip streams.
 	/// </summary>
@@ -21,10 +19,10 @@ namespace ICSharpCode.SharpZipLib.GZip
 		public static void Decompress(Stream inStream, Stream outStream, bool isStreamOwner)
 		{
 			if (inStream == null)
-				throw new ArgumentNullException(nameof(inStream), "Input stream is null");
+				throw new ArgumentNullException("inStream", "Input stream is null");
 
 			if (outStream == null)
-				throw new ArgumentNullException(nameof(outStream), "Output stream is null");
+				throw new ArgumentNullException("outStream", "Output stream is null");
 
 			try
 			{
@@ -59,16 +57,16 @@ namespace ICSharpCode.SharpZipLib.GZip
 		public static void Compress(Stream inStream, Stream outStream, bool isStreamOwner, int bufferSize = 512, int level = 6)
 		{
 			if (inStream == null)
-				throw new ArgumentNullException(nameof(inStream), "Input stream is null");
+				throw new ArgumentNullException("inStream", "Input stream is null");
 
 			if (outStream == null)
-				throw new ArgumentNullException(nameof(outStream), "Output stream is null");
+				throw new ArgumentNullException("outStream", "Output stream is null");
 
 			if (bufferSize < 512)
-				throw new ArgumentOutOfRangeException(nameof(bufferSize), "Deflate buffer size must be >= 512");
+				throw new ArgumentOutOfRangeException("bufferSize", "Deflate buffer size must be >= 512");
 
-			if (level < NO_COMPRESSION || level > BEST_COMPRESSION)
-				throw new ArgumentOutOfRangeException(nameof(level), "Compression level must be 0-9");
+			if (level < Zip.Compression.Deflater.NO_COMPRESSION || level > Zip.Compression.Deflater.BEST_COMPRESSION)
+				throw new ArgumentOutOfRangeException("level", "Compression level must be 0-9");
 
 			try
 			{

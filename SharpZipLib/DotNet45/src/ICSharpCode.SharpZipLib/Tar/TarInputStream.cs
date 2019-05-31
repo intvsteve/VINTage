@@ -205,7 +205,7 @@ namespace ICSharpCode.SharpZipLib.Tar
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			int totalRead = 0;
@@ -510,8 +510,8 @@ namespace ICSharpCode.SharpZipLib.Tar
 							xhr.Read(nameBuffer, numRead);
 							numToRead -= numRead;
 						}
-
-						if (xhr.Headers.TryGetValue("path", out string name))
+						string name;
+						if (xhr.Headers.TryGetValue("path", out name))
 						{
 							longName = new StringBuilder(name);
 						}

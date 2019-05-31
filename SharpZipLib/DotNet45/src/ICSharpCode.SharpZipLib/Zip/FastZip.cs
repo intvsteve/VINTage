@@ -2,7 +2,6 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using System;
 using System.IO;
-using static ICSharpCode.SharpZipLib.Zip.Compression.Deflater;
 
 namespace ICSharpCode.SharpZipLib.Zip
 {
@@ -452,7 +451,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 		{
 			if ((overwrite == Overwrite.Prompt) && (confirmDelegate == null))
 			{
-				throw new ArgumentNullException(nameof(confirmDelegate));
+				throw new ArgumentNullException("confirmDelegate");
 			}
 
 			continueRunning_ = true;
@@ -562,7 +561,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 		{
 			if (stream == null)
 			{
-				throw new ArgumentNullException(nameof(stream));
+				throw new ArgumentNullException("stream");
 			}
 
 			if (buffer_ == null)
@@ -770,7 +769,7 @@ namespace ICSharpCode.SharpZipLib.Zip
 		private IEntryFactory entryFactory_ = new ZipEntryFactory();
 		private INameTransform extractNameTransform_;
 		private UseZip64 useZip64_ = UseZip64.Dynamic;
-		private CompressionLevel compressionLevel_ = CompressionLevel.DEFAULT_COMPRESSION;
+		private Deflater.CompressionLevel compressionLevel_ = Deflater.CompressionLevel.DEFAULT_COMPRESSION;
 
 		private string password_;
 

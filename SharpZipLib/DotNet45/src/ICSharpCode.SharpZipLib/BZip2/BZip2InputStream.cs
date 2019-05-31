@@ -95,8 +95,9 @@ namespace ICSharpCode.SharpZipLib.BZip2
 		/// <param name="stream">Data source</param>
 		public BZip2InputStream(Stream stream)
 		{
+			IsStreamOwner = true;
 			if (stream == null)
-				throw new ArgumentNullException(nameof(stream));
+				throw new ArgumentNullException("stream");
 			// init arrays
 			for (int i = 0; i < BZip2Constants.GroupCount; ++i)
 			{
@@ -117,7 +118,7 @@ namespace ICSharpCode.SharpZipLib.BZip2
 		/// Get/set flag indicating ownership of underlying stream.
 		/// When the flag is true <see cref="Stream.Dispose()" /> will close the underlying stream also.
 		/// </summary>
-		public bool IsStreamOwner { get; set; } = true;
+		public bool IsStreamOwner { get; set; }
 
 		#region Stream Overrides
 
@@ -252,7 +253,7 @@ namespace ICSharpCode.SharpZipLib.BZip2
 		{
 			if (buffer == null)
 			{
-				throw new ArgumentNullException(nameof(buffer));
+				throw new ArgumentNullException("buffer");
 			}
 
 			for (int i = 0; i < count; ++i)

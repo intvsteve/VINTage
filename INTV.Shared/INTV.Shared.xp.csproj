@@ -193,6 +193,7 @@
     <Compile Include="Utility\ColorHelpers.WPF.cs" />
     <Compile Include="Utility\ComparableObservableCollection`T.cs" />
     <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
+    <Compile Include="Utility\CompressedArchiveAccessMode.cs" />
     <Compile Include="Utility\CompressedArchiveFormat.cs" />
     <Compile Include="Utility\ErrorReporting.cs" />
     <Compile Include="Utility\FileBrowserDialogResult.cs" />

@@ -31,7 +31,7 @@ namespace INTV.Shared.Utility
     /// </summary>
     public sealed partial class ZipArchiveAccess
     {
-        private static IDisposable Open(Stream stream, ZipArchiveAccessMode mode)
+        private static IDisposable Open(Stream stream, CompressedArchiveAccessMode mode)
         {
             var zipArchive = new ZipArchive(stream, (ZipArchiveMode)mode);
             return zipArchive;

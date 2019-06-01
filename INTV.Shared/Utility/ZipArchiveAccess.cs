@@ -25,21 +25,6 @@ using System.IO;
 namespace INTV.Shared.Utility
 {
     /// <summary>
-    /// Access modes for working with a <see cref="ZipArchiveAccess"/> instance.
-    /// </summary>
-    public enum ZipArchiveAccessMode
-    {
-        /// <summary>Read archive entries - no modifications to the archive are allowed.</summary>
-        Read,
-
-        /// <summary>Create archive entries - no reading operations are allowed.</summary>
-        Create,
-
-        /// <summary>Read and write archive entries.</summary>
-        Update
-    }
-
-    /// <summary>
     /// Options to optimize for speed or size when compressing data in the ZIP archive.
     /// </summary>
     public enum ZipArchiveCompressionMethod
@@ -61,10 +46,10 @@ namespace INTV.Shared.Utility
     {
         private IDisposable _zipArchiveObject; // the backing object
 
-        /// <inheritdoc cref="ZipArchiveAccess(Stream, ZipArchiveAccessMode)"/>
-        /// <remarks>Accesses the stream using <see cref="ZipArchiveAccessMode.Read"/></remarks>
+        /// <inheritdoc cref="ZipArchiveAccess(Stream, CompressedArchiveAccessMode)"/>
+        /// <remarks>Accesses the stream using <see cref="CompressedArchiveAccessMode.Read"/></remarks>
         public ZipArchiveAccess(Stream stream)
-            : this(stream, ZipArchiveAccessMode.Read)
+            : this(stream, CompressedArchiveAccessMode.Read)
         {
         }
 
@@ -73,7 +58,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="stream">Stream containing data in ZIP archive format.</param>
         /// <param name="mode">The access mode to use for ZIP operations.</param>
-        public ZipArchiveAccess(Stream stream, ZipArchiveAccessMode mode)
+        public ZipArchiveAccess(Stream stream, CompressedArchiveAccessMode mode)
         {
             Mode = mode;
             _zipArchiveObject = Open(stream, mode);
@@ -90,7 +75,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets the access mode that describes actions that can be performed on the archive.
         /// </summary>
-        public ZipArchiveAccessMode Mode { get; private set; }
+        public CompressedArchiveAccessMode Mode { get; private set; }
 
         /// <summary>
         /// Determines whether the file with the given name exists in the archive.

@@ -62,24 +62,24 @@ namespace INTV.Shared.Utility
         // ArgumentOutOfRangeException - bad combo if mode and access
         // NotSupportedException - bad sharing options
         // ArgumentException more bad mode / access / share combos
-        private static IDisposable Open(Stream stream, ZipArchiveAccessMode mode)
+        private static IDisposable Open(Stream stream, CompressedArchiveAccessMode mode)
         {
-            var fileMode = ZipArchiveAccessModeToFileMode(mode);
-            var fileAccess = ZipArchiveAccessModeToFileAccess(mode);
-            var streaming = mode == ZipArchiveAccessMode.Create; // actually, eventually turns into -> use async option for stream access
+            var fileMode = CompressedArchiveAccessModeToFileMode(mode);
+            var fileAccess = CompressedArchiveAccessModeToFileAccess(mode);
+            var streaming = mode == CompressedArchiveAccessMode.Create; // actually, eventually turns into -> use async option for stream access
             var zipArchiveObject = OpenFromStreamMethod.Value.Invoke(null, new object[] { stream, fileMode, fileAccess, streaming }) as IDisposable;
             return zipArchiveObject;
         }
 
-        private static FileMode ZipArchiveAccessModeToFileMode(ZipArchiveAccessMode mode)
+        private static FileMode CompressedArchiveAccessModeToFileMode(CompressedArchiveAccessMode mode)
         {
             var fileMode = FileMode.Open;
             switch (mode)
             {
-                case ZipArchiveAccessMode.Create:
+                case CompressedArchiveAccessMode.Create:
                     fileMode = FileMode.Create;
                     break;
-                case ZipArchiveAccessMode.Update:
+                case CompressedArchiveAccessMode.Update:
                     fileMode = FileMode.OpenOrCreate;
                     break;
                 default:
@@ -88,15 +88,15 @@ namespace INTV.Shared.Utility
             return fileMode;
         }
 
-        private static FileAccess ZipArchiveAccessModeToFileAccess(ZipArchiveAccessMode mode)
+        private static FileAccess CompressedArchiveAccessModeToFileAccess(CompressedArchiveAccessMode mode)
         {
             var fileAccess = FileAccess.Read;
             switch (mode)
             {
-                case ZipArchiveAccessMode.Create:
+                case CompressedArchiveAccessMode.Create:
                     fileAccess = FileAccess.Write;
                     break;
-                case ZipArchiveAccessMode.Update:
+                case CompressedArchiveAccessMode.Update:
                     fileAccess = FileAccess.ReadWrite;
                     break;
                 default:
@@ -200,8 +200,8 @@ namespace INTV.Shared.Utility
             var deflate = ZipArchiveCompressionMethodToNativeDeflateOptionEnum(compressionMethod);
             var zipFileInfoObject = AddFileMethod.Value.Invoke(_zipArchiveObject, new object[] { fileName, compression, deflate });
             var zipFileInfo = new ZipFileInfo(zipFileInfoObject);
-            var fileMode = ZipArchiveAccessModeToFileMode(Mode);
-            var fileAccess = ZipArchiveAccessModeToFileAccess(Mode);
+            var fileMode = CompressedArchiveAccessModeToFileMode(Mode);
+            var fileAccess = CompressedArchiveAccessModeToFileAccess(Mode);
             var stream = zipFileInfo.GetStream(fileMode, fileAccess);
             return stream;
         }

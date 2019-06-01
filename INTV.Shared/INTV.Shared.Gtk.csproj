@@ -60,6 +60,7 @@
       <Package>gconf-sharp-2.0</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <!--  <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -316,6 +317,8 @@
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
     <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
     <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
+    <Compile Include="Utility\ZipArchiveAccess.cs" />
+    <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

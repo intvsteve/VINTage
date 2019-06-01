@@ -218,6 +218,8 @@
     <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
     <Compile Include="ComponentModel\WeightAttribute.cs" />
     <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
+    <Compile Include="Utility\CompressedArchiveFormat.cs" />
     <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
     <Compile Include="Utility\ReflectionHelpers.cs" />
     <Compile Include="Model\IStreamConnection.cs" />
@@ -375,8 +377,8 @@
     <Compile Include="Utility\PathComparer.Default.cs" />
     <Compile Include="View\IFakeDependencyObjectHelpers.Mac.cs" />
     <Compile Include="View\IMainWindow.cs" />
-    <Compile Include="View\ROMsTableView.Mac.cs" />
     <Compile Include="View\NSTableViewHelpers.cs" />
+    <Compile Include="View\ROMsTableView.Mac.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>

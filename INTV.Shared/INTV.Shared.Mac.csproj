@@ -220,6 +220,8 @@
     <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
     <Compile Include="ComponentModel\WeightAttribute.cs" />
     <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
+    <Compile Include="Utility\CompressedArchiveFormat.cs" />
     <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
     <Compile Include="Utility\ReflectionHelpers.cs" />
     <Compile Include="Model\IStreamConnection.cs" />

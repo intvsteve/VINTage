@@ -166,6 +166,8 @@
     <Compile Include="Utility\ColorHelpers.cs" />
     <Compile Include="Utility\ColorHelpers.Gtk.cs" />
     <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
+    <Compile Include="Utility\CompressedArchiveFormat.cs" />
     <Compile Include="Utility\ErrorReporting.cs" />
     <Compile Include="Utility\ExitEventArgs.Mono.cs" />
     <Compile Include="Utility\FileBrowserDialogResult.cs" />

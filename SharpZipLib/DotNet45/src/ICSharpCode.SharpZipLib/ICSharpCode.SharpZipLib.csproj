@@ -40,7 +40,6 @@
     <Prefer32Bit>false</Prefer32Bit>
     <DefineConstants>TRACE;DEBUG;NET45;CODE_ANALYSIS;CODE_ANALYSIS</DefineConstants>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
@@ -55,7 +54,6 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <Prefer32Bit>false</Prefer32Bit>
     <DefineConstants>TRACE;NET45;CODE_ANALYSIS;CODE_ANALYSIS</DefineConstants>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>

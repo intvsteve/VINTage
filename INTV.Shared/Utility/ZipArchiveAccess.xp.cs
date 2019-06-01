@@ -56,46 +56,6 @@ namespace INTV.Shared.Utility
         private static readonly Lazy<MethodInfo> DeleteFileMethod = new Lazy<MethodInfo>(() => ZipArchiveType.Value.GetMethod("DeleteFile", InstanceFlags));
         ////private static readonly Lazy<MethodInfo> FlushMethod = new Lazy<MethodInfo>(() => ZipArchiveType.Value.GetMethod("Flush", InstanceFlags));
 
-        internal static void Testing()
-        {
-            var path = @"D:\Users\Steve\Downloads\LTO_Flash_4764.zip";
-            var clonePath = @"D:\Users\Steve\Downloads\LTO_Flash_4764-clone2.zip";
-            ////          path = clonePath;
-            ////path = @"D:\Users\Steve\Projects\appletSource1.zip";
-            ////            var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-            var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
-            ////            using (var zip = new ZipArchiveAccess(stream))
-            using (var zip = new ZipArchiveAccess(stream, ZipArchiveAccessMode.Update))
-            {
-                ////zip.Delete("release_notes.txt");
-                ////zip.Delete("goover");
-                using (var clone = new FileStream(clonePath, FileMode.CreateNew, FileAccess.Write))
-                {
-                    using (var zipClone = new ZipArchiveAccess(clone, ZipArchiveAccessMode.Create))
-                    {
-                        foreach (var file in zip.FileNames)
-                        {
-                            System.Diagnostics.Debug.WriteLine(file);
-                            using (var copy = zipClone.Add(file, ZipArchiveCompressionMethod.MaximumCompression))
-                            {
-                                using (var s = zip.OpenFileEntry(file))
-                                {
-                                    s.CopyTo(copy);
-                                }
-                            }
-                        }
-                        var exists = zip.FileExists("release_notes.txt");
-                        using (var s = zip.OpenFileEntry("release_notes.txt"))
-                        {
-                            var reader = new StreamReader(s);
-                            var text = reader.ReadToEnd();
-                        }
-                        exists = zip.FileExists("goober");
-                    }
-                }
-            }
-        }
-
         // FileFormatException - open mode, zero size
         // IOException - create(new) - not empty
         // ArgumentNullException null stream

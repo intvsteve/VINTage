@@ -61,6 +61,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Posix" />
     <Reference Include="Xamarin.Mac" />
+    <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -387,6 +388,8 @@
     <Compile Include="ComponentModel\CompositionHelpers.Mac.cs" />
     <Compile Include="ComponentModel\IVINTagePlugin.cs" />
     <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
+    <Compile Include="Utility\ZipArchiveAccess.cs" />
+    <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.VSMac.csproj">

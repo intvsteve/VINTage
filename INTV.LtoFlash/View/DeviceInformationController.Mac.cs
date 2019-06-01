@@ -691,7 +691,7 @@ namespace INTV.LtoFlash.View
             foreach (var controlCommandMapEntry in _controlCommandMap.Reverse())
             {
                 var commandVisual = controlCommandMapEntry.Key;
-                if (!AdditionalToolTipsMap.Value.ContainsKey((DeviceInfoFieldToolTipTag)commandVisual.Tag))
+                if (!AdditionalToolTipsMap.Value.ContainsKey((DeviceInfoFieldToolTipTag)(int)commandVisual.Tag))
                 {
                     commandVisual.UnbindCommandVisualFromToolTipDescription();
                 }
@@ -764,7 +764,7 @@ namespace INTV.LtoFlash.View
                 foreach (var textField in tabViewItem.View.FindChildren<NSTextField>(f => f.Tag != 0))
                 {
                     VisualRelayCommand command;
-                    if (additionalItemsMap.TryGetValue((DeviceInfoFieldToolTipTag)textField.Tag, out command))
+                    if (additionalItemsMap.TryGetValue((DeviceInfoFieldToolTipTag)(int)textField.Tag, out command))
                     {
                         _controlCommandMap[textField] = command;
                     }
@@ -775,7 +775,7 @@ namespace INTV.LtoFlash.View
             {
                 var commandVisual = controlCommandMapEntry.Key;
                 var controlCommand = controlCommandMapEntry.Value;
-                var tag = (DeviceInfoFieldToolTipTag)commandVisual.Tag;
+                var tag = (DeviceInfoFieldToolTipTag)(int)commandVisual.Tag;
                 if (additionalItemsMap.ContainsKey(tag))
                 {
                     var toolTip = controlCommand.ToolTipDescription;
@@ -946,7 +946,7 @@ namespace INTV.LtoFlash.View
             foreach (var controlCommand in _controlCommandMap)
             {
                 var commandVisual = controlCommand.Key;
-                if (!AdditionalToolTipsMap.Value.ContainsKey((DeviceInfoFieldToolTipTag)commandVisual.Tag))
+                if (!AdditionalToolTipsMap.Value.ContainsKey((DeviceInfoFieldToolTipTag)(int)commandVisual.Tag))
                 {
                     var enable = controlCommand.Value.CanExecute(ViewModel);
                     commandVisual.Enabled = enable;

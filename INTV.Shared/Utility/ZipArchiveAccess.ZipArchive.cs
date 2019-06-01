@@ -30,8 +30,9 @@ namespace INTV.Shared.Utility
     {
         internal static void Testing()
         {
-            var path = @"D:\Users\Steve\Downloads\LTO_Flash_4764.zip";
-            var clonePath = @"D:\Users\Steve\Downloads\LTO_Flash_4764-clone2.zip";
+            var path = @"/Users/steveno/Downloads/LTO_Flash_4764.zip";
+           //var path = @"/Users/steveno/Downloads/LTO_Flash_4764-from-mac-extra-entries.zip";
+            var clonePath = @"/Users/steveno/Downloads/LTO_Flash_4764-clone.zip";
             ////          path = clonePath;
             ////path = @"D:\Users\Steve\Projects\appletSource1.zip";
             ////            var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -39,12 +40,17 @@ namespace INTV.Shared.Utility
             ////            using (var zip = new ZipArchiveAccess(stream))
             using (var zip = new ZipArchiveAccess(stream, ZipArchiveAccessMode.Update))
             {
+                var e = ((ZipArchive)zip._zipArchiveObject).Entries.ToList();
                 ////zip.Delete("release_notes.txt");
                 ////zip.Delete("goover");
                 using (var clone = new FileStream(clonePath, FileMode.CreateNew, FileAccess.Write))
                 {
                     using (var zipClone = new ZipArchiveAccess(clone, ZipArchiveAccessMode.Create))
                     {
+                        // Turns out that extra entries produced by Mac (.DS_Store, __MACOS, etc.)
+                        // return "name" that is empty - should be using FullName or ignoring the
+                        // empty name entries....
+                        var fileNames = zip.FileNames.ToList();
                         foreach (var file in zip.FileNames)
                         {
                             System.Diagnostics.Debug.WriteLine(file);
@@ -57,6 +63,11 @@ namespace INTV.Shared.Utility
                             }
                         }
                         var exists = zip.FileExists("release_notes.txt");
+                        // NOTE The OPenFileEntry below crashes on old MonoMac builds stating that the file is already
+                        // open for writing. This seems like a bug, since this .zip is openf for *udpate* which should
+                        // allow for read AND write.  Perhaps it's fixed in later versions of Mono than what the
+                        // MonoMac build is using.
+                        // Confirmed that newer Xamarin.Mac version works correctly here.
                         using (var s = zip.OpenFileEntry("release_notes.txt"))
                         {
                             var reader = new StreamReader(s);
@@ -76,6 +87,7 @@ namespace INTV.Shared.Utility
 
         private IEnumerable<string> GetFileEntryNames()
         {
+            // or use full name here?
             var zipArchive = (ZipArchive)_zipArchiveObject;
             return zipArchive.Entries.Select(e => e.Name);
         }

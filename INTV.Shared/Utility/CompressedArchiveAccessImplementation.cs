@@ -42,8 +42,18 @@ namespace INTV.Shared.Utility
         SharpZipLib,
 
         /// <summary>
+        /// Some other, custom implementation.
+        /// </summary>
+        Other,
+
+        /// <summary>
         /// Use the default compression / archive implementation.
         /// </summary>
-        Default = SharpZipLib
+        Default = SharpZipLib,
+
+        /// <summary>
+        /// Use any available implementation.
+        /// </summary>
+        Any = -1
     }
 }

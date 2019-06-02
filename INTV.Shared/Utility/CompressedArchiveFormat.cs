@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace INTV.Shared.Utility
@@ -92,6 +93,46 @@ namespace INTV.Shared.Utility
                 fileExtensions = Enumerable.Empty<string>();
             }
             return fileExtensions;
+        }
+
+        /// <summary>
+        /// Gets the compressions and archive formats based entirely on file extension(s) of the given file.
+        /// </summary>
+        /// <param name="fileName">The file path to check.</param>
+        /// <returns>The formats presumed to be in use by the file with the given name.</returns>
+        public static IEnumerable<CompressedArchiveFormat> GetCompressedArchiveFormatsFromFileName(this string fileName)
+        {
+            var formats = new List<CompressedArchiveFormat>();
+            var fileExtension = Path.GetExtension(fileName);
+            fileName = Path.GetFileNameWithoutExtension(fileName);
+            while (!string.IsNullOrEmpty(fileExtension))
+            {
+                var format = fileExtension.GetCompressedArchiveFormatFromFileExtension();
+                if (format == CompressedArchiveFormat.None)
+                {
+                    break;
+                }
+                formats.Add(format);
+                fileExtension = Path.GetExtension(fileName);
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+            }
+            return formats;
+        }
+
+        /// <summary>
+        /// Gets the compression / archive format based solely on the given file extension.
+        /// </summary>
+        /// <param name="fileExtension">The file extension to check.</param>
+        /// <returns>The compression / archive format, based on file extension. If no match is found, <see cref="CompressedArchiveFormat.None"/> is returned.</returns>
+        public static CompressedArchiveFormat GetCompressedArchiveFormatFromFileExtension(this string fileExtension)
+        {
+            var format = CompressedArchiveFormat.None;
+            if (fileExtension.FirstOrDefault() == '.')
+            {
+                var compressedArchiveFormatFileExtensions = CompressedArchiveFormatFileExtensions.Value;
+                format = compressedArchiveFormatFileExtensions.FirstOrDefault(f => f.Value.FirstOrDefault(e => string.Compare(e, fileExtension, ignoreCase: true) == 0) != null).Key;
+            }
+            return format;
         }
 
         /// <summary>

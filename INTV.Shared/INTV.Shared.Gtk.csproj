@@ -60,6 +60,7 @@
       <Package>gconf-sharp-2.0</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <!--  <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -165,12 +166,18 @@
     <Compile Include="Utility\ColorHelpers.cs" />
     <Compile Include="Utility\ColorHelpers.Gtk.cs" />
     <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\CompressedArchiveAccess.cs" />
+    <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
+    <Compile Include="Utility\CompressedArchiveAccessMode.cs" />
+    <Compile Include="Utility\CompressedArchiveFormat.cs" />
     <Compile Include="Utility\ErrorReporting.cs" />
     <Compile Include="Utility\ExitEventArgs.Mono.cs" />
     <Compile Include="Utility\FileBrowserDialogResult.cs" />
     <Compile Include="Utility\FileDialogHelpers.cs" />
     <Compile Include="Utility\FileUtilities.cs" />
     <Compile Include="Utility\FixedSizeCollection`T.cs" />
+    <Compile Include="Utility\ICompressedArchiveAccess.cs" />
+    <Compile Include="Utility\ICompressedArchiveEntry.cs" />
     <Compile Include="Utility\IFileBrowserDialog.cs" />
     <Compile Include="Utility\IFixedSizeCollection.cs" />
     <Compile Include="Utility\Logger.cs" />
@@ -316,6 +323,8 @@
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
     <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
     <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
+    <Compile Include="Utility\ZipArchiveAccess.cs" />
+    <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

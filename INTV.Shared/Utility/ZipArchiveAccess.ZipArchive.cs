@@ -29,52 +29,113 @@ namespace INTV.Shared.Utility
     /// <summary>
     /// Wraps access to the native ZipArchive implementation from System.IO.Compression in .NET 4.5 and later.
     /// </summary>
-    public sealed partial class ZipArchiveAccess
+    internal sealed partial class ZipArchiveAccess
     {
+        private ZipArchive ZipArchive
+        {
+            get { return (ZipArchive)_zipArchiveObject; }
+        }
+
+        /// <inheritdoc />
+        protected override bool DeleteEntry(ICompressedArchiveEntry entry)
+        {
+            var zipEntry = entry as ZipEntry;
+            var deleted = zipEntry != null;
+            if (deleted)
+            {
+                zipEntry.Entry.Delete();
+            }
+            return deleted;
+        }
+
         private static IDisposable Open(Stream stream, CompressedArchiveAccessMode mode)
         {
             var zipArchive = new ZipArchive(stream, (ZipArchiveMode)mode);
             return zipArchive;
         }
 
-        private IEnumerable<string> GetFileEntryNames()
+        private IEnumerable<ICompressedArchiveEntry> GetArchiveEntries()
         {
-            // or use full name here?
-            var zipArchive = (ZipArchive)_zipArchiveObject;
-            return zipArchive.Entries.Select(e => e.Name);
+            return ZipArchive.Entries.Select(e => new ZipEntry(e));
         }
 
-        private bool FileEntryExists(string fileName)
+        private Stream OpenZipEntry(ICompressedArchiveEntry entry)
         {
-            var zipArchive = (ZipArchive)_zipArchiveObject;
-            var entry = zipArchive.GetEntry(fileName);
-            return entry != null;
-        }
-
-        private Stream OpenFileEntry(string fileName)
-        {
-            var zipArchive = (ZipArchive)_zipArchiveObject;
-            var entry = zipArchive.GetEntry(fileName);
-            var stream = entry.Open();
-            return stream;
-        }
-
-        private Stream CreateAndOpenFileEntry(string fileName, ZipArchiveCompressionMethod compressionMethod)
-        {
-            var zipArchive = (ZipArchive)_zipArchiveObject;
-            var entry = zipArchive.CreateEntry(fileName, (CompressionLevel)compressionMethod);
-            var stream = entry.Open();
-            return stream;
-        }
-
-        private void DeleteFileEntry(string fileName)
-        {
-            var zipArchive = (ZipArchive)_zipArchiveObject;
-            var entry = zipArchive.GetEntry(fileName);
-            if (entry != null)
+            Stream stream = null;
+            var zipEntry = entry as ZipEntry;
+            if (zipEntry != null)
             {
-                entry.Delete();
+                stream = zipEntry.Entry.Open();
             }
+            return stream;
+        }
+
+        private ICompressedArchiveEntry CreateZipEntry(string fileName, ZipArchiveCompressionMethod compressionMethod)
+        {
+            ZipEntry entry = null;
+            var zipArchiveEntry = ZipArchive.CreateEntry(fileName, (CompressionLevel)compressionMethod);
+            if (zipArchiveEntry != null)
+            {
+                entry = new ZipEntry(zipArchiveEntry);
+            }
+            return entry;
+        }
+
+        /// <summary>
+        /// Wraps <see cref="System.IO.Compression.ZipArchiveEntry"/> to expose as <see cref="ICompressedArchiveEntry"/>.
+        /// </summary>
+        private class ZipEntry : ICompressedArchiveEntry
+        {
+            /// <summary>
+            /// Initializes a new instance of <see cref="ZipEntry"/>.
+            /// </summary>
+            /// <param name="entry">The <see cref="System.IO.Compression.ZipArchiveEntry"/> to wrap.</param>
+            public ZipEntry(ZipArchiveEntry entry)
+            {
+                _entry = entry;
+            }
+
+            /// <summary>
+            /// Gets the wrapped <see cref="System.IO.Compression.ZipArchiveEntry"/>.
+            /// </summary>
+            public ZipArchiveEntry Entry
+            {
+                get { return _entry; }
+            }
+            private ZipArchiveEntry _entry;
+
+            #region ICompressedArchiveEntry
+
+            /// <inheritdoc />
+            public string Name
+            {
+                get { return Entry.FullName; }
+            }
+
+            /// <inheritdoc />
+            public long Length
+            {
+                get { return Entry.Length; }
+            }
+
+            /// <inheritdoc />
+            public DateTime LastModificationTime
+            {
+                get { return Entry.LastWriteTime.UtcDateTime; }
+            }
+
+            /// <inheritdoc />
+            public bool IsDirectory
+            {
+                get
+                {
+                    var isDirectory = string.IsNullOrEmpty(Entry.Name) && !string.IsNullOrEmpty(Entry.FullName)
+                        && ((Entry.FullName.Last() == Path.DirectorySeparatorChar) || (Entry.FullName.Last() == Path.AltDirectorySeparatorChar));
+                    return isDirectory;
+                }
+            }
+
+            #endregion // ICompressedArchiveEntry
         }
     }
 }

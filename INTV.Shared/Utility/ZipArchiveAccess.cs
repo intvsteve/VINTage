@@ -42,13 +42,13 @@ namespace INTV.Shared.Utility
     /// <summary>
     /// Provides a .NET-agnostic mechanism to access ZIP archives.
     /// </summary>
-    public sealed partial class ZipArchiveAccess : IDisposable
+    internal sealed partial class ZipArchiveAccess : CompressedArchiveAccess
     {
         private IDisposable _zipArchiveObject; // the backing object
 
         /// <inheritdoc cref="ZipArchiveAccess(Stream, CompressedArchiveAccessMode)"/>
         /// <remarks>Accesses the stream using <see cref="CompressedArchiveAccessMode.Read"/></remarks>
-        public ZipArchiveAccess(Stream stream)
+        private ZipArchiveAccess(Stream stream)
             : this(stream, CompressedArchiveAccessMode.Read)
         {
         }
@@ -58,18 +58,10 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="stream">Stream containing data in ZIP archive format.</param>
         /// <param name="mode">The access mode to use for ZIP operations.</param>
-        public ZipArchiveAccess(Stream stream, CompressedArchiveAccessMode mode)
+        private ZipArchiveAccess(Stream stream, CompressedArchiveAccessMode mode)
         {
             Mode = mode;
             _zipArchiveObject = Open(stream, mode);
-        }
-
-        /// <summary>
-        /// Gets the names of the items in the ZIP archive.
-        /// </summary>
-        public IEnumerable<string> FileNames
-        {
-            get { return GetFileEntryNames(); }
         }
 
         /// <summary>
@@ -78,49 +70,54 @@ namespace INTV.Shared.Utility
         public CompressedArchiveAccessMode Mode { get; private set; }
 
         /// <summary>
-        /// Determines whether the file with the given name exists in the archive.
+        /// Creates a new instance of <see cref="ZipArchiveAccess"/> using the given mode.
         /// </summary>
-        /// <param name="fileName">The name of an entry in the archive, e.g. it's archive-relative path.</param>
-        /// <returns><c>true</c> if an entry with the given name exists, <c>false</c> otherwise.</returns>
-        public bool FileExists(string fileName)
+        /// <param name="stream">Stream containing data in ZIP archive format.</param>
+        /// <param name="mode">The access mode to use for ZIP operations.</param>
+        /// <returns>A new instance of <see cref="ZipArchiveAccess"/>.</returns>
+        public static ZipArchiveAccess Create(Stream stream, CompressedArchiveAccessMode mode)
         {
-            return FileEntryExists(fileName);
+            return new ZipArchiveAccess(stream, mode);
         }
 
-        /// <summary>
-        /// Opens a read-only stream to the given file entry.
-        /// </summary>
-        /// <param name="fileName">The name of an entry in the archive to open, e.g. it's archive-relative path.</param>
-        /// <returns>The stream to the entry.</returns>
-        public Stream Open(string fileName)
+        #region ICompressedArchiveAccess
+
+        /// <inheritdoc />
+        public override bool IsArchive
         {
-            return OpenFileEntry(fileName);
+            get { return true; }
         }
 
-        /// <summary>
-        /// Adds a new file entry to the ZIP archive using the given compression method.
-        /// </summary>
-        /// <param name="fileName">The name of the file entry to create.</param>
-        /// <param name="compressionMethod">The compression method to use.</param>
-        /// <returns>A stream to which the file entry's contents can be written.</returns>
-        public Stream Add(string fileName, ZipArchiveCompressionMethod compressionMethod)
+        /// <inheritdoc />
+        public override bool IsCompressed
         {
-            return CreateAndOpenFileEntry(fileName, compressionMethod);
+            get { return true; }
         }
 
-        /// <summary>
-        /// Deletes a file entry from the archive.
-        /// </summary>
-        /// <param name="fileName">The name of the file entry to remove from the archive.</param>
-        public void Delete(string fileName)
+        /// <inheritdoc />
+        public override IEnumerable<ICompressedArchiveEntry> Entries
         {
-            DeleteFileEntry(fileName);
+            get { return GetArchiveEntries(); }
         }
+
+        /// <inheritdoc />
+        public override Stream OpenEntry(ICompressedArchiveEntry entry)
+        {
+            return OpenZipEntry(entry);
+        }
+
+        /// <inheritdoc />
+        public override ICompressedArchiveEntry CreateEntry(string name)
+        {
+            return CreateZipEntry(name, ZipArchiveCompressionMethod.MaximumCompression);
+        }
+
+        #endregion  // ICompressedArchiveAccess
 
         #region IDisposable
 
         /// <inheritdoc />
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (_zipArchiveObject != null)
             {

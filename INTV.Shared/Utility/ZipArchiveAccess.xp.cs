@@ -23,7 +23,6 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace INTV.Shared.Utility
@@ -39,7 +38,7 @@ namespace INTV.Shared.Utility
     /// Informed and augmented by examining reference source, here:
     /// https://referencesource.microsoft.com/#WindowsBase/Base/MS/Internal/IO/Zip/ZipArchive.cs
     /// </summary>
-    public sealed partial class ZipArchiveAccess
+    internal sealed partial class ZipArchiveAccess : CompressedArchiveAccess
     {
         private const BindingFlags StaticFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
         private const BindingFlags InstanceFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -54,14 +53,34 @@ namespace INTV.Shared.Utility
         private static readonly Lazy<MethodInfo> GetFileMethod = new Lazy<MethodInfo>(() => ZipArchiveType.Value.GetMethod("GetFile", InstanceFlags));
         private static readonly Lazy<MethodInfo> AddFileMethod = new Lazy<MethodInfo>(() => ZipArchiveType.Value.GetMethod("AddFile", InstanceFlags));
         private static readonly Lazy<MethodInfo> DeleteFileMethod = new Lazy<MethodInfo>(() => ZipArchiveType.Value.GetMethod("DeleteFile", InstanceFlags));
-        ////private static readonly Lazy<MethodInfo> FlushMethod = new Lazy<MethodInfo>(() => ZipArchiveType.Value.GetMethod("Flush", InstanceFlags));
+        private static readonly Lazy<MethodInfo> FlushMethod = new Lazy<MethodInfo>(() => ZipArchiveType.Value.GetMethod("Flush", InstanceFlags));
 
-        // FileFormatException - open mode, zero size
-        // IOException - create(new) - not empty
-        // ArgumentNullException null stream
-        // ArgumentOutOfRangeException - bad combo if mode and access
-        // NotSupportedException - bad sharing options
-        // ArgumentException more bad mode / access / share combos
+        /// <inheritdoc />
+        /// <exception cref="System.ArgumentNullException">Thrown if entry has a null name.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the entry's name is too long.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if archive was opened in read mode.</exception>
+        protected override bool DeleteEntry(ICompressedArchiveEntry entry)
+        {
+            var deleted = entry is ZipFileInfo;
+            if (deleted)
+            {
+                DeleteFileMethod.Value.Invoke(_zipArchiveObject, new object[] { entry.Name });
+            }
+            return deleted;
+        }
+
+        /// <summary>
+        /// Wraps the internal open method.
+        /// </summary>
+        /// <param name="stream">A stream containing a ZIP archive.</param>
+        /// <param name="mode">The mode in which to access the archive.</param>
+        /// <returns>The native object representing a ZIP archive.</returns>
+        /// <exception cref="System.FileFormatException">Thrown if archive was opened for reading, but is of zero size.</exception>
+        /// <exception cref="System.IOException">Thrown if <paramref name="stream"/> is not empty and archive was opened in Create mode.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stream"/> is <c>null</c></exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if an invalid combination of file access and mode is used.</exception>
+        /// <exception cref="System.NotSupportedException">Thrown if an invalid file sharing mode is in use.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if invalid file access, sharing, and mode combinations are used.</exception>
         private static IDisposable Open(Stream stream, CompressedArchiveAccessMode mode)
         {
             var fileMode = CompressedArchiveAccessModeToFileMode(mode);
@@ -69,40 +88,6 @@ namespace INTV.Shared.Utility
             var streaming = mode == CompressedArchiveAccessMode.Create; // actually, eventually turns into -> use async option for stream access
             var zipArchiveObject = OpenFromStreamMethod.Value.Invoke(null, new object[] { stream, fileMode, fileAccess, streaming }) as IDisposable;
             return zipArchiveObject;
-        }
-
-        private static FileMode CompressedArchiveAccessModeToFileMode(CompressedArchiveAccessMode mode)
-        {
-            var fileMode = FileMode.Open;
-            switch (mode)
-            {
-                case CompressedArchiveAccessMode.Create:
-                    fileMode = FileMode.Create;
-                    break;
-                case CompressedArchiveAccessMode.Update:
-                    fileMode = FileMode.OpenOrCreate;
-                    break;
-                default:
-                    break;
-            }
-            return fileMode;
-        }
-
-        private static FileAccess CompressedArchiveAccessModeToFileAccess(CompressedArchiveAccessMode mode)
-        {
-            var fileAccess = FileAccess.Read;
-            switch (mode)
-            {
-                case CompressedArchiveAccessMode.Create:
-                    fileAccess = FileAccess.Write;
-                    break;
-                case CompressedArchiveAccessMode.Update:
-                    fileAccess = FileAccess.ReadWrite;
-                    break;
-                default:
-                    break;
-            }
-            return fileAccess;
         }
 
         private static CompressionMethodEnum ZipArchiveCompressionMethodToCompressionMethodEnum(ZipArchiveCompressionMethod compressionMethod)
@@ -153,8 +138,12 @@ namespace INTV.Shared.Utility
             return nativeDeflateOptionEnum;
         }
 
-        // InvalidOperationException - opened in write mode, file does not exist
-        private IEnumerable<ZipFileInfo> GetFiles()
+        /// <summary>
+        /// Gets the entries in the archive.
+        /// </summary>
+        /// <returns>An enumerable of the entries in the archive.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown if archive was opened in write mode.</exception>
+        private IEnumerable<ZipFileInfo> GetArchiveEntries()
         {
             var zipFileInfoObjects = GetFilesMethod.Value.Invoke(_zipArchiveObject, null) as IEnumerable;
             foreach (var zipFileInfoObject in zipFileInfoObjects)
@@ -163,9 +152,39 @@ namespace INTV.Shared.Utility
             }
         }
 
-        // ArgumentNullException - null file name
-        // ArgumentOutOfRangeException - file name too long
-        // InvalidOperationException - opened in write mode, file does not exist
+        private Stream OpenZipEntry(ICompressedArchiveEntry entry)
+        {
+            var zipFileInfo = entry as ZipFileInfo;
+            var stream = zipFileInfo == null ? null : zipFileInfo.GetStream(FileMode.Open, FileAccess.Read);
+            return stream;
+        }
+
+        /// <summary>
+        /// Creates a new ZIP entry in the archive.
+        /// </summary>
+        /// <param name="fileName">The name of the entry in the archive.</param>
+        /// <param name="compressionMethod">The compression method to use.</param>
+        /// <returns>The new archive entry.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="fileName"/> is <c>null</c></exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="fileName"/> is too long, or <paramref name="compressionMethod"/> indicates improper compression or deflate mode.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if archive was opened in read mode, or <paramref name="fileName"/> already exists in the archive.</exception>
+        private ICompressedArchiveEntry CreateZipEntry(string fileName, ZipArchiveCompressionMethod compressionMethod)
+        {
+            var compression = ZipArchiveCompressionMethodToNativeCompressionMethodEnum(compressionMethod);
+            var deflate = ZipArchiveCompressionMethodToNativeDeflateOptionEnum(compressionMethod);
+            var zipFileInfoObject = AddFileMethod.Value.Invoke(_zipArchiveObject, new object[] { fileName, compression, deflate });
+            var zipFileInfo = new ZipFileInfo(zipFileInfoObject);
+            return zipFileInfo;
+        }
+
+        /// <summary>
+        /// Gets a <see cref="ZipFileInfo"/> for the given <paramref name="fileName"/>.
+        /// </summary>
+        /// <param name="fileName">The name of the entry in the archive.</param>
+        /// <returns>The entry in the archive.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="fileName"/> is <c>null</c></exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="fileName"/> is too long.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if archive was opened in write mode, or <paramref name="fileName"/> does not exist in the archive.</exception>
         private ZipFileInfo GetFile(string fileName)
         {
             var zipFileInfoObject = GetFileMethod.Value.Invoke(_zipArchiveObject, new object[] { fileName });
@@ -173,45 +192,10 @@ namespace INTV.Shared.Utility
             return zipFileInfo;
         }
 
-        private IEnumerable<string> GetFileEntryNames()
-        {
-            return GetFiles().Select(f => f.Name).OrderBy(p => p, PathComparer.Instance);
-        }
-
         private bool FileEntryExists(string fileName)
         {
             bool exists = (bool)FileExistsMethod.Value.Invoke(_zipArchiveObject, new object[] { fileName });
             return exists;
-        }
-
-        private Stream OpenFileEntry(string fileName)
-        {
-            var zipFileInfo = GetFile(fileName);
-            var stream = zipFileInfo.GetStream(FileMode.Open, FileAccess.Read);
-            return stream;
-        }
-
-        // ArgumentNullException - null file name
-        // ArgumentOutOfRangeException - file name too long, invalid compression, deflation
-        // InvalidOperationException - opened in Read mode, file already exists
-        private Stream CreateAndOpenFileEntry(string fileName, ZipArchiveCompressionMethod compressionMethod)
-        {
-            var compression = ZipArchiveCompressionMethodToNativeCompressionMethodEnum(compressionMethod);
-            var deflate = ZipArchiveCompressionMethodToNativeDeflateOptionEnum(compressionMethod);
-            var zipFileInfoObject = AddFileMethod.Value.Invoke(_zipArchiveObject, new object[] { fileName, compression, deflate });
-            var zipFileInfo = new ZipFileInfo(zipFileInfoObject);
-            var fileMode = CompressedArchiveAccessModeToFileMode(Mode);
-            var fileAccess = CompressedArchiveAccessModeToFileAccess(Mode);
-            var stream = zipFileInfo.GetStream(fileMode, fileAccess);
-            return stream;
-        }
-
-        // ArgumentNullException - null file name
-        // ArgumentOutOfRangeException - file name too long
-        // InvalidOperationException - opened in Read mode
-        private void DeleteFileEntry(string fileName)
-        {
-            DeleteFileMethod.Value.Invoke(_zipArchiveObject, new object[] { fileName });
         }
 
         /// <summary>
@@ -247,42 +231,89 @@ namespace INTV.Shared.Utility
             None = 0xFF
         }
 
-        private class ZipFileInfo
+        /// <summary>
+        /// Implements access to the internal ZipFileInfo type.
+        /// </summary>
+        private class ZipFileInfo : ICompressedArchiveEntry
         {
             private static readonly Lazy<Type> ZipFileInfoType = new Lazy<Type>(() => typeof(System.IO.Packaging.Package).Assembly.GetType(ZipArchiveNamespace + "ZipFileInfo"));
             private static readonly Lazy<MethodInfo> GetStreamMethod = new Lazy<MethodInfo>(() => ZipFileInfoType.Value.GetMethod("GetStream", InstanceFlags));
             private static readonly ConcurrentDictionary<string, PropertyInfo> Properties = new ConcurrentDictionary<string, PropertyInfo>();
 
+            /// <summary>
+            /// Initializes a new instance of <see cref="ZipFileInfo"/>.
+            /// </summary>
+            /// <param name="nativeObject">The native zip file information to wrap.</param>
             public ZipFileInfo(object nativeObject)
             {
                 NativeObject = nativeObject;
             }
 
+            #region ICompressedArchiveEntry
+
+            /// <inheritdoc />
             public string Name
             {
                 get { return GetPropertyValue<string>("Name"); }
             }
 
+            /// <inheritdoc />
+            /// <remarks>With enough effort, it may be possible to extract this value.
+            /// See: https://referencesource.microsoft.com/#WindowsBase/Base/MS/Internal/IO/Zip/ZipIOCentralDirectoryFileHeader.cs,9d73c7b389b47091 </remarks>
+            public long Length
+            {
+                get { return -1; }
+            }
+
+            /// <inheritdoc />
+            public DateTime LastModificationTime
+            {
+                get { return LastModFileDateTime; }
+            }
+
+            /// <inheritdoc />
+            public bool IsDirectory
+            {
+                get { return FolderFlag; }
+            }
+
+            #endregion // ICompressedArchiveEntry
+
+            /// <summary>
+            /// Gets the last modification time of the file entry.
+            /// </summary>
             public DateTime LastModFileDateTime
             {
                 get { return GetPropertyValue<DateTime>("LastModFileDateTime"); }
             }
 
+            /// <summary>
+            /// Gets the compression method used for the entry.
+            /// </summary>
             public CompressionMethodEnum CompressionMethod
             {
                 get { return (CompressionMethodEnum)GetPropertyValue<ushort>("CompressionMethod"); }
             }
 
+            /// <summary>
+            /// Gets the deflate option for the entry.
+            /// </summary>
             public DeflateOptionEnum DeflateOption
             {
                 get { return (DeflateOptionEnum)GetPropertyValue<byte>("DeflateOption"); }
             }
 
+            /// <summary>
+            /// Gets a value indicating whether or not the entry represents a folder.
+            /// </summary>
             public bool FolderFlag
             {
                 get { return GetPropertyValue<bool>("FolderFlag"); }
             }
 
+            /// <summary>
+            /// Gets a value indicating whether or not the entry represents a volume label.
+            /// </summary>
             public bool VolumeLabelFlag
             {
                 get { return GetPropertyValue<bool>("VolumeLabelFlag"); }
@@ -290,9 +321,15 @@ namespace INTV.Shared.Utility
 
             private object NativeObject { get; set; }
 
-            // InvalidOperationException - file mode Create but can't write
-            // ArgumentException - FileMode CreateNew/Append/Truncate / access
-            // ArgumentOutOfRangeException - bad file mode / access
+            /// <summary>
+            /// Gets a stream to operate on the underlying item in the ZIP archive.
+            /// </summary>
+            /// <param name="mode">The file mode to use.</param>
+            /// <param name="access">The file access mode to use.</param>
+            /// <returns>A stream for input or output or both, depending on <paramref name="mode"/>, <paramref name="access"/> and how the owning archive was opened.</returns>
+            /// <exception cref="System.InvalidOperationException">Thrown if archive mode is incompatible with <paramref name="mode"/> or <paramref name="access"/>.</exception>
+            /// <exception cref="System.ArgumentException">Thrown if an invalid combination of <paramref name="mode"/> and <paramref name="access"/> is requested.</exception>
+            /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="mode"/> or <paramref name="access"/> are unsupported.</exception>
             public Stream GetStream(FileMode mode, FileAccess access)
             {
                 var stream = (Stream)GetStreamMethod.Value.Invoke(NativeObject, new object[] { mode, access });

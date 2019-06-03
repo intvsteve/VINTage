@@ -35,12 +35,14 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets the size of the uncompressed archive entry.
         /// </summary>
+        /// <remarks>NOTE: Not all implementations support this. If this value cannot be accurately reported, the implementation
+        /// should return a value of -1.</remarks>
         long Length { get; }
 
         /// <summary>
         /// Gets the last modification date and time of the archive entry.
         /// </summary>
-        DateTime LastModificationType { get; }
+        DateTime LastModificationTime { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not the entry describes a directory.

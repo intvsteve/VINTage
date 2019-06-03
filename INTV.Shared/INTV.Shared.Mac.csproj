@@ -222,6 +222,7 @@
     <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
     <Compile Include="ComponentModel\WeightAttribute.cs" />
     <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\CompressedArchiveAccess.cs" />
     <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
     <Compile Include="Utility\CompressedArchiveAccessMode.cs" />
     <Compile Include="Utility\CompressedArchiveFormat.cs" />

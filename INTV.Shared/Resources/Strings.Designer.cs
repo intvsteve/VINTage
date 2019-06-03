@@ -624,6 +624,41 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The implementation type &apos;{0}&apos; is not a valid implementation for compressed archive type &apos;{1}&apos;..
+        /// </summary>
+        internal static string CompressedArchiveAccess_InvalidCompressionImplementationTypeErrorMessage_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_InvalidCompressionImplementationTypeErrorMessage_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to created accessor for compressed archive file at location:
+        ///  {0}
+        ///
+        ///The following formats were expected:
+        ///  {1}
+        ///The following formats were successfully processed:
+        ///  {2}
+        ///The following formats were not processed:
+        ///  {3}.
+        /// </summary>
+        internal static string CompressedArchiveAccess_UnableToProcessError_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_UnableToProcessError_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to create an instance of the compressed archive of format &apos;{0}&apos;. The format is not supported..
+        /// </summary>
+        internal static string CompressedArchiveAccess_UnsupportedFormatErrorMessage_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_UnsupportedFormatErrorMessage_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to control is not an ItemsControl.
         /// </summary>
         internal static string ControlMustBeItemsControlErrorMessage {

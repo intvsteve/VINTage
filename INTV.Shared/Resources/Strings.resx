@@ -1648,4 +1648,24 @@ Click the arrow for more commands.</value>
   <data name="ToolsDirectoryMissingMessage" xml:space="preserve">
     <value>Tools directory missing!</value>
   </data>
+  <data name="CompressedArchiveAccess_InvalidCompressionImplementationTypeErrorMessage_Format" xml:space="preserve">
+    <value>The implementation type '{0}' is not a valid implementation for compressed archive type '{1}'.</value>
+    <comment>{0} and {1} are names of internal data type values, which are not localized</comment>
+  </data>
+  <data name="CompressedArchiveAccess_UnsupportedFormatErrorMessage_Format" xml:space="preserve">
+    <value>Unable to create an instance of the compressed archive of format '{0}'. The format is not supported.</value>
+    <comment>{0} is a compressed archive format name</comment>
+  </data>
+  <data name="CompressedArchiveAccess_UnableToProcessError_Format" xml:space="preserve">
+    <value>Unable to created accessor for compressed archive file at location:
+  {0}
+
+The following formats were expected:
+  {1}
+The following formats were successfully processed:
+  {2}
+The following formats were not processed:
+  {3}</value>
+    <comment>{0} is a file path; {1}, {2} and {3} are lists of file formats converted to a string already</comment>
+  </data>
 </root>

@@ -21,16 +21,22 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using INTV.Core.Utility;
 
 namespace INTV.Shared.Utility
 {
     /// <summary>
     /// A basic interface that provides access to an archive, which may or may not be compressed.
     /// </summary>
-    public interface ICompressedArchiveAccess : IDisposable
+    public interface ICompressedArchiveAccess : IStorageAccess, IDisposable
     {
         /// <summary>
-        /// Gets a value indicating whether the archive is also compressed.
+        /// Gets a value indicating whether the instance is an archive.
+        /// </summary>
+        bool IsArchive { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the instance is compressed.
         /// </summary>
         bool IsCompressed { get; }
 
@@ -38,6 +44,13 @@ namespace INTV.Shared.Utility
         /// Gets an enumerable of the entries contained in the archive.
         /// </summary>
         IEnumerable<ICompressedArchiveEntry> Entries { get; }
+
+        /// <summary>
+        /// Finds an entry with the given name.
+        /// </summary>
+        /// <param name="name">The name of the entry in the archive to find.</param>
+        /// <returns>The entry, or <c>null</c> if not found.</returns>
+        ICompressedArchiveEntry FindEntry(string name);
 
         /// <summary>
         /// Opens a stream that provides access to the contents of the entry.
@@ -54,5 +67,12 @@ namespace INTV.Shared.Utility
         /// <returns>The new entry.</returns>
         /// <remarks>Whether a new entry can be created depends on the implementation.</remarks>
         ICompressedArchiveEntry CreateEntry(string name);
+
+        /// <summary>
+        /// Deletes an entry from the archive.
+        /// </summary>
+        /// <param name="name">The name of the entry to remove from the archive.</param>
+        /// <returns><c>true</c> if the entry was removed, <c>false</c> otherwise.</returns>
+        bool DeleteEntry(string name);
     }
 }

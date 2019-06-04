@@ -167,9 +167,9 @@ namespace INTV.Shared.Utility
             {
                 { CompressedArchiveFormat.None, Enumerable.Empty<string>() },
                 { CompressedArchiveFormat.Zip, new[] { ".zip" } },
-                { CompressedArchiveFormat.GZip, new[] { ".gz" } },
+                { CompressedArchiveFormat.GZip, new[] { ".gz", ".gzip" } },
                 { CompressedArchiveFormat.Tar, new[] { ".tar" } },
-                { CompressedArchiveFormat.BZip2, new[] { ".bz2" } },
+                { CompressedArchiveFormat.BZip2, new[] { ".bz2", ".bzip2" } },
             };
             return compressedArchiveFormatFileExtensions;
         }

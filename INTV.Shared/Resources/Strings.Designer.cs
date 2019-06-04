@@ -624,6 +624,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The GZIP compresssed file format does not support deletion of an entry..
+        /// </summary>
+        internal static string CompressedArchiveAccess_GZipDeleteEntryNotSupported {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_GZipDeleteEntryNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The implementation type &apos;{0}&apos; is not a valid implementation for compressed archive type &apos;{1}&apos;..
         /// </summary>
         internal static string CompressedArchiveAccess_InvalidCompressionImplementationTypeErrorMessage_Format {

@@ -1668,4 +1668,7 @@ The following formats were not processed:
   {3}</value>
     <comment>{0} is a file path; {1}, {2} and {3} are lists of file formats converted to a string already</comment>
   </data>
+  <data name="CompressedArchiveAccess_GZipDeleteEntryNotSupported" xml:space="preserve">
+    <value>The GZIP compresssed file format does not support deletion of an entry.</value>
+  </data>
 </root>

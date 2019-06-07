@@ -46,13 +46,6 @@ namespace INTV.Shared.Utility
     {
         private IDisposable _zipArchiveObject; // the backing object
 
-        /// <inheritdoc cref="ZipArchiveAccess(Stream, CompressedArchiveAccessMode)"/>
-        /// <remarks>Accesses the stream using <see cref="CompressedArchiveAccessMode.Read"/></remarks>
-        private ZipArchiveAccess(Stream stream)
-            : this(stream, CompressedArchiveAccessMode.Read)
-        {
-        }
-
         /// <summary>
         /// Initialize a new instance of the type from the given stream.
         /// </summary>

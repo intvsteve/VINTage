@@ -397,60 +397,6 @@ namespace INTV.Shared.Tests.Utility
             return format;
         }
 
-        private sealed class TemporaryFile : IDisposable
-        {
-            public TemporaryFile(string fileExtension, bool createFile)
-            {
-                CreatedFile = createFile;
-                FilePath = Path.Combine(Path.GetTempPath(), "TestCompressedArchive_" + Guid.NewGuid() + fileExtension);
-                if (createFile)
-                {
-                    using (var tmp = new FileStream(FilePath, FileMode.OpenOrCreate))
-                    {
-                        tmp.Flush();
-                    }
-                }
-            }
-
-            ~TemporaryFile()
-            {
-                Dispose(false);
-            }
-
-            public string FilePath { get; private set; }
-
-            private bool CreatedFile { get; set; }
-
-            public void Dispose()
-            {
-                Dispose(true);
-            }
-
-            private void Dispose(bool disposing)
-            {
-                if (!string.IsNullOrEmpty(FilePath))
-                {
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
-                    try
-                    {
-                        if (File.Exists(FilePath))
-                        {
-                            File.Delete(FilePath);
-                        }
-                    }
-                    catch
-                    {
-                    }
-                    FilePath = null;
-                }
-                if (disposing)
-                {
-                    GC.SuppressFinalize(this);
-                }
-            }
-        }
-
         private class TestCompressedArchiveAccess : CompressedArchiveAccess
         {
             private readonly Dictionary<string, TestCompressedArchiveEntry> _entries = new Dictionary<string, TestCompressedArchiveEntry>();

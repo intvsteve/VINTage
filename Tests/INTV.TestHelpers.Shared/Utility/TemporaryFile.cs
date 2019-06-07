@@ -36,7 +36,7 @@ namespace INTV.TestHelpers.Shared.Utility
         public TemporaryFile(string fileExtension, bool createFile)
         {
             CreatedFile = createFile;
-            FilePath = Path.Combine(Path.GetTempPath(), "TestCompressedArchive_" + Guid.NewGuid() + fileExtension);
+            FilePath = GenerateUniqueFilePath("TestCompressedArchive_", fileExtension);
             if (createFile)
             {
                 using (var tmp = new FileStream(FilePath, FileMode.OpenOrCreate))
@@ -57,6 +57,18 @@ namespace INTV.TestHelpers.Shared.Utility
         public string FilePath { get; private set; }
 
         private bool CreatedFile { get; set; }
+
+        /// <summary>
+        /// Generates a unique file path using a prefix and file extension.
+        /// </summary>
+        /// <param name="fileNamePrefix">The prefix for the temporary file's name.</param>
+        /// <param name="fileExtension">The file extension to use.</param>
+        /// <returns>A unique file name.</returns>
+        public static string GenerateUniqueFilePath(string fileNamePrefix, string fileExtension)
+        {
+            var filePath = Path.Combine(Path.GetTempPath(), fileNamePrefix + Guid.NewGuid() + fileExtension);
+            return filePath;
+        }
 
         #region IDispose
 

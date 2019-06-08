@@ -14,8 +14,9 @@ namespace INTV.TestHelpers.Shared.Xunit.Sdk
     /// Discoverer for the single-thread apartment theory attribute (STATheorAttribute).
     /// </summary>
     /// <remarks>Barely modified version of AArnott's version here:
-    /// https://github.com/xunit/samples.xunit/blob/master/STAExamples/WpfTheoryDiscoverer.cs </remarks>
-    public class STATheoryDiscoverer : IXunitTestCaseDiscoverer
+    /// https://github.com/xunit/samples.xunit/blob/master/STAExamples/WpfTheoryDiscoverer.cs
+    /// </remarks>
+    public class STATheoryDiscoverer : STADiscoverer
     {
         private readonly TheoryDiscoverer _theoryDiscoverer;
 
@@ -28,10 +29,10 @@ namespace INTV.TestHelpers.Shared.Xunit.Sdk
             _theoryDiscoverer = new TheoryDiscoverer(diagnosticMessageSink);
         }
 
-        /// <inheritdoc/>
-        public IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo factAttribute)
+        /// <inheritdoc />
+        protected override IXunitTestCaseDiscoverer WrappedDiscoverer
         {
-            return _theoryDiscoverer.Discover(discoveryOptions, testMethod, factAttribute).Select(t => new STATestCase(t));
+            get { return _theoryDiscoverer; }
         }
     }
 }

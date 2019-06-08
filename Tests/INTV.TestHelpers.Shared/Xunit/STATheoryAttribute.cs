@@ -15,7 +15,12 @@ namespace INTV.TestHelpers.Shared.Xunit
     /// <remarks>Copied from: https://github.com/xunit/samples.xunit/blob/9de33a206e0e3fb654479580445642f4bcc0dc84/STAExamples/STATheoryAttribute.cs </remarks>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     [XunitTestCaseDiscoverer("INTV.TestHelpers.Shared.Xunit.Sdk.STATheoryDiscoverer", "INTV.TestHelpers.Shared")]
-    public class STATheoryAttribute : TheoryAttribute
+    public class STATheoryAttribute : TheoryAttribute, ISTATestAttributeData
     {
+        /// <inheritdoc />
+        public bool UsePackUri { get; set; }
+
+        /// <inheritdoc />
+        public bool UsePackUriApplication { get; set; }
     }
 }

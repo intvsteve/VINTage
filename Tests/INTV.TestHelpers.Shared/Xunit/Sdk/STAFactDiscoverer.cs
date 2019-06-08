@@ -16,7 +16,7 @@ namespace INTV.TestHelpers.Shared.Xunit.Sdk
     /// <remarks>Barely modified version of AArnott's version here:
     /// https://github.com/xunit/samples.xunit/blob/master/STAExamples/WpfFactDiscoverer.cs
     /// </remarks>
-    public class STAFactDiscoverer : IXunitTestCaseDiscoverer
+    public class STAFactDiscoverer : STADiscoverer
     {
         private readonly FactDiscoverer _factDiscoverer;
 
@@ -29,10 +29,10 @@ namespace INTV.TestHelpers.Shared.Xunit.Sdk
             _factDiscoverer = new FactDiscoverer(diagnosticMessageSink);
         }
 
-        /// <inheritdoc/>
-        public IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo factAttribute)
+        /// <inheritdoc />
+        protected override IXunitTestCaseDiscoverer WrappedDiscoverer
         {
-            return _factDiscoverer.Discover(discoveryOptions, testMethod, factAttribute).Select(t => new STATestCase(t));
+            get { return _factDiscoverer; }
         }
     }
 }

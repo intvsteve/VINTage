@@ -30,13 +30,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="xunit.abstractions">
       <HintPath>..\..\packages\xunit.abstractions.2.0.0\lib\portable-net45+win+wpa81+wp80+monotouch+monoandroid+Xamarin.iOS\xunit.abstractions.dll</HintPath>
     </Reference>
@@ -51,6 +55,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ICompressedArchiveTest.cs" />
     <Compile Include="Utility\TemporaryFile.cs" />
+    <Compile Include="Xunit\ISTATestAttributeData.cs" />
+    <Compile Include="Xunit\Sdk\STADiscoverer.cs" />
     <Compile Include="Xunit\STAFactAttribute.cs" />
     <Compile Include="Xunit\Sdk\STAFactDiscoverer.cs" />
     <Compile Include="Xunit\Sdk\STATestCase.cs" />

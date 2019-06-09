@@ -65,6 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\CompressedArchiveAccessTests.cs" />
     <Compile Include="Utility\CompressedArchiveFormatTests.cs" />
+    <Compile Include="Utility\ResourceHelpersTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

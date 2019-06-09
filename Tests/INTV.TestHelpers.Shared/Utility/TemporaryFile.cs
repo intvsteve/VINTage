@@ -35,14 +35,10 @@ namespace INTV.TestHelpers.Shared.Utility
         /// <param name="createFile">If <c>true</c>, create the file on disk; otherwise only create the path initially.</param>
         public TemporaryFile(string fileExtension, bool createFile)
         {
-            CreatedFile = createFile;
-            FilePath = GenerateUniqueFilePath("TestCompressedArchive_", fileExtension);
+            FilePath = GenerateUniqueFilePath("INTV_Test_TempFile_", fileExtension);
             if (createFile)
             {
-                using (var tmp = new FileStream(FilePath, FileMode.OpenOrCreate))
-                {
-                    tmp.Flush();
-                }
+                CreateTempFileOnDisk(FilePath);
             }
         }
 
@@ -56,8 +52,6 @@ namespace INTV.TestHelpers.Shared.Utility
         /// </summary>
         public string FilePath { get; private set; }
 
-        private bool CreatedFile { get; set; }
-
         /// <summary>
         /// Generates a unique file path using a prefix and file extension.
         /// </summary>
@@ -70,12 +64,36 @@ namespace INTV.TestHelpers.Shared.Utility
             return filePath;
         }
 
+        /// <summary>
+        /// Create an instance of <see cref="TemporaryFile"/> with a predefined path.
+        /// </summary>
+        /// <param name="path">The absolute path for the file.</param>
+        /// <param name="createEmptyFile">If <c>true</c>, create the file on disk; otherwise only create the path initially.</param>
+        /// <returns>The temporary file instance.</returns>
+        public static TemporaryFile CreateTemporaryFileWithPath(string path, bool createEmptyFile)
+        {
+            var temporaryFile = new TemporaryFile(string.Empty, createFile: false) { FilePath = path };
+            if (createEmptyFile)
+            {
+                CreateTempFileOnDisk(path);
+            }
+            return temporaryFile;
+        }
+
         #region IDispose
 
         /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
+        }
+
+        private static void CreateTempFileOnDisk(string filePath)
+        {
+            using (var tmp = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                tmp.Flush();
+            }
         }
 
         private void Dispose(bool disposing)

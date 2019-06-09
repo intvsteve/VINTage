@@ -106,6 +106,7 @@ namespace INTV.Shared.Utility
         /// <param name="format">The format of the compressed archive.</param>
         /// <param name="mode">The access mode to use for operations on the compressed archive.</param>
         /// <returns>An instance of a compressed archive accessor for the given format.</returns>
+        /// <remarks>The archive takes ownership of <paramref name="stream"/> and will dispose it.</remarks>
         /// <exception cref="System.NotSupportedException">Thrown if it is not possible to locate a factory for the given <paramref name="format"/>, or
         /// if <paramref name="stream"/> was opened with an unsupported file sharing mode in use.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stream"/> is <c>null</c></exception>

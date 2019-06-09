@@ -46,13 +46,6 @@ namespace INTV.Shared.Utility
     {
         private IDisposable _zipArchiveObject; // the backing object
 
-        /// <inheritdoc cref="ZipArchiveAccess(Stream, CompressedArchiveAccessMode)"/>
-        /// <remarks>Accesses the stream using <see cref="CompressedArchiveAccessMode.Read"/></remarks>
-        private ZipArchiveAccess(Stream stream)
-            : this(stream, CompressedArchiveAccessMode.Read)
-        {
-        }
-
         /// <summary>
         /// Initialize a new instance of the type from the given stream.
         /// </summary>
@@ -75,6 +68,7 @@ namespace INTV.Shared.Utility
         /// <param name="stream">Stream containing data in ZIP archive format.</param>
         /// <param name="mode">The access mode to use for ZIP operations.</param>
         /// <returns>A new instance of <see cref="ZipArchiveAccess"/>.</returns>
+        /// <remarks>The ZIP archive assumes ownership of <paramref name="stream"/> and will dispose it.</remarks>
         public static ZipArchiveAccess Create(Stream stream, CompressedArchiveAccessMode mode)
         {
             return new ZipArchiveAccess(stream, mode);
@@ -107,6 +101,9 @@ namespace INTV.Shared.Utility
         }
 
         /// <inheritdoc />
+        /// <remarks>NOTE: To add a directory entry, be sure that <paramref name="name"/> ends with the directory
+        /// separator character. For cross-platform considerations, it is wise to use forward slash rather than
+        /// backslash, though this has not been rigorously tested.</remarks>
         public override ICompressedArchiveEntry CreateEntry(string name)
         {
             return CreateZipEntry(name, ZipArchiveCompressionMethod.MaximumCompression);

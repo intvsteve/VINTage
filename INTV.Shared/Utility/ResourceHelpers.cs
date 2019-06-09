@@ -1,4 +1,4 @@
-﻿// <copyright file="ResourceHelpers.cs" company="INTV Funhouse">
+// <copyright file="ResourceHelpers.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -58,7 +58,9 @@ namespace INTV.Shared.Utility
         /// <typeparam name="T">A type whose assembly is expected to contain a specific image resource.</typeparam>
         /// <param name="type">Any object whose implementation is in the assembly in which the image resource is supposed to exist.</param>
         /// <param name="relativeResourcePath">The relative path to the image resource within the type's assembly.</param>
-        /// <returns>The image resource, or <c>null</c> if not found.</returns>
+        /// <returns>The image.</returns>
+        /// <exception cref="System.IOException">Thrown if <paramref name="relativeResourcePath"/> refers to a resource that cannot be found.</exception>
+        /// <exception cref="System.NotSupportedException">Thrown if <paramref name="relativeResourcePath"/> refers to a resource that is not a valid image format.</exception>
         public static OSImage LoadImageResource<T>(this T type, string relativeResourcePath)
         {
             return LoadImageResource(typeof(T), relativeResourcePath);
@@ -101,10 +103,6 @@ namespace INTV.Shared.Utility
             catch (System.Resources.MissingManifestResourceException)
             {
                 value = "!!NO RESOURCES FOUND FOR '" + resourceName + "." + key + "'!!";
-            }
-            catch (System.Resources.MissingSatelliteAssemblyException)
-            {
-                value = "!!NO SATELLITE RESOURCES FOUND FOR '" + resourceName + "." + key + "'!!";
             }
             return value;
         }
@@ -153,7 +151,6 @@ namespace INTV.Shared.Utility
                                 }
                             }
                             extractedResourceFiles.Add(filePath);
-                            System.Diagnostics.Debug.WriteLine(fileName);
                         }
                     }
                 }

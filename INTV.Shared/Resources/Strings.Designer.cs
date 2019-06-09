@@ -633,6 +633,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The compressed archive type &apos;{0}&apos; is not a valid compressed archive type..
+        /// </summary>
+        internal static string CompressedArchiveAccess_InvalidCompressionFormatTypeErrorMessage_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_InvalidCompressionFormatTypeErrorMessage_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The implementation type &apos;{0}&apos; is not a valid implementation for compressed archive type &apos;{1}&apos;..
         /// </summary>
         internal static string CompressedArchiveAccess_InvalidCompressionImplementationTypeErrorMessage_Format {
@@ -642,7 +651,7 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to created accessor for compressed archive file at location:
+        ///   Looks up a localized string similar to Unable to create accessor for compressed archive file at location:
         ///  {0}
         ///
         ///The following formats were expected:
@@ -664,6 +673,60 @@ namespace INTV.Shared.Resources {
         internal static string CompressedArchiveAccess_UnsupportedFormatErrorMessage_Format {
             get {
                 return ResourceManager.GetString("CompressedArchiveAccess_UnsupportedFormatErrorMessage_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file extension &apos;{0}&apos; is already in use by the format &apos;{1}&apos;..
+        /// </summary>
+        internal static string CompressedArchiveFomrat_FileExtensionAlreadyInUseError_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFomrat_FileExtensionAlreadyInUseError_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compound file extensions are not supported..
+        /// </summary>
+        internal static string CompressedArchiveFormat_CompountFileExtensionsNotSupportedError {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_CompountFileExtensionsNotSupportedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least one file extension must be provided..
+        /// </summary>
+        internal static string CompressedArchiveFormat_FileExtensionRequiredError {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_FileExtensionRequiredError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The format &apos;{0}&apos; is not registered..
+        /// </summary>
+        internal static string CompressedArchiveFormat_FormatIsNotRegisteredError_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_FormatIsNotRegisteredError_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least one implementation must be provided..
+        /// </summary>
+        internal static string CompressedArchiveFormat_ImplementationRequired {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_ImplementationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File extension is invalid..
+        /// </summary>
+        internal static string CompressedArchiveFormat_InvalidFileExtensionError {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_InvalidFileExtensionError", resourceCulture);
             }
         }
         

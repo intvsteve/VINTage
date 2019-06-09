@@ -1657,7 +1657,7 @@ Click the arrow for more commands.</value>
     <comment>{0} is a compressed archive format name</comment>
   </data>
   <data name="CompressedArchiveAccess_UnableToProcessError_Format" xml:space="preserve">
-    <value>Unable to created accessor for compressed archive file at location:
+    <value>Unable to create accessor for compressed archive file at location:
   {0}
 
 The following formats were expected:

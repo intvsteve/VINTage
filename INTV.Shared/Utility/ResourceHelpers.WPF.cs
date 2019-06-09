@@ -51,11 +51,12 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="type">Any object whose implementation is in the assembly in which the image resource is supposed to exist.</param>
         /// <param name="relativeResourcePath">The relative path to the image resource within the type's assembly.</param>
-        /// <returns>The image resource, or <c>null</c> if not found.</returns>
+        /// <returns>The image.</returns>
         public static ImageSource LoadImageResource(this Type type, string relativeResourcePath)
         {
             var resourceName = type.CreatePackedResourceString(relativeResourcePath);
-            var image = new System.Windows.Media.Imaging.BitmapImage(new System.Uri(resourceName, System.UriKind.RelativeOrAbsolute));
+            var imageUri = new System.Uri(resourceName, System.UriKind.RelativeOrAbsolute);
+            var image = new System.Windows.Media.Imaging.BitmapImage(imageUri);
             return image;
         }
     }

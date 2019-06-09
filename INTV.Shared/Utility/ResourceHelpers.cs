@@ -104,10 +104,6 @@ namespace INTV.Shared.Utility
             {
                 value = "!!NO RESOURCES FOUND FOR '" + resourceName + "." + key + "'!!";
             }
-            catch (System.Resources.MissingSatelliteAssemblyException)
-            {
-                value = "!!NO SATELLITE RESOURCES FOUND FOR '" + resourceName + "." + key + "'!!";
-            }
             return value;
         }
 
@@ -155,7 +151,6 @@ namespace INTV.Shared.Utility
                                 }
                             }
                             extractedResourceFiles.Add(filePath);
-                            System.Diagnostics.Debug.WriteLine(fileName);
                         }
                     }
                 }

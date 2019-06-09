@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -62,10 +63,10 @@ namespace INTV.Shared.Utility
     /// </summary>
     public static class CompressedArchiveFormatExtensions
     {
-        private static readonly Lazy<IDictionary<CompressedArchiveFormat, IEnumerable<string>>> CompressedArchiveFormatFileExtensions = new Lazy<IDictionary<CompressedArchiveFormat, IEnumerable<string>>>(GetCompressedArchiveFormatFileExtensions);
-        private static readonly Lazy<IDictionary<CompressedArchiveFormat, IEnumerable<CompressedArchiveAccessImplementation>>> CompressedArchiveAccessImplementations = new Lazy<IDictionary<CompressedArchiveFormat, IEnumerable<CompressedArchiveAccessImplementation>>>(GetCompressedArchiveFormatImplementations);
+        private static readonly Lazy<IDictionary<CompressedArchiveFormat, List<string>>> CompressedArchiveFormatFileExtensions = new Lazy<IDictionary<CompressedArchiveFormat, List<string>>>(InitializeCompressedArchiveFormatFileExtensions);
+        private static readonly Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>> CompressedArchiveAccessImplementations = new Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>>(InitializeCompressedArchiveFormatImplementations);
 
-        private static readonly IEnumerable<CompressedArchiveFormat> AvailableFormats = new[]
+        private static readonly HashSet<CompressedArchiveFormat> AvailableFormats = new HashSet<CompressedArchiveFormat>()
         {
             CompressedArchiveFormat.Zip,
         };
@@ -87,10 +88,11 @@ namespace INTV.Shared.Utility
         /// <returns>The file extensions. If an unexpected value for <paramref name="format"/> is provided, an empty enumerable is returned.</returns>
         public static IEnumerable<string> FileExtensions(this CompressedArchiveFormat format)
         {
-            IEnumerable<string> fileExtensions;
-            if (!format.IsCompressedArchiveFormatSupported() || !CompressedArchiveFormatFileExtensions.Value.TryGetValue(format, out fileExtensions))
+            var fileExtensions = Enumerable.Empty<string>();
+            List<string> registeredFileExtensions;
+            if (format.IsCompressedArchiveFormatSupported() && CompressedArchiveFormatFileExtensions.Value.TryGetValue(format, out registeredFileExtensions))
             {
-                fileExtensions = Enumerable.Empty<string>();
+                fileExtensions = registeredFileExtensions;
             }
             return fileExtensions;
         }
@@ -130,7 +132,7 @@ namespace INTV.Shared.Utility
             if (fileExtension.FirstOrDefault() == '.')
             {
                 var compressedArchiveFormatFileExtensions = CompressedArchiveFormatFileExtensions.Value;
-                format = compressedArchiveFormatFileExtensions.FirstOrDefault(f => f.Value.FirstOrDefault(e => string.Compare(e, fileExtension, ignoreCase: true) == 0) != null).Key;
+                format = compressedArchiveFormatFileExtensions.FirstOrDefault(f => f.Value.FirstOrDefault(e => StringComparer.OrdinalIgnoreCase.Compare(e, fileExtension) == 0) != null).Key;
             }
             return format;
         }
@@ -142,10 +144,11 @@ namespace INTV.Shared.Utility
         /// <returns>The available implementations. If unsupported, an empty enumerable is returned.</returns>
         public static IEnumerable<CompressedArchiveAccessImplementation> GetAvailableCompressedArchiveImplementations(this CompressedArchiveFormat format)
         {
-            IEnumerable<CompressedArchiveAccessImplementation> implementations;
-            if (!format.IsCompressedArchiveFormatSupported() || !CompressedArchiveAccessImplementations.Value.TryGetValue(format, out implementations))
+            var implementations = Enumerable.Empty<CompressedArchiveAccessImplementation>();
+            IList<CompressedArchiveAccessImplementation> registeredImplementations;
+            if (format.IsCompressedArchiveFormatSupported() && CompressedArchiveAccessImplementations.Value.TryGetValue(format, out registeredImplementations))
             {
-                implementations = Enumerable.Empty<CompressedArchiveAccessImplementation>();
+                implementations = registeredImplementations;
             }
             return implementations;
         }
@@ -161,24 +164,205 @@ namespace INTV.Shared.Utility
             return preferredImplementation;
         }
 
-        private static IDictionary<CompressedArchiveFormat, IEnumerable<string>> GetCompressedArchiveFormatFileExtensions()
+        /// <summary>
+        /// Associates a file extension with a previously registered <see cref="CompressedArchiveFormat"/>.
+        /// </summary>
+        /// <param name="format">The compressed archive format with which to associate a file extension.</param>
+        /// <param name="fileExtension">The file extension to associate with <paramref name="format"/>.</param>
+        /// <param name="makeDefault">If <c>true</c>, treat <paramref name="fileExtension"/> as the default, meaning the first in the enumerable of values returned from <see cref="FileExtensions(CompressedArchiveFormat)"/>.</param>
+        /// <returns><c>true</c> if the file extension was added to those associated with <paramref name="format"/>, <c>false</c> otherwise.</returns>
+        /// <remarks>Note that if a particular file extension is not already the default, you can make it so by calling this method and setting <paramref name="makeDefault"/>
+        /// to <c>true</c>. In this usage, the function will always return <c>false</c> if <paramref name="fileExtension"/> is already associated with <paramref name="format"/>.
+        /// Note also that file extensions are not case sensitive.</remarks>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="format"/> is <see cref="CompressedArchiveFormat.None"/>.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if <paramref name="fileExtension"/> is null, empty, whitespace, contains invalid characters,
+        /// does not begin with a period, or contains multiple periods. This exception is also thrown if <paramref name="format"/> has not already
+        /// been registered as an available format, either as a format automatically included in the implementation, or registered via
+        /// <see cref="RegisterCompressedArchiveFormat(CompressedArchiveFormat, IEnumerable{string}, IEnumerable{CompressedArchiveAccessImplementation})"/>.
+        /// This exception is also thrown if <paramref name="fileExtension"/> is already in use by a previously registered <paramref name="format"/>.</exception>
+        public static bool AddFileExtension(this CompressedArchiveFormat format, string fileExtension, bool makeDefault)
         {
-            var compressedArchiveFormatFileExtensions = new Dictionary<CompressedArchiveFormat, IEnumerable<string>>()
+            if (format == CompressedArchiveFormat.None)
             {
-                { CompressedArchiveFormat.None, Enumerable.Empty<string>() },
-                { CompressedArchiveFormat.Zip, new[] { ".zip" } },
-                { CompressedArchiveFormat.GZip, new[] { ".gz" } },
-                { CompressedArchiveFormat.Tar, new[] { ".tar" } },
-                { CompressedArchiveFormat.BZip2, new[] { ".bz2" } },
+                throw new ArgumentOutOfRangeException("format");
+            }
+            if (string.IsNullOrWhiteSpace(fileExtension) || (fileExtension.First() != '.') || Path.GetInvalidFileNameChars().Intersect(fileExtension).Any())
+            {
+                throw new ArgumentException(Resources.Strings.CompressedArchiveFormat_InvalidFileExtensionError, "fileExtension");
+            }
+            if (fileExtension.Count(c => c == '.') > 1)
+            {
+                throw new ArgumentException(Resources.Strings.CompressedArchiveFormat_CompountFileExtensionsNotSupportedError, "fileExtension");
+            }
+
+            List<string> existingFileExtensionsForFormat;
+            var formatAlreadyRegistered = CompressedArchiveFormatFileExtensions.Value.TryGetValue(format, out existingFileExtensionsForFormat);
+            var formatAlreadyUsingExtension = CompressedArchiveFormatFileExtensions.Value.FirstOrDefault(e => e.Value.Contains(fileExtension, StringComparer.OrdinalIgnoreCase));
+
+            bool? added = null;
+            if (formatAlreadyRegistered)
+            {
+                if ((formatAlreadyUsingExtension.Key == CompressedArchiveFormat.None) || (formatAlreadyUsingExtension.Key == format))
+                {
+                    added = AddOrUpdateCompressedArchiveFormatData(fileExtension, makeDefault, existingFileExtensionsForFormat, (f, e) => ((List<string>)e).FindIndex(0, x => StringComparer.OrdinalIgnoreCase.Compare(x, f) == 0));
+                }
+            }
+            else
+            {
+                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FormatIsNotRegisteredError_Format, format);
+                throw new ArgumentException(message, "format");
+            }
+            if (!added.HasValue)
+            {
+                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFomrat_FileExtensionAlreadyInUseError_Format, fileExtension, formatAlreadyUsingExtension.Key);
+                throw new ArgumentException(message, "fileExtension");
+            }
+            return added.Value;
+        }
+
+        /// <summary>
+        ///  Associates an implementation with a previously registered <see cref="CompressedArchiveFormat"/>.
+        /// </summary>
+        /// <param name="format">The compressed archive format with which to associate an implementation.</param>
+        /// <param name="implementation">The implementation to associate with the compressed archive format</param>
+        /// <param name="makePreferred">If <c>true</c>, <paramref name="implemenatation"/> becomes the implementation returned by <see cref="GetPreferredCompressedArchiveImplementation(CompressedArchiveFormat)"/>.</param>
+        /// <returns><c>true</c> if <paramref name="implementation"/> was added, <c>false</c> otherwise.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="format"/> is <see cref="CompressedArchiveFormat.None"/>. Also thrown if the
+        /// value of <paramref name="implementation"/> is <see cref="CompressedArchiveAccessImplementation.Any"/> or <see cref="CompressedArchiveAccessImplementation.None"/>.</exception>
+        /// <exception cref="System.ArgumentException">Thrown if <paramref name="format"/>has not already been registered as an available format,
+        /// either as a format automatically included in the implementation, or registered via
+        /// <see cref="RegisterCompressedArchiveFormat(CompressedArchiveFormat, IEnumerable{string}, IEnumerable{CompressedArchiveAccessImplementation})"/>.</exception>
+        public static bool AddImplementation(this CompressedArchiveFormat format, CompressedArchiveAccessImplementation implementation, bool makePreferred)
+        {
+            if (format == CompressedArchiveFormat.None)
+            {
+                throw new ArgumentOutOfRangeException("format");
+            }
+            if ((implementation == CompressedArchiveAccessImplementation.None) || (implementation == CompressedArchiveAccessImplementation.Any))
+            {
+                throw new ArgumentOutOfRangeException("implementation");
+            }
+
+            IList<CompressedArchiveAccessImplementation> existingImplementationsForFormat;
+            var formatAlreadyRegistered = CompressedArchiveAccessImplementations.Value.TryGetValue(format, out existingImplementationsForFormat);
+
+            var added = false;
+            if (formatAlreadyRegistered)
+            {
+                added = AddOrUpdateCompressedArchiveFormatData(implementation, makePreferred, existingImplementationsForFormat, (i, e) => e.IndexOf(i));
+            }
+            else
+            {
+                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FormatIsNotRegisteredError_Format, format);
+                throw new ArgumentException(message, "format");
+            }
+            return added;
+        }
+
+        /// <summary>
+        /// Registers a <see cref="CompressedArchiveFormat"/> for use.
+        /// </summary>
+        /// <param name="format">The format to register.</param>
+        /// <param name="fileExtensions">The file extensions to associate with <paramref name="format"/>.</param>
+        /// <param name="implementations">The implementations to associate with <paramref name="format"/>.</param>
+        /// <returns><c>true</c> if <paramref name="format"/> was newly registered, <c>false</c> otherwise.</returns>
+        /// <remarks>If this method is called multiple times with the same <paramref name="format"/> and other arguments, no net effect results. If it is
+        /// called with values in the <paramref name="fileExtensions"/> and <paramref name="implementations"/> arguments that are not already associated
+        /// with <paramref name="format"/>, they will be added, subject to the restrictions documented in the <see cref="AddFileExtension(CompressedArchiveFormat, string, bool)"/>
+        /// and <see cref="AddImplementation(CompressedArchiveFormat, CompressedArchiveAccessImplementation, bool)"/> methods respectively. Note that in this
+        /// usage, the default / preferred file extension and implementation will not be changed.</remarks>
+        public static bool RegisterCompressedArchiveFormat(this CompressedArchiveFormat format, IEnumerable<string> fileExtensions, IEnumerable<CompressedArchiveAccessImplementation> implementations)
+        {
+            if (format == CompressedArchiveFormat.None)
+            {
+                throw new ArgumentOutOfRangeException("format");
+            }
+            if (fileExtensions == null)
+            {
+                throw new ArgumentNullException("fileExtensions");
+            }
+            if (!fileExtensions.Any())
+            {
+                throw new ArgumentException(Resources.Strings.CompressedArchiveFormat_FileExtensionRequiredError, "fileExtensions");
+            }
+            if (implementations == null)
+            {
+                throw new ArgumentNullException("implementations");
+            }
+            if (!implementations.Any())
+            {
+                throw new ArgumentException(Resources.Strings.CompressedArchiveFormat_ImplementationRequired, "implementations");
+            }
+
+            if (!CompressedArchiveFormatFileExtensions.Value.Keys.Contains(format))
+            {
+                CompressedArchiveFormatFileExtensions.Value[format] = new List<string>();
+            }
+            foreach (var fileExtension in fileExtensions)
+            {
+                format.AddFileExtension(fileExtension, makeDefault: false);
+            }
+
+            if (!CompressedArchiveAccessImplementations.Value.Keys.Contains(format))
+            {
+                CompressedArchiveAccessImplementations.Value[format] = new List<CompressedArchiveAccessImplementation>();
+            }
+            foreach (var implementation in implementations)
+            {
+                format.AddImplementation(implementation, makePreferred: false);
+            }
+
+            var registered = AvailableFormats.Add(format);
+
+            return registered;
+        }
+
+        private static bool AddOrUpdateCompressedArchiveFormatData<T>(T data, bool makeDefault, IList<T> existingData, Func<T, IList<T>, int> find)
+        {
+            var index = find(data, existingData);
+            var added = index < 0;
+
+            if (makeDefault)
+            {
+                if (index > 0)
+                {
+                    existingData.RemoveAt(index);
+                    existingData.Insert(0, data);
+                }
+                else if (added)
+                {
+                    if (existingData.Count > 0)
+                    {
+                        existingData.Insert(0, data);
+                    }
+                }
+            }
+            else if (added)
+            {
+                existingData.Add(data);
+            }
+
+            return added;
+        }
+
+        private static IDictionary<CompressedArchiveFormat, List<string>> InitializeCompressedArchiveFormatFileExtensions()
+        {
+            var compressedArchiveFormatFileExtensions = new Dictionary<CompressedArchiveFormat, List<string>>()
+            {
+                { CompressedArchiveFormat.None, new List<string>() },
+                { CompressedArchiveFormat.Zip, new List<string>() { ".zip" } },
+                { CompressedArchiveFormat.GZip, new List<string>() { ".gz" } },
+                { CompressedArchiveFormat.Tar, new List<string>() { ".tar" } },
+                { CompressedArchiveFormat.BZip2, new List<string>() { ".bz2" } },
             };
             return compressedArchiveFormatFileExtensions;
         }
 
-        private static IDictionary<CompressedArchiveFormat, IEnumerable<CompressedArchiveAccessImplementation>> GetCompressedArchiveFormatImplementations()
+        private static IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>> InitializeCompressedArchiveFormatImplementations()
         {
-            var compressedArchiveFormatImplementations = new Dictionary<CompressedArchiveFormat, IEnumerable<CompressedArchiveAccessImplementation>>()
+            var compressedArchiveFormatImplementations = new Dictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>()
             {
-                { CompressedArchiveFormat.None, Enumerable.Empty<CompressedArchiveAccessImplementation>() },
+                { CompressedArchiveFormat.None, new List<CompressedArchiveAccessImplementation>() },
                 { CompressedArchiveFormat.Zip, new[] { CompressedArchiveAccessImplementation.Native, CompressedArchiveAccessImplementation.SharpZipLib } },
                 { CompressedArchiveFormat.GZip, new[] { CompressedArchiveAccessImplementation.SharpZipLib } },
                 { CompressedArchiveFormat.Tar, new[] { CompressedArchiveAccessImplementation.SharpZipLib } },

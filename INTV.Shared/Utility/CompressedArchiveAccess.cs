@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define OPEN_NESTED_FORMAT_IMMEDIATELY
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -45,7 +47,7 @@ namespace INTV.Shared.Utility
     /// </summary>
     public abstract class CompressedArchiveAccess : ICompressedArchiveAccess
     {
-        private static readonly Lazy<ConcurrentDictionary<ComressedArchiveIdentifier, CompressedArchiveAccessFactory>> Factories = new Lazy<ConcurrentDictionary<ComressedArchiveIdentifier, CompressedArchiveAccessFactory>>(InitializeCompressedArchiveFactories);
+        private static readonly Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>> Factories = new Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>>(InitializeCompressedArchiveFactories);
 
         ~CompressedArchiveAccess()
         {
@@ -59,16 +61,21 @@ namespace INTV.Shared.Utility
         /// <param name="implementation">The implementation for which the factory is being registered.</param>
         /// <param name="factory">The factory method.</param>
         /// <returns><c>true</c> if the factory was successfully registered; <c>false</c> otherwise.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the value of <paramref name="implementation"/> is not valid.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the value of <paramref name="format"/> or <paramref name="implementation"/> is not valid.</exception>
         public static bool RegisterFactory(CompressedArchiveFormat format, CompressedArchiveAccessImplementation implementation, CompressedArchiveAccessFactory factory)
         {
+            if (format == CompressedArchiveFormat.None)
+            {
+                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_InvalidCompressionFormatTypeErrorMessage_Format, format);
+                throw new ArgumentOutOfRangeException("format", message);
+            }
             if ((implementation == CompressedArchiveAccessImplementation.None) || (implementation == CompressedArchiveAccessImplementation.Any))
             {
                 var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_InvalidCompressionImplementationTypeErrorMessage_Format, implementation, format);
                 throw new ArgumentOutOfRangeException("implementation", message);
             }
 
-            var registered = Factories.Value.TryAdd(new ComressedArchiveIdentifier(format, implementation), factory);
+            var registered = Factories.Value.TryAdd(new CompressedArchiveIdentifier(format, implementation), factory);
             return registered;
         }
 
@@ -99,6 +106,7 @@ namespace INTV.Shared.Utility
         /// <param name="format">The format of the compressed archive.</param>
         /// <param name="mode">The access mode to use for operations on the compressed archive.</param>
         /// <returns>An instance of a compressed archive accessor for the given format.</returns>
+        /// <remarks>The archive takes ownership of <paramref name="stream"/> and will dispose it.</remarks>
         /// <exception cref="System.NotSupportedException">Thrown if it is not possible to locate a factory for the given <paramref name="format"/>, or
         /// if <paramref name="stream"/> was opened with an unsupported file sharing mode in use.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stream"/> is <c>null</c></exception>
@@ -109,12 +117,12 @@ namespace INTV.Shared.Utility
         public static ICompressedArchiveAccess Open(Stream stream, CompressedArchiveFormat format, CompressedArchiveAccessMode mode)
         {
             var preferredImplementation = format.GetPreferredCompressedArchiveImplementation();
-            var identifier = new ComressedArchiveIdentifier(format, preferredImplementation);
+            var identifier = new CompressedArchiveIdentifier(format, preferredImplementation);
 
             CompressedArchiveAccessFactory factory;
             if (!Factories.Value.TryGetValue(identifier, out factory))
             {
-                identifier = new ComressedArchiveIdentifier(format, CompressedArchiveAccessImplementation.Any);
+                identifier = new CompressedArchiveIdentifier(format, CompressedArchiveAccessImplementation.Any);
                 Factories.Value.TryGetValue(identifier, out factory);
             }
 
@@ -293,7 +301,7 @@ namespace INTV.Shared.Utility
         /// <returns>The entry, or <c>null</c> if not found.</returns>
         protected ICompressedArchiveEntry GetEntry(string name)
         {
-            if (!string.IsNullOrEmpty(RootLocation))
+            if (!string.IsNullOrEmpty(RootLocation) && Path.IsPathRooted(name))
             {
                 name = PathUtils.GetRelativePath(name, RootLocation);
             }
@@ -301,10 +309,10 @@ namespace INTV.Shared.Utility
             return entry;
         }
 
-        private static ConcurrentDictionary<ComressedArchiveIdentifier, CompressedArchiveAccessFactory> InitializeCompressedArchiveFactories()
+        private static ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory> InitializeCompressedArchiveFactories()
         {
-            var factories = new ConcurrentDictionary<ComressedArchiveIdentifier, CompressedArchiveAccessFactory>(new ComressedArchiveIdentifier());
-            factories[new ComressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.Native)] = ZipArchiveAccess.Create;
+            var factories = new ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>(new CompressedArchiveIdentifier());
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.Native)] = ZipArchiveAccess.Create;
             return factories;
         }
 
@@ -376,6 +384,8 @@ namespace INTV.Shared.Utility
                 var fileStream = new FileStream(filePath, fileMode, fileAccess);
                 var formats = filePath.GetCompressedArchiveFormatsFromFileName();
                 ICompressedArchiveAccess compressedArchiveAccess = null;
+
+#if OPEN_NESTED_FORMAT_IMMEDIATELY
                 Stream stream = fileStream;
                 foreach (var format in formats)
                 {
@@ -400,6 +410,13 @@ namespace INTV.Shared.Utility
                         break;
                     }
                 }
+#else
+                var format = formats.FirstOrDefault();
+                if (format != CompressedArchiveFormat.None)
+                {
+                    compressedArchiveAccess = Utility.CompressedArchiveAccess.Open(fileStream, format, mode);
+                }
+#endif
 
                 if (compressedArchiveAccess == null)
                 {
@@ -427,6 +444,12 @@ namespace INTV.Shared.Utility
             }
 
             /// <inheritdoc />
+            protected override bool DeleteEntry(ICompressedArchiveEntry entry)
+            {
+                return CompressedArchiveAccess.DeleteEntry(entry.Name);
+            }
+
+            /// <inheritdoc />
             protected override void Dispose(bool disposing)
             {
                 lock (_lock)
@@ -443,22 +466,16 @@ namespace INTV.Shared.Utility
                     }
                 }
             }
-
-            /// <inheritdoc />
-            protected override bool DeleteEntry(ICompressedArchiveEntry entry)
-            {
-                return CompressedArchiveAccess.DeleteEntry(entry.Name);
-            }
         }
 
-        private struct ComressedArchiveIdentifier : IEqualityComparer<ComressedArchiveIdentifier>, IComparable<ComressedArchiveIdentifier>
+        private struct CompressedArchiveIdentifier : IEqualityComparer<CompressedArchiveIdentifier>, IComparable<CompressedArchiveIdentifier>
         {
             /// <summary>
-            /// Initializes a new instance of <see cref="ComressedArchiveIdentifier"/>.
+            /// Initializes a new instance of <see cref="CompressedArchiveIdentifier"/>.
             /// </summary>
             /// <param name="format">The compressed archive format to use in the identifier.</param>
             /// <param name="implementation">The compressed archive access implementation kind to use in the identifier.</param>
-            public ComressedArchiveIdentifier(CompressedArchiveFormat format, CompressedArchiveAccessImplementation implementation)
+            public CompressedArchiveIdentifier(CompressedArchiveFormat format, CompressedArchiveAccessImplementation implementation)
             {
                 _format = format;
                 _implementation = implementation;
@@ -483,27 +500,30 @@ namespace INTV.Shared.Utility
             private CompressedArchiveAccessImplementation _implementation;
 
             /// <inheritdoc />
-            public int CompareTo(ComressedArchiveIdentifier other)
+            public int CompareTo(CompressedArchiveIdentifier other)
             {
                 var result = Format - other.Format;
                 if (result == 0)
                 {
-                    if ((Implementation != CompressedArchiveAccessImplementation.Any) && (other.Implementation != CompressedArchiveAccessImplementation.Any))
+                    if (Implementation != CompressedArchiveAccessImplementation.Any)
                     {
-                        result = Implementation - other.Implementation;
+                        if (other.Implementation != CompressedArchiveAccessImplementation.Any)
+                        {
+                            result = Implementation - other.Implementation;
+                        }
                     }
                 }
                 return result;
             }
 
             /// <inheritdoc />
-            public bool Equals(ComressedArchiveIdentifier x, ComressedArchiveIdentifier y)
+            public bool Equals(CompressedArchiveIdentifier x, CompressedArchiveIdentifier y)
             {
                 return x.CompareTo(y) == 0;
             }
 
             /// <inheritdoc />
-            public int GetHashCode(ComressedArchiveIdentifier obj)
+            public int GetHashCode(CompressedArchiveIdentifier obj)
             {
                 return obj.Format.GetHashCode();
             }

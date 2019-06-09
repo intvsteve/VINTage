@@ -1657,7 +1657,7 @@ Click the arrow for more commands.</value>
     <comment>{0} is a compressed archive format name</comment>
   </data>
   <data name="CompressedArchiveAccess_UnableToProcessError_Format" xml:space="preserve">
-    <value>Unable to created accessor for compressed archive file at location:
+    <value>Unable to create accessor for compressed archive file at location:
   {0}
 
 The following formats were expected:
@@ -1667,5 +1667,29 @@ The following formats were successfully processed:
 The following formats were not processed:
   {3}</value>
     <comment>{0} is a file path; {1}, {2} and {3} are lists of file formats converted to a string already</comment>
+  </data>
+  <data name="CompressedArchiveAccess_InvalidCompressionFormatTypeErrorMessage_Format" xml:space="preserve">
+    <value>The compressed archive type '{0}' is not a valid compressed archive type.</value>
+    <comment>{0} is an archive type, whose name is not localized</comment>
+  </data>
+  <data name="CompressedArchiveFomrat_FileExtensionAlreadyInUseError_Format" xml:space="preserve">
+    <value>The file extension '{0}' is already in use by the format '{1}'.</value>
+    <comment>{0} is a file extension, {1} is a compressed archive format</comment>
+  </data>
+  <data name="CompressedArchiveFormat_CompountFileExtensionsNotSupportedError" xml:space="preserve">
+    <value>Compound file extensions are not supported.</value>
+  </data>
+  <data name="CompressedArchiveFormat_FileExtensionRequiredError" xml:space="preserve">
+    <value>At least one file extension must be provided.</value>
+  </data>
+  <data name="CompressedArchiveFormat_FormatIsNotRegisteredError_Format" xml:space="preserve">
+    <value>The format '{0}' is not registered.</value>
+    <comment>{0} us a compressed archive format, whose name is not localized</comment>
+  </data>
+  <data name="CompressedArchiveFormat_ImplementationRequired" xml:space="preserve">
+    <value>At least one implementation must be provided.</value>
+  </data>
+  <data name="CompressedArchiveFormat_InvalidFileExtensionError" xml:space="preserve">
+    <value>File extension is invalid.</value>
   </data>
 </root>

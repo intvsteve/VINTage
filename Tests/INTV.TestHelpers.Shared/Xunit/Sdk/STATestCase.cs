@@ -155,7 +155,7 @@ namespace INTV.TestHelpers.Shared.Xunit.Sdk
         /// <inheritdoc />
         public void Serialize(IXunitSerializationInfo info)
         {
-            info.AddValue( InnerTestCasePropertyName, TestCase);
+            info.AddValue(InnerTestCasePropertyName, TestCase);
             info.AddValue(UsePackUriPropertyName, UsePackUri);
             info.AddValue(UsePackUriApplicationPropertyName, UsePackUriApplication);
         }

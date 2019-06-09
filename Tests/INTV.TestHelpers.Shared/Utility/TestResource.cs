@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -98,16 +99,28 @@ namespace INTV.TestHelpers.Shared.Utility
         public static readonly TestResource TestStringOriginalOnlyInResx = new TestResource(TestResourceKind.ResxDouble, "TestString_OriginalOnly", expectedValue: "This string is not in any satellites.");
 
         /// <summary>An embedded ZIP file.</summary>
-        public static readonly TestResource TagalongZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong.zip");
+        public static readonly TestResource TagalongZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong.zip")
+        {
+            ArchiveContents = new[] { "tagalong.bin", "tagalong.cfg" }
+        };
 
         /// <summary>An embedded ZIP file that contains files in a subdirectory.</summary>
-        public static readonly TestResource TagalongDirZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_dir.zip");
+        public static readonly TestResource TagalongDirZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_dir.zip")
+        {
+            ArchiveContents = new[] { "tagalong_dir/", "tagalong_dir/tagalong.luigi", "tagalong_dir/tagalong.rom" }
+        };
 
         /// <summary>An embedded resource ZIP file that only contains an empty directory.</summary>
-        public static readonly TestResource TagalongEmptyZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_empty.zip");
+        public static readonly TestResource TagalongEmptyZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_empty.zip")
+        {
+            ArchiveContents = new[] { "tagalong_empty" }
+        };
 
         /// <summary>An embedded resource ZIP file that contains another ZIP file.</summary>
-        public static readonly TestResource TagalongNestedZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_nested.zip");
+        public static readonly TestResource TagalongNestedZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_nested.zip")
+        {
+            ArchiveContents = new[] { "tagalong.zip" }
+        };
 
         /// <summary>An embedded resource text file with a space in the name.</summary>
         public static readonly TestResource TextEmbeddedResourceFile = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "embedded resource file.txt");
@@ -142,5 +155,21 @@ namespace INTV.TestHelpers.Shared.Utility
         /// Gets the expected value for a string resource.
         /// </summary>
         public string ExpectedValue { get; private set; }
+
+        /// <summary>
+        /// Gets the first level of expected content in an archive resource.
+        /// </summary>
+        public IEnumerable<string> ArchiveContents { get; private set; }
+
+        /// <summary>
+        /// Opens the resource for reading.
+        /// </summary>
+        /// <returns></returns>
+        public Stream OpenResourceForReading()
+        {
+            var assembly = this.GetType().Assembly;
+            var resourceStream = assembly.GetManifestResourceStream(Name);
+            return resourceStream;
+        }
     }
 }

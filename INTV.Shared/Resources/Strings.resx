@@ -1671,4 +1671,13 @@ The following formats were not processed:
   <data name="CompressedArchiveAccess_GZipDeleteEntryNotSupported" xml:space="preserve">
     <value>The GZIP compresssed file format does not support deletion of an entry.</value>
   </data>
+  <data name="GZipHeaderError_InvalidCompression" xml:space="preserve">
+    <value>Invalid GZIP header: Compression method is not 'Deflate'.</value>
+  </data>
+  <data name="GZipHeaderError_InvalidMagic" xml:space="preserve">
+    <value>Invalid GZIP header: Inititial header is not { 0x1F, 0x8B }.</value>
+  </data>
+  <data name="GZipHeaderError_ReservedFlagsSet" xml:space="preserve">
+    <value>Invalid GZIP header: Reserved flags must not be set.</value>
+  </data>
 </root>

@@ -112,6 +112,20 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\tagalong_nested.zip" />
+    <EmbeddedResource Include="Resources\tagalong.bin.gz" />
+    <EmbeddedResource Include="Resources\tagalong.cfg.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bclr_nnnn.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bclr_nnyn.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bclr_nynn.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bclr_nyny.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bclr_nyyn.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bclr_ynny.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bclr_ynyn.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bclr_yyyy.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bc_nn.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bc_ny.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bc_yn.gz" />
+    <EmbeddedResource Include="Resources\tagalong_bc_yy.gz" />
     <None Include="Resources\TestIconResource.ico" />
   </ItemGroup>
   <ItemGroup>

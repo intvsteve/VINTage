@@ -112,7 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\tagalong_nested.zip" />
-    <EmbeddedResource Include="Resources\tagalong.bin.gz" />
+    <EmbeddedResource Include="Resources\tagalong.bbin.gz">
+      <LogicalName>INTV.TestHelpers.Shared.Resources.tagalong.bin.gz</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\tagalong.cfg.gz" />
     <EmbeddedResource Include="Resources\tagalong_bclr_nnnn.gz" />
     <EmbeddedResource Include="Resources\tagalong_bclr_nnyn.gz" />

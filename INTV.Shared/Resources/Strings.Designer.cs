@@ -1846,6 +1846,42 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file must not contain any GZIP members..
+        /// </summary>
+        internal static string GZipAccess_EntriesAlreadyPresent {
+            get {
+                return ResourceManager.GetString("GZipAccess_EntriesAlreadyPresent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The GZip file must be opened in Create mode to add content..
+        /// </summary>
+        internal static string GZipAccess_InvalidModeForCreateEntryError {
+            get {
+                return ResourceManager.GetString("GZipAccess_InvalidModeForCreateEntryError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only one entry may be added to a new GZip file..
+        /// </summary>
+        internal static string GZipAccess_MultipleMembersNotSupportedError {
+            get {
+                return ResourceManager.GetString("GZipAccess_MultipleMembersNotSupportedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file is not a valid GZIP file..
+        /// </summary>
+        internal static string GZipAccess_NoEntriesFound {
+            get {
+                return ResourceManager.GetString("GZipAccess_NoEntriesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid GZIP header: Compression method is not &apos;Deflate&apos;..
         /// </summary>
         internal static string GZipHeaderError_InvalidCompression {

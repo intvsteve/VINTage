@@ -1704,4 +1704,16 @@ The following formats were not processed:
   <data name="GZipHeaderError_ReservedFlagsSet" xml:space="preserve">
     <value>Invalid GZIP header: Reserved flags must not be set.</value>
   </data>
+  <data name="GZipAccess_InvalidModeForCreateEntryError" xml:space="preserve">
+    <value>The GZip file must be opened in Create mode to add content.</value>
+  </data>
+  <data name="GZipAccess_MultipleMembersNotSupportedError" xml:space="preserve">
+    <value>Only one entry may be added to a new GZip file.</value>
+  </data>
+  <data name="GZipAccess_EntriesAlreadyPresent" xml:space="preserve">
+    <value>The file must not contain any GZIP members.</value>
+  </data>
+  <data name="GZipAccess_NoEntriesFound" xml:space="preserve">
+    <value>The file is not a valid GZIP file.</value>
+  </data>
 </root>

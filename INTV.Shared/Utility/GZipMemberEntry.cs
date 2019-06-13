@@ -24,8 +24,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace INTV.Shared.Utility
 {
@@ -80,6 +78,20 @@ namespace INTV.Shared.Utility
         Unknown = 255
     }
 
+    /// <summary>
+    /// Provides an implementation of <see cref="ICompressedArchiveEntry"/> that attempts to parse out additional information about
+    /// the contents of a GZIP member based on the specification.
+    /// </summary>
+    /// <remarks>This type's <see cref="Inflate(Stream)"/> and similar overloads will parse out the standard information that may (or may not) be provided
+    /// in the header block of a GZIP file, per RFC 1952 here: http://www.zlib.org/rfc-gzip.html 
+    /// If multiple GZIP files are concatenated together to form one large multi-member file, the <see cref="GetMemberEntries(Stream, int)"/>
+    /// method provides a potentially brittle attempt to identify them. The mechanism has some unreliability in that it does not inflate the
+    /// compressed data blocks after the header, rather it linearly searches for the next potential header. Therefore, false matches may be encountered.
+    /// The behavior in such a scenario has not been rigorously tested, though the intent is, perhaps one day, to keep searching.
+    /// Note that because the original CRC and file length data is stored in the footer of the compressed member, and the deflated data is not
+    /// formally inflated, the reliability of the <see cref="Crc32"/> and <see cref="Length"/> values is dependent upon the quality of the input GZIP.
+    /// Members with extraneous data at the end of the file will return invalid values for those properties.
+    /// </remarks>
     internal sealed class GZipMemberEntry : INTV.Core.Utility.ByteSerializer, ICompressedArchiveEntry
     {
         /// <summary>
@@ -109,6 +121,7 @@ namespace INTV.Shared.Utility
         #region ICompressedArchiveEntry
 
         /// <inheritdoc />
+        /// <remarks>If a GZIP member was originally compressed to include this information, it may be provided.</remarks>
         public string Name
         {
             get { return _name; }
@@ -116,6 +129,7 @@ namespace INTV.Shared.Utility
         private string _name;
 
         /// <inheritdoc />
+        /// <remarks>If a GZIP member was originally compressed to include this information, it may be provided. See class notes.</remarks>
         public long Length
         {
             get { return _length; }
@@ -123,6 +137,7 @@ namespace INTV.Shared.Utility
         private long _length = -1;
 
         /// <inheritdoc />
+        /// <remarks>If a GZIP member was originally compressed to include this information, it may be provided.</remarks>
         public DateTime LastModificationTime
         {
             get { return _lastModificationTime; }
@@ -137,10 +152,20 @@ namespace INTV.Shared.Utility
 
         #endregion // ICompressedArchiveEntry
 
+        /// <summary>
+        /// Gets the operating system (more akin to file system) under which the GZIP was created.
+        /// </summary>
+        /// <remarks>macOS reports as Unix, Windows still reports as Windows, and Linux reports as Unix.</remarks>
         public GZipOS OperatingSystem { get; private set; }
 
+        /// <summary>
+        /// Gets the comment attached to the GZIP entry, if any.
+        /// </summary>
         public string Comment { get; private set; }
 
+        /// <summary>
+        /// Gets the CRC-C32 (a.k.a. ZIP) of the original file prior to compression via GZIP.
+        /// </summary>
         public uint Crc32 { get; set; }
 
         private MetadataFlags Flags { get; set; }
@@ -153,21 +178,41 @@ namespace INTV.Shared.Utility
 
         private ushort Crc16 { get; set; }
 
-        public static IEnumerable<GZipMemberEntry> GetAllMemberEntries(Stream stream)
+        /// <summary>
+        /// Attempts to identify the members in a GZIP stream, even when multiple GZIPped files have been concatenated.
+        /// </summary>
+        /// <param name="stream">The stream containing GZIP entries.</param>
+        /// <param name="maxNumberOfEntries">The maximum number of entries to attempt to identify. A value less than zero indicates to attempt to identify all members.</param>
+        /// <returns>An enumerable of identifiable GZIP entries.</returns>
+        /// <remarks>This method will, with the default parameters, visit every byte in <paramref name="stream"/>. It is incumbent
+        /// upon the caller to determine if, for the sake of performance, the <paramref name="maxNumberOfEntries"/> should be limited.
+        /// The position within <paramref name="stream"/> will be restored to its initial location. Note that the accuracy of the Crc32
+        /// and Length values is not guaranteed. If an error is encountered during the 'member walk' the method stops and returns
+        /// the known entries.</remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "The BinaryReader constructor keeps the input stream open.")]
+        public static IEnumerable<GZipMemberEntry> GetMemberEntries(Stream stream, int maxNumberOfEntries = -1)
         {
             var length = stream.Length;
+            var initialPosition = stream.Position;
             var currentPosition = stream.Seek(0, SeekOrigin.Begin);
             var memberEntries = new List<GZipMemberEntry>();
+            if (maxNumberOfEntries < 0)
+            {
+                maxNumberOfEntries = int.MaxValue;
+            }
 
-            while (stream.Position < length)
+            while ((memberEntries.Count < maxNumberOfEntries) && (stream.Position < length))
             {
                 try
                 {
                     var entry = Inflate(stream);
                     memberEntries.Add(entry);
-                    using (var reader = new Core.Utility.BinaryReader(stream))
+                    if (memberEntries.Count < maxNumberOfEntries)
                     {
-                        currentPosition = FindNextEntry(reader, entry);
+                        using (var reader = new Core.Utility.BinaryReader(stream))
+                        {
+                            currentPosition = FindNextEntry(reader, entry);
+                        }
                     }
                 }
                 catch (InvalidOperationException)
@@ -191,6 +236,7 @@ namespace INTV.Shared.Utility
                 }
             }
 
+            stream.Seek(initialPosition, SeekOrigin.Begin);
             return memberEntries;
         }
 

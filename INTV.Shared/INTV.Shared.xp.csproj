@@ -201,6 +201,7 @@
     <Compile Include="Utility\FileDialogHelpers.cs" />
     <Compile Include="Utility\FileUtilities.cs" />
     <Compile Include="Utility\FixedSizeCollection`T.cs" />
+    <Compile Include="Utility\GZipMemberEntry.cs" />
     <Compile Include="Utility\GZipNativeAccess.cs" />
     <Compile Include="Utility\ICompressedArchiveAccess.cs" />
     <Compile Include="Utility\ICompressedArchiveEntry.cs" />

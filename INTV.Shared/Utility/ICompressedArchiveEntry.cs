@@ -40,7 +40,7 @@ namespace INTV.Shared.Utility
         long Length { get; }
 
         /// <summary>
-        /// Gets the last modification date and time of the archive entry.
+        /// Gets the last modification date and time of the archive entry. Times should be in UTC.
         /// </summary>
         DateTime LastModificationTime { get; }
 

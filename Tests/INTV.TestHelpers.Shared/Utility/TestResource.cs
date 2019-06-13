@@ -135,7 +135,7 @@ namespace INTV.TestHelpers.Shared.Utility
         };
 
         /// <summary>An embedded resource GZIP file that contains tagalong.bin and tagalong.cfg, but without file names.</summary>
-        public static readonly TestResource TagalongBinCfgNNZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bc_nn.gz")
+        public static readonly TestResource TagalongBinCfgNNGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bc_nn.gz")
         {
             ArchiveContents = new[] { "tagalong_bc_nn", "tagalong_bc_nn_1" }
         };
@@ -159,7 +159,7 @@ namespace INTV.TestHelpers.Shared.Utility
         };
 
         /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with no file names.</summary>
-        public static readonly TestResource TagalongBCLRNNNNZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_nnnn.gz")
+        public static readonly TestResource TagalongBCLRNNNNGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_nnnn.gz")
         {
             ArchiveContents = new[] { "tagalong_bclr_nnnn", "tagalong_bclr_nnnn_1", "tagalong_bclr_nnnn_2", "tagalong_bclr_nnnn_3" }
         };
@@ -179,7 +179,7 @@ namespace INTV.TestHelpers.Shared.Utility
         /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with  some file names.</summary>
         public static readonly TestResource TagalongBCLRNYNYGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_nyny.gz")
         {
-            ArchiveContents = new[] { "tagalong_bclr_nyny", "tagalong.cfg", "tagalong_bclr_nyny_2", "tagalong_bclr_nyny.rom" }
+            ArchiveContents = new[] { "tagalong_bclr_nyny", "tagalong.cfg", "tagalong_bclr_nyny_2", "tagalong.rom" }
         };
 
         /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with  some file names.</summary>

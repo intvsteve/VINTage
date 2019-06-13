@@ -214,7 +214,7 @@ namespace INTV.Shared.Utility
             }
             if (!added.HasValue)
             {
-                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFomrat_FileExtensionAlreadyInUseError_Format, fileExtension, formatAlreadyUsingExtension.Key);
+                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FileExtensionAlreadyInUseError_Format, fileExtension, formatAlreadyUsingExtension.Key);
                 throw new ArgumentException(message, "fileExtension");
             }
             return added.Value;

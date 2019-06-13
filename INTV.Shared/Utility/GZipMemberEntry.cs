@@ -168,6 +168,11 @@ namespace INTV.Shared.Utility
         /// </summary>
         public uint Crc32 { get; set; }
 
+        /// <summary>
+        /// Gets the offset into the original stream to locate the entry.
+        /// </summary>
+        internal long Offset { get; private set; }
+
         private MetadataFlags Flags { get; set; }
 
         private ExtraFlags CompressionHint { get; set; }
@@ -201,17 +206,20 @@ namespace INTV.Shared.Utility
                 maxNumberOfEntries = int.MaxValue;
             }
 
+            var entryOffset = 0L;
             while ((memberEntries.Count < maxNumberOfEntries) && (stream.Position < length))
             {
                 try
                 {
                     var entry = Inflate(stream);
+                    entry.Offset = entryOffset;
                     memberEntries.Add(entry);
                     if (memberEntries.Count < maxNumberOfEntries)
                     {
                         using (var reader = new Core.Utility.BinaryReader(stream))
                         {
                             currentPosition = FindNextEntry(reader, entry);
+                            entryOffset = currentPosition;
                         }
                     }
                 }

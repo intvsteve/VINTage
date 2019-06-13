@@ -196,7 +196,7 @@ namespace INTV.Shared.Tests.Utility
                 foreach (var entry in entries)
                 {
                     // Expected length is loosely checked -- any value indicates a > 0 check.
-                    VerifyGZipMemberEntry(entry, expectedNames[i], expectedCrc32s[i], expectedLength: 2, checkModificationDate: false);
+                    VerifyGZipMemberEntry(entry, expectedNames[i], expectedCrc32s[i], expectedLength: 2, checkModificationDate: false, checkOffset: i > 0);
                     ++i;
                 }
             }
@@ -274,7 +274,7 @@ namespace INTV.Shared.Tests.Utility
             }
         }
 
-        private static void VerifyGZipMemberEntry(GZipMemberEntry entry, string expectedName, uint? expectedCrc32, long? expectedLength, GZipOS? expectedOperatingSystem = null, bool checkModificationDate = true)
+        private static void VerifyGZipMemberEntry(GZipMemberEntry entry, string expectedName, uint? expectedCrc32, long? expectedLength, GZipOS? expectedOperatingSystem = null, bool checkModificationDate = true, bool checkOffset = false)
         {
             Assert.NotNull(entry);
             Assert.False(entry.IsDirectory);
@@ -298,6 +298,10 @@ namespace INTV.Shared.Tests.Utility
             if (expectedCrc32.HasValue && (expectedCrc32.Value != 0))
             {
                 Assert.Equal(expectedCrc32.Value, entry.Crc32);
+            }
+            if (checkOffset)
+            {
+                Assert.True(entry.Offset > 0);
             }
             Assert.Equal(-1, entry.SerializeByteCount);
             Assert.True(entry.DeserializeByteCount >= MinimumEntryDeserializeLength);

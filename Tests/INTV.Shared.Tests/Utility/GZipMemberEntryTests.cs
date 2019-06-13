@@ -42,7 +42,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void GZipMemberEntry_GetAllMemberEntriesWithNullStream_ThrowsNullReferenceException()
         {
-            Assert.Throws<NullReferenceException>(() => GZipMemberEntry.GetAllMemberEntries(null));
+            Assert.Throws<NullReferenceException>(() => GZipMemberEntry.GetMemberEntries(null));
         }
 
         [Fact]
@@ -59,8 +59,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var binGZip = TestResource.TagalongBinGZip;
 
-            using (var stream = binGZip.OpenResourceForReading())
-            using (var reader = new INTV.Core.Utility.BinaryReader(stream))
+            using (var reader = new INTV.Core.Utility.BinaryReader(binGZip.OpenResourceForReading()))
             {
                 var entry = GZipMemberEntry.Inflate(reader);
 
@@ -83,7 +82,7 @@ namespace INTV.Shared.Tests.Utility
         {
             using (var stream = testResource.OpenResourceForReading())
             {
-                var entry = GZipMemberEntry.GetAllMemberEntries(stream).Single();
+                var entry = GZipMemberEntry.GetMemberEntries(stream).Single();
 
                 VerifyGZipMemberEntry(entry, testResource.ArchiveContents.First(), expectedCrc32, expectedLength, GZipOS.Unix);
             }
@@ -106,7 +105,7 @@ namespace INTV.Shared.Tests.Utility
         {
             using (var stream = testResource.OpenResourceForReading())
             {
-                var entries = GZipMemberEntry.GetAllMemberEntries(stream).ToList();
+                var entries = GZipMemberEntry.GetMemberEntries(stream).ToList();
                 var verifyEntriesData = verificationData.ToList();
 
                 for (var i = 0; i < entries.Count; ++i)
@@ -114,6 +113,50 @@ namespace INTV.Shared.Tests.Utility
                     var verifyData = verifyEntriesData[i];
                     VerifyGZipMemberEntry(entries[i], verifyData.ExpectedName, verifyData.ExpectedCrc32, verifyData.ExpectedLength, checkModificationDate: verifyData.CheckLastModificationTime);
                 }
+            }
+        }
+
+        [Fact]
+        public void GZipMemberEntry_GetAllMemberEntriesFromStreamContainingConcatenatedGZipsWithMaxLimitZero_GetsZeroEntries()
+        {
+            using (var stream = TestResource.TagalongBCLRNYNYGZip.OpenResourceForReading())
+            {
+                var entries = GZipMemberEntry.GetMemberEntries(stream, maxNumberOfEntries: 0);
+
+                Assert.False(entries.Any());
+            }
+        }
+
+        [Fact]
+        public void GZipMemberEntry_GetAllMemberEntriesFromStreamContainingFourConcatenatedGZipsWithMaxLimitThree_GetsThreeEntries()
+        {
+            using (var stream = TestResource.TagalongBCLRYNNYGZip.OpenResourceForReading())
+            {
+                var entries = GZipMemberEntry.GetMemberEntries(stream, maxNumberOfEntries: 3).ToList();
+
+                Assert.Equal(3, entries.Count);
+            }
+        }
+
+        [Fact]
+        public void GZipMemberEntry_GetAllMemberEntriesFromStreamContainingTwoConcatenatedGZipsWithMaxLimitThree_GetsTwoEntries()
+        {
+            using (var stream = TestResource.TagalongBinCfgNYGZip.OpenResourceForReading())
+            {
+                var entries = GZipMemberEntry.GetMemberEntries(stream, maxNumberOfEntries: 3).ToList();
+
+                Assert.Equal(2, entries.Count);
+            }
+        }
+
+        [Fact]
+        public void GZipMemberEntry_GetAllMemberEntriesFromStreamContainingOneGZipWithMaxLimitFour_GetsOneEntry()
+        {
+            using (var stream = TestResource.TagalongCfgGZip.OpenResourceForReading())
+            {
+                var entries = GZipMemberEntry.GetMemberEntries(stream, maxNumberOfEntries: 4).ToList();
+
+                Assert.Equal(1, entries.Count);
             }
         }
 
@@ -142,7 +185,7 @@ namespace INTV.Shared.Tests.Utility
                 IEnumerable<GZipMemberEntry> entries = null;
                 using (var stream = new FileStream(testResourcePath, FileMode.Open, FileAccess.Read))
                 {
-                    entries = GZipMemberEntry.GetAllMemberEntries(stream);
+                    entries = GZipMemberEntry.GetMemberEntries(stream);
                 }
 
                 // .cfg file CRCs are zero because they are inconsistent based on line endings.
@@ -182,7 +225,7 @@ namespace INTV.Shared.Tests.Utility
             {
                 using (var stream = new TestFileStream(testResourcePath, FileMode.Open, FileAccess.Read))
                 {
-                    var entries = GZipMemberEntry.GetAllMemberEntries(stream);
+                    var entries = GZipMemberEntry.GetMemberEntries(stream);
 
                     Assert.True(entries.Count() < 2);
                 }

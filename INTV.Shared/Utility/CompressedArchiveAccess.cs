@@ -105,6 +105,7 @@ namespace INTV.Shared.Utility
         /// <param name="stream">The stream to use for the compressed archive accessor.</param>
         /// <param name="format">The format of the compressed archive.</param>
         /// <param name="mode">The access mode to use for operations on the compressed archive.</param>
+        /// <param name="implementation">If not <c>null</c>, use a specific implementation if possible. Otherwise, use default, or any.</param>
         /// <returns>An instance of a compressed archive accessor for the given format.</returns>
         /// <remarks>The archive takes ownership of <paramref name="stream"/> and will dispose it.</remarks>
         /// <exception cref="System.NotSupportedException">Thrown if it is not possible to locate a factory for the given <paramref name="format"/>, or
@@ -114,10 +115,13 @@ namespace INTV.Shared.Utility
         /// <exception cref="System.ArgumentException">Thrown if invalid file access, sharing, and mode combinations are used.</exception>
         /// <exception cref="System.FileFormatException">Thrown if archive was opened for reading, but is of zero size.</exception>
         /// <exception cref="System.IOException">Thrown if <paramref name="stream"/> is not empty and archive was opened in Create mode.</exception>
-        public static ICompressedArchiveAccess Open(Stream stream, CompressedArchiveFormat format, CompressedArchiveAccessMode mode)
+        public static ICompressedArchiveAccess Open(Stream stream, CompressedArchiveFormat format, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation = null)
         {
-            var preferredImplementation = format.GetPreferredCompressedArchiveImplementation();
-            var identifier = new CompressedArchiveIdentifier(format, preferredImplementation);
+            if (!implementation.HasValue)
+            {
+                implementation = format.GetPreferredCompressedArchiveImplementation();
+            }
+            var identifier = new CompressedArchiveIdentifier(format, implementation.Value);
 
             CompressedArchiveAccessFactory factory;
             if (!Factories.Value.TryGetValue(identifier, out factory))

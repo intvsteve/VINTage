@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.Mono.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -109,6 +109,15 @@ namespace INTV.Shared.Properties
             set { SetSetting(ShowDetailedErrorsSettingName, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the maximum number of GZIP members to attempt to parse from a .gz file.
+        /// </summary>
+        public int MaxGZipEntriesSearch
+        {
+            get { return GetSetting<int>(MaxGZipEntriesSearchSettingName); }
+            set { SetSetting(MaxGZipEntriesSearchSettingName, value); }
+        }
+
         #endregion // Properties
 
         #region ISettings
@@ -122,6 +131,7 @@ namespace INTV.Shared.Properties
             AddSetting(ShowRomDetailsSettingName, false);
             AddSetting(DisplayRomFileNameForTitleSettingName, false);
             AddSetting(ShowDetailedErrorsSettingName, DefaultShowDetailedErrorsSetting);
+            AddSetting(MaxGZipEntriesSearchSettingName, DefaultMaxGZipEntriesSearchSetting);
             AddSetting(CheckForAppUpdatesAtLaunchSettingName, DefaultCheckForUpdatesAtLaunchSetting);
             OSInitializeDefaults();
         }

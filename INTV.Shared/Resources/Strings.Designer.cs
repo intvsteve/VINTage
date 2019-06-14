@@ -624,6 +624,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The GZIP compresssed file format does not support deletion of an entry..
+        /// </summary>
+        internal static string CompressedArchiveAccess_GZipDeleteEntryNotSupported {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_GZipDeleteEntryNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The compressed archive type &apos;{0}&apos; is not a valid compressed archive type..
         /// </summary>
         internal static string CompressedArchiveAccess_InvalidCompressionFormatTypeErrorMessage_Format {
@@ -668,20 +677,20 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The file extension &apos;{0}&apos; is already in use by the format &apos;{1}&apos;..
-        /// </summary>
-        internal static string CompressedArchiveFomrat_FileExtensionAlreadyInUseError_Format {
-            get {
-                return ResourceManager.GetString("CompressedArchiveFomrat_FileExtensionAlreadyInUseError_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Compound file extensions are not supported..
         /// </summary>
         internal static string CompressedArchiveFormat_CompountFileExtensionsNotSupportedError {
             get {
                 return ResourceManager.GetString("CompressedArchiveFormat_CompountFileExtensionsNotSupportedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file extension &apos;{0}&apos; is already in use by the format &apos;{1}&apos;..
+        /// </summary>
+        internal static string CompressedArchiveFormat_FileExtensionAlreadyInUseError_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_FileExtensionAlreadyInUseError_Format", resourceCulture);
             }
         }
         
@@ -1833,6 +1842,69 @@ namespace INTV.Shared.Resources {
         internal static string GenerateStockCfgFileFailed_Title {
             get {
                 return ResourceManager.GetString("GenerateStockCfgFileFailed_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file must not contain any GZIP members..
+        /// </summary>
+        internal static string GZipAccess_EntriesAlreadyPresent {
+            get {
+                return ResourceManager.GetString("GZipAccess_EntriesAlreadyPresent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The GZip file must be opened in Create mode to add content..
+        /// </summary>
+        internal static string GZipAccess_InvalidModeForCreateEntryError {
+            get {
+                return ResourceManager.GetString("GZipAccess_InvalidModeForCreateEntryError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only one entry may be added to a new GZip file..
+        /// </summary>
+        internal static string GZipAccess_MultipleMembersNotSupportedError {
+            get {
+                return ResourceManager.GetString("GZipAccess_MultipleMembersNotSupportedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file is not a valid GZIP file..
+        /// </summary>
+        internal static string GZipAccess_NoEntriesFound {
+            get {
+                return ResourceManager.GetString("GZipAccess_NoEntriesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid GZIP header: Compression method is not &apos;Deflate&apos;..
+        /// </summary>
+        internal static string GZipHeaderError_InvalidCompression {
+            get {
+                return ResourceManager.GetString("GZipHeaderError_InvalidCompression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid GZIP header: Inititial header is not { 0x1F, 0x8B }..
+        /// </summary>
+        internal static string GZipHeaderError_InvalidMagic {
+            get {
+                return ResourceManager.GetString("GZipHeaderError_InvalidMagic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid GZIP header: Reserved flags must not be set..
+        /// </summary>
+        internal static string GZipHeaderError_ReservedFlagsSet {
+            get {
+                return ResourceManager.GetString("GZipHeaderError_ReservedFlagsSet", resourceCulture);
             }
         }
         

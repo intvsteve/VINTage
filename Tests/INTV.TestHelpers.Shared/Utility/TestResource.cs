@@ -122,6 +122,90 @@ namespace INTV.TestHelpers.Shared.Utility
             ArchiveContents = new[] { "tagalong.zip" }
         };
 
+        /// <summary>An embedded resource GZIP file that only contains tagalong.bin including the file name.</summary>
+        public static readonly TestResource TagalongBinGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong.bin.gz")
+        {
+            ArchiveContents = new[] { "tagalong.bin" }
+        };
+
+        /// <summary>An embedded resource GZIP file that only contains tagalong.cfg including the file name.</summary>
+        public static readonly TestResource TagalongCfgGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong.cfg.gz")
+        {
+            ArchiveContents = new[] { "tagalong.cfg" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin and tagalong.cfg, but without file names.</summary>
+        public static readonly TestResource TagalongBinCfgNNGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bc_nn.gz")
+        {
+            ArchiveContents = new[] { "tagalong_bc_nn", "tagalong_bc_nn_1" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin (no file name) and tagalong.cfg (with file name).</summary>
+        public static readonly TestResource TagalongBinCfgNYGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bc_ny.gz")
+        {
+            ArchiveContents = new[] { "tagalong_bc_ny", "tagalong.cfg" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin (with file name) and tagalong.cfg (without file name).</summary>
+        public static readonly TestResource TagalongBinCfgYNGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bc_yn.gz")
+        {
+            ArchiveContents = new[] { "tagalong.bin", "tagalong_bc_yn" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin and tagalong.cfg with file names.</summary>
+        public static readonly TestResource TagalongBinCfgYYGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bc_yy.gz")
+        {
+            ArchiveContents = new[] { "tagalong.bin", "tagalong.cfg" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with no file names.</summary>
+        public static readonly TestResource TagalongBCLRNNNNGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_nnnn.gz")
+        {
+            ArchiveContents = new[] { "tagalong_bclr_nnnn", "tagalong_bclr_nnnn_1", "tagalong_bclr_nnnn_2", "tagalong_bclr_nnnn_3" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with some file names.</summary>
+        public static readonly TestResource TagalongBCLRNNYNGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_nnyn.gz")
+        {
+            ArchiveContents = new[] { "tagalong_bclr_nnyn", "tagalong_bclr_nnyn_1", "tagalong.luigi", "tagalong_bclr_nnyn_3" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with  some file names.</summary>
+        public static readonly TestResource TagalongBCLRNYNNGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_nynn.gz")
+        {
+            ArchiveContents = new[] { "tagalong_bclr_nynn", "tagalong.cfg", "tagalong_bclr_nynn_2", "tagalong_bclr_nynn_3" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with  some file names.</summary>
+        public static readonly TestResource TagalongBCLRNYNYGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_nyny.gz")
+        {
+            ArchiveContents = new[] { "tagalong_bclr_nyny", "tagalong.cfg", "tagalong_bclr_nyny_2", "tagalong.rom" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with  some file names.</summary>
+        public static readonly TestResource TagalongBCLRNYYNGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_nyyn.gz")
+        {
+            ArchiveContents = new[] { "tagalong_bclr_nyyn", "tagalong.cfg", "tagalong.luigi", "tagalong_bclr_nyyn_3" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with  some file names.</summary>
+        public static readonly TestResource TagalongBCLRYNNYGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_ynny.gz")
+        {
+            ArchiveContents = new[] { "tagalong.bin", "tagalong_bclr_ynny", "tagalong_bclr_ynny_2", "tagalong.rom" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with  some file names.</summary>
+        public static readonly TestResource TagalongBCLRYNYNGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_ynyn.gz")
+        {
+            ArchiveContents = new[] { "tagalong.bin", "tagalong_bclr_ynyn", "tagalong.luigi", "tagalong_bclr_ynyn_3" }
+        };
+
+        /// <summary>An embedded resource GZIP file that contains tagalong.bin, .cfg, .luigi and .rom with file names.</summary>
+        public static readonly TestResource TagalongBCLRYYYYGZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bclr_yyyy.gz")
+        {
+            ArchiveContents = new[] { "tagalong.bin", "tagalong.cfg", "tagalong.luigi", "tagalong.rom" }
+        };
+
         /// <summary>An embedded resource text file with a space in the name.</summary>
         public static readonly TestResource TextEmbeddedResourceFile = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "embedded resource file.txt");
 
@@ -164,7 +248,7 @@ namespace INTV.TestHelpers.Shared.Utility
         /// <summary>
         /// Opens the resource for reading.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A stream for reading the resource.</returns>
         public Stream OpenResourceForReading()
         {
             var assembly = this.GetType().Assembly;

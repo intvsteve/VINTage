@@ -1672,7 +1672,7 @@ The following formats were not processed:
     <value>The compressed archive type '{0}' is not a valid compressed archive type.</value>
     <comment>{0} is an archive type, whose name is not localized</comment>
   </data>
-  <data name="CompressedArchiveFomrat_FileExtensionAlreadyInUseError_Format" xml:space="preserve">
+  <data name="CompressedArchiveFormat_FileExtensionAlreadyInUseError_Format" xml:space="preserve">
     <value>The file extension '{0}' is already in use by the format '{1}'.</value>
     <comment>{0} is a file extension, {1} is a compressed archive format</comment>
   </data>
@@ -1691,5 +1691,29 @@ The following formats were not processed:
   </data>
   <data name="CompressedArchiveFormat_InvalidFileExtensionError" xml:space="preserve">
     <value>File extension is invalid.</value>
+  </data>
+  <data name="CompressedArchiveAccess_GZipDeleteEntryNotSupported" xml:space="preserve">
+    <value>The GZIP compresssed file format does not support deletion of an entry.</value>
+  </data>
+  <data name="GZipHeaderError_InvalidCompression" xml:space="preserve">
+    <value>Invalid GZIP header: Compression method is not 'Deflate'.</value>
+  </data>
+  <data name="GZipHeaderError_InvalidMagic" xml:space="preserve">
+    <value>Invalid GZIP header: Inititial header is not { 0x1F, 0x8B }.</value>
+  </data>
+  <data name="GZipHeaderError_ReservedFlagsSet" xml:space="preserve">
+    <value>Invalid GZIP header: Reserved flags must not be set.</value>
+  </data>
+  <data name="GZipAccess_InvalidModeForCreateEntryError" xml:space="preserve">
+    <value>The GZip file must be opened in Create mode to add content.</value>
+  </data>
+  <data name="GZipAccess_MultipleMembersNotSupportedError" xml:space="preserve">
+    <value>Only one entry may be added to a new GZip file.</value>
+  </data>
+  <data name="GZipAccess_EntriesAlreadyPresent" xml:space="preserve">
+    <value>The file must not contain any GZIP members.</value>
+  </data>
+  <data name="GZipAccess_NoEntriesFound" xml:space="preserve">
+    <value>The file is not a valid GZIP file.</value>
   </data>
 </root>

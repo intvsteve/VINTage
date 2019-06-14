@@ -45,6 +45,10 @@ namespace INTV.TestHelpers.Core.Utility
         /// <summary>CRC32 of <see cref="TestCfgPath"/>.</summary>
         public const uint TestCfgCrc = 0x06B5EA3E;
 
+        /// <summary>CRC32 of <see cref="TestCfgPath"/> on Mac / Linux.</summary>
+        /// <remarks>This arises when pulled as a text file and CR+LF line endings change to just LF. The .cfg file has two EOLs.</remarks>
+        public const uint TestCfgCrcUnix = 0XDA1F5444;
+
         /// <summary>A duplicate of <see cref="TestBinPath"/>.</summary>
         public const string TestBinMetadataPath = "/Resources/tagalong_metadata.bin";
 

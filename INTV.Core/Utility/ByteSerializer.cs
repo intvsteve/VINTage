@@ -46,7 +46,7 @@ namespace INTV.Core.Utility
         /// <summary>
         /// Gets the expected byte count to deserialize the object, or the number of bytes deserialized.
         /// </summary>
-        /// <remarks>If the value is less than or equal to zero, this inidcates that the object has not
+        /// <remarks>If the value is less than or equal to zero, this indicates that the object has not
         /// yet been deserialized, and the size is not known a priori, but rather determined during deserialization.</remarks>
         public abstract int DeserializeByteCount { get; }
 

@@ -214,7 +214,7 @@ namespace INTV.Shared.Utility
             }
             if (!added.HasValue)
             {
-                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFomrat_FileExtensionAlreadyInUseError_Format, fileExtension, formatAlreadyUsingExtension.Key);
+                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FileExtensionAlreadyInUseError_Format, fileExtension, formatAlreadyUsingExtension.Key);
                 throw new ArgumentException(message, "fileExtension");
             }
             return added.Value;
@@ -351,9 +351,9 @@ namespace INTV.Shared.Utility
             {
                 { CompressedArchiveFormat.None, new List<string>() },
                 { CompressedArchiveFormat.Zip, new List<string>() { ".zip" } },
-                { CompressedArchiveFormat.GZip, new List<string>() { ".gz" } },
+                { CompressedArchiveFormat.GZip, new List<string>() { ".gz", ".gzip" } },
                 { CompressedArchiveFormat.Tar, new List<string>() { ".tar" } },
-                { CompressedArchiveFormat.BZip2, new List<string>() { ".bz2" } },
+                { CompressedArchiveFormat.BZip2, new List<string>() { ".bz2", ".bzip2" } },
             };
             return compressedArchiveFormatFileExtensions;
         }

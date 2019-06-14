@@ -237,5 +237,17 @@ namespace INTV.Shared.Properties {
                 this["CheckForAppUpdatesAtLaunch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int MaxGZipEntriesSearch {
+            get {
+                return ((int)(this["MaxGZipEntriesSearch"]));
+            }
+            set {
+                this["MaxGZipEntriesSearch"] = value;
+            }
+        }
     }
 }

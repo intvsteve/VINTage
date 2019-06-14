@@ -291,6 +291,17 @@ namespace INTV.Core.Utility
         /// Compute a CRC value for a stream.
         /// </summary>
         /// <param name="dataStream">The data stream upon which to compute a CRC.</param>
+        /// <param name="fromStartOfStream">If <c>true</c>, seek to the beginning of <paramref name="dataStream"/> before starting the computation.</param>
+        /// <returns>The 32-bit CRC of the stream.</returns>
+        public static uint OfStream(Stream dataStream, bool fromStartOfStream)
+        {
+            return OfStream(dataStream, false, 0, null, fromStartOfStream);
+        }
+
+        /// <summary>
+        /// Compute a CRC value for a stream.
+        /// </summary>
+        /// <param name="dataStream">The data stream upon which to compute a CRC.</param>
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="dataStream"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
         /// <remarks>This method will seek to the beginning of <paramref name="dataStream"/> before computing the CRC.</remarks>
@@ -319,11 +330,15 @@ namespace INTV.Core.Utility
         /// <param name="replaceFirstByte">If <c>true</c>, replaces the first byte in the calculation with the value in alternateFirstByte.</param>
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
         /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="dataStream"/>, to exclude from the checksum.</param>
+        /// <param name="fromStartOfStream">If <c>true</c>, seek to the beginning of <paramref name="dataStream"/> before starting the computation.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
         /// <remarks>This method will seek to the beginning of <paramref name="dataStream"/> before computing the CRC.</remarks>
-        private static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
+        private static uint OfStream(Stream dataStream, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges, bool fromStartOfStream = true)
         {
-            dataStream.Seek(0, SeekOrigin.Begin);
+            if (fromStartOfStream)
+            {
+                dataStream.Seek(0, SeekOrigin.Begin);
+            }
             var crc = InitialValue;
             var data = new byte[1024];
             var numBytesRead = 0;

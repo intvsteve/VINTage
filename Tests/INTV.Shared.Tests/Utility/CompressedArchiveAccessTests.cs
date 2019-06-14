@@ -267,6 +267,32 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
+        public void CompressedArchiveAccess_RegisterMultipleImplementationsAndCreateWithSpecificImplementation_CreatesUsingSelectedImplementation()
+        {
+            var format = RegisterFakeFormatForTest(registerFormat: true);
+
+            var implementations = new[]
+                {
+                    format.GetPreferredCompressedArchiveImplementation(),
+                    this.GetFakeCompressedArchiveAccessImplementationForTest(),
+                    this.GetFakeCompressedArchiveAccessImplementationForTest()
+                };
+            Assert.True(format.AddImplementation(implementations[1], makePreferred: false));
+            Assert.True(format.AddImplementation(implementations[2], makePreferred: false));
+            Assert.True(CompressedArchiveAccess.RegisterFactory(format, implementations[1], (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementations[1])));
+            Assert.True(CompressedArchiveAccess.RegisterFactory(format, implementations[2], (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementations[2])));
+
+            foreach (var implementation in implementations)
+            {
+                using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Create, implementation) as TestCompressedArchiveAccess)
+                {
+                    Assert.NotNull(archive);
+                    Assert.Equal(implementation, archive.Implementation);
+                }
+            }
+        }
+
+        [Fact]
         public void CompressedArchiveAccess_ForceFinalizer()
         {
             var format = RegisterFakeFormatForTest();

@@ -32,6 +32,16 @@ namespace INTV.Shared.Tests.Utility
     public class ZipArchiveAccessTests
     {
         [Fact]
+        public void ZipArchiveAccess_OpenNonZip_ThrowsInvalidDataException()
+        {
+            var nonZipResource = TestResource.TextEmbeddedResourceFile;
+
+            var stream = nonZipResource.OpenResourceForReading();
+
+            Assert.Throws<InvalidDataException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read));
+        }
+
+        [Fact]
         public void ZipArchiveAccess_OpenForRead_HasExpectedContents()
         {
             var zipResource = TestResource.TagalongZip;

@@ -23,24 +23,38 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 
 namespace INTV.Shared.Utility
 {
     /// <summary>
-    /// Provides access to a GZIP-formatted stream. Multiple-entry treatment should not be expected.
+    /// Provides access to a GZIP-formatted stream. Multiple-entry treatment is semi-supported. Don't have your hopes up too high, though.
     /// </summary>
     internal sealed class GZipNativeAccess : CompressedArchiveAccess
     {
         private GZipNativeAccess(Stream stream, CompressionMode mode)
         {
             Mode = mode;
-            GZipStream = new GZipStream(stream, mode, leaveOpen: true);
+            BaseStream = stream;
             var fileStream = stream as FileStream;
             if (fileStream != null)
             {
                 RootLocation = fileStream.Name;
-                Entry = new GZipEntry(fileStream);
+            }
+            _entries = GZipMemberEntry.GetMemberEntries(stream, Properties.Settings.Default.MaxGZipEntriesSearch).ToList();
+            switch (mode)
+            {
+                case CompressionMode.Decompress:
+                    if (!_entries.Any())
+                    {
+                        throw new InvalidDataException(Resources.Strings.GZipAccess_NoEntriesFound);
+                    }
+                    break;
+                case CompressionMode.Compress:
+                    if (_entries.Any())
+                    {
+                        throw new InvalidOperationException(Resources.Strings.GZipAccess_EntriesAlreadyPresent);
+                    }
+                    break;
             }
         }
 
@@ -59,25 +73,21 @@ namespace INTV.Shared.Utility
         /// <inheritdoc />
         public override IEnumerable<ICompressedArchiveEntry> Entries
         {
-            get
-            {
-                if (Entry != null)
-                {
-                    yield return Entry;
-                }
-                else
-                {
-                    yield break;
-                }
-            }
+            get { return _entries; }
         }
+        private List<GZipMemberEntry> _entries = new List<GZipMemberEntry>();
 
-        private GZipStream GZipStream { get; set; }
+        private Stream BaseStream { get; set; }
 
         private CompressionMode Mode { get; set; }
 
-        private GZipEntry Entry { get; set; }
-
+        /// <summary>
+        /// Creates a new instance of <see cref="GZipNativeAccess"/> using the given mode.
+        /// </summary>
+        /// <param name="stream">Stream containing data in GZIP compressed format.</param>
+        /// <param name="mode">The access mode to use for GZIP operations.</param>
+        /// <returns>A new instance of <see cref="GZipNativeAccess"/>.</returns>
+        /// <remarks>The GZIP implementation assumes ownership of <paramref name="stream"/> and will dispose it.</remarks>
         public static GZipNativeAccess Create(Stream stream, CompressedArchiveAccessMode mode)
         {
             var compressionMode = CompressedArchiveAccessModeToCompressionMode(mode);
@@ -88,28 +98,35 @@ namespace INTV.Shared.Utility
         /// <inheritdoc />
         public override Stream OpenEntry(ICompressedArchiveEntry entry)
         {
-            // TODO: keep track of where we are in multi-member stream, etc.
-            return GZipStream;
+            GZipStream entryStream = null;
+            var gzipEntry = GetEntry(entry.Name) as GZipMemberEntry;
+            if (gzipEntry != null)
+            {
+                BaseStream.Seek(gzipEntry.Offset, SeekOrigin.Begin);
+                entryStream = new GZipStream(BaseStream, Mode, leaveOpen: true);
+            }
+            return entryStream;
         }
 
         /// <inheritdoc />
         public override ICompressedArchiveEntry CreateEntry(string name)
         {
-            throw new NotImplementedException();
+            if (Mode != CompressionMode.Compress)
+            {
+                throw new InvalidOperationException(Resources.Strings.GZipAccess_InvalidModeForCreateEntryError);
+            }
+            if (_entries.Count > 0)
+            {
+                throw new NotSupportedException(Resources.Strings.GZipAccess_MultipleMembersNotSupportedError);
+            }
+            var entry = GZipMemberEntry.CreateEmptyEntry(name);
+            _entries.Add(entry);
+            return entry;
         }
 
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-            if (GZipStream != null)
-            {
-                var gzipStream = GZipStream;
-                GZipStream = null;
-                if (gzipStream != null)
-                {
-                    gzipStream.Dispose();
-                }
-            }
         }
 
         /// <inheritdoc />
@@ -133,50 +150,6 @@ namespace INTV.Shared.Utility
                     throw new ArgumentOutOfRangeException();
             }
             return compressionMode;
-        }
-
-        private class GZipEntry : ICompressedArchiveEntry
-        {
-            public GZipEntry(FileStream gzipFileStream)
-            {
-                var gzipFileLocation = gzipFileStream.Name;
-                if (!string.IsNullOrEmpty(gzipFileLocation))
-                {
-                    Name = Path.GetFileNameWithoutExtension(gzipFileLocation);
-                    Length = -1;
-                    LastModificationTime = DateTime.MinValue;
-                    FilePath = Path.Combine(Path.GetDirectoryName(gzipFileLocation), Name);
-                }
-            }
-
-            public GZipEntry(string filePath)
-            {
-                var fileInfo = new FileInfo(filePath);
-                Name = Path.GetFileNameWithoutExtension(filePath);
-                Length = fileInfo.Length;
-                LastModificationTime = fileInfo.LastWriteTimeUtc;
-                FilePath = filePath;
-            }
-
-            /// <inheritdoc />
-            public string Name { get; private set; }
-
-            /// <inheritdoc />
-            public long Length { get; private set; }
-
-            /// <inheritdoc />
-            public DateTime LastModificationTime { get; private set; }
-
-            /// <inheritdoc />
-            public bool IsDirectory
-            {
-                get { return false; }
-            }
-
-            /// <summary>
-            /// Gets the absolute path to the entry, if available.
-            /// </summary>
-            public string FilePath { get; private set; }
         }
     }
 }

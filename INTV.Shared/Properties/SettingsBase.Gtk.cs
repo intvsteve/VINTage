@@ -1,5 +1,5 @@
 ﻿// <copyright file="SettingsBase.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -84,7 +84,7 @@ namespace INTV.Shared.Properties
         /// <param name="type">The data type of the setting.</param>
         /// <param name="value">Receives the value of the setting, or <c>null</c> if not found.</param>
         /// <returns><c>true</c>, if get setting was retrieved, <c>false</c> otherwise.</returns>
-        /// <remarks>The implemetnation will store Enum-type values as strings. Therefore, derived
+        /// <remarks>The implementation will store Enum-type values as strings. Therefore, derived
         /// types need to provide custom type converters for enum values.</remarks>
         protected bool TryGetSetting(string key, Type type, out object value)
         {

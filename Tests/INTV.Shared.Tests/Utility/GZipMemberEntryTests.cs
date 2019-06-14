@@ -39,6 +39,25 @@ namespace INTV.Shared.Tests.Utility
 
         private static readonly string StockEntryName = "file.dat"; // copied from GZipMemberEntry
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void GZipMemberEntry_CreateEmptyEntryWithBadName_ThrowsArgumentException(string badName)
+        {
+            Assert.Throws<ArgumentException>(() => GZipMemberEntry.CreateEmptyEntry(badName));
+        }
+
+        [Fact]
+        public void GZipMemberEntry_CreateEmpty_CreatesEntryWithGivenName()
+        {
+            var name = "whee";
+
+            var entry = GZipMemberEntry.CreateEmptyEntry(name);
+
+            Assert.NotNull(entry);
+            Assert.Equal(name, entry.Name);
+        }
+
         [Fact]
         public void GZipMemberEntry_GetAllMemberEntriesWithNullStream_ThrowsNullReferenceException()
         {

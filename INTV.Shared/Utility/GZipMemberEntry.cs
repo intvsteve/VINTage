@@ -166,7 +166,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets the CRC-C32 (a.k.a. ZIP) of the original file prior to compression via GZIP.
         /// </summary>
-        public uint Crc32 { get; set; }
+        public uint Crc32 { get; private set; }
 
         /// <summary>
         /// Gets the offset into the original stream to locate the entry.
@@ -248,8 +248,6 @@ namespace INTV.Shared.Utility
             return memberEntries;
         }
 
-        #region ByteSerializer
-
         /// <summary>
         /// Creates a new instance of a GZipMemberEntry by parsing it from a Stream.
         /// </summary>
@@ -275,6 +273,26 @@ namespace INTV.Shared.Utility
         {
             return Inflate<GZipMemberEntry>(reader);
         }
+
+        /// <summary>
+        /// Creates an instance of <see cref="GZipMemberEntry"/> with the given name.
+        /// </summary>
+        /// <param name="name">The name for the entry.</param>
+        /// <returns>A new instance of <see cref="GZipMemberEntry"/>.</returns>
+        /// <remarks>NOTE: This instance is a placeholder only, and none of the relevant metadata is set. It is used in implementations of
+        /// ICompressedArchiveAccess that provide a means to create new GZIP files. Note also that only minimal name validation is done.</remarks>
+        /// <exception cref="ArgumentException">Thrown if name is <c>null</c>or empty. Perhaps other more stringent checks could be added.</exception>
+        internal static GZipMemberEntry CreateEmptyEntry(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("name");
+            }
+            var entry = new GZipMemberEntry() { _name = name };
+            return entry;
+        }
+
+        #region ByteSerializer
 
         /// <inheritdoc />
         public override int Serialize(Core.Utility.BinaryWriter writer)

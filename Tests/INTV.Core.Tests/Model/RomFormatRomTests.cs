@@ -129,7 +129,12 @@ namespace INTV.Core.Tests.Model
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomMetadataBadCrcPath).First();
             var rom = Rom.Create(romPath, null);
 
+#if DEBUG
             Assert.Throws<System.IO.InvalidDataException>(() => rom.GetRomFileMetadata());
+#else
+            var metadata = rom.GetRomFileMetadata();
+            Assert.NotNull(metadata);
+#endif // DEBUG
         }
 
         private void VerifyExpectedMetadata(IProgramMetadata metadata, bool lastVersionMetadataIsCorrupt)

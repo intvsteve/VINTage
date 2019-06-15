@@ -216,39 +216,40 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void GZipNativeAccess_WriteRomResourceToGZip_ProducesExpectedResult()
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                var inputCrc = 0u;
-                var inputLength = 0L;
+            var inputCrc = 0u;
+            var inputLength = 0L;
 
-                // Create in-memory GZIP
-                using (var gzip = CompressedArchiveAccess.Open(memoryStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create))
+            // Create in-memory GZIP
+            var newMemoryStream = new MemoryStream();
+            var copyMemoryStream = new MemoryStream();
+            using (var gzip = CompressedArchiveAccess.Open(newMemoryStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create))
+            {
+                var testResourceName = "INTV.TestHelpers.Core.Resources.tagalong.luigi";
+                var newGZipEntryName = "tagalong.luigi";
+                var entry = gzip.CreateEntry(newGZipEntryName);
+                using (var gzipStream = gzip.Open(entry.Name))
+                using (var sourceStream = typeof(TestRomResources).Assembly.GetManifestResourceStream(testResourceName))
                 {
-                    var testResourceName = "INTV.TestHelpers.Core.Resources.tagalong.luigi";
-                    var newGZipEntryName = "tagalong.luigi";
-                    var entry = gzip.CreateEntry(newGZipEntryName);
-                    using (var gzipStream = gzip.Open(entry.Name))
-                    using (var sourceStream = typeof(TestRomResources).Assembly.GetManifestResourceStream(testResourceName))
-                    {
-                        sourceStream.CopyTo(gzipStream);
-                        inputCrc = Crc32.OfStream(sourceStream);
-                        inputLength = sourceStream.Length;
-                    }
+                    sourceStream.CopyTo(gzipStream);
+                    inputCrc = Crc32.OfStream(sourceStream);
+                    inputLength = sourceStream.Length;
                 }
 
                 // Now, rewind and see if we can extract it!
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                using (var gzip = CompressedArchiveAccess.Open(memoryStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read))
+                newMemoryStream.Seek(0, SeekOrigin.Begin);
+                newMemoryStream.CopyTo(copyMemoryStream);
+            }
+
+            using (var gzip = CompressedArchiveAccess.Open(copyMemoryStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read))
+            {
+                Assert.True(inputLength > copyMemoryStream.Length); // let's assume some kind of compression happened!
+                Assert.True(gzip.Entries.Any());
+                var entry = gzip.Entries.Single();
+                Assert.False(string.IsNullOrEmpty(entry.Name));
+                using (var gzipStream = gzip.OpenEntry(entry))
                 {
-                    Assert.True(inputLength > memoryStream.Length); // let's assume some kind of compression happened!
-                    Assert.True(gzip.Entries.Any());
-                    var entry = gzip.Entries.Single();
-                    Assert.False(string.IsNullOrEmpty(entry.Name));
-                    using (var gzipStream = gzip.OpenEntry(entry))
-                    {
-                        var extractedEntryCrc = Crc32.OfStream(gzipStream, fromStartOfStream: false);
-                        Assert.Equal(inputCrc, extractedEntryCrc);
-                    }
+                    var extractedEntryCrc = Crc32.OfStream(gzipStream, fromStartOfStream: false);
+                    Assert.Equal(inputCrc, extractedEntryCrc);
                 }
             }
         }
@@ -260,21 +261,19 @@ namespace INTV.Shared.Tests.Utility
 
             using (TemporaryFile.CreateTemporaryFileWithPath(gzipFileName, createEmptyFile: false))
             {
+                // Create on-disk GZIP
                 var inputLength = 0L;
-                using (var fileStream = new FileStream(gzipFileName, FileMode.Create, FileAccess.Write))
+                var fileStream = new FileStream(gzipFileName, FileMode.Create, FileAccess.Write);
+                using (var gzip = CompressedArchiveAccess.Open(fileStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create))
                 {
-                    // Create on-disk GZIP
-                    using (var gzip = CompressedArchiveAccess.Open(fileStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create))
+                    var testResourceName = "INTV.TestHelpers.Core.Resources.tagalong.luigi";
+                    var newGZipEntryName = "tagalong.luigi";
+                    var entry = gzip.CreateEntry(newGZipEntryName);
+                    using (var gzipStream = gzip.Open(entry.Name))
+                    using (var sourceStream = typeof(TestRomResources).Assembly.GetManifestResourceStream(testResourceName))
                     {
-                        var testResourceName = "INTV.TestHelpers.Core.Resources.tagalong.luigi";
-                        var newGZipEntryName = "tagalong.luigi";
-                        var entry = gzip.CreateEntry(newGZipEntryName);
-                        using (var gzipStream = gzip.Open(entry.Name))
-                        using (var sourceStream = typeof(TestRomResources).Assembly.GetManifestResourceStream(testResourceName))
-                        {
-                            sourceStream.CopyTo(gzipStream);
-                            inputLength = sourceStream.Length;
-                        }
+                        sourceStream.CopyTo(gzipStream);
+                        inputLength = sourceStream.Length;
                     }
                 }
 

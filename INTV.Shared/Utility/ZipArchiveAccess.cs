@@ -57,23 +57,6 @@ namespace INTV.Shared.Utility
             _zipArchiveObject = Open(stream, mode);
         }
 
-        /// <summary>
-        /// Gets the access mode that describes actions that can be performed on the archive.
-        /// </summary>
-        public CompressedArchiveAccessMode Mode { get; private set; }
-
-        /// <summary>
-        /// Creates a new instance of <see cref="ZipArchiveAccess"/> using the given mode.
-        /// </summary>
-        /// <param name="stream">Stream containing data in ZIP archive format.</param>
-        /// <param name="mode">The access mode to use for ZIP operations.</param>
-        /// <returns>A new instance of <see cref="ZipArchiveAccess"/>.</returns>
-        /// <remarks>The ZIP archive assumes ownership of <paramref name="stream"/> and will dispose it.</remarks>
-        public static ZipArchiveAccess Create(Stream stream, CompressedArchiveAccessMode mode)
-        {
-            return new ZipArchiveAccess(stream, mode);
-        }
-
         #region ICompressedArchiveAccess
 
         /// <inheritdoc />
@@ -93,6 +76,27 @@ namespace INTV.Shared.Utility
         {
             get { return GetArchiveEntries(); }
         }
+
+        #endregion ICompressedArchiveAccess
+
+        /// <summary>
+        /// Gets the access mode that describes actions that can be performed on the archive.
+        /// </summary>
+        public CompressedArchiveAccessMode Mode { get; private set; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ZipArchiveAccess"/> using the given mode.
+        /// </summary>
+        /// <param name="stream">Stream containing data in ZIP archive format.</param>
+        /// <param name="mode">The access mode to use for ZIP operations.</param>
+        /// <returns>A new instance of <see cref="ZipArchiveAccess"/>.</returns>
+        /// <remarks>The ZIP archive assumes ownership of <paramref name="stream"/> and will dispose it.</remarks>
+        public static ZipArchiveAccess Create(Stream stream, CompressedArchiveAccessMode mode)
+        {
+            return new ZipArchiveAccess(stream, mode);
+        }
+
+        #region ICompressedArchiveAccess
 
         /// <inheritdoc />
         public override Stream OpenEntry(ICompressedArchiveEntry entry)

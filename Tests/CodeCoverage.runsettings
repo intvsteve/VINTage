@@ -15,6 +15,7 @@
                 <ModulePath>.*TestHelpers.*</ModulePath>
                 <ModulePath>.*xunit.*</ModulePath>
                 <ModulePath>^Microsoft.*</ModulePath>
+				<ModulePath>^ICSharpCode.*</ModulePath>
               </Exclude>
             </ModulePaths>
 

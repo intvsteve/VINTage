@@ -84,6 +84,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="filePath">The absolute path for the compressed archive.</param>
         /// <param name="mode">The access mode to use for operations on the compressed archive.</param>
+        /// <param name="implementation">If not <c>null</c>, use a specific implementation if possible. Otherwise, use default, or any.</param>
         /// <returns>An instance of the compressed archive.</returns>
         /// <remarks>The format of the compressed archive accessor is determined via file extension.</remarks>
         /// <exception cref="System.NotSupportedException">Thrown if it is not possible to locate a factory for the given <paramref name="format"/>, or
@@ -93,9 +94,9 @@ namespace INTV.Shared.Utility
         /// <exception cref="System.ArgumentException">Thrown if invalid file access, sharing, and mode combinations are used.</exception>
         /// <exception cref="System.FileFormatException">Thrown if archive was opened for reading, but is of zero size.</exception>
         /// <exception cref="System.IOException">Thrown if <paramref name="stream"/> is not empty and archive was opened in Create mode.</exception>
-        public static ICompressedArchiveAccess Open(string filePath, CompressedArchiveAccessMode mode)
+        public static ICompressedArchiveAccess Open(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation = null)
         {
-            var archive = CompressedArchiveFileAccess.Create(filePath, mode);
+            var archive = CompressedArchiveFileAccess.Create(filePath, mode, implementation);
             return archive;
         }
 
@@ -317,6 +318,7 @@ namespace INTV.Shared.Utility
         {
             var factories = new ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>(new CompressedArchiveIdentifier());
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.Native)] = ZipArchiveAccess.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.SharpZipLib)] = ZipArchiveAccessSharpZipLib.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.Native)] = GZipNativeAccess.Create;
             return factories;
         }
@@ -366,6 +368,7 @@ namespace INTV.Shared.Utility
             /// </summary>
             /// <param name="filePath">The absolute path for the compressed archive.</param>
             /// <param name="mode">The access mode to use for operations on the compressed archive.</param>
+            /// <param name="implementation">If not <c>null</c>, use a specific implementation if possible. Otherwise, use default, or any.</param>
             /// <returns>An instance of <see cref="CompressedArchiveFileAccess"/> that provides access to the compressed archive located at <paramref name="filePath"/>.</returns>
             /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="filePath"/> is <c>null</c>.</exception>
             /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the file is accessed incorrectly for the given <paramref name="mode"/>.</exception>
@@ -379,7 +382,7 @@ namespace INTV.Shared.Utility
             /// <exception cref="System.IO.PathTooLongException">Thrown if <paramref name="filePath"/> is too long.</exception>
             /// <exception cref="System.InvalidOperationException">Thrown if it is not possible to create an instance of <see cref="CompressedArchiveFileAccess"/> from the file at <paramref name="filePath"/>,
             /// despite the file appearing to be valid.</exception>
-            public static CompressedArchiveFileAccess Create(string filePath, CompressedArchiveAccessMode mode)
+            public static CompressedArchiveFileAccess Create(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation)
             {
                 var fileMode = CompressedArchiveAccessModeToFileMode(mode);
                 var fileAccess = CompressedArchiveAccessModeToFileAccess(mode);
@@ -419,7 +422,7 @@ namespace INTV.Shared.Utility
                 var format = formats.FirstOrDefault();
                 if (format != CompressedArchiveFormat.None)
                 {
-                    compressedArchiveAccess = Utility.CompressedArchiveAccess.Open(fileStream, format, mode);
+                    compressedArchiveAccess = Utility.CompressedArchiveAccess.Open(fileStream, format, mode, implementation);
                 }
 #endif
 

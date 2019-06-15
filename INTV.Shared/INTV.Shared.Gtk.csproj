@@ -327,6 +327,7 @@
     <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
+    <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -337,6 +338,10 @@
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.Gtk.csproj">
       <Project>{C1185AA4-E7D9-449C-97E1-D0EEEE2CB719}</Project>
       <Name>INTV.jzIntv.Gtk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpZipLib\DotNet45\src\ICSharpCode.SharpZipLib\ICSharpCode.SharpZipLib.csproj">
+      <Project>{8E804852-42DF-4588-A9D0-774FE1340523}</Project>
+      <Name>ICSharpCode.SharpZipLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

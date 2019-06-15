@@ -398,6 +398,7 @@
     <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
+    <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj">
@@ -407,6 +408,10 @@
     <ProjectReference Include="..\INTV.Core\INTV.Core.XamMac.csproj">
       <Project>{FB5C25FD-A481-48E9-A721-24DAE07DF67A}</Project>
       <Name>INTV.Core.XamMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpZipLib\DotNet45\src\ICSharpCode.SharpZipLib\ICSharpCode.SharpZipLib.XamMac.csproj">
+      <Project>{8E804852-42DF-4588-A9D0-774FE1340523}</Project>
+      <Name>ICSharpCode.SharpZipLib.XamMac</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />

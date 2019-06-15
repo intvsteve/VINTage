@@ -63,6 +63,7 @@ namespace INTV.Shared.Utility
     /// </summary>
     public static class CompressedArchiveFormatExtensions
     {
+        private static readonly object Lock = new object();
         private static readonly Lazy<IDictionary<CompressedArchiveFormat, List<string>>> CompressedArchiveFormatFileExtensions = new Lazy<IDictionary<CompressedArchiveFormat, List<string>>>(InitializeCompressedArchiveFormatFileExtensions);
         private static readonly Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>> CompressedArchiveAccessImplementations = new Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>>(InitializeCompressedArchiveFormatImplementations);
 
@@ -88,13 +89,16 @@ namespace INTV.Shared.Utility
         /// <returns>The file extensions. If an unexpected value for <paramref name="format"/> is provided, an empty enumerable is returned.</returns>
         public static IEnumerable<string> FileExtensions(this CompressedArchiveFormat format)
         {
-            var fileExtensions = Enumerable.Empty<string>();
-            List<string> registeredFileExtensions;
-            if (format.IsCompressedArchiveFormatSupported() && CompressedArchiveFormatFileExtensions.Value.TryGetValue(format, out registeredFileExtensions))
+            lock (Lock)
             {
-                fileExtensions = registeredFileExtensions;
+                var fileExtensions = Enumerable.Empty<string>();
+                List<string> registeredFileExtensions;
+                if (format.IsCompressedArchiveFormatSupported() && CompressedArchiveFormatFileExtensions.Value.TryGetValue(format, out registeredFileExtensions))
+                {
+                    fileExtensions = registeredFileExtensions;
+                }
+                return fileExtensions;
             }
-            return fileExtensions;
         }
 
         /// <summary>
@@ -128,13 +132,16 @@ namespace INTV.Shared.Utility
         /// <returns>The compression / archive format, based on file extension. If no match is found, <see cref="CompressedArchiveFormat.None"/> is returned.</returns>
         public static CompressedArchiveFormat GetCompressedArchiveFormatFromFileExtension(this string fileExtension)
         {
-            var format = CompressedArchiveFormat.None;
-            if (fileExtension.FirstOrDefault() == '.')
+            lock (Lock)
             {
-                var compressedArchiveFormatFileExtensions = CompressedArchiveFormatFileExtensions.Value;
-                format = compressedArchiveFormatFileExtensions.FirstOrDefault(f => f.Value.FirstOrDefault(e => StringComparer.OrdinalIgnoreCase.Compare(e, fileExtension) == 0) != null).Key;
+                var format = CompressedArchiveFormat.None;
+                if (fileExtension.FirstOrDefault() == '.')
+                {
+                    var compressedArchiveFormatFileExtensions = CompressedArchiveFormatFileExtensions.Value;
+                    format = compressedArchiveFormatFileExtensions.FirstOrDefault(f => f.Value.FirstOrDefault(e => StringComparer.OrdinalIgnoreCase.Compare(e, fileExtension) == 0) != null).Key;
+                }
+                return format;
             }
-            return format;
         }
 
         /// <summary>
@@ -144,13 +151,16 @@ namespace INTV.Shared.Utility
         /// <returns>The available implementations. If unsupported, an empty enumerable is returned.</returns>
         public static IEnumerable<CompressedArchiveAccessImplementation> GetAvailableCompressedArchiveImplementations(this CompressedArchiveFormat format)
         {
-            var implementations = Enumerable.Empty<CompressedArchiveAccessImplementation>();
-            IList<CompressedArchiveAccessImplementation> registeredImplementations;
-            if (format.IsCompressedArchiveFormatSupported() && CompressedArchiveAccessImplementations.Value.TryGetValue(format, out registeredImplementations))
+            lock (Lock)
             {
-                implementations = registeredImplementations;
+                var implementations = Enumerable.Empty<CompressedArchiveAccessImplementation>();
+                IList<CompressedArchiveAccessImplementation> registeredImplementations;
+                if (format.IsCompressedArchiveFormatSupported() && CompressedArchiveAccessImplementations.Value.TryGetValue(format, out registeredImplementations))
+                {
+                    implementations = registeredImplementations;
+                }
+                return implementations;
             }
-            return implementations;
         }
 
         /// <summary>
@@ -195,29 +205,32 @@ namespace INTV.Shared.Utility
                 throw new ArgumentException(Resources.Strings.CompressedArchiveFormat_CompountFileExtensionsNotSupportedError, "fileExtension");
             }
 
-            List<string> existingFileExtensionsForFormat;
-            var formatAlreadyRegistered = CompressedArchiveFormatFileExtensions.Value.TryGetValue(format, out existingFileExtensionsForFormat);
-            var formatAlreadyUsingExtension = CompressedArchiveFormatFileExtensions.Value.FirstOrDefault(e => e.Value.Contains(fileExtension, StringComparer.OrdinalIgnoreCase));
+            lock (Lock)
+            {
+                List<string> existingFileExtensionsForFormat;
+                var formatAlreadyRegistered = CompressedArchiveFormatFileExtensions.Value.TryGetValue(format, out existingFileExtensionsForFormat);
+                var formatAlreadyUsingExtension = CompressedArchiveFormatFileExtensions.Value.FirstOrDefault(e => e.Value.Contains(fileExtension, StringComparer.OrdinalIgnoreCase));
 
-            bool? added = null;
-            if (formatAlreadyRegistered)
-            {
-                if ((formatAlreadyUsingExtension.Key == CompressedArchiveFormat.None) || (formatAlreadyUsingExtension.Key == format))
+                bool? added = null;
+                if (formatAlreadyRegistered)
                 {
-                    added = AddOrUpdateCompressedArchiveFormatData(fileExtension, makeDefault, existingFileExtensionsForFormat, (f, e) => ((List<string>)e).FindIndex(0, x => StringComparer.OrdinalIgnoreCase.Compare(x, f) == 0));
+                    if ((formatAlreadyUsingExtension.Key == CompressedArchiveFormat.None) || (formatAlreadyUsingExtension.Key == format))
+                    {
+                        added = AddOrUpdateCompressedArchiveFormatData(fileExtension, makeDefault, existingFileExtensionsForFormat, (f, e) => ((List<string>)e).FindIndex(0, x => StringComparer.OrdinalIgnoreCase.Compare(x, f) == 0));
+                    }
                 }
+                else
+                {
+                    var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FormatIsNotRegisteredError_Format, format);
+                    throw new ArgumentException(message, "format");
+                }
+                if (!added.HasValue)
+                {
+                    var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FileExtensionAlreadyInUseError_Format, fileExtension, formatAlreadyUsingExtension.Key);
+                    throw new ArgumentException(message, "fileExtension");
+                }
+                return added.Value;
             }
-            else
-            {
-                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FormatIsNotRegisteredError_Format, format);
-                throw new ArgumentException(message, "format");
-            }
-            if (!added.HasValue)
-            {
-                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FileExtensionAlreadyInUseError_Format, fileExtension, formatAlreadyUsingExtension.Key);
-                throw new ArgumentException(message, "fileExtension");
-            }
-            return added.Value;
         }
 
         /// <summary>
@@ -243,20 +256,23 @@ namespace INTV.Shared.Utility
                 throw new ArgumentOutOfRangeException("implementation");
             }
 
-            IList<CompressedArchiveAccessImplementation> existingImplementationsForFormat;
-            var formatAlreadyRegistered = CompressedArchiveAccessImplementations.Value.TryGetValue(format, out existingImplementationsForFormat);
+            lock (Lock)
+            {
+                IList<CompressedArchiveAccessImplementation> existingImplementationsForFormat;
+                var formatAlreadyRegistered = CompressedArchiveAccessImplementations.Value.TryGetValue(format, out existingImplementationsForFormat);
 
-            var added = false;
-            if (formatAlreadyRegistered)
-            {
-                added = AddOrUpdateCompressedArchiveFormatData(implementation, makePreferred, existingImplementationsForFormat, (i, e) => e.IndexOf(i));
+                var added = false;
+                if (formatAlreadyRegistered)
+                {
+                    added = AddOrUpdateCompressedArchiveFormatData(implementation, makePreferred, existingImplementationsForFormat, (i, e) => e.IndexOf(i));
+                }
+                else
+                {
+                    var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FormatIsNotRegisteredError_Format, format);
+                    throw new ArgumentException(message, "format");
+                }
+                return added;
             }
-            else
-            {
-                var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveFormat_FormatIsNotRegisteredError_Format, format);
-                throw new ArgumentException(message, "format");
-            }
-            return added;
         }
 
         /// <summary>
@@ -294,18 +310,24 @@ namespace INTV.Shared.Utility
                 throw new ArgumentException(Resources.Strings.CompressedArchiveFormat_ImplementationRequired, "implementations");
             }
 
-            if (!CompressedArchiveFormatFileExtensions.Value.Keys.Contains(format))
+            lock (Lock)
             {
-                CompressedArchiveFormatFileExtensions.Value[format] = new List<string>();
+                if (!CompressedArchiveFormatFileExtensions.Value.Keys.Contains(format))
+                {
+                    CompressedArchiveFormatFileExtensions.Value[format] = new List<string>();
+                }
             }
             foreach (var fileExtension in fileExtensions)
             {
                 format.AddFileExtension(fileExtension, makeDefault: false);
             }
 
-            if (!CompressedArchiveAccessImplementations.Value.Keys.Contains(format))
+            lock (Lock)
             {
-                CompressedArchiveAccessImplementations.Value[format] = new List<CompressedArchiveAccessImplementation>();
+                if (!CompressedArchiveAccessImplementations.Value.Keys.Contains(format))
+                {
+                    CompressedArchiveAccessImplementations.Value[format] = new List<CompressedArchiveAccessImplementation>();
+                }
             }
             foreach (var implementation in implementations)
             {

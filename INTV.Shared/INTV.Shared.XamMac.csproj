@@ -398,6 +398,7 @@
     <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
+    <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.XamMac.csproj">

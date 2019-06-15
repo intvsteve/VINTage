@@ -1,4 +1,4 @@
-// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
+﻿// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -318,6 +318,7 @@ namespace INTV.Shared.Utility
         {
             var factories = new ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>(new CompressedArchiveIdentifier());
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.Native)] = ZipArchiveAccess.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.SharpZipLib)] = ZipArchiveAccessSharpZipLib.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.Native)] = GZipNativeAccess.Create;
             return factories;
         }

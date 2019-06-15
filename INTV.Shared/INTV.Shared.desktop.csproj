@@ -268,6 +268,7 @@
     <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
+    <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />
     <Compile Include="ViewModel\OSViewModelBase.WPF.cs" />
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
     <Compile Include="View\IMainWindow.cs" />
@@ -411,6 +412,10 @@
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.desktop.csproj">
       <Project>{96090ce5-6a2c-4709-9b6f-4a50484b6b86}</Project>
       <Name>INTV.jzIntv.desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpZipLib\DotNet45\src\ICSharpCode.SharpZipLib\ICSharpCode.SharpZipLib.csproj">
+      <Project>{8e804852-42df-4588-a9d0-774fe1340523}</Project>
+      <Name>ICSharpCode.SharpZipLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\WindowsAPICodePack\Core\Core.csproj">
       <Project>{2e1fb0df-f9bb-4909-9f32-2d9d022a8e57}</Project>

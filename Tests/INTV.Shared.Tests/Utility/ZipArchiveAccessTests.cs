@@ -31,23 +31,27 @@ namespace INTV.Shared.Tests.Utility
 {
     public class ZipArchiveAccessTests
     {
-        [Fact]
-        public void ZipArchiveAccess_OpenNonZip_ThrowsInvalidDataException()
+        [Theory]
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_OpenNonZip_ThrowsInvalidDataException(CompressedArchiveAccessImplementation implementation)
         {
             var nonZipResource = TestResource.TextEmbeddedResourceFile;
 
             var stream = nonZipResource.OpenResourceForReading();
 
-            Assert.Throws<InvalidDataException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read));
+            Assert.Throws<InvalidDataException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read, implementation));
         }
 
-        [Fact]
-        public void ZipArchiveAccess_OpenForRead_HasExpectedContents()
+        [Theory]
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_OpenForRead_HasExpectedContents(CompressedArchiveAccessImplementation implementation)
         {
             var zipResource = TestResource.TagalongZip;
 
             var zipStream = zipResource.OpenResourceForReading();
-            using (var zipArchive = CompressedArchiveAccess.Open(zipStream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zipArchive = CompressedArchiveAccess.Open(zipStream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read, implementation))
             {
                 var entries = zipArchive.Entries;
 
@@ -62,13 +66,15 @@ namespace INTV.Shared.Tests.Utility
             }
         }
 
-        [Fact]
-        public void ZipArchiveAccess_OpenEntryForRead_SuccessfullyOpensEntry()
+        [Theory]
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_OpenEntryForRead_SuccessfullyOpensEntry(CompressedArchiveAccessImplementation implementation)
         {
             var zipResource = TestResource.TagalongDirZip;
 
             var zipStream = zipResource.OpenResourceForReading();
-            using (var zipArchive = CompressedArchiveAccess.Open(zipStream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zipArchive = CompressedArchiveAccess.Open(zipStream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read, implementation))
             {
                 var zipEntry = zipArchive.FindEntry(zipResource.ArchiveContents.First(e => e.EndsWith(".luigi")));
                 var entries = zipArchive.Entries;
@@ -87,18 +93,21 @@ namespace INTV.Shared.Tests.Utility
         /// <summary>
         /// Tests archive creation AND validates the contents - more than a unit test really should.
         /// </summary>
+        /// <param name="implementation">The specific ZIP archive access implementation to test.</param>
         /// <remarks>This test actually covers multiple areas - file and directory entry creation, as well
         /// as testing the Windows path separator rather than the standard forward slash. Further,
         /// it validates the results of zip creation by also verifying the contents afterwards.</remarks>
-        [Fact]
-        public void ZipArchiveAccess_CreateNewZip_SuccessfullyAddDirectoryAndFileEntries()
+        [Theory]
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_CreateNewZip_SuccessfullyAddDirectoryAndFileEntries(CompressedArchiveAccessImplementation implementation)
         {
             var zipTestEntryName = @"test\entry";
             var zipTestEntryContent = "Here is some text to write!";
             var testZipFilePath = TemporaryFile.GenerateUniqueFilePath("ZipTest", ".zip");
 
-            var zipStream = new FileStream(testZipFilePath, FileMode.Create, FileAccess.Write);
-            using (var zipArchive = CompressedArchiveAccess.Open(zipStream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Create))
+            var zipStream = new FileStream(testZipFilePath, FileMode.Create, FileAccess.ReadWrite); // SharpZipLib requires ReadWrite, .NET works with Write only.
+            using (var zipArchive = CompressedArchiveAccess.Open(zipStream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Create, implementation))
             {
                 var zipDirectoryEntryName = Path.GetDirectoryName(zipTestEntryName) + Path.DirectorySeparatorChar;
                 var zipDirectoryEntry = zipArchive.CreateEntry(zipDirectoryEntryName);
@@ -111,18 +120,20 @@ namespace INTV.Shared.Tests.Utility
             }
 
             Assert.True(File.Exists(testZipFilePath));
-            VerifyTestZipContents(testZipFilePath, zipTestEntryName, zipTestEntryContent);
+            VerifyTestZipContents(testZipFilePath, zipTestEntryName, zipTestEntryContent, implementation);
         }
 
-        [Fact]
-        public void ZipArchiveAccess_DeleteAnEntryFromExistingZipArchive_RemoveEntry()
+        [Theory]
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_DeleteAnEntryFromExistingZipArchive_RemovesEntry(CompressedArchiveAccessImplementation implementation)
         {
             var numberOfEntriesToCreate = 4;
             var zipTestEntryNameFormat = "testEntry_{0}";
             var zipTestEntryContentFormat = "Here is some text to write for {0}!";
             var testZipFilePath = TemporaryFile.GenerateUniqueFilePath("ZipTest", ".zip");
-            var zipStream = new FileStream(testZipFilePath, FileMode.Create, FileAccess.Write);
-            using (var zipArchive = CompressedArchiveAccess.Open(zipStream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Create))
+            var zipStream = new FileStream(testZipFilePath, FileMode.Create, FileAccess.ReadWrite); // SharpZipLib requires ReadWrite, .NET works with Write only.
+            using (var zipArchive = CompressedArchiveAccess.Open(zipStream, CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Create, implementation))
             {
                 for (var i = 0; i < numberOfEntriesToCreate; ++i)
                 {
@@ -136,10 +147,10 @@ namespace INTV.Shared.Tests.Utility
                     }
                 }
             }
-            VerifyNumberOfEntries(testZipFilePath, numberOfEntriesToCreate);
+            VerifyNumberOfEntries(testZipFilePath, numberOfEntriesToCreate, implementation);
 
             var numberOfEntriesToDelete = 2;
-            using (var zipArchive = CompressedArchiveAccess.Open(testZipFilePath, CompressedArchiveAccessMode.Update))
+            using (var zipArchive = CompressedArchiveAccess.Open(testZipFilePath, CompressedArchiveAccessMode.Update, implementation))
             {
                 var entriesToDelete = zipArchive.Entries.Take(numberOfEntriesToDelete).Select(e => e.Name).ToList();
                 foreach (var entry in entriesToDelete)
@@ -150,7 +161,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var tempFile = TemporaryFile.CreateTemporaryFileWithPath(testZipFilePath, createEmptyFile: false))
             {
-                VerifyNumberOfEntries(testZipFilePath, numberOfEntriesToCreate - numberOfEntriesToDelete);
+                VerifyNumberOfEntries(testZipFilePath, numberOfEntriesToCreate - numberOfEntriesToDelete, implementation);
             }
         }
 
@@ -162,10 +173,10 @@ namespace INTV.Shared.Tests.Utility
             Assert.True(header.SequenceEqual(magicKey));
         }
 
-        private static void VerifyTestZipContents(string testZipFilePath, string zipTestEntryName, string zipTestEntryContent)
+        private static void VerifyTestZipContents(string testZipFilePath, string zipTestEntryName, string zipTestEntryContent, CompressedArchiveAccessImplementation implementation)
         {
             using (var tempFile = TemporaryFile.CreateTemporaryFileWithPath(testZipFilePath, createEmptyFile: false))
-            using (var zipArchive = CompressedArchiveAccess.Open(testZipFilePath, CompressedArchiveAccessMode.Read))
+            using (var zipArchive = CompressedArchiveAccess.Open(testZipFilePath, CompressedArchiveAccessMode.Read, implementation))
             {
                 var entries = zipArchive.Entries;
                 Assert.True(entries.Any(e => e.IsDirectory));
@@ -179,9 +190,9 @@ namespace INTV.Shared.Tests.Utility
             }
         }
 
-        private static void VerifyNumberOfEntries(string testZipFilePath, int expectedNumberOfEntries)
+        private static void VerifyNumberOfEntries(string testZipFilePath, int expectedNumberOfEntries, CompressedArchiveAccessImplementation implementation)
         {
-            using (var zipArchive = CompressedArchiveAccess.Open(testZipFilePath, CompressedArchiveAccessMode.Read))
+            using (var zipArchive = CompressedArchiveAccess.Open(testZipFilePath, CompressedArchiveAccessMode.Read, implementation))
             {
                 var numberOfEntries = zipArchive.Entries.Count();
                 Assert.Equal(expectedNumberOfEntries, numberOfEntries);

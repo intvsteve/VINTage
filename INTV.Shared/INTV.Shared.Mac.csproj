@@ -77,6 +77,7 @@
     <Compile Include="Utility\FileDialogHelpers.cs" />
     <Compile Include="Utility\FileUtilities.cs" />
     <Compile Include="Utility\FixedSizeCollection`T.cs" />
+    <Compile Include="Utility\GZipAccess.cs" />
     <Compile Include="Utility\GZipAccessNative.cs" />
     <Compile Include="Utility\GZipMemberEntry.cs" />
     <Compile Include="Utility\ICompressedArchiveAccess.cs" />

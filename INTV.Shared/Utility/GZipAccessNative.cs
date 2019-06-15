@@ -19,65 +19,21 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 
 namespace INTV.Shared.Utility
 {
     /// <summary>
     /// Provides access to a GZIP-formatted stream. Multiple-entry treatment is semi-supported. Don't have your hopes up too high, though.
     /// </summary>
-    internal sealed class GZipAccessNative : CompressedArchiveAccess
+    internal sealed class GZipAccessNative : GZipAccess
     {
-        private GZipAccessNative(Stream stream, CompressionMode mode)
+        private GZipAccessNative(Stream stream, CompressedArchiveAccessMode mode)
+            : base(stream, mode)
         {
-            Mode = mode;
-            BaseStream = stream;
-            var fileStream = stream as FileStream;
-            if (fileStream != null)
-            {
-                RootLocation = fileStream.Name;
-            }
-            _entries = GZipMemberEntry.GetMemberEntries(stream, Properties.Settings.Default.MaxGZipEntriesSearch).ToList();
-            switch (mode)
-            {
-                case CompressionMode.Decompress:
-                    if (!_entries.Any())
-                    {
-                        throw new InvalidDataException(Resources.Strings.GZipAccess_NoEntriesFound);
-                    }
-                    break;
-                case CompressionMode.Compress:
-                    if (_entries.Any())
-                    {
-                        throw new InvalidOperationException(Resources.Strings.GZipAccess_EntriesAlreadyPresent);
-                    }
-                    break;
-            }
+            Mode = CompressedArchiveAccessModeToCompressionMode(mode);
         }
-
-        /// <inheritdoc />
-        public override bool IsArchive
-        {
-            get { return false; }
-        }
-
-        /// <inheritdoc />
-        public override bool IsCompressed
-        {
-            get { return true; }
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<ICompressedArchiveEntry> Entries
-        {
-            get { return _entries; }
-        }
-        private List<GZipMemberEntry> _entries = new List<GZipMemberEntry>();
-
-        private Stream BaseStream { get; set; }
 
         private CompressionMode Mode { get; set; }
 
@@ -90,58 +46,15 @@ namespace INTV.Shared.Utility
         /// <remarks>The GZIP implementation assumes ownership of <paramref name="stream"/> and will dispose it.</remarks>
         public static GZipAccessNative Create(Stream stream, CompressedArchiveAccessMode mode)
         {
-            var compressionMode = CompressedArchiveAccessModeToCompressionMode(mode);
-            var gzipNativeAccess = new GZipAccessNative(stream, compressionMode);
-            return gzipNativeAccess;
+            var gzipAccess = new GZipAccessNative(stream, ValidateMode(mode));
+            return gzipAccess;
         }
 
         /// <inheritdoc />
-        public override Stream OpenEntry(ICompressedArchiveEntry entry)
+        protected override Stream OpenStreamForEntry(GZipMemberEntry entry)
         {
-            GZipStream entryStream = null;
-            var gzipEntry = GetEntry(entry.Name) as GZipMemberEntry;
-            if (gzipEntry != null)
-            {
-                BaseStream.Seek(gzipEntry.Offset, SeekOrigin.Begin);
-                entryStream = new GZipStream(BaseStream, Mode, leaveOpen: true);
-            }
+            var entryStream = new GZipStream(BaseStream, Mode, leaveOpen: true);
             return entryStream;
-        }
-
-        /// <inheritdoc />
-        public override ICompressedArchiveEntry CreateEntry(string name)
-        {
-            if (Mode != CompressionMode.Compress)
-            {
-                throw new InvalidOperationException(Resources.Strings.GZipAccess_InvalidModeForCreateEntryError);
-            }
-            if (_entries.Count > 0)
-            {
-                throw new NotSupportedException(Resources.Strings.GZipAccess_MultipleMembersNotSupportedError);
-            }
-            var entry = GZipMemberEntry.CreateEmptyEntry(name);
-            _entries.Add(entry);
-            return entry;
-        }
-
-        /// <inheritdoc />
-        protected override void Dispose(bool disposing)
-        {
-            if (BaseStream != null)
-            {
-                var baseStream = BaseStream;
-                BaseStream = null;
-                if (baseStream != null)
-                {
-                    baseStream.Dispose();
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        protected override bool DeleteEntry(ICompressedArchiveEntry entry)
-        {
-            throw new NotSupportedException(Resources.Strings.CompressedArchiveAccess_GZipDeleteEntryNotSupported);
         }
 
         private static CompressionMode CompressedArchiveAccessModeToCompressionMode(CompressedArchiveAccessMode mode)
@@ -155,8 +68,6 @@ namespace INTV.Shared.Utility
                 case CompressedArchiveAccessMode.Create:
                 case CompressedArchiveAccessMode.Update:
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
             return compressionMode;
         }

@@ -1,4 +1,4 @@
-﻿// <copyright file="GZipNativeAccessTests.cs" company="INTV Funhouse">
+﻿// <copyright file="GZipAccessTests.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -30,10 +30,10 @@ using Xunit;
 
 namespace INTV.Shared.Tests.Utility
 {
-    public class GZipNativeAccessTests
+    public class GZipAccessTests
     {
         [Fact]
-        public void GZipNativeAccess_OpenNonGZip_ThrowsInvalidDataException()
+        public void GZipAccess_OpenNonGZip_ThrowsInvalidDataException()
         {
             var nonGZipResource = TestResource.TextEmbeddedResourceFile;
 
@@ -44,7 +44,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_OpenWithInvalidMode_ThrowsArgumentOutOfRangeException()
+        public void GZipAccess_OpenWithInvalidMode_ThrowsArgumentOutOfRangeException()
         {
             var gzipResource = TestResource.TagalongBinGZip;
 
@@ -57,7 +57,7 @@ namespace INTV.Shared.Tests.Utility
         [Theory]
         [InlineData(CompressedArchiveAccessMode.Create)]
         [InlineData(CompressedArchiveAccessMode.Update)]
-        public void GZipNativeAccess_OpenNonEmptyGZipForModification_ThrowsInvalidOperationException(CompressedArchiveAccessMode mode)
+        public void GZipAccess_OpenNonEmptyGZipForModification_ThrowsInvalidOperationException(CompressedArchiveAccessMode mode)
         {
             var gzipResource = TestResource.TagalongBinGZip;
 
@@ -68,7 +68,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_DeleteEntry_ThrowsNotSupportedException()
+        public void GZipAccess_DeleteEntry_ThrowsNotSupportedException()
         {
             var gzipResource = TestResource.TagalongCfgGZip;
             var entryName = gzipResource.ArchiveContents.First();
@@ -81,7 +81,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_CreateEntryWhenOpenInDecompressMode_ThrowsInvalidOperationException()
+        public void GZipAccess_CreateEntryWhenOpenInDecompressMode_ThrowsInvalidOperationException()
         {
             var gzipResource = TestResource.TagalongCfgGZip;
 
@@ -93,7 +93,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_OpenSingleMemberFileWithEntryName_HasExpectedContents()
+        public void GZipAccess_OpenSingleMemberFileWithEntryName_HasExpectedContents()
         {
             var gzipResource = TestResource.TagalongBinGZip;
 
@@ -113,7 +113,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_OpenSecondMemberEntry_HasExpectedContents()
+        public void GZipAccess_OpenSecondMemberEntry_HasExpectedContents()
         {
             var gzipResource = TestResource.TagalongBinCfgYYGZip;
 
@@ -133,7 +133,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_IsArchive_IsFalse()
+        public void GZipAccess_IsArchive_IsFalse()
         {
             var stream = new MemoryStream();
             using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create))
@@ -143,7 +143,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_IsCompressed_IsTrue()
+        public void GZipAccess_IsCompressed_IsTrue()
         {
             var stream = new MemoryStream();
             using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create))
@@ -153,7 +153,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_CreateEntryInEmptyStream_Succeeds()
+        public void GZipAccess_CreateEntryInEmptyStream_Succeeds()
         {
             var stream = new MemoryStream();
             using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create))
@@ -163,7 +163,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_CreateSecondEntry_ThrowsNotSupportedException()
+        public void GZipAccess_CreateSecondEntry_ThrowsNotSupportedException()
         {
             var stream = new MemoryStream();
             using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create))
@@ -175,7 +175,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_OpenFromDisk_HasExpectedContent()
+        public void GZipAccess_OpenFromDisk_HasExpectedContent()
         {
             var testResourcePath = ExtractTestResourceToTemporaryFile(TestResource.TagalongBinCfgNNGZip);
             try
@@ -214,7 +214,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_WriteRomResourceToGZip_ProducesExpectedResult()
+        public void GZipAccess_WriteRomResourceToGZip_ProducesExpectedResult()
         {
             var inputCrc = 0u;
             var inputLength = 0L;
@@ -255,7 +255,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void GZipNativeAccess_WriteRomResourceToGZipFile_ProducesExpectedResult()
+        public void GZipAccess_WriteRomResourceToGZipFile_ProducesExpectedResult()
         {
             var gzipFileName = TemporaryFile.GenerateUniqueFilePath("tagalong", ".luigi.gz");
 

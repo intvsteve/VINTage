@@ -198,71 +198,37 @@ namespace INTV.Shared.Tests.Utility
         [MemberData("GetAllMemberEntriesFromFileTestData")]
         public void GZipMemberEntry_GetAllMemberEntriesFromFile_GetsMembersWithExpectedEntryNames(TestResource testResource)
         {
-            var testResourcePath = ExtractTestResourceToTemporaryFile(testResource);
-            try
+            IEnumerable<GZipMemberEntry> entries = null;
+            string testResourcePath;
+            using (testResource.ExtractToTemporaryFile(out testResourcePath))
+            using (var stream = new FileStream(testResourcePath, FileMode.Open, FileAccess.Read))
             {
-                IEnumerable<GZipMemberEntry> entries = null;
-                using (var stream = new FileStream(testResourcePath, FileMode.Open, FileAccess.Read))
-                {
-                    entries = GZipMemberEntry.GetMemberEntries(stream);
-                }
-
-                // .cfg file CRCs are zero because they are inconsistent based on line endings.
-                // .luigi file CRCs are zero merely because they haven't been computed :P
-                var expectedCrc32s = new[] { TestRomResources.TestBinCrc, 0u, 0u, TestRomResources.TestRomCrc };
-                var expectedNames = testResource.ArchiveContents.ToList();
-                var i = 0;
-                foreach (var entry in entries)
-                {
-                    // Expected length is loosely checked -- any value indicates a > 0 check.
-                    VerifyGZipMemberEntry(entry, expectedNames[i], expectedCrc32s[i], expectedLength: 2, checkModificationDate: false, checkOffset: i > 0);
-                    ++i;
-                }
+                entries = GZipMemberEntry.GetMemberEntries(stream);
             }
-            finally
+
+            // .cfg file CRCs are zero because they are inconsistent based on line endings.
+            // .luigi file CRCs are zero merely because they haven't been computed :P
+            var expectedCrc32s = new[] { TestRomResources.TestBinCrc, 0u, 0u, TestRomResources.TestRomCrc };
+            var expectedNames = testResource.ArchiveContents.ToList();
+            var i = 0;
+            foreach (var entry in entries)
             {
-                var testTempDirectory = Path.GetDirectoryName(testResourcePath);
-                if (testResourcePath.StartsWith(Path.GetTempPath()) && new DirectoryInfo(testTempDirectory).Exists)
-                {
-                    try
-                    {
-                        Directory.Delete(testTempDirectory, recursive: true);
-                    }
-                    catch
-                    {
-                        // trash left behind in temp directory
-                    }
-                }
+                // Expected length is loosely checked -- any value indicates a > 0 check.
+                VerifyGZipMemberEntry(entry, expectedNames[i], expectedCrc32s[i], expectedLength: 2, checkModificationDate: false, checkOffset: i > 0);
+                ++i;
             }
         }
 
         [Fact]
         public void GZipMemberEntry_GetAllMemberEntriesFromBadStream_OnlyReturnsSomeEntries()
         {
-            var testResourcePath = ExtractTestResourceToTemporaryFile(TestResource.TagalongBinCfgYYGZip);
-            try
+            string testResourcePath;
+            using (TestResource.TagalongBinCfgYYGZip.ExtractToTemporaryFile(out testResourcePath))
+            using (var stream = new TestFileStream(testResourcePath, FileMode.Open, FileAccess.Read))
             {
-                using (var stream = new TestFileStream(testResourcePath, FileMode.Open, FileAccess.Read))
-                {
-                    var entries = GZipMemberEntry.GetMemberEntries(stream);
+                var entries = GZipMemberEntry.GetMemberEntries(stream);
 
-                    Assert.True(entries.Count() < 2);
-                }
-            }
-            finally
-            {
-                var testTempDirectory = Path.GetDirectoryName(testResourcePath);
-                if (testResourcePath.StartsWith(Path.GetTempPath()) && new DirectoryInfo(testTempDirectory).Exists)
-                {
-                    try
-                    {
-                        Directory.Delete(testTempDirectory, recursive: true);
-                    }
-                    catch
-                    {
-                        // trash left behind in temp dir
-                    }
-                }
+                Assert.True(entries.Count() < 2);
             }
         }
 
@@ -337,25 +303,6 @@ namespace INTV.Shared.Tests.Utility
             stream.WriteByte(0xFF);
             stream.Seek(0, SeekOrigin.Begin);
             return stream;
-        }
-
-        private static string ExtractTestResourceToTemporaryFile(TestResource testResource)
-        {
-            var subdirectoryName = "INTV_Test_TempDir_" + Guid.NewGuid();
-            var tempFileDirectory = Path.Combine(Path.GetTempPath(), subdirectoryName);
-            var resourceFileName = testResource.Name.Substring(TestResource.ResourcePrefix.Length);
-            var tempFilePath = Path.Combine(tempFileDirectory, resourceFileName);
-
-            if (Directory.CreateDirectory(tempFileDirectory).Exists)
-            {
-                using (var resourceStream = testResource.OpenResourceForReading())
-                using (var fileStream = new FileStream(tempFilePath, FileMode.CreateNew, FileAccess.Write))
-                {
-                    resourceStream.CopyTo(fileStream);
-                }
-            }
-
-            return tempFilePath;
         }
 
         private static string MakeStockEntryName(int index)

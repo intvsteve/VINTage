@@ -1,4 +1,4 @@
-﻿// <copyright file="TestResource.cs" company="INTV Funhouse">
+// <copyright file="TestResource.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -254,6 +254,94 @@ namespace INTV.TestHelpers.Shared.Utility
             var assembly = this.GetType().Assembly;
             var resourceStream = assembly.GetManifestResourceStream(Name);
             return resourceStream;
+        }
+
+        /// <summary>
+        /// Creates a disk copy of the resource in a temporary location. When returned object disposed, the temporary copy is deleted.
+        /// </summary>
+        /// <param name="resourceFilePath">Receives the path to the disk copy of the resource.</param>
+        /// <returns>An <see cref="IDisposable"/> to remove the temporary file copy.</returns>
+        public IDisposable ExtractToTemporaryFile(out string resourceFilePath)
+        {
+            var temporaryDirectory = new TemporaryDirectoryForResource();
+            var resourceFileName = Name.Substring(TestResource.ResourcePrefix.Length);
+            resourceFilePath = Path.Combine(temporaryDirectory.Path, resourceFileName);
+
+            using (var resourceStream = OpenResourceForReading())
+            using (var fileStream = new FileStream(resourceFilePath, FileMode.CreateNew, FileAccess.Write))
+            {
+                resourceStream.CopyTo(fileStream);
+            }
+
+            return temporaryDirectory;
+        }
+
+        private sealed class TemporaryDirectoryForResource : IDisposable
+        {
+            /// <summary>
+            /// Initialize a new instance of <paramref name="TemporaryDirectory"/>.
+            /// </summary>
+            public TemporaryDirectoryForResource()
+            {
+                Path = GenerateUniqueDirectoryPath();
+                Directory.CreateDirectory(Path);
+            }
+
+            ~TemporaryDirectoryForResource()
+            {
+                Dispose(false);
+            }
+
+            /// <summary>
+            /// Gets the absolute path to use for the temporary directory.
+            /// </summary>
+            public string Path { get; private set; }
+
+            /// <summary>
+            /// Generates a unique directory path.
+            /// </summary>
+            /// <returns>A unique directory path.</returns>
+            public static string GenerateUniqueDirectoryPath()
+            {
+                var directoryPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "VINT_" + Guid.NewGuid());
+                return directoryPath;
+            }
+
+            #region IDispose
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                Dispose(true);
+            }
+
+            [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] // The catch is a CYA that shouldn't be triggered. Rest is covered.
+            private void Dispose(bool disposing)
+            {
+                if (!string.IsNullOrEmpty(Path))
+                {
+                    if (Path.StartsWith(System.IO.Path.GetTempPath()))
+                    {
+                        try
+                        {
+                            if (Directory.Exists(Path))
+                            {
+                                Directory.Delete(Path, recursive: true);
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
+                    Path = null;
+                }
+                if (disposing)
+                {
+                    GC.SuppressFinalize(this);
+                }
+            }
+
+            #endregion // IDispose
         }
     }
 }

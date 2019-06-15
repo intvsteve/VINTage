@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -203,6 +203,7 @@
     <Compile Include="Utility\FixedSizeCollection`T.cs" />
     <Compile Include="Utility\GZipAccess.cs" />
     <Compile Include="Utility\GZipAccessNative.cs" />
+    <Compile Include="Utility\GZipAccessSharpZipLib.cs" />
     <Compile Include="Utility\GZipMemberEntry.cs" />
     <Compile Include="Utility\ICompressedArchiveAccess.cs" />
     <Compile Include="Utility\ICompressedArchiveEntry.cs" />

@@ -319,7 +319,8 @@ namespace INTV.Shared.Utility
             var factories = new ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>(new CompressedArchiveIdentifier());
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.Native)] = ZipArchiveAccess.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.SharpZipLib)] = ZipArchiveAccessSharpZipLib.Create;
-            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.Native)] = GZipNativeAccess.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.Native)] = GZipAccessNative.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.SharpZipLib)] = GZipAccessSharpZipLib.Create;
             return factories;
         }
 

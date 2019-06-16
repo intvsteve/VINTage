@@ -59,17 +59,28 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessMode.Create, CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessMode.Create, CompressedArchiveAccessImplementation.SharpZipLib)]
-        [InlineData(CompressedArchiveAccessMode.Update, CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessMode.Update, CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_OpenNonEmptyGZipForModification_ThrowsInvalidOperationException(CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation implementation)
+        [InlineData( CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void GZipAccess_OpenNonEmptyGZipForUpdate_ThrowsInvalidOperationException(CompressedArchiveAccessImplementation implementation)
         {
             var gzipResource = TestResource.TagalongBinGZip;
 
             using (var stream = gzipResource.OpenResourceForReading())
             {
-                Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, mode, implementation));
+                Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Update, implementation));
+            }
+        }
+
+        [Theory]
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void GZipAccess_OpenNonEmptyGZipForCreate_ThrowsInvalidOperationException(CompressedArchiveAccessImplementation implementation)
+        {
+            var gzipResource = TestResource.TagalongBinGZip;
+
+            using (var stream = gzipResource.OpenResourceForReading())
+            {
+                Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation));
             }
         }
 

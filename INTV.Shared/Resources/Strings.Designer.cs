@@ -651,6 +651,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The TAR file format does not support deletion of an entry..
+        /// </summary>
+        internal static string CompressedArchiveAccess_TarDeleteEntryNotSupported {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_TarDeleteEntryNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to create accessor for compressed archive file at location:
         ///  {0}
         ///
@@ -1851,6 +1860,15 @@ namespace INTV.Shared.Resources {
         internal static string GZipAccess_EntriesAlreadyPresent {
             get {
                 return ResourceManager.GetString("GZipAccess_EntriesAlreadyPresent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The GZIP file format only supports Read and Create modes..
+        /// </summary>
+        internal static string GZipAccess_InvalidMode {
+            get {
+                return ResourceManager.GetString("GZipAccess_InvalidMode", resourceCulture);
             }
         }
         
@@ -4506,6 +4524,24 @@ namespace INTV.Shared.Resources {
         internal static string SystemCompatibility_Name {
             get {
                 return ResourceManager.GetString("SystemCompatibility_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The TAR file format only supports Read and Create modes..
+        /// </summary>
+        internal static string TarArchiveAccess_InvalidMode {
+            get {
+                return ResourceManager.GetString("TarArchiveAccess_InvalidMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The TAR file must be opened in Create mode to add content..
+        /// </summary>
+        internal static string TarArchiveAccess_InvalidModeForCreateEntryError {
+            get {
+                return ResourceManager.GetString("TarArchiveAccess_InvalidModeForCreateEntryError", resourceCulture);
             }
         }
         

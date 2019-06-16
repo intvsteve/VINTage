@@ -121,10 +121,11 @@ namespace INTV.Shared.Utility
                 case CompressedArchiveAccessMode.Read:
                     break;
                 case CompressedArchiveAccessMode.Create:
-                case CompressedArchiveAccessMode.Update:
                     break;
+                case CompressedArchiveAccessMode.Update:
+                    throw new InvalidOperationException(Resources.Strings.GZipAccess_InvalidMode);
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException("mode", mode, Resources.Strings.GZipAccess_InvalidMode);
             }
             return mode;
         }

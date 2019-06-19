@@ -59,7 +59,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Theory]
-        [InlineData( CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
         [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
         public void GZipAccess_OpenNonEmptyGZipForUpdate_ThrowsInvalidOperationException(CompressedArchiveAccessImplementation implementation)
         {

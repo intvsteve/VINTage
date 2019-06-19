@@ -206,6 +206,24 @@ namespace INTV.TestHelpers.Shared.Utility
             ArchiveContents = new[] { "tagalong.bin", "tagalong.cfg", "tagalong.luigi", "tagalong.rom" }
         };
 
+        /// <summary>An embedded resource TAR file that contains tagalong.bin and tagalong.cfg. (Created via 7-Zip)</summary>
+        public static readonly TestResource TagalongBinCfgTar = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bc.tar")
+        {
+            ArchiveContents = new[] { "tagalong.bin", "tagalong.cfg" }
+        };
+
+        /// <summary>An embedded resource TAR file that contains tagalong.luigi and tagalong.rom in a subdirectory. (Created on dev machine in PowerShell)</summary>
+        public static readonly TestResource TagalongDirLuigiRomTar = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_dir_lr.tar")
+        {
+            ArchiveContents = new[] { "tagalong_dir/", "tagalong_dir/tagalong.luigi", "tagalong_dir/tagalong.rom" }
+        };
+
+        /// <summary>An embedded resource TAR file that contains tagalong.cc3 and tagalong.rom. (Created in MSYS2 (64-bit)</summary>
+        public static readonly TestResource TagalongCC3RomTar = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_rc.tar")
+        {
+            ArchiveContents = new[] { "tagalong.rom", "tagalong.cc3" }
+        };
+
         /// <summary>An embedded resource text file with a space in the name.</summary>
         public static readonly TestResource TextEmbeddedResourceFile = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "embedded resource file.txt");
 
@@ -248,12 +266,113 @@ namespace INTV.TestHelpers.Shared.Utility
         /// <summary>
         /// Opens the resource for reading.
         /// </summary>
+        /// <param name="typeForResource">The data type whose implementing assembly is checked for the given resource.</param>
+        /// <param name="resourceName">The name of the resource.</param>
+        /// <returns>A stream for reading the resource.</returns>
+        public static Stream OpenExternalResourceForReading(Type typeForResource, string resourceName)
+        {
+            var assembly = typeForResource.Assembly;
+            var resourceStream = assembly.GetManifestResourceStream(assembly.GetName().Name + ".Resources." + resourceName);
+            return resourceStream;
+        }
+
+        /// <summary>
+        /// Opens the resource for reading.
+        /// </summary>
         /// <returns>A stream for reading the resource.</returns>
         public Stream OpenResourceForReading()
         {
             var assembly = this.GetType().Assembly;
             var resourceStream = assembly.GetManifestResourceStream(Name);
             return resourceStream;
+        }
+
+        /// <summary>
+        /// Creates a disk copy of the resource in a temporary location. When returned object disposed, the temporary copy is deleted.
+        /// </summary>
+        /// <param name="resourceFilePath">Receives the path to the disk copy of the resource.</param>
+        /// <returns>An <see cref="IDisposable"/> to remove the temporary file copy.</returns>
+        public IDisposable ExtractToTemporaryFile(out string resourceFilePath)
+        {
+            var temporaryDirectory = new TemporaryDirectoryForResource();
+            var resourceFileName = Name.Substring(TestResource.ResourcePrefix.Length);
+            resourceFilePath = Path.Combine(temporaryDirectory.Path, resourceFileName);
+
+            using (var resourceStream = OpenResourceForReading())
+            using (var fileStream = new FileStream(resourceFilePath, FileMode.CreateNew, FileAccess.Write))
+            {
+                resourceStream.CopyTo(fileStream);
+            }
+
+            return temporaryDirectory;
+        }
+
+        private sealed class TemporaryDirectoryForResource : IDisposable
+        {
+            /// <summary>
+            /// Initialize a new instance of <paramref name="TemporaryDirectory"/>.
+            /// </summary>
+            public TemporaryDirectoryForResource()
+            {
+                Path = GenerateUniqueDirectoryPath();
+                Directory.CreateDirectory(Path);
+            }
+
+            ~TemporaryDirectoryForResource()
+            {
+                Dispose(false);
+            }
+
+            /// <summary>
+            /// Gets the absolute path to use for the temporary directory.
+            /// </summary>
+            public string Path { get; private set; }
+
+            /// <summary>
+            /// Generates a unique directory path.
+            /// </summary>
+            /// <returns>A unique directory path.</returns>
+            public static string GenerateUniqueDirectoryPath()
+            {
+                var directoryPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "VINT_" + Guid.NewGuid());
+                return directoryPath;
+            }
+
+            #region IDispose
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                Dispose(true);
+            }
+
+            [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage] // The catch is a CYA that shouldn't be triggered. Rest is covered.
+            private void Dispose(bool disposing)
+            {
+                if (!string.IsNullOrEmpty(Path))
+                {
+                    if (Path.StartsWith(System.IO.Path.GetTempPath()))
+                    {
+                        try
+                        {
+                            if (Directory.Exists(Path))
+                            {
+                                Directory.Delete(Path, recursive: true);
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
+                    Path = null;
+                }
+                if (disposing)
+                {
+                    GC.SuppressFinalize(this);
+                }
+            }
+
+            #endregion // IDispose
         }
     }
 }

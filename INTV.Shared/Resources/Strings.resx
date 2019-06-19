@@ -1716,4 +1716,16 @@ The following formats were not processed:
   <data name="GZipAccess_NoEntriesFound" xml:space="preserve">
     <value>The file is not a valid GZIP file.</value>
   </data>
+  <data name="CompressedArchiveAccess_TarDeleteEntryNotSupported" xml:space="preserve">
+    <value>The TAR file format does not support deletion of an entry.</value>
+  </data>
+  <data name="GZipAccess_InvalidMode" xml:space="preserve">
+    <value>The GZIP file format only supports Read and Create modes.</value>
+  </data>
+  <data name="TarArchiveAccess_InvalidMode" xml:space="preserve">
+    <value>The TAR file format only supports Read and Create modes.</value>
+  </data>
+  <data name="TarArchiveAccess_InvalidModeForCreateEntryError" xml:space="preserve">
+    <value>The TAR file must be opened in Create mode to add content.</value>
+  </data>
 </root>

@@ -68,6 +68,8 @@
     <Compile Include="Utility\GZipMemberEntryTests.cs" />
     <Compile Include="Utility\GZipAccessTests.cs" />
     <Compile Include="Utility\ResourceHelpersTests.cs" />
+    <Compile Include="Utility\TarArchiveAccessTests.cs" />
+    <Compile Include="Utility\TemporaryDirectoryTests.cs" />
     <Compile Include="Utility\ZipArchiveAccessTests.cs" />
   </ItemGroup>
   <ItemGroup>

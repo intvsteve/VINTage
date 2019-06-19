@@ -59,17 +59,28 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessMode.Create, CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessMode.Create, CompressedArchiveAccessImplementation.SharpZipLib)]
-        [InlineData(CompressedArchiveAccessMode.Update, CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessMode.Update, CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_OpenNonEmptyGZipForModification_ThrowsInvalidOperationException(CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void GZipAccess_OpenNonEmptyGZipForUpdate_ThrowsInvalidOperationException(CompressedArchiveAccessImplementation implementation)
         {
             var gzipResource = TestResource.TagalongBinGZip;
 
             using (var stream = gzipResource.OpenResourceForReading())
             {
-                Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, mode, implementation));
+                Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Update, implementation));
+            }
+        }
+
+        [Theory]
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void GZipAccess_OpenNonEmptyGZipForCreate_ThrowsInvalidOperationException(CompressedArchiveAccessImplementation implementation)
+        {
+            var gzipResource = TestResource.TagalongBinGZip;
+
+            using (var stream = gzipResource.OpenResourceForReading())
+            {
+                Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation));
             }
         }
 
@@ -201,42 +212,25 @@ namespace INTV.Shared.Tests.Utility
         [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
         public void GZipAccess_OpenFromDisk_HasExpectedContent(CompressedArchiveAccessImplementation implementation)
         {
-            var testResourcePath = ExtractTestResourceToTemporaryFile(TestResource.TagalongBinCfgNNGZip);
-            try
+            string testResourcePath;
+            using (TestResource.TagalongBinCfgNNGZip.ExtractToTemporaryFile(out testResourcePath))
+            using (var gzip = CompressedArchiveAccess.Open(testResourcePath, CompressedArchiveAccessMode.Read, implementation))
             {
-                using (var gzip = CompressedArchiveAccess.Open(testResourcePath, CompressedArchiveAccessMode.Read, implementation))
+                var expectedCrc32s = new[] { TestRomResources.TestBinCrc, TestRomResources.TestCfgCrc };
+                var i = 0;
+                foreach (var entry in gzip.Entries)
                 {
-                    var expectedCrc32s = new[] { TestRomResources.TestBinCrc, TestRomResources.TestCfgCrc };
-                    var i = 0;
-                    foreach (var entry in gzip.Entries)
+                    using (var entryStream = gzip.OpenEntry(entry))
+                    using (var validationStream = new MemoryStream())
                     {
-                        using (var entryStream = gzip.OpenEntry(entry))
-                        using (var validationStream = new MemoryStream())
-                        {
-                            // Some implementations, e.g. SharpZipLib, inflate the ENTIRE contents of ALL members of a multi-member entry into one giant output,
-                            // so we need to read to an intermediate stream, then verify the output.
-                            entryStream.CopyTo(validationStream);
-                            validationStream.SetLength(entry.Length);
-                            var crc = Crc32.OfStream(validationStream);
-                            Assert.Equal(expectedCrc32s[i], crc);
-                        }
-                        ++i;
+                        // Some implementations, e.g. SharpZipLib, inflate the ENTIRE contents of ALL members of a multi-member entry into one giant output,
+                        // so we need to read to an intermediate stream, then verify the output.
+                        entryStream.CopyTo(validationStream);
+                        validationStream.SetLength(entry.Length);
+                        var crc = Crc32.OfStream(validationStream);
+                        Assert.Equal(expectedCrc32s[i], crc);
                     }
-                }
-            }
-            finally
-            {
-                var testTempDirectory = Path.GetDirectoryName(testResourcePath);
-                if (testResourcePath.StartsWith(Path.GetTempPath()) && new DirectoryInfo(testTempDirectory).Exists)
-                {
-                    try
-                    {
-                        Directory.Delete(testTempDirectory, recursive: true);
-                    }
-                    catch
-                    {
-                        // trash left behind in temp directory
-                    }
+                    ++i;
                 }
             }
         }
@@ -340,25 +334,6 @@ namespace INTV.Shared.Tests.Utility
                     Assert.Equal(TestRomResources.TestBinCrc, header.OriginalRomCrc32);
                 }
             }
-        }
-
-        private static string ExtractTestResourceToTemporaryFile(TestResource testResource)
-        {
-            var subdirectoryName = "INTV_Test_TempDir_" + Guid.NewGuid();
-            var tempFileDirectory = Path.Combine(Path.GetTempPath(), subdirectoryName);
-            var resourceFileName = testResource.Name.Substring(TestResource.ResourcePrefix.Length);
-            var tempFilePath = Path.Combine(tempFileDirectory, resourceFileName);
-
-            if (Directory.CreateDirectory(tempFileDirectory).Exists)
-            {
-                using (var resourceStream = testResource.OpenResourceForReading())
-                using (var fileStream = new FileStream(tempFilePath, FileMode.CreateNew, FileAccess.Write))
-                {
-                    resourceStream.CopyTo(fileStream);
-                }
-            }
-
-            return tempFilePath;
         }
     }
 }

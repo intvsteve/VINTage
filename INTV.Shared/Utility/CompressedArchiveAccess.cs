@@ -243,6 +243,17 @@ namespace INTV.Shared.Utility
         #endregion // IDisposable
 
         /// <summary>
+        /// Given an entry name, determine if it is for a directory.
+        /// </summary>
+        /// <param name="name">The name to check.</param>
+        /// <returns><c>true</c> if <paramref name="name"/> indicates a directory.</returns>
+        protected static bool IsDirectoryName(string name)
+        {
+            var isDirectory = (name.Last() == Path.DirectorySeparatorChar) || (name.Last() == Path.AltDirectorySeparatorChar);
+            return isDirectory;
+        }
+
+        /// <summary>
         /// Converts a <see cref="CompressedArchiveAccessMode"/> to an appropriate <see cref="FileMode"/>.
         /// </summary>
         /// <param name="mode">A compressed archive access mode.</param>
@@ -321,6 +332,7 @@ namespace INTV.Shared.Utility
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.SharpZipLib)] = ZipArchiveAccessSharpZipLib.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.Native)] = GZipAccessNative.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.SharpZipLib)] = GZipAccessSharpZipLib.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Tar, CompressedArchiveAccessImplementation.SharpZipLib)] = TarAccessSharpZipLib.Create;
             return factories;
         }
 

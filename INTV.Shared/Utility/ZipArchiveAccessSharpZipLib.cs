@@ -195,12 +195,6 @@ namespace INTV.Shared.Utility
             }
         }
 
-        private static bool IsDirectoryName(string name)
-        {
-            var isDirectory = (name.Last() == Path.DirectorySeparatorChar) || (name.Last() == Path.AltDirectorySeparatorChar);
-            return isDirectory;
-        }
-
         /// <summary>
         /// This implementation of <see cref="IStaticDataInstance"/> is used only to create empty dummy entries.
         /// </summary>

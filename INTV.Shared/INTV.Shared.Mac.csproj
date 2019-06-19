@@ -400,6 +400,8 @@
     <Compile Include="ComponentModel\CompositionHelpers.Mac.cs" />
     <Compile Include="ComponentModel\IVINTagePlugin.cs" />
     <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
+    <Compile Include="Utility\TarAccessSharpZipLib.cs" />
+    <Compile Include="Utility\TemporaryDirectory.cs" />
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
     <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />

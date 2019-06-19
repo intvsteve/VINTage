@@ -66,6 +66,7 @@ namespace INTV.Shared.Utility
         private static readonly object Lock = new object();
         private static readonly Lazy<IDictionary<CompressedArchiveFormat, List<string>>> CompressedArchiveFormatFileExtensions = new Lazy<IDictionary<CompressedArchiveFormat, List<string>>>(InitializeCompressedArchiveFormatFileExtensions);
         private static readonly Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>> CompressedArchiveAccessImplementations = new Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>>(InitializeCompressedArchiveFormatImplementations);
+        private static readonly Lazy<IDictionary<string, IList<CompressedArchiveFormat>>> FileExtensionsForCompoundCompressedArchiveFormats = new Lazy<IDictionary<string, IList<CompressedArchiveFormat>>>(InitializeFileExtensionsForCompoundCompressedArchiveFormats);
 
         private static readonly HashSet<CompressedArchiveFormat> AvailableFormats = new HashSet<CompressedArchiveFormat>()
         {
@@ -113,12 +114,12 @@ namespace INTV.Shared.Utility
             fileName = Path.GetFileNameWithoutExtension(fileName);
             while (!string.IsNullOrEmpty(fileExtension))
             {
-                var format = fileExtension.GetCompressedArchiveFormatFromFileExtension();
-                if (format == CompressedArchiveFormat.None)
+                var formatsForFileExtension = fileExtension.GetCompressedArchiveFormatsFromFileExtension();
+                if (!formatsForFileExtension.Any())
                 {
                     break;
                 }
-                formats.Add(format);
+                formats.AddRange(formatsForFileExtension);
                 fileExtension = Path.GetExtension(fileName);
                 fileName = Path.GetFileNameWithoutExtension(fileName);
             }
@@ -130,17 +131,30 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="fileExtension">The file extension to check.</param>
         /// <returns>The compression / archive format, based on file extension. If no match is found, <see cref="CompressedArchiveFormat.None"/> is returned.</returns>
-        public static CompressedArchiveFormat GetCompressedArchiveFormatFromFileExtension(this string fileExtension)
+        public static IEnumerable<CompressedArchiveFormat> GetCompressedArchiveFormatsFromFileExtension(this string fileExtension)
         {
             lock (Lock)
             {
-                var format = CompressedArchiveFormat.None;
+                var formats = new List<CompressedArchiveFormat>();
                 if (fileExtension.FirstOrDefault() == '.')
                 {
+                    var format = CompressedArchiveFormat.None;
                     var compressedArchiveFormatFileExtensions = CompressedArchiveFormatFileExtensions.Value;
                     format = compressedArchiveFormatFileExtensions.FirstOrDefault(f => f.Value.FirstOrDefault(e => StringComparer.OrdinalIgnoreCase.Compare(e, fileExtension) == 0) != null).Key;
+                    if (format != CompressedArchiveFormat.None)
+                    {
+                        formats.Add(format);
+                    }
+                    else
+                    {
+                        IList<CompressedArchiveFormat> compoundFormats;
+                        if (FileExtensionsForCompoundCompressedArchiveFormats.Value.TryGetValue(fileExtension, out compoundFormats))
+                        {
+                            formats.AddRange(compoundFormats);
+                        }
+                    }
                 }
-                return format;
+                return formats;
             }
         }
 
@@ -391,6 +405,17 @@ namespace INTV.Shared.Utility
                 { CompressedArchiveFormat.BZip2, new[] { CompressedArchiveAccessImplementation.SharpZipLib } },
             };
             return compressedArchiveFormatImplementations;
+        }
+
+        private static IDictionary<string, IList<CompressedArchiveFormat>> InitializeFileExtensionsForCompoundCompressedArchiveFormats()
+        {
+            var fileExtensionsForCompoundCompressedArchiveFormats = new Dictionary<string, IList<CompressedArchiveFormat>>(StringComparer.OrdinalIgnoreCase)
+            {
+                { ".tgz", new[] { CompressedArchiveFormat.GZip, CompressedArchiveFormat.Tar } },
+                { ".tbz", new[] { CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Tar } },
+                { ".tbz2", new[] { CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Tar } },
+            };
+            return fileExtensionsForCompoundCompressedArchiveFormats;
         }
     }
 }

@@ -88,6 +88,11 @@ namespace INTV.Shared.Tests.Utility
                 yield return new object[] { "baz.txt.zip", new[] { CompressedArchiveFormat.Zip } };
                 yield return new object[] { @"x:\baz.zip.txt", Enumerable.Empty<CompressedArchiveFormat>() };
                 yield return new object[] { "baz.zip.tar.gz.tar.zip.bz2", new[] { CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Zip, CompressedArchiveFormat.Tar, CompressedArchiveFormat.GZip, CompressedArchiveFormat.Tar, CompressedArchiveFormat.Zip } };
+                yield return new object[] { ".TgZ", new[] { CompressedArchiveFormat.GZip, CompressedArchiveFormat.Tar } };
+                yield return new object[] { ".tBZ", new[] { CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Tar } };
+                yield return new object[] { ".tbZ2", new[] { CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Tar } };
+                yield return new object[] { ".zip.tgz", new[] { CompressedArchiveFormat.GZip, CompressedArchiveFormat.Tar, CompressedArchiveFormat.Zip } };
+                yield return new object[] { ".tbz2.zip", new[] { CompressedArchiveFormat.Zip, CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Tar } };
             }
         }
 

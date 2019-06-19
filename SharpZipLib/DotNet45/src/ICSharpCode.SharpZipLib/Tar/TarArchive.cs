@@ -306,8 +306,15 @@ namespace ICSharpCode.SharpZipLib.Tar
 				{
 					throw new ObjectDisposedException("TarArchive");
 				}
-				// Convert to forward slashes for matching. Trim trailing / for correct final path
-				rootPath = value.Replace('\\', '/').TrimEnd('/');
+				if (value != null)
+				{
+					// Convert to forward slashes for matching. Trim trailing / for correct final path
+					rootPath = value.Replace('\\', '/').TrimEnd('/');
+				}
+				else
+				{
+					rootPath = value;
+				}
 			}
 		}
 

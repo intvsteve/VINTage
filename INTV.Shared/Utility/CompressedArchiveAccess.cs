@@ -1,4 +1,4 @@
-﻿// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
+// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -241,6 +241,17 @@ namespace INTV.Shared.Utility
         }
 
         #endregion // IDisposable
+
+        /// <summary>
+        /// Given an entry name, determine if it is for a directory.
+        /// </summary>
+        /// <param name="name">The name to check.</param>
+        /// <returns><c>true</c> if <paramref name="name"/> indicates a directory.</returns>
+        protected static bool IsDirectoryName(string name)
+        {
+            var isDirectory = (name.Last() == Path.DirectorySeparatorChar) || (name.Last() == Path.AltDirectorySeparatorChar);
+            return isDirectory;
+        }
 
         /// <summary>
         /// Converts a <see cref="CompressedArchiveAccessMode"/> to an appropriate <see cref="FileMode"/>.

@@ -327,6 +327,7 @@
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
     <Compile Include="Interop\DeviceManagement\ISystemPowerManagement.cs" />
     <Compile Include="Interop\DeviceManagement\SystemWillSleepEventArgs.cs" />
+    <Compile Include="Utility\TarAccessSharpZipLib.cs" />
     <Compile Include="Utility\TemporaryDirectory.cs" />
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />

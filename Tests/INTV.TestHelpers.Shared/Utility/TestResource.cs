@@ -1,4 +1,4 @@
-// <copyright file="TestResource.cs" company="INTV Funhouse">
+﻿// <copyright file="TestResource.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -206,6 +206,24 @@ namespace INTV.TestHelpers.Shared.Utility
             ArchiveContents = new[] { "tagalong.bin", "tagalong.cfg", "tagalong.luigi", "tagalong.rom" }
         };
 
+        /// <summary>An embedded resource TAR file that contains tagalong.bin and tagalong.cfg. (Created via 7-Zip)</summary>
+        public static readonly TestResource TagalongBinCfgTar = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_bc.tar")
+        {
+            ArchiveContents = new[] { "tagalong.bin", "tagalong.cfg" }
+        };
+
+        /// <summary>An embedded resource TAR file that contains tagalong.luigi and tagalong.rom in a subdirectory. (Created on dev machine in PowerShell)</summary>
+        public static readonly TestResource TagalongDirLuigiRomTar = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_dir_lr.tar")
+        {
+            ArchiveContents = new[] { "tagalong_dir/", "tagalong_dir/tagalong.luigi", "tagalong_dir/tagalong.rom" }
+        };
+
+        /// <summary>An embedded resource TAR file that contains tagalong.cc3 and tagalong.rom. (Created in MSYS2 (64-bit)</summary>
+        public static readonly TestResource TagalongCC3RomTar = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_rc.tar")
+        {
+            ArchiveContents = new[] { "tagalong.rom", "tagalong.cc3" }
+        };
+
         /// <summary>An embedded resource text file with a space in the name.</summary>
         public static readonly TestResource TextEmbeddedResourceFile = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "embedded resource file.txt");
 
@@ -244,6 +262,19 @@ namespace INTV.TestHelpers.Shared.Utility
         /// Gets the first level of expected content in an archive resource.
         /// </summary>
         public IEnumerable<string> ArchiveContents { get; private set; }
+
+        /// <summary>
+        /// Opens the resource for reading.
+        /// </summary>
+        /// <param name="typeForResource">The data type whose implementing assembly is checked for the given resource.</param>
+        /// <param name="resourceName">The name of the resource.</param>
+        /// <returns>A stream for reading the resource.</returns>
+        public static Stream OpenExternalResourceForReading(Type typeForResource, string resourceName)
+        {
+            var assembly = typeForResource.Assembly;
+            var resourceStream = assembly.GetManifestResourceStream(assembly.GetName().Name + ".Resources." + resourceName);
+            return resourceStream;
+        }
 
         /// <summary>
         /// Opens the resource for reading.

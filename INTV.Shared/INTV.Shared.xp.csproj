@@ -244,6 +244,7 @@
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
     <Compile Include="Utility\StringUtilities.cs" />
+    <Compile Include="Utility\TarAccessSharpZipLib.cs" />
     <Compile Include="Utility\TemporaryDirectory.cs" />
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.xp.cs" />

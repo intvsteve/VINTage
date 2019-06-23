@@ -71,6 +71,8 @@ namespace INTV.Shared.Utility
         private static readonly HashSet<CompressedArchiveFormat> AvailableFormats = new HashSet<CompressedArchiveFormat>()
         {
             CompressedArchiveFormat.Zip,
+            CompressedArchiveFormat.GZip,
+            CompressedArchiveFormat.Tar,
         };
 
         /// <summary>
@@ -400,7 +402,7 @@ namespace INTV.Shared.Utility
             {
                 { CompressedArchiveFormat.None, new List<CompressedArchiveAccessImplementation>() },
                 { CompressedArchiveFormat.Zip, new[] { CompressedArchiveAccessImplementation.Native, CompressedArchiveAccessImplementation.SharpZipLib } },
-                { CompressedArchiveFormat.GZip, new[] { CompressedArchiveAccessImplementation.SharpZipLib } },
+                { CompressedArchiveFormat.GZip, new[] { CompressedArchiveAccessImplementation.Native, CompressedArchiveAccessImplementation.SharpZipLib } },
                 { CompressedArchiveFormat.Tar, new[] { CompressedArchiveAccessImplementation.SharpZipLib } },
                 { CompressedArchiveFormat.BZip2, new[] { CompressedArchiveAccessImplementation.SharpZipLib } },
             };

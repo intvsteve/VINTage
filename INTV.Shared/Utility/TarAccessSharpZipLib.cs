@@ -1,4 +1,4 @@
-// <copyright file="TarAccessSharpZipLib.cs" company="INTV Funhouse">
+﻿// <copyright file="TarAccessSharpZipLib.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -75,6 +75,12 @@ namespace INTV.Shared.Utility
         public override bool IsCompressed
         {
             get { return false; }
+        }
+
+        /// <inheritdoc />
+        public override CompressedArchiveFormat Format
+        {
+            get { return CompressedArchiveFormat.Tar; }
         }
 
         /// <inheritdoc />

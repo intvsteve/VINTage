@@ -155,6 +155,9 @@ namespace INTV.Shared.Utility
         public abstract bool IsCompressed { get; }
 
         /// <inheritdoc />
+        public abstract CompressedArchiveFormat Format { get; }
+
+        /// <inheritdoc />
         public abstract IEnumerable<ICompressedArchiveEntry> Entries { get; }
 
         /// <inheritdoc />
@@ -364,6 +367,12 @@ namespace INTV.Shared.Utility
             public override bool IsCompressed
             {
                 get { return CompressedArchiveAccess.IsCompressed; }
+            }
+
+            /// <inheritdoc />
+            public override CompressedArchiveFormat Format
+            {
+                get { return CompressedArchiveAccess.Format; }
             }
 
             /// <inheritdoc />

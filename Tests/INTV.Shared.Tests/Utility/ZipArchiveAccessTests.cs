@@ -57,6 +57,7 @@ namespace INTV.Shared.Tests.Utility
 
                 Assert.True(zipArchive.IsArchive);
                 Assert.True(zipArchive.IsCompressed);
+                Assert.Equal(CompressedArchiveFormat.Zip, zipArchive.Format);
                 Assert.Equal(zipResource.ArchiveContents.Count(), entries.Count());
                 Assert.Equal(zipResource.ArchiveContents, entries.Select(e => e.Name));
                 Assert.All(entries, e => Assert.True(e.Length > 0));

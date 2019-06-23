@@ -184,6 +184,18 @@ namespace INTV.Shared.Tests.Utility
         [Theory]
         [InlineData(CompressedArchiveAccessImplementation.Native)]
         [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
+        public void GZipAccess_Format_IsGZip(CompressedArchiveAccessImplementation implementation)
+        {
+            var stream = new MemoryStream();
+            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
+            {
+                Assert.Equal(CompressedArchiveFormat.GZip, gzip.Format);
+            }
+        }
+
+        [Theory]
+        [InlineData(CompressedArchiveAccessImplementation.Native)]
+        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
         public void GZipAccess_CreateEntryInEmptyStream_Succeeds(CompressedArchiveAccessImplementation implementation)
         {
             var stream = new MemoryStream();

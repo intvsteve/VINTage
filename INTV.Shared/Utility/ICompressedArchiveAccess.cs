@@ -41,6 +41,11 @@ namespace INTV.Shared.Utility
         bool IsCompressed { get; }
 
         /// <summary>
+        /// Gets the format of the compressed archive.
+        /// </summary>
+        CompressedArchiveFormat Format { get; }
+
+        /// <summary>
         /// Gets an enumerable of the entries contained in the archive.
         /// </summary>
         IEnumerable<ICompressedArchiveEntry> Entries { get; }

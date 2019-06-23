@@ -89,6 +89,7 @@ namespace INTV.Shared.Tests.Utility
             {
                 Assert.True(tar.IsArchive);
                 Assert.False(tar.IsCompressed);
+                Assert.Equal(CompressedArchiveFormat.Tar, tar.Format);
                 var expectedEntryNames = testResource.ArchiveContents.ToList();
                 Assert.Equal(expectedEntryNames.Count, tar.Entries.Count());
                 Assert.Equal(expectAtLeastOneDirectoryEntry, tar.Entries.Any(e => e.IsDirectory));

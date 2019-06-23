@@ -1,4 +1,4 @@
-// <copyright file="GZipMemberEntry.cs" company="INTV Funhouse">
+﻿// <copyright file="GZipMemberEntry.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -471,7 +471,18 @@ namespace INTV.Shared.Utility
             {
                 if (!string.IsNullOrEmpty(fileStream.Name))
                 {
-                    defaultEntryName = Path.GetFileNameWithoutExtension(Path.GetFileName(fileStream.Name));
+                    var extension = Path.GetExtension(fileStream.Name);
+                    var fileName = Path.GetFileNameWithoutExtension(Path.GetFileName(fileStream.Name));
+                    var formats = extension.GetCompressedArchiveFormatsFromFileExtension();
+                    if (formats.Count() > 1)
+                    {
+                        if (formats.All(f => f.IsCompressedArchiveFormatSupported()))
+                        {
+                            extension = string.Join(string.Empty, formats.Skip(1).Reverse().Select(f => f.FileExtensions().First()));
+                            fileName += extension;
+                        }
+                    }
+                    defaultEntryName = fileName;
                 }
             }
             return defaultEntryName;

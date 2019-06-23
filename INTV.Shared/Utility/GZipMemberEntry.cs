@@ -1,4 +1,4 @@
-﻿// <copyright file="GZipMemberEntry.cs" company="INTV Funhouse">
+// <copyright file="GZipMemberEntry.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -92,6 +92,7 @@ namespace INTV.Shared.Utility
     /// formally inflated, the reliability of the <see cref="Crc32"/> and <see cref="Length"/> values is dependent upon the quality of the input GZIP.
     /// Members with extraneous data at the end of the file will return invalid values for those properties.
     /// </remarks>
+    [System.Diagnostics.DebuggerDisplay("{Name,nq}")]
     internal sealed class GZipMemberEntry : INTV.Core.Utility.ByteSerializer, ICompressedArchiveEntry
     {
         /// <summary>

@@ -227,6 +227,7 @@
     <Compile Include="Utility\CompressedArchiveAccess.cs" />
     <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
     <Compile Include="Utility\CompressedArchiveAccessMode.cs" />
+    <Compile Include="Utility\CompressedArchiveEntry.cs" />
     <Compile Include="Utility\CompressedArchiveFormat.cs" />
     <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
     <Compile Include="Utility\ReflectionHelpers.cs" />

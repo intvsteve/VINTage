@@ -234,7 +234,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Implements access to the internal ZipFileInfo type.
         /// </summary>
-        private class ZipFileInfo : ICompressedArchiveEntry
+        private class ZipFileInfo : CompressedArchiveEntry
         {
             private static readonly Lazy<Type> ZipFileInfoType = new Lazy<Type>(() => typeof(System.IO.Packaging.Package).Assembly.GetType(ZipArchiveNamespace + "ZipFileInfo"));
             private static readonly Lazy<MethodInfo> GetStreamMethod = new Lazy<MethodInfo>(() => ZipFileInfoType.Value.GetMethod("GetStream", InstanceFlags));
@@ -252,7 +252,7 @@ namespace INTV.Shared.Utility
             #region ICompressedArchiveEntry
 
             /// <inheritdoc />
-            public string Name
+            public override string Name
             {
                 get { return GetPropertyValue<string>("Name"); }
             }
@@ -260,19 +260,19 @@ namespace INTV.Shared.Utility
             /// <inheritdoc />
             /// <remarks>With enough effort, it may be possible to extract this value.
             /// See: https://referencesource.microsoft.com/#WindowsBase/Base/MS/Internal/IO/Zip/ZipIOCentralDirectoryFileHeader.cs,9d73c7b389b47091 </remarks>
-            public long Length
+            public override long Length
             {
                 get { return -1; }
             }
 
             /// <inheritdoc />
-            public DateTime LastModificationTime
+            public override DateTime LastModificationTime
             {
                 get { return LastModFileDateTime; }
             }
 
             /// <inheritdoc />
-            public bool IsDirectory
+            public override bool IsDirectory
             {
                 get { return FolderFlag; }
             }

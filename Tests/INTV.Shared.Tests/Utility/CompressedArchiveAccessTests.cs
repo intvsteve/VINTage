@@ -1,4 +1,4 @@
-﻿// <copyright file="CompressedArchiveAccessTests.cs" company="INTV Funhouse">
+// <copyright file="CompressedArchiveAccessTests.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -587,7 +587,7 @@ namespace INTV.Shared.Tests.Utility
                 }
             }
 
-            private class TestCompressedArchiveEntry : ICompressedArchiveEntry
+            private class TestCompressedArchiveEntry : CompressedArchiveEntry
             {
                 public TestCompressedArchiveEntry(string name, bool isDirectory)
                 {
@@ -596,14 +596,6 @@ namespace INTV.Shared.Tests.Utility
                     LastModificationTime = DateTime.UtcNow;
                     IsDirectory = isDirectory;
                 }
-
-                public string Name { get; private set; }
-
-                public long Length { get; private set; }
-
-                public DateTime LastModificationTime { get; private set; }
-
-                public bool IsDirectory { get; private set; }
             }
         }
     }

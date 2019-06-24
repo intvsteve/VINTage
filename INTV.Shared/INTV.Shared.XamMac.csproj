@@ -81,6 +81,7 @@
     <Compile Include="Utility\GZipAccessSharpZipLib.cs" />
     <Compile Include="Utility\GZipMemberEntry.cs" />
     <Compile Include="Utility\ICompressedArchiveAccess.cs" />
+    <Compile Include="Utility\ICompressedArchiveAccessExtensions.cs" />
     <Compile Include="Utility\ICompressedArchiveEntry.cs" />
     <Compile Include="Utility\IFileBrowserDialog.cs" />
     <Compile Include="Utility\IFixedSizeCollection.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
     <Compile Include="Utility\CompressedArchiveAccess.cs" />
     <Compile Include="Utility\CompressedArchiveAccessMode.cs" />
+    <Compile Include="Utility\CompressedArchiveEntry.cs" />
     <Compile Include="Utility\CompressedArchiveFormat.cs" />
     <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
     <Compile Include="Utility\ReflectionHelpers.cs" />

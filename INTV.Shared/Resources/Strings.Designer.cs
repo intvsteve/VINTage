@@ -651,6 +651,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The nested archive &apos;{0}&apos; could not be found..
+        /// </summary>
+        internal static string CompressedArchiveAccess_NestedArchiveNotFound {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_NestedArchiveNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The TAR file format does not support deletion of an entry..
         /// </summary>
         internal static string CompressedArchiveAccess_TarDeleteEntryNotSupported {

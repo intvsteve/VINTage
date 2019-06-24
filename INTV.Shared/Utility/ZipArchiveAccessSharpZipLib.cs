@@ -61,6 +61,12 @@ namespace INTV.Shared.Utility
         }
 
         /// <inheritdoc />
+        public override CompressedArchiveFormat Format
+        {
+            get { return CompressedArchiveFormat.Zip; }
+        }
+
+        /// <inheritdoc />
         public override IEnumerable<ICompressedArchiveEntry> Entries
         {
             get
@@ -257,7 +263,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// A simple wrapper around <see cref="ICSharpCode.SharpZipLib.Zip.ZipEntry"/>.
         /// </summary>
-        private class ZipArchiveEntry : ICompressedArchiveEntry
+        private class ZipArchiveEntry : CompressedArchiveEntry
         {
             /// <summary>
             /// Initializes a new instance of <see cref="ZipArchiveEntry"/>.
@@ -269,25 +275,25 @@ namespace INTV.Shared.Utility
             }
 
             /// <inheritdoc />
-            public string Name
+            public override string Name
             {
                 get { return ZipEntry.Name; }
             }
 
             /// <inheritdoc />
-            public long Length
+            public override long Length
             {
                 get { return ZipEntry.Size; }
             }
 
             /// <inheritdoc />
-            public DateTime LastModificationTime
+            public override DateTime LastModificationTime
             {
                 get { return ZipEntry.DateTime; }
             }
 
             /// <inheritdoc />
-            public bool IsDirectory
+            public override bool IsDirectory
             {
                 get { return ZipEntry.IsDirectory; }
             }

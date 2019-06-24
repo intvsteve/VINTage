@@ -14,8 +14,8 @@
                 <ModulePath>.*\.Tests.dll</ModulePath>
                 <ModulePath>.*TestHelpers.*</ModulePath>
                 <ModulePath>.*xunit.*</ModulePath>
+                <ModulePath>.*ICSharpCode.*</ModulePath>
                 <ModulePath>^Microsoft.*</ModulePath>
-				<ModulePath>^ICSharpCode.*</ModulePath>
               </Exclude>
             </ModulePaths>
 

@@ -338,6 +338,7 @@ namespace INTV.Shared.Tests.Utility
                     Assert.NotNull(archive);
                     Assert.True(archive.IsArchive);
                     Assert.True(archive.IsCompressed);
+                    Assert.Equal(format, archive.Format);
                     Assert.False(archive.Entries.Any());
                 }
             }
@@ -448,7 +449,11 @@ namespace INTV.Shared.Tests.Utility
                 get { return _entries.Values; }
             }
 
-            public CompressedArchiveFormat Format { get; private set; }
+            public override CompressedArchiveFormat Format
+            {
+                get { return _format; }
+            }
+            private CompressedArchiveFormat _format;
 
             public CompressedArchiveAccessImplementation Implementation { get; private set; }
 
@@ -463,7 +468,7 @@ namespace INTV.Shared.Tests.Utility
                 bool isArchive = true,
                 bool isCompressed = true)
             {
-                var testArchiveAccess = new TestCompressedArchiveAccess() { Mode = mode, Format = format, Implementation = implementation };
+                var testArchiveAccess = new TestCompressedArchiveAccess() { Mode = mode, _format = format, Implementation = implementation };
                 testArchiveAccess._isArchive = isArchive;
                 testArchiveAccess._isCompressed = isCompressed;
                 if (!string.IsNullOrWhiteSpace(firstEntryName))
@@ -587,7 +592,7 @@ namespace INTV.Shared.Tests.Utility
                 }
             }
 
-            private class TestCompressedArchiveEntry : ICompressedArchiveEntry
+            private class TestCompressedArchiveEntry : CompressedArchiveEntry
             {
                 public TestCompressedArchiveEntry(string name, bool isDirectory)
                 {
@@ -596,14 +601,6 @@ namespace INTV.Shared.Tests.Utility
                     LastModificationTime = DateTime.UtcNow;
                     IsDirectory = isDirectory;
                 }
-
-                public string Name { get; private set; }
-
-                public long Length { get; private set; }
-
-                public DateTime LastModificationTime { get; private set; }
-
-                public bool IsDirectory { get; private set; }
             }
         }
     }

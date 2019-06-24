@@ -233,6 +233,23 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
+        public void GZipMemberEntry_GetMemberNameFromTgzFile_ReturnsNameWithTarFileExtension()
+        {
+            var tgzResource = TestResource.TagalongMsys2Tgz;
+
+            string tgzFile; // necessary to get archive being identified via file extension
+            using (tgzResource.ExtractToTemporaryFile(out tgzFile))
+            {
+                using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
+                {
+                    var entry = tgz.Entries.Single();
+
+                    Assert.Equal("tagalong_msys2.tar", entry.Name);
+                }
+            }
+        }
+
+        [Fact]
         public void GZipMemberEntry_InflateStreamWithCorruptMagicKey_ThrowsInvalidOperationException()
         {
             using (var stream = CreateCorruptedGZipStream(TestResource.TagalongCfgGZip, CorruptMagicOffset))

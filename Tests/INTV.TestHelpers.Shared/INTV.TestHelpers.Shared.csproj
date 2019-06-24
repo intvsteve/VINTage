@@ -131,6 +131,10 @@
     <EmbeddedResource Include="Resources\tagalong_bc.tar" />
     <EmbeddedResource Include="Resources\tagalong_dir_lr.tar" />
     <EmbeddedResource Include="Resources\tagalong_rc.tar" />
+    <EmbeddedResource Include="Resources\tagalong_msys2.tgz" />
+    <EmbeddedResource Include="Resources\tagalong_w10.tar.gz" />
+    <EmbeddedResource Include="Resources\tagalong_extra_nester.zip" />
+    <EmbeddedResource Include="Resources\tagalong_many_dirs.tgz" />
     <None Include="Resources\TestIconResource.ico" />
   </ItemGroup>
   <ItemGroup>

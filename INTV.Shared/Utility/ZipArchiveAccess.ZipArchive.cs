@@ -84,7 +84,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Wraps <see cref="System.IO.Compression.ZipArchiveEntry"/> to expose as <see cref="ICompressedArchiveEntry"/>.
         /// </summary>
-        private class ZipEntry : ICompressedArchiveEntry
+        private class ZipEntry : CompressedArchiveEntry
         {
             /// <summary>
             /// Initializes a new instance of <see cref="ZipEntry"/>.
@@ -107,25 +107,25 @@ namespace INTV.Shared.Utility
             #region ICompressedArchiveEntry
 
             /// <inheritdoc />
-            public string Name
+            public override string Name
             {
                 get { return Entry.FullName; }
             }
 
             /// <inheritdoc />
-            public long Length
+            public override long Length
             {
                 get { return Entry.Length; }
             }
 
             /// <inheritdoc />
-            public DateTime LastModificationTime
+            public override DateTime LastModificationTime
             {
                 get { return Entry.LastWriteTime.UtcDateTime; }
             }
 
             /// <inheritdoc />
-            public bool IsDirectory
+            public override bool IsDirectory
             {
                 get
                 {

@@ -32,8 +32,8 @@ namespace INTV.Shared.Tests.Utility
         [Theory]
         [InlineData(CompressedArchiveFormat.None, false)]
         [InlineData(CompressedArchiveFormat.Zip, true)]
-        [InlineData(CompressedArchiveFormat.GZip, false)]
-        [InlineData(CompressedArchiveFormat.Tar, false)]
+        [InlineData(CompressedArchiveFormat.GZip, true)]
+        [InlineData(CompressedArchiveFormat.Tar, true)]
         [InlineData(CompressedArchiveFormat.BZip2, false)]
         public void CompressedArchiveFormat_IsCompressedArchiveFormatSupported_ReturnsCorrectValue(CompressedArchiveFormat format, bool expectedIsSupported)
         {
@@ -46,8 +46,8 @@ namespace INTV.Shared.Tests.Utility
             {
                 yield return new object[] { CompressedArchiveFormat.None, Enumerable.Empty<string>() };
                 yield return new object[] { CompressedArchiveFormat.Zip, new[] { ".zip" } };
-                yield return new object[] { CompressedArchiveFormat.GZip, Enumerable.Empty<string>() }; // new[] { ".gz" }
-                yield return new object[] { CompressedArchiveFormat.Tar, Enumerable.Empty<string>() }; // new[] { ".tar" }
+                yield return new object[] { CompressedArchiveFormat.GZip, new[] { ".gz", ".gzip" } };
+                yield return new object[] { CompressedArchiveFormat.Tar, new[] { ".tar" } };
                 yield return new object[] { CompressedArchiveFormat.BZip2, Enumerable.Empty<string>() }; // new[] { ".bz2" }
                 yield return new object[] { (CompressedArchiveFormat)123456, Enumerable.Empty<string>() };
             }
@@ -88,6 +88,11 @@ namespace INTV.Shared.Tests.Utility
                 yield return new object[] { "baz.txt.zip", new[] { CompressedArchiveFormat.Zip } };
                 yield return new object[] { @"x:\baz.zip.txt", Enumerable.Empty<CompressedArchiveFormat>() };
                 yield return new object[] { "baz.zip.tar.gz.tar.zip.bz2", new[] { CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Zip, CompressedArchiveFormat.Tar, CompressedArchiveFormat.GZip, CompressedArchiveFormat.Tar, CompressedArchiveFormat.Zip } };
+                yield return new object[] { ".TgZ", new[] { CompressedArchiveFormat.GZip, CompressedArchiveFormat.Tar } };
+                yield return new object[] { ".tBZ", new[] { CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Tar } };
+                yield return new object[] { ".tbZ2", new[] { CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Tar } };
+                yield return new object[] { ".zip.tgz", new[] { CompressedArchiveFormat.GZip, CompressedArchiveFormat.Tar, CompressedArchiveFormat.Zip } };
+                yield return new object[] { ".tbz2.zip", new[] { CompressedArchiveFormat.Zip, CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Tar } };
             }
         }
 
@@ -106,8 +111,8 @@ namespace INTV.Shared.Tests.Utility
             {
                 yield return new object[] { CompressedArchiveFormat.None, Enumerable.Empty<CompressedArchiveAccessImplementation>() };
                 yield return new object[] { CompressedArchiveFormat.Zip, new[] { CompressedArchiveAccessImplementation.Native, CompressedArchiveAccessImplementation.SharpZipLib } };
-                yield return new object[] { CompressedArchiveFormat.GZip, Enumerable.Empty<CompressedArchiveAccessImplementation>() }; // new[] { CompressedArchiveAccessImplementation.SharpZipLib }
-                yield return new object[] { CompressedArchiveFormat.Tar, Enumerable.Empty<CompressedArchiveAccessImplementation>() }; // new[] { CompressedArchiveAccessImplementation.SharpZipLib }
+                yield return new object[] { CompressedArchiveFormat.GZip, new[] { CompressedArchiveAccessImplementation.Native, CompressedArchiveAccessImplementation.SharpZipLib } };
+                yield return new object[] { CompressedArchiveFormat.Tar, new[] { CompressedArchiveAccessImplementation.SharpZipLib } };
                 yield return new object[] { CompressedArchiveFormat.BZip2, Enumerable.Empty<CompressedArchiveAccessImplementation>() }; // new[] { CompressedArchiveAccessImplementation.SharpZipLib }
                 yield return new object[] { (CompressedArchiveFormat)987654, Enumerable.Empty<CompressedArchiveAccessImplementation>() };
             }
@@ -125,8 +130,8 @@ namespace INTV.Shared.Tests.Utility
         [Theory]
         [InlineData(CompressedArchiveFormat.None, CompressedArchiveAccessImplementation.None)]
         [InlineData(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.None)] // SharpZipLib
-        [InlineData(CompressedArchiveFormat.Tar, CompressedArchiveAccessImplementation.None)] // SharpZipLib
+        [InlineData(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.Native)] // SharpZipLib
+        [InlineData(CompressedArchiveFormat.Tar, CompressedArchiveAccessImplementation.SharpZipLib)] // SharpZipLib
         [InlineData(CompressedArchiveFormat.BZip2, CompressedArchiveAccessImplementation.None)] // SharpZipLib
         [InlineData((CompressedArchiveFormat)24680, CompressedArchiveAccessImplementation.None)]
         public void CompressedArchiveFormat_GetPreferredCompressedArchiveImplementation_ReturnsExpectedPreferredImplementation(CompressedArchiveFormat format, CompressedArchiveAccessImplementation expectedPreferredImplementation)

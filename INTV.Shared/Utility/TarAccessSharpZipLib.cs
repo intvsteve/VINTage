@@ -78,6 +78,12 @@ namespace INTV.Shared.Utility
         }
 
         /// <inheritdoc />
+        public override CompressedArchiveFormat Format
+        {
+            get { return CompressedArchiveFormat.Tar; }
+        }
+
+        /// <inheritdoc />
         public override IEnumerable<ICompressedArchiveEntry> Entries
         {
             get { return _entries; }
@@ -235,7 +241,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// A simple wrapper around <see cref="ICSharpCode.SharpZipLib.Tar.TarEntry"/>
         /// </summary>
-        private class TarArchiveEntry : ICompressedArchiveEntry
+        private class TarArchiveEntry : CompressedArchiveEntry
         {
             /// <summary>
             /// Initializes a new instance of <see cref="TarArchiveEntry"/>.
@@ -247,25 +253,25 @@ namespace INTV.Shared.Utility
             }
 
             /// <inheritdoc />
-            public string Name
+            public override string Name
             {
                 get { return TarEntry.Name; }
             }
 
             /// <inheritdoc />
-            public long Length
+            public override long Length
             {
                 get { return TarEntry.Size; }
             }
 
             /// <inheritdoc />
-            public DateTime LastModificationTime
+            public override DateTime LastModificationTime
             {
                 get { return TarEntry.ModTime; }
             }
 
             /// <inheritdoc />
-            public bool IsDirectory
+            public override bool IsDirectory
             {
                 get { return TarEntry.IsDirectory; }
             }

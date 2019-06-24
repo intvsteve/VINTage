@@ -224,6 +224,130 @@ namespace INTV.TestHelpers.Shared.Utility
             ArchiveContents = new[] { "tagalong.rom", "tagalong.cc3" }
         };
 
+        /// <summary>An embedded resource tgz file with various contents, including a zip! (Created in MSYS2 (64-bit)</summary>
+        public static readonly TestResource TagalongMsys2Tgz = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_msys2.tgz")
+        {
+            ArchiveContents = new[]
+            {
+                "tagalong_msys2.tar",
+                "tagalong_msys2.tar/bin/",
+                "tagalong_msys2.tar/bin/tagalong.bin",
+                "tagalong_msys2.tar/bin/tagalong.cfg",
+                "tagalong_msys2.tar/tagalong.luigi",
+                "tagalong_msys2.tar/tagalong.rom",
+                "tagalong_msys2.tar/tagalong.zip",
+                "tagalong_msys2.tar/tagalong.zip/tagalong.bin",
+                "tagalong_msys2.tar/tagalong.zip/tagalong.cfg"
+            }
+        };
+
+        /// <summary>An embedded resource tar.gz file that contains various contents, including a zip! (Created in Windows 10 (powershell)</summary>
+        public static readonly TestResource TagalongWin10TarGz = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_w10.tar.gz")
+        {
+            ArchiveContents = new[]
+            {
+                "tagalong_w10.tar",
+                "tagalong_w10.tar/meta/",
+                "tagalong_w10.tar/meta/tagalong_metadata.bin",
+                "tagalong_w10.tar/meta/tagalong_metadata.cfg",
+                "tagalong_w10.tar/meta/tagalong_metadata.luigi",
+                "tagalong_w10.tar/meta/tagalong_metadata.rom",
+                "tagalong_w10.tar/scram/",
+                "tagalong_w10.tar/scram/tagalong_any.luigi",
+                "tagalong_w10.tar/scram/tagalong_dev0.luigi",
+                "tagalong_w10.tar/scram/tagalong_dev1.luigi",
+                "tagalong_w10.tar/tagalong.bin",
+                "tagalong_w10.tar/tagalong.cfg",
+                "tagalong_w10.tar/tagalong.rom",
+            }
+        };
+
+        /// <summary>An embedded resource ZIP file that contains various contents, including multiply nested things. (Created in Windows 10 (Explorer), manipulated with 7zip).</summary>
+        public static readonly TestResource TagalongZipWithManyNests = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_extra_nester.zip")
+        {
+            ArchiveContents = new[]
+            {
+                "extra_nest/",
+                "extra_nest/tagalong_metadata.bin",
+                "extra_nest/tagalong_metadata.cfg",
+                "extra_nest/tagalong_msys2.tgz",
+                "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar",
+                "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/",
+                "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/tagalong.bin",
+                "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/tagalong.cfg",
+                "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.luigi",
+                "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.rom",
+                "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip",
+                "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.bin",
+                "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.cfg",
+                "tagalong_dev0.luigi",
+                "tagalong_dev1.luigi",
+            }
+        };
+
+        /// <summary>An embedded resource .tgz with lots of directories. Created from tar tool in Terminal on macOS 10.13.6.</summary>
+        /// <remarks>This .tgz file also has the distinction of triggering a 'false positive' match in the GZipMemberEntry simpleton parser
+        /// that makes it appear to encounter a second member header. In fact, this is not the case. Since the GZIP has only one true entry,
+        /// reading it works as expected.</remarks>
+        public static readonly TestResource TagalongTgzManyDirs = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_many_dirs.tgz")
+        {
+            ArchiveContents = new[]
+            {
+                "tagalong_many_dirs.tar",
+                "tagalong_many_dirs.tar/rootSub/",
+                "tagalong_many_dirs.tar/rootSub/._.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub0/",
+                "tagalong_many_dirs.tar/rootSub/sub0/._.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub0/.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub0/subSub0/",
+                "tagalong_many_dirs.tar/rootSub/sub0/subSub0/tagalong_metadata.bin",
+                "tagalong_many_dirs.tar/rootSub/sub0/subSub0/tagalong_metadata.cfg",
+                "tagalong_many_dirs.tar/rootSub/sub0/subSub0/tagalong_metadata.luigi",
+                "tagalong_many_dirs.tar/rootSub/sub0/subSub0/tagalong_metadata.rom",
+                "tagalong_many_dirs.tar/rootSub/sub0/subSub1/",
+                "tagalong_many_dirs.tar/rootSub/sub0/tagalong_any.luigi",
+                "tagalong_many_dirs.tar/rootSub/sub1/",
+                "tagalong_many_dirs.tar/rootSub/sub1/._.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub1/.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub1/subSub2/",
+                "tagalong_many_dirs.tar/rootSub/sub1/subSub2/tagalong.luigi",
+                "tagalong_many_dirs.tar/rootSub/sub1/subSub2/tagalong.rom",
+                "tagalong_many_dirs.tar/rootSub/sub1/subSub3/",
+                "tagalong_many_dirs.tar/rootSub/sub1/subSub4/",
+                "tagalong_many_dirs.tar/rootSub/sub1/tagalong_dev0.luigi",
+                "tagalong_many_dirs.tar/rootSub/sub2/",
+                "tagalong_many_dirs.tar/rootSub/sub2/._.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub2/.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub2/subSub5/",
+                "tagalong_many_dirs.tar/rootSub/sub2/subSub5/tagalong_dev1.luigi",
+                "tagalong_many_dirs.tar/rootSub/sub2/subSub5/tagalong_zero_crc.luigi",
+                "tagalong_many_dirs.tar/rootSub/sub2/tagalong.bin",
+                "tagalong_many_dirs.tar/rootSub/sub2/tagalong.cc3",
+                "tagalong_many_dirs.tar/rootSub/sub2/tagalong.cfg",
+                "tagalong_many_dirs.tar/rootSub/sub2/tagalong.int",
+                "tagalong_many_dirs.tar/rootSub/sub2/tagalong.itv",
+                "tagalong_many_dirs.tar/rootSub/sub3/",
+                "tagalong_many_dirs.tar/rootSub/sub3/._.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub3/.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub6/",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub6/tagalong.bad",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub6/tagalong_metadata_any.luigi",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub7/",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub7/._.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub7/.DS_Store",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub7/subSubSub0/",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub7/subSubSub0/tagalong_metadata.bin",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub7/subSubSub0/tagalong_metadata.cfg",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub7/tagalong_any.luigi",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub8/",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub8/tagalong_corrupt.rom",
+                "tagalong_many_dirs.tar/rootSub/sub3/subSub8/tagalong_v0.luigi",
+                "tagalong_many_dirs.tar/rootSub/sub3/tagalong_from_rom.luigi",
+                "tagalong_many_dirs.tar/rootSub/tagalong",
+            }
+        };
+
         /// <summary>An embedded resource text file with a space in the name.</summary>
         public static readonly TestResource TextEmbeddedResourceFile = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "embedded resource file.txt");
 

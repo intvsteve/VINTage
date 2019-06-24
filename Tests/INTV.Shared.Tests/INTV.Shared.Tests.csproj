@@ -67,6 +67,7 @@
     <Compile Include="Utility\CompressedArchiveFormatTests.cs" />
     <Compile Include="Utility\GZipMemberEntryTests.cs" />
     <Compile Include="Utility\GZipAccessTests.cs" />
+    <Compile Include="Utility\ICompressedArchiveAccessExtensionsTests.cs" />
     <Compile Include="Utility\ResourceHelpersTests.cs" />
     <Compile Include="Utility\TarArchiveAccessTests.cs" />
     <Compile Include="Utility\TemporaryDirectoryTests.cs" />

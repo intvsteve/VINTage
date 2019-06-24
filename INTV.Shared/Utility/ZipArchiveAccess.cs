@@ -72,6 +72,12 @@ namespace INTV.Shared.Utility
         }
 
         /// <inheritdoc />
+        public override CompressedArchiveFormat Format
+        {
+            get { return CompressedArchiveFormat.Zip; }
+        }
+
+        /// <inheritdoc />
         public override IEnumerable<ICompressedArchiveEntry> Entries
         {
             get { return GetArchiveEntries(); }

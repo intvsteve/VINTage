@@ -92,6 +92,7 @@ namespace INTV.Shared.Utility
     /// formally inflated, the reliability of the <see cref="Crc32"/> and <see cref="Length"/> values is dependent upon the quality of the input GZIP.
     /// Members with extraneous data at the end of the file will return invalid values for those properties.
     /// </remarks>
+    [System.Diagnostics.DebuggerDisplay("{Name,nq}")]
     internal sealed class GZipMemberEntry : INTV.Core.Utility.ByteSerializer, ICompressedArchiveEntry
     {
         /// <summary>
@@ -470,7 +471,18 @@ namespace INTV.Shared.Utility
             {
                 if (!string.IsNullOrEmpty(fileStream.Name))
                 {
-                    defaultEntryName = Path.GetFileNameWithoutExtension(Path.GetFileName(fileStream.Name));
+                    var extension = Path.GetExtension(fileStream.Name);
+                    var fileName = Path.GetFileNameWithoutExtension(Path.GetFileName(fileStream.Name));
+                    var formats = extension.GetCompressedArchiveFormatsFromFileExtension();
+                    if (formats.Count() > 1)
+                    {
+                        if (formats.All(f => f.IsCompressedArchiveFormatSupported()))
+                        {
+                            extension = string.Join(string.Empty, formats.Skip(1).Reverse().Select(f => f.FileExtensions().First()));
+                            fileName += extension;
+                        }
+                    }
+                    defaultEntryName = fileName;
                 }
             }
             return defaultEntryName;

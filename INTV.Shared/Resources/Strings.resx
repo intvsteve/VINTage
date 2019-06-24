@@ -1728,4 +1728,8 @@ The following formats were not processed:
   <data name="TarArchiveAccess_InvalidModeForCreateEntryError" xml:space="preserve">
     <value>The TAR file must be opened in Create mode to add content.</value>
   </data>
+  <data name="CompressedArchiveAccess_NestedArchiveNotFound" xml:space="preserve">
+    <value>The nested archive '{0}' could not be found.</value>
+    <comment>{0} is the name of a nested compressed archive</comment>
+  </data>
 </root>

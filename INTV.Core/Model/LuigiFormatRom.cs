@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFormatRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -211,6 +211,28 @@ namespace INTV.Core.Model
                         }
                     }
                 }
+            }
+            return format;
+        }
+
+        /// <summary>
+        /// Inspects data in the stream to determine if it appears to be a LUIGI ROM.
+        /// </summary>
+        /// <param name="stream">The stream containing the data to inspect.</param>
+        /// <returns><c>RomFormat.Luigi</c> if the data at the beginning of <paramref name="stream"/> is a valid
+        /// LUIGI file header, otherwise <c>RomFormat.None</c>.</returns>
+        internal static RomFormat CheckFormat(System.IO.Stream stream)
+        {
+            var format = RomFormat.None;
+            try
+            {
+                if (LuigiFileHeader.Inflate(stream) != null)
+                {
+                    format = RomFormat.Luigi;
+                }
+            }
+            catch (System.Exception)
+            {
             }
             return format;
         }

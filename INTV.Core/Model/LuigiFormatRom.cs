@@ -223,9 +223,11 @@ namespace INTV.Core.Model
         /// LUIGI file header, otherwise <c>RomFormat.None</c>.</returns>
         internal static RomFormat CheckFormat(System.IO.Stream stream)
         {
+            var position = 0L;
             var format = RomFormat.None;
             try
             {
+                position = stream.Position;
                 if (LuigiFileHeader.Inflate(stream) != null)
                 {
                     format = RomFormat.Luigi;
@@ -233,6 +235,13 @@ namespace INTV.Core.Model
             }
             catch (System.Exception)
             {
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Seek(position, System.IO.SeekOrigin.Begin);
+                }
             }
             return format;
         }

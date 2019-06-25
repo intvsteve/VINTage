@@ -39,7 +39,7 @@ namespace INTV.Core.Tests.Model
         [InlineData(TestRomResources.TestLuigiScrambledForAnyDevicePath, RomFormat.Luigi)]
         [InlineData(TestRomResources.TestLuigiWithMetadataPath, RomFormat.Luigi)]
         [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForDevice0Path, RomFormat.Luigi)]
-        public void RomFormatRom_CheckFormatFromStream_RomFormatIdentifiedCorrectly(string testRomResource, RomFormat expectedRomFormat)
+        public void LuigiFormatRom_CheckFormatFromStream_RomFormatIdentifiedCorrectly(string testRomResource, RomFormat expectedRomFormat)
         {
             using (var romData = TestRomResources.OpenResourceStream(testRomResource))
             {

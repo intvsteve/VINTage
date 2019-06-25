@@ -282,7 +282,15 @@ namespace INTV.Core.Model
             {
                 // Coerce allow odd ROM file size to true since certain ... shady ... ROM sites commonly
                 // have ZIPped up ROMs that somehow have an extra byte at the end.
-                fileSizeCheck = IsValidFileSize(stream, allowOddRomFileSize: true);
+                var position = stream.Position;
+                try
+                {
+                    fileSizeCheck = IsValidFileSize(stream, allowOddRomFileSize: true);
+                }
+                finally
+                {
+                    stream.Seek(position, System.IO.SeekOrigin.Begin);
+                }
             }
             if (fileSizeCheck)
             {

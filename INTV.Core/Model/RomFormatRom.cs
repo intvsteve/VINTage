@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomFormatRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -246,21 +246,29 @@ namespace INTV.Core.Model
             {
                 if (stream.Length > 0)
                 {
-                    byte[] data = new byte[HeaderSize];
-                    var numBytesRead = stream.Read(data, 0, HeaderSize);
-                    if (numBytesRead == HeaderSize)
+                    var position = stream.Position;
+                    try
                     {
-                        // Check the header (checks for both .rom and .cc3/.cc3 advanced formats)
-                        format = AutoBaudBytes.FirstOrDefault(a => a.Value == data[0]).Key;
-                        if (format != RomFormat.None)
+                        byte[] data = new byte[HeaderSize];
+                        var numBytesRead = stream.Read(data, 0, HeaderSize);
+                        if (numBytesRead == HeaderSize)
                         {
-                            // If header appears to be valid, assume the entire ROM is valid. Full validation would require walking
-                            // all the segments -- essentially most of the ROM.
-                            if ((data[1] ^ data[2]) != 0xFF)
+                            // Check the header (checks for both .rom and .cc3/.cc3 advanced formats)
+                            format = AutoBaudBytes.FirstOrDefault(a => a.Value == data[0]).Key;
+                            if (format != RomFormat.None)
                             {
-                                format = RomFormat.None;
+                                // If header appears to be valid, assume the entire ROM is valid. Full validation would require walking
+                                // all the segments -- essentially most of the ROM.
+                                if ((data[1] ^ data[2]) != 0xFF)
+                                {
+                                    format = RomFormat.None;
+                                }
                             }
                         }
+                    }
+                    finally
+                    {
+                        stream.Seek(position, System.IO.SeekOrigin.Begin);
                     }
                 }
             }

@@ -33,6 +33,22 @@ namespace INTV.Core.Tests.Model
         [InlineData(TestRomResources.TestRomPath, RomFormat.Intellicart)]
         [InlineData(TestRomResources.TestCc3Path, RomFormat.CuttleCart3)]
         [InlineData(TestRomResources.TestAdvPath, RomFormat.CuttleCart3Advanced)]
+        [InlineData(TestRomResources.TestBinMetadataPath, RomFormat.None)]
+        [InlineData(TestRomResources.TestLuigiFromBinPath, RomFormat.None)]
+        [InlineData(TestRomResources.TestLuigiFromRomPath, RomFormat.None)]
+        public void RomFormatRom_CheckFormatFromStream_RomFormatIdentifiedCorrectly(string testRomResource, RomFormat expectedRomFormat)
+        {
+            using (var romData = TestRomResources.OpenResourceStream(testRomResource))
+            {
+                Assert.NotNull(romData);
+                Assert.Equal(expectedRomFormat, RomFormatRom.CheckFormat(romData));
+            }
+        }
+
+        [Theory]
+        [InlineData(TestRomResources.TestRomPath, RomFormat.Intellicart)]
+        [InlineData(TestRomResources.TestCc3Path, RomFormat.CuttleCart3)]
+        [InlineData(TestRomResources.TestAdvPath, RomFormat.CuttleCart3Advanced)]
         public void RomFormatRom_LoadAndValidateRom_RomFormatIdentifiedCorrectly(string testRomPath, RomFormat expectedRomFormat)
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(testRomPath).First();

@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -196,5 +197,30 @@ namespace INTV.TestHelpers.Core.Utility
         public const string TestLuigiWithExtraNullBytePath = "/Resources/tagalong_extra_null_byte.luigi";
 
         #endregion // Corrupted LUIGI format ROMs
+
+        /// <summary>
+        /// Opens a resource stream for the given resource from this assembly.
+        /// </summary>
+        /// <param name="resource">The name of the resource. All '/' are replaced with '.' and is expected to be relative to assembly name.</param>
+        /// <returns>A stream to access the resource's data, or null if not found.</returns>
+        public static Stream OpenResourceStream(string resource)
+        {
+            return OpenResourceStream(typeof(TestRomResources), resource);
+        }
+
+        /// <summary>
+        /// Opens a resource stream for the given resource.
+        /// </summary>
+        /// <param name="typeWhoseAssemblyContainsResource">Type whose implementing assembly should contain the resource. If <c>null</c> this type is used.</param>
+        /// <param name="resource">The name of the resource. All '/' are replaced with '.' and is expected to be relative to assembly name.</param>
+        /// <returns>A stream to access the resource's data, or null if not found.</returns>
+        public static Stream OpenResourceStream(Type typeWhoseAssemblyContainsResource, string resource)
+        {
+            var type = typeWhoseAssemblyContainsResource == null ? typeof(TestRomResources) : typeWhoseAssemblyContainsResource;
+            var assembly = type.Assembly;
+            resource = assembly.GetName().Name + resource.Replace("/", ".");
+            var resourceStream = assembly.GetManifestResourceStream(resource);
+            return resourceStream;
+        }
     }
 }

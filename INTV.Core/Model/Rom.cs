@@ -1,5 +1,5 @@
 ﻿// <copyright file="Rom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -236,6 +236,28 @@ namespace INTV.Core.Model
         public abstract uint RefreshCfgCrc(out bool changed);
 
         #endregion // IRom
+
+        /// <summary>
+        /// Inspects data in the stream to determine if it appears to be a ROM.
+        /// </summary>
+        /// <param name="stream">The stream containing the data to inspect.</param>
+        /// <returns>A <see cref="RomFormat"/> value; a value of <c>RomFormat.None</c> indicates the stream is almost certainly not
+        /// a known ROM format. It is possible to get false positive matches resulting in <c>RomFormat.Bin</c> as it is not a
+        /// strongly structured format that can be identified with high confidence. It is incumbent upon the caller to do a modicum
+        /// of checking, e.g. file name extension checks, or later exception handling, to deal with errors.</returns>
+        public static RomFormat GetFormat(System.IO.Stream stream)
+        {
+            var format = LuigiFormatRom.CheckFormat(stream);
+            if (format == RomFormat.None)
+            {
+                format = RomFormatRom.CheckFormat(stream);
+            }
+            if (format == RomFormat.None)
+            {
+                format = BinFormatRom.CheckFormat(stream);
+            }
+            return format;
+        }
 
         /// <summary>
         /// Check ROM format efficiently using the memo system.

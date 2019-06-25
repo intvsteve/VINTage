@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFormatRomTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -30,6 +30,24 @@ namespace INTV.Core.Tests.Model
 {
     public class LuigiFormatRomTests
     {
+        [Theory]
+        [InlineData(TestRomResources.TestRomPath, RomFormat.None)]
+        [InlineData(TestRomResources.TestAdvPath, RomFormat.None)]
+        [InlineData(TestRomResources.TestBinMetadataPath, RomFormat.None)]
+        [InlineData(TestRomResources.TestLuigiFromBinPath, RomFormat.Luigi)]
+        [InlineData(TestRomResources.TestLuigiFromRomPath, RomFormat.Luigi)]
+        [InlineData(TestRomResources.TestLuigiScrambledForAnyDevicePath, RomFormat.Luigi)]
+        [InlineData(TestRomResources.TestLuigiWithMetadataPath, RomFormat.Luigi)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForDevice0Path, RomFormat.Luigi)]
+        public void LuigiFormatRom_CheckFormatFromStream_RomFormatIdentifiedCorrectly(string testRomResource, RomFormat expectedRomFormat)
+        {
+            using (var romData = TestRomResources.OpenResourceStream(testRomResource))
+            {
+                Assert.NotNull(romData);
+                Assert.Equal(expectedRomFormat, LuigiFormatRom.CheckFormat(romData));
+            }
+        }
+
         [Fact]
         public void LuigiFormatRom_LoadAndValidateRom_RomFormatIdentifiedCorrectly()
         {

@@ -1,5 +1,5 @@
 ﻿// <copyright file="BinFormatRomTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -30,6 +30,22 @@ namespace INTV.Core.Tests.Model
 {
     public class BinFormatRomTests
     {
+        [Theory]
+        [InlineData(TestRomResources.TestBinPath, RomFormat.Bin)]
+        [InlineData(TestRomResources.TestBinPathNoFileExtension, RomFormat.Bin)]
+        [InlineData(TestRomResources.TestCfgPath, RomFormat.None)]
+        [InlineData(TestRomResources.TestBinMetadataPath, RomFormat.Bin)]
+        [InlineData(TestRomResources.TestLuigiFromBinPath, RomFormat.Bin)]
+        [InlineData(TestRomResources.TestRomCorruptedPath, RomFormat.None)]
+        public void BinFormatRom_CheckFormatFromStream_RomFormatIdentifiedCorrectly(string testRomResource, RomFormat expectedRomFormat)
+        {
+            using (var romData = TestRomResources.OpenResourceStream(testRomResource))
+            {
+                Assert.NotNull(romData);
+                Assert.Equal(expectedRomFormat, BinFormatRom.CheckFormat(romData));
+            }
+        }
+
         [Fact]
         public void BinFormatRom_LoadAndValidateRom_RomFormatIdentifiedCorrectly()
         {

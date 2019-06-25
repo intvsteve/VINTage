@@ -226,25 +226,39 @@ namespace INTV.Core.Model
             {
                 using (var file = StreamUtilities.OpenFileStream(filePath))
                 {
-                    if (file != null)
+                    format = CheckFormat(file);
+                }
+            }
+            return format;
+        }
+
+        /// <summary>
+        /// Inspects data in the stream to determine if it appears to be a ROM-format ROM.
+        /// </summary>
+        /// <param name="stream">The stream containing the data to inspect.</param>
+        /// <returns><c>RomFormat.Rom</c>, <c>RomFormat.CuttleCart3</c> or <c>RomFormat.CuttleCart3Advanced</c>
+        /// if the data at the beginning of <paramref name="stream"/> appears to be a valid ROM-format ROM,
+        /// otherwise <c>RomFormat.None</c>.</returns>
+        internal static RomFormat CheckFormat(System.IO.Stream stream)
+        {
+            var format = RomFormat.None;
+            if (stream != null)
+            {
+                if (stream.Length > 0)
+                {
+                    byte[] data = new byte[HeaderSize];
+                    var numBytesRead = stream.Read(data, 0, HeaderSize);
+                    if (numBytesRead == HeaderSize)
                     {
-                        if (file.Length > 0)
+                        // Check the header (checks for both .rom and .cc3/.cc3 advanced formats)
+                        format = AutoBaudBytes.FirstOrDefault(a => a.Value == data[0]).Key;
+                        if (format != RomFormat.None)
                         {
-                            byte[] data = new byte[HeaderSize];
-                            var numBytesRead = file.Read(data, 0, HeaderSize);
-                            if (numBytesRead == HeaderSize)
+                            // If header appears to be valid, assume the entire ROM is valid. Full validation would require walking
+                            // all the segments -- essentially most of the ROM.
+                            if ((data[1] ^ data[2]) != 0xFF)
                             {
-                                // Check the header (checks for both .rom and .cc3/.cc3 advanced formats)
-                                format = AutoBaudBytes.FirstOrDefault(a => a.Value == data[0]).Key;
-                                if (format != RomFormat.None)
-                                {
-                                    // If header appears to be valid, assume the entire ROM is valid. Full validation would require walking
-                                    // all the segments -- essentially most of the ROM.
-                                    if ((data[1] ^ data[2]) != 0xFF)
-                                    {
-                                        format = RomFormat.None;
-                                    }
-                                }
+                                format = RomFormat.None;
                             }
                         }
                     }

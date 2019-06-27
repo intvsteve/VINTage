@@ -1,5 +1,5 @@
-﻿// <copyright file="PathUtils.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// <copyright file="PathUtils.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -39,8 +39,8 @@ namespace INTV.Shared.Utility
         /// Given a Uri form of a file path, return one suitable for use with file system APIs.
         /// </summary>
         /// <param name="path">A file Uri to convert to a file system path.</param>
-        /// <returns>An absolute file system path with approprate separators.</returns>
-        /// <remarks>In Windows, at least some file / path APIs only support the tradititional backslash separator. This method takes a Uri and
+        /// <returns>An absolute file system path with appropriate separators.</returns>
+        /// <remarks>In Windows, at least some file / path APIs only support the traditional backslash separator. This method takes a Uri and
         /// ensures that the string form of the file path returned uses appropriate path separators for the platform.</remarks>
         public static string FixUpUriPath(this Uri path)
         {
@@ -80,12 +80,16 @@ namespace INTV.Shared.Utility
         /// Gets the common path.
         /// </summary>
         /// <returns>The common path.</returns>
-        /// <param name="paths">The paths form which to extract a common path.</param>
-        /// <remarks>>Modified from the C# entry from RosettaCode.org.</remarks>
+        /// <param name="paths">The paths from which to extract a common path.</param>
+        /// <remarks>Modified from the C# entry from RosettaCode.org.</remarks>
         /// <see cref="http://rosettacode.org/wiki/Find_Common_Directory_Path#C.23"/>
         public static string GetCommonPath(IEnumerable<string> paths)
         {
             char[] separator = new[] { Path.DirectorySeparatorChar };
+            if (Path.DirectorySeparatorChar != Path.AltDirectorySeparatorChar)
+            {
+                paths = paths.Select(p => p.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+            }
             var longestCommonPath = string.Empty;
             var separatedPaths = paths.First(p => p.Length == paths.Max(p2 => p2.Length)).Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
@@ -104,12 +108,12 @@ namespace INTV.Shared.Utility
                         firstElement += Path.DirectorySeparatorChar;
                     }
 #endif // WIN
-                    if (paths.All(p => p.StartsWith(firstElement)))
+                    if (paths.All(p => p.StartsWith(firstElement, PathComparer.DefaultPolicy)))
                     {
                         longestCommonPath = firstElement;
                     }
                 }
-                else if (paths.All(p => p.StartsWith(Path.Combine(longestCommonPath, element))))
+                else if (paths.All(p => p.StartsWith(Path.Combine(longestCommonPath, element), PathComparer.DefaultPolicy)))
                 {
                     longestCommonPath = Path.Combine(longestCommonPath, element);
                 }
@@ -117,6 +121,10 @@ namespace INTV.Shared.Utility
                 {
                     break;
                 }
+            }
+            if (string.IsNullOrEmpty(longestCommonPath) && (paths.Count() == 1))
+            {
+                longestCommonPath = paths.First();
             }
             return longestCommonPath;
         }
@@ -268,7 +276,7 @@ namespace INTV.Shared.Utility
         /// <returns>The time as a specially formatted string.</returns>
         public static string GetTimeString(bool useUTC)
         {
-            var now = useUTC ? System.DateTime.UtcNow : System.DateTime.Now;
+            var now = useUTC ? DateTime.UtcNow : DateTime.Now;
             var dateTimeForFileName = now.Year.ToString("D4") + "-" + now.Month.ToString("D2") + "-" + now.Day.ToString("D2");
             dateTimeForFileName += "-" + now.Hour.ToString("D2") + "-" + now.Minute.ToString("D2") + "-" + now.Second.ToString("D2") + "-" + now.Millisecond.ToString("D3");
             return dateTimeForFileName;
@@ -281,9 +289,9 @@ namespace INTV.Shared.Utility
         /// <param name="path">The path to check.</param>
         /// <returns>A <see cref="DateTime"/> value created from the give file name. If all the elements cannot be determined, then
         /// a value of DateTime.MinValue is returned.</returns>
-        public static System.DateTime GetDateTimeFromString(string path)
+        public static DateTime GetDateTimeFromString(string path)
         {
-            var directoryName = System.IO.Path.GetFileName(path);
+            var directoryName = Path.GetFileName(path);
             var elements = directoryName.Split('-');
 
             int year = -1;
@@ -307,10 +315,10 @@ namespace INTV.Shared.Utility
             int millisecond = -1;
             valid = valid && int.TryParse(elements[6], out millisecond);
 
-            var result = System.DateTime.MinValue;
+            var result = DateTime.MinValue;
             if (valid)
             {
-                result = new System.DateTime(year, month, day, hour, minute, second, millisecond);
+                result = new DateTime(year, month, day, hour, minute, second, millisecond);
             }
 
             return result;

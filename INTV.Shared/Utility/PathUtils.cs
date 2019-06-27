@@ -1,4 +1,4 @@
-// <copyright file="PathUtils.cs" company="INTV Funhouse">
+﻿// <copyright file="PathUtils.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -322,6 +322,29 @@ namespace INTV.Shared.Utility
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Determines whether the given path identifies a location within a supported compressed archive file.
+        /// </summary>
+        /// <param name="path">A file path that may indicate a path to a compressed archive.</param>
+        /// <returns><c>true</c> if <paramref name="path"/> is a path to or within a supported compressed archive file.</returns>
+        public static bool IsPathInSupportedArchive(this string path)
+        {
+            var isPathInArchive = false;
+            while (!string.IsNullOrEmpty(path) && !File.Exists(path))
+            {
+                path = Path.GetDirectoryName(path);
+            }
+            if (!string.IsNullOrEmpty(path))
+            {
+                var formats = path.GetCompressedArchiveFormatsFromFileName();
+                if (formats.Any())
+                {
+                    isPathInArchive = path.GetCompressedArchiveFormatsFromFileName().All(f => f.IsCompressedArchiveFormatSupported());
+                }
+            }
+            return isPathInArchive;
         }
     }
 }

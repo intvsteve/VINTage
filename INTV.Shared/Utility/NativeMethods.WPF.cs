@@ -1,5 +1,5 @@
 ﻿// <copyright file="NativeMethods.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -34,34 +34,6 @@ namespace INTV.Shared.Utility
         /// This special pseudo-window is used to broadcast a message to all windows in the system. USE WITH CAUTION!
         /// </summary>
         public static readonly IntPtr HWND_BROADCAST = (IntPtr)0xffff;
-
-        /// <summary>
-        /// Convert a path into a form without spaces.
-        /// </summary>
-        /// <param name="longName">The path to convert.</param>
-        /// <returns>The converted path.</returns>
-        public static string ToShortPathName(string longName)
-        {
-            uint bufferSize = 256;
-            StringBuilder shortNameBuffer = new StringBuilder((int)bufferSize);
-
-            uint result = GetShortPathName(longName, shortNameBuffer, bufferSize);
-            System.Diagnostics.Debug.WriteLineIf(result == 0, "GetShortPathName failed.");
-            return shortNameBuffer.ToString();
-        }
-
-        /// <summary>
-        /// Retrieves the short path form of the specified path. Useful if an application cannot tolerate spaces in a path, or quoted strings.
-        /// </summary>
-        /// <param name="path">The path string.</param>
-        /// <param name="shortPath">A pointer to a buffer to receive the null-terminated short form of the path. Passing IntPtr.Zero for this
-        /// parameter and zero for shortPathLength will always return the required buffer size for a specified path.</param>
-        /// <param name="shortPathLength">The size of the buffer that shortPath points to, in TCHARs. Set this parameter to zero if shortPath is set to IntPtr.Zero.</param>
-        /// <returns>If the function succeeds, the return value is the length, in TCHARs, of the string that is copied to shortPath, not including the terminating null character.
-        /// If the shortPath buffer is too small to contain the path, the return value is the size of the buffer, in TCHARs, that is required to hold the path and the terminating null character.
-        /// If the function fails for any other reason, the return value is zero. To get extended error information, call GetLastError.</returns>
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern uint GetShortPathName(string path, StringBuilder shortPath, uint shortPathLength);
 
         /// <summary>
         /// Places (posts) a message in the message queue associated with the thread that created the specified window and returns without waiting for the thread to process the message.
@@ -112,9 +84,12 @@ namespace INTV.Shared.Utility
         {
             foreach (object obj in comObjs)
             {
-                if ((obj != null) && Marshal.IsComObject(obj))
+                if (obj != null)
                 {
-                    Marshal.ReleaseComObject(obj);
+                    if (Marshal.IsComObject(obj))
+                    {
+                        Marshal.ReleaseComObject(obj);
+                    }
                 }
             }
         }
@@ -316,6 +291,7 @@ namespace INTV.Shared.Utility
         /// not require the folder to exist.
         /// </summary>
         /// <returns>The default path of the known folder.</returns>
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         public static string GetDownloadsPath()
         {
             string downloadsPath = null;

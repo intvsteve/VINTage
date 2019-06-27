@@ -594,6 +594,7 @@ namespace INTV.Shared.Tests.Utility
 
             private class TestCompressedArchiveEntry : CompressedArchiveEntry
             {
+                [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Don't care - it's test code.")]
                 public TestCompressedArchiveEntry(string name, bool isDirectory)
                 {
                     Name = name;

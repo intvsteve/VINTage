@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathUtils.Linux.cs" company="INTV Funhouse">
-// Copyright (c) 2017-2018 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -77,29 +77,44 @@ namespace INTV.Shared.Utility
             if (!isRemovable)
             {
                 var ephemeralPath = System.IO.Path.GetTempPath(); // treat temp dir as ephemeral
-                isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
             }
 #if false
             if (!isRemovable)
             {
                 var ephemeralPath = NativeMethods.GetDownloadsPath(); // treat downloads path as ephemeral
-                isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
             }
 #endif // false
             if (!isRemovable)
             {
                 var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.History);
-                isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
             }
             if (!isRemovable)
             {
                 var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.InternetCache);
-                isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
             }
             if (!isRemovable)
             {
                 var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.CDBurning);
-                isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
             }
             return isRemovable;
         }

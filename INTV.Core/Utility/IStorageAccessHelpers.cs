@@ -1,5 +1,5 @@
-﻿// <copyright file="StreamUtilities.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+﻿// <copyright file="IStorageAccessHelpers.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -28,7 +28,7 @@ namespace INTV.Core.Utility
     /// <summary>
     /// Utility functions for working with the Stream type.
     /// </summary>
-    public static class StreamUtilities
+    public static class IStorageAccessHelpers
     {
         /// <summary>
         /// Special value to signify the default <see cref="IStorageAccess"/>.
@@ -91,7 +91,7 @@ namespace INTV.Core.Utility
         /// <param name="filePath">The absolute path to the file.</param>
         /// <param name="storageAccess">The storage access to use; if <c>null</c> the default storage access is used.</param>
         /// <returns>A Stream for accessing the contents of the file.</returns>
-        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="StreamUtilities.Initialize(IStorageAccess)"/> method.</remarks>
+        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="IStorageAccessHelpers.Initialize(IStorageAccess)"/> method.</remarks>
         public static Stream OpenFileStream(string filePath, IStorageAccess storageAccess = DefaultStorage)
         {
             return GetStorageAccess(storageAccess).Open(filePath);
@@ -103,7 +103,7 @@ namespace INTV.Core.Utility
         /// <param name="filePath">The absolute path to the file.</param>
         /// <param name="storageAccess">The storage access to use; if <c>null</c> the default storage access is used.</param>
         /// <returns><c>true</c> if the file exists at the given path.</returns>
-        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="StreamUtilities.Initialize(IStorageAccess)"/> method.</remarks>
+        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="IStorageAccessHelpers.Initialize(IStorageAccess)"/> method.</remarks>
         public static bool FileExists(string filePath, IStorageAccess storageAccess = DefaultStorage)
         {
             return GetStorageAccess(storageAccess).Exists(filePath);
@@ -115,7 +115,7 @@ namespace INTV.Core.Utility
         /// <param name="filePath">The absolute path to the file.</param>
         /// <param name="storageAccess">The storage access to use; if <c>null</c> the default storage access is used.</param>
         /// <returns>Length of the file, in bytes.</returns>
-        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="StreamUtilities.Initialize(IStorageAccess)"/> method.</remarks>
+        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="IStorageAccessHelpers.Initialize(IStorageAccess)"/> method.</remarks>
         public static long FileSize(string filePath, IStorageAccess storageAccess = DefaultStorage)
         {
             return GetStorageAccess(storageAccess).Size(filePath);
@@ -127,7 +127,7 @@ namespace INTV.Core.Utility
         /// <param name="filePath">The absolute path to the file.</param>
         /// <param name="storageAccess">The storage access to use; if <c>null</c> the default storage access is used.</param>
         /// <returns>Last modification time of the file, in UTC.</returns>
-        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="StreamUtilities.Initialize(IStorageAccess)"/> method.</remarks>
+        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="IStorageAccessHelpers.Initialize(IStorageAccess)"/> method.</remarks>
         public static DateTime LastFileWriteTimeUtc(string filePath, IStorageAccess storageAccess = DefaultStorage)
         {
             return GetStorageAccess(storageAccess).LastWriteTimeUtc(filePath);

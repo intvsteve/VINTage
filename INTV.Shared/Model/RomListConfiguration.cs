@@ -156,7 +156,7 @@ namespace INTV.Shared.Model
         /// <inheritdoc />
         public void OnImportsSatisfied()
         {
-            var initializedCoreStreamUtils = INTV.Core.Utility.StreamUtilities.Initialize(new StorageAccess());
+            var initializedCoreStreamUtils = INTV.Core.Utility.IStorageAccessHelpers.Initialize(new StorageAccess());
             if (initializedCoreStreamUtils)
             {
                 INTV.Core.Utility.StringUtilities.RegisterHtmlDecoder(StringUtilities.HtmlDecode);

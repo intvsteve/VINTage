@@ -133,7 +133,12 @@ namespace INTV.Core.Utility
             return GetStorageAccess(storageAccess).LastWriteTimeUtc(filePath);
         }
 
-        private static IStorageAccess GetStorageAccess(IStorageAccess specificStorageAccess)
+        /// <summary>
+        /// Get the instance of <see cref="IStorageAccess"/> to use, accounting for <see cref="DefaultStorage"/>.
+        /// </summary>
+        /// <param name="specificStorageAccess">An instance of <see cref="IStorageAccess"/> to resolve to a concrete storage access.</param>
+        /// <returns>If <paramref name="specificStorageAccess"/> equals <see cref="DefaultStorage"/>, then the registered default storage access is returned, otherwise <paramref name="specificStorageAccess"/>.</returns>
+        internal static IStorageAccess GetStorageAccess(this IStorageAccess specificStorageAccess)
         {
             IStorageAccess storageAccess = specificStorageAccess;
             if (specificStorageAccess == DefaultStorage)

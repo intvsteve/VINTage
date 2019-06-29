@@ -218,6 +218,8 @@
     <Compile Include="Utility\RandomUtilities.cs" />
     <Compile Include="Utility\Range.cs" />
     <Compile Include="Utility\IStorageAccessHelpers.cs" />
+    <Compile Include="Utility\StorageLocation.cs" />
+    <Compile Include="Utility\StorageLocationExtensions.cs" />
     <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="Utility\WeakKeyDictionary`TKey`TValue.cs" />
     <Compile Include="Utility\ResourceHelpers.cs" />

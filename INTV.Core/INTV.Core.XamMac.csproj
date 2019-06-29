@@ -176,6 +176,8 @@
     <Compile Include="Utility\Crc8.cs" />
     <Compile Include="Utility\FileMemo`T.cs" />
     <Compile Include="Utility\IStorageAccess.cs" />
+    <Compile Include="Utility\StorageLocation.cs" />
+    <Compile Include="Utility\StorageLocationExtensions.cs" />
     <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="Model\Program\Bee3Features.cs" />
     <Compile Include="Model\Program\CuttleCart3Features.cs" />

@@ -115,9 +115,9 @@ namespace INTV.Core.Model
                 {
                     if (IsValid)
                     {
-                        if (StreamUtilities.FileExists(RomPath))
+                        if (IStorageAccessHelpers.FileExists(RomPath))
                         {
-                            using (var file = StreamUtilities.OpenFileStream(RomPath))
+                            using (var file = IStorageAccessHelpers.OpenFileStream(RomPath))
                             {
                                 var offsetIntoFile = GetMetadataOffset(file);
                                 while (offsetIntoFile < file.Length)
@@ -161,7 +161,7 @@ namespace INTV.Core.Model
             IsValid = !string.IsNullOrEmpty(RomPath);
             if (IsValid)
             {
-                IsValid = StreamUtilities.FileExists(RomPath);
+                IsValid = IStorageAccessHelpers.FileExists(RomPath);
             }
             return IsValid;
         }
@@ -172,7 +172,7 @@ namespace INTV.Core.Model
             var crc = _crc;
             if (IsValid)
             {
-                if (StreamUtilities.FileExists(RomPath))
+                if (IStorageAccessHelpers.FileExists(RomPath))
                 {
                     uint dontCare;
                     _crc = GetCrcs(Format, RomPath, null, out dontCare);
@@ -224,7 +224,7 @@ namespace INTV.Core.Model
             var format = CheckMemo(filePath);
             if (format == RomFormat.None)
             {
-                using (var file = StreamUtilities.OpenFileStream(filePath))
+                using (var file = IStorageAccessHelpers.OpenFileStream(filePath))
                 {
                     format = CheckFormat(file);
                 }
@@ -294,7 +294,7 @@ namespace INTV.Core.Model
             cfgCrc = 0;
             uint romCrc = 0;
 
-            if (StreamUtilities.FileExists(romPath))
+            if (IStorageAccessHelpers.FileExists(romPath))
             {
                 byte replacementByte = AutoBaudBytes[format];
 

@@ -415,7 +415,7 @@ namespace INTV.Core.Model
         private class LuigiHeaderMemo : FileMemo<LuigiFileHeader>
         {
             public LuigiHeaderMemo()
-                : base(StreamUtilities.DefaultStorage)
+                : base(IStorageAccessHelpers.DefaultStorage)
             {
             }
 
@@ -431,7 +431,7 @@ namespace INTV.Core.Model
                 LuigiFileHeader luigiHeader = null;
                 try
                 {
-                    using (var file = StreamUtilities.OpenFileStream(filePath))
+                    using (var file = IStorageAccessHelpers.OpenFileStream(filePath))
                     {
                         var reader = new INTV.Core.Utility.BinaryReader(file);
                         byte[] header = reader.ReadBytes(MagicKey.Length);

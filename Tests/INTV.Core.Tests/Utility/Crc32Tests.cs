@@ -89,7 +89,7 @@ namespace INTV.Core.Tests.Utility
             // We use a privately defined type for the storage access to check initialize and remove, which will
             // hopefully guarantee that we use the expected storage during this test.
             var storageAcces = new Crc32TestStorageAccess();
-            StreamUtilities.Initialize(storageAcces);
+            IStorageAccessHelpers.Initialize(storageAcces);
             var ignoreRanges = new[] { new Range<int>(10, 200) };
             Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(null));
             Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(null, ignoreRanges));
@@ -102,9 +102,9 @@ namespace INTV.Core.Tests.Utility
             // We use a privately defined type for the storage access to check initialize and remove, which will
             // hopefully guarantee that we use the expected storage during this test.
             var storageAcces = new Crc32TestStorageAccess();
-            StreamUtilities.Initialize(storageAcces);
+            IStorageAccessHelpers.Initialize(storageAcces);
             var testFileName = "~/Crc32_OfFile_IsCorrect.dat";
-            using (var fileStream = StreamUtilities.OpenFileStream(testFileName))
+            using (var fileStream = IStorageAccessHelpers.OpenFileStream(testFileName))
             {
                 var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
                 fileStream.Write(testData, 0, testData.Length);
@@ -119,9 +119,9 @@ namespace INTV.Core.Tests.Utility
             // We use a privately defined type for the storage access to check initialize and remove, which will
             // hopefully guarantee that we use the expected storage during this test.
             var storageAcces = new Crc32TestStorageAccess();
-            StreamUtilities.Initialize(storageAcces);
+            IStorageAccessHelpers.Initialize(storageAcces);
             var testFileName = "~/Crc32_OfFileWithIgnoreRange_IsCorrect.dat";
-            using (var fileStream = StreamUtilities.OpenFileStream(testFileName))
+            using (var fileStream = IStorageAccessHelpers.OpenFileStream(testFileName))
             {
                 var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
                 fileStream.Write(testData, 0, testData.Length);
@@ -138,8 +138,8 @@ namespace INTV.Core.Tests.Utility
             // hopefully guarantee that we use the expected storage during this test.
             var storageAcces = new Crc32TestStorageAccess();
             var testFileName = "~/Crc32_OfFileWithAlternateFirstByte_IsCorrect.dat";
-            StreamUtilities.Initialize(storageAcces);
-            using (var fileStream = StreamUtilities.OpenFileStream(testFileName))
+            IStorageAccessHelpers.Initialize(storageAcces);
+            using (var fileStream = IStorageAccessHelpers.OpenFileStream(testFileName))
             {
                 var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
                 fileStream.Write(testData, 0, testData.Length);

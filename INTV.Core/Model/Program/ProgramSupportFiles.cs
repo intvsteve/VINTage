@@ -374,10 +374,10 @@ namespace INTV.Core.Model.Program
                     {
                         var previousValidationState = ProgramSupportFileState.None;
                         _supportFileStates.TryGetValue(whichFile, out previousValidationState);
-                        if (!StreamUtilities.FileExists(RomImagePath))
+                        if (!IStorageAccessHelpers.FileExists(RomImagePath))
                         {
                             validationState = ProgramSupportFileState.Missing;
-                            if (AlternateRomImagePaths.Any(p => StreamUtilities.FileExists(p)))
+                            if (AlternateRomImagePaths.Any(p => IStorageAccessHelpers.FileExists(p)))
                             {
                                 validationState = ProgramSupportFileState.MissingWithAlternateFound;
                             }

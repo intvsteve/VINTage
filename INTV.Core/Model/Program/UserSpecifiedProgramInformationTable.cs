@@ -73,7 +73,7 @@ namespace INTV.Core.Model.Program
             UserSpecifiedProgramInformationTable table = null;
             try
             {
-                using (var fileStream = StreamUtilities.OpenFileStream(localFilePath))
+                using (var fileStream = IStorageAccessHelpers.OpenFileStream(localFilePath))
                 {
                     if (fileStream != null)
                     {

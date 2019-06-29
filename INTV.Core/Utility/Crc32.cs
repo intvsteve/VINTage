@@ -494,7 +494,7 @@ namespace INTV.Core.Utility
         private class Crc32Memo : FileMemo<uint>
         {
             public Crc32Memo()
-                : base(StreamUtilities.DefaultStorage)
+                : base(IStorageAccessHelpers.DefaultStorage)
             {
             }
 
@@ -508,7 +508,7 @@ namespace INTV.Core.Utility
             protected override uint GetMemo(string filePath, object data)
             {
                 uint crc = InitialValue;
-                using (var fileStream = StreamUtilities.OpenFileStream(filePath, StorageAccess))
+                using (var fileStream = IStorageAccessHelpers.OpenFileStream(filePath, StorageAccess))
                 {
                     var supportData = (Tuple<bool, byte, IEnumerable<Range<int>>>)data;
                     var replaceFirstByte = supportData.Item1;

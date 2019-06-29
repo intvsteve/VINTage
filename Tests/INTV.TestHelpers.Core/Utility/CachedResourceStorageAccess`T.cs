@@ -218,7 +218,7 @@ namespace INTV.TestHelpers.Core.Utility
         {
             var storageAccess = new T();
             storageAccess._self = storageAccess;
-            StreamUtilities.Initialize(storageAccess);
+            IStorageAccessHelpers.Initialize(storageAccess);
             storageAccess.AddCachedResource(resourcePath, resourcePath, typeForLocatingResources);
 
             if (additionalResourcePaths != null)

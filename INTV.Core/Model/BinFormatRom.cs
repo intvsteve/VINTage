@@ -100,13 +100,13 @@ namespace INTV.Core.Model
                     {
                         if (ConfigPath != null)
                         {
-                            if (StreamUtilities.FileExists(ConfigPath))
+                            if (IStorageAccessHelpers.FileExists(ConfigPath))
                             {
                                 if (MetadataCacheEnabled && (_metadata != null))
                                 {
                                     return _metadata;
                                 }
-                                using (var file = StreamUtilities.OpenFileStream(ConfigPath))
+                                using (var file = IStorageAccessHelpers.OpenFileStream(ConfigPath))
                                 {
                                     metadata = CfgVarMetadataBlock.InflateAll(file);
                                 }
@@ -146,13 +146,13 @@ namespace INTV.Core.Model
             var isValid = !string.IsNullOrEmpty(RomPath);
             if (isValid)
             {
-                isValid = StreamUtilities.FileExists(RomPath);
+                isValid = IStorageAccessHelpers.FileExists(RomPath);
             }
             if (isValid)
             {
                 if (!string.IsNullOrEmpty(ConfigPath))
                 {
-                    isValid = StreamUtilities.FileExists(ConfigPath);
+                    isValid = IStorageAccessHelpers.FileExists(ConfigPath);
                 }
             }
             IsValid = isValid;
@@ -165,7 +165,7 @@ namespace INTV.Core.Model
             var crc = _crc;
             if (IsValid)
             {
-                if (StreamUtilities.FileExists(RomPath))
+                if (IStorageAccessHelpers.FileExists(RomPath))
                 {
                     uint dontCare;
                     _crc = GetCrcs(RomPath, null, out dontCare);
@@ -187,7 +187,7 @@ namespace INTV.Core.Model
             {
                 if (!string.IsNullOrEmpty(ConfigPath))
                 {
-                    if (StreamUtilities.FileExists(ConfigPath))
+                    if (IStorageAccessHelpers.FileExists(ConfigPath))
                     {
                         GetCrcs(null, ConfigPath, out _cfgCrc);
                         if (cfgCrc == 0)
@@ -226,7 +226,7 @@ namespace INTV.Core.Model
             var format = CheckFormat(filePath);
             if (format == RomFormat.Bin)
             {
-                using (System.IO.Stream configFile = (configFilePath == null) ? null : StreamUtilities.OpenFileStream(configFilePath))
+                using (System.IO.Stream configFile = (configFilePath == null) ? null : IStorageAccessHelpers.OpenFileStream(configFilePath))
                 {
                     // any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason, these all seem to be a multiple of
                     // 8KB + 1 byte in size. So allow those through, too.
@@ -250,7 +250,7 @@ namespace INTV.Core.Model
             var format = CheckMemo(filePath);
             if (format == RomFormat.None)
             {
-                using (System.IO.Stream file = StreamUtilities.OpenFileStream(filePath))
+                using (System.IO.Stream file = IStorageAccessHelpers.OpenFileStream(filePath))
                 {
                     var fileSizeCheck = file != null;
                     if (fileSizeCheck)
@@ -311,11 +311,11 @@ namespace INTV.Core.Model
         {
             cfgCrc = 0;
             uint romCrc = 0;
-            if (!string.IsNullOrEmpty(romPath) && StreamUtilities.FileExists(romPath))
+            if (!string.IsNullOrEmpty(romPath) && IStorageAccessHelpers.FileExists(romPath))
             {
                 romCrc = Crc32.OfFile(romPath);
             }
-            if (!string.IsNullOrEmpty(cfgPath) && StreamUtilities.FileExists(cfgPath))
+            if (!string.IsNullOrEmpty(cfgPath) && IStorageAccessHelpers.FileExists(cfgPath))
             {
                 cfgCrc = Crc32.OfFile(cfgPath);
             }

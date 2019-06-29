@@ -149,7 +149,7 @@ namespace INTV.Core.Utility
         private class Crc24Memo : FileMemo<uint>
         {
             public Crc24Memo()
-                : base(StreamUtilities.DefaultStorage)
+                : base(IStorageAccessHelpers.DefaultStorage)
             {
             }
 
@@ -163,7 +163,7 @@ namespace INTV.Core.Utility
             protected override uint GetMemo(string filePath, object data)
             {
                 uint crc = InitialValue;
-                using (var fileStream = StreamUtilities.OpenFileStream(filePath, StorageAccess))
+                using (var fileStream = IStorageAccessHelpers.OpenFileStream(filePath, StorageAccess))
                 {
                     fileStream.Seek(0, SeekOrigin.Begin);
                     crc = OfStream(fileStream, InitialValue);

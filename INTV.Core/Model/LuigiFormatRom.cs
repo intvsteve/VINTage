@@ -85,7 +85,7 @@ namespace INTV.Core.Model
             IsValid = !string.IsNullOrEmpty(RomPath);
             if (IsValid)
             {
-                IsValid = StreamUtilities.FileExists(RomPath);
+                IsValid = IStorageAccessHelpers.FileExists(RomPath);
             }
             return IsValid;
         }
@@ -132,7 +132,7 @@ namespace INTV.Core.Model
                 {
                     if (_crc24 == 0)
                     {
-                        if (StreamUtilities.FileExists(RomPath))
+                        if (IStorageAccessHelpers.FileExists(RomPath))
                         {
                             _crc24 = INTV.Core.Utility.Crc24.OfFile(RomPath);
                         }
@@ -197,7 +197,7 @@ namespace INTV.Core.Model
             var format = CheckMemo(filePath);
             if (format == RomFormat.None)
             {
-                using (var file = StreamUtilities.OpenFileStream(filePath))
+                using (var file = IStorageAccessHelpers.OpenFileStream(filePath))
                 {
                     if (file != null)
                     {
@@ -279,7 +279,7 @@ namespace INTV.Core.Model
                     }
                 }
             }
-            if (romCrc == 0 && StreamUtilities.FileExists(romPath))
+            if (romCrc == 0 && IStorageAccessHelpers.FileExists(romPath))
             {
                 usedLuigiFileCrc = true;
                 romCrc = INTV.Core.Utility.Crc32.OfFile(romPath);
@@ -326,9 +326,9 @@ namespace INTV.Core.Model
         internal T LocateDataBlock<T>() where T : LuigiDataBlock
         {
             var dataBlock = default(T);
-            if (StreamUtilities.FileExists(RomPath))
+            if (IStorageAccessHelpers.FileExists(RomPath))
             {
-                using (var file = StreamUtilities.OpenFileStream(RomPath))
+                using (var file = IStorageAccessHelpers.OpenFileStream(RomPath))
                 {
                     if (file != null)
                     {
@@ -375,7 +375,7 @@ namespace INTV.Core.Model
         private class LuigiUniqueIdMemo : FileMemo<string>
         {
             public LuigiUniqueIdMemo()
-                : base(StreamUtilities.DefaultStorage)
+                : base(IStorageAccessHelpers.DefaultStorage)
             {
             }
 

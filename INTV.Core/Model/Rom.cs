@@ -284,7 +284,7 @@ namespace INTV.Core.Model
         private class RomFormatMemo : FileMemo<RomFormat>
         {
             public RomFormatMemo()
-                : base(StreamUtilities.DefaultStorage)
+                : base(IStorageAccessHelpers.DefaultStorage)
             {
             }
 

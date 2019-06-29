@@ -59,7 +59,7 @@ namespace INTV.Core.Utility
             memo = DefaultMemoValue;
             var foundMemo = false;
             Tuple<long, DateTime, T> memorandum;
-            if (!StreamUtilities.FileExists(filePath, StorageAccess))
+            if (!IStorageAccessHelpers.FileExists(filePath, StorageAccess))
             {
                 if (_memos.TryRemove(filePath, out memorandum))
                 {
@@ -68,7 +68,7 @@ namespace INTV.Core.Utility
             }
             else
             {
-                foundMemo = _memos.TryGetValue(filePath, out memorandum) && (StreamUtilities.FileSize(filePath, StorageAccess) == memorandum.Item1) && (StreamUtilities.LastFileWriteTimeUtc(filePath, StorageAccess) == memorandum.Item2);
+                foundMemo = _memos.TryGetValue(filePath, out memorandum) && (IStorageAccessHelpers.FileSize(filePath, StorageAccess) == memorandum.Item1) && (IStorageAccessHelpers.LastFileWriteTimeUtc(filePath, StorageAccess) == memorandum.Item2);
             }
             if (foundMemo)
             {
@@ -88,10 +88,10 @@ namespace INTV.Core.Utility
         public bool AddMemo(string filePath, T memo)
         {
 #if ENABLE_MEMOS
-            var added = IsValidMemo(memo) && StreamUtilities.FileExists(filePath, StorageAccess);
+            var added = IsValidMemo(memo) && IStorageAccessHelpers.FileExists(filePath, StorageAccess);
             if (added)
             {
-                _memos[filePath] = new Tuple<long, DateTime, T>(StreamUtilities.FileSize(filePath, StorageAccess), StreamUtilities.LastFileWriteTimeUtc(filePath, StorageAccess), memo);
+                _memos[filePath] = new Tuple<long, DateTime, T>(IStorageAccessHelpers.FileSize(filePath, StorageAccess), IStorageAccessHelpers.LastFileWriteTimeUtc(filePath, StorageAccess), memo);
             }
             else
             {

@@ -68,7 +68,7 @@ namespace INTV.Core.Tests.Utility
             int memo = 42; // just use a bogus memo
             var memos = new TestFileMemo();
 
-            using (StreamUtilities.OpenFileStream(testFileName, memos.Storage))
+            using (IStorageAccessHelpers.OpenFileStream(testFileName, memos.Storage))
             {
                 Assert.True(memos.AddMemo(testFileName, memo));
             }
@@ -83,7 +83,7 @@ namespace INTV.Core.Tests.Utility
             int memo = 42; // just use a bogus memo
             var memos = new TestFileMemo();
 
-            using (StreamUtilities.OpenFileStream(testFileName, memos.Storage))
+            using (IStorageAccessHelpers.OpenFileStream(testFileName, memos.Storage))
             {
                 Assert.True(memos.AddMemo(testFileName, memo));
                 Assert.False(memos.AddMemo(testFileName, TestFileMemo.InitialMemoValue));
@@ -140,10 +140,10 @@ namespace INTV.Core.Tests.Utility
 
             var originalLastWriteTime = memos.Storage.LastWriteTimeUtc(testFileName);
             Thread.Sleep(1); // ugh... but tests can run fast enough to fail w/ equal timestamps
-            var originalSize = StreamUtilities.FileSize(testFileName, memos.Storage);
+            var originalSize = IStorageAccessHelpers.FileSize(testFileName, memos.Storage);
             file.Seek(0, SeekOrigin.End);
             file.WriteByte(0xFF);
-            Assert.NotEqual(originalSize, StreamUtilities.FileSize(testFileName, memos.Storage));
+            Assert.NotEqual(originalSize, IStorageAccessHelpers.FileSize(testFileName, memos.Storage));
             memos.Storage.SetLastWriteTimeUtc(testFileName, originalLastWriteTime);
             Assert.Equal(originalLastWriteTime, memos.Storage.LastWriteTimeUtc(testFileName));
 
@@ -163,13 +163,13 @@ namespace INTV.Core.Tests.Utility
             var memo = TestFileMemo.ComputeMemoValue(file);
             Assert.True(memos.AddMemo(testFileName, memo));
 
-            var originalLastWriteTime = StreamUtilities.LastFileWriteTimeUtc(testFileName, memos.Storage);
+            var originalLastWriteTime = IStorageAccessHelpers.LastFileWriteTimeUtc(testFileName, memos.Storage);
             Thread.Sleep(1); // ugh... but tests can run fast enough to fail w/ equal timestamps
-            var originalSize = StreamUtilities.FileSize(testFileName, memos.Storage);
+            var originalSize = IStorageAccessHelpers.FileSize(testFileName, memos.Storage);
             file.Seek(0, SeekOrigin.End);
             file.WriteByte(0xFF);
-            Assert.NotEqual(originalSize, StreamUtilities.FileSize(testFileName, memos.Storage));
-            Assert.NotEqual(originalLastWriteTime, StreamUtilities.LastFileWriteTimeUtc(testFileName, memos.Storage));
+            Assert.NotEqual(originalSize, IStorageAccessHelpers.FileSize(testFileName, memos.Storage));
+            Assert.NotEqual(originalLastWriteTime, IStorageAccessHelpers.LastFileWriteTimeUtc(testFileName, memos.Storage));
 
             var returnedMemo = memo;
             Assert.False(memos.CheckMemo(testFileName, out returnedMemo));
@@ -344,7 +344,7 @@ namespace INTV.Core.Tests.Utility
             protected override int GetMemo(string filePath, object data)
             {
                 CalledGetMemo = true;
-                var stream = StreamUtilities.OpenFileStream(filePath, StorageAccess);
+                var stream = IStorageAccessHelpers.OpenFileStream(filePath, StorageAccess);
                 var memoValue = ComputeMemoValue(stream);
                 return memoValue;
             }

@@ -34,13 +34,13 @@ namespace INTV.Core.Tests.Utility
         [Fact]
         public void StreamUtilities_RegisterNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => StreamUtilities.Initialize(null));
+            Assert.Throws<ArgumentNullException>(() => IStorageAccessHelpers.Initialize(null));
         }
 
         [Fact]
         public void StreamUtilities_RemoveNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => StreamUtilities.Remove(null));
+            Assert.Throws<ArgumentNullException>(() => IStorageAccessHelpers.Remove(null));
         }
 
         [Fact]
@@ -50,12 +50,12 @@ namespace INTV.Core.Tests.Utility
 
             // We use a privately defined type for the storage access to check initialize and remove, which will
             // also guarantee that there is a default storage access at least for the duration of this test.
-            Assert.True(StreamUtilities.Initialize(storageAcces));
-            Assert.False(StreamUtilities.Initialize(storageAcces));
-            Assert.NotNull(StreamUtilities.DefaultStorageAccess);
-            Assert.False(StreamUtilities.FileExists(@"~-=</.\/_\/.\>=-~"));
-            Assert.True(StreamUtilities.Remove(storageAcces));
-            Assert.False(StreamUtilities.Remove(storageAcces));
+            Assert.True(IStorageAccessHelpers.Initialize(storageAcces));
+            Assert.False(IStorageAccessHelpers.Initialize(storageAcces));
+            Assert.NotNull(IStorageAccessHelpers.DefaultStorageAccess);
+            Assert.False(IStorageAccessHelpers.FileExists(@"~-=</.\/_\/.\>=-~"));
+            Assert.True(IStorageAccessHelpers.Remove(storageAcces));
+            Assert.False(IStorageAccessHelpers.Remove(storageAcces));
         }
 
         [Fact]
@@ -63,33 +63,33 @@ namespace INTV.Core.Tests.Utility
         {
             var storage = new TestStorageAccess();
             var testPath = @"~/open_create_path.dat";
-            using (var stream = StreamUtilities.OpenFileStream(testPath, storage))
+            using (var stream = IStorageAccessHelpers.OpenFileStream(testPath, storage))
             {
-                Assert.True(StreamUtilities.FileExists(testPath, storage));
+                Assert.True(IStorageAccessHelpers.FileExists(testPath, storage));
                 Assert.NotNull(stream);
             }
-            Assert.False(StreamUtilities.FileExists(testPath, storage));
+            Assert.False(IStorageAccessHelpers.FileExists(testPath, storage));
         }
 
         [Fact]
         public void StreamUtilitiesWithTestStorage_CallFileExistsWithNonexistentPath_ReturnsFalse()
         {
             var storage = new TestStorageAccess();
-            Assert.False(StreamUtilities.FileExists(@"SomeInvalidPathThatDoesNotExist", storage));
+            Assert.False(IStorageAccessHelpers.FileExists(@"SomeInvalidPathThatDoesNotExist", storage));
         }
 
         [Fact]
         public void StreamUtilitiesWithTestStorage_CallSizeWithNonexistentPath_ThrowsFileNotFoundException()
         {
             var storage = new TestStorageAccess();
-            Assert.Throws<FileNotFoundException>(() => StreamUtilities.FileSize(@"SomeBogusPathThatHasNoSize", storage));
+            Assert.Throws<FileNotFoundException>(() => IStorageAccessHelpers.FileSize(@"SomeBogusPathThatHasNoSize", storage));
         }
 
         [Fact]
         public void StreamUtilitiesWithTestStorage_CallLastWriteTimeUtcWithNonexistentPath_ReturnsDefaultDateTime()
         {
             var storage = new TestStorageAccess();
-            Assert.Equal(FileNotFoundTime, StreamUtilities.LastFileWriteTimeUtc(@"SomeSillyPathWithNoLastWriteTime", storage));
+            Assert.Equal(FileNotFoundTime, IStorageAccessHelpers.LastFileWriteTimeUtc(@"SomeSillyPathWithNoLastWriteTime", storage));
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace INTV.Core.Tests.Utility
             var testSize = 64;
             using (var testStream = storage.OpenOrCreate(testPath, testSize))
             {
-                Assert.Equal(testSize, StreamUtilities.FileSize(testPath, storage));
+                Assert.Equal(testSize, IStorageAccessHelpers.FileSize(testPath, storage));
             }
         }
 
@@ -109,7 +109,7 @@ namespace INTV.Core.Tests.Utility
         {
             var storage = new TestStorageAccess();
             var testPath = @"~/test_file_to_write.dat";
-            using (var stream = StreamUtilities.OpenFileStream(testPath, storage))
+            using (var stream = IStorageAccessHelpers.OpenFileStream(testPath, storage))
             {
                 var beforeWrite = DateTime.UtcNow;
                 int numBytesToWrite = 128;
@@ -117,9 +117,9 @@ namespace INTV.Core.Tests.Utility
                 {
                     stream.WriteByte(i);
                 }
-                Assert.Equal(numBytesToWrite, StreamUtilities.FileSize(testPath, storage));
+                Assert.Equal(numBytesToWrite, IStorageAccessHelpers.FileSize(testPath, storage));
                 var afterWrite = DateTime.UtcNow;
-                var lastWrite = StreamUtilities.LastFileWriteTimeUtc(testPath, storage);
+                var lastWrite = IStorageAccessHelpers.LastFileWriteTimeUtc(testPath, storage);
                 Assert.True(lastWrite >= beforeWrite);
                 Assert.True(lastWrite <= afterWrite);
             }

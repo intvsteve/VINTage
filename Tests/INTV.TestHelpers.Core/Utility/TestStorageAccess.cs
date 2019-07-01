@@ -1,5 +1,5 @@
 ﻿// <copyright file="TestStorageAccess.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -41,6 +41,25 @@ namespace INTV.TestHelpers.Core.Utility
         private static ConcurrentDictionary<string, TestStorageStream> FileSystem
         {
             get { return FakeFileSystem.Value; }
+        }
+
+        /// <summary>
+        /// Gets a storage location with a null path.
+        /// </summary>
+        public StorageLocation NullLocation
+        {
+            get { return new StorageLocation(null, this); }
+        }
+
+        /// <summary>
+        /// Creates a new storage location.
+        /// </summary>
+        /// <param name="path">The location in the storage.</param>
+        /// <returns>The new location.</returns>
+        public StorageLocation CreateLocation(string path)
+        {
+            var location = new StorageLocation(path, this);
+            return location;
         }
 
         /// <summary>

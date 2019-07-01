@@ -68,12 +68,12 @@ namespace INTV.Core.Model.Program
         /// <param name="localFilePath">Absolute path to a file storing the user-specified program information.</param>
         /// <returns>If the file path is valid, the returned table contains the user's locally defined program information. Otherwise, a new,
         /// empty table is returned.</returns>
-        public static IProgramInformationTable Initialize(string localFilePath)
+        public static IProgramInformationTable Initialize(StorageLocation localFilePath)
         {
             UserSpecifiedProgramInformationTable table = null;
             try
             {
-                using (var fileStream = IStorageAccessHelpers.OpenFileStream(localFilePath))
+                using (var fileStream = localFilePath.OpenStream())
                 {
                     if (fileStream != null)
                     {

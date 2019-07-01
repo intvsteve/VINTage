@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpersSupport.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -156,10 +156,10 @@ namespace INTV.TestHelpers.Core.Utility
             lock (RomInfos)
             {
                 var info = Enumerable.Empty<string>();
-                if (!string.IsNullOrEmpty(rom.RomPath))
+                if (!string.IsNullOrEmpty(rom.RomPath.Path))
                 {
                     RomInfoData romInfo;
-                    if (RomInfos.TryGetValue(rom.RomPath, out romInfo))
+                    if (RomInfos.TryGetValue(rom.RomPath.Path, out romInfo))
                     {
                         info = romInfo.Info;
                     }

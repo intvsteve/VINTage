@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -99,8 +99,6 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="rom">The ROM whose features are desired.</param>
         /// <returns>The ROM features.</returns>
-        /// <remarks>At this time, the implementation only extracts additional features from LUIGI-format ROMs. Future updates
-        /// may support parsing .cfg files associated with BIN format ROMs.</remarks>
         public static ProgramFeatures GetProgramFeatures(this IRom rom)
         {
             var features = ProgramFeatures.GetUnrecognizedRomFeatures();
@@ -223,10 +221,10 @@ namespace INTV.Core.Model
         #region BIN-related Helpers
 
         /// <summary>
-        /// Gets IProgramInformation from a .BIN-format file's metadata, if it is available.
+        /// Gets IProgramInformation from a .BIN-format ROM's metadata, if it is available.
         /// </summary>
         /// <param name="rom">The ROM from which metadata-based information is retrieved.</param>
-        /// <returns>IProgramInformation retrieved from the .BIN-format ROM's .cfg file.</returns>
+        /// <returns>IProgramInformation retrieved from the .BIN-format ROM's .cfg data.</returns>
         public static CfgFileMetadataProgramInformation GetBinFileMetadata(this IRom rom)
         {
             CfgFileMetadataProgramInformation programInfo = null;
@@ -247,7 +245,7 @@ namespace INTV.Core.Model
         #region ROM-related Helpers
 
         /// <summary>
-        /// Gets IProgramInformation from a .ROM-format file's metadata, if it is available.
+        /// Gets IProgramInformation from a .ROM-format image's metadata, if it is available.
         /// </summary>
         /// <param name="rom">The ROM from which metadata-based information is retrieved.</param>
         /// <returns>IProgramInformation retrieved from the .ROM-format ROM.</returns>
@@ -278,7 +276,7 @@ namespace INTV.Core.Model
         public static LuigiFileHeader GetLuigiHeader(this IRom rom)
         {
             LuigiFileHeader luigiHeader = null;
-            if ((rom != null) && (rom.Format == RomFormat.Luigi) && !string.IsNullOrEmpty(rom.RomPath) && IStorageAccessHelpers.FileExists(rom.RomPath) && LuigiFileHeader.PotentialLuigiFile(rom.RomPath))
+            if ((rom != null) && (rom.Format == RomFormat.Luigi) && rom.RomPath.IsValid && rom.RomPath.Exists() && LuigiFileHeader.PotentialLuigiFile(rom.RomPath))
             {
                 luigiHeader = LuigiFileHeader.GetHeader(rom.RomPath);
             }
@@ -344,7 +342,7 @@ namespace INTV.Core.Model
         }
 
         /// <summary>
-        /// Gets IProgramInformation from a LUIGI file's metadata, if it is available.
+        /// Gets IProgramInformation from a LUIGI image's metadata, if it is available.
         /// </summary>
         /// <param name="rom">The ROM from which metadata-based information is retrieved.</param>
         /// <returns>IProgramInformation retrieved from the LUIGI format ROM.</returns>
@@ -380,30 +378,30 @@ namespace INTV.Core.Model
         #region Stock Configuration File Helpers
 
         /// <summary>
-        /// Update the config file path of a ROM.
+        /// Update the config location of a ROM.
         /// </summary>
-        /// <param name="rom">The ROM whose config file path is being updated.</param>
-        /// <param name="cfgFile">The new config file path.</param>
-        public static void UpdateCfgFile(this IRom rom, string cfgFile)
+        /// <param name="rom">The ROM whose configuration location is being updated.</param>
+        /// <param name="cfgLocation">The new configuration location.</param>
+        public static void UpdateCfgFile(this IRom rom, StorageLocation cfgLocation)
         {
-            Rom.ReplaceCfgPath(rom, cfgFile);
+            Rom.ReplaceCfgPath(rom, cfgLocation);
         }
 
         /// <summary>
-        /// Retrieves a 'stock' .cfg file if the given ROM is of .bin format, and does not already have a .cfg associated with it.
+        /// Retrieves a 'stock' .cfg data if the given ROM is of .bin format, and does not already have a .cfg associated with it.
         /// </summary>
         /// <param name="rom">The ROM for which a .cfg is needed.</param>
         /// <param name="programInfo">Program information for the ROM.</param>
-        /// <returns>The path to a 'stock' .cfg file. These 'canonical' configuration files have been known to work with ROMs distributed
+        /// <returns>The location of a 'stock' .cfg data. These 'canonical' configuration data have been known to work with ROMs distributed
         /// with various products from Intellivision Productions' emulators, jzIntv, and other emulators. If the ROM cannot be identified
         /// via its CRC, then a default configuration for the ROM is assumed.</returns>
-        public static string GetStockCfgFile(this IRom rom, IProgramInformation programInfo)
+        public static StorageLocation GetStockCfgFile(this IRom rom, IProgramInformation programInfo)
         {
-            string stockCfgFilePath = null;
+            var stockCfgFilePath = StorageLocation.InvalidLocation;
             if (rom.Format == RomFormat.Bin)
             {
                 // The following is disabled because it turns out it may cause an infinite recursion. I.e. if programInfo is null,
-                // the act of retrieving program information on a .bin-format ROM w/o a .cfg file may result in... get this... another
+                // the act of retrieving program information on a .bin-format ROM w/o a .cfg data may result in... get this... another
                 // call to this method with a null programInfo!
                 ////programInfo = programInfo ?? rom.GetProgramInformation();
                 stockCfgFilePath = GetStockCfgFile(rom.Crc, rom.RomPath, programInfo);
@@ -412,78 +410,77 @@ namespace INTV.Core.Model
         }
 
         /// <summary>
-        /// Retrieves a 'stock' .cfg file if the given CRC matches a known ROM in .bin format.
+        /// Retrieves a 'stock' .cfg data if the given CRC matches a known ROM in .bin format.
         /// </summary>
-        /// <param name="crc">THe CRC of the ROM whose corresponding .cfg file is desired.</param>
-        /// <param name="romPath">Absolute path to the ROM on disk.</param>
+        /// <param name="crc">THe CRC of the ROM whose corresponding .cfg data is desired.</param>
+        /// <param name="romLocation">Location of the ROM.</param>
         /// <param name="programInfo">Program information for the ROM.</param>
-        /// <returns>The path to a 'stock' .cfg file. These 'canonical' configuration files have been known to work with ROMs distributed
+        /// <returns>The path to a 'stock' .cfg data. These 'canonical' configuration data have been known to work with ROMs distributed
         /// with various products from Intellivision Productions' emulators, jzIntv, and other emulators. If the ROM cannot be identified
         /// via its CRC, then a default configuration for the ROM is assumed.</returns>
-        public static string GetStockCfgFile(uint crc, string romPath, IProgramInformation programInfo)
+        public static StorageLocation GetStockCfgFile(uint crc, StorageLocation romLocation, IProgramInformation programInfo)
         {
-            string stockCfgFilePath = null;
             var stockConfigFileNumber = 0; // the default
             if (programInfo != null)
             {
-                // This direct ROM CRC compare is necessary because we don't *have* a .cfg file to check against.
+                // This direct ROM CRC compare is necessary because we don't *have* a .cfg data to check against.
                 var crcData = programInfo.Crcs.FirstOrDefault(c => c.Crc == crc);
                 if (crcData != null)
                 {
                     stockConfigFileNumber = crcData.BinConfigTemplate;
                 }
             }
-            stockCfgFilePath = GetStockCfgFilePath(stockConfigFileNumber);
+            var stockCfgFilePath = GetStockCfgFilePath(stockConfigFileNumber);
             return stockCfgFilePath;
         }
 
         /// <summary>
-        /// Gets a path to an existing stock config file path given its canonical CFG identifier.
+        /// Gets a path to an existing stock configuration location given its canonical CFG identifier.
         /// </summary>
-        /// <param name="stockConfigFileNumber">A positive integer value indicating which canonical configuration file whose disk location is desired.</param>
-        /// <returns>The absolute path to the file, or <c>null</c> if a file for the given canonical configuration file does not exist.</returns>
+        /// <param name="stockConfigFileNumber">A positive integer value indicating which canonical configuration data whose disk location is desired.</param>
+        /// <returns>The location of the data, or <see cref="StorageLocation.InvalidLocation"/> if data for the given canonical configuration data does not exist.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="stockConfigFileNumber"/> is less than zero.</exception>
-        public static string GetStockCfgFilePath(int stockConfigFileNumber)
+        public static StorageLocation GetStockCfgFilePath(int stockConfigFileNumber)
         {
             var stockCfgFileName = stockConfigFileNumber.ToString(CultureInfo.InvariantCulture) + ProgramFileKind.CfgFile.FileExtension();
             var stockCfgUri = new Uri(DefaultToolsDirectory + stockCfgFileName);
-            var stockCfgFilePath = Uri.UnescapeDataString(stockCfgUri.AbsolutePath); // Need to unescape spaces.
+            var stockCfgFilePath = new StorageLocation(Uri.UnescapeDataString(stockCfgUri.AbsolutePath)); // Need to unescape spaces.
 #if WIN
             stockCfgFilePath = stockCfgFilePath.Replace('/', System.IO.Path.DirectorySeparatorChar);
 #elif PCL
             // NOTE: This will, of course, cause trouble if we build PCL for non-Windows platforms, in which case the proper
-            // solution is to register the 'FixUpUri' method and use it instead... In fact, it would be better to just have a
-            // file system interface to use for stuff like this... Maybe imported via MEF or some such...
-            stockCfgFilePath = stockCfgFilePath.Replace('/', '\\');
+            // solution is to register the 'FixUpUri' method and use it instead... Consider having this on the IStorageAccess
+            // interface or the StorageLocation type itself?
+            stockCfgFilePath = new StorageLocation(stockCfgFilePath.Path.Replace('/', '\\'));
 #endif // WIN
-            if (!IStorageAccessHelpers.FileExists(stockCfgFilePath))
+            if (!stockCfgFilePath.Exists())
             {
-                stockCfgFilePath = null;
+                stockCfgFilePath = StorageLocation.InvalidLocation;
             }
             return stockCfgFilePath;
         }
 
         /// <summary>
-        /// Ensures that a configuration file can be located for a given ROM.
+        /// Ensures that a configuration data can be located for a given ROM.
         /// </summary>
-        /// <param name="rom">A ROM that may need a configuration (.cfg) file.</param>
+        /// <param name="rom">A ROM that may need configuration (.cfg) data.</param>
         /// <param name="programInfo">Detailed <see cref="IProgramInformation"/> providing detailed data about the ROM.</param>
-        /// <returns><c>true</c> if <paramref name="rom"/> uses an existing stock CFG file, <c>false</c> otherwise.</returns>
-        /// <remarks>If a ROM requires a configuration file, but one cannot be found, the best possible matching file will be searched for. This is only applicable
-        /// to .bin format ROMs (or their compatriots, .itv and .int files, typically). If <paramref name="rom"/> either does not provide a .cfg file, or
-        /// the file it provides cannot be found, the best possible match based on <paramref name="programInfo"/> will be used. If <paramref name="programInfo"/>
-        /// is also null, the CRC of the ROM will be checked against the active ROM database in memory for a possible stock .cfg file match. If the matching
-        /// stock file is found, then the function returns <c>true</c>.</remarks>
+        /// <returns><c>true</c> if <paramref name="rom"/> uses an existing stock CFG data, <c>false</c> otherwise.</returns>
+        /// <remarks>If a ROM requires configuration data, but one cannot be found, the best possible matching data will be searched for. This is only applicable
+        /// to .bin format ROMs (or their compatriots, .itv and .int files, typically). If <paramref name="rom"/> either does not provide a .cfg, or
+        /// the data it provides cannot be found, the best possible match based on <paramref name="programInfo"/> will be used. If <paramref name="programInfo"/>
+        /// is also null, the CRC of the ROM will be checked against the active ROM database in memory for a possible stock .cfg data match. If the matching
+        /// stock data is found, then the function returns <c>true</c>.</remarks>
         public static bool EnsureCfgFileProvided(this IRom rom, IProgramInformation programInfo)
         {
             var usesStockCfgFile = false;
-            if ((rom.Format == RomFormat.Bin) && (string.IsNullOrEmpty(rom.ConfigPath) || !IStorageAccessHelpers.FileExists(rom.ConfigPath)))
+            if ((rom.Format == RomFormat.Bin) && (!rom.ConfigPath.IsValid || !rom.ConfigPath.Exists()))
             {
-                var cfgFilePath = GetStockCfgFile(rom.Crc, rom.RomPath, programInfo);
-                usesStockCfgFile = !string.IsNullOrEmpty(cfgFilePath);
+                var cfgFileLocation = GetStockCfgFile(rom.Crc, rom.RomPath, programInfo);
+                usesStockCfgFile = cfgFileLocation.IsValid;
                 if (usesStockCfgFile)
                 {
-                    rom.UpdateCfgFile(cfgFilePath);
+                    rom.UpdateCfgFile(cfgFileLocation);
                 }
             }
             return usesStockCfgFile;
@@ -495,7 +492,7 @@ namespace INTV.Core.Model
         /// Checks the given ROM to determine if it is operating as an alternative version (referring to a backup location).
         /// </summary>
         /// <param name="rom">The <see cref="IRom"/> to check.</param>
-        /// <returns><c>true</c> if <paramref name="rom"/> refers to an alternative location of the ROM and its configuration file.</returns>
+        /// <returns><c>true</c> if <paramref name="rom"/> refers to an alternative location of the ROM and its configuration data.</returns>
         public static bool IsAlternateRom(this IRom rom)
         {
             return rom is AlternateRom;
@@ -553,24 +550,24 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="rom">The ROM to check for a match.</param>
         /// <param name="programIdentifier">The program identifier to match.</param>
-        /// <param name="cfgCrcMustMatch">If <c>true</c> and a .BIN format ROM is being checked, determines whether the CRC of the config file must match as well.</param>
+        /// <param name="cfgCrcMustMatch">If <c>true</c> and a .BIN format ROM is being checked, determines whether the CRC of the config data must match as well.</param>
         /// <returns><c>true</c> if <paramref name="rom"/>'s CRC data matches the given <paramref name="programIdentifier"/>, <c>false</c> otherwise.</returns>
         /// <remarks><para>For .BIN format ROMs, there is the possibility, depending on the value if <paramref name="cfgCrcMustMatch"/>, that a match is reported, even though
-        /// the .CFG file could have a profound impact on the actual ROM being used. The .CFG file can actually cause modifications to the ROM itself, or describe different
+        /// the .CFG data could have a profound impact on the actual ROM being used. The .CFG data can actually cause modifications to the ROM itself, or describe different
         /// features in the ROM (e.g. different compatibility or metadata). While metadata and compatibility differences could be considered cosmetic only, they can affect
         /// how the ROM is handled by hardware in the case of LTO Flash! for example. Most important of course is the matter of the memory map, RAM mappings, or actual
         /// code modification (e.g. the patch for Dreadnaught Factor for PAL systems). That said, until .CFG CRC values are computed on a 'canonicalized' form of the .CFG
-        /// file, it is important to note that mere whitespace changes will cause .CFG mismatches, making it fragile to do full compares when working with database.</para>
-        /// <para>Similarly, when working with the .ROM format, it is important to note that at this time, the CRC is computed for the entire file, including metadata that
-        /// may be provided. This means that mismatches can occur because a documentation credit was modified in the metadata of one version of the file, even though
+        /// data, it is important to note that mere whitespace changes will cause .CFG mismatches, making it fragile to do full compares when working with database.</para>
+        /// <para>Similarly, when working with the .ROM format, it is important to note that at this time, the CRC is computed for the entire data, including metadata that
+        /// may be provided. This means that mismatches can occur because a documentation credit was modified in the metadata of one version of the data, even though
         /// the executable ROM itself was not changed.</para>
         /// <para>Finally, for the LUIGI format, there is an additional challenge. To this point, this ROM format is only used as the destination format for ROMs copied to
         /// the LTO Flash! hardware, though the jzIntv emulator supports it as well. As such, it is more than a container format for .BIN or .ROM formats, as it is different
         /// in several important ways. However, it has not yet (and possibly will never become) a target ROM format. It addresses some deficiencies in the original .ROM format
         /// that parallel the limitations of the original Intellicart and CuttleCart 3 hardware. That said, in theory the LUIGI header's UID entry poses a challenge. If the
-        /// LUIGI file was created from a .ROM-format ROM, it is unambiguous. However, thereafter it is not clear if the file was created directly from the assembler, in which
-        /// case the UID contains an as-yet-to-be-defined strong hash of something, or wither it contains a pair of 32-bit CRC values, one from the .BIN file, the other from
-        /// the corresponding .CFG file. Given the nature of more modern Intellivision programs to commonly stray from the standard set of common .CFG files (and memory maps),
+        /// LUIGI image was created from a .ROM-format ROM, it is unambiguous. However, thereafter it is not clear if the image was created directly from the assembler, in which
+        /// case the UID contains an as-yet-to-be-defined strong hash of something, or wither it contains a pair of 32-bit CRC values, one from the .BIN image, the other from
+        /// the corresponding .CFG data. Given the nature of more modern Intellivision programs to commonly stray from the standard set of common .CFG data (and memory maps),
         /// it will be an interesting challenge to distinguish a LUIGI created via bin2luigi from one created directly by the assembler. In such a case, most likely we'd want
         /// to bump the version number of the LUIGI header and at least set a flag somewhere in the sea of bits that we swim through to figure out all these intricacies.</para></remarks>
         public static bool MatchesProgramIdentifier(this IRom rom, ProgramIdentifier programIdentifier, bool cfgCrcMustMatch)

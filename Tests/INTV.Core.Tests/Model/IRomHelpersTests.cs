@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpersTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -46,7 +47,7 @@ namespace INTV.Core.Tests.Model
         public void IRomHelpers_GetProgramFeaturesForNonLuigiFormatRom_ReturnsUnrecognizedProgramFeatures()
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestCc3Path).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             var features = rom.GetProgramFeatures();
@@ -60,7 +61,7 @@ namespace INTV.Core.Tests.Model
         public void IRomHelpers_GetProgramFeaturesForLuigiFormatRom_ReturnsExpectedProgramFeatures(string testLuigiRomPath)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(testLuigiRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             var features = rom.GetProgramFeatures();
@@ -89,7 +90,7 @@ namespace INTV.Core.Tests.Model
             var rom = Rom.Create(romPath, cfgPath);
             Assert.NotNull(rom);
 
-            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath))
+            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath.Path))
             {
                 EnsureDatabaseEntryNotPresent(TestRomResources.TestBinCrc);
                 var programInformation = rom.GetProgramInformation();
@@ -118,7 +119,7 @@ namespace INTV.Core.Tests.Model
             var date = "1999";
             var shortName = "Tagger";
 
-            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath, name, date, shortName))
+            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath.Path, name, date, shortName))
             {
                 EnsureDatabaseEntryNotPresent(TestRomResources.TestBinCrc);
                 var programInformation = rom.GetProgramInformation();
@@ -154,7 +155,7 @@ namespace INTV.Core.Tests.Model
             expectedProgramFeatures.LtoFlash = LtoFlashFeatures.Requires | LtoFlashFeatures.LtoFlashMemoryMapped;
             expectedProgramFeatures.Tutorvision = FeatureCompatibility.Incompatible;
 
-            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath))
+            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath.Path))
             {
                 EnsureDatabaseEntryNotPresent(TestRomResources.TestBinCrc);
                 var programInformation = rom.GetProgramInformation();
@@ -190,7 +191,7 @@ namespace INTV.Core.Tests.Model
             expectedProgramFeatures.LtoFlash = LtoFlashFeatures.Requires | LtoFlashFeatures.LtoFlashMemoryMapped;
             expectedProgramFeatures.Tutorvision = FeatureCompatibility.Incompatible;
 
-            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath, "Tag-A-Long Mr. Toad!", "1945", "Tagger"))
+            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath.Path, "Tag-A-Long Mr. Toad!", "1945", "Tagger"))
             {
                 EnsureDatabaseEntryNotPresent(TestRomResources.TestBinCrc);
                 var programInformation = rom.GetProgramInformation();
@@ -224,10 +225,10 @@ namespace INTV.Core.Tests.Model
             testRomInfo.AddCrc(TestRomResources.TestRomCrc, "Rock On, Honorable Ones", IncompatibilityFlags.None);
             testDatabase.AddProgram(testRomInfo);
             InitializeTestProgramInfoDatabase(testDatabase);
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
-            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath))
+            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath.Path))
             {
                 var programInformation = rom.GetProgramInformation();
 
@@ -260,10 +261,10 @@ namespace INTV.Core.Tests.Model
             testRomInfo.AddCrc(TestRomResources.TestBinCrc, "etiquette of violence", IncompatibilityFlags.None);
             testDatabase.AddProgram(testRomInfo);
             InitializeTestProgramInfoDatabase(testDatabase);
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
-            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath, "This is a name", "1984", "bob"))
+            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath.Path, "This is a name", "1984", "bob"))
             {
                 var programInformation = rom.GetProgramInformation();
 
@@ -296,14 +297,14 @@ namespace INTV.Core.Tests.Model
             testRomInfo.AddCrc(TestRomResources.TestRomMetadataCrc, "White Music", IncompatibilityFlags.None);
             testDatabase.AddProgram(testRomInfo);
             InitializeTestProgramInfoDatabase(testDatabase);
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
             var metadata = rom.GetProgramMetadata() as RomFileMetadataProgramInformation;
             Assert.NotNull(metadata);
             var expectedFeatures = metadata.Features.Clone();
             expectedFeatures.JlpHardwareVersion = JlpHardwareVersion.Jlp04;
 
-            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath))
+            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath.Path))
             {
                 var programInformation = rom.GetProgramInformation();
 
@@ -336,14 +337,14 @@ namespace INTV.Core.Tests.Model
             testRomInfo.AddCrc(TestRomResources.TestBinCrc, "Zenyatta Mendatta", IncompatibilityFlags.None);
             testDatabase.AddProgram(testRomInfo);
             InitializeTestProgramInfoDatabase(testDatabase);
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
             var metadata = rom.GetProgramMetadata() as LuigiFileMetadataProgramInformation;
             Assert.NotNull(metadata);
             var expectedFeatures = metadata.Features.Clone();
             expectedFeatures.JlpHardwareVersion = JlpHardwareVersion.Jlp05;
 
-            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath, "Toady FiBodey Modi", "1985", "Z'up"))
+            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath.Path, "Toady FiBodey Modi", "1985", "Z'up"))
             {
                 var programInformation = rom.GetProgramInformation();
 
@@ -373,11 +374,11 @@ namespace INTV.Core.Tests.Model
             testRomInfo.AddCrc(TestRomResources.TestBinCrc, "Odysseus 7", IncompatibilityFlags.None);
             testDatabase.AddProgram(testRomInfo);
             InitializeTestProgramInfoDatabase(testDatabase);
-            IReadOnlyList<string> paths;
+            IReadOnlyList<StorageLocation> paths;
             var storageAccess = IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var romPath = paths[0];
             var cfgPath = paths[1];
-            using (var cfgFile = storageAccess.Open(cfgPath))
+            using (var cfgFile = storageAccess.Open(cfgPath.Path))
             {
                 cfgFile.Seek(0, SeekOrigin.End);
                 var textToAppend =
@@ -395,7 +396,7 @@ Year = 2112
             Assert.NotNull(metadata);
             var intvnameShortName = "Whee!";
 
-            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath, "Rip Van de Coot", "1905", intvnameShortName))
+            using (IRomHelpersSupport.AddSelfCleaningRomInfo(romPath.Path, "Rip Van de Coot", "1905", intvnameShortName))
             {
                 var programInformation = rom.GetProgramInformation();
 
@@ -427,7 +428,7 @@ Year = 2112
         public void IRomHelpers_CanExecuteOnDeviceWithNonLuigiRom_ReturnsTrue(string deviceId)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestAdvPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.True(rom.CanExecuteOnDevice(deviceId));
@@ -443,7 +444,7 @@ Year = 2112
         public void IRomHelpers_CanExecuteOnDeviceWithNonScrambledLuigiRom_ReturnsTrue(string deviceId)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiFromRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.True(rom.CanExecuteOnDevice(deviceId));
@@ -459,7 +460,7 @@ Year = 2112
         public void IRomHelpers_CanExecuteOnDeviceWithScrambledForAnyLuigiRom_ReturnsTrue(string deviceId)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForAnyDevicePath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.True(rom.CanExecuteOnDevice(deviceId));
@@ -475,7 +476,7 @@ Year = 2112
         public void IRomHelpers_CanExecuteOnDeviceWithScrambledForSpecificLuigiRom_ReturnsTrue(string deviceId, bool expectedCanExecuteOnDevice)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForDevice1Path).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.Equal(expectedCanExecuteOnDevice, rom.CanExecuteOnDevice(deviceId));
@@ -489,12 +490,12 @@ Year = 2112
         [InlineData(-1)]
         [InlineData(10)]
         [InlineData(123456)]
-        public void IRomHelpers_GetStockCfgFilePathWithInvalidStockPathNumber_ReturnsNull(int stockCfgFileNumber)
+        public void IRomHelpers_GetStockCfgFilePathWithInvalidStockPathNumber_ReturnsInvalidLocation(int stockCfgFileNumber)
         {
             string toolsDir;
             IRomHelpersTestStorageAccess.Initialize().WithDefaultToolsDirectory(out toolsDir);
 
-            Assert.Null(IRomHelpers.GetStockCfgFilePath(stockCfgFileNumber));
+            Assert.Equal(StorageLocation.InvalidLocation, IRomHelpers.GetStockCfgFilePath(stockCfgFileNumber));
         }
 
         [Theory]
@@ -514,8 +515,8 @@ Year = 2112
 
             var stockCfgFilePath = IRomHelpers.GetStockCfgFilePath(stockCfgFileNumber);
 
-            Assert.False(string.IsNullOrEmpty(stockCfgFilePath));
-            Assert.True(storageAccess.Exists(stockCfgFilePath));
+            Assert.False(string.IsNullOrEmpty(stockCfgFilePath.Path));
+            Assert.True(storageAccess.Exists(stockCfgFilePath.Path));
         }
 
         #endregion // GetStockCfgFilePath
@@ -536,7 +537,7 @@ Year = 2112
         public void IRomHelpers_EnsureCfgFileProvidedWithNonBinFormatRomAndNoProgramInformation_ReturnsFalse(string romResourcePath)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(romResourcePath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.False(rom.EnsureCfgFileProvided(null));
@@ -548,7 +549,7 @@ Year = 2112
         public void IRomHelpers_EnsureCfgFileProvidedWithNonBinFormatRomWithProgramInformation_ReturnsFalse(string romResourcePath)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(romResourcePath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
             var programInformation = rom.GetProgramMetadata() as IProgramInformation;
             Assert.NotNull(programInformation);
@@ -559,9 +560,9 @@ Year = 2112
         [Fact]
         public void IRomHelpers_EnsureCfgFileProvidedWhenStockCfgMissing_ReturnsFalse()
         {
-            IReadOnlyList<string> paths;
+            IReadOnlyList<StorageLocation> paths;
             IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestBinPath).WithStockCfgResources(new[] { 0 });
-            var rom = Rom.Create(paths[0], null);
+            var rom = Rom.Create(paths[0], StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.False(rom.EnsureCfgFileProvided(null));
@@ -570,13 +571,13 @@ Year = 2112
         [Fact]
         public void IRomHelpers_EnsureCfgFileProvidedWhenStockCfgPresent_ReturnsTrue()
         {
-            IReadOnlyList<string> paths;
+            IReadOnlyList<StorageLocation> paths;
             IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestBinPath).WithStockCfgResources();
-            var rom = Rom.Create(paths[0], null);
+            var rom = Rom.Create(paths[0], StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.True(rom.EnsureCfgFileProvided(null));
-            Assert.False(string.IsNullOrEmpty(rom.ConfigPath));
+            Assert.False(string.IsNullOrEmpty(rom.ConfigPath.Path));
             Assert.NotEqual(0u, rom.CfgCrc);
         }
 
@@ -594,7 +595,7 @@ Year = 2112
         public void IRomHelpers_GetLuigiFileMetadataFromNonLuigiRom_ReturnsNull()
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestBinPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.Null(rom.GetLuigiFileMetadata());
@@ -603,12 +604,12 @@ Year = 2112
         [Fact]
         public void IRomHelpers_GetLuigiFileMetadataFromCorruptedLuigiFile_BehavesAsExpected()
         {
-            IReadOnlyList<string> paths;
+            IReadOnlyList<StorageLocation> paths;
             var storageAccess = IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestLuigiWithExtraNullBytePath);
             var romPath = paths.First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
-            Assert.True(storageAccess.IntroduceCorruption(romPath));
+            Assert.True(storageAccess.IntroduceCorruption(romPath.Path));
 
             AssertMetadataBehavior(rom);
         }
@@ -636,7 +637,7 @@ Year = 2112
         [Fact]
         public void IRomHelpers_GetLuigiHeaderWithNonLuigiRomFormat_ReturnsNull()
         {
-            var rom = EdgeCaseTestingRom.CreateTestingRom(null).WithFormat(RomFormat.None);
+            var rom = EdgeCaseTestingRom.CreateTestingRom(StorageLocation.InvalidLocation).WithFormat(RomFormat.None);
 
             Assert.Null(IRomHelpers.GetLuigiHeader(null));
         }
@@ -644,7 +645,7 @@ Year = 2112
         [Fact]
         public void IRomHelpers_GetLuigiHeaderWithLuigiRomFormatButNullPath_ReturnsNull()
         {
-            var rom = EdgeCaseTestingRom.CreateTestingRom(null).WithFormat(RomFormat.Luigi);
+            var rom = EdgeCaseTestingRom.CreateTestingRom(StorageLocation.InvalidLocation).WithFormat(RomFormat.Luigi);
 
             Assert.Null(IRomHelpers.GetLuigiHeader(null));
         }
@@ -652,8 +653,8 @@ Year = 2112
         [Fact]
         public void IRomHelpers_GetLuigiHeaderWithLuigiRomFormatAndNonexistentPath_ReturnsNull()
         {
-            IRomHelpersTestStorageAccess.Initialize();
-            var rom = EdgeCaseTestingRom.CreateTestingRom("/Resources/IRomHelpers_GetLuigiHeaderWithLuigiRomFormatAndNonexistentPath_ReturnsNull.luigi").WithFormat(RomFormat.Luigi);
+            var storage = IRomHelpersTestStorageAccess.Initialize();
+            var rom = EdgeCaseTestingRom.CreateTestingRom(storage.CreateLocation("/Resources/IRomHelpers_GetLuigiHeaderWithLuigiRomFormatAndNonexistentPath_ReturnsNull.luigi")).WithFormat(RomFormat.Luigi);
 
             Assert.Null(IRomHelpers.GetLuigiHeader(null));
         }
@@ -661,16 +662,16 @@ Year = 2112
         [Fact]
         public void IRomHelpers_GetLuigiHeaderWithLuigiFormatRomFormatWithCorruptHeader_ReturnsNull()
         {
-            IReadOnlyList<string> paths;
+            IReadOnlyList<StorageLocation> paths;
             var storageAccess = IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestLuigiWithBadHeaderCrcPath);
             var romPath = paths.First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
-            using (var file = storageAccess.Open(romPath))
+            using (var file = storageAccess.Open(romPath.Path))
             {
                 file.WriteByte(1);
             }
-            storageAccess.SetLastWriteTimeUtc(romPath, DateTime.UtcNow.AddSeconds(12.3));
+            storageAccess.SetLastWriteTimeUtc(romPath.Path, DateTime.UtcNow.AddSeconds(12.3));
 
             Assert.Null(rom.GetLuigiHeader());
         }
@@ -679,7 +680,7 @@ Year = 2112
         public void IRomHelpers_GetLuigiHeaderWithLuigiFormatRom_ReturnsValidLuigiHeader()
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestLuigiFromRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.NotNull(rom.GetLuigiHeader());
@@ -699,7 +700,7 @@ Year = 2112
         public void IRomHelpers_IsAlternateRomOnRomFormatRom_ReturnsFalse()
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.False(rom.IsAlternateRom());
@@ -709,9 +710,9 @@ Year = 2112
         public void IRomHelpers_IsAlternateRomOnAlternateRom_ReturnsTrue()
         {
             var romPaths = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestRomPath);
-            var originalRom = Rom.Create(romPaths[0], null);
+            var originalRom = Rom.Create(romPaths[0], StorageLocation.InvalidLocation);
             Assert.NotNull(originalRom);
-            var rom = new AlternateRom(romPaths[1], null, originalRom);
+            var rom = new AlternateRom(romPaths[1], StorageLocation.InvalidLocation, originalRom);
             Assert.NotNull(rom);
 
             Assert.True(rom.IsAlternateRom());
@@ -744,7 +745,7 @@ Year = 2112
         public void IRomHelpers_IsLtoFlashOnlyRom_ReturnsExpectedResult(string romResourcePath, bool expectedIsLtoFlashOnlyResult)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(romResourcePath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.Equal(expectedIsLtoFlashOnlyResult, rom.IsLtoFlashOnlyRom());
@@ -777,7 +778,7 @@ Year = 2112
         public void IRomHelpers_GetTargetDeviceUniqueId_ReturnsExpectedTargetUniqueId(string romResourcePath, string expectedtargetUniqueId)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(romResourcePath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.Equal(expectedtargetUniqueId, rom.GetTargetDeviceUniqueId());
@@ -796,8 +797,8 @@ Year = 2112
         [Fact]
         public void IRomHelpers_MatchesProgramIdentifierOfInvalidRomFormat_ThrowsInvalidOperationException()
         {
-            IRomHelpersTestStorageAccess.Initialize();
-            var rom = EdgeCaseTestingRom.CreateTestingRom("/Resources/IRomHelpers_MatchesProgramIdentifierOfInvalidRomFormat_ThrowsInvalidOperationException.file").WithFormat(RomFormat.None);
+            var storage = IRomHelpersTestStorageAccess.Initialize();
+            var rom = EdgeCaseTestingRom.CreateTestingRom(storage.CreateLocation("/Resources/IRomHelpers_MatchesProgramIdentifierOfInvalidRomFormat_ThrowsInvalidOperationException.file")).WithFormat(RomFormat.None);
 
             Assert.Throws<InvalidOperationException>(() => rom.MatchesProgramIdentifier(ProgramIdentifier.Invalid, cfgCrcMustMatch: true));
         }
@@ -856,7 +857,7 @@ Year = 2112
         {
             var paths = IRomHelpersTestStorageAccess.Initialize(romResourcePath, cfgResourcePath);
             var romPath = paths[0];
-            var cfgPath = string.IsNullOrEmpty(cfgResourcePath) ? null : paths[1];
+            var cfgPath = string.IsNullOrEmpty(cfgResourcePath) ? StorageLocation.InvalidLocation : paths[1];
             var rom = Rom.Create(romPath, cfgPath);
             Assert.NotNull(rom);
 
@@ -876,8 +877,8 @@ Year = 2112
         [Fact]
         public void IRomHelpers_MatchingRomFormatOfBadLuigi_ReturnsFalse()
         {
-            IRomHelpersTestStorageAccess.Initialize();
-            var rom = EdgeCaseTestingRom.CreateTestingRom("/Resources/IRomHelpers_MatchingRomFormatOfBadLuigi_ReturnsFalse.luigi").WithFormat(RomFormat.Luigi);
+            var storage = IRomHelpersTestStorageAccess.Initialize();
+            var rom = EdgeCaseTestingRom.CreateTestingRom(storage.CreateLocation("/Resources/IRomHelpers_MatchingRomFormatOfBadLuigi_ReturnsFalse.luigi")).WithFormat(RomFormat.Luigi);
 
             Assert.False(rom.MatchingRomFormat(RomFormat.Bin, considerOriginalFormat: true));
         }
@@ -972,7 +973,7 @@ Year = 2112
         public void IRomHelpers_MatchingRomFormatOfRom_MatchesAsExpected(string romResourcePath, RomFormat format, bool considerOriginalFormat, bool expectedMatchResult)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(romResourcePath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.Equal(expectedMatchResult, rom.MatchingRomFormat(format, considerOriginalFormat));
@@ -1005,7 +1006,7 @@ Year = 2112
         public void IRomHelpers_OriginalRomOfConcreteRomType_ReturnsInputRom(string romResourcePath)
         {
             var romPath = IRomHelpersTestStorageAccess.Initialize(romResourcePath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             Assert.True(object.ReferenceEquals(rom, rom.OriginalRom()));
@@ -1015,9 +1016,9 @@ Year = 2112
         public void IRomHelpers_OriginalRomOfAlternate_ReturnsOriginal()
         {
             var romPaths = IRomHelpersTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestRomPath);
-            var originalRom = Rom.Create(romPaths[0], null);
+            var originalRom = Rom.Create(romPaths[0], StorageLocation.InvalidLocation);
             Assert.NotNull(originalRom);
-            var rom = new AlternateRom(romPaths[1], null, originalRom);
+            var rom = new AlternateRom(romPaths[1], StorageLocation.InvalidLocation, originalRom);
             Assert.NotNull(rom);
 
             Assert.True(object.ReferenceEquals(originalRom, rom.OriginalRom()));
@@ -1176,10 +1177,10 @@ Year = 2112
             public override RomFormat Format { get; protected set; }
 
             /// <inheritdoc />
-            public override string RomPath { get; protected set; }
+            public override StorageLocation RomPath { get; protected set; }
 
             /// <inheritdoc />
-            public override string ConfigPath { get; protected set; }
+            public override StorageLocation ConfigPath { get; protected set; }
 
             /// <inheritdoc />
             public override bool IsValid { get; protected set; }
@@ -1198,7 +1199,7 @@ Year = 2112
             }
             private uint _cfgCrc;
 
-            public static EdgeCaseTestingRom CreateTestingRom(string romPath)
+            public static EdgeCaseTestingRom CreateTestingRom(StorageLocation romPath)
             {
                 var rom = new EdgeCaseTestingRom() { RomPath = romPath };
                 return rom;
@@ -1228,7 +1229,7 @@ Year = 2112
                 return this;
             }
 
-            public EdgeCaseTestingRom WithConfigPath(string configPath)
+            public EdgeCaseTestingRom WithConfigPath(StorageLocation configPath)
             {
                 ConfigPath = configPath;
                 return this;

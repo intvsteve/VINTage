@@ -1,5 +1,5 @@
 ﻿// <copyright file="CachedResourceStorageAccess`T.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -52,12 +52,12 @@ namespace INTV.TestHelpers.Core.Utility
         /// </summary>
         /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
         /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
-        /// <returns>The paths to the copies of the resources.</returns>
+        /// <returns>The storage locations of the copies of the resources.</returns>
         /// <remarks>Behaves poorly if entries in <paramref name="additionalResourcePaths"/> are <c>null</c>. They are simply excluded from the
         /// output list, rather than having <c>null</c> entries in the output.</remarks>
-        public static IReadOnlyList<string> Initialize(string resourcePath, params string[] additionalResourcePaths)
+        public static IReadOnlyList<StorageLocation> Initialize(string resourcePath, params string[] additionalResourcePaths)
         {
-            IReadOnlyList<string> copiedResourcePaths;
+            IReadOnlyList<StorageLocation> copiedResourcePaths;
             Initialize(out copiedResourcePaths, resourcePath, additionalResourcePaths);
             return copiedResourcePaths;
         }
@@ -65,12 +65,12 @@ namespace INTV.TestHelpers.Core.Utility
         /// <summary>
         /// Initializes the storage access and registers it for use, caching the given resources as files and creating copies for use by tests.
         /// </summary>
-        /// <param name="copiedResourcePaths">Receives the temporary path copies for the corresponding resources</param>
+        /// <param name="copiedResourcePaths">Receives the temporary storage location copies for the corresponding resources</param>
         /// <param name="resourcePath">A resource path to register with the storage access and subsequently cache.</param>
         /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
         /// <returns>The instance of the storage access that was created.</returns>
         /// <remarks>This assumes the resources are located in the same assembly as the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/>.</remarks>
-        public static T Initialize(out IReadOnlyList<string> copiedResourcePaths, string resourcePath, params string[] additionalResourcePaths)
+        public static T Initialize(out IReadOnlyList<StorageLocation> copiedResourcePaths, string resourcePath, params string[] additionalResourcePaths)
         {
             return Initialize(out copiedResourcePaths, null, resourcePath, additionalResourcePaths);
         }
@@ -78,7 +78,7 @@ namespace INTV.TestHelpers.Core.Utility
         /// <summary>
         /// Initializes the storage access and registers it for use, caching the given resources as files and creating copies for use by tests.
         /// </summary>
-        /// <param name="copiedResourcePaths">Receives the temporary path copies for the corresponding resources</param>
+        /// <param name="copiedResourcePaths">Receives the temporary storage location copies for the corresponding resources</param>
         /// <param name="typeForLocatingResources">If not <c>null</c>, the assembly containing the given type will be used to
         /// locate the resources named by the <paramref name="resourcePath"/> and <paramref name="additionalResourcePaths"/> arguments.
         /// Otherwise, the assembly that implements the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/> will be used
@@ -87,12 +87,12 @@ namespace INTV.TestHelpers.Core.Utility
         /// <param name="additionalResourcePaths">Additional resource paths to register with the storage access and subsequently cache.</param>
         /// <returns>The instance of the storage access that was created.</returns>
         /// <remarks>This assumes the resources are located in the same assembly as the type <see cref="INTV.TestHelpers.Core.Utility.TestRomResources"/>.</remarks>
-        public static T Initialize(out IReadOnlyList<string> copiedResourcePaths, Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
+        public static T Initialize(out IReadOnlyList<StorageLocation> copiedResourcePaths, Type typeForLocatingResources, string resourcePath, params string[] additionalResourcePaths)
         {
             var storageAccess = Initialize(typeForLocatingResources, resourcePath, additionalResourcePaths).WithStockCfgResources();
             if (string.IsNullOrEmpty(resourcePath))
             {
-                copiedResourcePaths = new List<string>();
+                copiedResourcePaths = new List<StorageLocation>();
             }
             else
             {
@@ -102,7 +102,7 @@ namespace INTV.TestHelpers.Core.Utility
                 var randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
 
                 storageAccess.AddCachedResource(resourcePath, randomPath, typeForLocatingResources);
-                var copiedPaths = new List<string>() { randomPath };
+                var copiedPaths = new List<StorageLocation>() { new StorageLocation(randomPath, storageAccess) };
                 copiedResourcePaths = copiedPaths;
 
                 if (additionalResourcePaths != null)
@@ -115,7 +115,7 @@ namespace INTV.TestHelpers.Core.Utility
                         randomPath = Path.Combine(directory, Path.ChangeExtension(randomFileName, fileExtension));
 
                         storageAccess.AddCachedResource(additionalResourcePath, randomPath, typeForLocatingResources);
-                        copiedPaths.Add(randomPath);
+                        copiedPaths.Add(new StorageLocation(randomPath, storageAccess));
                     }
                 }
             }

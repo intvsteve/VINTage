@@ -1,5 +1,5 @@
 ﻿// <copyright file="XmlRomInformationHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -94,7 +94,7 @@ namespace INTV.Core.Model.Program
                             // The string specifies a canonical CFG file number that we expect to have shipped with INTV.Core. If that file can be found,
                             // compute its CRC and use that as the otherCRC value. These files are named fileNumber.cfg, e.g. 0.cfg, 1.cfg, et. al.
                             var stockConfigFilePath = IRomHelpers.GetStockCfgFilePath((int)otherCrc);
-                            if (!string.IsNullOrEmpty(stockConfigFilePath))
+                            if (stockConfigFilePath.IsValid)
                             {
                                 otherCrc = Crc32.OfFile(stockConfigFilePath);
                             }

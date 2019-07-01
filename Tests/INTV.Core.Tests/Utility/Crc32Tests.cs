@@ -84,16 +84,25 @@ namespace INTV.Core.Tests.Utility
         }
 
         [Fact]
+        public void Crc32_OfInvalidFile_ThrowsInvalidOperationException()
+        {
+            var ignoreRanges = new[] { new Range<int>(10, 200) };
+            Assert.Throws<System.InvalidOperationException>(() => Crc32.OfFile(StorageLocation.InvalidLocation));
+            Assert.Throws<System.InvalidOperationException>(() => Crc32.OfFile(StorageLocation.InvalidLocation, ignoreRanges));
+            Assert.Throws<System.InvalidOperationException>(() => Crc32.OfFile(StorageLocation.InvalidLocation, replaceFirstByte: true, alternateFirstByte: 0x42));
+        }
+
+        [Fact]
         public void Crc32_OfNullFile_ThrowsArgumentNullException()
         {
             // We use a privately defined type for the storage access to check initialize and remove, which will
-            // hopefully guarantee that we use the expected storage during this test.
-            var storageAcces = new Crc32TestStorageAccess();
-            IStorageAccessHelpers.Initialize(storageAcces);
+            // guarantee that we use the expected storage during this test.
+            var storageAccess = new Crc32TestStorageAccess();
+
             var ignoreRanges = new[] { new Range<int>(10, 200) };
-            Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(null));
-            Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(null, ignoreRanges));
-            Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(null, replaceFirstByte: true, alternateFirstByte: 0x42));
+            Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(storageAccess.NullLocation));
+            Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(storageAccess.NullLocation, ignoreRanges));
+            Assert.Throws<System.ArgumentNullException>(() => Crc32.OfFile(storageAccess.NullLocation, replaceFirstByte: true, alternateFirstByte: 0x42));
         }
 
         [Fact]
@@ -101,10 +110,10 @@ namespace INTV.Core.Tests.Utility
         {
             // We use a privately defined type for the storage access to check initialize and remove, which will
             // hopefully guarantee that we use the expected storage during this test.
-            var storageAcces = new Crc32TestStorageAccess();
-            IStorageAccessHelpers.Initialize(storageAcces);
-            var testFileName = "~/Crc32_OfFile_IsCorrect.dat";
-            using (var fileStream = IStorageAccessHelpers.OpenFileStream(testFileName))
+            var storageAccess = new Crc32TestStorageAccess();
+            IStorageAccessHelpers.Initialize(storageAccess);
+            var testFileName = storageAccess.CreateLocation("~/Crc32_OfFile_IsCorrect.dat");
+            using (var fileStream = testFileName.OpenStream())
             {
                 var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
                 fileStream.Write(testData, 0, testData.Length);
@@ -118,10 +127,10 @@ namespace INTV.Core.Tests.Utility
         {
             // We use a privately defined type for the storage access to check initialize and remove, which will
             // hopefully guarantee that we use the expected storage during this test.
-            var storageAcces = new Crc32TestStorageAccess();
-            IStorageAccessHelpers.Initialize(storageAcces);
-            var testFileName = "~/Crc32_OfFileWithIgnoreRange_IsCorrect.dat";
-            using (var fileStream = IStorageAccessHelpers.OpenFileStream(testFileName))
+            var storageAccess = new Crc32TestStorageAccess();
+            IStorageAccessHelpers.Initialize(storageAccess);
+            var testFileName = storageAccess.CreateLocation("~/Crc32_OfFileWithIgnoreRange_IsCorrect.dat");
+            using (var fileStream = testFileName.OpenStream())
             {
                 var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
                 fileStream.Write(testData, 0, testData.Length);
@@ -136,10 +145,10 @@ namespace INTV.Core.Tests.Utility
         {
             // We use a privately defined type for the storage access to check initialize and remove, which will
             // hopefully guarantee that we use the expected storage during this test.
-            var storageAcces = new Crc32TestStorageAccess();
-            var testFileName = "~/Crc32_OfFileWithAlternateFirstByte_IsCorrect.dat";
-            IStorageAccessHelpers.Initialize(storageAcces);
-            using (var fileStream = IStorageAccessHelpers.OpenFileStream(testFileName))
+            var storageAccess = new Crc32TestStorageAccess();
+            var testFileName = storageAccess.CreateLocation("~/Crc32_OfFileWithAlternateFirstByte_IsCorrect.dat");
+            IStorageAccessHelpers.Initialize(storageAccess);
+            using (var fileStream = testFileName.OpenStream())
             {
                 var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
                 fileStream.Write(testData, 0, testData.Length);

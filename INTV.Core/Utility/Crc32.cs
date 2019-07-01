@@ -233,47 +233,47 @@ namespace INTV.Core.Utility
         /// <summary>
         /// Compute a CRC value for a file.
         /// </summary>
-        /// <param name="file">The absolute path to the file for which to compute a 32-bit CRC.</param>
+        /// <param name="location">The location of the file for which to compute a 32-bit CRC.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
-        public static uint OfFile(string file)
+        public static uint OfFile(StorageLocation location)
         {
-            return OfFile(file, false, 0, null);
+            return OfFile(location, false, 0, null);
         }
 
         /// <summary>
         /// Compute a CRC value for a file.
         /// </summary>
-        /// <param name="file">The absolute path to the file for which to compute a 32-bit CRC.</param>
-        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="file"/>, to exclude from the checksum.</param>
+        /// <param name="location">The location of the file for which to compute a 32-bit CRC.</param>
+        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="location"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
-        public static uint OfFile(string file, IEnumerable<Range<int>> ignoreRanges)
+        public static uint OfFile(StorageLocation location, IEnumerable<Range<int>> ignoreRanges)
         {
-            return OfFile(file, false, 0, ignoreRanges);
+            return OfFile(location, false, 0, ignoreRanges);
         }
 
         /// <summary>
         /// Compute a CRC value for a file.
         /// </summary>
-        /// <param name="file">The absolute path to the file for which to compute a 32-bit CRC.</param>
+        /// <param name="location">The location of the file for which to compute a 32-bit CRC.</param>
         /// <param name="replaceFirstByte">If <c>true</c>, replaces the first byte in the calculation with the value in alternateFirstByte.</param>
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
-        public static uint OfFile(string file, bool replaceFirstByte, byte alternateFirstByte)
+        public static uint OfFile(StorageLocation location, bool replaceFirstByte, byte alternateFirstByte)
         {
-            return OfFile(file, replaceFirstByte, alternateFirstByte, null);
+            return OfFile(location, replaceFirstByte, alternateFirstByte, null);
         }
 
         /// <summary>
         /// Compute a CRC value for a file.
         /// </summary>
-        /// <param name="file">The absolute path to the file for which to compute a 32-bit CRC.</param>
+        /// <param name="location">The location of the file for which to compute a 32-bit CRC.</param>
         /// <param name="replaceFirstByte">If <c>true</c>, replaces the first byte in the calculation with the value in alternateFirstByte.</param>
         /// <param name="alternateFirstByte">If useAlternateByte is true, replaces the first byte of the stream with this value for the calculation.</param>
-        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="file"/>, to exclude from the checksum.</param>
+        /// <param name="ignoreRanges">Ranges of bytes, defined as indexes into the byte data in <paramref name="location"/>, to exclude from the checksum.</param>
         /// <returns>The 32-bit CRC of the stream.</returns>
-        public static uint OfFile(string file, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
+        public static uint OfFile(StorageLocation location, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
         {
-            uint crc = CheckMemo(file, replaceFirstByte, alternateFirstByte, ignoreRanges);
+            uint crc = CheckMemo(location, replaceFirstByte, alternateFirstByte, ignoreRanges);
             return crc;
         }
 
@@ -484,17 +484,17 @@ namespace INTV.Core.Utility
             return (crc >> 8) ^ lookupTable[(crc ^ data) & 0xFF];
         }
 
-        private static uint CheckMemo(string file, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
+        private static uint CheckMemo(StorageLocation location, bool replaceFirstByte, byte alternateFirstByte, IEnumerable<Range<int>> ignoreRanges)
         {
             uint crc;
-            Memos.CheckAddMemo(file, new Tuple<bool, byte, IEnumerable<Range<int>>>(replaceFirstByte, alternateFirstByte, ignoreRanges), out crc);
+            Memos.CheckAddMemo(location, new Tuple<bool, byte, IEnumerable<Range<int>>>(replaceFirstByte, alternateFirstByte, ignoreRanges), out crc);
             return crc;
         }
 
         private class Crc32Memo : FileMemo<uint>
         {
             public Crc32Memo()
-                : base(IStorageAccessHelpers.DefaultStorage)
+                : base()
             {
             }
 
@@ -505,10 +505,10 @@ namespace INTV.Core.Utility
             }
 
             /// <inheritdoc />
-            protected override uint GetMemo(string filePath, object data)
+            protected override uint GetMemo(StorageLocation location, object data)
             {
                 uint crc = InitialValue;
-                using (var fileStream = IStorageAccessHelpers.OpenFileStream(filePath, StorageAccess))
+                using (var fileStream = location.OpenStream())
                 {
                     var supportData = (Tuple<bool, byte, IEnumerable<Range<int>>>)data;
                     var replaceFirstByte = supportData.Item1;

@@ -1,5 +1,5 @@
 ﻿// <copyright file="Crc24Tests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -48,8 +48,7 @@ namespace INTV.Core.Tests.Utility
         public void Crc24_OfNullFile_ThrowsArgumentNullException()
         {
             var storageAcces = new Crc24TestStorageAccess();
-            IStorageAccessHelpers.Initialize(storageAcces);
-            Assert.Throws<System.ArgumentNullException>(() => Crc24.OfFile(null));
+            Assert.Throws<System.ArgumentNullException>(() => Crc24.OfFile(storageAcces.NullLocation));
         }
 
         [Fact]
@@ -59,8 +58,8 @@ namespace INTV.Core.Tests.Utility
             // hopefully guarantee that we use the expected storage during this test.
             var storageAcces = new Crc24TestStorageAccess();
             IStorageAccessHelpers.Initialize(storageAcces);
-            var testFileName = "~/Crc24_OfFile_IsCorrect.dat";
-            using (var fileStream = IStorageAccessHelpers.OpenFileStream(testFileName))
+            var testFileName = storageAcces.CreateLocation("~/Crc24_OfFile_IsCorrect.dat");
+            using (var fileStream = testFileName.OpenStream())
             {
                 var testData = new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
                 fileStream.Write(testData, 0, testData.Length);

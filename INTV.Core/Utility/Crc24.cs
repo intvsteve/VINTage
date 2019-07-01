@@ -1,5 +1,5 @@
 ﻿// <copyright file="Crc24.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -96,11 +96,11 @@ namespace INTV.Core.Utility
         /// <summary>
         /// Compute a CRC value for a file.
         /// </summary>
-        /// <param name="file">The absolute path to the file for which to compute a 24-bit CRC.</param>
+        /// <param name="location">The location of the file for which to compute a 24-bit CRC.</param>
         /// <returns>The 24-bit CRC of the stream.</returns>
-        public static uint OfFile(string file)
+        public static uint OfFile(StorageLocation location)
         {
-            uint crc = CheckMemo(file);
+            uint crc = CheckMemo(location);
             return crc;
         }
 
@@ -139,17 +139,17 @@ namespace INTV.Core.Utility
             return ((crc << 8) ^ Crc24Table[((crc >> 16) ^ data) & 0xFF]) & 0x00FFFFFF;
         }
 
-        private static uint CheckMemo(string file)
+        private static uint CheckMemo(StorageLocation location)
         {
             uint crc;
-            Memos.CheckAddMemo(file, null, out crc);
+            Memos.CheckAddMemo(location, null, out crc);
             return crc;
         }
 
         private class Crc24Memo : FileMemo<uint>
         {
             public Crc24Memo()
-                : base(IStorageAccessHelpers.DefaultStorage)
+                : base()
             {
             }
 
@@ -160,10 +160,10 @@ namespace INTV.Core.Utility
             }
 
             /// <inheritdoc />
-            protected override uint GetMemo(string filePath, object data)
+            protected override uint GetMemo(StorageLocation location, object data)
             {
                 uint crc = InitialValue;
-                using (var fileStream = IStorageAccessHelpers.OpenFileStream(filePath, StorageAccess))
+                using (var fileStream = location.OpenStream())
                 {
                     fileStream.Seek(0, SeekOrigin.Begin);
                     crc = OfStream(fileStream, InitialValue);

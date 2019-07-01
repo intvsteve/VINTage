@@ -1,5 +1,5 @@
 ﻿// <copyright file="XmlRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,10 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Core.Utility;
+
 namespace INTV.Core.Model
 {
     /// <summary>
-    /// This class represents a ROM described by an XML file, which is identified by one or two separate file system paths.
+    /// This class represents a ROM described by XML, which is identified by one or two separate locations.
     /// </summary>
     /// <remarks>This implementation of IRom will ultimately resolve into either a BinFormatRom, a RomFormatRom, a LuigiFormatRom, or null.</remarks>
     internal class XmlRom : Rom
@@ -33,6 +35,8 @@ namespace INTV.Core.Model
         /// </summary>
         public XmlRom()
         {
+            _romPath = StorageLocation.InvalidLocation;
+            _configPath = StorageLocation.InvalidLocation;
         }
 
         #endregion // Constructors
@@ -56,7 +60,7 @@ namespace INTV.Core.Model
         }
 
         /// <inheritdoc />
-        public override string RomPath
+        public override StorageLocation RomPath
         {
             get
             {
@@ -76,10 +80,10 @@ namespace INTV.Core.Model
                 }
             }
         }
-        private string _romPath;
+        private StorageLocation _romPath;
 
         /// <inheritdoc />
-        public override string ConfigPath
+        public override StorageLocation ConfigPath
         {
             get
             {
@@ -90,7 +94,7 @@ namespace INTV.Core.Model
             {
                 if (!IsValid || (ConfigPath != value))
                 {
-                    if (RomPath != null)
+                    if (RomPath.IsValid)
                     {
                         ResolvedRom = Create(RomPath, value);
                     }
@@ -102,7 +106,7 @@ namespace INTV.Core.Model
                 }
             }
         }
-        private string _configPath;
+        private StorageLocation _configPath;
 
         /// <inheritdoc />
         public override uint Crc
@@ -163,22 +167,22 @@ namespace INTV.Core.Model
         /// <summary>
         /// Updates the RomPath and attempts to resolve the ROM to a known good ROM type.
         /// </summary>
-        /// <param name="romPath">The absolute path to the ROM file.</param>
-        /// <remarks>If romPath refers to a file requiring a separate configuration file, and the configuration
-        /// file has not yet been defined, then resolution will fail.</remarks>
-        public void UpdateRomPath(string romPath)
+        /// <param name="romLocation">The location of the ROM image.</param>
+        /// <remarks>If romPath refers to a ROM requiring separate configuration data, and the configuration
+        /// data has not yet been defined, then resolution will fail.</remarks>
+        public void UpdateRomPath(StorageLocation romLocation)
         {
-            RomPath = romPath;
+            RomPath = romLocation;
         }
 
         /// <summary>
         /// Updates the ConfigPath and attempts to resolve the ROM to a known good ROM type.
         /// </summary>
-        /// <param name="configPath">The absolute path to the ROM's configuration file.</param>
+        /// <param name="configLocation">The location of the ROM's configuration data.</param>
         /// <remarks>If the RomPath has not yet been set, resolution will fail.</remarks>
-        public void UpdateConfigPath(string configPath)
+        public void UpdateConfigPath(StorageLocation configLocation)
         {
-            ConfigPath = configPath;
+            ConfigPath = configLocation;
         }
     }
 }

@@ -41,11 +41,13 @@ namespace INTV.Core.Tests.Utility
             var invalidLocation = StorageLocation.InvalidLocation;
 
             Assert.True(invalidLocation.Equals(StorageLocation.InvalidLocation));
+            Assert.True(invalidLocation.IsInvalid);
             Assert.True(StorageLocation.InvalidLocation.Equals(invalidLocation));
             Assert.True(invalidLocation == StorageLocation.InvalidLocation);
             Assert.True(StorageLocation.InvalidLocation == invalidLocation);
             Assert.False(invalidLocation != StorageLocation.InvalidLocation);
             Assert.False(StorageLocation.InvalidLocation != invalidLocation);
+            Assert.False(invalidLocation.IsValid);
         }
 
         [Fact]
@@ -121,8 +123,8 @@ namespace INTV.Core.Tests.Utility
         [InlineData("b", "c", false)]
         public void StorageLocation_GetHashCodeOfTwoLocations_AreEqualAsExpected(string path0, string path1, bool expectedHashEquality)
         {
-            var hash0 = new StorageLocation(path0 + "/").GetHashCode();
-            var hash1 = new StorageLocation(path1 + "/").GetHashCode();
+            var hash0 = new StorageLocation(path0).GetHashCode();
+            var hash1 = new StorageLocation(path1).GetHashCode();
 
             Assert.Equal(expectedHashEquality, hash0 == hash1);
         }
@@ -151,6 +153,16 @@ namespace INTV.Core.Tests.Utility
             var hashB = new StorageLocation(path, storageAccessB).GetHashCode();
 
             Assert.NotEqual(hashA, hashB);
+        }
+
+        [Fact]
+        public void StorageLocation_NullStorageLocation_HasNullPathIsNotValidIsNotInvalid()
+        {
+            var nullLocation = StorageLocation.Null;
+
+            Assert.Null(nullLocation.Path);
+            Assert.False(nullLocation.IsValid);
+            Assert.False(nullLocation.IsInvalid);
         }
 
         private sealed class PrivateStorageAccessA : TestStorageAccess

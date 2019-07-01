@@ -28,6 +28,7 @@ namespace INTV.Core.Utility
     /// whereas a URL string could be 'storage location' for data "stored" on the internet.
     /// </summary>
     /// <remarks>Though incorrect in case-sensitive file systems, locations are considered equal in a case-insensitive manner.</remarks>
+    [System.Diagnostics.DebuggerDisplay("{Path,nq}, {_storageAccess}")]
     public struct StorageLocation : IEquatable<StorageLocation>, IComparable<StorageLocation>
     {
         /// <summary>
@@ -56,6 +57,14 @@ namespace INTV.Core.Utility
         }
 
         /// <summary>
+        /// Gets a null location that will use the default storage access. Primarily for testing purposes.
+        /// </summary>
+        public static StorageLocation Null
+        {
+            get { return new StorageLocation(); }
+        }
+
+        /// <summary>
         /// Gets the location (path) within the storage.
         /// </summary>
         public string Path
@@ -72,6 +81,22 @@ namespace INTV.Core.Utility
             get { return _storageAccess.GetStorageAccess(); }
         }
         private IStorageAccess _storageAccess;
+
+        /// <summary>
+        /// Gets a value indicating whether or not the storage location is valid.
+        /// </summary>
+        public bool IsValid
+        {
+            get { return !string.IsNullOrEmpty(_path); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the location is a canonical invalid storage location.
+        /// </summary>
+        public bool IsInvalid
+        {
+            get { return _storageAccess is InvalidStorageAccess; }
+        }
 
         /// <summary>
         /// Equality operator for <see cref="StorageAccess"/>.

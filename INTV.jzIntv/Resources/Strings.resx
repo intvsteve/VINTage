@@ -129,6 +129,14 @@
   <data name="HardwareGroupCommand_Name" xml:space="preserve">
     <value>Hardware</value>
   </data>
+  <data name="jzIntvExitedWithError_MessageFormat" xml:space="preserve">
+    <value>jzIntv encountered an error when running
+  '{0}'
+
+and exited with error: {1}
+</value>
+    <comment>{0} is a ROM path, {1} is jzintv exit code</comment>
+  </data>
   <data name="JzIntvTabCommand_Name" xml:space="preserve">
     <value>jzIntv</value>
   </data>

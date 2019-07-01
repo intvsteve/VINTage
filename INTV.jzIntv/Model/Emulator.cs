@@ -1,5 +1,5 @@
 ﻿// <copyright file="Emulator.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -163,7 +163,7 @@ namespace INTV.JzIntv.Model
         public bool Launch(Process process, IDictionary<CommandLineArgument, object> options, ProgramDescription program)
         {
             Rom = program;
-            var commandLineArguments = options.BuildCommandLineArguments(program.Rom.RomPath, false);
+            var commandLineArguments = options.BuildCommandLineArguments(program.Rom.RomPath.Path, false);
             process.StartInfo.Arguments = commandLineArguments;
             process.StartInfo.FileName = Path;
             process.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(Path);
@@ -211,7 +211,7 @@ namespace INTV.JzIntv.Model
                 System.Diagnostics.Debug.WriteLine("jzIntv EXIT: " + process.ExitCode);
                 if ((process.ExitCode != 0) && (ErrorReporter != null))
                 {
-                    var errorMessage = new System.Text.StringBuilder().AppendFormat("jzIntv encountered an error when running\n  '{0}'\n\nand exited with error: {1}\n", ((Rom == null) || (Rom.Rom == null)) ? "<Invalid ROM>" : Rom.Rom.RomPath, process.ExitCode);
+                    var errorMessage = new System.Text.StringBuilder().AppendFormat(INTV.jzIntv.Resources.Strings.jzIntvExitedWithError_MessageFormat, ((Rom == null) || (Rom.Rom == null)) ? "<Invalid ROM>" : Rom.Rom.RomPath.Path, process.ExitCode);
                     if (StderrBuffer.Any(l => !string.IsNullOrWhiteSpace(l)) || StdoutBuffer.Any(l => !string.IsNullOrWhiteSpace(l)))
                     {
                         errorMessage.AppendLine();

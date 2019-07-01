@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,10 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Core.Utility;
+
 namespace INTV.Core.Model
 {
     /// <summary>
-    /// Interface to an Intellivision program's ROM file.
+    /// Interface to an Intellivision program's ROM image.
     /// </summary>
     public interface IRom
     {
@@ -31,14 +33,14 @@ namespace INTV.Core.Model
         RomFormat Format { get; }
 
         /// <summary>
-        /// Gets the full path to the ROM file.
+        /// Gets the location of the ROM image.
         /// </summary>
-        string RomPath { get; }
+        StorageLocation RomPath { get; }
 
         /// <summary>
-        /// Gets the full path to the ROM's configuration file.
+        /// Gets the location of the ROM's configuration data.
         /// </summary>
-        string ConfigPath { get; }
+        StorageLocation ConfigPath { get; }
 
         /// <summary>
         /// Gets a value indicating whether the ROM is valid or not.
@@ -46,12 +48,12 @@ namespace INTV.Core.Model
         bool IsValid { get; }
 
         /// <summary>
-        /// Gets the 32-bit CRC of a ROM file.
+        /// Gets the 32-bit CRC of a ROM image.
         /// </summary>
         uint Crc { get; }
 
         /// <summary>
-        /// Gets the 32-bit CRC of a companion .cfg of a ROM file if the ROM format supports it.
+        /// Gets the 32-bit CRC of a companion .cfg of a ROM if the ROM format supports it.
         /// </summary>
         uint CfgCrc { get; }
 
@@ -62,16 +64,16 @@ namespace INTV.Core.Model
         bool Validate();
 
         /// <summary>
-        /// Refreshes the CRC of the ROM file.
+        /// Refreshes the CRC of the ROM image.
         /// </summary>
         /// <returns>The CRC of the ROM.</returns>
         /// <param name="changed">Set to <c>true</c> if the CRC value changed.</param>
         uint RefreshCrc(out bool changed);
 
         /// <summary>
-        /// Refreshes the CRC of the configuration data file for the ROM, if one is present.
+        /// Refreshes the CRC of the configuration data for the ROM, if one is present.
         /// </summary>
-        /// <returns>The CRC of the configuration file, if present.</returns>
+        /// <returns>The CRC of the configuration, if present.</returns>
         /// <param name="changed">Set to <c>true</c> if the CRC value changed.</param>
         uint RefreshCfgCrc(out bool changed);
     }

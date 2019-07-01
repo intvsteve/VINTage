@@ -26,7 +26,7 @@ using INTV.Core.Utility;
 namespace INTV.Core.Model
 {
     /// <summary>
-    /// Describes the fixed header portion of a LUIGI file, per the specification.
+    /// Describes the fixed header portion of a LUIGI image, per the specification.
     /// </summary>
     public class LuigiFileHeader : INTV.Core.Utility.ByteSerializer
     {
@@ -97,7 +97,7 @@ namespace INTV.Core.Model
         #region Key data for all LUIGI header versions (Version 0)
 
         /// <summary>
-        /// The "magic key" identifying file contents.
+        /// The "magic key" identifying LUIGI contents.
         /// </summary>
         private static readonly byte[] MagicKey = new byte[3] { (byte)'L', (byte)'T', (byte)'O' };
 
@@ -113,12 +113,12 @@ namespace INTV.Core.Model
         #region Properties
 
         /// <summary>
-        /// Gets the magic key identifier of the file.
+        /// Gets the magic key identifier of the image.
         /// </summary>
         public byte[] Magic { get; private set; }
 
         /// <summary>
-        /// Gets the version of the LUIGI file format.
+        /// Gets the version of the LUIGI format.
         /// </summary>
         public byte Version { get; private set; }
 
@@ -133,27 +133,27 @@ namespace INTV.Core.Model
         public LuigiFeatureFlags2 Features2 { get; private set; }
 
         /// <summary>
-        /// Gets the unique ID of the file.
+        /// Gets the unique ID of the image.
         /// </summary>
         /// <remarks>Not set in version 0; only valid in versions 1 and later.</remarks>
         public ulong Uid { get; private set; }
 
         /// <summary>
-        /// Gets the format of the ROM used to create the LUIGI file.
+        /// Gets the format of the ROM used to create the LUIGI image.
         /// </summary>
-        /// <remarks>This value is set to RomFormat.None for LUIGI files created in early versions of the tools. Only set in version 1 and later.</remarks>
+        /// <remarks>This value is set to RomFormat.None for LUIGI images created in early versions of the tools. Only set in version 1 and later.</remarks>
         public RomFormat OriginalRomFormat { get; private set; }
 
         /// <summary>
         /// Gets the 32-bit ZIP-style CRC of the original ROM or BIN format.
         /// </summary>
-        /// <remarks>This value is only valid if the LUIGI file was created using version 1 or later, and from a .rom or .bin format ROM.</remarks>
+        /// <remarks>This value is only valid if the LUIGI image was created using version 1 or later, and from a .rom or .bin format ROM.</remarks>
         public uint OriginalRomCrc32 { get; private set; }
 
         /// <summary>
-        /// Gets the 32-bit ZIP-style CRC of the original CFG file for a BIN format ROM.
+        /// Gets the 32-bit ZIP-style CRC of the original CFG data for a BIN format ROM.
         /// </summary>
-        /// <remarks>This value is only valid if the LUIGI file was created using version 1a or later, and from a .bin format ROM.</remarks>
+        /// <remarks>This value is only valid if the LUIGI image was created using version 1 or later, and from a .bin format ROM.</remarks>
         public uint OriginalCfgCrc32 { get; private set; }
 
         /// <summary>
@@ -187,26 +187,26 @@ namespace INTV.Core.Model
         #endregion // Properties
 
         /// <summary>
-        /// Determines whether the given file contents begin with a LUIGI file header.
+        /// Determines whether the given image contents begin with a LUIGI header.
         /// </summary>
-        /// <param name="filePath">The file to check to see if it could be a LUIGI file.</param>
-        /// <returns><c>true</c> if the file contents begin with the 'magic' for a LUIGI header.</returns>
-        public static bool PotentialLuigiFile(string filePath)
+        /// <param name="location">Location to check to see if it could be a LUIGI image.</param>
+        /// <returns><c>true</c> if the image contents begin with the 'magic' for a LUIGI header.</returns>
+        public static bool PotentialLuigiFile(StorageLocation location)
         {
             LuigiFileHeader header;
-            bool isPotentialLuigiFile = Memos.CheckAddMemo(filePath, null, out header) && (header != null);
+            bool isPotentialLuigiFile = Memos.CheckAddMemo(location, null, out header) && (header != null);
             return isPotentialLuigiFile;
         }
 
         /// <summary>
-        /// Get the LUIGI file header from the ROM at the given absolute path.
+        /// Get the LUIGI header from the ROM at the given absolute path.
         /// </summary>
-        /// <param name="filePath">Absolute path to the ROM whose LUIGI header is desired.</param>
+        /// <param name="location">Location of the ROM whose LUIGI header is desired.</param>
         /// <returns>The LUIGI header, or <c>null</c> if the ROM is not of the expected format.</returns>
-        public static LuigiFileHeader GetHeader(string filePath)
+        public static LuigiFileHeader GetHeader(StorageLocation location)
         {
             LuigiFileHeader header;
-            Memos.CheckAddMemo(filePath, null, out header);
+            Memos.CheckAddMemo(location, null, out header);
             return header;
         }
 
@@ -234,7 +234,7 @@ namespace INTV.Core.Model
         /// Determines whether the given features would cause a change to this header's feature bits.
         /// </summary>
         /// <param name="features">The proposed new features to apply to the header.</param>
-        /// <param name="forceFeatureUpdate">If set to <c>true</c> force feature update, even if the features were set explicitly by a .cfg file.</param>
+        /// <param name="forceFeatureUpdate">If set to <c>true</c> force feature update, even if the features were set explicitly by .cfg data.</param>
         /// <returns><c>true</c>, if the new features differ from existing ones, and would cause an update, <c>false</c> otherwise.</returns>
         public bool WouldModifyFeatures(LuigiFeatureFlags features, bool forceFeatureUpdate)
         {
@@ -253,7 +253,7 @@ namespace INTV.Core.Model
         /// Update the feature flags.
         /// </summary>
         /// <param name="features">The new feature flags.</param>
-        /// <param name="forceFeatureUpdate">If <c>true</c>, apply ROM features even if already set via config file.</param>
+        /// <param name="forceFeatureUpdate">If <c>true</c>, apply ROM features even if already set via config data.</param>
         /// <remarks>This also updates the CRC of the header.</remarks>
         public void UpdateFeatures(LuigiFeatureFlags features, bool forceFeatureUpdate)
         {
@@ -415,7 +415,7 @@ namespace INTV.Core.Model
         private class LuigiHeaderMemo : FileMemo<LuigiFileHeader>
         {
             public LuigiHeaderMemo()
-                : base(IStorageAccessHelpers.DefaultStorage)
+                : base()
             {
             }
 
@@ -426,12 +426,12 @@ namespace INTV.Core.Model
             }
 
             /// <inheritdoc />
-            protected override LuigiFileHeader GetMemo(string filePath, object data)
+            protected override LuigiFileHeader GetMemo(StorageLocation location, object data)
             {
                 LuigiFileHeader luigiHeader = null;
                 try
                 {
-                    using (var file = IStorageAccessHelpers.OpenFileStream(filePath))
+                    using (var file = location.OpenStream())
                     {
                         var reader = new INTV.Core.Utility.BinaryReader(file);
                         byte[] header = reader.ReadBytes(MagicKey.Length);

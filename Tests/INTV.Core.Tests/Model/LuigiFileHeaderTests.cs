@@ -1,5 +1,5 @@
 ﻿// <copyright file="LuigiFileHeaderTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -45,21 +45,31 @@ namespace INTV.Core.Tests.Model
         [InlineData(TestRomResources.TestBinPath, "/Really/not/a/valid.luigi", false)]
         public void LuigiFileHeader_IsPotentialLuigiFile_ProvidesCorrectResult(string resourceToRegister, string potentialLuigiFilePath, bool expectedIsPotentialLuigiFile)
         {
-            var romFilePath = LuigiFileHeaderTestStorageAccess.Initialize(resourceToRegister).First();
+            IReadOnlyList<StorageLocation> paths;
+            var storage = LuigiFileHeaderTestStorageAccess.Initialize(out paths, resourceToRegister);
+            var romFilePath = paths.First();
             if (string.IsNullOrEmpty(potentialLuigiFilePath))
             {
-                potentialLuigiFilePath = romFilePath;
+                potentialLuigiFilePath = romFilePath.Path;
             }
 
-            Assert.Equal(expectedIsPotentialLuigiFile, LuigiFileHeader.PotentialLuigiFile(potentialLuigiFilePath));
+            Assert.Equal(expectedIsPotentialLuigiFile, LuigiFileHeader.PotentialLuigiFile(storage.CreateLocation(potentialLuigiFilePath)));
         }
 
         [Fact]
-        public void LuigiFileHeader_IsPotentialLuigiFile_ThrowsArgumentNullException()
+        public void LuigiFileHeader_IsPotentialLuigiFileWithInvalidLocation_ReturnsFalse()
         {
             LuigiFileHeaderTestStorageAccess.Initialize();
 
-            Assert.Throws<ArgumentNullException>(() => LuigiFileHeader.PotentialLuigiFile(null));
+            Assert.False(LuigiFileHeader.PotentialLuigiFile(StorageLocation.InvalidLocation));
+        }
+
+        [Fact]
+        public void LuigiFileHeader_IsPotentialLuigiFileWithNullLocation_ThrowsArgumentNullException()
+        {
+            var storage = LuigiFileHeaderTestStorageAccess.Initialize();
+
+            Assert.Throws<ArgumentNullException>(() => LuigiFileHeader.PotentialLuigiFile(storage.NullLocation));
         }
 
         [Fact]
@@ -260,10 +270,10 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void LuigiFileHeader_GetFromValidLuigiRom_DoesNotThrowAndReportsExpectedVersion()
         {
-            IReadOnlyList<string> paths;
+            IReadOnlyList<StorageLocation> paths;
             var storage = LuigiFileHeaderTestStorageAccess.Initialize(out paths, TestRomResources.TestLuigiFromRomPath);
 
-            using (var reader = new BinaryReader(storage.Open(paths.First())))
+            using (var reader = new BinaryReader(storage.Open(paths.First().Path)))
             {
                 var header = LuigiFileHeader.Inflate(reader);
 

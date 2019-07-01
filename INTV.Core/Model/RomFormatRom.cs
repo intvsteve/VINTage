@@ -279,7 +279,7 @@ namespace INTV.Core.Model
         /// Get the Crc32 values of a ROM.
         /// </summary>
         /// <param name="romLocation">Location of the ROM whose CRC32 value is desired.</param>
-        /// <param name="cfgLocation">Location of the configuration (.cfg) file whose CRC32 is desired. May be <c>null</c>, depending on the ROM.</param>
+        /// <param name="cfgLocation">Location of the configuration data (.cfg) is not used.</param>
         /// <param name="cfgCrc">Set to zero. This ROM format does not use a .cfg file.</param>
         /// <returns>CRC32 of the ROM file.</returns>
         /// <remarks>Instead of zero, should the Crc32.InitialValue be used as a sentinel 'invalid' value?</remarks>

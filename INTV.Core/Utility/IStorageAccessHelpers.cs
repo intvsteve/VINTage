@@ -20,7 +20,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Linq;
 
 namespace INTV.Core.Utility
@@ -83,54 +82,6 @@ namespace INTV.Core.Utility
                 }
             }
             return removed;
-        }
-
-        /// <summary>
-        /// Opens a Stream using an absolute path.
-        /// </summary>
-        /// <param name="filePath">The absolute path to the file.</param>
-        /// <param name="storageAccess">The storage access to use; if <c>null</c> the default storage access is used.</param>
-        /// <returns>A Stream for accessing the contents of the file.</returns>
-        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="IStorageAccessHelpers.Initialize(IStorageAccess)"/> method.</remarks>
-        public static Stream OpenFileStream(string filePath, IStorageAccess storageAccess = DefaultStorage)
-        {
-            return GetStorageAccess(storageAccess).Open(filePath);
-        }
-
-        /// <summary>
-        /// Verifies that a file exists at the given absolute path.
-        /// </summary>
-        /// <param name="filePath">The absolute path to the file.</param>
-        /// <param name="storageAccess">The storage access to use; if <c>null</c> the default storage access is used.</param>
-        /// <returns><c>true</c> if the file exists at the given path.</returns>
-        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="IStorageAccessHelpers.Initialize(IStorageAccess)"/> method.</remarks>
-        public static bool FileExists(string filePath, IStorageAccess storageAccess = DefaultStorage)
-        {
-            return GetStorageAccess(storageAccess).Exists(filePath);
-        }
-
-        /// <summary>
-        /// Gets the size, in bytes, of the file at the given absolute path.
-        /// </summary>
-        /// <param name="filePath">The absolute path to the file.</param>
-        /// <param name="storageAccess">The storage access to use; if <c>null</c> the default storage access is used.</param>
-        /// <returns>Length of the file, in bytes.</returns>
-        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="IStorageAccessHelpers.Initialize(IStorageAccess)"/> method.</remarks>
-        public static long FileSize(string filePath, IStorageAccess storageAccess = DefaultStorage)
-        {
-            return GetStorageAccess(storageAccess).Size(filePath);
-        }
-
-        /// <summary>
-        /// Gets the last modification time of the file at the given path.
-        /// </summary>
-        /// <param name="filePath">The absolute path to the file.</param>
-        /// <param name="storageAccess">The storage access to use; if <c>null</c> the default storage access is used.</param>
-        /// <returns>Last modification time of the file, in UTC.</returns>
-        /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="IStorageAccessHelpers.Initialize(IStorageAccess)"/> method.</remarks>
-        public static DateTime LastFileWriteTimeUtc(string filePath, IStorageAccess storageAccess = DefaultStorage)
-        {
-            return GetStorageAccess(storageAccess).LastWriteTimeUtc(filePath);
         }
 
         /// <summary>

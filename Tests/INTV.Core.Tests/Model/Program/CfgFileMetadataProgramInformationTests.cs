@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -128,9 +129,9 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void CfgFileMetadataProgramInformation_CreateUsingRomWithJlpNoFlash_ContainsValidMetadata()
         {
-            IReadOnlyList<string> romPaths;
+            IReadOnlyList<StorageLocation> romPaths;
             var storage = CfgFileMetadataProgramInformationTestStorageAccess.Initialize(out romPaths, TestRomResources.TestBinPath, TestRomResources.TestCfgMetadataPath);
-            using (var cfgFile = storage.Open(romPaths[1]))
+            using (var cfgFile = romPaths[1].OpenStream())
             {
                 var cfgContent = "[vars]\njlp=2\n";
                 var cfgBytes = Encoding.UTF8.GetBytes(cfgContent);
@@ -150,9 +151,9 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void CfgFileMetadataProgramInformation_CreateUsingRomWithZeroSizeJlpFlash_ContainsValidMetadata()
         {
-            IReadOnlyList<string> romPaths;
+            IReadOnlyList<StorageLocation> romPaths;
             var storage = CfgFileMetadataProgramInformationTestStorageAccess.Initialize(out romPaths, TestRomResources.TestBinPath, TestRomResources.TestCfgMetadataPath);
-            using (var cfgFile = storage.Open(romPaths[1]))
+            using (var cfgFile = storage.Open(romPaths[1].Path))
             {
                 var cfgContent = "[vars]\njlp=2\njlp_flash=0\n";
                 var cfgBytes = Encoding.UTF8.GetBytes(cfgContent);

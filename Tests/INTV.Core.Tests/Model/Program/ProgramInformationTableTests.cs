@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -32,7 +33,7 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramInformationTable_Initialize_()
         {
-            IReadOnlyList<string> romPaths;
+            IReadOnlyList<StorageLocation> romPaths;
             var storageAccess = ProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
             var database0FilePath = "/testing/database/user_specified_database_0.xml";
             storageAccess.AddDatabaseFile(database0FilePath, 2);
@@ -43,9 +44,9 @@ namespace INTV.Core.Tests.Model.Program
             var database = ProgramInformationTable.Initialize(
                 new[]
                 {
-                    new ProgramInformationTableDescriptor(database0FilePath, p => UserSpecifiedProgramInformationTable.Initialize(p)),
-                    new ProgramInformationTableDescriptor(database1FilePath, p => UserSpecifiedProgramInformationTable.Initialize(p)),
-                    new ProgramInformationTableDescriptor(database2FilePath, p => UserSpecifiedProgramInformationTable.Initialize(p)),
+                    new ProgramInformationTableDescriptor(database0FilePath, p => UserSpecifiedProgramInformationTable.Initialize(storageAccess.CreateLocation(p))),
+                    new ProgramInformationTableDescriptor(database1FilePath, p => UserSpecifiedProgramInformationTable.Initialize(storageAccess.CreateLocation(p))),
+                    new ProgramInformationTableDescriptor(database2FilePath, p => UserSpecifiedProgramInformationTable.Initialize(storageAccess.CreateLocation(p))),
                 });
 
             Assert.NotNull(database);

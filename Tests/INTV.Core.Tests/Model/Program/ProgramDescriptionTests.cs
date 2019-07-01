@@ -26,6 +26,7 @@ using System.Text;
 using System.Xml.Serialization;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -200,7 +201,7 @@ namespace INTV.Core.Tests.Model.Program
             information.AddCrc(crc);
             var description = new ProgramDescription(crc, null, information);
             var romPath = ProgramDescriptionTestStorage.Initialize(TestRomResources.TestRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             var newFiles = new ProgramSupportFiles(rom);
@@ -214,7 +215,7 @@ namespace INTV.Core.Tests.Model.Program
         public void ProgramDescription_ValidRomSetProgramSupportFilesWithNullRom_UpdatesFilesAndLeavesRomUnchanged()
         {
             var romPath = ProgramDescriptionTestStorage.Initialize(TestRomResources.TestRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
             var information = new TestProgramInformation();
             var crc = rom.Crc;
@@ -232,13 +233,13 @@ namespace INTV.Core.Tests.Model.Program
         public void ProgramDescription_ValidRomSetProgramSupportFilesWithValidRom_UpdatesFilesAndLeavesRomUnchanged()
         {
             var romPaths = ProgramDescriptionTestStorage.Initialize(TestRomResources.TestRomPath, TestRomResources.TestBinPath);
-            var rom0 = Rom.Create(romPaths[0], null);
+            var rom0 = Rom.Create(romPaths[0], StorageLocation.InvalidLocation);
             Assert.NotNull(rom0);
             var information = new TestProgramInformation();
             var crc = rom0.Crc;
             information.AddCrc(crc);
             var description = new ProgramDescription(crc, rom0, information);
-            var rom1 = Rom.Create(romPaths[1], null);
+            var rom1 = Rom.Create(romPaths[1], StorageLocation.InvalidLocation);
             Assert.NotNull(rom1);
 
             var newFiles = new ProgramSupportFiles(rom1);
@@ -334,7 +335,7 @@ namespace INTV.Core.Tests.Model.Program
         public void ProgramDescription_ValidateWithValidRom_ReturnsTrue()
         {
             var romPath = ProgramDescriptionTestStorage.Initialize(TestRomResources.TestRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
             var information = new TestProgramInformation();
             var crc = rom.Crc;
@@ -350,7 +351,7 @@ namespace INTV.Core.Tests.Model.Program
         public void ProgramDescription_ValidateWithValidRomWhoseCfgFileIsMissing_ReturnsFalse()
         {
             var romPath = ProgramDescriptionTestStorage.Initialize(TestRomResources.TestLuigiScrambledForDevice0Path).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
             var information = new TestProgramInformation();
             var crc = 0x8C29E37Du;
@@ -639,17 +640,17 @@ namespace INTV.Core.Tests.Model.Program
             Assert.Equal("1999", description.Year);
             Assert.Equal(TestRomResources.TestBinCrc, description.Crc);
             Assert.Equal(ProgramFeatures.DefaultFeatures, description.Features);
-            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.RomImagePath);
-            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.RomConfigurationFilePath);
-            Assert.Empty(description.Files.AlternateRomImagePaths);
-            Assert.Empty(description.Files.AlternateRomConfigurationFilePaths);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.XmlRomImagePath);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.XmlRomConfigurationFilePath);
+            Assert.Empty(description.Files.XmlAlternateRomImagePaths);
+            Assert.Empty(description.Files.XmlAlternateRomConfigurationFilePaths);
             Assert.NotNull(description.Rom);
             Assert.True(description.Rom is XmlRom);
             Assert.Null(((XmlRom)description.Rom).ResolvedRom);
             Assert.Equal(0u, description.Rom.Crc);
             Assert.Equal(0u, description.Rom.CfgCrc);
-            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath);
-            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath.Path);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath.Path);
         }
 
         [Fact]
@@ -704,17 +705,17 @@ namespace INTV.Core.Tests.Model.Program
             Assert.Equal("1999", description.Year);
             Assert.Equal(TestRomResources.TestBinCrc, description.Crc);
             Assert.Equal(ProgramFeatures.DefaultFeatures, description.Features);
-            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.RomImagePath);
-            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.RomConfigurationFilePath);
-            Assert.Empty(description.Files.AlternateRomImagePaths);
-            Assert.Empty(description.Files.AlternateRomConfigurationFilePaths);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.XmlRomImagePath);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.XmlRomConfigurationFilePath);
+            Assert.Empty(description.Files.XmlAlternateRomImagePaths);
+            Assert.Empty(description.Files.XmlAlternateRomConfigurationFilePaths);
             Assert.NotNull(description.Rom);
             Assert.True(description.Rom is XmlRom);
             Assert.Null(((XmlRom)description.Rom).ResolvedRom);
             Assert.Equal(0u, description.Rom.Crc);
             Assert.Equal(0u, description.Rom.CfgCrc);
-            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath);
-            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath.Path);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath.Path);
         }
 
         [Fact]
@@ -769,17 +770,17 @@ namespace INTV.Core.Tests.Model.Program
             Assert.Equal("1999", description.Year);
             Assert.Equal(TestRomResources.TestBinCrc, description.Crc);
             Assert.Equal(ProgramFeatures.DefaultFeatures, description.Features);
-            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.RomImagePath);
-            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.RomConfigurationFilePath);
-            Assert.Empty(description.Files.AlternateRomImagePaths);
-            Assert.Empty(description.Files.AlternateRomConfigurationFilePaths);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.XmlRomImagePath);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.XmlRomConfigurationFilePath);
+            Assert.Empty(description.Files.XmlAlternateRomImagePaths);
+            Assert.Empty(description.Files.XmlAlternateRomConfigurationFilePaths);
             Assert.NotNull(description.Rom);
             Assert.True(description.Rom is XmlRom);
             Assert.Null(((XmlRom)description.Rom).ResolvedRom);
             Assert.Equal(0u, description.Rom.Crc);
             Assert.Equal(0u, description.Rom.CfgCrc);
-            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath);
-            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath.Path);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath.Path);
         }
 
         [Fact]
@@ -834,17 +835,17 @@ namespace INTV.Core.Tests.Model.Program
             Assert.Equal("1999", description.Year);
             Assert.Equal(TestRomResources.TestBinCrc, description.Crc);
             Assert.Equal(ProgramFeatures.DefaultFeatures, description.Features);
-            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.RomImagePath);
-            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.RomConfigurationFilePath);
-            Assert.Empty(description.Files.AlternateRomImagePaths);
-            Assert.Empty(description.Files.AlternateRomConfigurationFilePaths);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Files.XmlRomImagePath);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Files.XmlRomConfigurationFilePath);
+            Assert.Empty(description.Files.XmlAlternateRomImagePaths);
+            Assert.Empty(description.Files.XmlAlternateRomConfigurationFilePaths);
             Assert.NotNull(description.Rom);
             Assert.True(description.Rom is XmlRom);
             Assert.Null(((XmlRom)description.Rom).ResolvedRom);
             Assert.Equal(0u, description.Rom.Crc);
             Assert.Equal(0u, description.Rom.CfgCrc);
-            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath);
-            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath);
+            Assert.Equal(@"\Users\tester\Projects\perforce\intellivision\roms\tagalong.bin", description.Rom.RomPath.Path);
+            Assert.Equal(@"/Users/tester/Projects/MinGW/msys/1.0/home/tester/lui_src/LtoFlash/bin/tools/0.cfg", description.Rom.ConfigPath.Path);
         }
 
         private void VerifyProgramInformation(IProgramInformation information0, IProgramInformation information1)
@@ -861,25 +862,25 @@ namespace INTV.Core.Tests.Model.Program
         private void VerifyProgramSupportFiles(ProgramSupportFiles files0, ProgramSupportFiles files1)
         {
             Assert.Equal(files0.Rom, files1.Rom);
-            Assert.Equal(files0.RomImagePath, files1.RomImagePath);
-            Assert.Equal(files0.RomConfigurationFilePath, files1.RomConfigurationFilePath);
-            Assert.Equal(files0.AlternateRomImagePaths, files1.AlternateRomImagePaths);
-            Assert.Equal(files0.AlternateRomConfigurationFilePaths, files1.AlternateRomConfigurationFilePaths);
-            Assert.Equal(files0.BoxImagePaths, files1.BoxImagePaths);
-            Assert.Equal(files0.OverlayImagePaths, files1.OverlayImagePaths);
-            Assert.Equal(files0.ManualCoverImagePaths, files1.ManualCoverImagePaths);
-            Assert.Equal(files0.LabelImagePaths, files1.LabelImagePaths);
-            Assert.Equal(files0.ManualPaths, files1.ManualPaths);
-            Assert.Equal(files0.SaveDataPaths, files1.SaveDataPaths);
-            Assert.Equal(files0.DefaultBoxImagePath, files1.DefaultBoxImagePath);
-            Assert.Equal(files0.DefaultOverlayImagePath, files1.DefaultOverlayImagePath);
-            Assert.Equal(files0.DefaultManualImagePath, files1.DefaultManualImagePath);
-            Assert.Equal(files0.DefaultLabelImagePath, files1.DefaultLabelImagePath);
-            Assert.Equal(files0.DefaultManualTextPath, files1.DefaultManualTextPath);
-            Assert.Equal(files0.DefaultSaveDataPath, files1.DefaultSaveDataPath);
-            Assert.Equal(files0.DefaultLtoFlashDataPath, files1.DefaultLtoFlashDataPath);
-            Assert.Equal(files0.DefaultVignettePath, files1.DefaultVignettePath);
-            Assert.Equal(files0.DefaultReservedDataPath, files1.DefaultReservedDataPath);
+            Assert.Equal(files0.XmlRomImagePath, files1.XmlRomImagePath);
+            Assert.Equal(files0.XmlRomConfigurationFilePath, files1.XmlRomConfigurationFilePath);
+            Assert.Equal(files0.XmlAlternateRomImagePaths, files1.XmlAlternateRomImagePaths);
+            Assert.Equal(files0.XmlAlternateRomConfigurationFilePaths, files1.XmlAlternateRomConfigurationFilePaths);
+            Assert.Equal(files0.BoxImageLocations, files1.BoxImageLocations);
+            Assert.Equal(files0.OverlayImageLocations, files1.OverlayImageLocations);
+            Assert.Equal(files0.ManualCoverImageLocations, files1.ManualCoverImageLocations);
+            Assert.Equal(files0.LabelImageLocations, files1.LabelImageLocations);
+            Assert.Equal(files0.ManualLocations, files1.ManualLocations);
+            Assert.Equal(files0.SaveDataLocations, files1.SaveDataLocations);
+            Assert.Equal(files0.XmlDefaultBoxImagePath, files1.XmlDefaultBoxImagePath);
+            Assert.Equal(files0.XmlDefaultOverlayImagePath, files1.XmlDefaultOverlayImagePath);
+            Assert.Equal(files0.XmlDefaultManualImagePath, files1.XmlDefaultManualImagePath);
+            Assert.Equal(files0.XmlDefaultLabelImagePath, files1.XmlDefaultLabelImagePath);
+            Assert.Equal(files0.XmlDefaultManualTextPath, files1.XmlDefaultManualTextPath);
+            Assert.Equal(files0.XmlDefaultSaveDataPath, files1.XmlDefaultSaveDataPath);
+            Assert.Equal(files0.XmlDefaultLtoFlashDataPath, files1.XmlDefaultLtoFlashDataPath);
+            Assert.Equal(files0.XmlDefaultVignettePath, files1.XmlDefaultVignettePath);
+            Assert.Equal(files0.XmlDefaultReservedDataPath, files1.XmlDefaultReservedDataPath);
         }
 
         private class TestProgramInformation : IProgramInformation

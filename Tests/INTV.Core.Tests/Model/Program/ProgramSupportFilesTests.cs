@@ -34,8 +34,6 @@ namespace INTV.Core.Tests.Model.Program
 {
     public class ProgramSupportFilesTests
     {
-// Tests use 'obsolete' types for XML testing.
-#pragma warning disable 618
         private static readonly IDictionary<ProgramFileKind, Func<ProgramSupportFiles, string>> ProgramFileKindToGetter = new Dictionary<ProgramFileKind, Func<ProgramSupportFiles, string>>()
         {
             { ProgramFileKind.Rom, f => f.XmlRomImagePath },
@@ -1479,6 +1477,5 @@ namespace INTV.Core.Tests.Model.Program
                 return isCompatible;
             }
         }
-#pragma warning restore 618
     }
 }

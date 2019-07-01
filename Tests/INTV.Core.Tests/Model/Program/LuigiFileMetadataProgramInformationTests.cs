@@ -22,6 +22,7 @@ using System;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -39,7 +40,7 @@ namespace INTV.Core.Tests.Model.Program
         public void LuigiFileMetadataProgramInformation_AddCrc_ThrowsInvalidOperationException()
         {
             var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).Single();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, StorageLocation.InvalidLocation));
             Assert.NotNull(rom);
             var metadataBlock = rom.LocateDataBlock<LuigiMetadataBlock>();
             Assert.Null(metadataBlock);
@@ -53,7 +54,7 @@ namespace INTV.Core.Tests.Model.Program
         public void LuigiFileMetadataProgramInformation_CreateWithNoMetadatda_DataOriginIsCorrect()
         {
             var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).Single();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, StorageLocation.InvalidLocation));
             Assert.NotNull(rom);
             var metadataBlock = rom.LocateDataBlock<LuigiMetadataBlock>();
             Assert.Null(metadataBlock);
@@ -67,7 +68,7 @@ namespace INTV.Core.Tests.Model.Program
         public void LuigiFileMetadataProgramInformation_CreateWithMetadatda_DataOriginIsCorrect()
         {
             var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiWithMetadataPath).Single();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, StorageLocation.InvalidLocation));
             Assert.NotNull(rom);
             var metadataBlock = rom.LocateDataBlock<LuigiMetadataBlock>();
             Assert.NotNull(metadataBlock);
@@ -81,7 +82,7 @@ namespace INTV.Core.Tests.Model.Program
         public void LuigiFileMetadataProgramInformation_CreateWithNoMetadatda_VerifySetTitle()
         {
             var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).Single();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, StorageLocation.InvalidLocation));
             Assert.NotNull(rom);
             var metadataBlock = rom.LocateDataBlock<LuigiMetadataBlock>();
             Assert.Null(metadataBlock);
@@ -98,7 +99,7 @@ namespace INTV.Core.Tests.Model.Program
         public void LuigiFileMetadataProgramInformation_CreateWithNoMetadatda_VerifySetShortName()
         {
             var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).Single();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, StorageLocation.InvalidLocation));
             Assert.NotNull(rom);
             var metadataBlock = rom.LocateDataBlock<LuigiMetadataBlock>();
             Assert.Null(metadataBlock);
@@ -115,7 +116,7 @@ namespace INTV.Core.Tests.Model.Program
         public void LuigiFileMetadataProgramInformation_CreateWithNoMetadatda_VerifySetVendor()
         {
             var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).Single();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, StorageLocation.InvalidLocation));
             Assert.NotNull(rom);
             var metadataBlock = rom.LocateDataBlock<LuigiMetadataBlock>();
             Assert.Null(metadataBlock);
@@ -132,7 +133,7 @@ namespace INTV.Core.Tests.Model.Program
         public void LuigiFileMetadataProgramInformation_CreateWithNoMetadatda_VerifySetYear()
         {
             var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).Single();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, StorageLocation.InvalidLocation));
             Assert.NotNull(rom);
             var metadataBlock = rom.LocateDataBlock<LuigiMetadataBlock>();
             Assert.Null(metadataBlock);
@@ -148,7 +149,7 @@ namespace INTV.Core.Tests.Model.Program
         public void LuigiFileMetadataProgramInformation_CreateWithNoMetadatda_VerifySetFeatures()
         {
             var path = LuigiFileMetadataProgramInformationTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).Single();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(path, StorageLocation.InvalidLocation));
             Assert.NotNull(rom);
             var metadataBlock = rom.LocateDataBlock<LuigiMetadataBlock>();
             Assert.Null(metadataBlock);

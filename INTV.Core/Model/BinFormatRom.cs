@@ -84,7 +84,7 @@ namespace INTV.Core.Model
         #endregion // IRom Properties
 
         /// <summary>
-        /// Gets the metadata from CFGVAR values that may be included in the .cfg file.
+        /// Gets the metadata from CFGVAR values that may be included in the .cfg data.
         /// </summary>
         /// <remarks>NOTE: Parsing here is EXTREMELY primitive. The code does not enforce the notion of
         /// the 'vars' section, it just blindly scans for values with 'keys' listed in as1600.txt.
@@ -100,13 +100,13 @@ namespace INTV.Core.Model
                     {
                         if (ConfigPath != null)
                         {
-                            if (IStorageAccessHelpers.FileExists(ConfigPath))
+                            if (ConfigPath.Exists())
                             {
                                 if (MetadataCacheEnabled && (_metadata != null))
                                 {
                                     return _metadata;
                                 }
-                                using (var file = IStorageAccessHelpers.OpenFileStream(ConfigPath))
+                                using (var file = ConfigPath.OpenStream())
                                 {
                                     metadata = CfgVarMetadataBlock.InflateAll(file);
                                 }
@@ -143,16 +143,16 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override bool Validate()
         {
-            var isValid = !string.IsNullOrEmpty(RomPath);
+            var isValid = RomPath.IsValid;
             if (isValid)
             {
-                isValid = IStorageAccessHelpers.FileExists(RomPath);
+                isValid = RomPath.Exists();
             }
             if (isValid)
             {
-                if (!string.IsNullOrEmpty(ConfigPath))
+                if (ConfigPath.IsValid)
                 {
-                    isValid = IStorageAccessHelpers.FileExists(ConfigPath);
+                    isValid = ConfigPath.Exists();
                 }
             }
             IsValid = isValid;
@@ -165,10 +165,10 @@ namespace INTV.Core.Model
             var crc = _crc;
             if (IsValid)
             {
-                if (IStorageAccessHelpers.FileExists(RomPath))
+                if (RomPath.Exists())
                 {
                     uint dontCare;
-                    _crc = GetCrcs(RomPath, null, out dontCare);
+                    _crc = GetCrcs(RomPath, StorageLocation.InvalidLocation, out dontCare);
                     if (crc == 0)
                     {
                         crc = _crc; // lazy initialization means on first read, we should never get a change
@@ -185,11 +185,11 @@ namespace INTV.Core.Model
             var cfgCrc = _cfgCrc;
             if (IsValid)
             {
-                if (!string.IsNullOrEmpty(ConfigPath))
+                if (!string.IsNullOrEmpty(ConfigPath.Path))
                 {
-                    if (IStorageAccessHelpers.FileExists(ConfigPath))
+                    if (ConfigPath.Exists())
                     {
-                        GetCrcs(null, ConfigPath, out _cfgCrc);
+                        GetCrcs(StorageLocation.InvalidLocation, ConfigPath, out _cfgCrc);
                         if (cfgCrc == 0)
                         {
                             cfgCrc = _cfgCrc; // lazy initialization means on first read, we should never get a change
@@ -204,36 +204,36 @@ namespace INTV.Core.Model
         #endregion // IRom
 
         /// <summary>
-        /// Replace the configuration file path in the ROM with the one provided.
+        /// Replace the configuration in the ROM with the one provided.
         /// </summary>
-        /// <param name="cfgPath">The new configuration file path.</param>
-        public void ReplaceCfgPath(string cfgPath)
+        /// <param name="cfgLocation">The new configuration file path.</param>
+        public void ReplaceCfgPath(StorageLocation cfgLocation)
         {
-            ConfigPath = cfgPath;
+            ConfigPath = cfgLocation;
             _cfgCrc = 0; // force recalculation CfgCrc next time it's requested
         }
 
         /// <summary>
-        /// Examines the given data stream and attempts to determine if it is in .bin format.
+        /// Examines the given data stream and attempts to determine if it might be a ROM in .bin format.
         /// </summary>
-        /// <param name="filePath">The path to the ROM file.</param>
-        /// <param name="configFilePath">The path to the config file.</param>
-        /// <returns>A valid BinFormatRom if the file appears to be a valid .bin (or similar) file, otherwise <c>null</c>.</returns>
-        /// <remarks>Apparently, there may be odd-sized files floating around out there, in which case this will fail.</remarks>
-        internal static new BinFormatRom Create(string filePath, string configFilePath)
+        /// <param name="romLocation">The location of the ROM.</param>
+        /// <param name="configLocation">The location of the config data.</param>
+        /// <returns>A valid BinFormatRom if the location appears to be a valid .bin (or similar) file, otherwise <c>null</c>.</returns>
+        /// <remarks>Apparently, there may be odd-sized images floating around out there, in which case this may fail.</remarks>
+        internal static new BinFormatRom Create(StorageLocation romLocation, StorageLocation configLocation)
         {
             BinFormatRom bin = null;
-            var format = CheckFormat(filePath);
+            var format = CheckFormat(romLocation);
             if (format == RomFormat.Bin)
             {
-                using (System.IO.Stream configFile = (configFilePath == null) ? null : IStorageAccessHelpers.OpenFileStream(configFilePath))
+                using (var configFile = configLocation.IsValid ? configLocation.OpenStream() : null)
                 {
-                    // any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason, these all seem to be a multiple of
+                    // any valid .bin image will be even sized -- except for some available through the Digital Press. For some reason, these all seem to be a multiple of
                     // 8KB + 1 byte in size. So allow those through, too.
                     var configFileCheck = ((configFile != null) && (configFile.Length > 0)) || configFile == null;
                     if (configFileCheck)
                     {
-                        bin = new BinFormatRom() { Format = RomFormat.Bin, IsValid = true, RomPath = filePath, ConfigPath = configFilePath };
+                        bin = new BinFormatRom() { Format = RomFormat.Bin, IsValid = true, RomPath = romLocation, ConfigPath = configLocation };
                     }
                 }
             }
@@ -241,21 +241,21 @@ namespace INTV.Core.Model
         }
 
         /// <summary>
-        /// Given an absolute path to a ROM file, attempt to determine the format of the ROM.
+        /// Given the location of a ROM file, attempt to determine its format.
         /// </summary>
-        /// <param name="filePath">Absolute path to the potential ROM file.</param>
+        /// <param name="location">Location of the potential ROM file.</param>
         /// <returns>The format of the file. If it does not appear to be a ROM, then <c>RomFormat.None</c> is returned.</returns>
-        internal static RomFormat CheckFormat(string filePath)
+        internal static RomFormat CheckFormat(StorageLocation location)
         {
-            var format = CheckMemo(filePath);
+            var format = CheckMemo(location);
             if (format == RomFormat.None)
             {
-                using (System.IO.Stream file = IStorageAccessHelpers.OpenFileStream(filePath))
+                using (System.IO.Stream file = location.OpenStream())
                 {
                     var fileSizeCheck = file != null;
                     if (fileSizeCheck)
                     {
-                        var allowOddRomFileSize = !ProgramFileKind.Rom.HasCustomRomExtension(filePath);
+                        var allowOddRomFileSize = !ProgramFileKind.Rom.HasCustomRomExtension(location.Path);
                         fileSizeCheck = IsValidFileSize(file, allowOddRomFileSize);
                     }
                     if (fileSizeCheck)
@@ -280,7 +280,7 @@ namespace INTV.Core.Model
             var fileSizeCheck = stream != null;
             if (fileSizeCheck)
             {
-                // Coerce allow odd ROM file size to true since certain ... shady ... ROM sites commonly
+                // Coerce allow odd ROM image sizes to true since certain ... shady ... ROM sites commonly
                 // have ZIPped up ROMs that somehow have an extra byte at the end.
                 var position = stream.Position;
                 try
@@ -302,29 +302,29 @@ namespace INTV.Core.Model
         /// <summary>
         /// Get the Crc32 values of a ROM.
         /// </summary>
-        /// <param name="romPath">Absolute path of the ROM whose CRC32 value is desired.</param>
-        /// <param name="cfgPath">Absolute path of the configuration (.cfg) file whose CRC32 is desired. May be <c>null</c>, depending on the ROM.</param>
-        /// <param name="cfgCrc">Receives the CRC32 of the configuration file, if applicable. Could be zero.</param>
-        /// <returns>CRC32 of the ROM file.</returns>
+        /// <param name="romLocation">Location of the ROM whose CRC32 value is desired.</param>
+        /// <param name="cfgLocation">Location of the configuration (.cfg) file whose CRC32 is desired. May be <c>null</c>, depending on the ROM.</param>
+        /// <param name="cfgCrc">Receives the CRC32 of the configuration data, if applicable. Could be zero.</param>
+        /// <returns>CRC32 of the ROM image.</returns>
         /// <remarks>Instead of zero, should the Crc32.InitialValue be used as a sentinel 'invalid' value?</remarks>
-        internal static uint GetCrcs(string romPath, string cfgPath, out uint cfgCrc)
+        internal static uint GetCrcs(StorageLocation romLocation, StorageLocation cfgLocation, out uint cfgCrc)
         {
             cfgCrc = 0;
             uint romCrc = 0;
-            if (!string.IsNullOrEmpty(romPath) && IStorageAccessHelpers.FileExists(romPath))
+            if (!string.IsNullOrEmpty(romLocation.Path) && romLocation.Exists())
             {
-                romCrc = Crc32.OfFile(romPath);
+                romCrc = Crc32.OfFile(romLocation);
             }
-            if (!string.IsNullOrEmpty(cfgPath) && IStorageAccessHelpers.FileExists(cfgPath))
+            if (!string.IsNullOrEmpty(cfgLocation.Path) && cfgLocation.Exists())
             {
-                cfgCrc = Crc32.OfFile(cfgPath);
+                cfgCrc = Crc32.OfFile(cfgLocation);
             }
             return romCrc;
         }
 
         private static bool IsValidFileSize(System.IO.Stream file, bool allowOddRomFileSize)
         {
-            // Any valid .bin file will be even sized -- except for some available through the Digital Press. For some reason,
+            // Any valid .bin image will be even sized -- except for some available through the Digital Press. For some reason,
             // these all seem to be a multiple of 8KB + 1 byte in size. Allow those through, too.
             var fileSizeCheck = file.Length >= MinRomSize;
             if (fileSizeCheck)

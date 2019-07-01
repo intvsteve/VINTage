@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -98,7 +99,7 @@ namespace INTV.Core.Tests.Model
         public void BinFormatRom_LoadAndValidateRomWithoutCfgPath_RomFormatIdentifiedCorrectly()
         {
             var path = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath).First();
-            var rom = Rom.Create(path, null);
+            var rom = Rom.Create(path, StorageLocation.InvalidLocation);
 
             Assert.NotNull(rom);
             Assert.Equal(RomFormat.Bin, rom.Format);
@@ -129,10 +130,11 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_ReplaceCfgPath_CfgPathChanges()
         {
-            var paths = BinFormatRomTestStorageAccess.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            IReadOnlyList<StorageLocation> paths;
+            var storage = BinFormatRomTestStorageAccess.Initialize(out paths, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
-            var fakeCfgPath = "/Resources/tugalong.cfg";
+            var fakeCfgPath = storage.CreateLocation("/Resources/tugalong.cfg");
             ((BinFormatRom)rom).ReplaceCfgPath(fakeCfgPath);
 
             Assert.Equal(fakeCfgPath, rom.ConfigPath);
@@ -163,11 +165,11 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void BinFormatRom_GetMetadataFromCorruptCfgFile_BehavesAsExpected()
         {
-            IReadOnlyList<string> paths;
+            IReadOnlyList<StorageLocation> paths;
             var storageAccess = BinFormatRomTestStorageAccess.Initialize(out paths, TestRomResources.TestBinMetadataPath, TestRomResources.TestCfgBadMetadataPath);
             var rom = Rom.Create(paths[0], paths[1]);
 
-            var corrupted = storageAccess.IntroduceCorruption(paths[1]);
+            var corrupted = storageAccess.IntroduceCorruption(paths[1].Path);
 
             Assert.True(corrupted);
             AssertMetadataBehavior(rom);

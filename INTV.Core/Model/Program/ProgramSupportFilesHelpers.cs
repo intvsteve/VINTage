@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramSupportFilesHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,10 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model.Program
 {
@@ -64,7 +63,7 @@ namespace INTV.Core.Model.Program
         /// <returns>An enumerable of the files that were requested.</returns>
         /// <remarks>If the <paramref name="kinds"/> argument is <c>null</c> or empty, the function behaves as if it contains the
         /// <see cref="ProgramFileKind.Rom"/> and <see cref="ProgramFileKind.CfgFile"/> values.</remarks>
-        public static IEnumerable<string> GetSupportFilePaths(this ProgramSupportFiles files, IEnumerable<ProgramFileKind> kinds, ProgramSupportFilesInclusionFlags inclusionFlags)
+        public static IEnumerable<StorageLocation> GetSupportFilePaths(this ProgramSupportFiles files, IEnumerable<ProgramFileKind> kinds, ProgramSupportFilesInclusionFlags inclusionFlags)
         {
             if ((kinds == null) || !kinds.Any())
             {
@@ -72,13 +71,13 @@ namespace INTV.Core.Model.Program
             }
             if (kinds.Contains(ProgramFileKind.Rom))
             {
-                if (!string.IsNullOrEmpty(files.RomImagePath))
+                if (files.RomImageLocation.IsValid)
                 {
-                    yield return files.RomImagePath;
+                    yield return files.RomImageLocation;
                 }
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
-                    foreach (var alternate in files.AlternateRomImagePaths.Where(p => !string.IsNullOrEmpty(p)))
+                    foreach (var alternate in files.AlternateRomImageLocations.Where(p => p.IsValid))
                     {
                         yield return alternate;
                     }
@@ -86,13 +85,13 @@ namespace INTV.Core.Model.Program
             }
             if (kinds.Contains(ProgramFileKind.CfgFile))
             {
-                if (!string.IsNullOrEmpty(files.RomConfigurationFilePath))
+                if (files.RomConfigurationLocation.IsValid)
                 {
-                    yield return files.RomConfigurationFilePath;
+                    yield return files.RomConfigurationLocation;
                 }
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
-                    foreach (var alternate in files.AlternateRomConfigurationFilePaths.Where(p => !string.IsNullOrEmpty(p)))
+                    foreach (var alternate in files.AlternateRomConfigurationLocations.Where(p => p.IsValid))
                     {
                         yield return alternate;
                     }
@@ -100,9 +99,9 @@ namespace INTV.Core.Model.Program
             }
             if (kinds.Contains(ProgramFileKind.LuigiFile))
             {
-                if (!string.IsNullOrEmpty(files.DefaultLtoFlashDataPath))
+                if (files.DefaultLtoFlashDataLocation.IsValid)
                 {
-                    yield return files.DefaultLtoFlashDataPath;
+                    yield return files.DefaultLtoFlashDataLocation;
                 }
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
@@ -113,16 +112,16 @@ namespace INTV.Core.Model.Program
             {
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
-                    foreach (var alternate in files.ManualPaths.Where(p => !string.IsNullOrEmpty(p)))
+                    foreach (var alternate in files.ManualLocations.Where(p => p.IsValid))
                     {
                         yield return alternate;
                     }
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(files.DefaultManualTextPath))
+                    if (files.DefaultManualTextLocation.IsValid)
                     {
-                        yield return files.DefaultManualTextPath;
+                        yield return files.DefaultManualTextLocation;
                     }
                 }
             }
@@ -130,16 +129,16 @@ namespace INTV.Core.Model.Program
             {
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
-                    foreach (var alternate in files.BoxImagePaths.Where(p => !string.IsNullOrEmpty(p)))
+                    foreach (var alternate in files.BoxImageLocations.Where(p => p.IsValid))
                     {
                         yield return alternate;
                     }
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(files.DefaultBoxImagePath))
+                    if (files.DefaultBoxImageLocation.IsValid)
                     {
-                        yield return files.DefaultBoxImagePath;
+                        yield return files.DefaultBoxImageLocation;
                     }
                 }
             }
@@ -147,16 +146,16 @@ namespace INTV.Core.Model.Program
             {
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
-                    foreach (var alternate in files.LabelImagePaths.Where(p => !string.IsNullOrEmpty(p)))
+                    foreach (var alternate in files.LabelImageLocations.Where(p => p.IsValid))
                     {
                         yield return alternate;
                     }
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(files.DefaultLabelImagePath))
+                    if (files.DefaultLabelImageLocation.IsValid)
                     {
-                        yield return files.DefaultLabelImagePath;
+                        yield return files.DefaultLabelImageLocation;
                     }
                 }
             }
@@ -164,16 +163,16 @@ namespace INTV.Core.Model.Program
             {
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
-                    foreach (var alternate in files.OverlayImagePaths.Where(p => !string.IsNullOrEmpty(p)))
+                    foreach (var alternate in files.OverlayImageLocations.Where(p => p.IsValid))
                     {
                         yield return alternate;
                     }
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(files.DefaultOverlayImagePath))
+                    if (files.DefaultOverlayImageLocation.IsValid)
                     {
-                        yield return files.DefaultOverlayImagePath;
+                        yield return files.DefaultOverlayImageLocation;
                     }
                 }
             }
@@ -181,16 +180,16 @@ namespace INTV.Core.Model.Program
             {
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
-                    foreach (var alternate in files.ManualCoverImagePaths.Where(p => !string.IsNullOrEmpty(p)))
+                    foreach (var alternate in files.ManualCoverImageLocations.Where(p => p.IsValid))
                     {
                         yield return alternate;
                     }
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(files.DefaultManualImagePath))
+                    if (files.DefaultManualCoverImageLocation.IsValid)
                     {
-                        yield return files.DefaultManualImagePath;
+                        yield return files.DefaultManualCoverImageLocation;
                     }
                 }
             }
@@ -198,24 +197,24 @@ namespace INTV.Core.Model.Program
             {
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
-                    foreach (var alternate in files.SaveDataPaths.Where(p => !string.IsNullOrEmpty(p)))
+                    foreach (var alternate in files.SaveDataLocations.Where(p => p.IsValid))
                     {
                         yield return alternate;
                     }
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(files.DefaultSaveDataPath))
+                    if (files.DefaultSaveDataLocation.IsValid)
                     {
-                        yield return files.DefaultSaveDataPath;
+                        yield return files.DefaultSaveDataLocation;
                     }
                 }
             }
             if (kinds.Contains(ProgramFileKind.Vignette))
             {
-                if (!string.IsNullOrEmpty(files.DefaultVignettePath))
+                if (files.DefaultVignetteLocation.IsValid)
                 {
-                    yield return files.DefaultVignettePath;
+                    yield return files.DefaultVignetteLocation;
                 }
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {
@@ -224,9 +223,9 @@ namespace INTV.Core.Model.Program
             }
             if (kinds.Contains(ProgramFileKind.GenericSupportFile))
             {
-                if (!string.IsNullOrEmpty(files.DefaultReservedDataPath))
+                if (files.DefaultReservedDataLocation.IsValid)
                 {
-                    yield return files.DefaultReservedDataPath;
+                    yield return files.DefaultReservedDataLocation;
                 }
                 if (inclusionFlags.HasFlag(ProgramSupportFilesInclusionFlags.Alternates))
                 {

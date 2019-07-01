@@ -28,70 +28,32 @@ namespace INTV.Core.Model.Program
     /// <summary>
     /// The support files associated with a program.
     /// </summary>
+    /// <remarks>It's better to split out the XML serialized version to a separate class, but oh well. This crept in when StorageLocation was introduced.</remarks>
     public class ProgramSupportFiles : INTV.Core.ComponentModel.ModelBase
     {
         #region Property Names
 
-        /// <summary>
-        /// Name of the RomImagePath property.
-        /// </summary>
-        public const string RomImagePathPropertyName = "RomImagePath";
-
-        /// <summary>
-        /// Name of the RomConfigurationFilePath property.
-        /// </summary>
+        public const string RomImageLocationPropertyName = "RomImageLocation";
         public const string RomConfigurationFilePathPropertyName = "RomConfigurationFilePath";
-
-        /// <summary>
-        /// Name of the DefaultBoxImagePath property.
-        /// </summary>
-        public const string DefaultBoxImagePathPropertyName = "DefaultBoxImagePath";
-
-        /// <summary>
-        /// Name of the DefaultOverlayImagePath property.
-        /// </summary>
-        public const string DefaultOverlayImagePathPropertyName = "DefaultOverlayImagePath";
-
-        /// <summary>
-        /// Name of the DefaultManualImagePath property.
-        /// </summary>
-        public const string DefaultManualImagePathPropertyName = "DefaultManualImagePath";
-
-        /// <summary>
-        /// Name of the DefaultLabelImagePath property.
-        /// </summary>
-        public const string DefaultLabelImagePathPropertyName = "DefaultLabelImagePath";
-
-        /// <summary>
-        /// Name of the DefaultManualTextPath property.
-        /// </summary>
+        public const string RomConfigurationLocationPropertyName = "RomConfigurationLocation";
+        public const string DefaultBoxImageLocationPropertyName = "DefaultBoxImageLocation";
+        public const string DefaultOverlayImageLocationPropertyName = "DefaultOverlayImageLocation";
+        public const string DefaultManualImageLocationPropertyName = "DefaultManualImageLocation";
+        public const string DefaultLabelImageLocationPropertyName = "DefaultLabelImageLocation";
         public const string DefaultManualTextPathPropertyName = "DefaultManualTextPath";
-
-        /// <summary>
-        /// Name of the DefaultSaveDataPath property.
-        /// </summary>
+        public const string DefaultManualTextLocationPropertyName = "DefaultManualTextLocation";
         public const string DefaultSaveDataPathPropertyName = "DefaultSaveDataPath";
-
-        /// <summary>
-        /// Name of the DefaultLtoFlashDataPath property.
-        /// </summary>
+        public const string DefaultSaveDataLocationPropertyName = "DefaultSaveDataLocation";
         public const string DefaultLtoFlashDataPathPropertyName = "DefaultLtoFlashDataPath";
-
-        /// <summary>
-        /// Name of the DefaultVignettePath property.
-        /// </summary>
-        public const string DefaultVignettePathPropertyName = "DefaultVignettePath";
-
-        /// <summary>
-        /// Name of the DefaultReservedDataPath property.
-        /// </summary>
-        public const string DefaultReservedDataPathPropertyName = "DefaultReservedDataPath";
+        public const string DefaultLtoFlashDataLocationPropertyName = "DefaultLtoFlashDataLocation";
+        public const string DefaultVignetteLocationPropertyName = "DefaultVignetteLocation";
+        public const string DefaultReservedDataLocationPropertyName = "DefaultReservedDataLocation";
 
         #endregion // Property Names
 
-        private Dictionary<ProgramFileKind, List<string>> _supportFiles;
+        private Dictionary<ProgramFileKind, List<StorageLocation>> _supportFiles;
         private Dictionary<ProgramFileKind, ProgramSupportFileState> _supportFileStates;
-        private IRom _programRom;
+        private IRom _programRom = null;
 
         #region Constructors
 
@@ -116,19 +78,19 @@ namespace INTV.Core.Model.Program
         public ProgramSupportFiles(IRom programRom, string boxPath, string manualPath, string manualTextPath, string overlayPath, string labelPath)
         {
             _programRom = programRom;
-            _supportFiles = new Dictionary<ProgramFileKind, List<string>>();
+            _supportFiles = new Dictionary<ProgramFileKind, List<StorageLocation>>();
             _supportFileStates = new Dictionary<ProgramFileKind, ProgramSupportFileState>();
-            _supportFiles[ProgramFileKind.Rom] = new List<string>();
-            _supportFiles[ProgramFileKind.CfgFile] = new List<string>();
-            _supportFiles[ProgramFileKind.Box] = new List<string>();
-            _supportFiles[ProgramFileKind.Label] = new List<string>();
-            _supportFiles[ProgramFileKind.Overlay] = new List<string>();
-            _supportFiles[ProgramFileKind.ManualCover] = new List<string>();
-            _supportFiles[ProgramFileKind.ManualText] = new List<string>();
-            _supportFiles[ProgramFileKind.SaveData] = new List<string>();
-            _supportFiles[ProgramFileKind.LuigiFile] = new List<string>();
-            _supportFiles[ProgramFileKind.Vignette] = new List<string>();
-            _supportFiles[ProgramFileKind.GenericSupportFile] = new List<string>();
+            _supportFiles[ProgramFileKind.Rom] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.CfgFile] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.Box] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.Label] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.Overlay] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.ManualCover] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.ManualText] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.SaveData] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.LuigiFile] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.Vignette] = new List<StorageLocation>();
+            _supportFiles[ProgramFileKind.GenericSupportFile] = new List<StorageLocation>();
         }
 
         /// <summary>
@@ -152,178 +114,364 @@ namespace INTV.Core.Model.Program
             get { return _programRom; }
         }
 
+        #region XML Properties
+
         /// <summary>
-        /// Gets or sets the path to the program ROM.
+        /// Gets or sets the path to the program ROM for XML Serialization.
         /// </summary>
-        /// <remarks>The setter is public to support XmlSerializer.</remarks>
-        public string RomImagePath
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use RomImageLocation instead.")]</remarks>
+        [System.Xml.Serialization.XmlElement("RomImagePath")]
+        public string XmlRomImagePath
         {
-            get { return (_programRom == null) ? null : _programRom.RomPath; }
-            set { UpdateProgramRom(ProgramFileKind.Rom, value); } // If this is only present for XML... why go through the complex code?
+            get { return RomImageLocation.Path; }
+            set { UpdateProgramRom(ProgramFileKind.Rom, value); }
         }
 
         /// <summary>
-        /// Gets or sets the path to the ROM's configuration path.
+        /// Gets or sets the path to the ROM's configuration path for XML Serialization.
         /// </summary>
-        /// <remarks>The setter is public to support XmlSerializer.</remarks>
-        public string RomConfigurationFilePath
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use RomConfigurationLocation instead.")]</remarks>
+        [System.Xml.Serialization.XmlElement("RomConfigurationFilePath")]
+        public string XmlRomConfigurationFilePath
         {
-            get { return (_programRom == null) ? null : _programRom.ConfigPath; }
-            set { UpdateProgramRom(ProgramFileKind.CfgFile, value); } // If this is only present for XML... why go through the complex code?
+            get { return RomConfigurationLocation.Path; }
+            set { UpdateProgramRom(ProgramFileKind.CfgFile, value); }
         }
 
         /// <summary>
-        /// Gets or sets the ROM file's alternate paths.
+        /// Gets or sets the ROM file's alternate paths for XML Serialization.
         /// </summary>
-        /// <remarks>The setter is present, public and uses <see cref="List"/> to support XmlSerializer.
-        /// Also the AddRange behavior seems pretty bad.</remarks>
-        public List<string> AlternateRomImagePaths
+        /// <remarks>Uses <see cref="List"/> to support XmlSerializer.</remarks>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use AlternateRomImageLocations instead.")]</remarks>
+        [System.Xml.Serialization.XmlArray("AlternateRomImagePaths")]
+        public List<string> XmlAlternateRomImagePaths
         {
-            get { return _supportFiles[ProgramFileKind.Rom]; }
-            set { _supportFiles[ProgramFileKind.Rom].AddRange(value); }
+            get
+            {
+                return _alternateRomImagePaths;
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    throw new System.ArgumentNullException("XmlAlternateRomImagePaths");
+                }
+                _alternateRomImagePaths = value;
+            }
         }
+        private List<string> _alternateRomImagePaths;
 
         /// <summary>
-        /// Gets or sets the ROM's alternate configuration file paths.
+        /// Gets or sets the ROM's alternate configuration file paths for XML Serialization.
         /// </summary>
-        /// <remarks>The setter is present, public and uses <see cref="List"/> to support XmlSerializer.
-        /// Also the AddRange behavior seems pretty bad.</remarks>
-        public List<string> AlternateRomConfigurationFilePaths
+        /// <remarks>Uses <see cref="List"/> to support XmlSerializer.</remarks>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use AlternateRomConfigurationLocations instead.")]</remarks>
+        [System.Xml.Serialization.XmlArray("AlternateRomConfigurationFilePaths")]
+        public List<string> XmlAlternateRomConfigurationFilePaths
         {
-            get { return _supportFiles[ProgramFileKind.CfgFile]; }
-            set { _supportFiles[ProgramFileKind.CfgFile].AddRange(value); }
+            get
+            {
+                return _alternateConfigurationFilePaths;
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    throw new System.ArgumentNullException("XmlAlternateRomConfigurationFilePaths");
+                }
+                _alternateConfigurationFilePaths = value;
+            }
         }
+        private List<string> _alternateConfigurationFilePaths;
 
         /// <summary>
-        /// Gets the box image paths.
+        /// Gets or sets the location of the default box image for XML Serialization.
         /// </summary>
-        public IEnumerable<string> BoxImagePaths
-        {
-            get { return _supportFiles[ProgramFileKind.Box]; }
-        }
-
-        /// <summary>
-        /// Gets the overlay image paths.
-        /// </summary>
-        public IEnumerable<string> OverlayImagePaths
-        {
-            get { return _supportFiles[ProgramFileKind.Overlay]; }
-        }
-
-        /// <summary>
-        /// Gets the manual cover image paths.
-        /// </summary>
-        public IEnumerable<string> ManualCoverImagePaths
-        {
-            get { return _supportFiles[ProgramFileKind.ManualCover]; }
-        }
-
-        /// <summary>
-        /// Gets the label image paths.
-        /// </summary>
-        public IEnumerable<string> LabelImagePaths
-        {
-            get { return _supportFiles[ProgramFileKind.Label]; }
-        }
-
-        /// <summary>
-        /// Gets the manual text file paths.
-        /// </summary>
-        public IEnumerable<string> ManualPaths
-        {
-            get { return _supportFiles[ProgramFileKind.ManualText]; }
-        }
-
-        /// <summary>
-        /// Gets the save data paths.
-        /// </summary>
-        public IEnumerable<string> SaveDataPaths
-        {
-            get { return _supportFiles[ProgramFileKind.SaveData]; }
-        }
-
-        /// <summary>
-        /// Gets or sets the path to the default box image.
-        /// </summary>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use DefaultBoxImageLocation instead.")]</remarks>
         [System.Xml.Serialization.XmlElement("BoxImagePath")]
-        public string DefaultBoxImagePath
+        public string XmlDefaultBoxImagePath
         {
-            get { return _supportFiles[ProgramFileKind.Box].FirstOrDefault(); }
-            set { UpdateProperty(DefaultBoxImagePathPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.Box, value)); }
+            get { return DefaultBoxImageLocation.Path; }
+            set { DefaultBoxImageLocation = new StorageLocation(value); }
         }
 
         /// <summary>
-        /// Gets or sets the path to the default overlay image.
+        /// Gets or sets the path to the default overlay image for XML Serialization.
         /// </summary>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use DefaultOverlayImageLocation instead.")]</remarks>
         [System.Xml.Serialization.XmlElement("OverlayImagePath")]
-        public string DefaultOverlayImagePath
+        public string XmlDefaultOverlayImagePath
         {
-            get { return _supportFiles[ProgramFileKind.Overlay].FirstOrDefault(); }
-            set { UpdateProperty(DefaultOverlayImagePathPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.Overlay, value)); }
+            get { return DefaultOverlayImageLocation.Path; }
+            set { DefaultOverlayImageLocation = new StorageLocation(value); }
         }
 
         /// <summary>
-        /// Gets or sets the path to the default manual cover image.
+        /// Gets or sets the path to the default manual cover image for XML Serialization.
         /// </summary>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use DefaultManualImageLocation instead.")]</remarks>
         [System.Xml.Serialization.XmlElement("ManualImagePath")]
-        public string DefaultManualImagePath
+        public string XmlDefaultManualImagePath
         {
-            get { return _supportFiles[ProgramFileKind.ManualCover].FirstOrDefault(); }
-            set { UpdateProperty(DefaultManualImagePathPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.ManualCover, value)); }
+            get { return DefaultManualCoverImageLocation.Path; }
+            set { DefaultManualCoverImageLocation = new StorageLocation(value); }
         }
 
         /// <summary>
-        /// Gets or sets the path to the default label image.
+        /// Gets or sets the path to the default label image for XML Serialization.
         /// </summary>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use DefaultLabelImageLocation instead.")]</remarks>
         [System.Xml.Serialization.XmlElement("LabelImagePath")]
-        public string DefaultLabelImagePath
+        public string XmlDefaultLabelImagePath
         {
-            get { return _supportFiles[ProgramFileKind.Label].FirstOrDefault(); }
-            set { UpdateProperty(DefaultLabelImagePathPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.Label, value)); }
+            get { return DefaultLabelImageLocation.Path; }
+            set { DefaultLabelImageLocation = new StorageLocation(value); }
         }
 
         /// <summary>
-        /// Gets or sets the path to the default program instructions.
+        /// Gets or sets the path to the default program instructions for XML Serialization.
         /// </summary>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use DefaultManualTextLocation instead.")]</remarks>
         [System.Xml.Serialization.XmlElement("ManualPath")]
-        public string DefaultManualTextPath
+        public string XmlDefaultManualTextPath
         {
-            get { return _supportFiles[ProgramFileKind.ManualText].FirstOrDefault(); }
-            set { UpdateProperty(DefaultManualTextPathPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.ManualText, value)); }
+            get { return DefaultManualTextLocation.Path; }
+            set { DefaultManualTextLocation = new StorageLocation(value); }
         }
 
         /// <summary>
-        /// Gets or sets the path to the default save data.
+        /// Gets or sets the path to the default save data for XML Serialization.
         /// </summary>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use DefaultSaveDataLocation instead.")]</remarks>
         [System.Xml.Serialization.XmlElement("SaveDataPath")]
-        public string DefaultSaveDataPath
+        public string XmlDefaultSaveDataPath
         {
-            get { return _supportFiles[ProgramFileKind.SaveData].FirstOrDefault(); }
-            set { UpdateProperty(DefaultSaveDataPathPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.SaveData, value)); }
+            get { return DefaultSaveDataLocation.Path; }
+            set { DefaultSaveDataLocation = new StorageLocation(value); }
         }
 
         /// <summary>
-        /// Gets or sets the path to the default LUIGI format path for the ROM.
+        /// Gets or sets the path to the default LUIGI format version of the ROM for XML Serialization.
         /// </summary>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use DefaultLtoFlashDataLocation instead.")]</remarks>
         [System.Xml.Serialization.XmlElement("LTOFlashROMPath")]
-        public string DefaultLtoFlashDataPath
+        public string XmlDefaultLtoFlashDataPath
         {
-            get { return _supportFiles[ProgramFileKind.LuigiFile].FirstOrDefault(); }
-            set { UpdateProperty(DefaultLtoFlashDataPathPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.LuigiFile, value)); }
+            get { return DefaultLtoFlashDataLocation.Path; }
+            set { DefaultLtoFlashDataLocation = new StorageLocation(value); }
         }
 
+        /// <summary>
+        /// Gets or sets the location of the default vignette for the ROM for XML Serialization.
+        /// </summary>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use DefaultVignetteLocation instead.")]</remarks>
         [System.Xml.Serialization.XmlIgnore]
-        public string DefaultVignettePath
+        [System.Xml.Serialization.XmlElement("LTOFlashVignettePath")]
+        public string XmlDefaultVignettePath
         {
-            get { return _supportFiles[ProgramFileKind.Vignette].FirstOrDefault(); }
-            set { UpdateProperty(DefaultLtoFlashDataPathPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.Vignette, value)); }
+            get { return DefaultVignetteLocation.Path; }
+            set { DefaultVignetteLocation = new StorageLocation(value); }
         }
 
+        /// <summary>
+        /// Gets or sets the path to a default, generic data file associated with the program for XML Serialization. Reserved for future use.
+        /// </summary>
+        /// <remarks>[System.Obsolete("This is only for use by XmlSerializer. Use DefaultReservedDataLocation instead.")]</remarks>
         [System.Xml.Serialization.XmlIgnore]
-        public string DefaultReservedDataPath
+        [System.Xml.Serialization.XmlElement("LTOFlashReservedDataPath")]
+        public string XmlDefaultReservedDataPath
         {
-            get { return _supportFiles[ProgramFileKind.GenericSupportFile].FirstOrDefault(); }
-            set { UpdateProperty(DefaultReservedDataPathPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.GenericSupportFile, value)); }
+            get { return DefaultReservedDataLocation.Path; }
+            set { DefaultReservedDataLocation = new StorageLocation(value); }
+        }
+
+        #endregion // XML Properties
+
+        /// <summary>
+        /// Gets the location of the program ROM.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation RomImageLocation
+        {
+            get { return ProgramRom.RomPath; }
+        }
+
+        /// <summary>
+        /// Gets the location of the program ROM's configuration data.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation RomConfigurationLocation
+        {
+            get { return ProgramRom.ConfigPath; }
+        }
+
+        /// <summary>
+        /// Gets the ROM image's alternate locations.
+        /// </summary>
+        public IEnumerable<StorageLocation> AlternateRomImageLocations
+        {
+            get { return GetSupportFiles(ProgramFileKind.Rom); }
+        }
+
+        /// <summary>
+        /// Gets the ROM image's alternate locations.
+        /// </summary>
+        public IEnumerable<StorageLocation> AlternateRomConfigurationLocations
+        {
+            get { return GetSupportFiles(ProgramFileKind.CfgFile); }
+        }
+
+        /// <summary>
+        /// Gets the box image locations.
+        /// </summary>
+        public IEnumerable<StorageLocation> BoxImageLocations
+        {
+            get { return GetSupportFiles(ProgramFileKind.Box); }
+        }
+
+        /// <summary>
+        /// Gets the overlay image locations.
+        /// </summary>
+        public IEnumerable<StorageLocation> OverlayImageLocations
+        {
+            get { return GetSupportFiles(ProgramFileKind.Overlay); }
+        }
+
+        /// <summary>
+        /// Gets the manual cover image locations.
+        /// </summary>
+        public IEnumerable<StorageLocation> ManualCoverImageLocations
+        {
+            get { return GetSupportFiles(ProgramFileKind.ManualCover); }
+        }
+
+        /// <summary>
+        /// Gets the label image locations.
+        /// </summary>
+        public IEnumerable<StorageLocation> LabelImageLocations
+        {
+            get { return GetSupportFiles(ProgramFileKind.Label); }
+        }
+
+        /// <summary>
+        /// Gets the manual text file locations.
+        /// </summary>
+        public IEnumerable<StorageLocation> ManualLocations
+        {
+            get { return GetSupportFiles(ProgramFileKind.ManualText); }
+        }
+
+        /// <summary>
+        /// Gets the save data locations.
+        /// </summary>
+        public IEnumerable<StorageLocation> SaveDataLocations
+        {
+            get { return GetSupportFiles(ProgramFileKind.SaveData); }
+        }
+
+        /// <summary>
+        /// Gets the LUIGI ROM image locations.
+        /// </summary>
+        public IEnumerable<StorageLocation> LtoFlashDataLocations
+        {
+            get { return GetSupportFiles(ProgramFileKind.LuigiFile); }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the default box image.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation DefaultBoxImageLocation
+        {
+            get { return BoxImageLocations.DefaultIfEmpty(StorageLocation.InvalidLocation).First(); }
+            set { UpdateProperty(DefaultBoxImageLocationPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.Box, value)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the default overlay image.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation DefaultOverlayImageLocation
+        {
+            get { return OverlayImageLocations.DefaultIfEmpty(StorageLocation.InvalidLocation).First(); }
+            set { UpdateProperty(DefaultOverlayImageLocationPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.Overlay, value)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the default manual cover image.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation DefaultManualCoverImageLocation
+        {
+            get { return ManualCoverImageLocations.DefaultIfEmpty(StorageLocation.InvalidLocation).First(); }
+            set { UpdateProperty(DefaultManualImageLocationPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.ManualCover, value)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the default label image.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation DefaultLabelImageLocation
+        {
+            get { return LabelImageLocations.DefaultIfEmpty(StorageLocation.InvalidLocation).First(); }
+            set { UpdateProperty(DefaultLabelImageLocationPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.Label, value)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the default program instructions.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation DefaultManualTextLocation
+        {
+            get { return ManualLocations.DefaultIfEmpty(StorageLocation.InvalidLocation).First(); }
+            set { UpdateProperty(DefaultManualTextLocationPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.ManualText, value), (p, v) => RaisePropertyChanged(DefaultManualTextPathPropertyName)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the default save data.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation DefaultSaveDataLocation
+        {
+            get { return SaveDataLocations.DefaultIfEmpty(StorageLocation.InvalidLocation).First(); }
+            set { UpdateProperty(DefaultSaveDataLocationPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.SaveData, value), (p, v) => RaisePropertyChanged(DefaultSaveDataPathPropertyName)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the default LUIGI format version of the ROM.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation DefaultLtoFlashDataLocation
+        {
+            get { return LtoFlashDataLocations.DefaultIfEmpty(StorageLocation.InvalidLocation).First(); }
+            set { UpdateProperty(DefaultLtoFlashDataLocationPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.LuigiFile, value), (p, v) => RaisePropertyChanged(DefaultLtoFlashDataPathPropertyName)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the default vignette for the ROM.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation DefaultVignetteLocation
+        {
+            get { return _supportFiles[ProgramFileKind.Vignette].DefaultIfEmpty(StorageLocation.InvalidLocation).First(); }
+            set { UpdateProperty(DefaultLtoFlashDataLocationPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.Vignette, value), (p, v) => RaisePropertyChanged(DefaultLtoFlashDataPathPropertyName)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of a generic data file associated with the program. Reserved for future use.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        public StorageLocation DefaultReservedDataLocation
+        {
+            get { return _supportFiles[ProgramFileKind.GenericSupportFile].DefaultIfEmpty(StorageLocation.InvalidLocation).First(); }
+            set { UpdateProperty(DefaultReservedDataLocationPropertyName, value, SetDefaultSupportFilePath(ProgramFileKind.GenericSupportFile, value)); }
+        }
+
+        private IRom ProgramRom
+        {
+            get { return _programRom == null ? Model.Rom.InvalidRom : _programRom; }
         }
 
         #endregion // Properties
@@ -332,10 +480,12 @@ namespace INTV.Core.Model.Program
         /// Unconditionally adds a support file to the support files associated with a program.
         /// </summary>
         /// <param name="whichFile">Which support file to add.</param>
-        /// <param name="filePath">Absolute path of the support file being added.</param>
-        public void AddSupportFile(ProgramFileKind whichFile, string filePath)
+        /// <param name="location">The location of the support file being added.</param>
+        public void AddSupportFile(ProgramFileKind whichFile, StorageLocation location)
         {
-            _supportFiles[whichFile].Add(filePath);
+            var files = _supportFiles[whichFile];
+            files.Add(location);
+            UpdateXmlSupportFilesList(whichFile, files);
         }
 
         /// <summary>
@@ -370,14 +520,14 @@ namespace INTV.Core.Model.Program
             {
                 case ProgramFileKind.Rom:
                     var isValid = Rom.Validate();
-                    if (!string.IsNullOrEmpty(RomImagePath))
+                    if (RomImageLocation.IsValid)
                     {
                         var previousValidationState = ProgramSupportFileState.None;
                         _supportFileStates.TryGetValue(whichFile, out previousValidationState);
-                        if (!IStorageAccessHelpers.FileExists(RomImagePath))
+                        if (!RomImageLocation.Exists())
                         {
                             validationState = ProgramSupportFileState.Missing;
-                            if (AlternateRomImagePaths.Any(p => IStorageAccessHelpers.FileExists(p)))
+                            if (AlternateRomImageLocations.Any(p => p.Exists()))
                             {
                                 validationState = ProgramSupportFileState.MissingWithAlternateFound;
                             }
@@ -389,7 +539,7 @@ namespace INTV.Core.Model.Program
                             {
                                 // In some cases, the CRC provided is actually Rom.Crc, so if they match, recompute the CRC.
                                 var cfgCrc = 0u;
-                                isValid = (Rom.Crc == crc) && (crc == GetRefreshedCrcForRom(RomImagePath, RomConfigurationFilePath, out cfgCrc) && (Rom.CfgCrc == cfgCrc));
+                                isValid = (Rom.Crc == crc) && (crc == GetRefreshedCrcForRom(RomImageLocation, RomConfigurationLocation, out cfgCrc) && (Rom.CfgCrc == cfgCrc));
                             }
                             validationState = isValid ? ProgramSupportFileState.PresentAndUnchanged : ProgramSupportFileState.PresentButModified;
                         }
@@ -486,25 +636,33 @@ namespace INTV.Core.Model.Program
             var programSupportFiles = (ProgramSupportFiles)this.MemberwiseClone(); // shallow copy
 
             // Need to deep copy this dictionary.
-            var supportFiles = new Dictionary<ProgramFileKind, List<string>>();
+            var supportFiles = new Dictionary<ProgramFileKind, List<StorageLocation>>();
             foreach (var entry in _supportFiles)
             {
-                supportFiles[entry.Key] = new List<string>(entry.Value);
+                supportFiles[entry.Key] = new List<StorageLocation>(entry.Value);
             }
             programSupportFiles._supportFiles = supportFiles;
+            foreach (var entry in supportFiles)
+            {
+                var xmlSupportFiles = GetXmlSupportFilesList(entry.Key);
+                if (xmlSupportFiles != null)
+                {
+                    programSupportFiles.UpdateXmlSupportFilesList(entry.Key, entry.Value);
+                }
+            }
 
             // This copy is OK -- dictionary only has POD in it.
             programSupportFiles._supportFileStates = new Dictionary<ProgramFileKind, ProgramSupportFileState>(_supportFileStates);
             return programSupportFiles;
         }
 
-        private static uint GetRefreshedCrcForRom(string romPath, string cfgPath, out uint cfgCrc)
+        private static uint GetRefreshedCrcForRom(StorageLocation romLocation, StorageLocation cfgLocation, out uint cfgCrc)
         {
             var refreshedCrc = 0u;
             cfgCrc = 0u;
             try
             {
-                refreshedCrc = Core.Model.Rom.GetRefreshedCrcs(romPath, cfgPath, out cfgCrc);
+                refreshedCrc = Core.Model.Rom.GetRefreshedCrcs(romLocation, cfgLocation, out cfgCrc);
             }
             catch (System.Exception)
             {
@@ -512,16 +670,16 @@ namespace INTV.Core.Model.Program
             return refreshedCrc;
         }
 
-        private string SetDefaultSupportFilePath(ProgramFileKind whichFile, string filePath)
+        private StorageLocation SetDefaultSupportFilePath(ProgramFileKind whichFile, StorageLocation location)
         {
-            string previousValue = null;
+            var previousValue = StorageLocation.InvalidLocation;
             var files = _supportFiles[whichFile];
             bool anyFiles = files.Any();
             if (anyFiles)
             {
                 previousValue = files[0];
             }
-            if (string.IsNullOrEmpty(filePath))
+            if (!location.IsValid)
             {
                 if (anyFiles)
                 {
@@ -534,25 +692,26 @@ namespace INTV.Core.Model.Program
             }
             else
             {
-                var existingMatch = files.FirstOrDefault(f => System.StringComparer.OrdinalIgnoreCase.Compare(f, filePath) == 0);
-                if (existingMatch != null)
+                var existingIndex = files.IndexOf(location);
+                if (existingIndex >= 0)
                 {
-                    files.Remove(existingMatch);
-                    files.Insert(0, filePath);
+                    files.RemoveAt(existingIndex);
+                    files.Insert(0, location);
                 }
                 else if (anyFiles)
                 {
-                    files[0] = filePath;
+                    files[0] = location;
                 }
                 else
                 {
-                    files.Insert(0, filePath);
+                    files.Insert(0, location);
                 }
             }
+            UpdateXmlSupportFilesList(whichFile, files);
             return previousValue;
         }
 
-        private void UpdateProgramRom(ProgramFileKind whichFile, object data)
+        private void UpdateProgramRom(ProgramFileKind whichFile, string data)
         {
             if (_programRom == null)
             {
@@ -563,16 +722,16 @@ namespace INTV.Core.Model.Program
             {
                 case ProgramFileKind.Rom:
                     System.Diagnostics.Debug.Assert(!xmlRom.IsValid, "When is this called on a valid ROM?");
-                    xmlRom.UpdateRomPath(data as string); // ugh... why is this here?
+                    xmlRom.UpdateRomPath(new StorageLocation(data)); // ugh... why is this here?
                     ////if (!_supportFiles[ProgramFileKind.Rom].Contains(RomImagePath, System.StringComparer.OrdinalIgnoreCase))
                     ////{
                     ////    _supportFiles[ProgramFileKind.Rom].Add(RomImagePath);
                     ////}
                     break;
                 case ProgramFileKind.CfgFile:
-                    if (!string.IsNullOrEmpty(data as string))
+                    if (!string.IsNullOrEmpty(data))
                     {
-                        xmlRom.UpdateConfigPath(data as string);
+                        xmlRom.UpdateConfigPath(new StorageLocation(data));
                         ////if (!_supportFiles[ProgramFileKind.CfgFile].Contains(RomConfigurationFilePath, System.StringComparer.OrdinalIgnoreCase))
                         ////{
                         ////    _supportFiles[ProgramFileKind.CfgFile].Add(RomConfigurationFilePath);
@@ -580,6 +739,52 @@ namespace INTV.Core.Model.Program
                     }
                     break;
             }
+        }
+
+        private List<string> GetXmlSupportFilesList(ProgramFileKind whichCollection)
+        {
+            List<string> supportFilesFromXml = null;
+            switch (whichCollection)
+            {
+                case ProgramFileKind.Rom:
+                    supportFilesFromXml = _alternateRomImagePaths;
+                    break;
+                case ProgramFileKind.CfgFile:
+                    supportFilesFromXml = _alternateConfigurationFilePaths;
+                    break;
+                default:
+                    break;
+            }
+            return supportFilesFromXml;
+        }
+
+        private void UpdateXmlSupportFilesList(ProgramFileKind whichCollection, IEnumerable<StorageLocation> supportFiles)
+        {
+            switch (whichCollection)
+            {
+                case ProgramFileKind.Rom:
+                    _alternateRomImagePaths = supportFiles.Select(l => l.Path).ToList();
+                    break;
+                case ProgramFileKind.CfgFile:
+                    _alternateConfigurationFilePaths = supportFiles.Select(l => l.Path).ToList();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private IEnumerable<StorageLocation> GetSupportFiles(ProgramFileKind whichCollection)
+        {
+            var supportFiles = _supportFiles[whichCollection];
+            var supportFilesFromXml = GetXmlSupportFilesList(whichCollection);
+            if (supportFilesFromXml != null)
+            {
+                var supportLocationsFromXml = supportFilesFromXml.Where(f => !string.IsNullOrEmpty(f)).Select(f => new StorageLocation(f));
+                var supportLocationsToAdd = supportLocationsFromXml.Except(supportFiles).ToList();
+                supportFiles.AddRange(supportLocationsToAdd);
+                UpdateXmlSupportFilesList(whichCollection, supportFiles);
+            }
+            return supportFiles;
         }
     }
 }

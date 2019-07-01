@@ -26,6 +26,7 @@ using System.Text;
 using INTV.Core.Model;
 using INTV.Core.Model.Device;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -33,46 +34,48 @@ namespace INTV.Core.Tests.Model.Program
 {
     public class ProgramSupportFilesTests
     {
+// Tests use 'obsolete' types for XML testing.
+#pragma warning disable 618
         private static readonly IDictionary<ProgramFileKind, Func<ProgramSupportFiles, string>> ProgramFileKindToGetter = new Dictionary<ProgramFileKind, Func<ProgramSupportFiles, string>>()
         {
-            { ProgramFileKind.Rom, f => f.RomImagePath },
-            { ProgramFileKind.Box, f => f.DefaultBoxImagePath },
-            { ProgramFileKind.Label, f => f.DefaultLabelImagePath },
-            { ProgramFileKind.Overlay, f => f.DefaultOverlayImagePath },
-            { ProgramFileKind.ManualCover, f => f.DefaultManualImagePath },
-            { ProgramFileKind.ManualText, f => f.DefaultManualTextPath },
-            { ProgramFileKind.SaveData, f => f.DefaultSaveDataPath },
-            { ProgramFileKind.CfgFile, f => f.RomConfigurationFilePath },
-            { ProgramFileKind.LuigiFile, f => f.DefaultLtoFlashDataPath },
-            { ProgramFileKind.Vignette, f => f.DefaultVignettePath },
-            { ProgramFileKind.GenericSupportFile, f => f.DefaultReservedDataPath }
+            { ProgramFileKind.Rom, f => f.XmlRomImagePath },
+            { ProgramFileKind.Box, f => f.XmlDefaultBoxImagePath },
+            { ProgramFileKind.Label, f => f.XmlDefaultLabelImagePath },
+            { ProgramFileKind.Overlay, f => f.XmlDefaultOverlayImagePath },
+            { ProgramFileKind.ManualCover, f => f.XmlDefaultManualImagePath },
+            { ProgramFileKind.ManualText, f => f.XmlDefaultManualTextPath },
+            { ProgramFileKind.SaveData, f => f.XmlDefaultSaveDataPath },
+            { ProgramFileKind.CfgFile, f => f.XmlRomConfigurationFilePath },
+            { ProgramFileKind.LuigiFile, f => f.XmlDefaultLtoFlashDataPath },
+            { ProgramFileKind.Vignette, f => f.XmlDefaultVignettePath },
+            { ProgramFileKind.GenericSupportFile, f => f.XmlDefaultReservedDataPath }
         };
 
         private static readonly IDictionary<ProgramFileKind, Action<ProgramSupportFiles, string>> ProgramFileKindToSetter = new Dictionary<ProgramFileKind, Action<ProgramSupportFiles, string>>()
         {
-            { ProgramFileKind.Rom, (f, p) => f.RomImagePath = p },
-            { ProgramFileKind.Box, (f, p) => f.DefaultBoxImagePath = p },
-            { ProgramFileKind.Label, (f, p) => f.DefaultLabelImagePath = p },
-            { ProgramFileKind.Overlay, (f, p) => f.DefaultOverlayImagePath = p },
-            { ProgramFileKind.ManualCover, (f, p) => f.DefaultManualImagePath = p },
-            { ProgramFileKind.ManualText, (f, p) => f.DefaultManualTextPath = p },
-            { ProgramFileKind.SaveData, (f, p) => f.DefaultSaveDataPath = p },
-            { ProgramFileKind.CfgFile, (f, p) => f.RomConfigurationFilePath = p },
-            { ProgramFileKind.LuigiFile, (f, p) => f.DefaultLtoFlashDataPath = p },
-            { ProgramFileKind.Vignette, (f, p) => f.DefaultVignettePath = p },
-            { ProgramFileKind.GenericSupportFile, (f, p) => f.DefaultReservedDataPath = p }
+            { ProgramFileKind.Rom, (f, p) => f.XmlRomImagePath = p },
+            { ProgramFileKind.Box, (f, p) => f.XmlDefaultBoxImagePath = p },
+            { ProgramFileKind.Label, (f, p) => f.XmlDefaultLabelImagePath = p },
+            { ProgramFileKind.Overlay, (f, p) => f.XmlDefaultOverlayImagePath = p },
+            { ProgramFileKind.ManualCover, (f, p) => f.XmlDefaultManualImagePath = p },
+            { ProgramFileKind.ManualText, (f, p) => f.XmlDefaultManualTextPath = p },
+            { ProgramFileKind.SaveData, (f, p) => f.XmlDefaultSaveDataPath = p },
+            { ProgramFileKind.CfgFile, (f, p) => f.XmlRomConfigurationFilePath = p },
+            { ProgramFileKind.LuigiFile, (f, p) => f.XmlDefaultLtoFlashDataPath = p },
+            { ProgramFileKind.Vignette, (f, p) => f.XmlDefaultVignettePath = p },
+            { ProgramFileKind.GenericSupportFile, (f, p) => f.XmlDefaultReservedDataPath = p }
         };
 
         private static readonly IDictionary<ProgramFileKind, Func<ProgramSupportFiles, IEnumerable<string>>> ProgramFileKindToFilesGetter = new Dictionary<ProgramFileKind, Func<ProgramSupportFiles, IEnumerable<string>>>()
         {
-            { ProgramFileKind.Rom, f => f.AlternateRomImagePaths },
-            { ProgramFileKind.Box, f => f.BoxImagePaths },
-            { ProgramFileKind.Label, f => f.LabelImagePaths },
-            { ProgramFileKind.Overlay, f => f.OverlayImagePaths },
-            { ProgramFileKind.ManualCover, f => f.ManualCoverImagePaths },
-            { ProgramFileKind.ManualText, f => f.ManualPaths },
-            { ProgramFileKind.SaveData, f => f.SaveDataPaths },
-            { ProgramFileKind.CfgFile, f => f.AlternateRomConfigurationFilePaths },
+            { ProgramFileKind.Rom, f => f.XmlAlternateRomImagePaths },
+            { ProgramFileKind.Box, f => f.BoxImageLocations.Select(p => p.Path) },
+            { ProgramFileKind.Label, f => f.LabelImageLocations.Select(p => p.Path) },
+            { ProgramFileKind.Overlay, f => f.OverlayImageLocations.Select(p => p.Path) },
+            { ProgramFileKind.ManualCover, f => f.ManualCoverImageLocations.Select(p => p.Path) },
+            { ProgramFileKind.ManualText, f => f.ManualLocations.Select(p => p.Path) },
+            { ProgramFileKind.SaveData, f => f.SaveDataLocations.Select(p => p.Path) },
+            { ProgramFileKind.CfgFile, f => f.XmlAlternateRomConfigurationFilePaths },
             { ProgramFileKind.LuigiFile, null },
             { ProgramFileKind.Vignette, null },
             { ProgramFileKind.GenericSupportFile, null }
@@ -107,59 +110,63 @@ namespace INTV.Core.Tests.Model.Program
             var supportFiles = new ProgramSupportFiles(null);
 
             Assert.Null(supportFiles.Rom);
-            Assert.Null(supportFiles.RomImagePath);
-            Assert.Null(supportFiles.RomConfigurationFilePath);
-            Assert.Empty(supportFiles.AlternateRomImagePaths);
-            Assert.Empty(supportFiles.AlternateRomConfigurationFilePaths);
-            Assert.Empty(supportFiles.BoxImagePaths);
-            Assert.Empty(supportFiles.OverlayImagePaths);
-            Assert.Empty(supportFiles.ManualCoverImagePaths);
-            Assert.Empty(supportFiles.LabelImagePaths);
-            Assert.Empty(supportFiles.ManualPaths);
-            Assert.Empty(supportFiles.SaveDataPaths);
-            Assert.Null(supportFiles.DefaultBoxImagePath);
-            Assert.Null(supportFiles.DefaultOverlayImagePath);
-            Assert.Null(supportFiles.DefaultManualImagePath);
-            Assert.Null(supportFiles.DefaultLabelImagePath);
-            Assert.Null(supportFiles.DefaultManualTextPath);
-            Assert.Null(supportFiles.DefaultSaveDataPath);
-            Assert.Null(supportFiles.DefaultLtoFlashDataPath);
-            Assert.Null(supportFiles.DefaultVignettePath);
-            Assert.Null(supportFiles.DefaultReservedDataPath);
+            Assert.Null(supportFiles.XmlRomImagePath);
+            Assert.Null(supportFiles.XmlRomConfigurationFilePath);
+            Assert.Null(supportFiles.XmlAlternateRomImagePaths);
+            Assert.Null(supportFiles.XmlAlternateRomConfigurationFilePaths);
+            Assert.Empty(supportFiles.AlternateRomImageLocations);
+            Assert.Empty(supportFiles.AlternateRomConfigurationLocations);
+            Assert.Empty(supportFiles.BoxImageLocations);
+            Assert.Empty(supportFiles.OverlayImageLocations);
+            Assert.Empty(supportFiles.ManualCoverImageLocations);
+            Assert.Empty(supportFiles.LabelImageLocations);
+            Assert.Empty(supportFiles.ManualLocations);
+            Assert.Empty(supportFiles.SaveDataLocations);
+            Assert.Null(supportFiles.XmlDefaultBoxImagePath);
+            Assert.Null(supportFiles.XmlDefaultOverlayImagePath);
+            Assert.Null(supportFiles.XmlDefaultManualImagePath);
+            Assert.Null(supportFiles.XmlDefaultLabelImagePath);
+            Assert.Null(supportFiles.XmlDefaultManualTextPath);
+            Assert.Null(supportFiles.XmlDefaultSaveDataPath);
+            Assert.Null(supportFiles.XmlDefaultLtoFlashDataPath);
+            Assert.Null(supportFiles.XmlDefaultVignettePath);
+            Assert.Null(supportFiles.XmlDefaultReservedDataPath);
         }
 
         [Fact]
-        public void ProgramSupportFiles_CreateWithInvalidXmlRomAndSetBinAndCfgPath_CreatesExpectedValies()
+        public void ProgramSupportFiles_CreateWithInvalidXmlRomAndSetBinAndCfgPath_CreatesExpectedValues()
         {
-            ProgramSupportFilesTestStorage.Initialize();
+            var storage = ProgramSupportFilesTestStorage.Initialize();
             var rom = new XmlRom();
-            var testConfigPath = "/some/bogus.cfg";
+            var testConfigPath = storage.CreateLocation("/some/bogus.cfg");
             rom.UpdateConfigPath(testConfigPath);
-            var testRomPath = "/some/bogus.bin";
+            var testRomPath = storage.CreateLocation("/some/bogus.bin");
             rom.UpdateRomPath(testRomPath);
 
             var supportFiles = new ProgramSupportFiles(rom);
 
             Assert.NotNull(supportFiles.Rom);
-            Assert.Equal(testRomPath, supportFiles.RomImagePath);
-            Assert.Equal(testConfigPath, supportFiles.RomConfigurationFilePath);
-            Assert.Empty(supportFiles.AlternateRomImagePaths);
-            Assert.Empty(supportFiles.AlternateRomConfigurationFilePaths);
-            Assert.Empty(supportFiles.BoxImagePaths);
-            Assert.Empty(supportFiles.OverlayImagePaths);
-            Assert.Empty(supportFiles.ManualCoverImagePaths);
-            Assert.Empty(supportFiles.LabelImagePaths);
-            Assert.Empty(supportFiles.ManualPaths);
-            Assert.Empty(supportFiles.SaveDataPaths);
-            Assert.Null(supportFiles.DefaultBoxImagePath);
-            Assert.Null(supportFiles.DefaultOverlayImagePath);
-            Assert.Null(supportFiles.DefaultManualImagePath);
-            Assert.Null(supportFiles.DefaultLabelImagePath);
-            Assert.Null(supportFiles.DefaultManualTextPath);
-            Assert.Null(supportFiles.DefaultSaveDataPath);
-            Assert.Null(supportFiles.DefaultLtoFlashDataPath);
-            Assert.Null(supportFiles.DefaultVignettePath);
-            Assert.Null(supportFiles.DefaultReservedDataPath);
+            Assert.Equal(testRomPath.Path, supportFiles.XmlRomImagePath);
+            Assert.Equal(testConfigPath.Path, supportFiles.XmlRomConfigurationFilePath);
+            Assert.Null(supportFiles.XmlAlternateRomImagePaths);
+            Assert.Null(supportFiles.XmlAlternateRomConfigurationFilePaths);
+            Assert.Empty(supportFiles.AlternateRomImageLocations);
+            Assert.Empty(supportFiles.AlternateRomConfigurationLocations);
+            Assert.Empty(supportFiles.BoxImageLocations);
+            Assert.Empty(supportFiles.OverlayImageLocations);
+            Assert.Empty(supportFiles.ManualCoverImageLocations);
+            Assert.Empty(supportFiles.LabelImageLocations);
+            Assert.Empty(supportFiles.ManualLocations);
+            Assert.Empty(supportFiles.SaveDataLocations);
+            Assert.Null(supportFiles.XmlDefaultBoxImagePath);
+            Assert.Null(supportFiles.XmlDefaultOverlayImagePath);
+            Assert.Null(supportFiles.XmlDefaultManualImagePath);
+            Assert.Null(supportFiles.XmlDefaultLabelImagePath);
+            Assert.Null(supportFiles.XmlDefaultManualTextPath);
+            Assert.Null(supportFiles.XmlDefaultSaveDataPath);
+            Assert.Null(supportFiles.XmlDefaultLtoFlashDataPath);
+            Assert.Null(supportFiles.XmlDefaultVignettePath);
+            Assert.Null(supportFiles.XmlDefaultReservedDataPath);
         }
 
         [Fact]
@@ -169,11 +176,11 @@ namespace INTV.Core.Tests.Model.Program
             var supportFiles = new ProgramSupportFiles(null);
 
             var testRomPath = "/nothing/to/see/here.rom";
-            supportFiles.RomImagePath = testRomPath;
+            supportFiles.XmlRomImagePath = testRomPath;
 
             Assert.NotNull(supportFiles.Rom);
             Assert.True(supportFiles.Rom is XmlRom);
-            Assert.Equal(testRomPath, supportFiles.RomImagePath);
+            Assert.Equal(testRomPath, supportFiles.XmlRomImagePath);
         }
 
         [Fact]
@@ -182,9 +189,9 @@ namespace INTV.Core.Tests.Model.Program
             ProgramSupportFilesTestStorage.Initialize();
             var supportFiles = new ProgramSupportFiles(null);
             Assert.Null(supportFiles.Rom);
-            Assert.Null(supportFiles.RomImagePath);
+            Assert.Null(supportFiles.XmlRomImagePath);
 
-            Assert.Throws<ArgumentNullException>(() => supportFiles.RomImagePath = null);
+            Assert.Throws<ArgumentNullException>(() => supportFiles.XmlRomImagePath = null);
         }
 
         [Fact]
@@ -194,11 +201,11 @@ namespace INTV.Core.Tests.Model.Program
             var supportFiles = new ProgramSupportFiles(null);
 
             var testCfgPath = "/move/along/move/along.cfg";
-            supportFiles.RomConfigurationFilePath = testCfgPath;
+            supportFiles.XmlRomConfigurationFilePath = testCfgPath;
 
             Assert.NotNull(supportFiles.Rom);
             Assert.True(supportFiles.Rom is XmlRom);
-            Assert.Equal(testCfgPath, supportFiles.RomConfigurationFilePath);
+            Assert.Equal(testCfgPath, supportFiles.XmlRomConfigurationFilePath);
         }
 
         [Fact]
@@ -207,12 +214,12 @@ namespace INTV.Core.Tests.Model.Program
             ProgramSupportFilesTestStorage.Initialize();
             var supportFiles = new ProgramSupportFiles(null);
             Assert.Null(supportFiles.Rom);
-            Assert.Null(supportFiles.RomConfigurationFilePath);
+            Assert.Null(supportFiles.XmlRomConfigurationFilePath);
 
-            supportFiles.RomConfigurationFilePath = null;
+            supportFiles.XmlRomConfigurationFilePath = null;
 
             Assert.NotNull(supportFiles.Rom);
-            Assert.Null(supportFiles.RomConfigurationFilePath);
+            Assert.Null(supportFiles.XmlRomConfigurationFilePath);
         }
 
         [Fact]
@@ -220,7 +227,7 @@ namespace INTV.Core.Tests.Model.Program
         {
             var supportFiles = new ProgramSupportFiles(null);
 
-            Assert.Throws<ArgumentNullException>(() => supportFiles.AlternateRomImagePaths = null);
+            Assert.Throws<ArgumentNullException>(() => supportFiles.XmlAlternateRomImagePaths = null);
         }
 
         [Fact]
@@ -229,21 +236,21 @@ namespace INTV.Core.Tests.Model.Program
             var supportFiles = new ProgramSupportFiles(null);
 
             var alternatePaths = new List<string>() { "/test/alt/0.bin", "test/alt/0.rom" };
-            supportFiles.AlternateRomImagePaths = alternatePaths;
+            supportFiles.XmlAlternateRomImagePaths = alternatePaths;
 
-            Assert.Equal(alternatePaths, supportFiles.AlternateRomImagePaths);
+            Assert.Equal(alternatePaths, supportFiles.XmlAlternateRomImagePaths);
         }
 
         [Fact]
-        public void ProgramSupportFiles_CreateWithNullRomSetAlternateRomImagePathsTwice_AccumulatesAlternateRomImagePaths()
+        public void ProgramSupportFiles_CreateWithNullRomSetAlternateRomImagePathsTwice_AlternateRomImagePathsAreNotDuplicated()
         {
             var supportFiles = new ProgramSupportFiles(null);
 
             var alternatePaths = new List<string>() { "/test/alt/0.bin", "test/alt/0.rom" };
-            supportFiles.AlternateRomImagePaths = alternatePaths;
-            supportFiles.AlternateRomImagePaths = alternatePaths;
+            supportFiles.XmlAlternateRomImagePaths = alternatePaths;
+            supportFiles.XmlAlternateRomImagePaths = alternatePaths;
 
-            Assert.Equal(alternatePaths.Concat(alternatePaths), supportFiles.AlternateRomImagePaths);
+            Assert.Equal(alternatePaths, supportFiles.XmlAlternateRomImagePaths);
         }
 
         [Fact]
@@ -251,7 +258,7 @@ namespace INTV.Core.Tests.Model.Program
         {
             var supportFiles = new ProgramSupportFiles(null);
 
-            Assert.Throws<ArgumentNullException>(() => supportFiles.AlternateRomConfigurationFilePaths = null);
+            Assert.Throws<ArgumentNullException>(() => supportFiles.XmlAlternateRomConfigurationFilePaths = null);
         }
 
         [Fact]
@@ -260,77 +267,77 @@ namespace INTV.Core.Tests.Model.Program
             var supportFiles = new ProgramSupportFiles(null);
 
             var alternateConfugrationFilePaths = new List<string>() { "/test/alt/0.cfg", "test/alt2/0.cfg" };
-            supportFiles.AlternateRomConfigurationFilePaths = alternateConfugrationFilePaths;
+            supportFiles.XmlAlternateRomConfigurationFilePaths = alternateConfugrationFilePaths;
 
-            Assert.Equal(alternateConfugrationFilePaths, supportFiles.AlternateRomConfigurationFilePaths);
+            Assert.Equal(alternateConfugrationFilePaths, supportFiles.XmlAlternateRomConfigurationFilePaths);
         }
 
         [Fact]
-        public void ProgramSupportFiles_CreateWithNullRomSetAlternateRomConfigurationFilePathsTwice_AccumulatesAlternateRomConfigurationFilePaths()
+        public void ProgramSupportFiles_CreateWithNullRomSetAlternateRomConfigurationFilePathsTwice_AlternateRomConfigurationFilePathsAreNotDuplicated()
         {
             var supportFiles = new ProgramSupportFiles(null);
 
             var alternateConfugrationFilePaths = new List<string>() { "/test/alt/0.cfg", "test/alt2/0.cfg" };
-            supportFiles.AlternateRomConfigurationFilePaths = alternateConfugrationFilePaths;
-            supportFiles.AlternateRomConfigurationFilePaths = alternateConfugrationFilePaths;
+            supportFiles.XmlAlternateRomConfigurationFilePaths = alternateConfugrationFilePaths;
+            supportFiles.XmlAlternateRomConfigurationFilePaths = alternateConfugrationFilePaths;
 
-            Assert.Equal(alternateConfugrationFilePaths.Concat(alternateConfugrationFilePaths), supportFiles.AlternateRomConfigurationFilePaths);
+            Assert.Equal(alternateConfugrationFilePaths, supportFiles.XmlAlternateRomConfigurationFilePaths);
         }
 
         public static IEnumerable<object[]> SetDefaultPathsTestData
         {
             get
             {
-                Func<ProgramSupportFiles, string> getter = f => f.DefaultBoxImagePath;
-                Action<ProgramSupportFiles, string> setter = (f, p) => f.DefaultBoxImagePath = p;
+                Func<ProgramSupportFiles, string> getter = f => f.XmlDefaultBoxImagePath;
+                Action<ProgramSupportFiles, string> setter = (f, p) => f.XmlDefaultBoxImagePath = p;
                 yield return new object[] { null, getter, setter };
                 yield return new object[] { string.Empty, getter, setter };
                 yield return new object[] { "/Users/test/ROMs/box/foo.jpg", getter, setter };
 
-                getter = f => f.DefaultOverlayImagePath;
-                setter = (f, p) => f.DefaultOverlayImagePath = p;
+                getter = f => f.XmlDefaultOverlayImagePath;
+                setter = (f, p) => f.XmlDefaultOverlayImagePath = p;
                 yield return new object[] { null, getter, setter };
                 yield return new object[] { string.Empty, getter, setter };
                 yield return new object[] { "/Users/test/ROMs/overlay/bar.jpg", getter, setter };
 
-                getter = f => f.DefaultManualImagePath;
-                setter = (f, p) => f.DefaultManualImagePath = p;
+                getter = f => f.XmlDefaultManualImagePath;
+                setter = (f, p) => f.XmlDefaultManualImagePath = p;
                 yield return new object[] { null, getter, setter };
                 yield return new object[] { string.Empty, getter, setter };
                 yield return new object[] { "/Users/test/ROMs/manual/baz.jpg", getter, setter };
 
-                getter = f => f.DefaultLabelImagePath;
-                setter = (f, p) => f.DefaultLabelImagePath = p;
+                getter = f => f.XmlDefaultLabelImagePath;
+                setter = (f, p) => f.XmlDefaultLabelImagePath = p;
                 yield return new object[] { null, getter, setter };
                 yield return new object[] { string.Empty, getter, setter };
                 yield return new object[] { "/Users/test/ROMs/cart/foolable.jpg", getter, setter };
 
-                getter = f => f.DefaultManualTextPath;
-                setter = (f, p) => f.DefaultManualTextPath = p;
+                getter = f => f.XmlDefaultManualTextPath;
+                setter = (f, p) => f.XmlDefaultManualTextPath = p;
                 yield return new object[] { null, getter, setter };
                 yield return new object[] { string.Empty, getter, setter };
                 yield return new object[] { "/Users/test/ROMs/foo.txt", getter, setter };
 
-                getter = f => f.DefaultSaveDataPath;
-                setter = (f, p) => f.DefaultSaveDataPath = p;
+                getter = f => f.XmlDefaultSaveDataPath;
+                setter = (f, p) => f.XmlDefaultSaveDataPath = p;
                 yield return new object[] { null, getter, setter };
                 yield return new object[] { string.Empty, getter, setter };
                 yield return new object[] { "/Users/test/ROMs/foo.jlp", getter, setter };
 
-                getter = f => f.DefaultLtoFlashDataPath;
-                setter = (f, p) => f.DefaultLtoFlashDataPath = p;
+                getter = f => f.XmlDefaultLtoFlashDataPath;
+                setter = (f, p) => f.XmlDefaultLtoFlashDataPath = p;
                 yield return new object[] { null, getter, setter };
                 yield return new object[] { string.Empty, getter, setter };
                 yield return new object[] { "/Users/test/ROMs/foo.luigi", getter, setter };
 
-                getter = f => f.DefaultVignettePath;
-                setter = (f, p) => f.DefaultVignettePath = p;
+                getter = f => f.XmlDefaultVignettePath;
+                setter = (f, p) => f.XmlDefaultVignettePath = p;
                 yield return new object[] { null, getter, setter };
                 yield return new object[] { string.Empty, getter, setter };
                 yield return new object[] { "/Users/test/ROMs/vignette/foo.vig", getter, setter };
 
-                getter = f => f.DefaultReservedDataPath;
-                setter = (f, p) => f.DefaultReservedDataPath = p;
+                getter = f => f.XmlDefaultReservedDataPath;
+                setter = (f, p) => f.XmlDefaultReservedDataPath = p;
                 yield return new object[] { null, getter, setter };
                 yield return new object[] { string.Empty, getter, setter };
                 yield return new object[] { "/Users/test/ROMs/foo.dat", getter, setter };
@@ -625,10 +632,10 @@ namespace INTV.Core.Tests.Model.Program
 
             var supportFiles = DeserializeFromXmlString(xmlString);
 
-            Assert.Equal(expectedRomImagePath, supportFiles.RomImagePath);
-            Assert.Equal(expectedRomConfigurationFilePath, supportFiles.RomConfigurationFilePath);
-            Assert.Equal(expectedAlternateRomImagePaths, supportFiles.AlternateRomImagePaths);
-            Assert.Equal(expectedAlternateRomConfigurationFilePaths, supportFiles.AlternateRomConfigurationFilePaths);
+            Assert.Equal(expectedRomImagePath, supportFiles.XmlRomImagePath);
+            Assert.Equal(expectedRomConfigurationFilePath, supportFiles.XmlRomConfigurationFilePath);
+            Assert.Equal(expectedAlternateRomImagePaths, supportFiles.XmlAlternateRomImagePaths);
+            Assert.Equal(expectedAlternateRomConfigurationFilePaths, supportFiles.XmlAlternateRomConfigurationFilePaths);
         }
 
         public static IEnumerable<object[]> DeserializeFromXmlStringImageSupportFilesTestData
@@ -738,14 +745,14 @@ namespace INTV.Core.Tests.Model.Program
 
             var supportFiles = DeserializeFromXmlString(xmlString);
 
-            Assert.Equal(expectedBoxImagePath, supportFiles.DefaultBoxImagePath);
-            Assert.Equal(expectedOverlayImagePath, supportFiles.DefaultOverlayImagePath);
-            Assert.Equal(expectedManualImagePath, supportFiles.DefaultManualImagePath);
-            Assert.Equal(expectedLabelImagePath, supportFiles.DefaultLabelImagePath);
-            Assert.Equal(expectedBoxImagePaths, supportFiles.BoxImagePaths);
-            Assert.Equal(expectedOverlayImagePaths, supportFiles.OverlayImagePaths);
-            Assert.Equal(expectedManualImagePaths, supportFiles.ManualCoverImagePaths);
-            Assert.Equal(expectedLabelImagePaths, supportFiles.LabelImagePaths);
+            Assert.Equal(expectedBoxImagePath, supportFiles.XmlDefaultBoxImagePath);
+            Assert.Equal(expectedOverlayImagePath, supportFiles.XmlDefaultOverlayImagePath);
+            Assert.Equal(expectedManualImagePath, supportFiles.XmlDefaultManualImagePath);
+            Assert.Equal(expectedLabelImagePath, supportFiles.XmlDefaultLabelImagePath);
+            Assert.Equal(expectedBoxImagePaths, supportFiles.BoxImageLocations.Select(p => p.Path));
+            Assert.Equal(expectedOverlayImagePaths, supportFiles.OverlayImageLocations.Select(p => p.Path));
+            Assert.Equal(expectedManualImagePaths, supportFiles.ManualCoverImageLocations.Select(p => p.Path));
+            Assert.Equal(expectedLabelImagePaths, supportFiles.LabelImageLocations.Select(p => p.Path));
         }
 
         public static IEnumerable<object[]> DeserializeFromXmlStringOtherSupportFilesTestData
@@ -824,11 +831,11 @@ namespace INTV.Core.Tests.Model.Program
 
             var supportFiles = DeserializeFromXmlString(xmlString);
 
-            Assert.Equal(expectedManualPath, supportFiles.DefaultManualTextPath);
-            Assert.Equal(expectedSaveDataPath, supportFiles.DefaultSaveDataPath);
-            Assert.Equal(expectedLuigiFilePath, supportFiles.DefaultLtoFlashDataPath);
-            Assert.Equal(expectedManualPaths, supportFiles.ManualPaths);
-            Assert.Equal(expectedSaveDataPaths, supportFiles.SaveDataPaths);
+            Assert.Equal(expectedManualPath, supportFiles.XmlDefaultManualTextPath);
+            Assert.Equal(expectedSaveDataPath, supportFiles.XmlDefaultSaveDataPath);
+            Assert.Equal(expectedLuigiFilePath, supportFiles.XmlDefaultLtoFlashDataPath);
+            Assert.Equal(expectedManualPaths, supportFiles.ManualLocations.Select(p => p.Path));
+            Assert.Equal(expectedSaveDataPaths, supportFiles.SaveDataLocations.Select(p => p.Path));
         }
 
         public static IEnumerable<object[]> AddSupportFileTestData
@@ -860,10 +867,10 @@ namespace INTV.Core.Tests.Model.Program
         [MemberData("AddSupportFileTestData")]
         public void ProgramSupportFiles_CreateWithNullRomAddSupportFile_AddsSupportFile(ProgramFileKind whichFile, string filePath, string expectedFilePath, Func<ProgramSupportFiles, string> getter, Func<ProgramSupportFiles, IEnumerable<string>> allFilesGetter)
         {
-            ProgramSupportFilesTestStorage.Initialize();
+            var storage = ProgramSupportFilesTestStorage.Initialize();
             var supportFiles = new ProgramSupportFiles(null);
 
-            supportFiles.AddSupportFile(whichFile, filePath);
+            supportFiles.AddSupportFile(whichFile, storage.CreateLocation(filePath));
 
             Assert.Equal(expectedFilePath, getter(supportFiles));
             if (allFilesGetter != null)
@@ -877,12 +884,12 @@ namespace INTV.Core.Tests.Model.Program
         [MemberData("AddSupportFileTestData")]
         public void ProgramSupportFiles_CreateWithNullRomAddSupportFileTwice_AddsTwoSupportFiles(ProgramFileKind whichFile, string filePath, string expectedFilePath, Func<ProgramSupportFiles, string> getter, Func<ProgramSupportFiles, IEnumerable<string>> allFilesGetter)
         {
-            ProgramSupportFilesTestStorage.Initialize();
+            var storage = ProgramSupportFilesTestStorage.Initialize();
             var supportFiles = new ProgramSupportFiles(null);
 
-            supportFiles.AddSupportFile(whichFile, filePath);
+            supportFiles.AddSupportFile(whichFile, storage.CreateLocation(filePath));
             var otherSupportFile = string.IsNullOrEmpty(filePath) ? "/Users/Testy McTesterson/" + whichFile + ".file" : filePath + ".bak";
-            supportFiles.AddSupportFile(whichFile, otherSupportFile);
+            supportFiles.AddSupportFile(whichFile, storage.CreateLocation(otherSupportFile));
 
             Assert.Equal(expectedFilePath, getter(supportFiles));
             if (allFilesGetter != null)
@@ -1034,11 +1041,11 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramSupportFiles_CreateWithNullRomAddBogusSupportFile_ThrowsKeyNotFoundException()
         {
-            ProgramSupportFilesTestStorage.Initialize();
+            var storage = ProgramSupportFilesTestStorage.Initialize();
             var supportFiles = new ProgramSupportFiles(null);
 
             var bogusSupportFile = ProgramFileKind.NumFileKinds + 1;
-            Assert.Throws<KeyNotFoundException>(() => supportFiles.AddSupportFile(bogusSupportFile, "/har/dee/har.hoot"));
+            Assert.Throws<KeyNotFoundException>(() => supportFiles.AddSupportFile(bogusSupportFile, storage.CreateLocation("/har/dee/har.hoot")));
         }
 
         public static IEnumerable<object[]> AllSupportFileKindsTestData
@@ -1098,21 +1105,21 @@ namespace INTV.Core.Tests.Model.Program
         }
 
         [Fact]
-        public void ProgramSupportFiles_CreateWithXmlRomWithNoRomPathAndValidateRomFileKindWithNullAndZeroArguments_ThrowsArgumentNullException()
+        public void ProgramSupportFiles_CreateWithXmlRomWithNoRomPathAndValidateRomFileKindWithNullAndZeroArguments_ThrowsInvalidOperationException()
         {
             ProgramSupportFilesTestStorage.Initialize();
             var rom = new XmlRom();
             var supportFiles = new ProgramSupportFiles(rom);
 
-            Assert.Throws<ArgumentNullException>(() => supportFiles.ValidateSupportFile(ProgramFileKind.Rom, 0, null, null, null, reportIfModified: false));
+            Assert.Throws<InvalidOperationException>(() => supportFiles.ValidateSupportFile(ProgramFileKind.Rom, 0, null, null, null, reportIfModified: false));
         }
 
         [Fact]
         public void ProgramSupportFiles_CreateWithXmlRomWithMissingRomPathAndValidateRomFileKindWithNullAndZeroArguments_ReturnsProgramSupportFileStateMissing()
         {
-            ProgramSupportFilesTestStorage.Initialize();
+            var storage = ProgramSupportFilesTestStorage.Initialize();
             var rom = new XmlRom();
-            var testRomPath = "/some/bogus.rom";
+            var testRomPath = storage.CreateLocation("/some/bogus.rom");
             rom.UpdateRomPath(testRomPath);
             var supportFiles = new ProgramSupportFiles(rom);
 
@@ -1164,14 +1171,14 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramSupportFiles_CreateWithXmlBinFormatRomWithValidModifiedRomPathValidCfgFileAndValidateRomFileKindWithNullArgumentsAndNonzeroCrc_ReturnsProgramSupportFileStatePresentButModified()
         {
-            IReadOnlyList<string> romPaths;
+            IReadOnlyList<StorageLocation> romPaths;
             var storageAccess = ProgramSupportFilesTestStorage.Initialize(out romPaths, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = Rom.Create(romPaths[0], romPaths[1]);
             var supportFiles = new ProgramSupportFiles(rom);
             Assert.Equal(TestRomResources.TestBinCrc, rom.Crc);
             Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
 
-            using (var s = storageAccess.Open(romPaths[0]))
+            using (var s = storageAccess.Open(romPaths[0].Path))
             {
                 s.Seek(0, SeekOrigin.End);
                 var bogusFileBytes = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
@@ -1184,14 +1191,14 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramSupportFiles_CreateWithXmlBinFormatRomWithValidRomPathValidModifiedCfgFileAndValidateRomFileKindWithNullArgumentsAndNonzeroCrc_ReturnsProgramSupportFileStatePresentButModified()
         {
-            IReadOnlyList<string> romPaths;
+            IReadOnlyList<StorageLocation> romPaths;
             var storageAccess = ProgramSupportFilesTestStorage.Initialize(out romPaths, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = Rom.Create(romPaths[0], romPaths[1]);
             var supportFiles = new ProgramSupportFiles(rom);
             Assert.Equal(TestRomResources.TestBinCrc, rom.Crc);
             Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
 
-            using (var s = storageAccess.Open(romPaths[1]))
+            using (var s = storageAccess.Open(romPaths[1].Path))
             {
                 s.Seek(0, SeekOrigin.End);
                 var cfgFileContent = "\n[vars]\nvoice=1";
@@ -1207,12 +1214,12 @@ namespace INTV.Core.Tests.Model.Program
         [InlineData(true)]
         public void ProgramSupportFiles_CreateWithXmlRomWithMissingRomPathAndMissingAlternateAndValidateRomFileKindWithNullAndZeroArguments_ReturnsProgramSupportFileStateMissing(bool reportIfModified)
         {
-            ProgramSupportFilesTestStorage.Initialize();
+            var storage = ProgramSupportFilesTestStorage.Initialize();
             var rom = new XmlRom();
-            var testRomPath = "/some/bogus.rom";
+            var testRomPath = storage.CreateLocation("/some/bogus.rom");
             rom.UpdateRomPath(testRomPath);
             var supportFiles = new ProgramSupportFiles(rom);
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, "/some/backup/bogus.rom");
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation("/some/backup/bogus.rom"));
 
             Assert.Equal(ProgramSupportFileState.Missing, supportFiles.ValidateSupportFile(ProgramFileKind.Rom, 0, null, null, null, reportIfModified));
         }
@@ -1222,13 +1229,14 @@ namespace INTV.Core.Tests.Model.Program
         [InlineData(true)]
         public void ProgramSupportFiles_CreateWithXmlRomWithMissingRomPathAndValidAlternateAndValidateRomFileKindWithNullAndZeroArguments_ReturnsProgramSupportFileStateMissingWithAlternateFound(bool reportIfModified)
         {
-            ProgramSupportFilesTestStorage.Initialize(TestRomResources.TestRomPath);
+            IReadOnlyList<StorageLocation> paths;
+            var storage = ProgramSupportFilesTestStorage.Initialize(out paths, TestRomResources.TestRomPath);
             var rom = new XmlRom();
-            var testRomPath = "/some/bogus.rom";
+            var testRomPath = storage.CreateLocation("/some/bogus.rom");
             rom.UpdateRomPath(testRomPath);
             var supportFiles = new ProgramSupportFiles(rom);
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, "/some/backup/bogus.rom");
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, TestRomResources.TestRomPath);
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation("/some/backup/bogus.rom"));
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation(TestRomResources.TestRomPath));
 
             Assert.Equal(ProgramSupportFileState.MissingWithAlternateFound, supportFiles.ValidateSupportFile(ProgramFileKind.Rom, 0, null, null, null, reportIfModified));
         }
@@ -1248,7 +1256,7 @@ namespace INTV.Core.Tests.Model.Program
         public void ProgramSupportFiles_CreateWithScrambledForAnyLtoFlashAndValidateRomFileKindWithPeripheralInformationNullProgramDescription_ThrowsNullReferenceException(IEnumerable<IPeripheral> peripherals, IEnumerable<IPeripheral> connectedPeripheralsHistory)
         {
             var romPath = ProgramSupportFilesTestStorage.Initialize(TestRomResources.TestLuigiScrambledForDevice0Path).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             var supportFiles = new ProgramSupportFiles(rom);
 
             Assert.Throws<NullReferenceException>(() => supportFiles.ValidateSupportFile(ProgramFileKind.Rom, 0, null, peripherals, connectedPeripheralsHistory, reportIfModified: false));
@@ -1301,7 +1309,7 @@ namespace INTV.Core.Tests.Model.Program
         public void ProgramSupportFiles_CreateWithScrambledForAnyLtoFlashAndValidateRomFileKindWithPeripheralInformation_ReturnsCorrectProgramSupportFileState(string luigiPath, uint crc, IEnumerable<IPeripheral> peripherals, IEnumerable<IPeripheral> connectedPeripheralsHistory, ProgramSupportFileState expectedState)
         {
             var romPath = ProgramSupportFilesTestStorage.Initialize(luigiPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             var information = new UserSpecifiedProgramInformation(crc);
             var description = new ProgramDescription(crc, rom, information);
             var supportFiles = new ProgramSupportFiles(rom);
@@ -1316,7 +1324,7 @@ namespace INTV.Core.Tests.Model.Program
         public void ProgramSupportFiles_CreateWithScrambledForAnyLtoFlashAndValidateRomFileKindWithPeripheralInformationAgainWithNullPeripherals_ReturnsCorrectProgramSupportFileState(string luigiPath, uint crc, IEnumerable<IPeripheral> peripherals, IEnumerable<IPeripheral> connectedPeripheralsHistory, ProgramSupportFileState expectedState)
         {
             var romPath = ProgramSupportFilesTestStorage.Initialize(luigiPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             var information = new UserSpecifiedProgramInformation(crc);
             var description = new ProgramDescription(crc, rom, information);
             var supportFiles = new ProgramSupportFiles(rom);
@@ -1329,9 +1337,11 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramSupportFiles_ValidateRomFileWithScrambledAlternateThenAgainWhenFileExistsWithoutPeripherals_ReturnsExpectedState()
         {
-            var romPath = ProgramSupportFilesTestStorage.Initialize(TestRomResources.TestLuigiScrambledForDevice0Path).First();
+            IReadOnlyList<StorageLocation> paths;
+            var storage = ProgramSupportFilesTestStorage.Initialize(out paths, TestRomResources.TestLuigiScrambledForDevice0Path);
+            var romPath = paths.First();
             var rom = new XmlRom();
-            rom.UpdateRomPath("/some/bogus.luigi");
+            rom.UpdateRomPath(storage.CreateLocation("/some/bogus.luigi"));
             var supportFiles = new ProgramSupportFiles(rom);
             supportFiles.AddSupportFile(ProgramFileKind.Rom, romPath);
             var state = supportFiles.ValidateSupportFile(ProgramFileKind.Rom, 0, null, null, null, reportIfModified: false);
@@ -1349,13 +1359,13 @@ namespace INTV.Core.Tests.Model.Program
         [InlineData(true, ProgramSupportFileState.PresentButModified)]
         public void ProgramSupportFiles_ValidateCorruptedRomFile_ReturnsExpectedState(bool reportIfModified, ProgramSupportFileState expectedState)
         {
-            IReadOnlyList<string> paths;
+            IReadOnlyList<StorageLocation> paths;
             var storageAccess = ProgramSupportFilesTestStorage.Initialize(out paths, TestRomResources.TestRomMetadataPath);
-            var rom = Rom.Create(paths[0], null);
+            var rom = Rom.Create(paths[0], StorageLocation.InvalidLocation);
             Assert.Equal(TestRomResources.TestRomMetadataCrc, rom.Crc);
             var supportFiles = new ProgramSupportFiles(rom);
 
-            Assert.True(storageAccess.IntroduceCorruption(paths[0]));
+            Assert.True(storageAccess.IntroduceCorruption(paths[0].Path));
             var state = supportFiles.ValidateSupportFile(ProgramFileKind.Rom, TestRomResources.TestRomMetadataCrc, null, null, null, reportIfModified);
 
             Assert.Equal(expectedState, state);
@@ -1364,46 +1374,48 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramSupportFiles_CreateAndCopy_CreatesValidCopy()
         {
-            var romPath = ProgramSupportFilesTestStorage.Initialize(TestRomResources.TestLuigiScrambledForDevice0Path).First();
+            IReadOnlyList<StorageLocation> paths;
+            var storageAccess = ProgramSupportFilesTestStorage.Initialize(out paths, TestRomResources.TestLuigiScrambledForDevice0Path);
+            var romPath = paths.First();
             var rom = new XmlRom();
-            rom.UpdateRomPath("/some/bogus.itv");
+            rom.UpdateRomPath(storageAccess.CreateLocation("/some/bogus.itv"));
             var supportFiles = new ProgramSupportFiles(rom, "/box/path.jpg", "/manual/path.jpg", "/manual/path.txt", "/overlay/path.png", "/label/path.jpg");
             foreach (var supportFileKind in SupportFileKinds.Value)
             {
-                supportFiles.AddSupportFile(supportFileKind, supportFileKind.ToString());
-                supportFiles.AddSupportFile(supportFileKind, supportFileKind.ToString() + "2");
+                supportFiles.AddSupportFile(supportFileKind, storageAccess.CreateLocation(supportFileKind.ToString()));
+                supportFiles.AddSupportFile(supportFileKind, storageAccess.CreateLocation(supportFileKind.ToString() + "2"));
             }
 
             var supportFilesCopy = supportFiles.Copy();
 
             Assert.True(object.ReferenceEquals(supportFiles.Rom, supportFilesCopy.Rom));
-            Assert.Equal(supportFiles.RomImagePath, supportFilesCopy.RomImagePath);
-            Assert.Equal(supportFiles.RomConfigurationFilePath, supportFilesCopy.RomConfigurationFilePath);
-            Assert.False(object.ReferenceEquals(supportFiles.AlternateRomImagePaths, supportFilesCopy.AlternateRomImagePaths));
-            Assert.Equal(supportFiles.AlternateRomImagePaths, supportFilesCopy.AlternateRomImagePaths);
-            Assert.False(object.ReferenceEquals(supportFiles.AlternateRomConfigurationFilePaths, supportFilesCopy.AlternateRomConfigurationFilePaths));
-            Assert.Equal(supportFiles.AlternateRomConfigurationFilePaths, supportFilesCopy.AlternateRomConfigurationFilePaths);
-            Assert.False(object.ReferenceEquals(supportFiles.BoxImagePaths, supportFilesCopy.BoxImagePaths));
-            Assert.Equal(supportFiles.BoxImagePaths, supportFilesCopy.BoxImagePaths);
-            Assert.False(object.ReferenceEquals(supportFiles.OverlayImagePaths, supportFilesCopy.OverlayImagePaths));
-            Assert.Equal(supportFiles.OverlayImagePaths, supportFilesCopy.OverlayImagePaths);
-            Assert.False(object.ReferenceEquals(supportFiles.ManualCoverImagePaths, supportFilesCopy.ManualCoverImagePaths));
-            Assert.Equal(supportFiles.ManualCoverImagePaths, supportFilesCopy.ManualCoverImagePaths);
-            Assert.False(object.ReferenceEquals(supportFiles.LabelImagePaths, supportFilesCopy.LabelImagePaths));
-            Assert.Equal(supportFiles.LabelImagePaths, supportFilesCopy.LabelImagePaths);
-            Assert.False(object.ReferenceEquals(supportFiles.ManualPaths, supportFilesCopy.ManualPaths));
-            Assert.Equal(supportFiles.ManualPaths, supportFilesCopy.ManualPaths);
-            Assert.False(object.ReferenceEquals(supportFiles.SaveDataPaths, supportFilesCopy.SaveDataPaths));
-            Assert.Equal(supportFiles.SaveDataPaths, supportFilesCopy.SaveDataPaths);
-            Assert.Equal(supportFiles.DefaultBoxImagePath, supportFilesCopy.DefaultBoxImagePath);
-            Assert.Equal(supportFiles.DefaultOverlayImagePath, supportFilesCopy.DefaultOverlayImagePath);
-            Assert.Equal(supportFiles.DefaultManualImagePath, supportFilesCopy.DefaultManualImagePath);
-            Assert.Equal(supportFiles.DefaultLabelImagePath, supportFilesCopy.DefaultLabelImagePath);
-            Assert.Equal(supportFiles.DefaultManualTextPath, supportFilesCopy.DefaultManualTextPath);
-            Assert.Equal(supportFiles.DefaultSaveDataPath, supportFilesCopy.DefaultSaveDataPath);
-            Assert.Equal(supportFiles.DefaultLtoFlashDataPath, supportFilesCopy.DefaultLtoFlashDataPath);
-            Assert.Equal(supportFiles.DefaultVignettePath, supportFilesCopy.DefaultVignettePath);
-            Assert.Equal(supportFiles.DefaultReservedDataPath, supportFilesCopy.DefaultReservedDataPath);
+            Assert.Equal(supportFiles.XmlRomImagePath, supportFilesCopy.XmlRomImagePath);
+            Assert.Equal(supportFiles.XmlRomConfigurationFilePath, supportFilesCopy.XmlRomConfigurationFilePath);
+            Assert.False(object.ReferenceEquals(supportFiles.XmlAlternateRomImagePaths, supportFilesCopy.XmlAlternateRomImagePaths));
+            Assert.Equal(supportFiles.XmlAlternateRomImagePaths, supportFilesCopy.XmlAlternateRomImagePaths);
+            Assert.False(object.ReferenceEquals(supportFiles.XmlAlternateRomConfigurationFilePaths, supportFilesCopy.XmlAlternateRomConfigurationFilePaths));
+            Assert.Equal(supportFiles.XmlAlternateRomConfigurationFilePaths, supportFilesCopy.XmlAlternateRomConfigurationFilePaths);
+            Assert.False(object.ReferenceEquals(supportFiles.BoxImageLocations, supportFilesCopy.BoxImageLocations));
+            Assert.Equal(supportFiles.BoxImageLocations, supportFilesCopy.BoxImageLocations);
+            Assert.False(object.ReferenceEquals(supportFiles.OverlayImageLocations, supportFilesCopy.OverlayImageLocations));
+            Assert.Equal(supportFiles.OverlayImageLocations, supportFilesCopy.OverlayImageLocations);
+            Assert.False(object.ReferenceEquals(supportFiles.ManualCoverImageLocations, supportFilesCopy.ManualCoverImageLocations));
+            Assert.Equal(supportFiles.ManualCoverImageLocations, supportFilesCopy.ManualCoverImageLocations);
+            Assert.False(object.ReferenceEquals(supportFiles.LabelImageLocations, supportFilesCopy.LabelImageLocations));
+            Assert.Equal(supportFiles.LabelImageLocations, supportFilesCopy.LabelImageLocations);
+            Assert.False(object.ReferenceEquals(supportFiles.ManualLocations, supportFilesCopy.ManualLocations));
+            Assert.Equal(supportFiles.ManualLocations, supportFilesCopy.ManualLocations);
+            Assert.False(object.ReferenceEquals(supportFiles.SaveDataLocations, supportFilesCopy.SaveDataLocations));
+            Assert.Equal(supportFiles.SaveDataLocations, supportFilesCopy.SaveDataLocations);
+            Assert.Equal(supportFiles.XmlDefaultBoxImagePath, supportFilesCopy.XmlDefaultBoxImagePath);
+            Assert.Equal(supportFiles.XmlDefaultOverlayImagePath, supportFilesCopy.XmlDefaultOverlayImagePath);
+            Assert.Equal(supportFiles.XmlDefaultManualImagePath, supportFilesCopy.XmlDefaultManualImagePath);
+            Assert.Equal(supportFiles.XmlDefaultLabelImagePath, supportFilesCopy.XmlDefaultLabelImagePath);
+            Assert.Equal(supportFiles.XmlDefaultManualTextPath, supportFilesCopy.XmlDefaultManualTextPath);
+            Assert.Equal(supportFiles.XmlDefaultSaveDataPath, supportFilesCopy.XmlDefaultSaveDataPath);
+            Assert.Equal(supportFiles.XmlDefaultLtoFlashDataPath, supportFilesCopy.XmlDefaultLtoFlashDataPath);
+            Assert.Equal(supportFiles.XmlDefaultVignettePath, supportFilesCopy.XmlDefaultVignettePath);
+            Assert.Equal(supportFiles.XmlDefaultReservedDataPath, supportFilesCopy.XmlDefaultReservedDataPath);
         }
 
         private static ProgramSupportFiles DeserializeFromXmlString(string xmlString)
@@ -1467,5 +1479,6 @@ namespace INTV.Core.Tests.Model.Program
                 return isCompatible;
             }
         }
+#pragma warning restore 618
     }
 }

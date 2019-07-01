@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomComparerStrict.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2016 All Rights Reserved
+// Copyright (c) 2015-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -83,7 +83,7 @@ namespace INTV.Core.Model
                         programInfo = x.GetProgramInformation();
                     }
                     var cfgFilePath = x.GetStockCfgFile(programInfo);
-                    if (!string.IsNullOrEmpty(cfgFilePath))
+                    if (cfgFilePath.IsValid)
                     {
                         cfgCrcRomX = INTV.Core.Utility.Crc32.OfFile(cfgFilePath);
                     }
@@ -96,7 +96,7 @@ namespace INTV.Core.Model
                         programInfo = y.GetProgramInformation();
                     }
                     var cfgFilePath = y.GetStockCfgFile(programInfo);
-                    if (!string.IsNullOrEmpty(cfgFilePath))
+                    if (cfgFilePath.IsValid)
                     {
                         cfgCrcRomY = INTV.Core.Utility.Crc32.OfFile(cfgFilePath);
                     }

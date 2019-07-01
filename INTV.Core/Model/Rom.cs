@@ -31,12 +31,14 @@ namespace INTV.Core.Model
     /// </summary>
     public abstract class Rom : IRom
     {
-        private static readonly RomFormatMemo Memos = new RomFormatMemo();
-
         /// <summary>
         /// The maximum size of a ROM.
         /// </summary>
         public const uint MaxROMSize = 0x100000; // 1 MB
+
+        private static readonly IRom InvalidRomInstance = new CanonicallyInvalidRom();
+
+        private static readonly RomFormatMemo Memos = new RomFormatMemo();
 
 #if REPORT_PERFORMANCE
         /// <summary>
@@ -47,14 +49,22 @@ namespace INTV.Core.Model
 
         #region IRom
 
+        /// <summary>
+        /// Gets the canonical invalid rom.
+        /// </summary>
+        public static IRom InvalidRom
+        {
+            get { return InvalidRomInstance; }
+        }
+
         /// <inheritdoc />
         public abstract RomFormat Format { get; protected set; }
 
         /// <inheritdoc />
-        public virtual string RomPath { get; protected set; }
+        public virtual StorageLocation RomPath { get; protected set; }
 
         /// <inheritdoc />
-        public virtual string ConfigPath { get; protected set; }
+        public virtual StorageLocation ConfigPath { get; protected set; }
 
         /// <inheritdoc />
         public virtual bool IsValid { get; protected set; }
@@ -68,27 +78,27 @@ namespace INTV.Core.Model
         #endregion // IRom
 
         /// <summary>
-        /// Creates an instance of IRom, which represents a program ROM, given at least one valid file path.
+        /// Creates an instance of IRom, which represents a program ROM, given at least one valid location.
         /// </summary>
-        /// <param name="filePath">The path to the ROM file.</param>
-        /// <param name="configFilePath">The path to the configuration file (as determined necessary depending on ROM format).</param>
-        /// <returns>If the file at the given path appears to be a valid program ROM, returns an instance of IRom, otherwise <c>null</c>.</returns>
-        public static IRom Create(string filePath, string configFilePath)
+        /// <param name="romLocation">The location of the ROM image.</param>
+        /// <param name="configLocation">The location of the configuration data (as determined necessary depending on ROM format).</param>
+        /// <returns>If the image at the given location appears to be a valid program ROM, returns an instance of IRom, otherwise <c>null</c>.</returns>
+        public static IRom Create(StorageLocation romLocation, StorageLocation configLocation)
         {
             Rom rom = null;
-            var format = CheckRomFormat(filePath);
+            var format = CheckRomFormat(romLocation);
             switch (format)
             {
                 case RomFormat.Intellicart:
                 case RomFormat.CuttleCart3:
                 case RomFormat.CuttleCart3Advanced:
-                    rom = RomFormatRom.Create(filePath);
+                    rom = RomFormatRom.Create(romLocation);
                     break;
                 case RomFormat.Bin:
-                    rom = BinFormatRom.Create(filePath, configFilePath);
+                    rom = BinFormatRom.Create(romLocation, configLocation);
                     break;
                 case RomFormat.Luigi:
-                    rom = LuigiFormatRom.Create(filePath);
+                    rom = LuigiFormatRom.Create(romLocation);
                     break;
                 case RomFormat.None:
                     break;
@@ -97,31 +107,31 @@ namespace INTV.Core.Model
         }
 
         /// <summary>
-        /// Get up-to-date CRC32 values for a ROM's file and, possibly, it's configuration file.
+        /// Get up-to-date CRC32 values for a ROM's image and, possibly, its configuration data.
         /// </summary>
-        /// <param name="filePath">Absolute path to the ROM file.</param>
-        /// <param name="configFilePath">Absolute path to the configuration file (for .bin format ROMs). May be <c>null</c>.</param>
-        /// <param name="cfgCrc">Receives the CRC32 of <paramref name="configFilePath"/> if it is valid.</param>
-        /// <returns>CRC32 of <paramref name="filePath"/>.</returns>
-        public static uint GetRefreshedCrcs(string filePath, string configFilePath, out uint cfgCrc)
+        /// <param name="romLocation">Location of the ROM image.</param>
+        /// <param name="configLocation">Location of the configuration data (for .bin format ROMs). May be <c>StorageLocation.InvalidLocation</c>.</param>
+        /// <param name="cfgCrc">Receives the CRC32 of <paramref name="configLocation"/> if it is valid.</param>
+        /// <returns>CRC32 of <paramref name="romLocation"/>.</returns>
+        public static uint GetRefreshedCrcs(StorageLocation romLocation, StorageLocation configLocation, out uint cfgCrc)
         {
 #if REPORT_PERFORMANCE
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 #endif // REPORT_PERFORMANCE
             uint romCrc = 0;
             cfgCrc = 0;
-            switch (CheckRomFormat(filePath))
+            switch (CheckRomFormat(romLocation))
             {
                 case RomFormat.Bin:
-                    romCrc = BinFormatRom.GetCrcs(filePath, configFilePath, out cfgCrc);
+                    romCrc = BinFormatRom.GetCrcs(romLocation, configLocation, out cfgCrc);
                     break;
                 case RomFormat.Intellicart:
                 case RomFormat.CuttleCart3:
                 case RomFormat.CuttleCart3Advanced:
-                    romCrc = RomFormatRom.GetCrcs(filePath, configFilePath, out cfgCrc);
+                    romCrc = RomFormatRom.GetCrcs(romLocation, configLocation, out cfgCrc);
                     break;
                 case RomFormat.Luigi:
-                    romCrc = LuigiFormatRom.GetCrcs(filePath, configFilePath, out cfgCrc);
+                    romCrc = LuigiFormatRom.GetCrcs(romLocation, configLocation, out cfgCrc);
                     break;
                 case RomFormat.None:
                     break;
@@ -134,29 +144,29 @@ namespace INTV.Core.Model
         }
 
         /// <summary>
-        /// Efficiently check to see if the file at the given path is of a known ROM type.
+        /// Efficiently check to see if the image at the given location is of a known ROM type.
         /// </summary>
-        /// <param name="filePath">Absolute path of the file to check.</param>
+        /// <param name="location">Location of the image to check.</param>
         /// <returns>Format of the ROM, <c>RomFormat.None</c> if the format cannot be determined.</returns>
-        public static RomFormat CheckRomFormat(string filePath)
+        public static RomFormat CheckRomFormat(StorageLocation location)
         {
             var format = RomFormat.None;
-            Memos.CheckAddMemo(filePath, null, out format);
+            Memos.CheckAddMemo(location, null, out format);
             return format;
         }
 
         /// <summary>
-        /// Replaces the configuration file path of a .bin format ROM.
+        /// Replaces the configuration location of a .bin format ROM.
         /// </summary>
-        /// <param name="rom">The ROM whose configuration file path is to be updated.</param>
-        /// <param name="cfgPath">The new .cfg path.</param>
+        /// <param name="rom">The ROM whose configuration location is to be updated.</param>
+        /// <param name="cfgLocation">The new .cfg location.</param>
         /// <remarks>>Only applies to BinFormatRoms -- i.e. ROMs using the original .bin + .cfg format.</remarks>
-        public static void ReplaceCfgPath(IRom rom, string cfgPath)
+        public static void ReplaceCfgPath(IRom rom, StorageLocation cfgLocation)
         {
             var binFormatRom = AsSpecificRomType<BinFormatRom>(rom);
             if (binFormatRom != null)
             {
-                binFormatRom.ReplaceCfgPath(cfgPath);
+                binFormatRom.ReplaceCfgPath(cfgLocation);
             }
         }
 
@@ -182,7 +192,7 @@ namespace INTV.Core.Model
         /// <param name="rom">The ROM whose ignorable data ranges for compare are needed.</param>
         /// <param name="excludeFeatureBits">If <c>true</c>, the result includes the range of bytes to ignore that describe ROM features.</param>
         /// <returns>An enumeration containing ranges of bytes to ignore for the purpose of comparing two LUIGI ROMs. For Version 1 and newer,
-        /// this range will always include an entry for the UID portion of the LUIGI, which will allow for the comparison of two LUIGI files
+        /// this range will always include an entry for the UID portion of the LUIGI, which will allow for the comparison of two LUIGI images
         /// created from different sources (e.g. .rom vs. .bin) to actually compare as equivalent.</returns>
         public static IEnumerable<INTV.Core.Utility.Range<int>> GetComparisonIgnoreRanges(IRom rom, bool excludeFeatureBits)
         {
@@ -244,7 +254,7 @@ namespace INTV.Core.Model
         /// <returns>A <see cref="RomFormat"/> value; a value of <c>RomFormat.None</c> indicates the stream is almost certainly not
         /// a known ROM format. It is possible to get false positive matches resulting in <c>RomFormat.Bin</c> as it is not a
         /// strongly structured format that can be identified with high confidence. It is incumbent upon the caller to do a modicum
-        /// of checking, e.g. file name extension checks, or later exception handling, to deal with errors.</returns>
+        /// of checking, e.g. location name extension checks, or later exception handling, to deal with errors.</returns>
         public static RomFormat GetFormat(System.IO.Stream stream)
         {
             var format = LuigiFormatRom.CheckFormat(stream);
@@ -262,12 +272,12 @@ namespace INTV.Core.Model
         /// <summary>
         /// Check ROM format efficiently using the memo system.
         /// </summary>
-        /// <param name="romPath">Absolute path of the ROM whose format is desired.</param>
+        /// <param name="location">Location of the ROM whose format is desired.</param>
         /// <returns>ROM format.</returns>
-        protected static RomFormat CheckMemo(string romPath)
+        protected static RomFormat CheckMemo(StorageLocation location)
         {
             RomFormat format;
-            Memos.CheckMemo(romPath, out format);
+            Memos.CheckMemo(location, out format);
             return format;
         }
 
@@ -276,7 +286,7 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="romPath">Absolute path of the ROM whose memo is to be added.</param>
         /// <param name="format">ROM format.</param>
-        protected static void AddMemo(string romPath, RomFormat format)
+        protected static void AddMemo(StorageLocation romPath, RomFormat format)
         {
             Memos.AddMemo(romPath, format);
         }
@@ -284,7 +294,7 @@ namespace INTV.Core.Model
         private class RomFormatMemo : FileMemo<RomFormat>
         {
             public RomFormatMemo()
-                : base(IStorageAccessHelpers.DefaultStorage)
+                : base()
             {
             }
 
@@ -295,16 +305,16 @@ namespace INTV.Core.Model
             }
 
             /// <inheritdoc />
-            protected override RomFormat GetMemo(string filePath, object data)
+            protected override RomFormat GetMemo(StorageLocation location, object data)
             {
-                var format = LuigiFormatRom.CheckFormat(filePath);
+                var format = LuigiFormatRom.CheckFormat(location);
                 if (format == RomFormat.None)
                 {
-                    format = RomFormatRom.CheckFormat(filePath);
+                    format = RomFormatRom.CheckFormat(location);
                 }
                 if (format == RomFormat.None)
                 {
-                    format = BinFormatRom.CheckFormat(filePath);
+                    format = BinFormatRom.CheckFormat(location);
                 }
                 return format;
             }
@@ -313,6 +323,66 @@ namespace INTV.Core.Model
             protected override bool IsValidMemo(RomFormat memo)
             {
                 return memo != RomFormat.None;
+            }
+        }
+
+        /// <summary>
+        /// Used to indicate an invalid or not-a-ROM.
+        /// </summary>
+        private class CanonicallyInvalidRom : IRom
+        {
+            /// <inheritdoc />
+            public RomFormat Format
+            {
+                get { return RomFormat.None; }
+            }
+
+            /// <inheritdoc />
+            public StorageLocation RomPath
+            {
+                get { return StorageLocation.InvalidLocation; }
+            }
+
+            /// <inheritdoc />
+            public StorageLocation ConfigPath
+            {
+                get { return StorageLocation.InvalidLocation; }
+            }
+
+            /// <inheritdoc />
+            public bool IsValid
+            {
+                get { return false; }
+            }
+
+            /// <inheritdoc />
+            public uint Crc
+            {
+                get { return 0; }
+            }
+
+            /// <inheritdoc />
+            public uint CfgCrc
+            {
+                get { return 0; }
+            }
+
+            /// <inheritdoc />
+            public bool Validate()
+            {
+                throw new InvalidOperationException();
+            }
+
+            /// <inheritdoc />
+            public uint RefreshCrc(out bool changed)
+            {
+                throw new InvalidOperationException();
+            }
+
+            /// <inheritdoc />
+            public uint RefreshCfgCrc(out bool changed)
+            {
+                throw new InvalidOperationException();
             }
         }
     }

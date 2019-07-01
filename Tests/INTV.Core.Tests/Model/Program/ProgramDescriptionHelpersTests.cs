@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescriptionHelpersTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -25,6 +25,7 @@ using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
 using INTV.Core.Restricted.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -49,21 +50,21 @@ namespace INTV.Core.Tests.Model.Program
         }
 
         [Fact]
-        public void ProgramDescription_GetRomWhenRomPathsAreNull_ThrowsArgumentNullException()
+        public void ProgramDescription_GetRomWhenRomPathsAreInvalid_ThrowsInvalidOperationException()
         {
             ProgramDescriptionHelpersTestStorage.Initialize();
             var rom = new XmlRom();
             var description = CreateProgramDescription(0x456u, rom);
 
-            Assert.Throws<ArgumentNullException>(() => description.GetRom());
+            Assert.Throws<InvalidOperationException>(() => description.GetRom());
         }
 
         [Fact]
         public void ProgramDescription_GetRomWhenRomPathInvalidCfgPathIsNullAndNoAlternatePaths_ReturnsOriginalRom()
         {
-            ProgramDescriptionHelpersTestStorage.Initialize();
+            var storage = ProgramDescriptionHelpersTestStorage.Initialize();
             var rom = new XmlRom();
-            rom.UpdateRomPath("/flargy/bargy/nargy.rom");
+            rom.UpdateRomPath(storage.CreateLocation("/flargy/bargy/nargy.rom"));
             var description = CreateProgramDescription(0x789u, rom);
 
             Assert.True(object.ReferenceEquals(rom, description.GetRom()));
@@ -72,10 +73,10 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramDescription_GetRomWhenRomAndCfgPathsInvalidAndNoAlternatePaths_ReturnsOriginalRom()
         {
-            ProgramDescriptionHelpersTestStorage.Initialize();
+            var storage = ProgramDescriptionHelpersTestStorage.Initialize();
             var rom = new XmlRom();
-            rom.UpdateRomPath("/floogy/boogy/noogy.bin");
-            rom.UpdateConfigPath("/floogy/boogy/noogy.cfg");
+            rom.UpdateRomPath(storage.CreateLocation("/floogy/boogy/noogy.bin"));
+            rom.UpdateConfigPath(storage.CreateLocation("/floogy/boogy/noogy.cfg"));
             var description = CreateProgramDescription(0x987u, rom);
 
             Assert.True(object.ReferenceEquals(rom, description.GetRom()));
@@ -84,12 +85,12 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramDescription_GetRomWhenRomAndCfgPathsInvalidAndUnbalancedAlternatePaths_ThrowsInvalidOperationException()
         {
-            ProgramDescriptionHelpersTestStorage.Initialize();
+            var storage = ProgramDescriptionHelpersTestStorage.Initialize();
             var rom = new XmlRom();
-            rom.UpdateRomPath("/fleggy/beggy/neggy.bin");
-            rom.UpdateConfigPath("/fleggy/beggy/neggy.cfg");
+            rom.UpdateRomPath(storage.CreateLocation("/fleggy/beggy/neggy.bin"));
+            rom.UpdateConfigPath(storage.CreateLocation("/fleggy/beggy/neggy.cfg"));
             var supportFiles = new ProgramSupportFiles(rom);
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, "/biff!");
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation("/biff!"));
             var description = CreateProgramDescription(0x654u, rom);
             description.Files = supportFiles;
 
@@ -100,15 +101,15 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramDescription_GetRomWhenRomAndCfgPathsInvalidAndAlternatePathsNotFound_ReturnsOriginalRom()
         {
-            ProgramDescriptionHelpersTestStorage.Initialize();
+            var storage = ProgramDescriptionHelpersTestStorage.Initialize();
             var rom = new XmlRom();
-            rom.UpdateRomPath("/flooty/booty/nooty.bin");
-            rom.UpdateConfigPath("/flooty/booty/nooty.cfg");
+            rom.UpdateRomPath(storage.CreateLocation("/flooty/booty/nooty.bin"));
+            rom.UpdateConfigPath(storage.CreateLocation("/flooty/booty/nooty.cfg"));
             var supportFiles = new ProgramSupportFiles(rom);
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, "/banff.bin");
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, "/barff.bin");
-            supportFiles.AddSupportFile(ProgramFileKind.CfgFile, "/banff.cfg");
-            supportFiles.AddSupportFile(ProgramFileKind.CfgFile, "/barff.cfg");
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation("/banff.bin"));
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation("/barff.bin"));
+            supportFiles.AddSupportFile(ProgramFileKind.CfgFile, storage.CreateLocation("/banff.cfg"));
+            supportFiles.AddSupportFile(ProgramFileKind.CfgFile, storage.CreateLocation("/barff.cfg"));
             var description = CreateProgramDescription(0x321u, rom);
             description.Files = supportFiles;
 
@@ -118,13 +119,15 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramDescription_GetRomWhenRomPathInvalidAndAlternatePathFound_ReturnsAlternateRom()
         {
-            var alternatePath = ProgramDescriptionHelpersTestStorage.Initialize(TestRomResources.TestCc3Path).First();
+            IReadOnlyList<StorageLocation> paths;
+            var storage = ProgramDescriptionHelpersTestStorage.Initialize(out paths, TestRomResources.TestCc3Path);
+            var alternatePath = paths.First();
             var rom = new XmlRom();
-            rom.UpdateRomPath("/floory/boory/noory.rom");
+            rom.UpdateRomPath(storage.CreateLocation("/floory/boory/noory.rom"));
             var supportFiles = new ProgramSupportFiles(rom);
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, "/grub.bin");
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation("/grub.bin"));
             supportFiles.AddSupportFile(ProgramFileKind.Rom, alternatePath);
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, "/burg.bin");
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation("/burg.bin"));
             var description = CreateProgramDescription(0x135u, rom);
             description.Files = supportFiles;
 
@@ -137,17 +140,18 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramDescription_GetRomWhenRomPathsInvalidAndAlternatePathsFound_ReturnsAlternateRom()
         {
-            var alternatePaths = ProgramDescriptionHelpersTestStorage.Initialize(TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
+            IReadOnlyList<StorageLocation> alternatePaths;
+            var storage = ProgramDescriptionHelpersTestStorage.Initialize(out alternatePaths, TestRomResources.TestBinPath, TestRomResources.TestCfgPath);
             var rom = new XmlRom();
-            rom.UpdateRomPath("/fleery/beery/neery.bin");
-            rom.UpdateConfigPath("/fleery/beery/neery.cfg");
+            rom.UpdateRomPath(storage.CreateLocation("/fleery/beery/neery.bin"));
+            rom.UpdateConfigPath(storage.CreateLocation("/fleery/beery/neery.cfg"));
             var supportFiles = new ProgramSupportFiles(rom);
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, "/grab.bin");
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation("/grab.bin"));
             supportFiles.AddSupportFile(ProgramFileKind.Rom, alternatePaths[0]);
-            supportFiles.AddSupportFile(ProgramFileKind.Rom, "/barg.bin");
-            supportFiles.AddSupportFile(ProgramFileKind.CfgFile, "/grab.cfg");
+            supportFiles.AddSupportFile(ProgramFileKind.Rom, storage.CreateLocation("/barg.bin"));
+            supportFiles.AddSupportFile(ProgramFileKind.CfgFile, storage.CreateLocation("/grab.cfg"));
             supportFiles.AddSupportFile(ProgramFileKind.CfgFile, alternatePaths[1]);
-            supportFiles.AddSupportFile(ProgramFileKind.CfgFile, "/barg.cfg");
+            supportFiles.AddSupportFile(ProgramFileKind.CfgFile, storage.CreateLocation("/barg.cfg"));
             var description = CreateProgramDescription(0x246u, rom);
             description.Files = supportFiles;
 
@@ -174,9 +178,11 @@ namespace INTV.Core.Tests.Model.Program
         [Fact]
         public void ProgramDescription_GetRomWhenRomPathValidAndCfgPathInvalidAndNoAlternates_ReturnsOriginalRom()
         {
-            var romPath = ProgramDescriptionHelpersTestStorage.Initialize(TestRomResources.TestBinPath).First();
+            IReadOnlyList<StorageLocation> paths;
+            var storage = ProgramDescriptionHelpersTestStorage.Initialize(out paths, TestRomResources.TestBinPath);
+            var romPath = paths.First();
             var rom = new XmlRom();
-            rom.UpdateConfigPath("/flangy/bangy/nangy.cfg");
+            rom.UpdateConfigPath(storage.CreateLocation("/flangy/bangy/nangy.cfg"));
             rom.UpdateRomPath(romPath);
             var description = CreateProgramDescription(0x468u, rom);
 

@@ -41,31 +41,35 @@ namespace INTV.Core.Model.Program
         public static IRom GetRom(this ProgramDescription programDescription)
         {
             var rom = programDescription.Rom;
-            var usesCfg = !string.IsNullOrEmpty(rom.ConfigPath);
-            if (!IStorageAccessHelpers.FileExists(rom.RomPath) || (usesCfg && !IStorageAccessHelpers.FileExists(rom.ConfigPath)))
+            var usesCfg = rom.ConfigPath.IsValid;
+            if (!rom.RomPath.Exists() || (usesCfg && !rom.ConfigPath.Exists()))
             {
-                var alternateRomPaths = programDescription.Files.AlternateRomImagePaths.ToList();
-                var alternateCfgPaths = programDescription.Files.AlternateRomConfigurationFilePaths.ToList();
+                if (rom.RomPath.IsInvalid && rom.ConfigPath.IsInvalid)
+                {
+                    throw new InvalidOperationException();
+                }
+                var alternateRomLocations = programDescription.Files.AlternateRomImageLocations.ToList();
+                var alternateCfgLocations = programDescription.Files.AlternateRomConfigurationLocations.ToList();
 
-                if (usesCfg && (alternateRomPaths.Count != alternateCfgPaths.Count))
+                if (usesCfg && (alternateRomLocations.Count != alternateCfgLocations.Count))
                 {
                     throw new InvalidOperationException(Resources.Strings.ProgramDescription_MissingAlternateCfgFile);
                 }
 
                 var foundAlternate = false;
-                string romPath = null;
-                string cfgPath = null;
-                for (var i = 0; (i < alternateRomPaths.Count) && !foundAlternate; ++i)
+                var romLocation = StorageLocation.InvalidLocation;
+                var cfgLocation = StorageLocation.InvalidLocation;
+                for (var i = 0; (i < alternateRomLocations.Count) && !foundAlternate; ++i)
                 {
-                    if (IStorageAccessHelpers.FileExists(alternateRomPaths[i]))
+                    if (alternateRomLocations[i].Exists())
                     {
-                        romPath = alternateRomPaths[i];
+                        romLocation = alternateRomLocations[i];
                         if (usesCfg)
                         {
-                            if (IStorageAccessHelpers.FileExists(alternateCfgPaths[i]))
+                            if (alternateCfgLocations[i].Exists())
                             {
                                 // This code assumes (but cannot check -- silly PCL has no Path API) that the .cfg and ROM are in the same directory for the same index.
-                                cfgPath = alternateCfgPaths[i];
+                                cfgLocation = alternateCfgLocations[i];
                                 foundAlternate = true;
                             }
                         }
@@ -77,7 +81,7 @@ namespace INTV.Core.Model.Program
                 }
                 if (foundAlternate)
                 {
-                    rom = new AlternateRom(romPath, cfgPath, rom);
+                    rom = new AlternateRom(romLocation, cfgLocation, rom);
                 }
             }
             return rom;

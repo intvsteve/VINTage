@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileMemoTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -68,7 +68,7 @@ namespace INTV.Core.Tests.Utility
             int memo = 42; // just use a bogus memo
             var memos = new TestFileMemo();
 
-            using (IStorageAccessHelpers.OpenFileStream(testFileName, memos.Storage))
+            using (memos.Storage.Open(testFileName))
             {
                 Assert.True(memos.AddMemo(testFileName, memo));
             }
@@ -83,7 +83,7 @@ namespace INTV.Core.Tests.Utility
             int memo = 42; // just use a bogus memo
             var memos = new TestFileMemo();
 
-            using (IStorageAccessHelpers.OpenFileStream(testFileName, memos.Storage))
+            using (memos.Storage.Open(testFileName))
             {
                 Assert.True(memos.AddMemo(testFileName, memo));
                 Assert.False(memos.AddMemo(testFileName, TestFileMemo.InitialMemoValue));
@@ -140,10 +140,10 @@ namespace INTV.Core.Tests.Utility
 
             var originalLastWriteTime = memos.Storage.LastWriteTimeUtc(testFileName);
             Thread.Sleep(1); // ugh... but tests can run fast enough to fail w/ equal timestamps
-            var originalSize = IStorageAccessHelpers.FileSize(testFileName, memos.Storage);
+            var originalSize = memos.Storage.Size(testFileName);
             file.Seek(0, SeekOrigin.End);
             file.WriteByte(0xFF);
-            Assert.NotEqual(originalSize, IStorageAccessHelpers.FileSize(testFileName, memos.Storage));
+            Assert.NotEqual(originalSize, memos.Storage.Size(testFileName));
             memos.Storage.SetLastWriteTimeUtc(testFileName, originalLastWriteTime);
             Assert.Equal(originalLastWriteTime, memos.Storage.LastWriteTimeUtc(testFileName));
 
@@ -163,13 +163,13 @@ namespace INTV.Core.Tests.Utility
             var memo = TestFileMemo.ComputeMemoValue(file);
             Assert.True(memos.AddMemo(testFileName, memo));
 
-            var originalLastWriteTime = IStorageAccessHelpers.LastFileWriteTimeUtc(testFileName, memos.Storage);
+            var originalLastWriteTime = memos.Storage.LastWriteTimeUtc(testFileName);
             Thread.Sleep(1); // ugh... but tests can run fast enough to fail w/ equal timestamps
-            var originalSize = IStorageAccessHelpers.FileSize(testFileName, memos.Storage);
+            var originalSize = memos.Storage.Size(testFileName);
             file.Seek(0, SeekOrigin.End);
             file.WriteByte(0xFF);
-            Assert.NotEqual(originalSize, IStorageAccessHelpers.FileSize(testFileName, memos.Storage));
-            Assert.NotEqual(originalLastWriteTime, IStorageAccessHelpers.LastFileWriteTimeUtc(testFileName, memos.Storage));
+            Assert.NotEqual(originalSize, memos.Storage.Size(testFileName));
+            Assert.NotEqual(originalLastWriteTime, memos.Storage.LastWriteTimeUtc(testFileName));
 
             var returnedMemo = memo;
             Assert.False(memos.CheckMemo(testFileName, out returnedMemo));
@@ -286,16 +286,18 @@ namespace INTV.Core.Tests.Utility
             public const int InitialMemoValue = 0;
 
             public TestFileMemo()
-                : base(new TestStorageAccess())
+                : base()
             {
+                _testStorageAccess = new TestStorageAccess();
             }
 
             public bool CalledGetMemo { get; private set; }
 
             public TestStorageAccess Storage
             {
-                get { return (TestStorageAccess)StorageAccess; }
+                get { return _testStorageAccess; }
             }
+            private TestStorageAccess _testStorageAccess;
 
             public static int ComputeMemoValue(Stream stream)
             {
@@ -336,15 +338,30 @@ namespace INTV.Core.Tests.Utility
                 return stream;
             }
 
+            public bool CheckMemo(string filePath, out int memo)
+            {
+                return CheckMemo(new StorageLocation(filePath, Storage), out memo);
+            }
+
+            public bool CheckAddMemo(string filePath, object data, out int memo)
+            {
+                return CheckAddMemo(new StorageLocation(filePath, Storage), data, out memo);
+            }
+
+            public bool AddMemo(string filePath, int memo)
+            {
+                return AddMemo(new StorageLocation(filePath, Storage), memo);
+            }
+
             protected override int DefaultMemoValue
             {
                 get { return InitialMemoValue; }
             }
 
-            protected override int GetMemo(string filePath, object data)
+            protected override int GetMemo(StorageLocation location, object data)
             {
                 CalledGetMemo = true;
-                var stream = IStorageAccessHelpers.OpenFileStream(filePath, StorageAccess);
+                var stream = location.OpenStream();
                 var memoValue = ComputeMemoValue(stream);
                 return memoValue;
             }

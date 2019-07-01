@@ -22,6 +22,7 @@ using System;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -52,7 +53,7 @@ namespace INTV.Core.Tests.Model
         public void RomFormatRom_LoadAndValidateRom_RomFormatIdentifiedCorrectly(string testRomPath, RomFormat expectedRomFormat)
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(testRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 
             Assert.NotNull(rom);
             Assert.Equal(expectedRomFormat, rom.Format);
@@ -63,7 +64,7 @@ namespace INTV.Core.Tests.Model
         public void RomFormatRom_LoadCorruptedRom_ReturnsNullRom()
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomBadHeaderPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 
             Assert.Null(rom);
         }
@@ -72,7 +73,7 @@ namespace INTV.Core.Tests.Model
         public void RomFormatRom_Load_VerifyCrc()
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 
             Assert.Equal(TestRomResources.TestRomCrc, rom.Crc);
             Assert.Equal(0u, rom.CfgCrc);
@@ -82,7 +83,7 @@ namespace INTV.Core.Tests.Model
         public void RomFormatRom_RefreshCfgCrc_NeverRefreshes()
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 
             var changed = true;
             Assert.Equal(0u, rom.RefreshCfgCrc(out changed));
@@ -95,7 +96,7 @@ namespace INTV.Core.Tests.Model
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath).First();
 
             uint cfgCrc;
-            var crc = RomFormatRom.GetCrcs(romPath, null, out cfgCrc);
+            var crc = RomFormatRom.GetCrcs(romPath, StorageLocation.InvalidLocation, out cfgCrc);
 
             Assert.Equal(TestRomResources.TestRomCrc, crc);
             Assert.Equal(0u, cfgCrc);
@@ -106,7 +107,7 @@ namespace INTV.Core.Tests.Model
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomPath).First();
 
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             var metadata = rom.GetRomFileMetadata();
 
             Assert.Null(metadata);
@@ -117,7 +118,7 @@ namespace INTV.Core.Tests.Model
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomCorruptedPath).First();
 
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 #if DEBUG
             Assert.Throws<InvalidOperationException>(() => rom.GetRomFileMetadata());
 #else
@@ -132,7 +133,7 @@ namespace INTV.Core.Tests.Model
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomMetadataPath).First();
 
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             var metadata = rom.GetRomFileMetadata();
 
             Assert.NotNull(metadata);
@@ -143,7 +144,7 @@ namespace INTV.Core.Tests.Model
         public void RomFormatRom_GetMetadataWithBadCrc_ThowsInvalidDataException()
         {
             var romPath = RomFormatRomTestStorageAccess.Initialize(TestRomResources.TestRomMetadataBadCrcPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 
 #if DEBUG
             Assert.Throws<System.IO.InvalidDataException>(() => rom.GetRomFileMetadata());

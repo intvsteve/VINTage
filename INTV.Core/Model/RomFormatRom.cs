@@ -115,9 +115,9 @@ namespace INTV.Core.Model
                 {
                     if (IsValid)
                     {
-                        if (IStorageAccessHelpers.FileExists(RomPath))
+                        if (RomPath.Exists())
                         {
-                            using (var file = IStorageAccessHelpers.OpenFileStream(RomPath))
+                            using (var file = RomPath.OpenStream())
                             {
                                 var offsetIntoFile = GetMetadataOffset(file);
                                 while (offsetIntoFile < file.Length)
@@ -158,10 +158,10 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override bool Validate()
         {
-            IsValid = !string.IsNullOrEmpty(RomPath);
+            IsValid = !string.IsNullOrEmpty(RomPath.Path);
             if (IsValid)
             {
-                IsValid = IStorageAccessHelpers.FileExists(RomPath);
+                IsValid = RomPath.Exists();
             }
             return IsValid;
         }
@@ -172,10 +172,10 @@ namespace INTV.Core.Model
             var crc = _crc;
             if (IsValid)
             {
-                if (IStorageAccessHelpers.FileExists(RomPath))
+                if (RomPath.Exists())
                 {
                     uint dontCare;
-                    _crc = GetCrcs(Format, RomPath, null, out dontCare);
+                    _crc = GetCrcs(Format, RomPath, StorageLocation.InvalidLocation, out dontCare);
 
                     if (crc == 0)
                     {
@@ -197,34 +197,34 @@ namespace INTV.Core.Model
         #endregion // IRom
 
         /// <summary>
-        /// Examines the given file and attempts to determine if it is a program in .rom format.
+        /// Examines the given data and attempts to determine if it is a program in .rom format.
         /// </summary>
-        /// <param name="filePath">The path to the ROM file.</param>
-        /// <returns>A valid RomFormatRom if file is a valid .rom (or compatible) file, otherwise <c>null</c>.</returns>
-        internal static RomFormatRom Create(string filePath)
+        /// <param name="location">The location of the ROM image.</param>
+        /// <returns>A valid RomFormatRom if location specifies a valid .rom (or compatible) file, otherwise <c>null</c>.</returns>
+        internal static RomFormatRom Create(StorageLocation location)
         {
             RomFormatRom rom = null;
-            var format = CheckFormat(filePath);
+            var format = CheckFormat(location);
             if (format != RomFormat.None)
             {
                 // Valid header, so create the instance. Full validation would require walking
                 // all the segments -- essentially most of the ROM.
-                rom = new RomFormatRom() { Format = format, IsValid = true, RomPath = filePath };
+                rom = new RomFormatRom() { Format = format, IsValid = true, RomPath = location };
             }
             return rom;
         }
 
         /// <summary>
-        /// Given an absolute path to a ROM file, attempt to determine the format of the ROM.
+        /// Given the location of a ROM file, attempt to determine the format of the ROM.
         /// </summary>
-        /// <param name="filePath">Absolute path to the potential ROM file.</param>
-        /// <returns>The format of the file. If it does not appear to be a ROM, then <c>RomFormat.None</c> is returned.</returns>
-        internal static RomFormat CheckFormat(string filePath)
+        /// <param name="location">Location of the potential ROM file.</param>
+        /// <returns>The format of the ROM. If it does not appear to be a ROM, then <c>RomFormat.None</c> is returned.</returns>
+        internal static RomFormat CheckFormat(StorageLocation location)
         {
-            var format = CheckMemo(filePath);
+            var format = CheckMemo(location);
             if (format == RomFormat.None)
             {
-                using (var file = IStorageAccessHelpers.OpenFileStream(filePath))
+                using (var file = location.OpenStream())
                 {
                     format = CheckFormat(file);
                 }
@@ -278,23 +278,23 @@ namespace INTV.Core.Model
         /// <summary>
         /// Get the Crc32 values of a ROM.
         /// </summary>
-        /// <param name="romPath">Absolute path of the ROM whose CRC32 value is desired.</param>
-        /// <param name="cfgPath">Absolute path of the configuration (.cfg) file whose CRC32 is desired. May be <c>null</c>, depending on the ROM.</param>
-        /// <param name="cfgCrc">Receives the CRC32 of the configuration file, if applicable. Could be zero.</param>
+        /// <param name="romLocation">Location of the ROM whose CRC32 value is desired.</param>
+        /// <param name="cfgLocation">Location of the configuration (.cfg) file whose CRC32 is desired. May be <c>null</c>, depending on the ROM.</param>
+        /// <param name="cfgCrc">Set to zero. This ROM format does not use a .cfg file.</param>
         /// <returns>CRC32 of the ROM file.</returns>
         /// <remarks>Instead of zero, should the Crc32.InitialValue be used as a sentinel 'invalid' value?</remarks>
-        internal static uint GetCrcs(string romPath, string cfgPath, out uint cfgCrc)
+        internal static uint GetCrcs(StorageLocation romLocation, StorageLocation cfgLocation, out uint cfgCrc)
         {
-            uint romCrc = GetCrcs(CheckFormat(romPath), romPath, cfgPath, out cfgCrc);
+            uint romCrc = GetCrcs(CheckFormat(romLocation), romLocation, cfgLocation, out cfgCrc);
             return romCrc;
         }
 
-        private static uint GetCrcs(RomFormat format, string romPath, string cfgPath, out uint cfgCrc)
+        private static uint GetCrcs(RomFormat format, StorageLocation romLocation, StorageLocation cfgLocation, out uint cfgCrc)
         {
             cfgCrc = 0;
             uint romCrc = 0;
 
-            if (IStorageAccessHelpers.FileExists(romPath))
+            if (romLocation.Exists())
             {
                 byte replacementByte = AutoBaudBytes[format];
 
@@ -302,9 +302,9 @@ namespace INTV.Core.Model
                 var metadataRange = new List<Range<int>>();
                 var metadataOffset = GetMetadataOffset();
                 metadataRange.Add(new Range<int>(metadataOffset, int.MaxValue));
-                romCrc = Crc32.OfFile(romPath, format != RomFormat.Intellicart, replacementByte, metadataRange);
+                romCrc = Crc32.OfFile(romLocation, format != RomFormat.Intellicart, replacementByte, metadataRange);
 #else
-                romCrc = Crc32.OfFile(romPath, format != RomFormat.Intellicart, replacementByte);
+                romCrc = Crc32.OfFile(romLocation, format != RomFormat.Intellicart, replacementByte);
 #endif // IGNORE_METADATA_FOR_CRC
             }
             return romCrc;

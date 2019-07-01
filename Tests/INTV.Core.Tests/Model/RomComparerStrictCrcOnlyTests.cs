@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomComparerStrictCrcOnlyTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System.Linq;
 using INTV.Core.Model;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -33,9 +34,9 @@ namespace INTV.Core.Tests.Model
         public void RomComparerStrictCrcOnlyTests_CompareRoms_CompareCorrectly(string firstRomPath, string secondRomPath, int expectedCompareResult)
         {
             var paths = RomComparerStrictCrcOnlyTestStorageAccess.Initialize(firstRomPath, secondRomPath);
-            var rom0 = Rom.Create(paths[0], null);
+            var rom0 = Rom.Create(paths[0], StorageLocation.InvalidLocation);
             Assert.NotNull(rom0);
-            var rom1 = Rom.Create(paths[1], null);
+            var rom1 = Rom.Create(paths[1], StorageLocation.InvalidLocation);
             Assert.NotNull(rom1);
 
             var compareResult = RomComparerStrictCrcOnly.Default.Compare(rom0, rom1);
@@ -46,35 +47,35 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void RomComparerStrictCrcOnlyTests_CompareMissingRoms_ReturnPathCompareResult()
         {
-            RomComparerStrictCrcOnlyTestStorageAccess.Initialize();
+            var storage = RomComparerStrictCrcOnlyTestStorageAccess.Initialize();
             var rom0 = new XmlRom();
-            rom0.UpdateRomPath("/where/is/waldo.bin");
+            rom0.UpdateRomPath(storage.CreateLocation("/where/is/waldo.bin"));
             var rom1 = new XmlRom(); 
-            rom1.UpdateRomPath("where/in/the/world/is/carmen/sandiego.rom");
+            rom1.UpdateRomPath(storage.CreateLocation("where/in/the/world/is/carmen/sandiego.rom"));
 
             var compareResult = RomComparerStrictCrcOnly.Default.Compare(rom0, rom1);
 
-            Assert.Equal(string.Compare(rom0.RomPath, rom1.RomPath), compareResult);
+            Assert.Equal(rom0.RomPath.CompareTo(rom1.RomPath), compareResult);
         }
 
         [Fact]
         public void RomComparerStrictCrcOnlyTests_CompareCorruptAndMissingRoms_ReturnPathCompareResult()
         {
-            RomComparerStrictCrcOnlyTestStorageAccess.Initialize();
-            var rom0 = new CorruptedTestRom("whos/on/first.rom");
+            var storage = RomComparerStrictCrcOnlyTestStorageAccess.Initialize();
+            var rom0 = new CorruptedTestRom(storage.CreateLocation("whos/on/first.rom"));
             var rom1 = new XmlRom(); 
-            rom1.UpdateRomPath("/what/is/on/second.bin");
+            rom1.UpdateRomPath(storage.CreateLocation("/what/is/on/second.bin"));
 
             var compareResult = RomComparerStrictCrcOnly.Default.Compare(rom0, rom1);
 
-            Assert.Equal(string.Compare(rom0.RomPath, rom1.RomPath), compareResult);
+            Assert.Equal(rom0.RomPath.CompareTo(rom1.RomPath), compareResult);
         }
 
         [Fact]
         public void RomComparerStrictCrcOnlyTests_CompareRomToItself_ReturnsZero()
         {
             var romPath = RomComparerStrictCrcOnlyTestStorageAccess.Initialize(TestRomResources.TestRomPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             var compareResult = RomComparerStrictCrcOnly.Default.Compare(rom, rom);
@@ -94,7 +95,7 @@ namespace INTV.Core.Tests.Model
         public void RomComparerStrictCrcOnlyTests_CompareRomToNull_ReturnsOne()
         {
             var romPath = RomComparerStrictCrcOnlyTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             Assert.NotNull(rom);
 
             var compareResult = RomComparerStrictCrcOnly.Default.Compare(rom, null);
@@ -120,7 +121,7 @@ namespace INTV.Core.Tests.Model
 
         private class CorruptedTestRom : IRom
         {
-            public CorruptedTestRom(string path)
+            public CorruptedTestRom(StorageLocation path)
             {
                 RomPath = path;
             }
@@ -130,11 +131,11 @@ namespace INTV.Core.Tests.Model
                 get { return RomFormat.CuttleCart3Advanced; }
             }
 
-            public string RomPath { get; private set; }
+            public StorageLocation RomPath { get; private set; }
 
-            public string ConfigPath
+            public StorageLocation ConfigPath
             {
-                get { return null; }
+                get { return StorageLocation.InvalidLocation; }
             }
 
             public bool IsValid

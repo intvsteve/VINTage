@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomComparerStrictCrcOnly.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2016 All Rights Reserved
+// Copyright (c) 2015-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -51,7 +51,7 @@ namespace INTV.Core.Model
                 {
                     // Both ROMs in the comparison are missing -- and both have the same CRC - which was zero.
                     // In such a case, try comparing the paths.
-                    result = string.Compare(x.RomPath, y.RomPath);
+                    result = x.RomPath.CompareTo(y.RomPath);
                 }
             }
             return result;

@@ -1,5 +1,5 @@
 ﻿// <copyright file="AlternateRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,10 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Core.Utility;
+
 namespace INTV.Core.Model
 {
     /// <summary>
-    /// Implementation of Rom for use when the primary ROM file cannot be located, but an alternative copy can be found.
+    /// Implementation of <see cref="Rom"/> for use when the primary ROM image cannot be located, but an alternative copy can be found.
     /// </summary>
     internal sealed class AlternateRom : Rom
     {
@@ -30,12 +32,12 @@ namespace INTV.Core.Model
         /// <summary>
         /// Initializes a new instance of the AlternateRom type.
         /// </summary>
-        /// <param name="romPath">The alternate path for the ROM described by <paramref name="originalRom"/>.</param>
-        /// <param name="configPath">The alternate configuration file path for the ROM described by <paramref name="originalRom"/>.</param>
+        /// <param name="romLocation">The alternate location for the ROM described by <paramref name="originalRom"/>.</param>
+        /// <param name="configLocation">The alternate configuration data location for the ROM described by <paramref name="originalRom"/>.</param>
         /// <param name="originalRom">The original ROM.</param>
-        public AlternateRom(string romPath, string configPath, IRom originalRom)
+        public AlternateRom(StorageLocation romLocation, StorageLocation configLocation, IRom originalRom)
         {
-            Alternate = Rom.Create(romPath, configPath);
+            Alternate = Rom.Create(romLocation, configLocation);
             RomPath = Alternate.RomPath;
             ConfigPath = Alternate.ConfigPath;
             IsValid = Alternate.IsValid;

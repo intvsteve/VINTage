@@ -82,10 +82,10 @@ namespace INTV.Core.Model
         /// <inheritdoc />
         public override bool Validate()
         {
-            IsValid = !string.IsNullOrEmpty(RomPath);
+            IsValid = RomPath.IsValid;
             if (IsValid)
             {
-                IsValid = IStorageAccessHelpers.FileExists(RomPath);
+                IsValid = RomPath.Exists();
             }
             return IsValid;
         }
@@ -99,7 +99,7 @@ namespace INTV.Core.Model
             {
                 uint dontCare;
                 bool usedLuigiFileForCrc;
-                _crc = GetCrcs(Header, RomPath, null, out dontCare, out usedLuigiFileForCrc);
+                _crc = GetCrcs(Header, RomPath, StorageLocation.InvalidLocation, out dontCare, out usedLuigiFileForCrc);
                 if (usedLuigiFileForCrc)
                 {
                     crc = _crc; // lazy initialization means on first read, we should never get a change
@@ -114,7 +114,7 @@ namespace INTV.Core.Model
         {
             var cfgCrc = _cfgCrc;
             bool dontCare;
-            GetCrcs(Header, RomPath, null, out _cfgCrc, out dontCare);
+            GetCrcs(Header, RomPath, StorageLocation.InvalidLocation, out _cfgCrc, out dontCare);
             changed = cfgCrc != _cfgCrc;
             return _cfgCrc;
         }
@@ -122,7 +122,7 @@ namespace INTV.Core.Model
         #endregion // IRom
 
         /// <summary>
-        /// Gets the 24-bit CRC of the file.
+        /// Gets the 24-bit CRC of the image.
         /// </summary>
         public uint Crc24
         {
@@ -132,7 +132,7 @@ namespace INTV.Core.Model
                 {
                     if (_crc24 == 0)
                     {
-                        if (IStorageAccessHelpers.FileExists(RomPath))
+                        if (RomPath.Exists())
                         {
                             _crc24 = INTV.Core.Utility.Crc24.OfFile(RomPath);
                         }
@@ -169,19 +169,19 @@ namespace INTV.Core.Model
         #endregion // Properties
 
         /// <summary>
-        /// Examines the given file and attempts to determine if it is a program in .luigi format.
+        /// Examines the given image and attempts to determine if it is a program in .luigi format.
         /// </summary>
-        /// <param name="filePath">The path to the LUIGI file.</param>
-        /// <returns>A valid LuigiFormatRom if file is a valid .luigi file, otherwise <c>null</c>.</returns>
-        internal static LuigiFormatRom Create(string filePath)
+        /// <param name="location">The location of the LUIGI image.</param>
+        /// <returns>A valid LuigiFormatRom if image is a valid .luigi image, otherwise <c>null</c>.</returns>
+        internal static LuigiFormatRom Create(StorageLocation location)
         {
             LuigiFormatRom rom = null;
-            if (CheckFormat(filePath) == RomFormat.Luigi)
+            if (CheckFormat(location) == RomFormat.Luigi)
             {
-                LuigiFileHeader header = LuigiFileHeader.GetHeader(filePath);
+                LuigiFileHeader header = LuigiFileHeader.GetHeader(location);
                 if (header != null)
                 {
-                    rom = new LuigiFormatRom() { Format = RomFormat.Luigi, IsValid = true, RomPath = filePath, Header = header };
+                    rom = new LuigiFormatRom() { Format = RomFormat.Luigi, IsValid = true, RomPath = location, Header = header };
                 }
             }
             return rom;
@@ -190,23 +190,23 @@ namespace INTV.Core.Model
         /// <summary>
         /// Checks the format of the ROM at the given absolute path.
         /// </summary>
-        /// <param name="filePath">Absolute path to a ROM file.</param>
+        /// <param name="location">Location of a ROM image.</param>
         /// <returns>The format of the ROM.</returns>
-        internal static RomFormat CheckFormat(string filePath)
+        internal static RomFormat CheckFormat(StorageLocation location)
         {
-            var format = CheckMemo(filePath);
+            var format = CheckMemo(location);
             if (format == RomFormat.None)
             {
-                using (var file = IStorageAccessHelpers.OpenFileStream(filePath))
+                using (var file = location.OpenStream())
                 {
                     if (file != null)
                     {
                         if (file.Length > 0)
                         {
-                            if (LuigiFileHeader.GetHeader(filePath) != null)
+                            if (LuigiFileHeader.GetHeader(location) != null)
                             {
                                 format = RomFormat.Luigi;
-                                AddMemo(filePath, format);
+                                AddMemo(location, format);
                             }
                         }
                     }
@@ -220,7 +220,7 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="stream">The stream containing the data to inspect.</param>
         /// <returns><c>RomFormat.Luigi</c> if the data at the beginning of <paramref name="stream"/> is a valid
-        /// LUIGI file header, otherwise <c>RomFormat.None</c>.</returns>
+        /// LUIGI header, otherwise <c>RomFormat.None</c>.</returns>
         internal static RomFormat CheckFormat(System.IO.Stream stream)
         {
             var position = 0L;
@@ -249,18 +249,18 @@ namespace INTV.Core.Model
         /// <summary>
         /// Get up-to-date CRC32 values for the ROM.
         /// </summary>
-        /// <param name="romPath">Absolute path to the ROM.</param>
-        /// <param name="cfgPath">Absolute path to the configuration file (may be <c>null</c>).</param>
-        /// <param name="cfgCrc">Receives the CRC32 of the file at <paramref name="cfgPath"/></param>
-        /// <returns>The CRC32 of the file at <paramref name="romPath"/>.</returns>
-        internal static uint GetCrcs(string romPath, string cfgPath, out uint cfgCrc)
+        /// <param name="romLocation">Location of the ROM.</param>
+        /// <param name="cfgLocation">Location of the configuration data (.cfg) is not used.</param>
+        /// <param name="cfgCrc">Receives the CRC32 of the original ROM used to create the LUIGI image, if applicable; otherwise set to zero.</param>
+        /// <returns>The CRC32 of the image at <paramref name="romLocation"/>.</returns>
+        internal static uint GetCrcs(StorageLocation romLocation, StorageLocation cfgLocation, out uint cfgCrc)
         {
             bool dontCare;
-            var romCrc = GetCrcs(LuigiFileHeader.GetHeader(romPath), romPath, cfgPath, out cfgCrc, out dontCare);
+            var romCrc = GetCrcs(LuigiFileHeader.GetHeader(romLocation), romLocation, cfgLocation, out cfgCrc, out dontCare);
             return romCrc;
         }
 
-        private static uint GetCrcs(LuigiFileHeader header, string romPath, string cfgPath, out uint cfgCrc, out bool usedLuigiFileCrc)
+        private static uint GetCrcs(LuigiFileHeader header, StorageLocation romLocation, StorageLocation cfgLocation, out uint cfgCrc, out bool usedLuigiFileCrc)
         {
             usedLuigiFileCrc = false;
             uint romCrc = 0;
@@ -279,10 +279,10 @@ namespace INTV.Core.Model
                     }
                 }
             }
-            if (romCrc == 0 && IStorageAccessHelpers.FileExists(romPath))
+            if (romCrc == 0 && romLocation.Exists())
             {
                 usedLuigiFileCrc = true;
-                romCrc = INTV.Core.Utility.Crc32.OfFile(romPath);
+                romCrc = INTV.Core.Utility.Crc32.OfFile(romLocation);
             }
             return romCrc;
         }
@@ -292,7 +292,7 @@ namespace INTV.Core.Model
         /// </summary>
         /// <param name="excludeFeatureBits">If <c>true</c>, the result includes the range of bytes to ignore that describe ROM features.</param>
         /// <returns>An enumeration containing ranges of bytes to ignore for the purpose of comparing two LUIGI ROMs. For Version 1 and newer,
-        /// this range will always include an entry for the UID portion of the LUIGI, which will allow for the comparison of two LUIGI files
+        /// this range will always include an entry for the UID portion of the LUIGI, which will allow for the comparison of two LUIGI images
         /// created from different sources (e.g. .rom vs. .bin) to actually compare as equivalent.</returns>
         public IEnumerable<Range<int>> GetComparisonIgnoreRanges(bool excludeFeatureBits)
         {
@@ -326,9 +326,9 @@ namespace INTV.Core.Model
         internal T LocateDataBlock<T>() where T : LuigiDataBlock
         {
             var dataBlock = default(T);
-            if (IStorageAccessHelpers.FileExists(RomPath))
+            if (RomPath.Exists())
             {
-                using (var file = IStorageAccessHelpers.OpenFileStream(RomPath))
+                using (var file = RomPath.OpenStream())
                 {
                     if (file != null)
                     {
@@ -375,7 +375,7 @@ namespace INTV.Core.Model
         private class LuigiUniqueIdMemo : FileMemo<string>
         {
             public LuigiUniqueIdMemo()
-                : base(IStorageAccessHelpers.DefaultStorage)
+                : base()
             {
             }
 
@@ -386,7 +386,7 @@ namespace INTV.Core.Model
             }
 
             /// <inheritdoc />
-            protected override string GetMemo(string filePath, object data)
+            protected override string GetMemo(StorageLocation location, object data)
             {
                 var uniqueIdMemo = string.Empty;
                 var rom = (LuigiFormatRom)data;
@@ -399,7 +399,7 @@ namespace INTV.Core.Model
             }
 
             /// <inheritdoc />
-            /// <remarks>We also cache empty / null here because the unique ID in a LUIGI is not going to change unless the file itself is rebuilt.</remarks>
+            /// <remarks>We also cache empty / null here because the unique ID in a LUIGI is not going to change unless the image itself is rebuilt.</remarks>
             protected override bool IsValidMemo(string memo)
             {
                 return true;

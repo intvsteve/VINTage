@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.TestHelpers.Core.Utility;
 using Xunit;
 
@@ -52,7 +53,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_LoadAndValidateRom_RomFormatIdentifiedCorrectly()
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 
             Assert.NotNull(rom);
             Assert.Equal(RomFormat.Luigi, rom.Format);
@@ -63,7 +64,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_Load_VerifyCrc()
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 
             Assert.Equal(TestRomResources.TestBinCrc, rom.Crc);
             Assert.Equal(TestRomResources.TestCfgCrc, rom.CfgCrc);
@@ -73,7 +74,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRomFromFuture_Load_DoesNotLoadAsLuigiFormatRom()
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromFuturePath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 
             // At this time, the ROM *just happens* to pass the .bin format tests! Depending on
             // many factors, differently "fake corrupted" ROMs could fail to load or not.
@@ -85,7 +86,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_Load_VerifyCrc24()
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).First();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, StorageLocation.InvalidLocation));
 
             Assert.Equal(0x0035f671u, rom.Crc24);
         }
@@ -94,7 +95,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_LoadStandardLuigi_VerifyTargetDeviceUniqueId()
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).First();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, StorageLocation.InvalidLocation));
 
             Assert.True(string.IsNullOrEmpty(rom.TargetDeviceUniqueId));
         }
@@ -103,7 +104,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_LoadScrambledForAnyLuigi_VerifyTargetDeviceUniqueId()
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForAnyDevicePath).First();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, StorageLocation.InvalidLocation));
 
             Assert.Equal(LuigiScrambleKeyBlock.AnyLTOFlashId, rom.TargetDeviceUniqueId);
         }
@@ -112,8 +113,8 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_LoadScrambledLuigis_VerifyTargetDeviceUniqueIds()
         {
             var paths = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForDevice0Path, TestRomResources.TestLuigiScrambledForDevice1Path);
-            var rom0 = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(paths[0], null));
-            var rom1 = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(paths[1], null));
+            var rom0 = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(paths[0], StorageLocation.InvalidLocation));
+            var rom1 = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(paths[1], StorageLocation.InvalidLocation));
 
             Assert.NotEqual(rom0.TargetDeviceUniqueId, rom1.TargetDeviceUniqueId);
             Assert.Equal(TestRomResources.TestLuigiScrambledForDevice0UniqueId, rom0.TargetDeviceUniqueId);
@@ -124,7 +125,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_LoadLuigiWithZeroCrcs_VerifyCrc()
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiWithZeroCrcsPath).First();
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
 
             Assert.Equal(TestRomResources.TestLuigiWithZeroCrcsCrc, rom.Crc);
             Assert.Equal(0u, rom.CfgCrc);
@@ -136,7 +137,7 @@ namespace INTV.Core.Tests.Model
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).First();
 
             uint cfgCrc;
-            var crc = LuigiFormatRom.GetCrcs(romPath, null, out cfgCrc);
+            var crc = LuigiFormatRom.GetCrcs(romPath, StorageLocation.InvalidLocation, out cfgCrc);
 
             Assert.Equal(TestRomResources.TestBinCrc, crc);
             Assert.Equal(TestRomResources.TestCfgCrc, cfgCrc);
@@ -148,7 +149,7 @@ namespace INTV.Core.Tests.Model
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromRomPath).First();
 
             uint cfgCrc;
-            var crc = LuigiFormatRom.GetCrcs(romPath, null, out cfgCrc);
+            var crc = LuigiFormatRom.GetCrcs(romPath, StorageLocation.InvalidLocation, out cfgCrc);
 
             Assert.Equal(TestRomResources.TestRomCrc, crc);
             Assert.Equal(0u, cfgCrc);
@@ -160,7 +161,7 @@ namespace INTV.Core.Tests.Model
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiWithZeroCrcsPath).First();
 
             uint cfgCrc;
-            var crc = LuigiFormatRom.GetCrcs(romPath, null, out cfgCrc);
+            var crc = LuigiFormatRom.GetCrcs(romPath, StorageLocation.InvalidLocation, out cfgCrc);
 
             Assert.Equal(TestRomResources.TestLuigiWithZeroCrcsCrc, crc);
             Assert.Equal(0u, cfgCrc);
@@ -171,7 +172,7 @@ namespace INTV.Core.Tests.Model
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiWithMetadataPath).First();
 
-            var rom = Rom.Create(romPath, null);
+            var rom = Rom.Create(romPath, StorageLocation.InvalidLocation);
             var metadata = rom.GetLuigiFileMetadata();
 
             Assert.NotNull(metadata);
@@ -181,10 +182,10 @@ namespace INTV.Core.Tests.Model
         [Fact]
         public void LuigiFormatRom_CheckFormatOfCorruptFile_ThrowsNullReferenceException()
         {
-            IReadOnlyList<string> paths;
+            IReadOnlyList<StorageLocation> paths;
             var storageAccess = LuigiFormatRomTestStorageAccess.Initialize(out paths, TestRomResources.TestLuigiWithBadHeaderPath);
 
-            var corrupted = storageAccess.IntroduceCorruption(paths.First());
+            var corrupted = storageAccess.IntroduceCorruption(paths.First().Path);
 
             Assert.True(corrupted);
             Assert.Throws<NullReferenceException>(() => LuigiFormatRom.CheckFormat(paths.First()));
@@ -196,7 +197,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_GetComparisonIgnoreRanges_ReturnsCorrectNumberOfExcludeRanges(bool excludeFeatureBits, int expectedNumberOfExcludeRanges)
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiFromBinPath).First();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, StorageLocation.InvalidLocation));
 
             // Three ranges of values are ignored in this case:
             // 1. Feature flags (depends on value of excludeFeatureBits)
@@ -211,7 +212,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_LoadScrambledForAnyLuigiWithoutMetadataRequestMetadata_VerifyNoMetadataPresent()
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiScrambledForAnyDevicePath).First();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, StorageLocation.InvalidLocation));
 
             Assert.Null(rom.LocateDataBlock<LuigiMetadataBlock>());
         }
@@ -220,7 +221,7 @@ namespace INTV.Core.Tests.Model
         public void LuigiFormatRom_LoadScrambledForAnyLuigiWithMetadataRequestTestBlock_VerifyTestBlockNotFound()
         {
             var romPath = LuigiFormatRomTestStorageAccess.Initialize(TestRomResources.TestLuigiWithMetadatdaScrambledForAnyDevicePath).First();
-            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, null));
+            var rom = Rom.AsSpecificRomType<LuigiFormatRom>(Rom.Create(romPath, StorageLocation.InvalidLocation));
 
             Assert.Null(rom.LocateDataBlock<LuigiTestDataBlock>());
         }

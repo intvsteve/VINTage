@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -256,7 +256,7 @@ namespace INTV.Shared.ViewModel
             foreach (var program in Programs)
             {
                 uint cfgCrc;
-                Core.Model.Rom.GetRefreshedCrcs(program.Model.Files.RomImagePath, program.Model.Files.RomConfigurationFilePath, out cfgCrc);
+                Core.Model.Rom.GetRefreshedCrcs(program.Model.Files.RomImageLocation, program.Model.Files.RomConfigurationLocation, out cfgCrc);
             }
         }
 
@@ -657,7 +657,7 @@ namespace INTV.Shared.ViewModel
                     sortProperty = column.ToString();
                     break;
                 case RomListColumn.RomFile:
-                    sortProperty = "Rom.RomPath";
+                    sortProperty = "Rom.RomPath.Path";
                     break;
                 default:
                     break;
@@ -731,13 +731,13 @@ namespace INTV.Shared.ViewModel
                     {
                         if (string.IsNullOrEmpty(program.Rom.ConfigPath))
                         {
-                            var cfgFilePath = System.IO.Path.ChangeExtension(program.Rom.RomPath, ProgramFileKind.CfgFile.FileExtension());
-                            if (!System.IO.File.Exists(cfgFilePath))
+                            var cfgFilePath = program.Rom.RomPath.ChangeExtension(ProgramFileKind.CfgFile.FileExtension());
+                            if (!cfgFilePath.Exists())
                             {
                                 // try stock .cfg file
                                 cfgFilePath = program.Rom.GetStockCfgFile(program.ProgramInformation);
                             }
-                            if (System.IO.File.Exists(cfgFilePath))
+                            if (cfgFilePath.Exists())
                             {
                                 INTV.Core.Model.Rom.ReplaceCfgPath(program.Rom, cfgFilePath);
                             }

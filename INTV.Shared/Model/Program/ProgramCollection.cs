@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 
@@ -235,7 +236,7 @@ namespace INTV.Shared.Model.Program
                     }
                     if (progressFunc != null)
                     {
-                        progressFunc(romFile.RomPath);
+                        progressFunc(romFile.RomPath.Path);
                     }
                     bool alreadyAdded = (romFile.Crc != 0) && (addedItems.FirstOrDefault(p => p.Rom.IsEquivalentTo(romFile, comparer)) != null);
                     if ((romFile.Crc != 0) && !alreadyAdded)
@@ -247,7 +248,7 @@ namespace INTV.Shared.Model.Program
                             if (!haveIt)
                             {
                                 IRom localRomCopy = null;
-                                if (romFile.RomPath.IsPathOnRemovableDevice())
+                                if (romFile.RomPath.Path.IsPathOnRemovableDevice())
                                 {
                                     localRomCopy = romFile.CopyToLocalRomsDirectory();
                                 }
@@ -256,7 +257,7 @@ namespace INTV.Shared.Model.Program
                                 {
                                     programDescription.Files.AddSupportFile(ProgramFileKind.Rom, localRomCopy.RomPath);
                                 }
-                                if ((romFile.Format == RomFormat.Bin) && (string.IsNullOrEmpty(romFile.ConfigPath) || !File.Exists(romFile.ConfigPath) || (localRomCopy != null)))
+                                if ((romFile.Format == RomFormat.Bin) && (!romFile.ConfigPath.Exists() || (localRomCopy != null)))
                                 {
                                     // Logic for .cfg file:
                                     // OnRemovableDevice: NO                          | YES
@@ -265,11 +266,11 @@ namespace INTV.Shared.Model.Program
                                     if (localRomCopy != null)
                                     {
                                         var cfgFilePath = localRomCopy.ConfigPath;
-                                        if (string.IsNullOrEmpty(cfgFilePath) || !File.Exists(cfgFilePath))
+                                        if (!cfgFilePath.Exists())
                                         {
                                             cfgFilePath = localRomCopy.GenerateStockCfgFile(programInfo);
                                         }
-                                        if (!string.IsNullOrEmpty(cfgFilePath) && File.Exists(cfgFilePath))
+                                        if (cfgFilePath.Exists())
                                         {
                                             programDescription.Files.AddSupportFile(ProgramFileKind.CfgFile, cfgFilePath);
                                         }
@@ -277,7 +278,7 @@ namespace INTV.Shared.Model.Program
                                     else
                                     {
                                         var cfgFilePath = romFile.GenerateStockCfgFile(programInfo);
-                                        if (!string.IsNullOrEmpty(cfgFilePath))
+                                        if (cfgFilePath.IsValid)
                                         {
                                             romFile.UpdateCfgFile(cfgFilePath);
                                         }
@@ -291,13 +292,13 @@ namespace INTV.Shared.Model.Program
                             }
                             else if (duplicateRoms != null)
                             {
-                                duplicateRoms.Add(romFile.RomPath);
+                                duplicateRoms.Add(romFile.RomPath.Path);
                             }
                         }
                     }
                     else if (alreadyAdded && (duplicateRoms != null))
                     {
-                        duplicateRoms.Add(romFile.RomPath);
+                        duplicateRoms.Add(romFile.RomPath.Path);
                     }
                     else if ((romFile != null) && ((romFile.Crc == 0) || (romFile.Crc == INTV.Core.Utility.Crc32.InitialValue) || !romFile.IsValid))
                     {

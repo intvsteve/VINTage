@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,12 +23,12 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.Intellicart.Model;
 using INTV.Intellicart.ViewModel;
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Model;
-using INTV.Shared.Model.Device;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
 
@@ -356,7 +356,8 @@ namespace INTV.Intellicart.Commands
                 var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false, Resources.Strings.BrowseAndDownloadCommand_BrowseDialogPrompt).FirstOrDefault();
                 if (selectedFile != null)
                 {
-                    var rom = selectedFile.GetRomFromPath();
+                    var selectedLocation = new StorageLocation(selectedFile);
+                    var rom = selectedLocation.GetRomFromPath();
                     IProgramDescription programDescription = null;
                     if (rom != null)
                     {

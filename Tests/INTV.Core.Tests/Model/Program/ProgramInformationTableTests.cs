@@ -35,18 +35,18 @@ namespace INTV.Core.Tests.Model.Program
         {
             IReadOnlyList<StorageLocation> romPaths;
             var storageAccess = ProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);
-            var database0FilePath = "/testing/database/user_specified_database_0.xml";
+            var database0FilePath = storageAccess.CreateLocation("/testing/database/user_specified_database_0.xml");
             storageAccess.AddDatabaseFile(database0FilePath, 2);
-            var database1FilePath = "/testing/database/user_specified_database_1.xml";
+            var database1FilePath = storageAccess.CreateLocation("/testing/database/user_specified_database_1.xml");
             storageAccess.AddDatabaseFile(database1FilePath, 3);
-            var database2FilePath = "/testing/database/user_specified_bogus_database.xml";
+            var database2FilePath = storageAccess.CreateLocation("/testing/database/user_specified_bogus_database.xml");
 
             var database = ProgramInformationTable.Initialize(
                 new[]
                 {
-                    new ProgramInformationTableDescriptor(database0FilePath, p => UserSpecifiedProgramInformationTable.Initialize(storageAccess.CreateLocation(p))),
-                    new ProgramInformationTableDescriptor(database1FilePath, p => UserSpecifiedProgramInformationTable.Initialize(storageAccess.CreateLocation(p))),
-                    new ProgramInformationTableDescriptor(database2FilePath, p => UserSpecifiedProgramInformationTable.Initialize(storageAccess.CreateLocation(p))),
+                    new ProgramInformationTableDescriptor(database0FilePath, p => UserSpecifiedProgramInformationTable.Initialize(p)),
+                    new ProgramInformationTableDescriptor(database1FilePath, p => UserSpecifiedProgramInformationTable.Initialize(p)),
+                    new ProgramInformationTableDescriptor(database2FilePath, p => UserSpecifiedProgramInformationTable.Initialize(p)),
                 });
 
             Assert.NotNull(database);
@@ -73,16 +73,16 @@ namespace INTV.Core.Tests.Model.Program
         {
             private readonly HashSet<Stream> _databaseStreamsCache = new HashSet<Stream>();
 
-            public void AddDatabaseFile(string databaseFilePath, int numberOfEntries)
+            public void AddDatabaseFile(StorageLocation databaseFilePath, int numberOfEntries)
             {
                 lock (_databaseStreamsCache)
                 {
-                    using (var databaseStream = OpenOrCreate(databaseFilePath, -1))
+                    using (var databaseStream = OpenOrCreate(databaseFilePath.Path, -1))
                     {
                         var databaseString = CreateDatabaseXmlString(numberOfEntries);
                         var databaseBytes = Encoding.UTF8.GetBytes(databaseString);
                         databaseStream.Write(databaseBytes, 0, databaseBytes.Length);
-                        _databaseStreamsCache.Add(Open(databaseFilePath));
+                        _databaseStreamsCache.Add(Open(databaseFilePath.Path));
                         databaseStream.Seek(0, SeekOrigin.Begin);
                     }
                 }

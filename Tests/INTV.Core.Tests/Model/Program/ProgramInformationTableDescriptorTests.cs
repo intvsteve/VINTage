@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramInformationTableDescriptorTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using Xunit;
 
 namespace INTV.Core.Tests.Model.Program
@@ -31,27 +32,27 @@ namespace INTV.Core.Tests.Model.Program
         {
             var descriptor = new ProgramInformationTableDescriptor();
 
-            Assert.Null(descriptor.FilePath);
+            Assert.Null(descriptor.FilePath.Path);
             Assert.Null(descriptor.Factory);
         }
 
         [Fact]
         public void ProgramInformationTableDescriptor_ConstructorWithNullArguments_DoesNotThrow()
         {
-            var descriptor = new ProgramInformationTableDescriptor(null, null);
+            var descriptor = new ProgramInformationTableDescriptor(StorageLocation.Null, null);
 
-            Assert.Null(descriptor.FilePath);
+            Assert.Null(descriptor.FilePath.Path);
             Assert.Null(descriptor.Factory);
         }
 
         [Fact]
         public void ProgramInformationTableDescriptor_ConstructorWithArguments_InitializesCorrectly()
         {
-            var factory = new Func<string, IProgramInformationTable>(p =>
+            var factory = new Func<StorageLocation, IProgramInformationTable>(p =>
                 {
                     return null;
                 });
-            var filePath = @"C:\Program Files\lol.xml";
+            var filePath = new StorageLocation(@"C:\Program Files\lol.xml");
             var descriptor = new ProgramInformationTableDescriptor(filePath, factory);
 
             Assert.Equal(filePath, descriptor.FilePath);

@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramInformationTableDescriptor.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,37 +19,38 @@
 // </copyright>
 
 using System;
+using INTV.Core.Utility;
 
 namespace INTV.Core.Model.Program
 {
     public struct ProgramInformationTableDescriptor
     {
-        private string _path;
-        private Func<string, IProgramInformationTable> _factory;
+        private StorageLocation _location;
+        private Func<StorageLocation, IProgramInformationTable> _factory;
 
         /// <summary>
         /// Initializes a new instance of ProgramInformationTableDescriptor.
         /// </summary>
-        /// <param name="path">Absolute path to a program information table.</param>
+        /// <param name="location">Location of a program information table.</param>
         /// <param name="factory">The factory function for the table.</param>
-        public ProgramInformationTableDescriptor(string path, Func<string, IProgramInformationTable> factory)
+        public ProgramInformationTableDescriptor(StorageLocation location, Func<StorageLocation, IProgramInformationTable> factory)
         {
-            _path = path;
+            _location = location;
             _factory = factory;
         }
 
         /// <summary>
-        /// Gets the full path to the information table on the local file system.
+        /// Gets the location of the information table.
         /// </summary>
-        public string FilePath
+        public StorageLocation FilePath
         {
-            get { return _path; }
+            get { return _location; }
         }
 
         /// <summary>
         /// Gets the factory function for an information table.
         /// </summary>
-        public Func<string, IProgramInformationTable> Factory
+        public Func<StorageLocation, IProgramInformationTable> Factory
         {
             get { return _factory; }
         }

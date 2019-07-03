@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramFileKindHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -25,6 +25,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
+using INTV.Shared.Utility;
 
 namespace INTV.Shared.Model.Program
 {
@@ -123,30 +125,30 @@ namespace INTV.Shared.Model.Program
         /// <summary>
         /// Given a file path, attempt to locate a .cfg file for it, if appropriate.
         /// </summary>
-        /// <param name="romFilePath">A path to a program ROM file.</param>
+        /// <param name="romFileLocation">A path to a program ROM file.</param>
         /// <returns>The path to a ROM file's associated .cfg file, if one can be found.</returns>
-        public static string GetConfigFilePath(this string romFilePath)
+        public static StorageLocation GetConfigFilePath(this StorageLocation romFileLocation)
         {
-            string configFile = null;
-            var romFileExtension = Path.GetExtension(romFilePath);
+            var configFile = StorageLocation.InvalidLocation;
+            var romFileExtension = romFileLocation.GetExtension();
             string extension = Core.Model.Program.ProgramFileKindHelpers.RomFileExtensionsThatUseCfgFiles.FirstOrDefault(ext => string.Compare(ext, romFileExtension, true) == 0);
             if (extension != null)
             {
 #if WIN
                 var searchPattern = "*" + ProgramFileKind.CfgFile.FileExtension();
-                var filesNextToRom = Directory.EnumerateFiles(Path.GetDirectoryName(romFilePath), searchPattern);
+                var filesNextToRom = Directory.EnumerateFiles(Path.GetDirectoryName(romFileLocation.Path), searchPattern);
 #else
                 // Workaround for non-Windows. Don't care about file system case sensitivity.
                 var searchPattern = ProgramFileKind.CfgFile.FileExtension();
-                var files = Directory.EnumerateFiles(Path.GetDirectoryName(romFilePath));
+                var files = Directory.EnumerateFiles(Path.GetDirectoryName(romFileLocation.Path));
                 var filesNextToRom = files.Where(f => f.EndsWith(searchPattern, StringComparison.InvariantCultureIgnoreCase));
 #endif // WIN
-                var possibleConfigFile = Path.Combine(Path.GetDirectoryName(romFilePath), Path.GetFileNameWithoutExtension(romFilePath) + ProgramFileKind.CfgFile.FileExtension());
-                configFile = filesNextToRom.FirstOrDefault(f => string.Compare(f, possibleConfigFile, true) == 0);
-                if (string.IsNullOrEmpty(configFile))
+                var possibleConfigFile = Path.Combine(Path.GetDirectoryName(romFileLocation.Path), Path.GetFileNameWithoutExtension(romFileLocation.Path) + ProgramFileKind.CfgFile.FileExtension());
+                configFile = new StorageLocation(filesNextToRom.FirstOrDefault(f => string.Compare(f, possibleConfigFile, true) == 0));
+                if (!configFile.IsValid)
                 {
-                    possibleConfigFile = romFilePath + ProgramFileKind.CfgFile.FileExtension();
-                    configFile = filesNextToRom.FirstOrDefault(f => string.Compare(f, possibleConfigFile, true) == 0);
+                    possibleConfigFile = romFileLocation + ProgramFileKind.CfgFile.FileExtension();
+                    configFile = new StorageLocation(filesNextToRom.FirstOrDefault(f => string.Compare(f, possibleConfigFile, true) == 0));
                 }
             }
             return configFile;

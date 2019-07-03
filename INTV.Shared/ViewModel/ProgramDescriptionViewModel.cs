@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramDescriptionViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -123,7 +123,7 @@ namespace INTV.Shared.ViewModel
                 finally
                 {
                     stopwatch.Stop();
-                    var romPath = Rom == null ? "<invalid ROM>" : Rom.RomPath;
+                    var romPath = Rom == null ? "<invalid ROM>" : Rom.RomPath.Path;
                     romPath = romPath ?? "<invalid ROM path>";
                     Logger.Log("ProgramDescriptionViewModel().Validate() for: " + romPath + " took: + " + stopwatch.Elapsed.ToString());
                 }
@@ -338,7 +338,7 @@ namespace INTV.Shared.ViewModel
             finally
             {
                 stopwatch.Stop();
-                var romPath = Rom == null ? "<invalid ROM>" : Rom.RomPath;
+                var romPath = Rom == null ? "<invalid ROM>" : Rom.RomPath.Path;
                 romPath = romPath ?? "<invalid ROM path>";
                 Logger.Log("ProgramDescriptionViewModel.RefreshFileStatus() for: " + romPath + " took: + " + stopwatch.Elapsed.ToString());
             }
@@ -361,7 +361,7 @@ namespace INTV.Shared.ViewModel
 
         private string GetDisplayName()
         {
-            var name = Properties.Settings.Default.DisplayRomFileNameForTitle ? System.IO.Path.GetFileNameWithoutExtension(Model.Rom.RomPath) : Model.Name;
+            var name = Properties.Settings.Default.DisplayRomFileNameForTitle ? System.IO.Path.GetFileNameWithoutExtension(Model.Rom.RomPath.Path) : Model.Name;
             return name;
         }
 

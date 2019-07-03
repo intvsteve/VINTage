@@ -25,6 +25,7 @@ using INTV.Core.ComponentModel;
 using INTV.Core.Model;
 using INTV.Core.Model.Device;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 
@@ -159,8 +160,8 @@ namespace INTV.Shared.Model
             var initializedCoreStreamUtils = INTV.Core.Utility.IStorageAccessHelpers.Initialize(new StorageAccess());
             if (initializedCoreStreamUtils)
             {
-                INTV.Core.Utility.StringUtilities.RegisterHtmlDecoder(StringUtilities.HtmlDecode);
-                INTV.Core.Utility.StringUtilities.RegisterHtmlEncoder(StringUtilities.HtmlEncode);
+                INTV.Core.Utility.StringUtilities.RegisterHtmlDecoder(Shared.Utility.StringUtilities.HtmlDecode);
+                INTV.Core.Utility.StringUtilities.RegisterHtmlEncoder(Shared.Utility.StringUtilities.HtmlEncode);
             }
             System.Diagnostics.Debug.Assert(initializedCoreStreamUtils, "Failed to initialize stream utilities!");
             Core.Model.IRomHelpers.InitializeCallbacks(GetIntvNameData);
@@ -181,10 +182,10 @@ namespace INTV.Shared.Model
             FileUtilities.EnsureDirectoriesExist(directories);
 
             RomFilesPath = Path.Combine(_applicationDocumentsPath, RomsFile);
-
+            var localRomDefinitionsPath = new StorageLocation(Path.Combine(_applicationDocumentsPath, LocalRomDefintions));
             var localInfoTables = new ProgramInformationTableDescriptor[]
             {
-                new ProgramInformationTableDescriptor(Path.Combine(_applicationDocumentsPath, LocalRomDefintions), UserSpecifiedProgramInformationTable.Initialize)
+                new ProgramInformationTableDescriptor(localRomDefinitionsPath, UserSpecifiedProgramInformationTable.Initialize)
             };
             ProgramInfoTable = ProgramInformationTable.Initialize(localInfoTables);
         }
@@ -214,7 +215,7 @@ namespace INTV.Shared.Model
             if ((intvname != null) && System.IO.File.Exists(intvname))
             {
                 var localRomCopy = rom;
-                if (rom.RomPath.IsPathOnRemovableDevice())
+                if (rom.RomPath.Path.IsPathOnRemovableDevice())
                 {
                     localRomCopy = rom.CopyToLocalRomsDirectory();
                 }
@@ -223,8 +224,8 @@ namespace INTV.Shared.Model
                 {
                     // intvname tool requires .cfg next to .bin, so make a copy of the stock file next to the ROM.
                     var stockCfgFilePath = localRomCopy.ConfigPath;
-                    var cfgFilePath = Path.ChangeExtension(localRomCopy.RomPath, ProgramFileKind.CfgFile.FileExtension());
-                    File.Copy(stockCfgFilePath, cfgFilePath, true);
+                    var cfgFilePath = localRomCopy.RomPath.ChangeExtension(ProgramFileKind.CfgFile.FileExtension());
+                    File.Copy(stockCfgFilePath.Path, cfgFilePath.Path, true);
                     localRomCopy.UpdateCfgFile(cfgFilePath);
                 }
 
@@ -245,12 +246,12 @@ namespace INTV.Shared.Model
                 }
                 if (string.IsNullOrEmpty(intvNameData[0]))
                 {
-                    intvNameData[0] = System.IO.Path.GetFileNameWithoutExtension(rom.RomPath);
+                    intvNameData[0] = Path.GetFileNameWithoutExtension(rom.RomPath.Path);
                 }
                 if (string.Equals(intvNameData[0], "IntyBASIC program", System.StringComparison.OrdinalIgnoreCase))
                 {
                     // Just use the file name.
-                    intvNameData[0] = Path.GetFileNameWithoutExtension(localRomCopy.RomPath);
+                    intvNameData[0] = Path.GetFileNameWithoutExtension(localRomCopy.RomPath.Path);
                 }
             }
             return intvNameData;

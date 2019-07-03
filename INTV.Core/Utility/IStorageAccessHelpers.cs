@@ -32,7 +32,7 @@ namespace INTV.Core.Utility
         /// <summary>
         /// Special value to signify the default <see cref="IStorageAccess"/>.
         /// </summary>
-        internal const IStorageAccess DefaultStorage = null;
+        public const IStorageAccess DefaultStorage = null;
 
         private static readonly Lazy<ConcurrentDictionary<Type, IStorageAccess>> RegisteredStorageAccessProviders = new Lazy<ConcurrentDictionary<Type, IStorageAccess>>(() => new ConcurrentDictionary<Type, IStorageAccess>());
         private static readonly Lazy<IStorageAccess> DefaultStorageAccessProvider = new Lazy<IStorageAccess>(GetDefaultStorageAccess);

@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2017 All Rights Reserved
+// Copyright (c) 2015-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using INTV.Core.Model;
+using INTV.Core.Utility;
 using INTV.Shared.Model;
 using INTV.Shared.Model.Device;
 using INTV.Shared.Utility;
@@ -177,19 +178,19 @@ namespace INTV.Intellicart.Model
 
             if (isSourceFileInCache)
             {
-                createRomFile = !System.IO.File.Exists(romFile);
+                createRomFile = !romFile.Exists();
             }
             else
             {
-                cachedRomPath.ClearReadOnlyAttribute();
-                cachedConfigPath.ClearReadOnlyAttribute();
-                System.IO.File.Copy(rom.RomPath, cachedRomPath, true);
-                if (!string.IsNullOrWhiteSpace(cachedConfigPath) && !string.IsNullOrEmpty(rom.ConfigPath) && System.IO.File.Exists(rom.ConfigPath) && (rom.ConfigPath != rom.RomPath))
+                cachedRomPath.Path.ClearReadOnlyAttribute();
+                cachedConfigPath.Path.ClearReadOnlyAttribute();
+                System.IO.File.Copy(rom.RomPath.Path, cachedRomPath.Path, true);
+                if (cachedConfigPath.IsValid && rom.ConfigPath.IsValid && rom.ConfigPath.Exists() && (rom.ConfigPath != rom.RomPath))
                 {
-                    System.IO.File.Copy(rom.ConfigPath, cachedConfigPath, true);
+                    System.IO.File.Copy(rom.ConfigPath.Path, cachedConfigPath.Path, true);
                 }
-                cachedRomPath.ClearReadOnlyAttribute();
-                cachedConfigPath.ClearReadOnlyAttribute();
+                cachedRomPath.Path.ClearReadOnlyAttribute();
+                cachedConfigPath.Path.ClearReadOnlyAttribute();
             }
 
             if (createRomFile)
@@ -200,7 +201,7 @@ namespace INTV.Intellicart.Model
                     var result = -1;
                     if (JustCopy == converterApp.Item1)
                     {
-                        System.IO.File.Copy(rom.RomPath, cachedRomPath, true);
+                        System.IO.File.Copy(rom.RomPath.Path, cachedRomPath.Path, true);
                         result = 0;
                     }
                     else
@@ -209,7 +210,7 @@ namespace INTV.Intellicart.Model
                     }
                     if (result == 0)
                     {
-                        cachedRomPath = System.IO.Path.ChangeExtension(cachedRomPath, converter.Item2.FileExtension());
+                        cachedRomPath = cachedRomPath.ChangeExtension(converter.Item2.FileExtension());
                     }
                     else
                     {
@@ -217,12 +218,12 @@ namespace INTV.Intellicart.Model
                         throw new InvalidOperationException(message);
                     }
                 }
-                if (!System.IO.File.Exists(romFile))
+                if (!romFile.Exists())
                 {
-                    var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.DownloadRom_RomConversionOutputFileNotFoundErrorFormat, rom.RomPath, System.IO.Path.GetFileNameWithoutExtension(romFile));
+                    var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.DownloadRom_RomConversionOutputFileNotFoundErrorFormat, rom.RomPath, System.IO.Path.GetFileNameWithoutExtension(romFile.Path));
                     throw new InvalidOperationException(message);
                 }
-                else if ((new System.IO.FileInfo(romFile)).Length > IntellicartModel.MaxROMSize)
+                else if ((new System.IO.FileInfo(romFile.Path)).Length > IntellicartModel.MaxROMSize)
                 {
                     var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.DownloadRom_RomTooLargeErrorFormat, rom.RomPath, romFile);
                     throw new InvalidOperationException(message);
@@ -234,7 +235,7 @@ namespace INTV.Intellicart.Model
             ////catch (System.IO.IOException e)
             ////catch (UnauthorizedAccessException e)
             ////catch (InvalidOperationException e)
-            return romFile;
+            return romFile.Path;
         }
 
         #endregion // DownloadRom

@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define ENABLE_IMPLICIT_CONVERSIONS
+
 using System;
 
 namespace INTV.Core.Utility
@@ -99,6 +101,14 @@ namespace INTV.Core.Utility
         }
 
         /// <summary>
+        /// Gets a value indicating whether the location is using the default pseudo-storage as its storage access.
+        /// </summary>
+        public bool UsesDefaultStorage
+        {
+            get { return _storageAccess == IStorageAccessHelpers.DefaultStorage; }
+        }
+
+        /// <summary>
         /// Equality operator for <see cref="StorageAccess"/>.
         /// </summary>
         /// <param name="lhs">The value on the left hand side of the equality operator.</param>
@@ -119,9 +129,11 @@ namespace INTV.Core.Utility
         {
             return !(lhs == rhs);
         }
-#if false
+
+#if ENABLE_IMPLICIT_CONVERSIONS
+
         /// <summary>
-        /// Places a location specified by <paramref name="path"/> into a <see cref="StorageLocation"/> in the default storage.
+        /// Implicit converter that places a location specified by <paramref name="path"/> into a <see cref="StorageLocation"/> in the default storage.
         /// </summary>
         /// <param name="path">A location in the default storage.</param>
         /// <returns>A <see cref="StorageLocation"/> for <paramref name="path"/> that will use the default storage.</returns>
@@ -129,7 +141,25 @@ namespace INTV.Core.Utility
         {
             return new StorageLocation(path);
         }
-#endif
+
+        /// <summary>
+        /// Implicit converter that returns the path from a <see cref="StorageLocation"/>.
+        /// </summary>
+        /// <param name="location">A storage location whose path is returned as a string.</param>
+        /// <returns>The <see cref="StorageLocation.Path"/>, regardless of validity of the location.</returns>
+        public static implicit operator string(StorageLocation location)
+        {
+            return location.Path;
+        }
+
+#endif // ENABLE_IMPLICIT_CONVERSIONS
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return Path;
+        }
+
         /// <inheritdoc/>
         public override int GetHashCode()
         {

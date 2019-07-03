@@ -33,6 +33,10 @@ namespace INTV.Core.Tests.Utility
 
             Assert.Null(storageLocation.Path);
             Assert.NotNull(storageLocation.StorageAccess);
+            Assert.False(storageLocation.UsesDefaultStorage);
+            Assert.True(storageLocation.IsInvalid);
+            Assert.False(storageLocation.IsValid);
+            Assert.False(storageLocation.UsesDefaultStorage);
         }
 
         [Fact]
@@ -41,13 +45,11 @@ namespace INTV.Core.Tests.Utility
             var invalidLocation = StorageLocation.InvalidLocation;
 
             Assert.True(invalidLocation.Equals(StorageLocation.InvalidLocation));
-            Assert.True(invalidLocation.IsInvalid);
             Assert.True(StorageLocation.InvalidLocation.Equals(invalidLocation));
             Assert.True(invalidLocation == StorageLocation.InvalidLocation);
             Assert.True(StorageLocation.InvalidLocation == invalidLocation);
-            Assert.False(invalidLocation != StorageLocation.InvalidLocation);
             Assert.False(StorageLocation.InvalidLocation != invalidLocation);
-            Assert.False(invalidLocation.IsValid);
+            Assert.False(invalidLocation != StorageLocation.InvalidLocation);
         }
 
         [Fact]
@@ -82,6 +84,7 @@ namespace INTV.Core.Tests.Utility
                 var storageLocation = new StorageLocation();
 
                 Assert.NotNull(storageLocation.StorageAccess);
+                Assert.True(storageLocation.UsesDefaultStorage);
             }
             finally
             {

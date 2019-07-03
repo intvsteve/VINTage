@@ -47,7 +47,7 @@ namespace INTV.Core.Utility
         /// <remarks>Requires a valid <see cref="IStorageAccess"/> to have been registered via <see cref="IStorageAccessHelpers.Initialize(IStorageAccess)"/> method.</remarks>
         public static bool Exists(this StorageLocation location)
         {
-            return location.StorageAccess.Exists(location.Path);
+            return location.IsValid && location.StorageAccess.Exists(location.Path);
         }
 
         /// <summary>

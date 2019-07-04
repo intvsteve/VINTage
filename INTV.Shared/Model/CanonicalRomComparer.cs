@@ -1,5 +1,5 @@
 ﻿// <copyright file="CanonicalRomComparer.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2017 All Rights Reserved
+// Copyright (c) 2015-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,10 +19,10 @@
 // </copyright>
 
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.Shared.Utility;
 
 namespace INTV.Shared.Model
@@ -59,14 +59,14 @@ namespace INTV.Shared.Model
         /// </summary>
         public CanonicalRomComparer()
         {
-            TemporaryRoms = new Dictionary<string, IRom>();
-            TemporaryCanonicalRoms = new Dictionary<string, IRom>();
+            TemporaryRoms = new Dictionary<StorageLocation, IRom>();
+            TemporaryCanonicalRoms = new Dictionary<StorageLocation, IRom>();
         }
 
         #endregion // Constructor
 
-        private Dictionary<string, IRom> TemporaryRoms { get; set; } // key is original ROM path, value is temporary ROM
-        private Dictionary<string, IRom> TemporaryCanonicalRoms { get; set; } // key is original ROM path, value is temporary canonical ROM
+        private Dictionary<StorageLocation, IRom> TemporaryRoms { get; set; } // key is original ROM location, value is temporary ROM
+        private Dictionary<StorageLocation, IRom> TemporaryCanonicalRoms { get; set; } // key is original ROM location, value is temporary canonical ROM
 
         /// <summary>
         /// Clears any cached data used for comparing ROMs. This is an attempt at improving performance.
@@ -196,26 +196,26 @@ namespace INTV.Shared.Model
             IRom tempRom = null;
             if (temporaryCopy && !TemporaryRoms.TryGetValue(rom.RomPath, out tempRom))
             {
-                temporaryRomPath = rom.RomPath.EnsureUniqueFileName();
+                temporaryRomPath = rom.RomPath.Path.EnsureUniqueFileName();
             }
             if (tempRom == null)
             {
-                tempRom = (temporaryCopy || rom.RomPath.IsPathOnRemovableDevice()) ? rom.CopyToLocalRomsDirectory(temporaryRomPath) : rom;
+                tempRom = (temporaryCopy || rom.RomPath.Path.IsPathOnRemovableDevice()) ? rom.CopyToLocalRomsDirectory(temporaryRomPath) : rom;
             }
             if (temporaryCopy)
             {
                 TemporaryRoms[rom.RomPath] = tempRom;
             }
-            var luigiPath = Path.ChangeExtension(tempRom.RomPath, RomFormat.Luigi.FileExtension());
+            var luigiPath = tempRom.RomPath.ChangeExtension(RomFormat.Luigi.FileExtension());
             var jzIntvConfiguration = SingleInstanceApplication.Instance.GetConfiguration<INTV.JzIntv.Model.Configuration>();
             var converterApp = jzIntvConfiguration.GetConverterApps(tempRom, RomFormat.Luigi).First(); // Convert to LUIGI
             var result = INTV.Shared.Utility.RunExternalProgram.Call(converterApp.Item1, "\"" + tempRom.RomPath + "\"", RomListConfiguration.Instance.RomsDirectory);
-            if ((result != 0) || !File.Exists(luigiPath))
+            if ((result != 0) || !luigiPath.Exists())
             {
                 var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.LuigiConversionError_Format, rom.RomPath, result);
                 throw new System.InvalidOperationException(message);
             }
-            return INTV.Core.Model.Rom.Create(luigiPath, null);
+            return INTV.Core.Model.Rom.Create(luigiPath, StorageLocation.InvalidLocation);
         }
 
         private bool LuigiNeedsUpdate(IRom rom, out IRom luigiRom, out bool treatAsTemporary)
@@ -224,19 +224,19 @@ namespace INTV.Shared.Model
             treatAsTemporary = false;
             System.Diagnostics.Debug.Assert(rom.Format != RomFormat.Luigi, "Only non-LUIGI format ROMs should be checked!");
             var romPath = rom.RomPath;
-            var luigiPath = Path.ChangeExtension(romPath, RomFormat.Luigi.FileExtension());
-            if (romPath.IsPathOnRemovableDevice())
+            var luigiPath = romPath.ChangeExtension(RomFormat.Luigi.FileExtension());
+            if (romPath.Path.IsPathOnRemovableDevice())
             {
                 // look in app's local ROMs directory for a LUIGI file
                 var localRomsDirectory = RomListConfiguration.Instance.RomsDirectory;
-                luigiPath = Path.Combine(localRomsDirectory, Path.GetFileName(luigiPath));
-                treatAsTemporary = File.Exists(luigiPath);
+                luigiPath = luigiPath.AlterContainingLocation(localRomsDirectory);
+                treatAsTemporary = luigiPath.Exists();
                 if (treatAsTemporary)
                 {
-                    luigiPath = luigiPath.EnsureUniqueFileName();
+                    luigiPath = luigiPath.EnsureUnique();
                 }
             }
-            var needsUpdate = !File.Exists(luigiPath);
+            var needsUpdate = !luigiPath.Exists();
             if (!needsUpdate)
             {
                 var luigiHeader = LuigiFileHeader.GetHeader(luigiPath);
@@ -257,30 +257,30 @@ namespace INTV.Shared.Model
             foreach (var temp in TemporaryRoms)
             {
                 var tempRom = temp.Value;
-                if (!string.IsNullOrEmpty(tempRom.RomPath) && File.Exists(tempRom.RomPath))
+                if (tempRom.RomPath.Exists())
                 {
-                    tempRom.RomPath.ClearReadOnlyAttribute();
-                    FileUtilities.DeleteFile(tempRom.RomPath, false, 4);
+                    tempRom.RomPath.Path.ClearReadOnlyAttribute();
+                    FileUtilities.DeleteFile(tempRom.RomPath.Path, false, 4);
                 }
-                if (!string.IsNullOrEmpty(tempRom.ConfigPath) && File.Exists(tempRom.ConfigPath))
+                if (tempRom.ConfigPath.Exists())
                 {
-                    tempRom.ConfigPath.ClearReadOnlyAttribute();
-                    FileUtilities.DeleteFile(tempRom.ConfigPath, false, 4);
+                    tempRom.ConfigPath.Path.ClearReadOnlyAttribute();
+                    FileUtilities.DeleteFile(tempRom.ConfigPath.Path, false, 4);
                 }
             }
             TemporaryRoms.Clear();
             foreach (var temp in TemporaryCanonicalRoms)
             {
                 var tempRom = temp.Value;
-                if (!string.IsNullOrEmpty(tempRom.RomPath) && File.Exists(tempRom.RomPath))
+                if (tempRom.RomPath.Exists())
                 {
-                    tempRom.RomPath.ClearReadOnlyAttribute();
-                    FileUtilities.DeleteFile(tempRom.RomPath, false, 4);
+                    tempRom.RomPath.Path.ClearReadOnlyAttribute();
+                    FileUtilities.DeleteFile(tempRom.RomPath.Path, false, 4);
                 }
-                if (!string.IsNullOrEmpty(tempRom.ConfigPath) && File.Exists(tempRom.ConfigPath))
+                if (tempRom.ConfigPath.Exists())
                 {
-                    tempRom.ConfigPath.ClearReadOnlyAttribute();
-                    FileUtilities.DeleteFile(tempRom.ConfigPath, false, 4);
+                    tempRom.ConfigPath.Path.ClearReadOnlyAttribute();
+                    FileUtilities.DeleteFile(tempRom.ConfigPath.Path, false, 4);
                 }
             }
             TemporaryCanonicalRoms.Clear();

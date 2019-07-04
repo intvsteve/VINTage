@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileSystemHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -1513,7 +1513,7 @@ namespace INTV.LtoFlash.Model
                     if (forkNumber != GlobalForkTable.InvalidForkNumber)
                     {
                         var fork = updateOperation.FileSystem.Forks[forkNumber];
-                        var forkName = (fork.Rom == null) ? fork.FullName : fork.Rom.RomPath; // retain this in case of error
+                        var forkName = (fork.Rom == null) ? fork.FullName : fork.Rom.RomPath.Path; // retain this in case of error
                         try
                         {
                             fork.GatherUpdateData(updateOperation, differences);
@@ -1543,7 +1543,7 @@ namespace INTV.LtoFlash.Model
             foreach (var fork in forks)
             {
                 var updateOperation = new LfsUpdateOperation(fileSystem, operation, LfsEntityType.Fork, fork.GlobalForkNumber);
-                var forkName = (fork.Rom == null) ? fork.FullName : fork.Rom.RomPath; // retain this in case of error
+                var forkName = (fork.Rom == null) ? fork.FullName : fork.Rom.RomPath.Path; // retain this in case of error
                 try
                 {
                     fork.GatherUpdateData(updateOperation, differences);
@@ -1590,7 +1590,7 @@ namespace INTV.LtoFlash.Model
 
         private static string GetPathForError(Fork fork, string forkPath, string fallback)
         {
-            var pathForError = (fork.Rom != null) ? fork.Rom.RomPath : forkPath;
+            var pathForError = (fork.Rom != null) ? fork.Rom.RomPath.Path : forkPath;
             if (string.IsNullOrEmpty(pathForError) && !string.IsNullOrEmpty(fallback))
             {
                 pathForError = fallback;

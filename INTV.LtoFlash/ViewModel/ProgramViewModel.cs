@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -24,6 +24,7 @@ using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Device;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.LtoFlash.Model;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
@@ -486,7 +487,7 @@ namespace INTV.LtoFlash.ViewModel
             string path = null;
             if (ProgramDescription != null)
             {
-                path = ProgramDescription.Files.DefaultManualTextPath;
+                path = ProgramDescription.Files.DefaultManualTextLocation.Path;
             }
             else
             {
@@ -503,7 +504,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             if (ProgramDescription != null)
             {
-                ProgramDescription.Files.DefaultManualTextPath = path;
+                ProgramDescription.Files.DefaultManualTextLocation = new StorageLocation(path);
             }
         }
 
@@ -512,7 +513,7 @@ namespace INTV.LtoFlash.ViewModel
             string path = null;
             if (ProgramDescription != null)
             {
-                path = ProgramDescription.Files.DefaultSaveDataPath;
+                path = ProgramDescription.Files.DefaultSaveDataLocation.Path;
             }
             else
             {
@@ -529,7 +530,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             if (ProgramDescription != null)
             {
-                ProgramDescription.Files.DefaultSaveDataPath = path;
+                ProgramDescription.Files.DefaultSaveDataLocation = new StorageLocation(path);
             }
         }
     }

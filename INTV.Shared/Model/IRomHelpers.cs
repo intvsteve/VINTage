@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,6 +26,7 @@ using System.IO;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.Shared.Model.Program;
 using INTV.Shared.Utility;
 
@@ -169,30 +170,30 @@ namespace INTV.Shared.Model
         public static IRom CopyToLocalRomsDirectory(this IRom rom, string destinationPath)
         {
             var currentRomPath = rom.RomPath;
-            string localRomPath = destinationPath;
+            var localRomPath = new StorageLocation(destinationPath);
             var romNeedsCopy = currentRomPath.IsLocalCopyNeeded(ref localRomPath);
             if (romNeedsCopy)
             {
-                localRomPath = localRomPath.EnsureUniqueFileName();
+                localRomPath = localRomPath.EnsureUnique();
             }
             var currentCfgPath = rom.ConfigPath;
-            if (string.IsNullOrEmpty(currentCfgPath))
+            if (!currentCfgPath.IsValid)
             {
                 currentCfgPath = rom.GetStockCfgFile(null);
             }
-            string localCfgPath = (destinationPath == null) ? null : Path.ChangeExtension(destinationPath, ProgramFileKind.CfgFile.FileExtension());
-            var cfgNeedsCopy = !string.IsNullOrEmpty(currentCfgPath) && currentCfgPath.IsLocalCopyNeeded(ref localCfgPath);
+            var localCfgPath = new StorageLocation((destinationPath == null) ? null : Path.ChangeExtension(destinationPath, ProgramFileKind.CfgFile.FileExtension()));
+            var cfgNeedsCopy = currentCfgPath.IsValid && currentCfgPath.IsLocalCopyNeeded(ref localCfgPath);
             if (cfgNeedsCopy)
             {
-                localCfgPath = Path.ChangeExtension(localRomPath, ProgramFileKind.CfgFile.FileExtension()); // preserve unique name if needed
+                localCfgPath = localRomPath.ChangeExtension(ProgramFileKind.CfgFile.FileExtension()); // preserve unique name if needed
             }
             if (romNeedsCopy)
             {
-                File.Copy(currentRomPath, localRomPath, true);
+                File.Copy(currentRomPath.Path, localRomPath.Path, true);
             }
             if (cfgNeedsCopy)
             {
-                File.Copy(currentCfgPath, localCfgPath, true);
+                File.Copy(currentCfgPath.Path, localCfgPath.Path, true);
             }
             rom = INTV.Core.Model.Rom.Create(localRomPath, localCfgPath);
             return rom;
@@ -207,23 +208,24 @@ namespace INTV.Shared.Model
         public static bool IsUsingStockCfgFilePath(this IRom rom)
         {
             var isStockCfgFilePath = false;
-            if (!string.IsNullOrEmpty(rom.ConfigPath) && (PathComparer.Instance.Compare(Path.GetDirectoryName(rom.RomPath), Path.GetDirectoryName(rom.ConfigPath)) != 0))
+            if (rom.ConfigPath.IsValid && (rom.RomPath.GetContainingLocation().CompareTo(rom.ConfigPath.GetContainingLocation()) != 0))
             {
                 var jzIntv = INTV.Shared.Utility.SingleInstanceApplication.Instance.GetConfiguration<JzIntv.Model.Configuration>();
-                isStockCfgFilePath = PathComparer.Instance.Compare(Path.GetDirectoryName(rom.ConfigPath), jzIntv.DefaultToolsDirectory) == 0;
+                isStockCfgFilePath = PathComparer.Instance.Compare(Path.GetDirectoryName(rom.ConfigPath.Path), jzIntv.DefaultToolsDirectory) == 0;
             }
             return isStockCfgFilePath;
         }
 
-        private static bool IsLocalCopyNeeded(this string filePath, ref string localPath)
+        private static bool IsLocalCopyNeeded(this StorageLocation location, ref StorageLocation localLocation)
         {
             var localRomsDirectory = RomListConfiguration.Instance.RomsDirectory;
-            localPath = Path.Combine(localRomsDirectory, Path.GetFileName(localPath ?? filePath));
-            var copyNeeded = !File.Exists(localPath); // if not present, we'll need to copy
+            var fileName = Path.GetFileName(localLocation.Path ?? location.Path);
+            localLocation = new StorageLocation(Path.Combine(localRomsDirectory, fileName));
+            var copyNeeded = !localLocation.Exists(); // if not present, we'll need to copy
             if (!copyNeeded)
             {
                 // file present -- see if it's different
-                copyNeeded = INTV.Core.Utility.Crc32.OfFile(localPath) != INTV.Core.Utility.Crc32.OfFile(filePath);
+                copyNeeded = INTV.Core.Utility.Crc32.OfFile(localLocation) != INTV.Core.Utility.Crc32.OfFile(location);
             }
             return copyNeeded;
         }
@@ -278,10 +280,10 @@ namespace INTV.Shared.Model
         /// <param name="rom">The ROM for which a config file is needed.</param>
         /// <param name="programInfo">The program information for the ROM.</param>
         /// <returns>The absolute path to the config file for the ROM.</returns>
-        public static string GenerateStockCfgFile(this IRom rom, IProgramInformation programInfo)
+        public static StorageLocation GenerateStockCfgFile(this IRom rom, IProgramInformation programInfo)
         {
-            string cfgFilePath = null;
-            if ((rom.Format == RomFormat.Bin) && (string.IsNullOrEmpty(rom.ConfigPath) || !File.Exists(rom.ConfigPath)))
+            StorageLocation cfgFilePath = StorageLocation.InvalidLocation;
+            if ((rom.Format == RomFormat.Bin) && !rom.ConfigPath.Exists())
             {
                 cfgFilePath = GenerateStockCfgFile(rom.Crc, rom.RomPath, programInfo);
             }
@@ -295,17 +297,17 @@ namespace INTV.Shared.Model
         /// <param name="romPath">The absolute path to the ROM file.</param>
         /// <param name="programInfo">The program information for the ROM.</param>
         /// <returns>The absolute path to the config file for the ROM.</returns>
-        public static string GenerateStockCfgFile(uint crc, string romPath, IProgramInformation programInfo)
+        public static StorageLocation GenerateStockCfgFile(uint crc, StorageLocation romPath, IProgramInformation programInfo)
         {
-            string cfgFilePath = null;
+            StorageLocation cfgFilePath = StorageLocation.InvalidLocation;
             var stockCfgFilePath = Core.Model.IRomHelpers.GetStockCfgFile(crc, romPath, programInfo);
-            if (File.Exists(stockCfgFilePath))
+            if (stockCfgFilePath.Exists())
             {
                 System.Exception exception = null;
                 try
                 {
-                    cfgFilePath = Path.ChangeExtension(romPath, ProgramFileKind.CfgFile.FileExtension());
-                    File.Copy(stockCfgFilePath, cfgFilePath, true);
+                    cfgFilePath = romPath.ChangeExtension(ProgramFileKind.CfgFile.FileExtension());
+                    File.Copy(stockCfgFilePath.Path, cfgFilePath.Path, true);
                 }
                 catch (System.NotSupportedException e)
                 {
@@ -338,11 +340,11 @@ namespace INTV.Shared.Model
         /// from the ROM's original file system location.</remarks>
         public static string GetStagingAreaPath(this IRom rom, string baseRomStagingArea)
         {
-            var stagingAreaDirectory = System.IO.Path.GetDirectoryName(rom.RomPath).GetHashCode().ToString("x8");
+            var stagingAreaDirectory = System.IO.Path.GetDirectoryName(rom.RomPath.Path).GetHashCode().ToString("x8");
             var isAlternateRom = rom.IsAlternateRom();
             if (isAlternateRom)
             {
-                stagingAreaDirectory = System.IO.Path.GetDirectoryName(rom.OriginalRom().RomPath).GetHashCode().ToString("x8");
+                stagingAreaDirectory = System.IO.Path.GetDirectoryName(rom.OriginalRom().RomPath.Path).GetHashCode().ToString("x8");
             }
             var stagingAreaPath = System.IO.Path.Combine(baseRomStagingArea, stagingAreaDirectory);
             if (!System.IO.Directory.Exists(stagingAreaPath))
@@ -358,15 +360,15 @@ namespace INTV.Shared.Model
         /// <param name="rom">The ROM whose cached file path is requested.</param>
         /// <param name="romStagingAreaPath">The staging area directory for the ROM.</param>
         /// <returns>The fully qualified path to the cached ROM file.</returns>
-        public static string GetCachedRomFilePath(this IRom rom, string romStagingAreaPath)
+        public static StorageLocation GetCachedRomFilePath(this IRom rom, string romStagingAreaPath)
         {
-            var cachedRomPath = System.IO.Path.Combine(romStagingAreaPath, System.IO.Path.GetFileName(rom.RomPath));
+            var cachedRomPath = rom.RomPath.AlterContainingLocation(romStagingAreaPath);
 
             // If the source file is lying about it's file extension, patch that up, too.
             var defaultExtension = rom.Format.FileExtension();
-            if (System.IO.Path.GetExtension(cachedRomPath) != defaultExtension)
+            if (cachedRomPath.GetExtension() != defaultExtension)
             {
-                cachedRomPath = System.IO.Path.ChangeExtension(cachedRomPath, defaultExtension);
+                cachedRomPath = cachedRomPath.ChangeExtension(defaultExtension);
             }
             return cachedRomPath;
         }
@@ -378,16 +380,16 @@ namespace INTV.Shared.Model
         /// <param name="romStagingAreaPath">The staging area directory for the ROM.</param>
         /// <returns>The fully qualified path to the cached ROM's configuration file. If the ROM does not
         /// have a configuration file, then <c>null</c> is returned.</returns>
-        public static string GetCachedConfigFilePath(this IRom rom, string romStagingAreaPath)
+        public static StorageLocation GetCachedConfigFilePath(this IRom rom, string romStagingAreaPath)
         {
             // NOTE: BUG ? : There's a goofy thing in that files w/o a cfg use the bin path... why?
-            string cachedConfigPath = null;
-            if (!string.IsNullOrWhiteSpace(rom.ConfigPath) && !string.IsNullOrWhiteSpace(rom.RomPath) && (rom.RomPath != rom.ConfigPath))
+            var cachedConfigPath = StorageLocation.InvalidLocation;
+            if (rom.ConfigPath.IsValid && rom.RomPath.IsValid && (rom.RomPath != rom.ConfigPath))
             {
-                cachedConfigPath = System.IO.Path.Combine(romStagingAreaPath, System.IO.Path.GetFileName(rom.ConfigPath));
+                cachedConfigPath = new StorageLocation(System.IO.Path.Combine(romStagingAreaPath, rom.ConfigPath.GetFileName()));
                 if (rom.IsUsingStockCfgFilePath())
                 {
-                    cachedConfigPath = Path.ChangeExtension(Path.Combine(romStagingAreaPath, Path.GetFileName(rom.RomPath)), ProgramFileKind.CfgFile.FileExtension());
+                    cachedConfigPath = new StorageLocation(Path.Combine(romStagingAreaPath, rom.RomPath.GetFileName())).ChangeExtension(ProgramFileKind.CfgFile.FileExtension());
                 }
             }
             return cachedConfigPath;
@@ -400,7 +402,7 @@ namespace INTV.Shared.Model
         /// <param name="romStagingAreaPath">The staging area directory for the ROM.</param>
         /// <param name="programFileKind">Target program file kind.</param>
         /// <returns>The fully qualified path to the expected output file.</returns>
-        public static string GetOutputFilePath(this IRom rom, string romStagingAreaPath, INTV.Core.Model.Program.ProgramFileKind programFileKind)
+        public static StorageLocation GetOutputFilePath(this IRom rom, string romStagingAreaPath, INTV.Core.Model.Program.ProgramFileKind programFileKind)
         {
             return rom.GetOutputFilePath(romStagingAreaPath, programFileKind, true);
         }
@@ -413,18 +415,18 @@ namespace INTV.Shared.Model
         /// <param name="programFileKind">Target program file kind.</param>
         /// <param name="includeOriginalFormat">If <c>true</c>, include the original ROM file format as part of the output file name.</param>
         /// <returns>The fully qualified path to the expected output file.</returns>
-        public static string GetOutputFilePath(this IRom rom, string romStagingAreaPath, INTV.Core.Model.Program.ProgramFileKind programFileKind, bool includeOriginalFormat)
+        public static StorageLocation GetOutputFilePath(this IRom rom, string romStagingAreaPath, INTV.Core.Model.Program.ProgramFileKind programFileKind, bool includeOriginalFormat)
         {
             var cachedPath = rom.GetCachedRomFilePath(romStagingAreaPath);
-            var extension = System.IO.Path.GetExtension(cachedPath);
+            var extension = cachedPath.GetExtension();
             if (includeOriginalFormat)
             {
                 var originalExtension = rom.Format.FileExtension();
                 var suffix = originalExtension.Replace('.', '_');
-                cachedPath = cachedPath + suffix + originalExtension;
+                cachedPath = cachedPath.AddSuffix(suffix + originalExtension);
             }
-            cachedPath = System.IO.Path.ChangeExtension(cachedPath, extension);
-            var path = System.IO.Path.ChangeExtension(cachedPath, programFileKind.FileExtension());
+            cachedPath = cachedPath.ChangeExtension(extension);
+            var path = cachedPath.ChangeExtension(programFileKind.FileExtension());
             return path;
         }
 
@@ -445,7 +447,7 @@ namespace INTV.Shared.Model
 #endif // REPORT_PERFORMANCE
             changed = true;
             var cachedRomPath = rom.GetCachedRomFilePath(romStagingAreaPath);
-            bool fileInCache = System.IO.File.Exists(cachedRomPath);
+            bool fileInCache = cachedRomPath.Exists();
 #if REPORT_PERFORMANCE
             stopwatch2.Stop();
             _accumulatedGetPathTime += stopwatch2.Elapsed;
@@ -468,7 +470,7 @@ namespace INTV.Shared.Model
                 {
                     if (rom.Format == RomFormat.Luigi)
                     {
-                        changed = !File.Exists(rom.RomPath) || (INTV.Core.Utility.Crc32.OfFile(rom.RomPath) != INTV.Core.Utility.Crc32.OfFile(cachedRomPath));
+                        changed = !rom.RomPath.Exists() || (INTV.Core.Utility.Crc32.OfFile(rom.RomPath) != INTV.Core.Utility.Crc32.OfFile(cachedRomPath));
                     }
                     else if (rom.Format == RomFormat.Bin)
                     {
@@ -501,7 +503,7 @@ namespace INTV.Shared.Model
         {
             changed = true;
             var configFilePath = rom.GetCachedConfigFilePath(romStagingAreaPath);
-            bool configFilePathInCache = (configFilePath == null) || (!string.IsNullOrWhiteSpace(configFilePath) && System.IO.File.Exists(configFilePath));
+            bool configFilePathInCache = configFilePath.IsInvalid || configFilePath.Exists();
             if (configFilePathInCache)
             {
                 if (configFilePath != null)
@@ -516,10 +518,10 @@ namespace INTV.Shared.Model
                     if (rom.Format == RomFormat.Luigi)
                     {
                         var cachedLuigiPath = rom.GetCachedRomFilePath(romStagingAreaPath);
-                        if (!string.IsNullOrEmpty(cachedLuigiPath) && System.IO.File.Exists(cachedLuigiPath))
+                        if (cachedLuigiPath.Exists())
                         {
                             uint luigiCfgCrc;
-                            Rom.GetRefreshedCrcs(cachedLuigiPath, null, out luigiCfgCrc);
+                            Rom.GetRefreshedCrcs(cachedLuigiPath, StorageLocation.InvalidLocation, out luigiCfgCrc);
                             changed = rom.CfgCrc != luigiCfgCrc;
                         }
                     }
@@ -559,6 +561,7 @@ namespace INTV.Shared.Model
             var potentialRomFilePaths = GetPotentialProgramRomFiles(files, acceptCancellation, progressFunc).Where(f => ProgramFileKind.Rom.IsProgramFile(f));
             foreach (var romFilePath in potentialRomFilePaths)
             {
+                var romFileLocation = new StorageLocation(romFilePath);
                 if (acceptCancellation())
                 {
                     yield break;
@@ -567,13 +570,13 @@ namespace INTV.Shared.Model
                 {
                     progressFunc(romFilePath);
                 }
-                var configFilePath = INTV.Shared.Model.Program.ProgramFileKindHelpers.GetConfigFilePath(romFilePath);
-                if (!string.IsNullOrEmpty(configFilePath) && File.Exists(configFilePath))
+                var configFilePath = INTV.Shared.Model.Program.ProgramFileKindHelpers.GetConfigFilePath(romFileLocation);
+                if (configFilePath.Exists())
                 {
                     INTV.Core.Model.IRom programRom = null;
                     try
                     {
-                        programRom = INTV.Core.Model.Rom.Create(romFilePath, configFilePath);
+                        programRom = INTV.Core.Model.Rom.Create(romFileLocation, configFilePath);
                     }
                     catch (IOException)
                     {
@@ -589,7 +592,7 @@ namespace INTV.Shared.Model
                     INTV.Core.Model.IRom programRom = null;
                     try
                     {
-                        programRom = INTV.Core.Model.Rom.Create(romFilePath, null);
+                        programRom = INTV.Core.Model.Rom.Create(romFileLocation, StorageLocation.InvalidLocation);
                     }
                     catch (IOException)
                     {
@@ -605,7 +608,7 @@ namespace INTV.Shared.Model
                         IProgramInformation programInfo = null;
                         try
                         {
-                            var crc = INTV.Core.Utility.Crc32.OfFile(romFilePath);
+                            var crc = INTV.Core.Utility.Crc32.OfFile(romFileLocation);
                             programInfo = ProgramInformationTable.Default.FindProgram(crc);
                         }
                         catch (IOException)
@@ -614,9 +617,9 @@ namespace INTV.Shared.Model
                         }
                         if (programInfo != null)
                         {
-                            if (INTV.Core.Model.Rom.CheckRomFormat(romFilePath) != RomFormat.None)
+                            if (INTV.Core.Model.Rom.CheckRomFormat(romFileLocation) != RomFormat.None)
                             {
-                                yield return INTV.Core.Model.Rom.Create(romFilePath, null);
+                                yield return INTV.Core.Model.Rom.Create(romFileLocation, StorageLocation.InvalidLocation);
                             }
                         }
                     }
@@ -627,19 +630,19 @@ namespace INTV.Shared.Model
         /// <summary>
         /// This function will return a ROM file given a path to a file that might be a ROM.
         /// </summary>
-        /// <param name="romFilePath">The path to an alleged ROM file.</param>
+        /// <param name="romLocation">The location of an alleged ROM file.</param>
         /// <returns>If identifiable as a ROM, the ROM. Otherwise, <c>null</c>.</returns>
         /// <remarks>This function cannot defend against 'malicious' users who circumvent file filters or have files with extensions
         /// that match the supported types, but in fact do not contain an actual ROM. Such files will likely just crash the Intellivision.</remarks>
-        public static IRom GetRomFromPath(this string romFilePath)
+        public static IRom GetRomFromPath(this StorageLocation romLocation)
         {
             IRom programRom = null;
-            var configFilePath = INTV.Shared.Model.Program.ProgramFileKindHelpers.GetConfigFilePath(romFilePath);
-            if (!string.IsNullOrEmpty(configFilePath) && File.Exists(configFilePath))
+            var configFilePath = INTV.Shared.Model.Program.ProgramFileKindHelpers.GetConfigFilePath(romLocation);
+            if (configFilePath.Exists())
             {
                 try
                 {
-                    programRom = INTV.Core.Model.Rom.Create(romFilePath, configFilePath);
+                    programRom = INTV.Core.Model.Rom.Create(romLocation, configFilePath);
                 }
                 catch (IOException)
                 {
@@ -650,7 +653,7 @@ namespace INTV.Shared.Model
             {
                 try
                 {
-                    programRom = INTV.Core.Model.Rom.Create(romFilePath, null);
+                    programRom = INTV.Core.Model.Rom.Create(romLocation, StorageLocation.InvalidLocation);
                 }
                 catch (IOException)
                 {
@@ -662,7 +665,7 @@ namespace INTV.Shared.Model
                     IProgramInformation programInfo = null;
                     try
                     {
-                        var crc = INTV.Core.Utility.Crc32.OfFile(romFilePath);
+                        var crc = INTV.Core.Utility.Crc32.OfFile(romLocation);
                         programInfo = ProgramInformationTable.Default.FindProgram(crc);
                     }
                     catch (IOException)
@@ -671,9 +674,9 @@ namespace INTV.Shared.Model
                     }
                     if (programInfo != null)
                     {
-                        if (INTV.Core.Model.Rom.CheckRomFormat(romFilePath) != RomFormat.None)
+                        if (INTV.Core.Model.Rom.CheckRomFormat(romLocation) != RomFormat.None)
                         {
-                            programRom = INTV.Core.Model.Rom.Create(romFilePath, null);
+                            programRom = INTV.Core.Model.Rom.Create(romLocation, StorageLocation.InvalidLocation);
                         }
                     }
                 }

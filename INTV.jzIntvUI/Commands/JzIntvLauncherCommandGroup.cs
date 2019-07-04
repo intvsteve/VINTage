@@ -1,5 +1,5 @@
 ﻿// <copyright file="jzIntvLauncherCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.JzIntv.Model;
 using INTV.JzIntvUI.Model;
 using INTV.Shared.Commands;
@@ -260,7 +261,7 @@ namespace INTV.JzIntvUI.Commands
                 options[CommandLineArgument.Jlp] = enableJlp;
                 if (enableJlp && (programDescription.Features.JlpFlashMinimumSaveSectors > 0))
                 {
-                    var jlpSavegame = System.IO.Path.ChangeExtension(programDescription.Rom.RomPath, ProgramFileKind.SaveData.FileExtension());
+                    var jlpSavegame = System.IO.Path.ChangeExtension(programDescription.Rom.RomPath.Path, ProgramFileKind.SaveData.FileExtension());
                     options[CommandLineArgument.JlpSaveGamePath] = jlpSavegame;
                 }
             }
@@ -473,7 +474,8 @@ namespace INTV.JzIntvUI.Commands
                 var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false, Resources.Strings.BrowseAndLaunchInJzIntvCommand_BrowseDialogPrompt).FirstOrDefault();
                 if (selectedFile != null)
                 {
-                    var rom = selectedFile.GetRomFromPath();
+                    var selectedLocation = new StorageLocation(selectedFile);
+                    var rom = selectedLocation.GetRomFromPath();
                     IProgramDescription programDescription = null;
                     if (rom != null)
                     {
@@ -531,7 +533,7 @@ namespace INTV.JzIntvUI.Commands
                 dialog.ShowSendEmailButton = false;
                 var options = GetCommandLineOptionsForRom(programDescription);
                 var jzIntvPath = ConfigurationCommandGroup.ResolvePathSetting(JzIntvLauncherConfiguration.Instance.EmulatorPath);
-                var commandLine = jzIntvPath + ' ' + options.BuildCommandLineArguments(programDescription.Rom.RomPath, false);
+                var commandLine = jzIntvPath + ' ' + options.BuildCommandLineArguments(programDescription.Rom.RomPath.Path, false);
                 dialog.ReportText = string.Format(Resources.Strings.ShowJzIntvCommandLineCommand_CommandLineMessage_Format, programDescription.Name, commandLine);
                 dialog.ShowDialog(Resources.Strings.ReportErrorDialogButtonText);
             }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceHelpers.UpdateFirmware.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using INTV.Core.Utility;
 using INTV.LtoFlash.Model.Commands;
 using INTV.Shared.Utility;
 
@@ -95,11 +96,11 @@ namespace INTV.LtoFlash.Model
                                 System.IO.Directory.CreateDirectory(configuration.FirmwareUpdatesDirectory);
                             }
                             var destinationErrorDatabaseFilePath = System.IO.Path.Combine(configuration.FirmwareUpdatesDirectory, ErrorLog.ErrorDatabaseFileName);
-                            var crcOfSource = INTV.Core.Utility.Crc32.OfFile(sourceErrorDatabaseFilePath);
+                            var crcOfSource = INTV.Core.Utility.Crc32.OfFile(new StorageLocation(sourceErrorDatabaseFilePath));
                             var crcOfDestination = 0u;
                             if (System.IO.File.Exists(destinationErrorDatabaseFilePath))
                             {
-                                crcOfDestination = INTV.Core.Utility.Crc32.OfFile(destinationErrorDatabaseFilePath);
+                                crcOfDestination = INTV.Core.Utility.Crc32.OfFile(new StorageLocation(destinationErrorDatabaseFilePath));
                                 if (crcOfSource != crcOfDestination)
                                 {
                                     var backupPath = destinationErrorDatabaseFilePath.GetUniqueBackupFilePath();

@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using INTV.Core.Utility;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
@@ -331,7 +332,7 @@ namespace INTV.Shared.Commands
             ToolTipDescription = Resources.Strings.AddRomFilesCommand_ToolTipDescription,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             Weight = 0.09,
-            LargeIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/add_file_32xLG.png"),
+            LargeIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/add_file_32xLG.png"),
             KeyboardShortcutKey = "o",
             KeyboardShortcutModifiers = OSModifierKeys.Menu,
             PreferredParameterType = typeof(RomListViewModel)
@@ -363,7 +364,7 @@ namespace INTV.Shared.Commands
             ToolTipDescription = Resources.Strings.AddRomFoldersCommand_ToolTipDescription,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             Weight = 0.1,
-            LargeIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/add_files_32xLG.png"),
+            LargeIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/add_files_32xLG.png"),
             KeyboardShortcutKey = "O",
             KeyboardShortcutModifiers = OSModifierKeys.Menu,
             PreferredParameterType = typeof(RomListViewModel)
@@ -405,8 +406,8 @@ namespace INTV.Shared.Commands
             ToolTipDescription = Resources.Strings.RemoveRomsCommand_ToolTipDescription,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             Weight = 0.12,
-            LargeIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "Resources/Images/remove_file_32xLG.png"),
-            SmallIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/remove_file_16xLG.png"),
+            LargeIcon = typeof(RomListCommandGroup).LoadImageResource("Resources/Images/remove_file_32xLG.png"),
+            SmallIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/remove_file_16xLG.png"),
             PreferredParameterType = typeof(RomListViewModel)
         };
 
@@ -442,8 +443,8 @@ namespace INTV.Shared.Commands
             ToolTipDescription = Resources.Strings.RefreshRomsCommand_ToolTipDescription,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             Weight = 0.13,
-            SmallIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/romsearch_16xLG.png"),
-            LargeIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/romsearch_32xMD.png"),
+            SmallIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/romsearch_16xLG.png"),
+            LargeIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/romsearch_32xMD.png"),
             PreferredParameterType = typeof(RomListViewModel)
         };
 
@@ -478,8 +479,8 @@ namespace INTV.Shared.Commands
             ToolTip = Resources.Strings.ValidateRomsCommand_ToolTip,
             ToolTipIcon = VisualRelayCommand.DefaultToolTipIcon,
             Weight = 0.129,
-            SmallIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/refresh_16xLG.png"),
-            LargeIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/refresh_32xMD.png"),
+            SmallIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/refresh_16xLG.png"),
+            LargeIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/refresh_32xMD.png"),
             PreferredParameterType = typeof(RomListViewModel)
         };
 
@@ -601,9 +602,9 @@ namespace INTV.Shared.Commands
         {
             var viewModel = parameter as RomListViewModel;
             var item = (viewModel == null) || !viewModel.CurrentSelection.Any() ? null : viewModel.CurrentSelection.First();
-            if ((item != null) && System.IO.File.Exists(item.Rom.RomPath))
+            if ((item != null) && item.Rom.RomPath.Exists())
             {
-                item.Rom.RomPath.RevealInFileSystem();
+                item.Rom.RomPath.Path.RevealInFileSystem();
             }
         }
 
@@ -611,7 +612,7 @@ namespace INTV.Shared.Commands
         {
             var viewModel = parameter as RomListViewModel;
             var item = (viewModel == null) || !viewModel.CurrentSelection.Any() ? null : viewModel.CurrentSelection.First();
-            return (viewModel != null) && (item != null) && System.IO.File.Exists(item.Rom.RomPath) && (viewModel.CurrentSelection.Count == 1);
+            return (viewModel != null) && (item != null) && item.Rom.RomPath.Exists() && (viewModel.CurrentSelection.Count == 1);
         }
 
         #endregion // ShowInFileSystemCommand
@@ -694,7 +695,7 @@ namespace INTV.Shared.Commands
             UniqueId = UniqueNameBase + ".RevertToDatabaseFeaturesCommand",
             Name = Resources.Strings.ProgramFeaturesEditor_RevertToDatabase,
             ToolTip = Resources.Strings.ProgramFeaturesEditor_RevertToDatabase,
-            SmallIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/refresh_16xLG.png"),
+            SmallIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/refresh_16xLG.png"),
             PreferredParameterType = typeof(RomFeaturesConfigurationViewModel)
         };
 
@@ -726,7 +727,7 @@ namespace INTV.Shared.Commands
             UniqueId = UniqueNameBase + ".ResetProgramFeaturesCommand",
             Name = Resources.Strings.ProgramFeaturesEditor_Revert,
             ToolTip = Resources.Strings.ProgramFeaturesEditor_Revert,
-            SmallIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/undo_16x.png"),
+            SmallIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/undo_16x.png"),
             PreferredParameterType = typeof(RomFeaturesConfigurationViewModel)
         };
 
@@ -751,7 +752,7 @@ namespace INTV.Shared.Commands
             UniqueId = UniqueNameBase + ".UpdateProgramFeaturesCommand",
             Name = Resources.Strings.ProgramFeaturesEditor_Commit,
             ToolTip = Resources.Strings.ProgramFeaturesEditor_Commit,
-            SmallIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/ok_16xLG.png"),
+            SmallIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/ok_16xLG.png"),
             PreferredParameterType = typeof(RomFeaturesConfigurationViewModel)
         };
 
@@ -776,7 +777,7 @@ namespace INTV.Shared.Commands
             UniqueId = UniqueNameBase + ".CancelUpdateProgramFeaturesCommand",
             Name = Resources.Strings.ProgramFeaturesEditor_Cancel,
             ToolTip = Resources.Strings.ProgramFeaturesEditor_Cancel,
-            SmallIcon = ResourceHelpers.LoadImageResource(typeof(RomListCommandGroup), "ViewModel/Resources/Images/cancel_16xLG.png"),
+            SmallIcon = typeof(RomListCommandGroup).LoadImageResource("ViewModel/Resources/Images/cancel_16xLG.png"),
             PreferredParameterType = typeof(RomFeaturesConfigurationViewModel)
         };
 

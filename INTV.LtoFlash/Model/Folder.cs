@@ -1,5 +1,5 @@
 ﻿// <copyright file="Folder.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -27,6 +27,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using INTV.Core.Model;
+using INTV.Core.Utility;
 using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.Model
@@ -739,7 +740,7 @@ namespace INTV.LtoFlash.Model
                             {
                                 if (program.Description == null)
                                 {
-                                    var rom = INTV.Core.Model.Rom.Create(program.Rom.FilePath, null);
+                                    var rom = INTV.Core.Model.Rom.Create(new StorageLocation(program.Rom.FilePath), StorageLocation.InvalidLocation);
                                     var programInfo = rom.GetProgramInformation();
                                     var programDescription = new INTV.Core.Model.Program.ProgramDescription(rom.Crc, rom, programInfo);
                                     program.Description = programDescription;

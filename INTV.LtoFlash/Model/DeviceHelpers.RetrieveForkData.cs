@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceHelpers.RetrieveForkData.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -117,36 +117,36 @@ namespace INTV.LtoFlash.Model
                     using (var tempFile = FileSystemFile.Inflate(memory))
                     {
                         var fileName = (forkFilenames == null) ? configuration.GetForkDataFileName(fork.GlobalForkNumber) : forkFilenames[forkBeingRetrieved - 1];
-                        var forkPath = System.IO.Path.Combine(destinationDirectory, fileName);
-                        forkPath = forkPath.EnsureUniqueFileName();
-                        data.FailureMessage = forkPath;
-                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(forkPath));
+                        var forkPath = new StorageLocation(System.IO.Path.Combine(destinationDirectory, fileName));
+                        forkPath = forkPath.EnsureUnique();
+                        data.FailureMessage = forkPath.Path;
+                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(forkPath.Path));
                         try
                         {
                             // Test to see if this is a Fork containing a LUIGI file.
                             memory.Seek(0, System.IO.SeekOrigin.Begin);
                             LuigiFileHeader.Inflate(memory);
-                            forkPath = System.IO.Path.ChangeExtension(forkPath, ProgramFileKind.LuigiFile.FileExtension());
+                            forkPath = forkPath.ChangeExtension(ProgramFileKind.LuigiFile.FileExtension());
                         }
                         catch (INTV.Core.UnexpectedFileTypeException)
                         {
                             // This is OK... we only want to execute certain functions if the file is a LUIGI file.
                         }
-                        if (System.IO.File.Exists(forkPath))
+                        if (forkPath.Exists())
                         {
                             var crcOfTarget = Crc32.OfFile(forkPath);
-                            var crcOfSource = Crc32.OfFile(tempFile.FileInfo.FullName);
+                            var crcOfSource = Crc32.OfFile(new StorageLocation(tempFile.FileInfo.FullName));
                             if (crcOfTarget != crcOfSource)
                             {
-                                forkPath = forkPath.EnsureUniqueFileName();
-                                System.IO.File.Copy(tempFile.FileInfo.FullName, forkPath);
+                                forkPath = forkPath.EnsureUnique();
+                                System.IO.File.Copy(tempFile.FileInfo.FullName, forkPath.Path);
                             }
                         }
                         else
                         {
-                            System.IO.File.Copy(tempFile.FileInfo.FullName, forkPath);
+                            System.IO.File.Copy(tempFile.FileInfo.FullName, forkPath.Path);
                         }
-                        fork.FilePath = forkPath;
+                        fork.FilePath = forkPath.Path;
                     }
                 }
                 if (!succeeded)

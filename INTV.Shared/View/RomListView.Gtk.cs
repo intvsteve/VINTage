@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomListView.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -106,7 +106,7 @@ namespace INTV.Shared.View
             column = new Gtk.TreeViewColumn() { Title = RomListViewModel.RomFileHeader };
             cellRenderer = new Gtk.CellRendererText();
             column.PackStart(cellRenderer, true);
-            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l, c, m, i, p => p.Rom.RomPath));
+            column.SetCellDataFunc(cellRenderer, (l, c, m, i) => VisualHelpers.CellTextColumnRenderer<ProgramDescriptionViewModel>(l, c, m, i, p => p.Rom.RomPath.Path));
             ////column.Sizing = Gtk.TreeViewColumnSizing.Fixed;
             ////column.FixedWidth = Properties.Settings.Default.RomListPathColWidth;
             column.Resizable = true;
@@ -372,7 +372,7 @@ namespace INTV.Shared.View
                             tooltip = INTV.Shared.Converter.ProgramFeaturesToPixbufConverter.GetFeatureTooltip(item, cellX, cellY);
                             break;
                         case RomListColumn.RomFile:
-                            tooltip = item.Rom.RomPath;
+                            tooltip = item.Rom.RomPath.Path;
                             break;
                         case RomListColumn.ManualFile:
                             throw new System.NotImplementedException("RomListView.HandleQueryTooltip(): ManualFile");

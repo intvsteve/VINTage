@@ -1,6 +1,6 @@
 ﻿<!--
     <copyright file="RomListView.xaml" company="INTV Funhouse">
-    Copyright (c) 2014-2015 All Rights Reserved
+    Copyright (c) 2014-2019 All Rights Reserved
     <author>Steven A. Orth</author>
 
     This program is free software: you can redistribute it and/or modify it
@@ -155,7 +155,7 @@
                     <GridViewColumn Width="{Binding Path=RomListPathColWidth, Source={x:Static intvSettings:SingleInstanceApplication.SharedAppSettings}, Mode=OneTime}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock ToolTip="{Binding Rom.RomPath}" Text="{Binding Rom.RomPath, Converter={StaticResource ShortPath}}"/>
+                                <TextBlock ToolTip="{Binding Rom.RomPath.Path}" Text="{Binding Rom.RomPath.Path, Converter={StaticResource ShortPath}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                         <GridViewColumnHeader Content="{x:Static intvViewModel:RomListViewModel.RomFileHeader}" Tag="{x:Static intvViewModel:RomListColumn.RomFile}"

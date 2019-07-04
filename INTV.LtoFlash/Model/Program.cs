@@ -1,5 +1,5 @@
 ﻿// <copyright file="Program.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -22,9 +22,9 @@
 ////#define PERSIST_RESERVED_FORKS
 
 using System;
-using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.Model
@@ -72,7 +72,7 @@ namespace INTV.LtoFlash.Model
             {
                 UpdateCrc();
             }
-            _description.Files.DefaultLtoFlashDataPath = _description.Rom.GetLtoFlashFilePath();
+            _description.Files.DefaultLtoFlashDataLocation = new StorageLocation(_description.Rom.GetLtoFlashFilePath());
 
             // The following block causes at least two extra calls to IRomHelpers.PrepareForDeployment.
             // It's not clear exactly what the benefit of this is based on simple code inspection.
@@ -296,7 +296,7 @@ namespace INTV.LtoFlash.Model
                     if (Crc32 == 0)
                     {
                         var filePath = Rom.FilePath;
-                        INTV.Core.Model.LuigiFileHeader luigiHeader = LuigiFileHeader.GetHeader(filePath);
+                        INTV.Core.Model.LuigiFileHeader luigiHeader = LuigiFileHeader.GetHeader(new StorageLocation(filePath));
                         if (luigiHeader != null)
                         {
                             string cfgFile = null;
@@ -322,7 +322,7 @@ namespace INTV.LtoFlash.Model
                                 }
                             }
 
-                            var rom = INTV.Core.Model.Rom.Create(romFile, cfgFile);
+                            var rom = INTV.Core.Model.Rom.Create(new StorageLocation(romFile), new StorageLocation(cfgFile));
                             var programInfo = rom.GetProgramInformation();
                             var programDescription = new ProgramDescription(rom.Crc, rom, programInfo);
                             Description = programDescription;
@@ -442,15 +442,15 @@ namespace INTV.LtoFlash.Model
                 case ProgramSupportFiles.DefaultLtoFlashDataPathPropertyName:
                 case ProgramSupportFiles.RomConfigurationFilePathPropertyName:
                     kind = ForkKind.Program;
-                    filePath = Description.Files.DefaultLtoFlashDataPath;
+                    filePath = Description.Files.DefaultLtoFlashDataLocation.Path;
                     break;
                 case ProgramSupportFiles.DefaultManualTextPathPropertyName:
                     kind = ForkKind.Manual;
-                    filePath = Description.Files.DefaultManualTextPath;
+                    filePath = Description.Files.DefaultManualTextLocation.Path;
                     break;
                 case ProgramSupportFiles.DefaultSaveDataPathPropertyName:
                     kind = ForkKind.JlpFlash;
-                    filePath = Description.Files.DefaultSaveDataPath;
+                    filePath = Description.Files.DefaultSaveDataLocation.Path;
                     break;
             }
             UpdateFork(kind, filePath);

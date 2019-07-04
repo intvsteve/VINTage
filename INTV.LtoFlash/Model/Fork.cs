@@ -1,5 +1,5 @@
 ﻿// <copyright file="Fork.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,6 +23,7 @@
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.Model
@@ -578,7 +579,7 @@ namespace INTV.LtoFlash.Model
                             // Since "Program" entries using the same Fork will all point to this one,
                             // we don't need to re-do this work for every file that might point at the fork.
                             var rom = program.Description.GetRom();
-                            if ((rom != null) && !string.IsNullOrEmpty(rom.RomPath))
+                            if ((rom != null) && rom.RomPath.IsValid)
                             {
                                 var path = string.Empty;
 #if REPORT_PERFORMANCE
@@ -614,7 +615,7 @@ namespace INTV.LtoFlash.Model
                             if (!prepareForDeployment && System.IO.File.Exists(_filePath))
                             {
                                 // Check to see if it looks like a valid LUIGI file.
-                                prepareForDeployment = LuigiFileHeader.GetHeader(_filePath) == null;
+                                prepareForDeployment = LuigiFileHeader.GetHeader(new StorageLocation(_filePath)) == null;
                             }
                         }
                         if (prepareForDeployment)
@@ -642,7 +643,7 @@ namespace INTV.LtoFlash.Model
                                             break;
                                     }
                                 }
-                                prepareForDeployment = (rom != null) && !System.IO.File.Exists(filePath) && !string.IsNullOrEmpty(rom.RomPath) && System.IO.File.Exists(rom.RomPath);
+                                prepareForDeployment = (rom != null) && !System.IO.File.Exists(filePath) && rom.RomPath.Exists();
                                 if (prepareForDeployment)
                                 {
                                     _filePath = null;
@@ -653,9 +654,9 @@ namespace INTV.LtoFlash.Model
                             // We should *always* be a LUIGI file. If not, fix it!
                             if (!string.IsNullOrEmpty(filePath) && System.IO.File.Exists(filePath))
                             {
-                                if (!LuigiFileHeader.PotentialLuigiFile(filePath))
+                                if (!LuigiFileHeader.PotentialLuigiFile(new StorageLocation(filePath)))
                                 {
-                                    rom = INTV.Core.Model.Rom.Create(filePath, null);
+                                    rom = INTV.Core.Model.Rom.Create(new StorageLocation(filePath), StorageLocation.InvalidLocation);
                                     prepareForDeployment = rom != null;
                                     if (prepareForDeployment)
                                     {
@@ -721,7 +722,7 @@ namespace INTV.LtoFlash.Model
                 if (!string.IsNullOrWhiteSpace(filePath) && System.IO.File.Exists(filePath))
                 {
                     var fileInfo = new System.IO.FileInfo(filePath);
-                    Crc24 = (originalUid == MenuPositionForkUid) ? MenuPositionForkUid : INTV.Core.Utility.Crc24.OfFile(filePath);
+                    Crc24 = (originalUid == MenuPositionForkUid) ? MenuPositionForkUid : INTV.Core.Utility.Crc24.OfFile(new StorageLocation(filePath));
                     Size = (uint)fileInfo.Length;
                 }
                 if (originalUid == MenuPositionForkUid)

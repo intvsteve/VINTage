@@ -1,5 +1,5 @@
 ﻿// <copyright file="IncompatibleRomException.cs" company="INTV Funhouse">
-// Copyright (c) 2016 All Rights Reserved
+// Copyright (c) 2016-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -38,7 +38,7 @@ namespace INTV.LtoFlash
         /// <param name="entityType">The type of the file system entity that is incompatible.</param>
         /// <param name="globalFileSystemNumber">The global file system identifier of the entity that is incompatible.</param>
         public IncompatibleRomException(IRom rom, string requiredDeviceId, string targetDeviceId, LfsEntityType entityType, uint globalFileSystemNumber)
-            : base(string.Format(Resources.Strings.IncompatibleRomException_MessageFormat, rom.RomPath, requiredDeviceId, targetDeviceId), entityType, globalFileSystemNumber, targetDeviceId, null)
+            : base(string.Format(Resources.Strings.IncompatibleRomException_MessageFormat, rom.RomPath.Path, requiredDeviceId, targetDeviceId), entityType, globalFileSystemNumber, targetDeviceId, null)
         {
             Rom = rom;
             RequiredDeviceId = requiredDeviceId;

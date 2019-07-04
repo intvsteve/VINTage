@@ -1,5 +1,5 @@
 ﻿// <copyright file="DownloadCommandGroup.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.ViewModel;
 using INTV.Shared.Commands;
@@ -136,7 +137,7 @@ namespace INTV.LtoFlash.Commands
                     var program = programDescriptionViewModel == null ? programViewModel.ProgramDescription : programDescriptionViewModel.Model;
                     if ((program != null) && (program.Rom != null) && !program.Rom.Validate())
                     {
-                        OSMessageBox.Show(string.Format(Resources.Strings.DownloadAndPlayCommand_Missing_Message_Format, program.Name, program.Rom.RomPath), string.Format(Resources.Strings.DownloadAndPlayCommand_Failed_Title_Format, program.Name));
+                        OSMessageBox.Show(string.Format(Resources.Strings.DownloadAndPlayCommand_Missing_Message_Format, program.Name, program.Rom.RomPath.Path), string.Format(Resources.Strings.DownloadAndPlayCommand_Failed_Title_Format, program.Name));
                     }
                     else
                     {
@@ -211,10 +212,10 @@ namespace INTV.LtoFlash.Commands
                 var selectedFile = INTV.Shared.Model.IRomHelpers.BrowseForRoms(false, Resources.Strings.DownloadAndPlayCommand_BrowseDialogPrompt).FirstOrDefault();
                 if (selectedFile != null)
                 {
-                    var rom = selectedFile.GetRomFromPath();
+                    var rom = new StorageLocation(selectedFile).GetRomFromPath();
                     if (rom != null)
                     {
-                        var fileName = System.IO.Path.GetFileName(rom.RomPath);
+                        var fileName = rom.RomPath.GetFileName();
                         var device = ltoFlashViewModel.ActiveLtoFlashDevice.Device;
                         var canPlayOnDevice = rom.CanExecuteOnDevice(device.UniqueId);
                         if (!canPlayOnDevice)

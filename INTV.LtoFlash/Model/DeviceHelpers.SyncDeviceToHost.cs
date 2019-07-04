@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceHelpers.SyncDeviceToHost.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -566,8 +566,8 @@ namespace INTV.LtoFlash.Model
                     extension = Configuration.ForkExtension;
                 }
                 var forkFileName = System.IO.Path.ChangeExtension(forkFileBaseName, extension);
-                var destFile = System.IO.Path.Combine(destinationDir, forkFileName);
-                if (System.IO.File.Exists(destFile))
+                var destFile = new StorageLocation(System.IO.Path.Combine(destinationDir, forkFileName));
+                if (destFile.Exists())
                 {
                     var existingCrc = 0u;
                     var existingCfgCrc = 0u;
@@ -583,8 +583,8 @@ namespace INTV.LtoFlash.Model
                     }
                     if (existingCfgCrc == 0)
                     {
-                        var destCfgFile = System.IO.Path.ChangeExtension(destFile, ProgramFileKind.CfgFile.FileExtension());
-                        if (System.IO.File.Exists(destCfgFile))
+                        var destCfgFile = destFile.ChangeExtension(ProgramFileKind.CfgFile.FileExtension());
+                        if (destCfgFile.Exists())
                         {
                             existingCfgCrc = Crc32.OfFile(destCfgFile);
                         }
@@ -594,16 +594,16 @@ namespace INTV.LtoFlash.Model
                     if ((crc != 0) && (existingCrc == crc) && ((cfgCrc == 0) || (existingCfgCrc == cfgCrc)))
                     {
                         retrievalNecessary = false;
-                        forkPath = destFile;
+                        forkPath = destFile.Path;
                     }
                     else
                     {
-                        forkPath = destFile.EnsureUniqueFileName();
+                        forkPath = destFile.EnsureUnique().Path;
                     }
                 }
                 else
                 {
-                    forkPath = destFile;
+                    forkPath = destFile.Path;
                 }
             }
             if (!string.IsNullOrEmpty(forkPath) && !System.IO.File.Exists(forkPath))
@@ -628,7 +628,7 @@ namespace INTV.LtoFlash.Model
                 var rom = roms.FirstOrDefault(r => (r.Crc == luigiHeader.OriginalRomCrc32) && ((luigiHeader.OriginalCfgCrc32 == 0) || (luigiHeader.OriginalCfgCrc32 == r.Rom.CfgCrc)));
                 if (rom != null)
                 {
-                    romPath = rom.Rom.RomPath;
+                    romPath = rom.Rom.RomPath.Path;
                 }
             }
             return romPath;
@@ -643,7 +643,7 @@ namespace INTV.LtoFlash.Model
                 var destFile = System.IO.Path.Combine(destDir, System.IO.Path.GetFileName(entry.RomPath));
                 if (System.IO.File.Exists(destFile))
                 {
-                    var crc = Crc32.OfFile(destFile);
+                    var crc = Crc32.OfFile(new StorageLocation(destFile));
                     if (crc == entry.RomCrc32)
                     {
                         romPath = destFile;
@@ -760,9 +760,9 @@ namespace INTV.LtoFlash.Model
                             string romPath;
                             if (forkSourceFileMap.TryGetValue(fork.GlobalForkNumber, out romPath) && !string.IsNullOrEmpty(romPath) && System.IO.File.Exists(romPath))
                             {
-                                if (LuigiFileHeader.PotentialLuigiFile(romPath))
+                                if (LuigiFileHeader.PotentialLuigiFile(new StorageLocation(romPath)))
                                 {
-                                    var luigiHeader = LuigiFileHeader.GetHeader(romPath);
+                                    var luigiHeader = LuigiFileHeader.GetHeader(new StorageLocation(romPath));
                                     if (luigiHeader.Version > 0)
                                     {
                                         crc = luigiHeader.OriginalRomCrc32;
@@ -771,7 +771,7 @@ namespace INTV.LtoFlash.Model
                                 }
                                 if (crc == 0u)
                                 {
-                                    crc = Crc32.OfFile(romPath);
+                                    crc = Crc32.OfFile(new StorageLocation(romPath));
                                 }
                             }
                             else
@@ -800,7 +800,7 @@ namespace INTV.LtoFlash.Model
                                 succeeded = forkSourceFileMap.TryGetValue(fork.GlobalForkNumber, out romPath);
                                 if (succeeded)
                                 {
-                                    rom = Rom.Create(romPath, null);
+                                    rom = Rom.Create(new StorageLocation(romPath), StorageLocation.InvalidLocation);
                                     fork.Rom = rom;
                                     if (string.IsNullOrEmpty(fork.FilePath))
                                     {
@@ -822,7 +822,7 @@ namespace INTV.LtoFlash.Model
                             fork.FilePath = filePath;
                             if (description != null)
                             {
-                                description.Files.DefaultManualTextPath = fork.FilePath;
+                                description.Files.DefaultManualTextLocation = new StorageLocation(fork.FilePath);
                             }
                         }
                         break;

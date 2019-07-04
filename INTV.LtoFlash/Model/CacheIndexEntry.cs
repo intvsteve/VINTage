@@ -1,5 +1,5 @@
 ﻿// <copyright file="CacheIndexEntry.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.Model
@@ -58,14 +59,14 @@ namespace INTV.LtoFlash.Model
                 if (File.Exists(cfgFilePath))
                 {
                     CfgPath = cfgFilePath.Substring(romStagingArea.Length + 1);
-                    CfgCrc32 = INTV.Core.Utility.Crc32.OfFile(cfgFilePath);
+                    CfgCrc32 = INTV.Core.Utility.Crc32.OfFile(new StorageLocation(cfgFilePath));
                     CfgSize = (uint)(new FileInfo(cfgFilePath)).Length;
                 }
             }
 
             var luigiFilePath = rom.GetLtoFlashFilePath();
             LuigiPath = luigiFilePath.Substring(romStagingArea.Length + 1);
-            if (!System.IO.File.Exists(luigiFilePath) && LuigiFileHeader.PotentialLuigiFile(romAbsolutePath))
+            if (!System.IO.File.Exists(luigiFilePath) && LuigiFileHeader.PotentialLuigiFile(new StorageLocation(romAbsolutePath)))
             {
                 // This has been known to happen in the transition between naming conventions, but also arises generally when
                 // a ROM in the main ROM list has always been a LUIGI file. We have an original LUIGI file,
@@ -76,7 +77,7 @@ namespace INTV.LtoFlash.Model
                     System.IO.File.Copy(romAbsolutePath, luigiFilePath, true);
                 }
             }
-            LuigiCrc24 = INTV.Core.Utility.Crc24.OfFile(luigiFilePath);
+            LuigiCrc24 = INTV.Core.Utility.Crc24.OfFile(new StorageLocation(luigiFilePath));
             LuigiSize = (uint)(new FileInfo(luigiFilePath)).Length;
         }
 
@@ -143,13 +144,13 @@ namespace INTV.LtoFlash.Model
                 if (!File.Exists(cfgPath))
                 {
                     var programInfo = ProgramInformationTable.Default.FindProgram(RomCrc32);
-                    var cfgFilePath = INTV.Shared.Model.IRomHelpers.GenerateStockCfgFile(RomCrc32, Path.Combine(cacheDir, RomPath), programInfo);
-                    recreatedCfgFile = !string.IsNullOrEmpty(cfgFilePath);
+                    var cfgFilePath = INTV.Shared.Model.IRomHelpers.GenerateStockCfgFile(RomCrc32, new StorageLocation(Path.Combine(cacheDir, RomPath)), programInfo);
+                    recreatedCfgFile = cfgFilePath.IsValid;
                     if (recreatedCfgFile)
                     {
                         CfgCrc32 = INTV.Core.Utility.Crc32.OfFile(cfgFilePath);
                         CfgPath = cfgPath.Substring(cacheDir.Length + 1);
-                        CfgSize = (uint)(new FileInfo(cfgFilePath)).Length;
+                        CfgSize = (uint)cfgFilePath.Size();
                     }
                 }
             }

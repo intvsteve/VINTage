@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileNodeViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.Linq;
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.LtoFlash.Model;
 using INTV.Shared.Utility;
 using INTV.Shared.ViewModel;
@@ -387,7 +388,7 @@ namespace INTV.LtoFlash.ViewModel
                     var acceptableRom = IsAcceptableRom(program, out reasonForRejection);
                     if (!acceptableRom && (rejectedRoms != null))
                     {
-                        rejectedRoms.Add(new System.Tuple<string, string>(file, reasonForRejection));
+                        rejectedRoms.Add(new System.Tuple<string, string>(file.Path, reasonForRejection));
                     }
                     accept |= acceptableRom;
                 }
@@ -414,7 +415,7 @@ namespace INTV.LtoFlash.ViewModel
             }
             if (accept)
             {
-                accept = !string.IsNullOrWhiteSpace(file);
+                accept = file.IsValid;
                 if (!accept)
                 {
                     reasonForRejection = Resources.Strings.AddItemRejected_NoFileName;
@@ -422,7 +423,7 @@ namespace INTV.LtoFlash.ViewModel
             }
             if (accept)
             {
-                accept = System.IO.File.Exists(file);
+                accept = file.Exists();
                 if (!accept)
                 {
                     reasonForRejection = Resources.Strings.AddItemRejected_FileNotFound;
@@ -430,7 +431,7 @@ namespace INTV.LtoFlash.ViewModel
             }
             if (accept)
             {
-                var fileInfo = new System.IO.FileInfo(file);
+                var fileInfo = new System.IO.FileInfo(file.Path);
                 accept = (fileInfo.Length <= INTV.Core.Model.Rom.MaxROMSize) && (fileInfo.Length <= Device.TotalRAMSize);
                 if (!accept)
                 {
@@ -725,7 +726,7 @@ namespace INTV.LtoFlash.ViewModel
                             }
                             else
                             {
-                                AddFailedEntry(args.FailedToAdd, destination, folder, reasonForFailure, item.Rom.RomPath);
+                                AddFailedEntry(args.FailedToAdd, destination, folder, reasonForFailure, item.Rom.RomPath.Path);
                             }
                         }
                         else
@@ -746,7 +747,7 @@ namespace INTV.LtoFlash.ViewModel
                 var accepted = IsAcceptableRom(item, out reasonForRejection);
                 if (!accepted)
                 {
-                    AddFailedEntry(args.FailedToAdd, destination, item.Name, reasonForRejection, item.Rom.RomPath);
+                    AddFailedEntry(args.FailedToAdd, destination, item.Name, reasonForRejection, item.Rom.RomPath.Path);
                 }
                 else
                 {
@@ -754,7 +755,7 @@ namespace INTV.LtoFlash.ViewModel
                     accepted = FileSystemCanAcceptMoreItems(destination, LfsEntityType.File, 1, true, out reasonForFailure);
                     if (!accepted)
                     {
-                        AddFailedEntry(args.FailedToAdd, destination, item.Name, reasonForFailure, item.Rom.RomPath);
+                        AddFailedEntry(args.FailedToAdd, destination, item.Name, reasonForFailure, item.Rom.RomPath.Path);
                     }
                 }
                 if (accepted)
@@ -774,7 +775,7 @@ namespace INTV.LtoFlash.ViewModel
                     }
                     catch (LuigiFileGenerationException exception)
                     {
-                        AddFailedEntry(args.FailedToAdd, destination, item.Name, Resources.Strings.AddItemRejected_FailedToCreateLUIGIFile, item.Rom.RomPath);
+                        AddFailedEntry(args.FailedToAdd, destination, item.Name, Resources.Strings.AddItemRejected_FailedToCreateLUIGIFile, item.Rom.RomPath.Path);
                         if (args.FirstFilePreparationError == null)
                         {
                             args.FirstFilePreparationError = exception;

@@ -33,6 +33,7 @@ using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Device;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.Model;
 using INTV.Shared.ComponentModel;
@@ -385,7 +386,7 @@ namespace INTV.LtoFlash.ViewModel
                 {
                     if (!string.IsNullOrEmpty(fork.FilePath))
                     {
-                        INTV.Core.Utility.Crc24.OfFile(fork.FilePath);
+                        INTV.Core.Utility.Crc24.OfFile(new StorageLocation(fork.FilePath));
                     }
                 }
 
@@ -393,7 +394,7 @@ namespace INTV.LtoFlash.ViewModel
                 foreach (var program in programs)
                 {
                     uint cfgCrc;
-                    Core.Model.Rom.GetRefreshedCrcs(program.Description.Files.RomImagePath, program.Description.Files.RomConfigurationFilePath, out cfgCrc);
+                    Core.Model.Rom.GetRefreshedCrcs(program.Description.Files.RomImageLocation, program.Description.Files.RomConfigurationLocation, out cfgCrc);
                 }
             }
             finally
@@ -719,11 +720,11 @@ namespace INTV.LtoFlash.ViewModel
                     {
                         ////paths.AddRange(e.DuplicateRomPaths);
                     }
-                    var longestCommonPath = PathUtils.GetCommonPath(paths);
+                    var longestCommonPath = PathUtils.GetCommonPath(paths.Select(p => p.Path));
                     List<string> directoriesForRoms = null;
                     if (!string.IsNullOrEmpty(longestCommonPath) && (_programsToAdd.Count > 1))
                     {
-                        directoriesForRoms = paths.Select(p => System.IO.Path.GetDirectoryName(p).Remove(0, longestCommonPath.Length)).ToList();
+                        directoriesForRoms = paths.Select(p => System.IO.Path.GetDirectoryName(p.Path).Remove(0, longestCommonPath.Length)).ToList();
                     }
                     FileNodeViewModel.AddItems(HostPCMenuLayout, directoriesForRoms, _programsToAdd);
                 }
@@ -791,7 +792,7 @@ namespace INTV.LtoFlash.ViewModel
                 {
                     var updateMode = e.ResetToDefault ? LuigiGenerationMode.Reset : LuigiGenerationMode.FeatureUpdate;
                     var updatedLuigiFile = rom.PrepareForDeployment(updateMode);
-                    var newUid = INTV.Core.Utility.Crc24.OfFile(updatedLuigiFile);
+                    var newUid = INTV.Core.Utility.Crc24.OfFile(new StorageLocation(updatedLuigiFile));
                     var programsToUpdate = HostPCMenuLayout.MenuLayout.FindPrograms(p => p.Description.Rom.RomPath == rom.RomPath);
                     foreach (var program in programsToUpdate.Where(p => p.Rom.Uid != newUid))
                     {

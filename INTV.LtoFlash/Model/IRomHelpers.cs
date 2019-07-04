@@ -1,5 +1,5 @@
 ﻿// <copyright file="IRomHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
+using INTV.Core.Utility;
 using INTV.Shared.Model;
 using INTV.Shared.Utility;
 
@@ -97,7 +98,7 @@ namespace INTV.LtoFlash.Model
 #endif // REPORT_PERFORMANCE
             if ((updateMode == LuigiGenerationMode.Passthrough) && (rom.Format == RomFormat.Luigi))
             {
-                return rom.RomPath;
+                return rom.RomPath.Path;
             }
 #if REPORT_PERFORMANCE
             stopwatch2.Restart();
@@ -153,7 +154,7 @@ namespace INTV.LtoFlash.Model
                 System.Diagnostics.Debug.Assert(luigiHeader.Version > 0, "Really, you've got some OLD LUIGI files. Delete them.");
 #endif // REPORT_OLD_LUIGI_FILES
                 var crc24 = INTV.Core.Utility.Crc24.OfFile(rom.RomPath);
-                var size = new System.IO.FileInfo(rom.RomPath).Length;
+                var size = rom.RomPath.Size();
                 var entry = CacheIndex.Find(crc24, (uint)size);
                 isSourceFileInCache = entry != null;
                 if (isSourceFileInCache)
@@ -173,11 +174,11 @@ namespace INTV.LtoFlash.Model
                     }
                     else
                     {
-                        luigiFile = System.IO.Path.Combine(romStagingArea, entry.LuigiPath);
-                        cachedRomPath = System.IO.Path.Combine(romStagingArea, entry.RomPath);
+                        luigiFile = new StorageLocation(System.IO.Path.Combine(romStagingArea, entry.LuigiPath));
+                        cachedRomPath = new StorageLocation(System.IO.Path.Combine(romStagingArea, entry.RomPath));
                         if (!string.IsNullOrEmpty(entry.CfgPath))
                         {
-                            cachedConfigPath = System.IO.Path.Combine(romStagingArea, entry.CfgPath);
+                            cachedConfigPath = new StorageLocation(System.IO.Path.Combine(romStagingArea, entry.CfgPath));
                         }
                     }
                 }
@@ -191,25 +192,25 @@ namespace INTV.LtoFlash.Model
 
             if (isSourceFileInCache)
             {
-                createLuigiFile = changed || !System.IO.File.Exists(luigiFile);
+                createLuigiFile = changed || !luigiFile.Exists();
             }
             if (!isSourceFileInCache || changed)
             {
-                cachedRomPath.ClearReadOnlyAttribute();
-                cachedConfigPath.ClearReadOnlyAttribute();
-                System.IO.File.Copy(rom.RomPath, cachedRomPath, true);
-                if (!string.IsNullOrWhiteSpace(cachedConfigPath) && !string.IsNullOrEmpty(rom.ConfigPath) && System.IO.File.Exists(rom.ConfigPath) && (rom.ConfigPath != rom.RomPath))
+                cachedRomPath.Path.ClearReadOnlyAttribute();
+                cachedConfigPath.Path.ClearReadOnlyAttribute();
+                System.IO.File.Copy(rom.RomPath.Path, cachedRomPath.Path, true);
+                if (cachedConfigPath.IsValid && rom.ConfigPath.IsValid && rom.ConfigPath.Exists() && (rom.ConfigPath != rom.RomPath))
                 {
-                    System.IO.File.Copy(rom.ConfigPath, cachedConfigPath, true);
+                    System.IO.File.Copy(rom.ConfigPath.Path, cachedConfigPath.Path, true);
                 }
-                else if ((string.IsNullOrEmpty(rom.ConfigPath) || !System.IO.File.Exists(rom.ConfigPath)) && System.IO.File.Exists(cachedConfigPath))
+                else if (!rom.ConfigPath.Exists() && cachedConfigPath.Exists())
                 {
                     // The ROM's configuration file path doesn't exist, but there's one in the cache. Remove it.
-                    FileUtilities.DeleteFile(cachedConfigPath, false, 2);
-                    cachedConfigPath = null; // this is OK, because the ClearReadOnlyAttribute() extension method is null-safe
+                    FileUtilities.DeleteFile(cachedConfigPath.Path, false, 2);
+                    cachedConfigPath = StorageLocation.InvalidLocation; // this is OK, because the ClearReadOnlyAttribute() extension method is null-safe
                 }
-                cachedRomPath.ClearReadOnlyAttribute();
-                cachedConfigPath.ClearReadOnlyAttribute();
+                cachedRomPath.Path.ClearReadOnlyAttribute();
+                cachedConfigPath.Path.ClearReadOnlyAttribute();
             }
 #if REPORT_PERFORMANCE
             stopwatch2.Stop();
@@ -224,7 +225,7 @@ namespace INTV.LtoFlash.Model
                 var result = -1;
                 if (JustCopy == converterApp.Item1)
                 {
-                    System.IO.File.Copy(rom.RomPath, luigiFile, true);
+                    System.IO.File.Copy(rom.RomPath.Path, luigiFile.Path, true);
                     result = 0;
                 }
                 else
@@ -233,12 +234,12 @@ namespace INTV.LtoFlash.Model
                 }
                 if (result == 0)
                 {
-                    if (!System.IO.File.Exists(luigiFile))
+                    if (!luigiFile.Exists())
                     {
-                        var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Format, rom.RomPath, System.IO.Path.GetFileNameWithoutExtension(luigiFile));
+                        var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Format, rom.RomPath, System.IO.Path.GetFileNameWithoutExtension(luigiFile.Path));
                         throw new LuigiFileGenerationException(message, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Description_Format);
                     }
-                    else if ((new System.IO.FileInfo(luigiFile)).Length > Device.TotalRAMSize)
+                    else if ((new System.IO.FileInfo(luigiFile.Path)).Length > Device.TotalRAMSize)
                     {
                         var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_TooLarge_Error_Message_Format, rom.RomPath, luigiFile);
                         throw new LuigiFileGenerationException(message, Resources.Strings.RomToLuigiFailed_TooLarge_Description);
@@ -269,7 +270,7 @@ namespace INTV.LtoFlash.Model
 #endif // DEBUG
                         if (luigiHeader.WouldModifyFeatures(features, updateMode == LuigiGenerationMode.FeatureUpdate))
                         {
-                            using (var file = System.IO.File.Open(luigiFile, System.IO.FileMode.Open, System.IO.FileAccess.ReadWrite))
+                            using (var file = System.IO.File.Open(luigiFile.Path, System.IO.FileMode.Open, System.IO.FileAccess.ReadWrite))
                             {
                                 luigiHeader.UpdateFeatures(features, updateMode == LuigiGenerationMode.FeatureUpdate);
                                 file.Seek(0, System.IO.SeekOrigin.Begin);
@@ -279,7 +280,7 @@ namespace INTV.LtoFlash.Model
                     }
                     try
                     {
-                        var cacheIndexEntry = new CacheIndexEntry(rom, cachedRomPath);
+                        var cacheIndexEntry = new CacheIndexEntry(rom, cachedRomPath.Path);
                         CacheIndex.Instance.AddEntry(cacheIndexEntry);
                     }
                     catch (Exception e)
@@ -299,12 +300,12 @@ namespace INTV.LtoFlash.Model
             {
                 // If this is a different ROM that produces the same LUIGI, add an entry.
                 var crc24 = INTV.Core.Utility.Crc24.OfFile(luigiFile);
-                var size = (uint)(new System.IO.FileInfo(luigiFile)).Length;
+                var size = (uint)(new System.IO.FileInfo(luigiFile.Path)).Length;
                 if (CacheIndex.Find(crc24, size) == null)
                 {
                     try
                     {
-                        var cacheIndexEntry = new CacheIndexEntry(rom, cachedRomPath);
+                        var cacheIndexEntry = new CacheIndexEntry(rom, cachedRomPath.Path);
                         CacheIndex.Instance.AddEntry(cacheIndexEntry);
                     }
                     catch (Exception e)
@@ -324,7 +325,7 @@ namespace INTV.LtoFlash.Model
             _accumulatedPrepareLuigiUpdateTime += stopwatch2.Elapsed;
 #endif // REPORT_PERFORMANCE
 
-            if (string.IsNullOrEmpty(luigiFile) || !System.IO.File.Exists(luigiFile))
+            if (!luigiFile.Exists())
             {
                 var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_Error_Description_Format, rom);
                 var description = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_InvalidOutputFileFormat, luigiFile);
@@ -334,7 +335,7 @@ namespace INTV.LtoFlash.Model
 #if REPORT_PERFORMANCE
             stopwatch.Stop();
 #endif // REPORT_PERFORMANCE
-            return luigiFile;
+            return luigiFile.Path;
 #if REPORT_PERFORMANCE
             }
             finally
@@ -382,7 +383,7 @@ namespace INTV.LtoFlash.Model
         {
             var romStagingArea = SingleInstanceApplication.Instance.GetConfiguration<Configuration>().RomsStagingAreaPath;
             var stagingAreaPath = rom.GetStagingAreaPath(romStagingArea);
-            return rom.GetOutputFilePath(stagingAreaPath, ProgramFileKind.LuigiFile);
+            return rom.GetOutputFilePath(stagingAreaPath, ProgramFileKind.LuigiFile).Path;
         }
 
         private static readonly Dictionary<System.Type, string> ExceptionErrorLookupTable = new Dictionary<System.Type, string>()

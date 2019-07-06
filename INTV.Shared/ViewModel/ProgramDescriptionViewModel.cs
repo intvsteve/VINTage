@@ -361,7 +361,7 @@ namespace INTV.Shared.ViewModel
 
         private string GetDisplayName()
         {
-            var name = Properties.Settings.Default.DisplayRomFileNameForTitle ? System.IO.Path.GetFileNameWithoutExtension(Model.Rom.RomPath.Path) : Model.Name;
+            var name = Properties.Settings.Default.DisplayRomFileNameForTitle ? Model.Rom.RomPath.GetFileNameWithoutExtension() : Model.Name;
             return name;
         }
 

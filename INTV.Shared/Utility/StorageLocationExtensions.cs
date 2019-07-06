@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
+using System.Collections.Generic;
 using System.IO;
 using INTV.Core.Utility;
 
@@ -25,6 +27,38 @@ namespace INTV.Shared.Utility
 {
     public static class StorageLocationExtensions
     {
+        /// <summary>
+        /// Appends one or more additional elements to the path in the given location.
+        /// </summary>
+        /// <param name="location">An existing storage location.</param>
+        /// <param name="pathElement">The first element to add to the path in <paramref name="location"/>.</param>
+        /// <param name="pathElements">Additional elements to append.</param>
+        /// <returns>A StorageLocation with the additional path elements appended to its path, using the same StorageAcess.</returns>
+        /// <remarks>If <paramref name="location"/> is a null or empty location, then only the elements defined in the
+        /// <paramref name="pathElement"/> and additional <paramref name="pathElements"/> parameters will be used.
+        /// Also <see cref="System.IO.Path.Combine"/> for further information.</remarks>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="location"/> is an invalid StorageLocation.</exception>
+        public static StorageLocation Combine(this StorageLocation location, string pathElement, params string[] pathElements)
+        {
+            if (location.IsInvalid)
+            {
+                throw new InvalidOperationException();
+            }
+            var elements = new List<string>();
+            if (location.IsValid)
+            {
+                elements.Add(location.Path);
+            }
+            elements.Add(pathElement);
+            if (pathElements.Length > 0)
+            {
+                elements.AddRange(pathElements);
+            }
+            var path = Path.Combine(elements.ToArray());
+            var newLocation = StorageLocation.CopyWithNewPath(location, path);
+            return newLocation;
+        }
+
         /// <summary>
         /// Gets the file name from the given location.
         /// </summary>
@@ -35,6 +69,18 @@ namespace INTV.Shared.Utility
         {
             var fileName = Path.GetFileName(location.Path);
             return fileName;
+        }
+
+        /// <summary>
+        /// Gets the file name from the given location without its file extension.
+        /// </summary>
+        /// <param name="location">The storage location whose file name without extension is desired.</param>
+        /// <returns>The file name without extension.</returns>
+        /// <remarks>Follows the behavior of <see cref="System.IO.Path.GetFielnameWithoutExtension(string)"/>.</remarks>
+        public static string GetFileNameWithoutExtension(this StorageLocation location)
+        {
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(location.Path);
+            return fileNameWithoutExtension;
         }
 
         /// <summary>
@@ -58,9 +104,8 @@ namespace INTV.Shared.Utility
         /// <remarks>Follows the rules of <see cref="System.IO.Path.ChangeExtension(string, string)"/>.</remarks>
         public static StorageLocation ChangeExtension(this StorageLocation location, string extension)
         {
-            var storageAccess = location.UsesDefaultStorage ? IStorageAccessHelpers.DefaultStorage : location.StorageAccess;
             var path = Path.ChangeExtension(location.Path, extension);
-            var locationWithNewExtension = new StorageLocation(path, storageAccess);
+            var locationWithNewExtension = StorageLocation.CopyWithNewPath(location, path);
             return locationWithNewExtension;
         }
 
@@ -72,9 +117,8 @@ namespace INTV.Shared.Utility
         /// <returns>A location with a path having the given suffix appended.</returns>
         public static StorageLocation AddSuffix(this StorageLocation location, string suffix)
         {
-            var storageAccess = location.UsesDefaultStorage ? IStorageAccessHelpers.DefaultStorage : location.StorageAccess;
             var updatedPath = location.Path + suffix;
-            var updatedLocation = new StorageLocation(updatedPath, storageAccess);
+            var updatedLocation = StorageLocation.CopyWithNewPath(location, updatedPath);
             return updatedLocation;
         }
 
@@ -83,11 +127,11 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="location">The location whose containing location is desired.</param>
         /// <returns>A location for the container of the given location.</returns>
+        /// <remarks>Vollows the rules of <see cref="System.IO.Path.GetDirectoryname(string)"/>.</remarks>
         public static StorageLocation GetContainingLocation(this StorageLocation location)
         {
-            var storageAccess = location.UsesDefaultStorage ? IStorageAccessHelpers.DefaultStorage : location.StorageAccess;
             var directory = Path.GetDirectoryName(location.Path);
-            var containingLocation = new StorageLocation(directory, storageAccess);
+            var containingLocation = StorageLocation.CopyWithNewPath(location, directory);
             return containingLocation;
         }
 
@@ -99,11 +143,12 @@ namespace INTV.Shared.Utility
         /// <returns>A location with the same file name, but using the updated container location.</returns>
         public static StorageLocation AlterContainingLocation(this StorageLocation location, string newContainingLocation)
         {
-            var storageAccess = location.UsesDefaultStorage ? IStorageAccessHelpers.DefaultStorage : location.StorageAccess;
-            var fileName = Path.GetFileName(location.Path);
-            var locationWithContainer = new StorageLocation(Path.Combine(newContainingLocation, fileName), storageAccess);
+            var fileName = location.GetFileName();
+            var locationWithContainer = StorageLocation.CopyWithNewPath(location, Path.Combine(newContainingLocation, fileName));
             return locationWithContainer;
         }
+
+        #region PathUtils Behaviors
 
         /// <summary>
         /// Returns a location that will be unique within its container.
@@ -113,10 +158,27 @@ namespace INTV.Shared.Utility
         /// <remarks>Really only works on disk paths...</remarks>
         public static StorageLocation EnsureUnique(this StorageLocation location)
         {
-            var storageAccess = location.UsesDefaultStorage ? IStorageAccessHelpers.DefaultStorage : location.StorageAccess;
             var uniquePath = location.Path.EnsureUniqueFileName();
-            var uniqueLocation = new StorageLocation(uniquePath, storageAccess);
+            var uniqueLocation = StorageLocation.CopyWithNewPath(location, uniquePath);
             return uniqueLocation;
         }
+
+        /// <summary>
+        /// Creates a StorageLocation that uses normalized path separators (forward slash).
+        /// </summary>
+        /// <param name="location">A <see cref="StorageLocation"/> whose path elements are to be separated using a forward slash.</param>
+        /// <returns>The given StorageLocation using normalized path separators.</returns>
+        public static StorageLocation NormalizeSeparators(this StorageLocation location)
+        {
+            var normalizedLocation = location;
+            if (location.IsValid)
+            {
+                var normalizedPath = location.Path.Replace('\\', '/');
+                normalizedLocation = StorageLocation.CopyWithNewPath(location, normalizedPath);
+            }
+            return normalizedLocation;
+        }
+
+        #endregion // PathUtils Behaviors
     }
 }

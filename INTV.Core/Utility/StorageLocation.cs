@@ -21,6 +21,7 @@
 ////#define ENABLE_IMPLICIT_CONVERSIONS
 
 using System;
+using System.Linq;
 
 namespace INTV.Core.Utility
 {
@@ -67,6 +68,14 @@ namespace INTV.Core.Utility
         }
 
         /// <summary>
+        /// Gets an empty location that will use the default storage access. Mainly for testing purposes.
+        /// </summary>
+        public static StorageLocation Empty
+        {
+            get { return new StorageLocation(string.Empty); }
+        }
+
+        /// <summary>
         /// Gets the location (path) within the storage.
         /// </summary>
         public string Path
@@ -83,6 +92,22 @@ namespace INTV.Core.Utility
             get { return _storageAccess.GetStorageAccess(); }
         }
         private IStorageAccess _storageAccess;
+
+        /// <summary>
+        /// Gets a value indicating whether <see cref="Path"/> is <c>null</c>.
+        /// </summary>
+        public bool IsNull
+        {
+            get { return _path == null; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether <see cref="Path"/> is an empty string.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return _path == string.Empty; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether or not the storage location is valid.
@@ -106,6 +131,17 @@ namespace INTV.Core.Utility
         public bool UsesDefaultStorage
         {
             get { return _storageAccess == IStorageAccessHelpers.DefaultStorage; }
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="StorageLocation"/> using a new path but using the same <see cref="StorageAccess"/>.
+        /// </summary>
+        /// <returns>A new <see cref="StorageLocation"/> that refers to <paramref name="newPath"/>.</returns>
+        /// <param name="location">The location whose <see cref="StorageAccess"/> will be retained.</param>
+        /// <param name="newPath">The new path.</param>
+        public static StorageLocation CopyWithNewPath(StorageLocation location, string newPath)
+        {
+            return new StorageLocation(newPath, location._storageAccess);
         }
 
         /// <summary>

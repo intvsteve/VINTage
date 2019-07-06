@@ -236,7 +236,7 @@ namespace INTV.LtoFlash.Model
                 {
                     if (!luigiFile.Exists())
                     {
-                        var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Format, rom.RomPath, System.IO.Path.GetFileNameWithoutExtension(luigiFile.Path));
+                        var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Format, rom.RomPath, luigiFile.GetFileNameWithoutExtension());
                         throw new LuigiFileGenerationException(message, Resources.Strings.RomToLuigiFailed_OutputFileNotFound_Error_Description_Format);
                     }
                     else if ((new System.IO.FileInfo(luigiFile.Path)).Length > Device.TotalRAMSize)

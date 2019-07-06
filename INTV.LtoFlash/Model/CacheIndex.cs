@@ -201,7 +201,7 @@ namespace INTV.LtoFlash.Model
                                 }
                                 else
                                 {
-                                    originalFile = System.IO.Path.GetFileNameWithoutExtension(cachedLuigiRom.RomPath.Path);
+                                    originalFile = cachedLuigiRom.RomPath.GetFileNameWithoutExtension();
                                 }
                                 if (File.Exists(originalFile))
                                 {
@@ -233,7 +233,7 @@ namespace INTV.LtoFlash.Model
                     if (originalRomFormat != RomFormat.None)
                     {
                         // Need to recreate the ROM from LUIGI.
-                        var sourcePath = "\"" + System.IO.Path.GetFileNameWithoutExtension(cachedLuigiRom.RomPath.Path) + "\"";
+                        var sourcePath = "\"" + cachedLuigiRom.RomPath.GetFileNameWithoutExtension() + "\"";
                         var workingDir = cachedLuigiRom.RomPath.GetContainingLocation();
                         var conversionApps = jzIntvConfiguration.GetConverterApps(cachedLuigiRom, luigiHeader.OriginalRomFormat);
                         var conversionResult = 0;
@@ -306,7 +306,7 @@ namespace INTV.LtoFlash.Model
 #endif // false
                     }
 
-                    var sourcePath = System.IO.Path.GetFileNameWithoutExtension(nonLuigiRom.RomPath.Path);
+                    var sourcePath = nonLuigiRom.RomPath.GetFileNameWithoutExtension();
                     var workingDir = System.IO.Path.GetDirectoryName(nonLuigiRom.RomPath.Path);
                     var conversionApp = jzIntvConfiguration.GetConverterApps(nonLuigiRom, RomFormat.Luigi).First();
                     var result = INTV.Shared.Utility.RunExternalProgram.Call(conversionApp.Item1, "\"" + sourcePath + "\"", workingDir);

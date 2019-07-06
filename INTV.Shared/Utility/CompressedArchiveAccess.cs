@@ -408,7 +408,6 @@ namespace INTV.Shared.Utility
             {
                 var fileMode = CompressedArchiveAccessModeToFileMode(mode);
                 var fileAccess = CompressedArchiveAccessModeToFileAccess(mode);
-                var fileName = Path.GetFileName(filePath);
 
                 var successfullyAccessedFormats = new List<CompressedArchiveFormat>();
                 var fileStream = new FileStream(filePath, fileMode, fileAccess);
@@ -425,6 +424,7 @@ namespace INTV.Shared.Utility
                         successfullyAccessedFormats.Add(format);
                         if (!compressedArchiveAccess.IsArchive)
                         {
+                            var fileName = Path.GetFileName(filePath);
                             fileName = Path.GetFileNameWithoutExtension(fileName);
                             var entry = compressedArchiveAccess.FindEntry(fileName);
                             stream = entry == null ? null : compressedArchiveAccess.OpenEntry(entry);

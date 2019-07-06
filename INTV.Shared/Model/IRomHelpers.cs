@@ -219,7 +219,7 @@ namespace INTV.Shared.Model
         private static bool IsLocalCopyNeeded(this StorageLocation location, ref StorageLocation localLocation)
         {
             var localRomsDirectory = RomListConfiguration.Instance.RomsDirectory;
-            var fileName = Path.GetFileName(localLocation.Path ?? location.Path);
+            var fileName = localLocation.GetFileName() ?? location.GetFileName();
             localLocation = new StorageLocation(Path.Combine(localRomsDirectory, fileName));
             var copyNeeded = !localLocation.Exists(); // if not present, we'll need to copy
             if (!copyNeeded)

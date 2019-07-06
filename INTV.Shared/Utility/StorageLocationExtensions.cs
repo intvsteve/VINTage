@@ -67,7 +67,7 @@ namespace INTV.Shared.Utility
         /// <remarks>Follows the behavior of <see cref="System.IO.Path.GetFileName(string)"/>.</remarks>
         public static string GetFileName(this StorageLocation location)
         {
-            var fileName = Path.GetFileName(location.Path);
+            var fileName = location.IsValid ? Path.GetFileName(location.Path) : null;
             return fileName;
         }
 

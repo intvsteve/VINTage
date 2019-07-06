@@ -98,7 +98,7 @@ namespace INTV.Core.Model
                 {
                     if (IsValid)
                     {
-                        if (ConfigPath != null)
+                        if (ConfigPath.IsValid)
                         {
                             if (ConfigPath.Exists())
                             {

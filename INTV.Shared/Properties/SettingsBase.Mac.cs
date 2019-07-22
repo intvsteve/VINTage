@@ -203,7 +203,9 @@ namespace INTV.Shared.Properties
         /// </summary>
         /// <param name="key">Key for the setting.</param>
         /// <param name="defaultValue">The default value for the setting.</param>
-        partial void OSAddSetting(string key, object defaultValue)
+        /// <param name="isApplicationSetting">If <c>true</c>, indicates the setting is for the application and not
+        /// the specific instance of the Settings class.</param>
+        partial void OSAddSetting(string key, object defaultValue, bool isApplicationSetting)
         {
             NSUserDefaultsObserver.AddPreferenceChangedNotification(key, RaisePropertyChanged);
         }

@@ -91,10 +91,12 @@ namespace INTV.Shared.Properties
         /// </summary>
         /// <param name="key">The key for the setting.</param>
         /// <param name="defaultValue">The default value of the setting.</param>
-        protected void AddSetting(string key, object defaultValue)
+        /// <param name="isApplicationSetting">If <c>true</c>, indicates the setting is for the application and not
+        /// the specific instance of the Settings class.</param>
+        protected void AddSetting(string key, object defaultValue, bool isApplicationSetting = false)
         {
             _defaults.Add(key, defaultValue);
-            OSAddSetting(key, defaultValue);
+            OSAddSetting(key, defaultValue, isApplicationSetting);
         }
 
         /// <summary>
@@ -135,7 +137,9 @@ namespace INTV.Shared.Properties
         /// </summary>
         /// <param name="key">The identifier for the setting.</param>
         /// <param name="defaultValue">The default value for the setting.</param>
-        partial void OSAddSetting(string key, object defaultValue);
+        /// <param name="isApplicationSetting">If <c>true</c>, indicates the setting is for the application and not
+        /// the specific instance of the Settings class.</param>
+        partial void OSAddSetting(string key, object defaultValue, bool isApplicationSetting);
 
         /// <summary>
         /// OS-specific save implementation.

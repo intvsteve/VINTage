@@ -1,4 +1,4 @@
-﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -255,9 +255,9 @@ namespace INTV.Shared.Properties
         /// </summary>
         partial void OSInitializeDefaults()
         {
-            AddSetting(WindowPositionSettingName, new Gdk.Point(80, 80));
-            AddSetting(WindowSizeSettingName, new Gdk.Size(1024, 768));
-            AddSetting(WindowStateSettingName, 0);
+            AddSetting(WindowPositionSettingName, new Gdk.Point(80, 80), isApplicationSetting: true);
+            AddSetting(WindowSizeSettingName, new Gdk.Size(1024, 768), isApplicationSetting: true);
+            AddSetting(WindowStateSettingName, 0, isApplicationSetting: true);
 
             var defaultShowMenuIconSetting = false;
             try

@@ -1,4 +1,4 @@
-﻿// <copyright file="SettingsBase.Gtk.cs" company="INTV Funhouse">
+// <copyright file="SettingsBase.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -35,6 +35,7 @@ namespace INTV.Shared.Properties
     public abstract partial class SettingsBase
     {
         private GConf.Client _client;
+        private HashSet<string> _applicationSettingsKeys = new HashSet<string>();
         private Dictionary<Type, Converters> _converters;
 
         /// <summary>
@@ -206,6 +207,21 @@ namespace INTV.Shared.Properties
             ConfigAppPath = "/apps/" + appName;
             ComponentName = this.GetType().FullName;
             Client.AddNotify(string.Join("/", ConfigAppPath, ComponentName), HandleSettingChanged);
+        }
+
+        /// <summary>
+        /// GTK-specific behavior for adding a setting.
+        /// </summary>
+        /// <param name="key">Key for the setting.</param>
+        /// <param name="defaultValue">The default value for the setting.</param>
+        /// <param name="isApplicationSetting">If <c>true</c>, indicates the setting is for the application and not
+        /// the specific instance of the Settings class.</param>
+        partial void OSAddSetting(string key, object defaultValue, bool isApplicationSetting)
+        {
+            if (isApplicationSetting)
+            {
+                _applicationSettingsKeys.Add(key);
+            }
         }
 
         private void HandleSettingChanged(object sender, GConf.NotifyEventArgs args)

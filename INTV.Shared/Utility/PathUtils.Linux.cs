@@ -36,6 +36,18 @@ namespace INTV.Shared.Utility
         public static readonly string ProgramSuffix = string.Empty;
 
         /// <summary>
+        /// Gets the user home directory.
+        /// </summary>
+        public static string UserHomeDirectory
+        {
+            get
+            {
+                var home = System.Environment.GetEnvironmentVariable("HOME");
+                return home;
+            }
+        }
+
+        /// <summary>
         /// Gets the Documents directory.
         /// </summary>
         /// <returns>The documents directory.</returns>

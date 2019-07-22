@@ -334,6 +334,7 @@
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
     <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />
+    <Compile Include="Utility\XdgEnvironmentVariable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

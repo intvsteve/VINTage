@@ -506,7 +506,7 @@ namespace INTV.Shared.Model
             bool configFilePathInCache = configFilePath.IsInvalid || configFilePath.Exists();
             if (configFilePathInCache)
             {
-                if (configFilePath != null)
+                if (configFilePath.Path != null)
                 {
                     var sourceConfigCrc = rom.RefreshCfgCrc(out changed);
                     var destConfigCrc = INTV.Core.Utility.Crc32.OfFile(configFilePath);

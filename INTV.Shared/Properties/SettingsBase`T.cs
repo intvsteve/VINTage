@@ -26,7 +26,7 @@ namespace INTV.Shared.Properties
     /// that is widely used throughout this codebase to access settings.
     /// </summary>
     /// <typeparam name="T">The concrete Settings implementation type.</typeparam>
-    public abstract class SettingsBase<T> : SettingsBase where T : SettingsBase, new()
+    public abstract partial class SettingsBase<T> : SettingsBase where T : SettingsBase, new()
     {
         /// <summary>
         /// Gets the default instance of the settings.
@@ -39,10 +39,17 @@ namespace INTV.Shared.Properties
                 if (_instance == null)
                 {
                     _instance = new T();
+                    LateInitialize(_instance);
                 }
                 return _instance;
             }
         }
         private static T _instance;
+
+        /// <summary>
+        /// Platform-specific late initialization.
+        /// </summary>
+        /// <param name="instance">The settings instance to initialize.</param>
+        static partial void LateInitialize(T instance);
     }
 }

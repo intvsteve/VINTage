@@ -18,11 +18,14 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Runtime.Serialization;
+
 namespace INTV.LtoFlash.Properties
 {
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
+    [DataContract(Namespace = "https://www.intvfunhouse.com")]
     internal sealed partial class Settings
     {
         /// <summary>
@@ -64,6 +67,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets the serial port read block size to use.
         /// </summary>
+        [DataMember]
         public int LtoFlashSerialReadChunkSize
         {
             get { return GetSetting<int>(LtoFlashSerialReadChunkSizeSettingName); }

@@ -1,4 +1,4 @@
-// <copyright file="SettingsBase.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="SettingsBase.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -19,8 +19,14 @@
 // </copyright>
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Xml;
+using INTV.Core.ComponentModel;
+using INTV.Shared.Utility;
 
 using Converters = System.Tuple<System.Func<string, object>, System.Action<string, object>>;
 
@@ -32,30 +38,77 @@ namespace INTV.Shared.Properties
     /// <remarks>GTK# currently supports GTK2, and does not have bindings for the newer DConf
     /// or GSettings APIs. We're using GConf.</remarks>
     /// <remarks>NOTE: The underlying GConf only supports a few basic types:</remarks>
-    public abstract partial class SettingsBase
+    [DataContract(Namespace = "https://www.intvfunhouse.com")]
+    public abstract partial class SettingsBase : INotifyPropertyChanged, IExtensibleDataObject
     {
-        private GConf.Client _client;
+        private ConcurrentDictionary<string, object> _values = new ConcurrentDictionary<string, object>();
         private HashSet<string> _applicationSettingsKeys = new HashSet<string>();
         private Dictionary<Type, Converters> _converters;
 
-        /// <summary>
-        /// Gets the GConf client for accessing settings.
-        /// </summary>
-        protected GConf.Client Client
+        public ExtensionDataObject ExtensionData
         {
-            get
+            get { return _extensibleDataObject; }
+            set { _extensibleDataObject = value; }
+        }
+        private ExtensionDataObject _extensibleDataObject;
+
+        protected string ComponentSettingsFilePath { get; set; }
+
+        private string ApplicationSettingsDirectory { get; set; }
+
+        private string ApplicationSettingsFilePath { get; set; }
+
+        #region Events
+
+        /// <inheritdoc/>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion // Events
+
+        protected static void InitializeFromSettingsFile<T>(T instance) where T : SettingsBase, new()
+        {
+            var preferencesFilePath = instance.ComponentSettingsFilePath;
+            if (File.Exists(preferencesFilePath))
             {
-                if (_client == null)
+                try
                 {
-                    _client = new GConf.Client();
+                    using (var fileStream = FileUtilities.OpenFileStream(preferencesFilePath))
+                    using (var xmlDictionaryReader = XmlDictionaryReader.CreateTextReader(fileStream, new XmlDictionaryReaderQuotas()))
+                    {
+                        var dataContractSerializer = new DataContractSerializer(instance.GetType());
+                        var settingsData = dataContractSerializer.ReadObject(xmlDictionaryReader);
+                        var settings = settingsData as SettingsBase;
+                    }
                 }
-                return _client;
+                catch (Exception e)
+                {
+                }
             }
         }
 
-        private string ConfigAppPath { get; set; }
+        /// <summary>
+        /// Updates the setting and raises a property changed event as appropriate.
+        /// </summary>
+        /// <typeparam name="T">The data type of the setting.</typeparam>
+        /// <param name="settingName">Setting name.</param>
+        /// <param name="newValue">New value.</param>
+        /// <param name="currentValue">Current value.</param>
+        protected void UpdateSetting<T>(string settingName, T newValue, T currentValue)
+        {
+            this.UpdateProperty(PropertyChanged, settingName, newValue, currentValue, (s, v) => SetSetting(s, v));
+        }
 
-        private string ComponentName { get; set; }
+        /// <summary>
+        /// Assigns and updates the setting value and raises a property changed event as appropriate.
+        /// </summary>
+        /// <typeparam name="T">The data type of the setting.</typeparam>
+        /// <param name="settingName">Setting name.</param>
+        /// <param name="newValue">New value.</param>
+        /// <param name="currentValue">Current value.</param>
+        protected void AssignAndUpdateSetting<T>(string settingName, T newValue, ref T currentValue)
+        {
+            this.AssignAndUpdateProperty(PropertyChanged, settingName, newValue, ref currentValue);
+        }
 
         /// <summary>
         /// Derived classes may need to provide custom type converters.
@@ -100,22 +153,22 @@ namespace INTV.Shared.Properties
                 else
                 {
                     value = GetSetting(key);
-                    if (type.IsEnum)
-                    {
-                        // Enums are always stored as strings.
-                        try
-                        {
-                            value = Enum.Parse(type, value as string);
-                        }
-                        catch (Exception)
-                        {
-                            value = 0; // Parse failed, so return default for an enum.
-                        }
-                    }
+                    //if (type.IsEnum)
+                    //{
+                    //    // Enums are always stored as strings.
+                    //    try
+                    //    {
+                    //        value = Enum.Parse(type, value as string);
+                    //    }
+                    //    catch (Exception)
+                    //    {
+                    //        value = 0; // Parse failed, so return default for an enum.
+                    //    }
+                    //}
                 }
                 gotSetting = true;
             }
-            catch (GConf.NoSuchKeyException)
+            catch(Exception)
             {
                 value = null;
             }
@@ -152,8 +205,12 @@ namespace INTV.Shared.Properties
         /// This method will append the subkeys to the base key to form the absolute key to the setting.</remarks>
         protected object GetSetting(string key, params string[] subkeys)
         {
-            var gconfKey = GetAbsoluteKey(key, subkeys);
-            var value = Client.Get(gconfKey);
+            object value;
+            if (!_values.TryGetValue(key, out value))
+            {
+                value = _defaults[key];
+                _values.TryAdd(key, value);
+            }
             return value;
         }
 
@@ -169,30 +226,16 @@ namespace INTV.Shared.Properties
         /// This method will append the subkeys to the base key to form the absolute key to the setting.</remarks>
         protected void StoreSetting(string key, object value, params string[] subkeys)
         {
-            var gconfKey = GetAbsoluteKey(key, subkeys);
             if (value.GetType().IsEnum)
             {
                 // Always store Enums as string.
-                value = value.ToString();
+                //value = value.ToString();
             }
-            Client.Set(gconfKey, value);
-        }
-
-        /// <summary>
-        /// Get the full key to use in GConf.
-        /// </summary>
-        /// <param name="key">The base key for a setting.</param>
-        /// <param name="subkeys">Additional sub-key data.</param>
-        /// <returns>The absolute key for the setting in GConf.</returns>
-        protected string GetAbsoluteKey(string key, params string[] subkeys)
-        {
-            var absoluteKey = string.Join("/", ConfigAppPath, ComponentName, key);
-            if (subkeys.Any())
+            var currentValue = GetSetting(key, subkeys);
+            if (_values.TryUpdate(key, value, currentValue))
             {
-                var additional = string.Join("/", subkeys);
-                absoluteKey = string.Join("/", absoluteKey, additional);
+                this.RaisePropertyChanged(PropertyChanged, key);
             }
-            return absoluteKey;
         }
 
         /// <summary>
@@ -203,10 +246,18 @@ namespace INTV.Shared.Properties
             _converters = new Dictionary<Type, Tuple<Func<string, object>, Action<string, object>>>();
             AddCustomTypeConverters();
             var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-            var appName = System.IO.Path.GetFileNameWithoutExtension(entryAssembly.GetName().Name);
-            ConfigAppPath = "/apps/" + appName;
-            ComponentName = this.GetType().FullName;
-            Client.AddNotify(string.Join("/", ConfigAppPath, ComponentName), HandleSettingChanged);
+            var appName = Path.GetFileNameWithoutExtension(entryAssembly.GetName().Name);
+
+            ApplicationSettingsDirectory = Path.Combine(XdgEnvironmentVariable.Config.GetEnvironmentVariableValue(), appName);
+            if (!Directory.Exists(ApplicationSettingsDirectory))
+            {
+                Directory.CreateDirectory(ApplicationSettingsDirectory);
+            }
+
+            ApplicationSettingsFilePath = Path.Combine(ApplicationSettingsDirectory, appName.ToLowerInvariant() + "rc");
+
+            var componentName = this.GetType().Assembly.GetName().Name.ToLowerInvariant().Replace('.', '-');
+            ComponentSettingsFilePath = Path.Combine(ApplicationSettingsDirectory, componentName + ".config");
         }
 
         /// <summary>
@@ -224,11 +275,24 @@ namespace INTV.Shared.Properties
             }
         }
 
-        private void HandleSettingChanged(object sender, GConf.NotifyEventArgs args)
+        /// <summary>
+        /// Saves the settings to disk.
+        /// </summary>
+        partial void OSSave()
         {
-            // We just need the last part of the key.
-            var key = args.Key.Split(new[] { '/' }).Last();
-            this.RaisePropertyChanged(key);
+            try
+            {
+                var xmlWriter = XmlWriter.Create(ComponentSettingsFilePath, new XmlWriterSettings() { Indent = true });
+                using (var xmlDictionaryWriter = XmlDictionaryWriter.CreateDictionaryWriter(xmlWriter))
+                {
+                    var dataContractSerializer = new DataContractSerializer(this.GetType());
+                    dataContractSerializer.WriteObject(xmlDictionaryWriter, this);
+                    xmlDictionaryWriter.Flush();
+                }
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
 }

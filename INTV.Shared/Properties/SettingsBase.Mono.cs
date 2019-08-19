@@ -19,7 +19,6 @@
 // </copyright>
 
 using System.Collections.Generic;
-using INTV.Core.ComponentModel;
 
 namespace INTV.Shared.Properties
 {
@@ -33,7 +32,7 @@ namespace INTV.Shared.Properties
     /// wrap the native GConf or Mac settings system. There are just enough bugs and other complaints
     /// floating around out there that this skeptic is just going to do The Wrap and
     /// deal with the extra work.</remarks>
-    public abstract partial class SettingsBase : PropertyChangedNotifier, ISettings
+    public abstract partial class SettingsBase : ISettings
     {
         private Dictionary<string, object> _defaults = new Dictionary<string, object>();
 

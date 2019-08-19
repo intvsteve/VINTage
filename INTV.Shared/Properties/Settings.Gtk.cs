@@ -1,5 +1,5 @@
-// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,11 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-// USE_CHANGESET_ENGINE is disabled because it causes this:
-// GConf-WARNING **: : You can't use a GConfEngine that has an active GConfClient wrapper object. Use GConfClient API instead.
-////#define USE_CHANGESET_ENGINE
-
 using System.Linq;
+using System.Runtime.Serialization;
 using INTV.Shared.Model;
 
 namespace INTV.Shared.Properties
@@ -30,6 +27,7 @@ namespace INTV.Shared.Properties
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
+    [DataContract(Namespace = "https://www.intvfunhouse.com")]
     internal sealed partial class Settings
     {
         public const string EnableMenuIconsSettingName = "EnableMenuIcons";
@@ -81,6 +79,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the setting that stores previous window position.
         /// </summary>
+//        [DataMember]
         public Gdk.Point WindowPosition
         {
             get { return GetSetting<Gdk.Point>(WindowPositionSettingName); }
@@ -90,6 +89,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the setting that stores previous window size.
         /// </summary>
+//        [DataMember]
         public Gdk.Size WindowSize
         {
             get { return GetSetting<Gdk.Size>(WindowSizeSettingName); }
@@ -99,6 +99,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the setting storing previous window state.
         /// </summary>
+//        [DataMember]
         public Gdk.WindowState WindowState
         {
             get { return (Gdk.WindowState)GetSetting<Gdk.WindowState>(WindowStateSettingName); }
@@ -112,6 +113,7 @@ namespace INTV.Shared.Properties
         /// <remarks>Even when (in testing) the following was changed, it did not seem to
         /// make a difference -- i.e. menu icons were not displayed:
         /// .../desktop/gnome/interface/menus_have_icons: true</remarks>
+        [DataMember]
         public bool EnableMenuIcons
         {
             get { return GetSetting<bool>(EnableMenuIconsSettingName); }
@@ -121,6 +123,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Title' column.
         /// </summary>
+//        [DataMember]
         public int RomListNameColWidth
         {
             get { return GetSetting<int>(RomListNameColWidthSettingName); }
@@ -130,6 +133,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Vendor' column.
         /// </summary>
+//        [DataMember]
         public int RomListVendorColWidth
         {
             get { return GetSetting<int>(RomListVendorColWidthSettingName); }
@@ -139,6 +143,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Year' column.
         /// </summary>
+//        [DataMember]
         public int RomListYearColWidth
         {
             get { return GetSetting<int>(RomListYearColWidthSettingName); }
@@ -148,6 +153,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Features' column.
         /// </summary>
+//        [DataMember]
         public int RomListFeaturesColWidth
         {
             get { return GetSetting<int>(RomListFeaturesColWidthSettingName); }
@@ -157,6 +163,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Path' column.
         /// </summary>
+//        [DataMember]
         public int RomListPathColWidth
         {
             get { return GetSetting<int>(RomListPathColWidthSettingName); }
@@ -173,65 +180,10 @@ namespace INTV.Shared.Properties
 ////        }
 
         /// <inheritdoc/>
-        /// <remarks>Register custom converters for point and size.
-        /// It does not seem that the bindings to GConf support schemas?
-        /// Haven't learned how these work, nor if the tools teased back in 2006
-        /// at the repo at GitHub ever panned out. Since these are few and far
-        /// between, just hand-roll things as needed.</remarks>
         protected override void AddCustomTypeConverters()
         {
             base.AddCustomTypeConverters();
-            AddCustomTypeConverter(typeof(Gdk.Point), GetPoint, SetPoint);
-            AddCustomTypeConverter(typeof(Gdk.Size), GetSize, SetSize);
             AddCustomTypeConverter(typeof(SearchDirectories), GetSearchDirectories, SetSearchDirectories);
-        }
-
-        private object GetPoint(string key)
-        {
-            int x = (int)GetSetting(key, "X");
-            int y = (int)GetSetting(key, "Y");
-            var point = new Gdk.Point(x, y);
-            return point;
-        }
-
-        private void SetPoint(string key, object value)
-        {
-            var point = (Gdk.Point)value;
-#if USE_CHANGESET_ENGINE
-            using (var changes = new GConf.ChangeSet())
-            {
-                changes.Set(GetAbsoluteKey(key, "X"), point.X);
-                changes.Set(GetAbsoluteKey(key, "Y"), point.Y);
-                GConf.Engine.Default.CommitChangeSet(changes, false);
-            }
-#else
-            StoreSetting(key, point.X, "X");
-            StoreSetting(key, point.Y, "Y");
-#endif // USE_CHANGESET_ENGINE
-        }
-
-        private object GetSize(string key)
-        {
-            int width = (int)GetSetting(key, "Width");
-            int height = (int)GetSetting(key, "Height");
-            var size = new Gdk.Size(width, height);
-            return size;
-        }
-
-        private void SetSize(string key, object value)
-        {
-            var size = (Gdk.Size)value;
-#if USE_CHANGESET_ENGINE
-            using (var changes = new GConf.ChangeSet())
-            {
-                changes.Set(GetAbsoluteKey(key, "Width"), size.Width);
-                changes.Set(GetAbsoluteKey(key, "Height"), size.Height);
-                GConf.Engine.Default.CommitChangeSet(changes, false);
-            }
-#else
-            StoreSetting(key, size.Width, "Width");
-            StoreSetting(key, size.Height, "Height");
-#endif // USE_CHANGESET_ENGINE
         }
 
         private object GetSearchDirectories(string key)
@@ -260,13 +212,13 @@ namespace INTV.Shared.Properties
             AddSetting(WindowStateSettingName, 0, isApplicationSetting: true);
 
             var defaultShowMenuIconSetting = false;
-            try
-            {
-                defaultShowMenuIconSetting = (bool)Client.Get("/desktop/gnome/interface/menus_have_icons");
-            }
-            catch (GConf.NoSuchKeyException)
-            {
-            }
+            //try
+            //{
+            //    defaultShowMenuIconSetting = (bool)Client.Get("/desktop/gnome/interface/menus_have_icons");
+            //}
+            //catch (GConf.NoSuchKeyException)
+            //{
+            //}
             AddSetting(EnableMenuIconsSettingName, defaultShowMenuIconSetting);
 
             AddSetting(RomListNameColWidthSettingName, DefaultRomListNameColWidth);

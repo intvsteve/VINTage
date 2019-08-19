@@ -18,7 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using INTV.Shared.ViewModel;
+using System.Runtime.Serialization;
 
 namespace INTV.Shared.Properties
 {
@@ -32,6 +32,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to validate the ROMs at startup.
         /// </summary>
+        [DataMember]
         public bool RomListValidateAtStartup
         {
             get { return GetSetting<bool>(ValidateAtLaunchSettingName); }
@@ -41,6 +42,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets a value indicating whether or not to search for new ROMs when launching the application.
         /// </summary>
+        [DataMember]
         public bool RomListSearchForRomsAtStartup
         {
             get { return GetSetting<bool>(SearchForRomsAtLaunchSettingName); }
@@ -76,6 +78,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets a value indicating whether or not to show detailed ROM information in the RomListView.
         /// </summary>
+        [DataMember]
         public bool ShowRomDetails
         {
             get { return GetSetting<bool>(ShowRomDetailsSettingName); }
@@ -85,6 +88,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets a value indicating whether or not ROMs are displayed using file name or database name.
         /// </summary>
+        [DataMember]
         public bool DisplayRomFileNameForTitle
         {
             get { return GetSetting<bool>(DisplayRomFileNameForTitleSettingName); }
@@ -94,6 +98,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to check for app updates at launch.
         /// </summary>
+        [DataMember]
         public bool CheckForAppUpdatesAtLaunch
         {
             get { return GetSetting<bool>(CheckForAppUpdatesAtLaunchSettingName); }
@@ -103,6 +108,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to show detailed errors.
         /// </summary>
+        [DataMember]
         public bool ShowDetailedErrors
         {
             get { return GetSetting<bool>(ShowDetailedErrorsSettingName); }
@@ -112,6 +118,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the maximum number of GZIP members to attempt to parse from a .gz file.
         /// </summary>
+        [DataMember]
         public int MaxGZipEntriesSearch
         {
             get { return GetSetting<int>(MaxGZipEntriesSearchSettingName); }

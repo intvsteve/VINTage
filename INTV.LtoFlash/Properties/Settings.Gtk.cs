@@ -25,9 +25,12 @@ namespace INTV.LtoFlash.Properties
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
-    [DataContract(Namespace = "https://www.intvfunhouse.com")]
+    [DataContract(Name = ContractName, Namespace = ContractNamespace)]
     internal sealed partial class Settings
     {
+        private const string ContractName = "LocutusSettings";
+        private const string ContractNamespace = "https://ltoflash.intvfunhouse.com";
+
         /// <summary>
         /// Gets or sets the width of the menu layout long name column.
         /// </summary>
@@ -67,11 +70,17 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets the serial port read block size to use.
         /// </summary>
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public int LtoFlashSerialReadChunkSize
         {
             get { return GetSetting<int>(LtoFlashSerialReadChunkSizeSettingName); }
             set { SetSetting(LtoFlashSerialReadChunkSizeSettingName, value); }
+        }
+
+        /// <inheritdoc/>
+        protected override void InitializeFromSettingsFile()
+        {
+            InitializeFromSettingsFile<SettingsDto>();
         }
 
         /// <summary>
@@ -84,6 +93,65 @@ namespace INTV.LtoFlash.Properties
             AddSetting(MenuLayoutManualColWidthSettingName, 168);
             AddSetting(MenuLayoutSaveDataColWidthSettingName, 128);
             AddSetting(LtoFlashSerialReadChunkSizeSettingName, 0);
+        }
+
+        [DataContract(Name = ContractName, Namespace = ContractNamespace)]
+        private sealed class SettingsDto : IExtensibleDataObject
+        {
+            public ExtensionDataObject ExtensionData
+            {
+                get { return _extensibleDataObject; }
+                set { _extensibleDataObject = value; }
+            }
+            private ExtensionDataObject _extensibleDataObject;
+
+            [DataMember]
+            public bool ValidateMenuAtStartup { get; set; }
+
+            [DataMember]
+            public bool SearchForDevicesAtStartup { get; set; }
+
+            [DataMember]
+            public bool ReconcileDeviceMenuWithLocalMenu { get; set; }
+
+            [DataMember]
+            public bool ShowAdvancedFeatures { get; set; }
+
+            [DataMember(EmitDefaultValue = false)]
+            public string LastActiveDevicePort { get; set; }
+
+            [DataMember]
+            public bool RunGCWhenConnected { get; set; }
+
+            [DataMember]
+            public bool AutomaticallyConnectToDevices { get; set; }
+
+            [DataMember]
+            public bool AddRomsToMenu { get; set; }
+
+            [DataMember]
+            public bool PromptToAddRomsToMenu { get; set; }
+
+            [DataMember]
+            public bool EnablePortLogging { get; set; }
+
+            [DataMember]
+            public bool PromptToInstallFTDIDriver { get; set; }
+
+            [DataMember]
+            public bool ShowFileSystemDetails { get; set; }
+
+            [DataMember]
+            public bool PromptToImportStarterRoms { get; set; }
+
+            [DataMember]
+            public bool PromptForFirmwareUpgrade { get; set; }
+
+            [DataMember]
+            public bool VerifyVIDandPIDBeforeConnecting { get; set; }
+
+            [DataMember]
+            public bool PreventSystemSleepDuringDeviceCommands { get; set; }
         }
     }
 }

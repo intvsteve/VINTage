@@ -5,16 +5,22 @@ namespace INTV.Shared.Properties
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
-    [DataContract(Namespace = "https://www.intvfunhouse.com")]
+    [DataContract]
     public abstract partial class SettingsBase<T>
     {
+        protected SettingsBase()
+        {
+            FinishInitialization();
+        }
+
         /// <summary>
         /// Initialize settings from file for GTK implementation.
         /// </summary>
-        /// <param name="instance">The settings instance to initialize.</param>
-        static partial void LateInitialize(T instance)
+        protected abstract void InitializeFromSettingsFile();
+
+        private void FinishInitialization()
         {
-            InitializeFromSettingsFile<T>(instance);
+            InitializeFromSettingsFile();
         }
     }
 }

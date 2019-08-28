@@ -39,17 +39,10 @@ namespace INTV.Shared.Properties
                 if (_instance == null)
                 {
                     _instance = new T();
-                    LateInitialize(_instance);
                 }
                 return _instance;
             }
         }
         private static T _instance;
-
-        /// <summary>
-        /// Platform-specific late initialization.
-        /// </summary>
-        /// <param name="instance">The settings instance to initialize.</param>
-        static partial void LateInitialize(T instance);
     }
 }

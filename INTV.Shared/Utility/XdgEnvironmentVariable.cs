@@ -43,13 +43,13 @@ namespace INTV.Shared.Utility
         Config,
 
         /// <summary>
-        /// A list of directories to be searched for data files in addition to <see cref="Data"./>
+        /// A list of directories to be searched for data files in addition to <see cref="Data"/>.
         /// </summary>
         /// <remarks>Directories are separated by the colon character.</remarks>
         DataDirectories,
 
         /// <summary>
-        /// A preference-ordered set of directories to search for configuration files in addition to <see cref="Config"./>
+        /// A preference-ordered set of directories to search for configuration files in addition to <see cref="Config"/>.
         /// </summary>
         /// <remarks>Directories are separated by the colon character.</remarks>
         ConfigDirectories,

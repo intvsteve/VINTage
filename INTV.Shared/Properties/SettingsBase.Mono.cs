@@ -1,5 +1,5 @@
 ﻿// <copyright file="SettingsBase.Mono.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ namespace INTV.Shared.Properties
         protected SettingsBase()
         {
             OSInitialize();
-            InitializeDefaults();
+            InitializeDefaultPropertyValues();
 
             // TODO: Consider adding support for exposing things via SettingsProperty / SettingsCollection?
             // This could lead down a rabbit hole of re-implementing provider, et. al.
@@ -129,6 +129,11 @@ namespace INTV.Shared.Properties
                 System.Diagnostics.Debug.Assert((object)value != null, "A value of <null> is not permitted!");
             }
             OSSetSetting(key, value);
+        }
+
+        private void InitializeDefaultPropertyValues()
+        {
+            InitializeDefaults();
         }
 
         /// <summary>

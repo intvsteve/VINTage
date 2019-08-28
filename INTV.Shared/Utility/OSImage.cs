@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSImage.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -46,7 +46,7 @@ namespace INTV.Shared.Utility
         private NativeImage _image;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.View.OSImage"/> struct.
+        /// Initializes a new instance of the <see cref="OSImage"/> struct.
         /// </summary>
         /// <param name="image">A platform-specific image.</param>
         public OSImage(NativeImage image)

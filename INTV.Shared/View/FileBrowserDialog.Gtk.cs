@@ -1,5 +1,5 @@
 ﻿// <copyright file="FileBrowserDialog.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -32,7 +32,7 @@ namespace INTV.Shared.View
         private Dictionary<string, IEnumerable<string>> _filters;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.FileBrowserDialog"/> class.
+        /// Initializes a new instance of the <see cref="FileBrowserDialog"/> class.
         /// </summary>
         public FileBrowserDialog()
         {

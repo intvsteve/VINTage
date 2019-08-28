@@ -254,7 +254,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="format">The compressed archive format with which to associate an implementation.</param>
         /// <param name="implementation">The implementation to associate with the compressed archive format</param>
-        /// <param name="makePreferred">If <c>true</c>, <paramref name="implemenatation"/> becomes the implementation returned by <see cref="GetPreferredCompressedArchiveImplementation(CompressedArchiveFormat)"/>.</param>
+        /// <param name="makePreferred">If <c>true</c>, <paramref name="implementation"/> becomes the implementation returned by <see cref="GetPreferredCompressedArchiveImplementation(CompressedArchiveFormat)"/>.</param>
         /// <returns><c>true</c> if <paramref name="implementation"/> was added, <c>false</c> otherwise.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="format"/> is <see cref="CompressedArchiveFormat.None"/>. Also thrown if the
         /// value of <paramref name="implementation"/> is <see cref="CompressedArchiveAccessImplementation.Any"/> or <see cref="CompressedArchiveAccessImplementation.None"/>.</exception>

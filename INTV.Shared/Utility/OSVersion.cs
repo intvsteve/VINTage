@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSVersion.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -172,9 +172,9 @@ namespace INTV.Shared.Utility
         #region object Overrides
 
         /// <inheritdoc />
-        public override bool Equals(object other)
+        public override bool Equals(object obj)
         {
-            return Version.Equals(other);
+            return Version.Equals(obj);
         }
 
         /// <inheritdoc />

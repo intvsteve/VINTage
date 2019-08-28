@@ -66,7 +66,7 @@ namespace INTV.Shared.Utility
         Stream OpenEntry(ICompressedArchiveEntry entry);
 
         /// <summary>
-        /// Creates a new entry in the archive with the given name. Use <see cref="Open(ICompressedArchiveEntry)"/> to provide content.
+        /// Creates a new entry in the archive with the given name. Use <see cref="OpenEntry(ICompressedArchiveEntry)"/> to provide content.
         /// </summary>
         /// <param name="name">The name of the new entry in the archive.</param>
         /// <returns>The new entry.</returns>

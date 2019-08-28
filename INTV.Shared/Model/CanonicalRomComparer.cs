@@ -1,5 +1,5 @@
 ﻿// <copyright file="CanonicalRomComparer.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2017 All Rights Reserved
+// Copyright (c) 2015-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -79,9 +79,9 @@ namespace INTV.Shared.Model
         #region RomComparer
 
         /// <inheritdoc />
-        public override int Compare(IRom x, IProgramInformation programInformationX, IRom y, IProgramInformation programInformationY)
+        public override int Compare(IRom x, IProgramInformation programInformationRomX, IRom y, IProgramInformation programInformationRomY)
         {
-            var result = BaseComparer.Compare(x, programInformationX, y, programInformationY);
+            var result = BaseComparer.Compare(x, programInformationRomX, y, programInformationRomY);
             if (result != 0)
             {
                 result = CanonicalCompare(x, y, false);

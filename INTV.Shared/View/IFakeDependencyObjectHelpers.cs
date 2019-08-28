@@ -169,7 +169,7 @@ namespace INTV.Shared.View
         /// <param name="o">The object upon which a value is to be set.</param>
         /// <param name="property">The name of the property to set.</param>
         /// <param name="propertyValue">The value of the property.</param>
-        /// <param name="propertyChanged">If not <c>null</c>, this method is invoked if the value of <paramref name="value"/> is changed.</param>
+        /// <param name="propertyChanged">If not <c>null</c>, this method is invoked if the value of <paramref name="propertyValue"/> is changed.</param>
         public static void SetPropertyValue(this object o, string property, object propertyValue, PropertyChangedEventHandler propertyChanged)
         {
             if ((o != null) && (o.GetType() == typeof(OSVisual)))

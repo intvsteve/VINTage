@@ -1,5 +1,5 @@
 ﻿// <copyright file="ObservableCollectionHelpers.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -103,7 +103,7 @@ namespace INTV.Shared.Utility
         /// <param name="model">The model data to synchronize into.</param>
         /// <param name="collection">The collection to copy into the model.</param>
         /// <remarks>Wacky idea: Wrap TreeModel in an INotifyCollection directly?</remarks>
-        /// <remarks>TODO / BUG: Blindly adds everything! Should confirm what's already in <paramref name="controller"/> and remove what's not!</remarks>
+        /// <remarks>TODO / BUG: Blindly adds everything! Should confirm what's already in <paramref name="collection"/> and remove what's not!</remarks>
         public static void SynchronizeCollection<T>(this Gtk.TreeModel model, ObservableCollection<T> collection)
         {
             if (!(model is Gtk.ListStore))

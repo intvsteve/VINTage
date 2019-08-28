@@ -1,5 +1,5 @@
 ﻿// <copyright file="SingleInstanceApplication.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -204,8 +204,8 @@ namespace INTV.Shared.Utility
         /// behavior and don't necessarily have access to the implementation of the Window.
         /// (OK, we do, but it's the principle of the thing here.) The documentation of
         /// GLib.ConnectBefore suggests using that attribute breaks enapsulation:
-        /// <see cref="http://docs.go-mono.com/index.aspx?link=T%3aGLib.ConnectBeforeAttribute"/>.
-        /// This solution was found here: <see cref="https://stackoverflow.com/questions/16778919/f-mono-gtk-configureevent"/>.
+        /// <see href="http://docs.go-mono.com/index.aspx?link=T%3aGLib.ConnectBeforeAttribute"/>.
+        /// This solution was found here: <see href="https://stackoverflow.com/questions/16778919/f-mono-gtk-configureevent"/>.
         /// IMO the current behavior seems like a bug -- it's not documented to require this kind of trickery,
         /// and the technique seems to crop up more often than you'd think for something that's considered
         /// borderline bad practice. OTOH, the frequency of ConfigureEvent could have performance implications, so

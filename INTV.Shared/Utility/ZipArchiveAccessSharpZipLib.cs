@@ -202,7 +202,7 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
-        /// This implementation of <see cref="IStaticDataInstance"/> is used only to create empty dummy entries.
+        /// This implementation of <see cref="IStaticDataSource"/> is used only to create empty dummy entries.
         /// </summary>
         private class DummyDataSource : IStaticDataSource
         {
@@ -214,7 +214,7 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
-        /// This implementation of <see cref="IStaticDataInstance"/> is, hopefully, not TOO clever....
+        /// This implementation of <see cref="IStaticDataSource"/> is, hopefully, not TOO clever....
         /// </summary>
         /// <remarks>SharpZipLib presents a substantially different way to add entries than the native .NET implementation.
         /// Hopefully the tricks done in the <see cref="Dispose(bool)"/> implementation are not going to be a problem.

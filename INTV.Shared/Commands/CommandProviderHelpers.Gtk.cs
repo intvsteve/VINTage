@@ -1,5 +1,5 @@
 ﻿// <copyright file="CommandProviderHelpers.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Collections;
 using System.Linq;
 using INTV.Shared.ComponentModel;
@@ -534,7 +535,7 @@ namespace INTV.Shared.Commands
 
         private static string RemoveTrailingEllipses(string text)
         {
-            var index = text.LastIndexOf("...");
+            var index = text.LastIndexOf("...", StringComparison.InvariantCultureIgnoreCase);
             if (index > 0)
             {
                 text = text.Substring(0, index);
@@ -550,7 +551,7 @@ namespace INTV.Shared.Commands
             {
                 modifiers |= Gdk.ModifierType.ShiftMask;
             }
-            var key = (Gdk.Key)command.KeyboardShortcutKey.ToCharArray()[0]; // totes hacky!
+            var key = (Gdk.Key)command.KeyboardShortcutKey[0]; // totes hacky!
             var acceleratorKey = new Gtk.AccelKey(key, modifiers, Gtk.AccelFlags.Visible);
             return acceleratorKey;
         }

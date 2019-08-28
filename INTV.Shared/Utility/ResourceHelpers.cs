@@ -59,8 +59,8 @@ namespace INTV.Shared.Utility
         /// <param name="type">Any object whose implementation is in the assembly in which the image resource is supposed to exist.</param>
         /// <param name="relativeResourcePath">The relative path to the image resource within the type's assembly.</param>
         /// <returns>The image.</returns>
-        /// <exception cref="System.IOException">Thrown if <paramref name="relativeResourcePath"/> refers to a resource that cannot be found.</exception>
-        /// <exception cref="System.NotSupportedException">Thrown if <paramref name="relativeResourcePath"/> refers to a resource that is not a valid image format.</exception>
+        /// <exception cref="IOException">Thrown if <paramref name="relativeResourcePath"/> refers to a resource that cannot be found.</exception>
+        /// <exception cref="NotSupportedException">Thrown if <paramref name="relativeResourcePath"/> refers to a resource that is not a valid image format.</exception>
         public static OSImage LoadImageResource<T>(this T type, string relativeResourcePath)
         {
             return LoadImageResource(typeof(T), relativeResourcePath);
@@ -115,7 +115,7 @@ namespace INTV.Shared.Utility
         /// <returns>The resources with names that start with <paramref name="resourceNameFilter"/>.</returns>
         public static IEnumerable<string> GetResources(this Type typeForLocatingResources, string resourceNameFilter)
         {
-            var resources = typeForLocatingResources.Assembly.GetManifestResourceNames().Where(r => r.StartsWith(resourceNameFilter));
+            var resources = typeForLocatingResources.Assembly.GetManifestResourceNames().Where(r => r.StartsWith(resourceNameFilter, StringComparison.InvariantCulture));
             return resources;
         }
 

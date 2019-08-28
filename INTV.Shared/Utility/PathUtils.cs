@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathUtils.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -82,7 +82,7 @@ namespace INTV.Shared.Utility
         /// <returns>The common path.</returns>
         /// <param name="paths">The paths form which to extract a common path.</param>
         /// <remarks>>Modified from the C# entry from RosettaCode.org.</remarks>
-        /// <see cref="http://rosettacode.org/wiki/Find_Common_Directory_Path#C.23"/>
+        /// <see href="http://rosettacode.org/wiki/Find_Common_Directory_Path#C.23"/>
         public static string GetCommonPath(IEnumerable<string> paths)
         {
             char[] separator = new[] { Path.DirectorySeparatorChar };
@@ -104,12 +104,12 @@ namespace INTV.Shared.Utility
                         firstElement += Path.DirectorySeparatorChar;
                     }
 #endif // WIN
-                    if (paths.All(p => p.StartsWith(firstElement)))
+                    if (paths.All(p => p.StartsWith(firstElement, PathComparer.DefaultPolicy)))
                     {
                         longestCommonPath = firstElement;
                     }
                 }
-                else if (paths.All(p => p.StartsWith(Path.Combine(longestCommonPath, element))))
+                else if (paths.All(p => p.StartsWith(Path.Combine(longestCommonPath, element), PathComparer.DefaultPolicy)))
                 {
                     longestCommonPath = Path.Combine(longestCommonPath, element);
                 }

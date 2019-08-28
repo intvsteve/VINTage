@@ -1,4 +1,4 @@
-﻿// <copyright file="SettingsBase.Gtk.cs" company="INTV Funhouse">
+// <copyright file="SettingsBase.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -23,6 +23,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
 using INTV.Core.ComponentModel;
@@ -43,7 +45,7 @@ namespace INTV.Shared.Properties
     {
         private ConcurrentDictionary<string, object> _values = new ConcurrentDictionary<string, object>();
         private HashSet<string> _applicationSettingsKeys = new HashSet<string>();
-        private Dictionary<Type, Converters> _converters;
+        private Dictionary<Type, Converters> _converters = new Dictionary<Type, Converters>();
 
         public ExtensionDataObject ExtensionData
         {
@@ -65,19 +67,23 @@ namespace INTV.Shared.Properties
 
         #endregion // Events
 
-        protected static void InitializeFromSettingsFile<T>(T instance) where T : SettingsBase, new()
+        protected void InitializeFromSettingsFile<T>() where T : new()
         {
-            var preferencesFilePath = instance.ComponentSettingsFilePath;
+            var dtoProperties = ValidateDataTransferObjectType<T>();
+            var preferencesFilePath = ComponentSettingsFilePath;
             if (File.Exists(preferencesFilePath))
             {
                 try
                 {
-                    using (var fileStream = FileUtilities.OpenFileStream(preferencesFilePath))
-                    using (var xmlDictionaryReader = XmlDictionaryReader.CreateTextReader(fileStream, new XmlDictionaryReaderQuotas()))
+                    using (var xmlDictionaryReader = XmlDictionaryReader.CreateTextReader(FileUtilities.OpenFileStream(preferencesFilePath), new XmlDictionaryReaderQuotas()))
                     {
-                        var dataContractSerializer = new DataContractSerializer(instance.GetType());
-                        var settingsData = dataContractSerializer.ReadObject(xmlDictionaryReader);
-                        var settings = settingsData as SettingsBase;
+                        var dataContractSerializer = new DataContractSerializer(typeof(T));
+                        var dtoSettingsData = dataContractSerializer.ReadObject(xmlDictionaryReader);
+                        foreach (var dtoProperty in dtoProperties)
+                        {
+                            var settingValue = dtoProperty.GetValue(dtoSettingsData);
+                            this[dtoProperty.Name] = settingValue;
+                        }
                     }
                 }
                 catch (Exception e)
@@ -197,13 +203,12 @@ namespace INTV.Shared.Properties
         /// Get the value for a setting.
         /// </summary>
         /// <param name="key">The key for the setting.</param>
-        /// <param name="subkeys">Additional sub-key data.</param>
         /// <returns>The value of the setting.</returns>
         /// <remarks>Since we're not using schemas, provide a simple brain-dead mechanism for
         /// derived classes to store more complex data. A typical example is how a Point is stored.
         /// The base value for <paramref name="key"/> will store two sub-values -- X and Y.
         /// This method will append the subkeys to the base key to form the absolute key to the setting.</remarks>
-        protected object GetSetting(string key, params string[] subkeys)
+        protected object GetSetting(string key)
         {
             object value;
             if (!_values.TryGetValue(key, out value))
@@ -219,23 +224,59 @@ namespace INTV.Shared.Properties
         /// </summary>
         /// <param name="key">The key for the setting.</param>
         /// <param name="value">The value to store for the setting.</param>
-        /// <param name="subkeys">Additional sub-key data.</param>
         /// <remarks>Since we're not using schemas, provide a simple brain-dead mechanism for
         /// derived classes to store more complex data. A typical example is how a Point is stored.
         /// The base value for <paramref name="key"/> will store two sub-values -- X and Y.
         /// This method will append the subkeys to the base key to form the absolute key to the setting.</remarks>
-        protected void StoreSetting(string key, object value, params string[] subkeys)
+        protected void StoreSetting(string key, object value)
         {
             if (value.GetType().IsEnum)
             {
                 // Always store Enums as string.
                 //value = value.ToString();
             }
-            var currentValue = GetSetting(key, subkeys);
+            var currentValue = GetSetting(key);
             if (_values.TryUpdate(key, value, currentValue))
             {
                 this.RaisePropertyChanged(PropertyChanged, key);
             }
+        }
+
+        private IEnumerable<PropertyInfo> ValidateDataTransferObjectType<T>()
+        {
+            var myContract = this.GetType ().GetCustomAttribute(typeof(DataContractAttribute));
+            var dtoContract = typeof(T).GetCustomAttribute(typeof (DataContractAttribute));
+
+            var myProperties = this.GetType().GetPublicInstancePropertiesWithGetAndSet(HasDataMemberProperty);
+            var dtoProperties = typeof(T).GetPublicInstancePropertiesWithGetAndSet(HasDataMemberProperty);
+
+            var propertyErrors = new List<string>();
+            var validProperties = new List<PropertyInfo>();
+            foreach (var myProperty in myProperties)
+            {
+                var dtoProperty = dtoProperties.FirstOrDefault (p => p.Name == myProperty.Name);
+                if (dtoProperty == null)
+                {
+                    propertyErrors.Add ($"Missing: {myProperty.Name}");
+                }
+                else if (dtoProperty.PropertyType != myProperty.PropertyType)
+                {
+                    propertyErrors.Add ($"Invalid data type: {myProperty.Name} - expected: {myProperty.PropertyType} actual: {dtoProperty.PropertyType}");
+                }
+                else
+                {
+                    validProperties.Add(dtoProperty);
+                }
+            }
+
+            return validProperties;
+        }
+
+        private static bool HasDataMemberProperty(PropertyInfo propertyInfo)
+        {
+            var dataMemberAttribute = propertyInfo.GetCustomAttribute(typeof(DataMemberAttribute));
+            var hasDataMemberProperty = dataMemberAttribute != null;
+            return hasDataMemberProperty;
         }
 
         /// <summary>
@@ -243,7 +284,6 @@ namespace INTV.Shared.Properties
         /// </summary>
         private void OSInitialize()
         {
-            _converters = new Dictionary<Type, Tuple<Func<string, object>, Action<string, object>>>();
             AddCustomTypeConverters();
             var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
             var appName = Path.GetFileNameWithoutExtension(entryAssembly.GetName().Name);

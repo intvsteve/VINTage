@@ -25,7 +25,7 @@ namespace INTV.LtoFlash.Commands
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
-    public partial class FirmwareCommandGroup
+    public partial class FirmwareCommandGroup : INTV.Shared.Commands.CommandGroup
     {
         #region CommandGroup
 

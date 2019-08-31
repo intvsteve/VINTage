@@ -22,6 +22,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -242,34 +243,39 @@ namespace INTV.Shared.Properties
             }
         }
 
-        private IEnumerable<PropertyInfo> ValidateDataTransferObjectType<T>()
+        private static void ReportSettingsDataContractErrors(string settingsTypeName, IEnumerable<string> errors)
         {
-            var myContract = this.GetType ().GetCustomAttribute(typeof(DataContractAttribute));
-            var dtoContract = typeof(T).GetCustomAttribute(typeof (DataContractAttribute));
-
-            var myProperties = this.GetType().GetPublicInstancePropertiesWithGetAndSet(HasDataMemberProperty);
-            var dtoProperties = typeof(T).GetPublicInstancePropertiesWithGetAndSet(HasDataMemberProperty);
-
-            var propertyErrors = new List<string>();
-            var validProperties = new List<PropertyInfo>();
-            foreach (var myProperty in myProperties)
+            if (errors.Any())
             {
-                var dtoProperty = dtoProperties.FirstOrDefault (p => p.Name == myProperty.Name);
-                if (dtoProperty == null)
+                var errorMessageBuilder = new System.Text.StringBuilder(string.Format(CultureInfo.CurrentCulture, "The following errors were reported when initializng settings for: {0}", settingsTypeName)).AppendLine();
+                foreach (var error in errors)
                 {
-                    propertyErrors.Add ($"Missing: {myProperty.Name}");
+                    errorMessageBuilder.AppendLine($"  {error}");
                 }
-                else if (dtoProperty.PropertyType != myProperty.PropertyType)
-                {
-                    propertyErrors.Add ($"Invalid data type: {myProperty.Name} - expected: {myProperty.PropertyType} actual: {dtoProperty.PropertyType}");
-                }
-                else
-                {
-                    validProperties.Add(dtoProperty);
-                }
+                var errorMessage = errorMessageBuilder.ToString();
+                ApplicationLogger.RecordInternalWarning(errorMessage);
+                ReportSettingsDataContractErrorsAfterLaunch(settingsTypeName, errors);
             }
+        }
 
-            return validProperties;
+        [System.Diagnostics.Conditional("DEBUG")]
+        private static void ReportSettingsDataContractErrorsAfterLaunch(string settingsTypeName, IEnumerable<string> errors)
+        {
+            var reportSettingsDataContractErrors = new Action(() =>
+            {
+                var errorMessageHeader = string.Format(CultureInfo.CurrentCulture, "The following errors were reported when initializng settings for: {0}", settingsTypeName);
+                var errorMessageBuilder = new System.Text.StringBuilder();
+                foreach (var error in errors)
+                {
+                    errorMessageBuilder.AppendLine(error);
+                }
+                var dialog = View.ReportDialog.Create("Settings Data Contract Error", errorMessageHeader);
+                dialog.ReportText = errorMessageBuilder.ToString();
+                dialog.TextWrapping = View.OSTextWrapping.NoWrap;
+                (dialog.DataContext as ViewModel.ReportDialogViewModel).CloseDialogButtonText = Resources.Strings.Close;
+                dialog.ShowDialog();
+            });
+            SingleInstanceApplication.Current.AddStartupAction("zzzzReportSettingsDataContractErrors:" + settingsTypeName, reportSettingsDataContractErrors, StartupTaskPriority.LowestAsyncTaskPriority);
         }
 
         private static bool HasDataMemberProperty(PropertyInfo propertyInfo)
@@ -279,13 +285,94 @@ namespace INTV.Shared.Properties
             return hasDataMemberProperty;
         }
 
+        private IEnumerable<PropertyInfo> ValidateDataTransferObjectType<T>()
+        {
+            var errorMessages = new List<string>();
+            ValidateDataContract<T>(errorMessages);
+            var validProperties = ValidateDataTransferObjectProperties<T>(errorMessages);
+            ReportSettingsDataContractErrors(this.GetType().FullName, errorMessages);
+            return validProperties;
+        }
+
+        private void ValidateDataContract<T>(IList<string> errorMessages)
+        {
+            var myContract = this.GetType().GetCustomAttribute(typeof(DataContractAttribute)) as DataContractAttribute;
+            var myContractName = myContract?.Name ?? "<not defined>";
+            var myContractNamespace = myContract?.Namespace ?? "<not defined>";
+
+            var dtoContract = typeof(T).GetCustomAttribute(typeof(DataContractAttribute)) as DataContractAttribute;
+            var dtoContractName = dtoContract?.Name ?? "<not defined>";
+            var dtoContractNamespace = dtoContract?.Namespace ?? "<not defined>";
+
+            var dataContractErrorMessage = string.Empty;
+            if ((myContract != null) && (dtoContract == null))
+            {
+                dataContractErrorMessage = string.Format(CultureInfo.CurrentCulture, "Data contract missing: Expected: [{0}, {1}]", myContractName, myContractNamespace);
+            }
+            else if ((myContract == null) && (dtoContract != null))
+            {
+                dataContractErrorMessage = string.Format(CultureInfo.CurrentCulture, "Data contract not defined: [{0}, {1}]", dtoContractName, dtoContractNamespace);
+            }
+            else if ((myContractName != dtoContractName) || (myContractNamespace != dtoContractNamespace))
+            {
+                dataContractErrorMessage = string.Format(CultureInfo.CurrentCulture, "Data contract mismatch: Expected: [{0}, {1}] Actual: [{2}, {3}]", myContractName, myContractNamespace, dtoContractName, dtoContractNamespace);
+            }
+
+            if (!string.IsNullOrEmpty(dataContractErrorMessage))
+            {
+                errorMessages.Add(dataContractErrorMessage);
+            }
+        }
+
+        private IEnumerable<PropertyInfo> ValidateDataTransferObjectProperties<T>(IList<string> errorMessages)
+        {
+            var dataContractProperties = this.GetType().GetPublicInstancePropertiesWithGetAndSet(HasDataMemberProperty);
+            var dtoProperties = typeof(T).GetPublicInstancePropertiesWithGetAndSet(HasDataMemberProperty);
+
+            var dataContractPropertyNames = dataContractProperties.Select(p => p.Name);
+            foreach (var propertyName in _defaults.Keys.Except(_applicationSettingsKeys))
+            {
+                if (!dataContractPropertyNames.Contains(propertyName))
+                {
+                    var propertyErrorMessage = string.Format(CultureInfo.CurrentCulture, "Data contract is missing property: {0}", propertyName);
+                    errorMessages.Add(propertyErrorMessage);
+                }
+            }
+
+            var validProperties = new List<PropertyInfo>();
+            foreach (var dataContractProperty in dataContractProperties)
+            {
+                var propertyErrorMessage = string.Empty;
+                var dtoProperty = dtoProperties.FirstOrDefault(p => p.Name == dataContractProperty.Name);
+                if (dtoProperty == null)
+                {
+                    propertyErrorMessage = string.Format(CultureInfo.CurrentCulture, "Data Transfer Object contract missing property: {0}", dataContractProperty.Name);
+                }
+                else if (dtoProperty.PropertyType != dataContractProperty.PropertyType)
+                {
+                    propertyErrorMessage = string.Format(CultureInfo.CurrentCulture, "Data contract property type mismatch for property: {0}: Expected: {1} Actual {2}", dataContractProperty.Name, dataContractProperty.PropertyType, dtoProperty.PropertyType);
+                }
+                else
+                {
+                    validProperties.Add(dtoProperty);
+                }
+
+                if (!string.IsNullOrEmpty(propertyErrorMessage))
+                {
+                    errorMessages.Add(propertyErrorMessage);
+                }
+            }
+
+            return validProperties;
+        }
+
         /// <summary>
         /// GTK-specific initialization.
         /// </summary>
         private void OSInitialize()
         {
             AddCustomTypeConverters();
-            var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
+            var entryAssembly = Assembly.GetEntryAssembly();
             var appName = Path.GetFileNameWithoutExtension(entryAssembly.GetName().Name);
 
             ApplicationSettingsDirectory = Path.Combine(XdgEnvironmentVariable.Config.GetEnvironmentVariableValue(), appName);

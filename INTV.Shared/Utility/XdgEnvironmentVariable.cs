@@ -25,6 +25,7 @@ namespace INTV.Shared.Utility
     /// <summary>
     /// Enumeration to simplify using XDG environment variables.
     /// </summary>
+    /// <remarks>Some of these values are are adapted from <see href="https://wiki.archlinux.org/index.php/XDG_user_directories"/>.</remarks>
     public enum XdgEnvironmentVariable
     {
         /// <summary>
@@ -60,10 +61,50 @@ namespace INTV.Shared.Utility
         Cache,
 
         /// <summary>
-        /// The directori to use for user-specific, non-essential runtime files, e.g. named pipes.
+        /// The directory to use for user-specific, non-essential runtime files, e.g. named pipes.
         /// </summary>
         /// <remarks>Several rules apply. See https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html </remarks>
         Runtime,
+
+        /// <summary>
+        /// The (user's) desktop directory.
+        /// </summary>
+        Desktop,
+
+        /// <summary>
+        /// The user's documents directory.
+        /// </summary>
+        Documents,
+
+        /// <summary>
+        /// The user's downloads directory.
+        /// </summary>
+        Downloads,
+
+        /// <summary>
+        /// The user's directory for storing music files.
+        /// </summary>
+        Music,
+
+        /// <summary>
+        /// The user's directory for storing pictures.
+        /// </summary>
+        Pictures,
+
+        /// <summary>
+        /// A public directory, accessible to other users.
+        /// </summary>
+        Public,
+
+        /// <summary>
+        /// The templates directory.
+        /// </summary>
+        Templates,
+
+        /// <summary>
+        /// The directory used to store videos.
+        /// </summary>
+        Videos,
     }
 
     /// <summary>
@@ -79,6 +120,14 @@ namespace INTV.Shared.Utility
             { XdgEnvironmentVariable.ConfigDirectories, "XDG_CONFIG_DIRS" },
             { XdgEnvironmentVariable.Cache, "XDG_CACHE_HOME" },
             { XdgEnvironmentVariable.Runtime, "XDG_RUNTIME_DIR" },
+            { XdgEnvironmentVariable.Desktop, "XDG_DESKTOP_DIR" },
+            { XdgEnvironmentVariable.Documents, "XDG_DOCUMENTS_DIR" },
+            { XdgEnvironmentVariable.Downloads, "XDG_DOWNLOAD_DIR" },
+            { XdgEnvironmentVariable.Music, "XDG_MUSIC_DIR" },
+            { XdgEnvironmentVariable.Pictures, "XDG_PICTURES_DIR" },
+            { XdgEnvironmentVariable.Public, "XDG_PUBLICSHARE_DIR" },
+            { XdgEnvironmentVariable.Templates, "XDG_TEMPLATES_DIR" },
+            { XdgEnvironmentVariable.Videos, "XDG_VIDEOS_DIR" },
         };
 
         /// <summary>
@@ -124,6 +173,30 @@ namespace INTV.Shared.Utility
                     break;
                 case XdgEnvironmentVariable.Runtime:
                     ////value = System.IO.Path.Combine (homeDir, );
+                    break;
+                case XdgEnvironmentVariable.Desktop:
+                    value = System.IO.Path.Combine(homeDir, "Desktop");
+                    break;
+                case XdgEnvironmentVariable.Documents:
+                    value = System.IO.Path.Combine(homeDir, "Documents");
+                    break;
+                case XdgEnvironmentVariable.Downloads:
+                    value = System.IO.Path.Combine(homeDir, "Downloads");
+                    break;
+                case XdgEnvironmentVariable.Music:
+                    value = System.IO.Path.Combine(homeDir, "Music");
+                    break;
+                case XdgEnvironmentVariable.Pictures:
+                    value = System.IO.Path.Combine(homeDir, "Pictures");
+                    break;
+                case XdgEnvironmentVariable.Public:
+                    value = System.IO.Path.Combine(homeDir, "Public");
+                    break;
+                case XdgEnvironmentVariable.Templates:
+                    value = System.IO.Path.Combine(homeDir, "Templates");
+                    break;
+                case XdgEnvironmentVariable.Videos:
+                    value = System.IO.Path.Combine(homeDir, "Videos");
                     break;
                 default:
                     break;

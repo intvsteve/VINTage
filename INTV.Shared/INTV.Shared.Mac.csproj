@@ -70,6 +70,7 @@
     <Compile Include="ComponentModel\PropertyChangedNotifierHelpers.cs" />
     <Compile Include="ComponentModel\RelayCommand.cs" />
     <Compile Include="ComponentModel\VisualRelayCommand.cs" />
+    <Compile Include="Utility\ApplicationLogger.cs" />
     <Compile Include="Utility\AsyncTaskData.cs" />
     <Compile Include="Utility\AsyncTaskWithProgress.cs" />
     <Compile Include="Utility\ColorHelpers.cs" />

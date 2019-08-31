@@ -209,6 +209,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Utility\ApplicationLogger.cs" />
     <Compile Include="Utility\AsyncTaskData.cs" />
     <Compile Include="Utility\AsyncTaskWithProgress.cs" />
     <Compile Include="Utility\ASCIIBinaryReader.cs" />

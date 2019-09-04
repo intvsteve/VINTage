@@ -88,21 +88,35 @@ namespace INTV.Shared.Utility
         /// <remarks>This function assumes that the string is in a resource that can be located in a namespace of [assemblyName].Resources.resourceName.</remarks>
         public static string GetResourceString(this Type type, string resourceName, string key)
         {
+            var assembly = type.Assembly;
+            resourceName = assembly.GetName().Name + ".Resources." + resourceName;
+            var value = type.GetStringFromResource(resourceName, key);
+            return value;
+        }
+
+        /// <summary>
+        /// Retrieves a string resource using the specified resource name.
+        /// </summary>
+        /// <param name="type">A type that is in the assembly containing the desired string resource.</param>
+        /// <param name="resourceManagerResourceName">Resource manager resource name.</param>
+        /// <param name="key">The name of the string resource.</param>
+        /// <returns>The string, or <c>null</c> if not found. May also be a bogus string starting with !! if an exception occurs.</returns>
+        public static string GetStringFromResource(this Type type, string resourceManagerResourceName, string key)
+        {
             var value = "!!MISSING STRING!!";
             try
             {
                 var assembly = type.Assembly;
-                resourceName = assembly.GetName().Name + ".Resources." + resourceName;
-                var resourceManager = new System.Resources.ResourceManager(resourceName, type.Assembly);
+                var resourceManager = new System.Resources.ResourceManager(resourceManagerResourceName, type.Assembly);
                 value = resourceManager.GetString(key);
             }
             catch (InvalidOperationException)
             {
-                value = "!!RESOURCE '" + resourceName + "." + key + " ' IS NOT A STRING!!";
+                value = "!!RESOURCE '" + resourceManagerResourceName + "." + key + " ' IS NOT A STRING!!";
             }
             catch (System.Resources.MissingManifestResourceException)
             {
-                value = "!!NO RESOURCES FOUND FOR '" + resourceName + "." + key + "'!!";
+                value = "!!NO RESOURCES FOUND FOR '" + resourceManagerResourceName + "." + key + "'!!";
             }
             return value;
         }

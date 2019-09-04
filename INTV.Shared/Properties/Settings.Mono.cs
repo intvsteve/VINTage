@@ -52,7 +52,8 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the list of ROM search directories.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if you attempt to assign the property.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if you attempt to assign the property.</exception>
+        [DataMember]
         public INTV.Shared.Model.SearchDirectories RomListSearchDirectories
         {
             get
@@ -118,7 +119,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the maximum number of GZIP members to attempt to parse from a .gz file.
         /// </summary>
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public int MaxGZipEntriesSearch
         {
             get { return GetSetting<int>(MaxGZipEntriesSearchSettingName); }

@@ -44,8 +44,8 @@ namespace INTV.Shared.Properties
 
         #region ROM List Settings
 
-        public const string ValidateAtLaunchSettingName = "ValidateAtLaunch";
-        public const string SearchForRomsAtLaunchSettingName = "SearchForRomsAtLaunch";
+        public const string ValidateAtLaunchSettingName = "RomListValidateAtStartup";
+        public const string SearchForRomsAtLaunchSettingName = "RomListSearchForRomsAtStartup";
         public const string RomListSearchDirectoriesSettingName = "RomListSearchDirectories";
         public const string RomListNameColWidthSettingName = "RomListNameColWidth";
         public const string RomListVendorColWidthSettingName = "RomListVendorColWidth";

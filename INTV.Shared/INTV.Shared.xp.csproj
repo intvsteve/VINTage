@@ -96,6 +96,7 @@
     <Compile Include="Commands\RootCommandGroup.WPF.cs" />
     <Compile Include="Commands\StandardMenuCommandId.cs" />
     <Compile Include="Commands\StandardMenuId.cs" />
+    <Compile Include="ComponentModel\ApplicationInfo.cs" />
     <Compile Include="ComponentModel\CommandManager.WPF.cs" />
     <Compile Include="ComponentModel\ComponentVisual.cs" />
     <Compile Include="ComponentModel\CompositionHelpers.cs" />

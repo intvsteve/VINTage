@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ComponentModel\ApplicationInfo.cs" />
     <Compile Include="ComponentModel\ICommand.Mono.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifierHelpers.cs" />
     <Compile Include="ComponentModel\RelayCommand.cs" />

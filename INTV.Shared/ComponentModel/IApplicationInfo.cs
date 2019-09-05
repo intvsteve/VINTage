@@ -1,5 +1,5 @@
 ﻿// <copyright file="IApplicationInfo.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.Properties;
 using INTV.Shared.Utility;
 
 namespace INTV.Shared.ComponentModel
@@ -27,6 +28,32 @@ namespace INTV.Shared.ComponentModel
     /// </summary>
     public interface IApplicationInfo
     {
+        /// <summary>
+        /// Gets the invariant application name.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Gets the display name for the application, which may be localized.
+        /// </summary>
+        string DisplayName { get; }
+
+        /// <summary>
+        /// Gets the application version as a string.
+        /// </summary>
+        /// <value>The version.</value>
+        string Version { get; }
+
+        /// <summary>
+        /// Gets the copyright string for the application.
+        /// </summary>
+        string Copyright { get; }
+
+        /// <summary>
+        /// Gets the author(s) of the application.
+        /// </summary>
+        string Author { get; }
+
         /// <summary>
         /// Gets the application-specific name of the folder in which documents should be saved.
         /// </summary>
@@ -56,5 +83,10 @@ namespace INTV.Shared.ComponentModel
         /// Gets the URL to use to see if there is a newer version of the application available for download.
         /// </summary>
         string VersionCheckUrl { get; }
+
+        /// <summary>
+        /// Gets the settings provided by the application itself.
+        /// </summary>
+        ISettings Settings { get; }
     }
 }

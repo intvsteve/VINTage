@@ -73,6 +73,7 @@ namespace INTV.Shared.Utility
             get
             {
                 var versionString = _versionString;
+                if (versionString == null)
                 {
                     versionString = Instance == null ? ApplicationInfo.StandardVersion : Instance.AppInfo.Version;
                 }

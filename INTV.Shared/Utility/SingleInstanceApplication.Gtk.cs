@@ -1,4 +1,4 @@
-﻿// <copyright file="SingleInstanceApplication.Gtk.cs" company="INTV Funhouse">
+// <copyright file="SingleInstanceApplication.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -93,10 +93,10 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <typeparam name="T">The type for the main window class.</typeparam>
         /// <param name="uniqueInstance">Unique instance string.</param>
-        /// <param name="settings">The application settings.</param>
+        /// <param name="applicationInfo">The application description.</param>
         /// <param name="args">Command line arguments.</param>
         /// <param name="splashScreenImage">Splash screen image.</param>
-        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : Gtk.Window, IMainWindow, new()
+        public static void RunApplication<T>(string uniqueInstance, IApplicationInfo applicationInfo, string[] args, string splashScreenImage) where T : Gtk.Window, IMainWindow, new()
         {
             // TODO: Single instance check / activate
             // Documentation of Gtk.Application.Init(progname, ref args) implies that
@@ -108,12 +108,13 @@ namespace INTV.Shared.Utility
             _splashScreenResource = splashScreenImage;
             Gtk.Application.Init(uniqueInstance, ref args);
 
-            var splashImage = _mainWindowType.LoadImageResource(_splashScreenResource);
+            Instance.AppInfo = applicationInfo;
             var window = new T();
             Instance.MainWindow = window;
             Instance.ReadyState |= AppReadyState.MainWindowSourced;
 
             Gtk.Window.DefaultIcon = window.Icon;
+            var splashImage = _mainWindowType.LoadImageResource(_splashScreenResource);
             var splashScreen = new SplashScreen(splashImage); // creating also shows
             splashScreen.TransientFor = window;
             window.Data["SplashScreen"] = splashScreen;

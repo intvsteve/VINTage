@@ -1,5 +1,5 @@
-﻿// <copyright file="SingleInstanceApplication.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// <copyright file="SingleInstanceApplication.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -72,12 +72,11 @@ namespace INTV.Shared.Utility
         {
             get
             {
-                if (string.IsNullOrEmpty(_versionString))
+                var versionString = _versionString;
                 {
-                    var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-                    _versionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).ProductVersion;
+                    versionString = Instance == null ? ApplicationInfo.StandardVersion : Instance.AppInfo.Version;
                 }
-                return _versionString;
+                return versionString;
             }
         }
 
@@ -86,12 +85,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         public static string Copyright
         {
-            get
-            {
-                var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-                var copyright = entryAssembly.GetCustomAttributes(typeof(System.Reflection.AssemblyCopyrightAttribute), false).OfType<System.Reflection.AssemblyCopyrightAttribute>().FirstOrDefault();
-                return copyright.Copyright + " Steven A. Orth";
-            }
+            get { return Instance == null ? ApplicationInfo.StandardCopyright : Instance.AppInfo.Copyright; }
         }
 
         /// <summary>
@@ -166,10 +160,9 @@ namespace INTV.Shared.Utility
         private int _busy;
 
         /// <summary>
-        /// Gets or sets the application information interface.
+        /// Gets the application information interface.
         /// </summary>
-        [System.ComponentModel.Composition.Import]
-        public IApplicationInfo AppInfo { get; set; }
+        public IApplicationInfo AppInfo { get; private set; }
 
         // UNDONE One day, perhaps we can get these via MEF. Not ready yet, though.
         // [System.ComponentModel.Composition.ImportMany]

@@ -74,10 +74,10 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <typeparam name="T">The type of the application's main window.</typeparam>
         /// <param name="uniqueInstance">A unique identifier for the application, used to enforce the single instance feature.</param>
-        /// <param name="settings">The application-specific settings data.</param>
+        /// <param name="applicationInfo">The application description.</param>
         /// <param name="args">Command line arguments to the application.</param>
         /// <param name="splashScreenImage">Image to display in the splash screen.</param>
-        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : System.Windows.Window, new()
+        public static void RunApplication<T>(string uniqueInstance, IApplicationInfo applicationInfo, string[] args, string splashScreenImage) where T : System.Windows.Window, new()
         {
             if (IsFirstInstance(uniqueInstance))
             {

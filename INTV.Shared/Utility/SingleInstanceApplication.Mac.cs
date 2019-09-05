@@ -146,11 +146,11 @@ namespace INTV.Shared.Utility
         /// Runs the application.
         /// </summary>
         /// <param name="uniqueInstance">Unique instance string.</param>
-        /// <param name="settings">The application ettings.</param>
+        /// <param name="applicationInfo">The application description.</param>
         /// <param name="args">Command line arguments.</param>
         /// <param name="splashScreenImage">Splash screen image.</param>
         /// <typeparam name="T">The type for the main window class.</typeparam>
-        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : NSWindow
+        public static void RunApplication<T>(string uniqueInstance, IApplicationInfo applicationInfo, string[] args, string splashScreenImage) where T : NSWindow
         {
             _mainWindowType = typeof(T);
             _splashScreenResource = splashScreenImage;

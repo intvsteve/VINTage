@@ -26,6 +26,12 @@ namespace LtoFlash.Properties
     internal sealed partial class Settings
     {
         /// <inheritdoc/>
+        public override double Weight { get; } = 0.0; // want to be first
+
+        /// <inheritdoc/>
+        public override string DescriptionsResourceName { get; } = "Locutus.Resources.Strings";
+
+        /// <inheritdoc/>
         protected override void InitializeFromSettingsFile()
         {
         }

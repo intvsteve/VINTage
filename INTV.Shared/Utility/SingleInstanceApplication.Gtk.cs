@@ -20,6 +20,7 @@
 
 using System.Linq;
 using INTV.Shared.ComponentModel;
+using INTV.Shared.Properties;
 using INTV.Shared.View;
 
 namespace INTV.Shared.Utility
@@ -124,7 +125,8 @@ namespace INTV.Shared.Utility
 
         private static bool FinishInitialization()
         {
-            Instance.Initialize(null);
+            var settings = Instance.AppInfo.Settings;
+            Instance.Initialize(settings);
             var window = Instance.MainWindow;
             InitializeMainWindow(window);
             return false;
@@ -363,7 +365,7 @@ namespace INTV.Shared.Utility
             // TODO: Determine if these are useless in GTK.
             foreach (var configuration in Configurations.OrderBy(c => c.Metadata.Weight))
             {
-                var settings = configuration.Value.Settings as System.Configuration.ApplicationSettingsBase;
+                var settings = configuration.Value.Settings as ISettings;
                 if (settings != null)
                 {
                     AddSettings(settings);

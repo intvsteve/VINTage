@@ -1,4 +1,4 @@
-// <copyright file="SingleInstanceApplication.cs" company="INTV Funhouse">
+﻿// <copyright file="SingleInstanceApplication.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -30,6 +30,7 @@ using INTV.Core.Model.Device;
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Model.Program;
+using INTV.Shared.Properties;
 using INTV.Shared.Resources;
 
 namespace INTV.Shared.Utility
@@ -53,7 +54,7 @@ namespace INTV.Shared.Utility
         // actions that must not run in parallel, such as updating file formats, et. al. The "asynchronous" actions are
         // usually activities such as ROM or device discovery, which are relatively low impact.
         private static ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>> _postStartupActions = new ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>>();
-        private List<System.Configuration.ApplicationSettingsBase> _settings;
+        private List<ISettings> _settings = new List<ISettings>();
 
         #region Properties
 
@@ -110,7 +111,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets the settings associated with the application.
         /// </summary>
-        public IEnumerable<System.Configuration.ApplicationSettingsBase> Settings
+        public IEnumerable<ISettings> Settings
         {
             get { return _settings; }
         }
@@ -263,9 +264,9 @@ namespace INTV.Shared.Utility
         /// Add settings to the application which will be saved at shutdown.
         /// </summary>
         /// <param name="settings">Settings to associate with the application.</param>
-        public void AddSettings(System.Configuration.ApplicationSettingsBase settings)
+        public void AddSettings(ISettings settings)
         {
-            if ((settings != null) && !_settings.Contains(settings))
+            if (_settings.FirstOrDefault(s => s.GetType() == settings.GetType()) == null)
             {
                 _settings.Add(settings);
             }
@@ -328,9 +329,8 @@ namespace INTV.Shared.Utility
             return commandProvider;
         }
 
-        private void Initialize(System.Configuration.ApplicationSettingsBase settings)
+        private void Initialize(ISettings settings)
         {
-            _settings = new System.Collections.Generic.List<System.Configuration.ApplicationSettingsBase>();
             AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
             PluginsLocation = GetPluginsDirectory();
             OSInitialize();

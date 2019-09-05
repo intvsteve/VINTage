@@ -92,6 +92,8 @@
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="LtoFlashApplicationInfo.cs" />
+    <Compile Include="LtoFlashApplicationInfo.Gtk.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

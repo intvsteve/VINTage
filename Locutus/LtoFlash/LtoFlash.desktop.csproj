@@ -71,6 +71,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="LtoFlashApplicationInfo.cs" />
+    <Compile Include="LtoFlashApplicationInfo.Win.cs" />
     <Compile Include="Settings.cs" />
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

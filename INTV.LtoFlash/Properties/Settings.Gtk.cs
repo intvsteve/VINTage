@@ -1,4 +1,4 @@
-// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -91,10 +91,10 @@ namespace INTV.LtoFlash.Properties
         /// </summary>
         partial void OSInitializeDefaults()
         {
-            AddSetting(MenuLayoutLongNameColWidthSettingName, 256);
-            AddSetting(MenuLayoutShortNameColWidthSettingName, 144);
-            AddSetting(MenuLayoutManualColWidthSettingName, 168);
-            AddSetting(MenuLayoutSaveDataColWidthSettingName, 128);
+            AddSetting(MenuLayoutLongNameColWidthSettingName, 256, isApplicationSetting: true);
+            AddSetting(MenuLayoutShortNameColWidthSettingName, 144, isApplicationSetting: true);
+            AddSetting(MenuLayoutManualColWidthSettingName, 168, isApplicationSetting: true);
+            AddSetting(MenuLayoutSaveDataColWidthSettingName, 128, isApplicationSetting: true);
             AddSetting(LtoFlashSerialReadChunkSizeSettingName, 0);
         }
 

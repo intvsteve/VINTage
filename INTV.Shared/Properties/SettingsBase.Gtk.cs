@@ -42,9 +42,9 @@ namespace INTV.Shared.Properties
     [DataContract(Namespace = "https://www.intvfunhouse.com")]
     public abstract partial class SettingsBase : INotifyPropertyChanged, IExtensibleDataObject
     {
-        private ConcurrentDictionary<string, object> _values = new ConcurrentDictionary<string, object>();
-        private HashSet<string> _applicationSettingsKeys = new HashSet<string>();
-        private Dictionary<Type, Converters> _converters = new Dictionary<Type, Converters>();
+        private static readonly Lazy<ApplicationSettings> SharedApplicationSettings = new Lazy<ApplicationSettings>();
+        private readonly ConcurrentDictionary<string, object> _values = new ConcurrentDictionary<string, object>();
+        private readonly HashSet<string> _applicationSettingsKeys = new HashSet<string>();
         private readonly Dictionary<Type, TypeConverter> _converters = new Dictionary<Type, TypeConverter>();
 
         public ExtensionDataObject ExtensionData
@@ -62,7 +62,19 @@ namespace INTV.Shared.Properties
         /// application-level settings file.</remarks>
         public abstract double Weight { get; }
 
-        private string ApplicationSettingsDirectory { get; set; }
+        /// <summary>
+        /// Gets the name of the descriptions resource.
+        /// </summary>
+        /// <remarks>Most implementations can leave this as a value of <c>null</c> - provided they follow
+        /// the convention that the default namespace used in the assembly matches the assembly name. For
+        /// convenience, resources that provide descriptions of the application-level settings an assembly
+        /// provides will be extracted from this resource. The grouping will use a resource key of
+        /// 'SettingsDescription' while individual settings will use the name of the settings property
+        /// as the key into the string resource. For an assembly named, for example, 'INTV.Shared' with the
+        /// same default namespace, if this value is <c>null</c>, the resources will be expected to be found
+        /// in a resource named `INTV.Shared.Resources.Strings`. If this value is not <c>null</c>, it must
+        /// be the name of a strings resource that can be accessed via the ResourceManager API.</remarks>
+        public virtual string DescriptionsResourceName { get; }
 
         /// <summary>
         /// Gets or sets the absolute path for the component's settings file.
@@ -70,7 +82,10 @@ namespace INTV.Shared.Properties
         /// <value>The component settings file path.</value>
         protected string ComponentSettingsFilePath { get; set; }
 
-        private string ApplicationSettingsFilePath { get; set; }
+        private static ApplicationSettings AppSettings
+        {
+            get { return SharedApplicationSettings.Value; }
+        }
 
         #region Events
 
@@ -358,19 +373,21 @@ namespace INTV.Shared.Properties
         private void OSInitialize()
         {
             AddCustomTypeConverters();
-            var entryAssembly = Assembly.GetEntryAssembly();
-            var appName = Path.GetFileNameWithoutExtension(entryAssembly.GetName().Name);
-
-            ApplicationSettingsDirectory = Path.Combine(XdgEnvironmentVariable.Config.GetEnvironmentVariableValue(), appName);
-            if (!Directory.Exists(ApplicationSettingsDirectory))
-            {
-                Directory.CreateDirectory(ApplicationSettingsDirectory);
-            }
-
-            ApplicationSettingsFilePath = Path.Combine(ApplicationSettingsDirectory, appName.ToLowerInvariant() + "rc");
-
             var componentName = this.GetType().Assembly.GetName().Name.ToLowerInvariant().Replace('.', '-');
-            ComponentSettingsFilePath = Path.Combine(ApplicationSettingsDirectory, componentName + ".config");
+            ComponentSettingsFilePath = Path.Combine(ApplicationSettings.Directory, componentName + ".config");
+        }
+
+        private void InitializeFromApplicationSettings()
+        {
+            try
+            {
+                AppSettings.InitializeSettings(this);
+            }
+            catch (Exception e)
+            {
+                var errorMessage = $"Error initializing from application settings:\n\n{e}";
+                ApplicationLogger.RecordDebugTraceMessage(errorMessage);
+            }
         }
 
         /// <summary>
@@ -385,6 +402,7 @@ namespace INTV.Shared.Properties
             if (isApplicationSetting)
             {
                 _applicationSettingsKeys.Add(key);
+                AppSettings.RegisterSetting(this, key, defaultValue.GetType());
             }
         }
 

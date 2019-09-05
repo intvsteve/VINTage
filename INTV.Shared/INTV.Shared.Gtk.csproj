@@ -336,6 +336,7 @@
     <Compile Include="Utility\ApplicationLogger.cs" />
     <Compile Include="Converter\GdkPointConverter.cs" />
     <Compile Include="Converter\GdkSizeConverter.cs" />
+    <Compile Include="Converter\TypeConverterRegistrar.cs" />
     <Compile Include="ComponentModel\ApplicationInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

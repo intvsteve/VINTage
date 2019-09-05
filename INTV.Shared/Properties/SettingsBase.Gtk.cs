@@ -31,8 +31,6 @@ using System.Xml;
 using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 
-using Converters = System.Tuple<System.Func<string, object>, System.Action<string, object>>;
-
 namespace INTV.Shared.Properties
 {
     /// <summary>
@@ -47,6 +45,7 @@ namespace INTV.Shared.Properties
         private ConcurrentDictionary<string, object> _values = new ConcurrentDictionary<string, object>();
         private HashSet<string> _applicationSettingsKeys = new HashSet<string>();
         private Dictionary<Type, Converters> _converters = new Dictionary<Type, Converters>();
+        private readonly Dictionary<Type, TypeConverter> _converters = new Dictionary<Type, TypeConverter>();
 
         public ExtensionDataObject ExtensionData
         {
@@ -145,22 +144,25 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Derived classes may need to provide custom type converters.
         /// </summary>
-        /// <remarks>If this method is overridden, it is likely to also necessary to
-        /// override the Item indexer implementation.</remarks>
         protected virtual void AddCustomTypeConverters()
         {
+            var stockConverterTypes = new[] { typeof(int), typeof(bool) };
+            foreach (var type in stockConverterTypes)
+            {
+                var converter = TypeDescriptor.GetConverter(type);
+                AddCustomTypeConverter(type, converter);
+            }
         }
 
         /// <summary>
         /// Add a custom type converter.
         /// </summary>
         /// <param name="type">The data type of the setting.</param>
-        /// <param name="getter">The delegate to call to retrieve a setting value for the type.</param>
-        /// <param name="setter">The delegate to call to store a setting value for the type.</param>
-        /// <remarks>Only one set of converter functions for a given type may be registered.</remarks>
-        protected void AddCustomTypeConverter(Type type, Func<string, object> getter, Action<string, object> setter)
+        /// <param name="converter">The <see cref="TypeConverter"/> to use to converter value for the type to and from a string.</param>
+        /// <remarks>Only one converter for a given type may be registered.</remarks>
+        protected void AddCustomTypeConverter(Type type, TypeConverter converter)
         {
-            _converters.Add(type, new Tuple<Func<string, object>, Action<string, object>>(getter, setter));
+            _converters.Add(type, converter);
         }
 
         /// <summary>
@@ -177,30 +179,10 @@ namespace INTV.Shared.Properties
             bool gotSetting = false;
             try
             {
-                Converters converters;
-                if (_converters.TryGetValue(type, out converters))
-                {
-                    value = converters.Item1(key);
-                }
-                else
-                {
-                    value = GetSetting(key);
-                    //if (type.IsEnum)
-                    //{
-                    //    // Enums are always stored as strings.
-                    //    try
-                    //    {
-                    //        value = Enum.Parse(type, value as string);
-                    //    }
-                    //    catch (Exception)
-                    //    {
-                    //        value = 0; // Parse failed, so return default for an enum.
-                    //    }
-                    //}
-                }
+                value = GetSetting(key);
                 gotSetting = true;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 value = null;
             }
@@ -214,15 +196,7 @@ namespace INTV.Shared.Properties
         /// <param name="value">The new value for the setting.</param>
         protected void OSSetSetting(string key, object value)
         {
-            Converters converters;
-            if (_converters.TryGetValue(value.GetType(), out converters))
-            {
-                converters.Item2(key, value);
-            }
-            else
-            {
-                StoreSetting(key, value);
-            }
+            StoreSetting(key, value);
         }
 
         /// <summary>
@@ -230,10 +204,6 @@ namespace INTV.Shared.Properties
         /// </summary>
         /// <param name="key">The key for the setting.</param>
         /// <returns>The value of the setting.</returns>
-        /// <remarks>Since we're not using schemas, provide a simple brain-dead mechanism for
-        /// derived classes to store more complex data. A typical example is how a Point is stored.
-        /// The base value for <paramref name="key"/> will store two sub-values -- X and Y.
-        /// This method will append the subkeys to the base key to form the absolute key to the setting.</remarks>
         protected object GetSetting(string key)
         {
             object value;
@@ -250,17 +220,8 @@ namespace INTV.Shared.Properties
         /// </summary>
         /// <param name="key">The key for the setting.</param>
         /// <param name="value">The value to store for the setting.</param>
-        /// <remarks>Since we're not using schemas, provide a simple brain-dead mechanism for
-        /// derived classes to store more complex data. A typical example is how a Point is stored.
-        /// The base value for <paramref name="key"/> will store two sub-values -- X and Y.
-        /// This method will append the subkeys to the base key to form the absolute key to the setting.</remarks>
         protected void StoreSetting(string key, object value)
         {
-            if (value.GetType().IsEnum)
-            {
-                // Always store Enums as string.
-                //value = value.ToString();
-            }
             var currentValue = GetSetting(key);
             if (_values.TryUpdate(key, value, currentValue))
             {

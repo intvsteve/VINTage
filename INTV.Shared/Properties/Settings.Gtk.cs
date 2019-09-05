@@ -186,9 +186,18 @@ namespace INTV.Shared.Properties
         protected override void AddCustomTypeConverters()
         {
             base.AddCustomTypeConverters();
-            AddCustomTypeConverter(typeof(SearchDirectories), GetSearchDirectories, SetSearchDirectories);
+            if (!TypeConverterRegistrar.TryRegisterAttribute<Gdk.Point, GdkPointConverter>())
+            {
+                ApplicationLogger.RecordDebugTraceMessage($"Failed to register type converter for: {typeof(Gdk.Point)}");
+            }
+            if (!TypeConverterRegistrar.TryRegisterAttribute<Gdk.Size, GdkSizeConverter>())
+            {
+                ApplicationLogger.RecordDebugTraceMessage($"Failed to register type converter for: {typeof(Gdk.Size)}");
+            }
+            AddCustomTypeConverter(typeof(Gdk.WindowState), TypeDescriptor.GetConverter(typeof(Gdk.WindowState)));
+            AddCustomTypeConverter(typeof(Gdk.Point), TypeDescriptor.GetConverter(typeof(Gdk.Point)));
+            AddCustomTypeConverter(typeof(Gdk.Size), TypeDescriptor.GetConverter(typeof(Gdk.Size)));
         }
-
         private object GetSearchDirectories(string key)
         {
             // TODO: Actually implement this! Supposedly, array of strings is supported by GConf...

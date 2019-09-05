@@ -1,4 +1,4 @@
-﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -30,6 +30,9 @@ namespace INTV.LtoFlash.Properties
     {
         private const string ContractName = "LocutusSettings";
         private const string ContractNamespace = "https://ltoflash.intvfunhouse.com";
+
+        /// <inheritdoc/>
+        public override double Weight { get; } = 0.8; // see INTV.LtoFlash.Model.Configuration
 
         /// <summary>
         /// Gets or sets the width of the menu layout long name column.

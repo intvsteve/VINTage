@@ -55,9 +55,21 @@ namespace INTV.Shared.Properties
         }
         private ExtensionDataObject _extensibleDataObject;
 
-        protected string ComponentSettingsFilePath { get; set; }
+        /// <summary>
+        /// Gets the weight of the settings relative to other implementations.
+        /// </summary>
+        /// <remarks>This value is typically the same as the main <see cref="IComponent"/> provided by a plugin assembly
+        /// It is mainly used to provide consistent ordering of the settings collected together in the shared
+        /// application-level settings file.</remarks>
+        public abstract double Weight { get; }
 
         private string ApplicationSettingsDirectory { get; set; }
+
+        /// <summary>
+        /// Gets or sets the absolute path for the component's settings file.
+        /// </summary>
+        /// <value>The component settings file path.</value>
+        protected string ComponentSettingsFilePath { get; set; }
 
         private string ApplicationSettingsFilePath { get; set; }
 
@@ -68,15 +80,26 @@ namespace INTV.Shared.Properties
 
         #endregion // Events
 
+        /// <summary>
+        /// Initializes the settings from the settings file on disk.
+        /// </summary>
+        /// <typeparam name="T">The data type of a simple Data Transfer Object to use during deserialization of the data contract.</typeparam>
+        /// <remarks>The provided DTO type <typeparamref name="T"/> is inspected for correctness. The following are reported to the
+        /// application log, and, if running a debug build, via a dialog:
+        /// <list type="bullet">
+        /// <item><description>This type and <typeparamref name="T"/> must have matching Data Contracts (name, namespace)</description></item>
+        /// <item><description>All public properties that can be get and set, and that are not application properties, must also be marked as Data Members</description></item>
+        /// <item><description>All properties in the data contract of this type must match those on <typeparamref name="T"/></description></item>
+        /// <item><description>Data types of all properties in the data contracts must match</description></item>
+        /// </list></remarks>
         protected void InitializeFromSettingsFile<T>() where T : new()
         {
             var dtoProperties = ValidateDataTransferObjectType<T>();
-            var preferencesFilePath = ComponentSettingsFilePath;
-            if (File.Exists(preferencesFilePath))
+            if (File.Exists(ComponentSettingsFilePath))
             {
                 try
                 {
-                    using (var xmlDictionaryReader = XmlDictionaryReader.CreateTextReader(FileUtilities.OpenFileStream(preferencesFilePath), new XmlDictionaryReaderQuotas()))
+                    using (var xmlDictionaryReader = XmlDictionaryReader.CreateTextReader(FileUtilities.OpenFileStream(ComponentSettingsFilePath), new XmlDictionaryReaderQuotas()))
                     {
                         var dataContractSerializer = new DataContractSerializer(typeof(T));
                         var dtoSettingsData = dataContractSerializer.ReadObject(xmlDictionaryReader);
@@ -89,6 +112,8 @@ namespace INTV.Shared.Properties
                 }
                 catch (Exception e)
                 {
+                    var errorMessage = $"Error initializing from preferences file:\n  {ComponentSettingsFilePath}\n\n{e}";
+                    ApplicationLogger.RecordDebugTraceMessage(errorMessage);
                 }
             }
         }

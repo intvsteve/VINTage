@@ -1,4 +1,4 @@
-﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -75,6 +75,9 @@ namespace INTV.Shared.Properties
                 }
             }
         }
+
+        /// <inheritdoc/>
+        public override double Weight { get; } = 0.1; // see INTV.Shared.Model.RomListConfiguration
 
         /// <summary>
         /// Gets or sets the setting that stores previous window position.

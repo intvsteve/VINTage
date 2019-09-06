@@ -19,7 +19,6 @@
 // </copyright>
 
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using INTV.Shared.Converter;
 using INTV.Shared.Model;
@@ -31,7 +30,7 @@ namespace INTV.Shared.Properties
     /// GTK-specific implementation.
     /// </summary>
     [DataContract(Name = ContractName, Namespace = ContractNamespace)]
-    internal sealed partial class Settings
+    internal sealed partial class Settings : SettingsBase<Settings>
     {
         private const string ContractName = "VINTageSharedSettings";
         private const string ContractNamespace = "https://www.intvfunhouse.com";
@@ -213,13 +212,6 @@ namespace INTV.Shared.Properties
             AddSetting(WindowStateSettingName, (Gdk.WindowState)0, isApplicationSetting: true);
 
             var defaultShowMenuIconSetting = false;
-            //try
-            //{
-            //    defaultShowMenuIconSetting = (bool)Client.Get("/desktop/gnome/interface/menus_have_icons");
-            //}
-            //catch (GConf.NoSuchKeyException)
-            //{
-            //}
             AddSetting(EnableMenuIconsSettingName, defaultShowMenuIconSetting, isApplicationSetting: true);
 
             AddSetting(RomListNameColWidthSettingName, DefaultRomListNameColWidth, isApplicationSetting: true);

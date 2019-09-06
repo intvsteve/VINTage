@@ -31,16 +31,16 @@ namespace INTV.Shared.ComponentModel
     /// </summary>
     public abstract class ApplicationInfo : IApplicationInfo
     {
-        private static readonly Lazy<string> _version = new Lazy<string>(InitializeVersion);
-        private static readonly Lazy<string> _copyright = new Lazy<string>(InitializeCopyright);
-        private static readonly Lazy<string> _author = new Lazy<string>(InitializeAuthor);
+        private static readonly Lazy<string> AppVersion = new Lazy<string>(InitializeVersion);
+        private static readonly Lazy<string> AppCopyright = new Lazy<string>(InitializeCopyright);
+        private static readonly Lazy<string> AppAuthor = new Lazy<string>(InitializeAuthor);
 
         /// <summary>
         /// Gets the application version using a standard approach (using assembly attribute data).
         /// </summary>
         public static string StandardVersion
         {
-            get { return _version.Value; }
+            get { return AppVersion.Value; }
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace INTV.Shared.ComponentModel
         /// </summary>
         public static string StandardCopyright
         {
-            get { return _copyright.Value; }
+            get { return AppCopyright.Value; }
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace INTV.Shared.ComponentModel
         /// hard-coded author returned, don't use this property!</remarks>
         public static string StandardAuthor
         {
-            get { return _author.Value; }
+            get { return AppAuthor.Value; }
         }
 
         /// <inheritdoc />
@@ -118,7 +118,7 @@ namespace INTV.Shared.ComponentModel
         {
             var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
             var copyright = entryAssembly.GetCustomAttributes(typeof(System.Reflection.AssemblyCopyrightAttribute), false).OfType<System.Reflection.AssemblyCopyrightAttribute>().FirstOrDefault();
-            return copyright.Copyright + " " + _author.Value;
+            return copyright.Copyright + " " + AppAuthor.Value;
         }
 
         private static string InitializeAuthor()

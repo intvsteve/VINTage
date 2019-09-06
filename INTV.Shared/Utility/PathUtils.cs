@@ -321,7 +321,7 @@ namespace INTV.Shared.Utility
             {
                 timeStringFields.Add(now.Millisecond.ToString("D3"));
             }
-            var dateTimeForFileName =  string.Join("-", timeStringFields);
+            var dateTimeForFileName = string.Join("-", timeStringFields);
             return dateTimeForFileName;
         }
 

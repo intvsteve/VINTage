@@ -25,6 +25,7 @@ namespace INTV.Shared.Properties
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
+    /// <typeparam name="T">The concrete Settings implementation type.</typeparam>
     [DataContract]
     public abstract partial class SettingsBase<T>
     {

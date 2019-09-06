@@ -46,8 +46,8 @@ namespace INTV.Shared.Properties
         /// culture-invariant string is requested from a <see cref="TypeConverter"/>.</remarks>
         private class ApplicationSettings
         {
-            private static Lazy<string> AppSettingsDir = new Lazy<string>(InitializeAppSettingsDir);
-            private static Lazy<string> AppSettingsPath = new Lazy<string>(InitializeAppSettingsPath);
+            private static readonly Lazy<string> AppSettingsDir = new Lazy<string>(InitializeAppSettingsDir);
+            private static readonly Lazy<string> AppSettingsPath = new Lazy<string>(InitializeAppSettingsPath);
             private readonly List<Setting> _applicationSettings = new List<Setting>();
             private readonly Dictionary<string, List<SettingDto>> _applicationSettingsDataTransferObjects = new Dictionary<string, List<SettingDto>>();
 
@@ -161,7 +161,7 @@ namespace INTV.Shared.Properties
                 {
                     foreach (var settingDto in settingDtos)
                     {
-                        var setting = _applicationSettings.FirstOrDefault(s => (settings.GetType()) == s.OwningSettings.GetType() && (s.Name == settingDto.Name));
+                        var setting = _applicationSettings.FirstOrDefault(s => (settings.GetType() == s.OwningSettings.GetType()) && (s.Name == settingDto.Name));
                         if (setting != null)
                         {
                             object value = settingDto.Value;

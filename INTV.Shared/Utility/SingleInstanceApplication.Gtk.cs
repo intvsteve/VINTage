@@ -122,6 +122,10 @@ namespace INTV.Shared.Utility
             window.Data["SplashScreen"] = splashScreen;
             GLib.Timeout.Add(1000, FinishInitialization);
             Gtk.Application.Run();
+            foreach (var settings in Instance.Settings)
+            {
+                settings.Save();
+            }
             SettingsBase.SaveApplicationSettings();
         }
 

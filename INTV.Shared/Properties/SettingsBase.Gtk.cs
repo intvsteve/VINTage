@@ -95,6 +95,25 @@ namespace INTV.Shared.Properties
         #endregion // Events
 
         /// <summary>
+        /// Loads the application-level settings from disk.
+        /// </summary>
+        /// <remarks>This method merely loads the raw string data from disk. Transferral of data values from
+        /// this storage to the proper instances of <see cref="SettingsBase"/> happens during the initialization
+        /// of the <see cref="SettingsBase"/> instance itself.</remarks>
+        internal static void LoadApplicationSettings()
+        {
+            AppSettings.Load();
+        }
+
+        /// <summary>
+        /// Saves the application-level settings to disk.
+        /// </summary>
+        internal static void SaveApplicationSettings()
+        {
+            AppSettings.Save();
+        }
+
+        /// <summary>
         /// Initializes the settings from the settings file on disk.
         /// </summary>
         /// <typeparam name="T">The data type of a simple Data Transfer Object to use during deserialization of the data contract.</typeparam>

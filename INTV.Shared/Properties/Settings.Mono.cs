@@ -59,22 +59,12 @@ namespace INTV.Shared.Properties
             get
             {
                 return GetSetting<INTV.Shared.Model.SearchDirectories>(RomListSearchDirectoriesSettingName);
-#if false
-                if (_romListSearchDirectories == null)
-                {
-                var userDefaults = UserDefaults.StringArrayForKey(RomListSearchDirectoriesSettingName);
-                    _romListSearchDirectories = new INTV.Shared.Model.SearchDirectories(userDefaults);
-                    _romListSearchDirectories.CollectionChanged += HandleSearchDirectoriesChanged;
-                }
-                return _romListSearchDirectories;
-#endif
             }
             set
             {
                 SetSetting(RomListSearchDirectoriesSettingName, value);
             }
         }
-        private INTV.Shared.Model.SearchDirectories _romListSearchDirectories;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not to show detailed ROM information in the RomListView.

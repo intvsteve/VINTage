@@ -1,4 +1,4 @@
-﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -263,8 +263,8 @@ namespace INTV.Shared.Properties
             [DataMember]
             public bool RomListSearchForRomsAtStartup { get; set; }
 
-            //            [DataMember]
-            //public SearchDirectories RomListSearchDirectories { get; set; }
+            [DataMember]
+            public SearchDirectories RomListSearchDirectories { get; set; }
 
             [DataMember]
             public bool ShowRomDetails { get; set; }

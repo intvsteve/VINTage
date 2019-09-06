@@ -1,4 +1,4 @@
-// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -34,12 +34,17 @@ namespace Locutus.Properties
         /// <inheritdoc/>
         protected override void InitializeFromSettingsFile()
         {
+            InitializeFromSettingsFile<SettingsDto>();
         }
 
         /// <summary>
         /// GTK-specific initialization.
         /// </summary>
         partial void OSInitializeDefaults()
+        {
+        }
+
+        private class SettingsDto
         {
         }
     }

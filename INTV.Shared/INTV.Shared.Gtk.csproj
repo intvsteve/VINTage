@@ -334,6 +334,7 @@
     <Compile Include="Utility\XdgEnvironmentVariable.cs" />
     <Compile Include="Properties\SettingsBase`T.Gtk.cs" />
     <Compile Include="Utility\ApplicationLogger.cs" />
+    <Compile Include="Properties\SettingsBase.Gtk.ApplicationSettings.cs" />
     <Compile Include="Converter\GdkPointConverter.cs" />
     <Compile Include="Converter\GdkSizeConverter.cs" />
     <Compile Include="Converter\TypeConverterRegistrar.cs" />

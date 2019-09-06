@@ -423,6 +423,8 @@ namespace INTV.Shared.Properties
             }
             catch (Exception e)
             {
+                var errorMessage = $"Error saving preferences file:\n  {ComponentSettingsFilePath}\n\n{e}";
+                ApplicationLogger.RecordDebugTraceMessage(errorMessage);
             }
         }
     }

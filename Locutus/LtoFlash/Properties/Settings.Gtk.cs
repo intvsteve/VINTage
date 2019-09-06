@@ -1,4 +1,4 @@
-﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -18,7 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-namespace LtoFlash.Properties
+namespace Locutus.Properties
 {
     /// <summary>
     /// GTK-specific implementation.

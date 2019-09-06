@@ -30,7 +30,7 @@ using SplitterPosition = System.Single;
 using SplitterPosition = System.Int32;
 #endif
 
-namespace LtoFlash.Properties
+namespace Locutus.Properties
 {
     /// <summary>
     /// Mono-specific implementation.

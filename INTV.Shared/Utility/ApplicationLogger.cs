@@ -134,7 +134,7 @@ namespace INTV.Shared.Utility
             var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
             var appName = System.IO.Path.GetFileNameWithoutExtension(entryAssembly.GetName().Name);
             var fileName = appName + "_Log_" + PathUtils.GetTimeString(PathUtils.AllTimeStringFields, includeMilliseconds: false, useUTC: false) + ".txt";
-            var documentFolderName = SingleInstanceApplication.Current.AppInfo.DocumentFolderName;
+            var documentFolderName = SingleInstanceApplication.Instance.AppInfo.DocumentFolderName;
             var logDirectory = System.IO.Path.Combine(PathUtils.GetDocumentsDirectory(), documentFolderName);
             System.IO.Directory.CreateDirectory(logDirectory);
             var applicationLogger = new ApplicationLogger(System.IO.Path.Combine(logDirectory, fileName));

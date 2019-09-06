@@ -84,7 +84,7 @@ namespace Locutus
         /// <inheritdoc />
         public override ISettings Settings
         {
-            get { return LtoFlash.Properties.Settings.Default; }
+            get { return Locutus.Properties.Settings.Default; }
         }
 
         private static string InitializeHelpUrl()

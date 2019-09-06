@@ -20,7 +20,7 @@
 
 using INTV.Shared.Properties;
 
-namespace LtoFlash.Properties
+namespace Locutus.Properties
 {
     /// <summary>
     /// Common Settings implementation for INTV.Shared.

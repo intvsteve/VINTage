@@ -25,7 +25,7 @@ namespace Locutus
     /// <summary>
     /// Windows-specific implementation.
     /// </summary>
-    internal sealed partial class ApplicationInfo
+    internal sealed partial class LtoFlashApplicationInfo
     {
         private const string OSString = "win";
         private static readonly OSVersion OSVersionMinimum = new OSVersion(5, 1, 0); // Windows xp

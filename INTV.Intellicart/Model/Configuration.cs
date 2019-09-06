@@ -1,5 +1,5 @@
 ﻿// <copyright file="Configuration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -80,13 +80,6 @@ namespace INTV.Intellicart.Model
 
         #endregion // IConfiguration
 
-        #region Imports
-
-        [System.ComponentModel.Composition.Import]
-        private IApplicationInfo AppInfo { get; set; }
-
-        #endregion // Imports
-
         #endregion // Properties;
 
         /// <inheritdoc />
@@ -99,8 +92,8 @@ namespace INTV.Intellicart.Model
         /// <inheritdoc />
         public void OnImportsSatisfied()
         {
-            var appInfo = CompositionHelpers.Container.GetExport<IApplicationInfo>();
-            ApplicationConfigurationPath = System.IO.Path.Combine(INTV.Shared.Utility.PathUtils.GetDocumentsDirectory(), appInfo.Value.DocumentFolderName); // applicationConfiguration.DocumentsPath;
+            var appInfo = INTV.Shared.Utility.SingleInstanceApplication.Instance.AppInfo;
+            ApplicationConfigurationPath = System.IO.Path.Combine(INTV.Shared.Utility.PathUtils.GetDocumentsDirectory(), appInfo.DocumentFolderName); // applicationConfiguration.DocumentsPath;
             RomsStagingAreaPath = System.IO.Path.Combine(ApplicationConfigurationPath, RomsStagingArea);
         }
 

@@ -1,4 +1,4 @@
-// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -18,18 +18,24 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using INTV.Shared.Converter;
 using INTV.Shared.Model;
+using INTV.Shared.Utility;
 
 namespace INTV.Shared.Properties
 {
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
-    [DataContract(Namespace = "https://www.intvfunhouse.com")]
+    [DataContract(Name = ContractName, Namespace = ContractNamespace)]
     internal sealed partial class Settings
     {
+        private const string ContractName = "VINTageSharedSettings";
+        private const string ContractNamespace = "https://www.intvfunhouse.com";
+
         public const string EnableMenuIconsSettingName = "EnableMenuIcons";
 
         private const int DefaultRomListNameColWidth = 192;
@@ -82,7 +88,6 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the setting that stores previous window position.
         /// </summary>
-//        [DataMember]
         public Gdk.Point WindowPosition
         {
             get { return GetSetting<Gdk.Point>(WindowPositionSettingName); }
@@ -92,7 +97,6 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the setting that stores previous window size.
         /// </summary>
-//        [DataMember]
         public Gdk.Size WindowSize
         {
             get { return GetSetting<Gdk.Size>(WindowSizeSettingName); }
@@ -102,7 +106,6 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the setting storing previous window state.
         /// </summary>
-//        [DataMember]
         public Gdk.WindowState WindowState
         {
             get { return (Gdk.WindowState)GetSetting<Gdk.WindowState>(WindowStateSettingName); }
@@ -116,7 +119,6 @@ namespace INTV.Shared.Properties
         /// <remarks>Even when (in testing) the following was changed, it did not seem to
         /// make a difference -- i.e. menu icons were not displayed:
         /// .../desktop/gnome/interface/menus_have_icons: true</remarks>
-        [DataMember]
         public bool EnableMenuIcons
         {
             get { return GetSetting<bool>(EnableMenuIconsSettingName); }
@@ -126,7 +128,6 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Title' column.
         /// </summary>
-//        [DataMember]
         public int RomListNameColWidth
         {
             get { return GetSetting<int>(RomListNameColWidthSettingName); }
@@ -136,7 +137,6 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Vendor' column.
         /// </summary>
-//        [DataMember]
         public int RomListVendorColWidth
         {
             get { return GetSetting<int>(RomListVendorColWidthSettingName); }
@@ -146,7 +146,6 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Year' column.
         /// </summary>
-//        [DataMember]
         public int RomListYearColWidth
         {
             get { return GetSetting<int>(RomListYearColWidthSettingName); }
@@ -156,7 +155,6 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Features' column.
         /// </summary>
-//        [DataMember]
         public int RomListFeaturesColWidth
         {
             get { return GetSetting<int>(RomListFeaturesColWidthSettingName); }
@@ -166,7 +164,6 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets the width of the rom list 'Path' column.
         /// </summary>
-//        [DataMember]
         public int RomListPathColWidth
         {
             get { return GetSetting<int>(RomListPathColWidthSettingName); }
@@ -183,6 +180,12 @@ namespace INTV.Shared.Properties
 ////        }
 
         /// <inheritdoc/>
+        protected override void InitializeFromSettingsFile()
+        {
+            InitializeFromSettingsFile<SettingsDto>();
+        }
+
+        /// <inheritdoc/>
         protected override void AddCustomTypeConverters()
         {
             base.AddCustomTypeConverters();
@@ -197,7 +200,10 @@ namespace INTV.Shared.Properties
             AddCustomTypeConverter(typeof(Gdk.WindowState), TypeDescriptor.GetConverter(typeof(Gdk.WindowState)));
             AddCustomTypeConverter(typeof(Gdk.Point), TypeDescriptor.GetConverter(typeof(Gdk.Point)));
             AddCustomTypeConverter(typeof(Gdk.Size), TypeDescriptor.GetConverter(typeof(Gdk.Size)));
+            AddCustomTypeConverter(typeof(SearchDirectories), TypeDescriptor.GetConverter(typeof(SearchDirectories)));
+            //          AddCustomTypeConverter(typeof(SearchDirectories), GetSearchDirectories, SetSearchDirectories);
         }
+/*
         private object GetSearchDirectories(string key)
         {
             // TODO: Actually implement this! Supposedly, array of strings is supported by GConf...
@@ -213,7 +219,7 @@ namespace INTV.Shared.Properties
             var directories = searchDirectories == null ? searchDirectories.ToArray() : new string[] { };
             StoreSetting(key, directories);
         }
-
+*/
         /// <summary>
         /// GTK-specific initialization.
         /// </summary>
@@ -221,7 +227,7 @@ namespace INTV.Shared.Properties
         {
             AddSetting(WindowPositionSettingName, new Gdk.Point(80, 80), isApplicationSetting: true);
             AddSetting(WindowSizeSettingName, new Gdk.Size(1024, 768), isApplicationSetting: true);
-            AddSetting(WindowStateSettingName, 0, isApplicationSetting: true);
+            AddSetting(WindowStateSettingName, (Gdk.WindowState)0, isApplicationSetting: true);
 
             var defaultShowMenuIconSetting = false;
             //try
@@ -231,14 +237,49 @@ namespace INTV.Shared.Properties
             //catch (GConf.NoSuchKeyException)
             //{
             //}
-            AddSetting(EnableMenuIconsSettingName, defaultShowMenuIconSetting);
+            AddSetting(EnableMenuIconsSettingName, defaultShowMenuIconSetting, isApplicationSetting: true);
 
-            AddSetting(RomListNameColWidthSettingName, DefaultRomListNameColWidth);
-            AddSetting(RomListVendorColWidthSettingName, DefaultRomListVendorColWidth);
-            AddSetting(RomListYearColWidthSettingName, DefaultRomListYearColWidth);
-            AddSetting(RomListFeaturesColWidthSettingName, DefaultRomListFeaturesColWidth);
-            AddSetting(RomListPathColWidthSettingName, DefaultRomListPathColWidth);
-            ////AddSetting(RomListManualPathColWidthSettingName, DefaultRomListManualPathColWidth);
+            AddSetting(RomListNameColWidthSettingName, DefaultRomListNameColWidth, isApplicationSetting: true);
+            AddSetting(RomListVendorColWidthSettingName, DefaultRomListVendorColWidth, isApplicationSetting: true);
+            AddSetting(RomListYearColWidthSettingName, DefaultRomListYearColWidth, isApplicationSetting: true);
+            AddSetting(RomListFeaturesColWidthSettingName, DefaultRomListFeaturesColWidth, isApplicationSetting: true);
+            AddSetting(RomListPathColWidthSettingName, DefaultRomListPathColWidth, isApplicationSetting: true);
+            ////AddSetting(RomListManualPathColWidthSettingName, DefaultRomListManualPathColWidth, isApplicationSetting: true);
+        }
+
+        [DataContract(Name = ContractName, Namespace = ContractNamespace)]
+        private sealed class SettingsDto : IExtensibleDataObject
+        {
+            public ExtensionDataObject ExtensionData
+            {
+                get { return _extensibleDataObject; }
+                set { _extensibleDataObject = value; }
+            }
+            private ExtensionDataObject _extensibleDataObject;
+
+            [DataMember]
+            public bool RomListValidateAtStartup { get; set; }
+
+            [DataMember]
+            public bool RomListSearchForRomsAtStartup { get; set; }
+
+            //            [DataMember]
+            //public SearchDirectories RomListSearchDirectories { get; set; }
+
+            [DataMember]
+            public bool ShowRomDetails { get; set; }
+
+            [DataMember]
+            public bool DisplayRomFileNameForTitle { get; set; }
+
+            [DataMember]
+            public bool CheckForAppUpdatesAtLaunch { get; set; }
+
+            [DataMember]
+            public bool ShowDetailedErrors { get; set; }
+
+            [DataMember(EmitDefaultValue = false)]
+            public int MaxGZipEntriesSearch { get; set; }
         }
     }
 }

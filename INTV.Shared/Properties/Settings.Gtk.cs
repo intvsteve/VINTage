@@ -36,7 +36,7 @@ namespace INTV.Shared.Properties
         private const string ContractName = "VINTageSharedSettings";
         private const string ContractNamespace = "https://www.intvfunhouse.com";
 
-        public const string EnableMenuIconsSettingName = "EnableMenuIcons";
+        private const string EnableMenuIconsSettingName = "EnableMenuIcons";
 
         private const int DefaultRomListNameColWidth = 192;
         private const int DefaultRomListVendorColWidth = 128;
@@ -201,25 +201,8 @@ namespace INTV.Shared.Properties
             AddCustomTypeConverter(typeof(Gdk.Point), TypeDescriptor.GetConverter(typeof(Gdk.Point)));
             AddCustomTypeConverter(typeof(Gdk.Size), TypeDescriptor.GetConverter(typeof(Gdk.Size)));
             AddCustomTypeConverter(typeof(SearchDirectories), TypeDescriptor.GetConverter(typeof(SearchDirectories)));
-            //          AddCustomTypeConverter(typeof(SearchDirectories), GetSearchDirectories, SetSearchDirectories);
-        }
-/*
-        private object GetSearchDirectories(string key)
-        {
-            // TODO: Actually implement this! Supposedly, array of strings is supported by GConf...
-            var directories = GetSetting(key) as string[];
-            var searchDirectories = new SearchDirectories(directories == null ? Enumerable.Empty<string>() : directories);
-            return searchDirectories;
         }
 
-        private void SetSearchDirectories(string key, object value)
-        {
-            // TODO: Actually implement this! Supposedly, array of strings is supported by GConf...
-            var searchDirectories = value as SearchDirectories;
-            var directories = searchDirectories == null ? searchDirectories.ToArray() : new string[] { };
-            StoreSetting(key, directories);
-        }
-*/
         /// <summary>
         /// GTK-specific initialization.
         /// </summary>

@@ -25,5 +25,9 @@ namespace INTV.Shared.Properties
     /// </summary>
     public interface ISettings
     {
+        /// <summary>
+        /// Save the settings to some form of persistence.
+        /// </summary>
+        void Save();
     }
 }

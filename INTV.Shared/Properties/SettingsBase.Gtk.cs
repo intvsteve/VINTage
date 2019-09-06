@@ -36,9 +36,11 @@ namespace INTV.Shared.Properties
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
-    /// <remarks>GTK# currently supports GTK2, and does not have bindings for the newer DConf
-    /// or GSettings APIs. We're using GConf.</remarks>
-    /// <remarks>NOTE: The underlying GConf only supports a few basic types:</remarks>
+    /// <remarks>The GTK implementation uses the Data Contract mechanism for storing settings, except for
+    /// those settings tagged as 'application' settings. Any setting that should be saved must have the
+    /// <see cref="DataMemberAttribute"/> associated with it. Classes should also provide a separate
+    /// Data Transfer Object type for deserialization, which is used to read settings from a file that are
+    /// then assigned to the actual <see cref="SettingsBase"/> instance.</remarks>
     [DataContract(Namespace = "https://www.intvfunhouse.com")]
     public abstract partial class SettingsBase : INotifyPropertyChanged, IExtensibleDataObject
     {
@@ -427,7 +429,7 @@ namespace INTV.Shared.Properties
         }
 
         /// <summary>
-        /// Saves the settings to disk.
+        /// GTK-specific implementation to saves the settings to disk using <see cref="DataContractSerializer"/>.
         /// </summary>
         partial void OSSave()
         {

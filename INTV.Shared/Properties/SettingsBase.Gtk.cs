@@ -149,6 +149,7 @@ namespace INTV.Shared.Properties
                     ApplicationLogger.RecordDebugTraceMessage(errorMessage);
                 }
             }
+            InitializeFromApplicationSettings();
         }
 
         /// <summary>

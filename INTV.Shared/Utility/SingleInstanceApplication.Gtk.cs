@@ -1,4 +1,4 @@
-// <copyright file="SingleInstanceApplication.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="SingleInstanceApplication.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -110,6 +110,7 @@ namespace INTV.Shared.Utility
             Gtk.Application.Init(uniqueInstance, ref args);
 
             Instance.AppInfo = applicationInfo;
+            SettingsBase.LoadApplicationSettings();
             var window = new T();
             Instance.MainWindow = window;
             Instance.ReadyState |= AppReadyState.MainWindowSourced;
@@ -121,6 +122,7 @@ namespace INTV.Shared.Utility
             window.Data["SplashScreen"] = splashScreen;
             GLib.Timeout.Add(1000, FinishInitialization);
             Gtk.Application.Run();
+            SettingsBase.SaveApplicationSettings();
         }
 
         private static bool FinishInitialization()

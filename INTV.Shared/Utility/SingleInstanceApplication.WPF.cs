@@ -46,7 +46,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Initializes a new instance of SingleInstanceApplication.
         /// </summary>
-        /// <param name="settings">The application-specific information.</param>
+        /// <param name="appInfo">The application-specific information.</param>
         public SingleInstanceApplication(IApplicationInfo appInfo)
         {
             AppInfo = appInfo;

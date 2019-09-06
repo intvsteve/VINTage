@@ -433,20 +433,25 @@ namespace INTV.Shared.Properties
         /// </summary>
         partial void OSSave()
         {
-            try
+            // If no settings are specific to the type, and all are shunted to application settings,
+            // don't bother creating the settings file!
+            if (_values.Keys.Except(_applicationSettingsKeys).Any())
             {
-                var xmlWriter = XmlWriter.Create(ComponentSettingsFilePath, new XmlWriterSettings() { Indent = true });
-                using (var xmlDictionaryWriter = XmlDictionaryWriter.CreateDictionaryWriter(xmlWriter))
+                try
                 {
-                    var dataContractSerializer = new DataContractSerializer(this.GetType());
-                    dataContractSerializer.WriteObject(xmlDictionaryWriter, this);
-                    xmlDictionaryWriter.Flush();
+                    var xmlWriter = XmlWriter.Create(ComponentSettingsFilePath, new XmlWriterSettings() { Indent = true });
+                    using (var xmlDictionaryWriter = XmlDictionaryWriter.CreateDictionaryWriter(xmlWriter))
+                    {
+                        var dataContractSerializer = new DataContractSerializer(this.GetType());
+                        dataContractSerializer.WriteObject(xmlDictionaryWriter, this);
+                        xmlDictionaryWriter.Flush();
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                var errorMessage = $"Error saving preferences file:\n  {ComponentSettingsFilePath}\n\n{e}";
-                ApplicationLogger.RecordDebugTraceMessage(errorMessage);
+                catch (Exception e)
+                {
+                    var errorMessage = $"Error saving preferences file:\n  {ComponentSettingsFilePath}\n\n{e}";
+                    ApplicationLogger.RecordDebugTraceMessage(errorMessage);
+                }
             }
         }
     }

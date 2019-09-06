@@ -65,11 +65,11 @@ namespace INTV.Core.Tests.Model
         }
 
         [Fact]
-        public void LuigiFileHeader_IsPotentialLuigiFileWithNullLocation_ThrowsArgumentNullException()
+        public void LuigiFileHeader_IsPotentialLuigiFileWithNullLocation_ReturnsFalse()
         {
             var storage = LuigiFileHeaderTestStorageAccess.Initialize();
 
-            Assert.Throws<ArgumentNullException>(() => LuigiFileHeader.PotentialLuigiFile(storage.NullLocation));
+            Assert.False(LuigiFileHeader.PotentialLuigiFile(storage.NullLocation));
         }
 
         [Fact]

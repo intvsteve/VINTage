@@ -37,6 +37,8 @@ namespace INTV.Core.Tests.Utility
             Assert.True(storageLocation.IsInvalid);
             Assert.False(storageLocation.IsValid);
             Assert.False(storageLocation.UsesDefaultStorage);
+            Assert.False(storageLocation.Exists());
+            Assert.False(storageLocation.StorageAccess.Exists(null));
         }
 
         [Fact]

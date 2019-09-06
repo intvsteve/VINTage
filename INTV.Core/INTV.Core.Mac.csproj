@@ -102,7 +102,7 @@
     <Compile Include="Utility\Crc32.cs" />
     <Compile Include="Utility\RandomUtilities.cs" />
     <Compile Include="Utility\Range.cs" />
-    <Compile Include="Utility\StreamUtilities.cs" />
+    <Compile Include="Utility\IStorageAccessHelpers.cs" />
     <Compile Include="Model\Program\CrcData.cs" />
     <Compile Include="Model\Program\EcsFeatures.cs" />
     <Compile Include="Model\Program\IProgramDescription.cs" />

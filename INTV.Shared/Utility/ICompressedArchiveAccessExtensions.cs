@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using INTV.Core.Utility;
 
 namespace INTV.Shared.Utility
 {
@@ -31,6 +32,24 @@ namespace INTV.Shared.Utility
     /// </summary>
     public static class ICompressedArchiveAccessExtensions
     {
+        /// <summary>
+        /// Gets the storage access to use for the given location.
+        /// </summary>
+        /// <param name="filePath">The file path to check.</param>
+        /// <returns>The storage access to use.</returns>
+        /// <remarks>If <paramref name="filePath"/> is not to a compressed archive, then the default storage
+        /// access will be returned.</remarks>
+        public static IStorageAccess GetStorageAccess(this string filePath)
+        {
+            var storageAccess = IStorageAccessHelpers.DefaultStorage;
+            var formats = filePath.GetCompressedArchiveFormatsFromFileName();
+            if (formats.FirstOrDefault().IsCompressedArchiveFormatSupported())
+            {
+                storageAccess = CompressedArchiveAccess.Open(filePath, CompressedArchiveAccessMode.Read);
+            }
+            return storageAccess;
+        }
+
         /// <summary>
         /// List the contents of the given compressed archive.
         /// </summary>

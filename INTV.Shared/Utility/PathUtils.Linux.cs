@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathUtils.Linux.cs" company="INTV Funhouse">
-// Copyright (c) 2017-2018 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -36,12 +36,28 @@ namespace INTV.Shared.Utility
         public static readonly string ProgramSuffix = string.Empty;
 
         /// <summary>
+        /// Gets the user home directory.
+        /// </summary>
+        public static string UserHomeDirectory
+        {
+            get
+            {
+                var home = System.Environment.GetEnvironmentVariable("HOME");
+                return home;
+            }
+        }
+
+        /// <summary>
         /// Gets the Documents directory.
         /// </summary>
         /// <returns>The documents directory.</returns>
         public static string GetDocumentsDirectory()
         {
-            var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            var documentsPath = XdgEnvironmentVariable.Documents.GetEnvironmentVariableValue();
+            if (!Directory.Exists(documentsPath))
+            {
+                documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            }
             return documentsPath;
         }
 
@@ -79,13 +95,12 @@ namespace INTV.Shared.Utility
                 var ephemeralPath = System.IO.Path.GetTempPath(); // treat temp dir as ephemeral
                 isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
             }
-#if false
+
             if (!isRemovable)
             {
-                var ephemeralPath = NativeMethods.GetDownloadsPath(); // treat downloads path as ephemeral
+                var ephemeralPath = XdgEnvironmentVariable.Downloads.GetEnvironmentVariableValue(); // treat downloads path as ephemeral
                 isRemovable = !string.IsNullOrEmpty(ephemeralPath) && path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
             }
-#endif // false
             if (!isRemovable)
             {
                 var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.History);

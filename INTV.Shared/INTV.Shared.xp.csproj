@@ -96,6 +96,7 @@
     <Compile Include="Commands\RootCommandGroup.WPF.cs" />
     <Compile Include="Commands\StandardMenuCommandId.cs" />
     <Compile Include="Commands\StandardMenuId.cs" />
+    <Compile Include="ComponentModel\ApplicationInfo.cs" />
     <Compile Include="ComponentModel\CommandManager.WPF.cs" />
     <Compile Include="ComponentModel\ComponentVisual.cs" />
     <Compile Include="ComponentModel\CompositionHelpers.cs" />
@@ -185,6 +186,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Utility\ApplicationLogger.cs" />
     <Compile Include="Utility\ASCIIBinaryReader.cs" />
     <Compile Include="Utility\ASCIIBinaryWriter.cs" />
     <Compile Include="Utility\AsyncTaskData.cs" />

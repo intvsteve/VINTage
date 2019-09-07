@@ -1,5 +1,5 @@
 ﻿// <copyright file="FixedSizeCollection`T.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -312,7 +312,7 @@ namespace INTV.Shared.Utility
         [System.Diagnostics.Conditional("DEBUG_ENTRY_REMOVAL")]
         private void LogObjectRemoval(T entry)
         {
-            if ((entry != null) && typeof(T).FullName.EndsWith("Fork"))
+            if ((entry != null) && typeof(T).FullName.EndsWith("Fork", StringComparison.InvariantCultureIgnoreCase))
             {
                 var logger = Logger;
                 if (logger != null)

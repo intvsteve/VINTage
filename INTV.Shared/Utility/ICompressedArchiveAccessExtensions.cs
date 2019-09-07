@@ -198,7 +198,7 @@ namespace INTV.Shared.Utility
             }
             else
             {
-                entries = entries.Where(e => e.Name.StartsWith(locationInArchive) && (e.Name.Length > locationInArchive.Length));
+                entries = entries.Where(e => e.Name.StartsWith(locationInArchive, PathComparer.DefaultPolicy) && (e.Name.Length > locationInArchive.Length));
                 entries = entries.Where(e => e.Name.Substring(locationInArchive.Length + 1).GetArchiveRelativePathSegments().Length < 2);
             }
 

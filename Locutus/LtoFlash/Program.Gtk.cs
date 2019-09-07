@@ -1,5 +1,5 @@
 ﻿// <copyright file="Program.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -33,7 +33,8 @@ namespace Locutus
         /// <param name="args">The command-line arguments.</param>
         public static void Main(string[] args)
         {
-            SingleInstanceApplication.RunApplication<View.MainWindow>("Locutus-{4B53C351-EE55-46AB-8DE9-C2E4DDD1297A}", null, args, "Resources/Images/LTOFlashSplash.png");
+            var applicationInfo = new LtoFlashApplicationInfo();
+            SingleInstanceApplication.RunApplication<View.MainWindow>("Locutus-{4B53C351-EE55-46AB-8DE9-C2E4DDD1297A}", applicationInfo, args, "Resources/Images/LTOFlashSplash.png");
         }
    }
 }

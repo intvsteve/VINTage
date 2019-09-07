@@ -1,5 +1,5 @@
 ﻿// <copyright file="SingleInstanceApplication.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -30,6 +30,7 @@ using INTV.Core.Model.Device;
 using INTV.Shared.Commands;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Model.Program;
+using INTV.Shared.Properties;
 using INTV.Shared.Resources;
 
 namespace INTV.Shared.Utility
@@ -53,7 +54,7 @@ namespace INTV.Shared.Utility
         // actions that must not run in parallel, such as updating file formats, et. al. The "asynchronous" actions are
         // usually activities such as ROM or device discovery, which are relatively low impact.
         private static ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>> _postStartupActions = new ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>>();
-        private List<System.Configuration.ApplicationSettingsBase> _settings;
+        private List<ISettings> _settings = new List<ISettings>();
 
         #region Properties
 
@@ -66,18 +67,23 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Gets the application information interface.
+        /// </summary>
+        public static IApplicationInfo AppInfo { get; private set; }
+
+        /// <summary>
         /// Gets the version of the application in the form Major.Minor.Revision (additional info).
         /// </summary>
         public static string Version
         {
             get
             {
-                if (string.IsNullOrEmpty(_versionString))
+                var versionString = _versionString;
+                if (versionString == null)
                 {
-                    var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-                    _versionString = System.Diagnostics.FileVersionInfo.GetVersionInfo(entryAssembly.Location).ProductVersion;
+                    versionString = AppInfo == null ? ApplicationInfo.StandardVersion : AppInfo.Version;
                 }
-                return _versionString;
+                return versionString;
             }
         }
 
@@ -86,12 +92,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         public static string Copyright
         {
-            get
-            {
-                var entryAssembly = System.Reflection.Assembly.GetEntryAssembly();
-                var copyright = entryAssembly.GetCustomAttributes(typeof(System.Reflection.AssemblyCopyrightAttribute), false).OfType<System.Reflection.AssemblyCopyrightAttribute>().FirstOrDefault();
-                return copyright.Copyright + " Steven A. Orth";
-            }
+            get { return AppInfo == null ? ApplicationInfo.StandardCopyright : AppInfo.Copyright; }
         }
 
         /// <summary>
@@ -115,7 +116,7 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets the settings associated with the application.
         /// </summary>
-        public IEnumerable<System.Configuration.ApplicationSettingsBase> Settings
+        public IEnumerable<ISettings> Settings
         {
             get { return _settings; }
         }
@@ -164,12 +165,6 @@ namespace INTV.Shared.Utility
             }
         }
         private int _busy;
-
-        /// <summary>
-        /// Gets or sets the application information interface.
-        /// </summary>
-        [System.ComponentModel.Composition.Import]
-        public IApplicationInfo AppInfo { get; set; }
 
         // UNDONE One day, perhaps we can get these via MEF. Not ready yet, though.
         // [System.ComponentModel.Composition.ImportMany]
@@ -269,9 +264,9 @@ namespace INTV.Shared.Utility
         /// Add settings to the application which will be saved at shutdown.
         /// </summary>
         /// <param name="settings">Settings to associate with the application.</param>
-        public void AddSettings(System.Configuration.ApplicationSettingsBase settings)
+        public void AddSettings(ISettings settings)
         {
-            if ((settings != null) && !_settings.Contains(settings))
+            if (_settings.FirstOrDefault(s => s.GetType() == settings.GetType()) == null)
             {
                 _settings.Add(settings);
             }
@@ -334,9 +329,8 @@ namespace INTV.Shared.Utility
             return commandProvider;
         }
 
-        private void Initialize(System.Configuration.ApplicationSettingsBase settings)
+        private void Initialize(ISettings settings)
         {
-            _settings = new System.Collections.Generic.List<System.Configuration.ApplicationSettingsBase>();
             AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
             PluginsLocation = GetPluginsDirectory();
             OSInitialize();
@@ -389,20 +383,19 @@ namespace INTV.Shared.Utility
 
         private void StartupActionWrapper(Action startupAction)
         {
-            // Disable unused variable warning
-#pragma warning disable 168
             try
             {
                 startupAction();
             }
             catch (Exception e)
             {
-                // Let this silently fail in release builds.
+                // Let this quietly fail in release builds.
+                var startupActionFaledMessage = "Failure in async startup action! Let's see what's going on here, shall we?" + e;
+                ApplicationLogger.RecordDebugTraceMessage(startupActionFaledMessage);
 #if DEBUG
-                System.Diagnostics.Debug.Assert(false, "Failure in async startup action! Let's see what's going on here, shall we?\n" + e);
+                System.Diagnostics.Debug.Assert(false, startupActionFaledMessage);
 #endif // DEBUG
             }
-#pragma warning restore 168
         }
 
         private void ReportStartupActionErrors(List<Tuple<string, Exception>> errors)
@@ -469,6 +462,7 @@ namespace INTV.Shared.Utility
         [System.Diagnostics.Conditional("REPORT_PLUGIN_INITIALIZATION")]
         private void ReportPluginStatus(string message)
         {
+            ApplicationLogger.RecordDebugTraceMessage(message);
             System.Diagnostics.Debug.WriteLine(message);
         }
 

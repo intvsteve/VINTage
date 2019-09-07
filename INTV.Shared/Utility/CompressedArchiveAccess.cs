@@ -38,7 +38,7 @@ namespace INTV.Shared.Utility
     /// <remarks>Note that ownership of <paramref name="stream"/> is not strongly defined at this time. Caveat emptor.
     /// Also, some implementations may throw exceptions. Typical exceptions to plan for are:
     /// <see cref="System.ArgumentException"/>, <see cref="System.ArgumentNullException"/>, <see cref="System.ArgumentOutOfRangeException"/>,
-    /// <see cref="System.InvalidOperationException"/>, <see cref="System.FileFormatException"/>, <see cref="System.NotSupportedException"/> and <see cref="System.IOException"/>.</remarks>
+    /// <see cref="System.InvalidOperationException"/>, <see cref="System.IO.FileFormatException"/>, <see cref="System.NotSupportedException"/> and <see cref="System.IO.IOException"/>.</remarks>
     public delegate ICompressedArchiveAccess CompressedArchiveAccessFactory(Stream stream, CompressedArchiveAccessMode mode);
 
     /// <summary>
@@ -87,13 +87,13 @@ namespace INTV.Shared.Utility
         /// <param name="implementation">If not <c>null</c>, use a specific implementation if possible. Otherwise, use default, or any.</param>
         /// <returns>An instance of the compressed archive.</returns>
         /// <remarks>The format of the compressed archive accessor is determined via file extension.</remarks>
-        /// <exception cref="System.NotSupportedException">Thrown if it is not possible to locate a factory for the given <paramref name="format"/>, or
-        /// if <paramref name="stream"/> was opened with an unsupported file sharing mode in use.</exception>
-        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stream"/> is <c>null</c></exception>
+        /// <exception cref="System.NotSupportedException">Thrown if it is not possible to locate a factory for the given <paramref name="filePath"/>, or
+        /// if <paramref name="filePath"/> was opened with an unsupported file sharing mode in use.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="filePath"/> is <c>null</c></exception>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if an invalid combination of file access and mode is used.</exception>
         /// <exception cref="System.ArgumentException">Thrown if invalid file access, sharing, and mode combinations are used.</exception>
-        /// <exception cref="System.FileFormatException">Thrown if archive was opened for reading, but is of zero size.</exception>
-        /// <exception cref="System.IOException">Thrown if <paramref name="stream"/> is not empty and archive was opened in Create mode.</exception>
+        /// <exception cref="System.IO.FileFormatException">Thrown if archive was opened for reading, but is of zero size.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if <paramref name="filePath"/> is not empty and archive was opened in Create mode.</exception>
         public static ICompressedArchiveAccess Open(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation = null)
         {
             var archive = CompressedArchiveFileAccess.Create(filePath, mode, implementation);
@@ -114,8 +114,8 @@ namespace INTV.Shared.Utility
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="stream"/> is <c>null</c></exception>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if an invalid combination of file access and mode is used.</exception>
         /// <exception cref="System.ArgumentException">Thrown if invalid file access, sharing, and mode combinations are used.</exception>
-        /// <exception cref="System.FileFormatException">Thrown if archive was opened for reading, but is of zero size.</exception>
-        /// <exception cref="System.IOException">Thrown if <paramref name="stream"/> is not empty and archive was opened in Create mode.</exception>
+        /// <exception cref="System.IO.FileFormatException">Thrown if archive was opened for reading, but is of zero size.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if <paramref name="stream"/> is not empty and archive was opened in Create mode.</exception>
         public static ICompressedArchiveAccess Open(Stream stream, CompressedArchiveFormat format, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation = null)
         {
             if (!implementation.HasValue)

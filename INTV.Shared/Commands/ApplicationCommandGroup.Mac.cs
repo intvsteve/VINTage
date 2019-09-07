@@ -49,7 +49,7 @@ namespace INTV.Shared.Commands
         {
             SingleInstanceApplication.Instance.BeginInvokeOnMainThread(() =>
                 {
-                    var recommendedVersion = SingleInstanceApplication.Instance.AppInfo.RecommendedOSVersion;
+                    var recommendedVersion = SingleInstanceApplication.AppInfo.RecommendedOSVersion;
                     if ((OSVersion.Current < recommendedVersion) && Properties.Settings.Default.ShowFTDIWarning)
                     {
                         var buttonLabels = new Dictionary<OSMessageBoxButton, string>

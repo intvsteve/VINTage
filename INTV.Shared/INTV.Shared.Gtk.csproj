@@ -56,11 +56,8 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="gconf-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gconf-sharp-2.0</Package>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <!--  <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -334,6 +331,14 @@
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
     <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />
+    <Compile Include="Utility\XdgEnvironmentVariable.cs" />
+    <Compile Include="Properties\SettingsBase`T.Gtk.cs" />
+    <Compile Include="Utility\ApplicationLogger.cs" />
+    <Compile Include="Properties\SettingsBase.Gtk.ApplicationSettings.cs" />
+    <Compile Include="Converter\GdkPointConverter.cs" />
+    <Compile Include="Converter\GdkSizeConverter.cs" />
+    <Compile Include="Converter\TypeConverterRegistrar.cs" />
+    <Compile Include="ComponentModel\ApplicationInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

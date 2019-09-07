@@ -62,6 +62,7 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="Xamarin.Mac" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

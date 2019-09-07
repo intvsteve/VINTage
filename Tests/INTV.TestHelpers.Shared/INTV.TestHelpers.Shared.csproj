@@ -77,6 +77,10 @@
     <Compile Include="Xunit\Sdk\STATheoryDiscoverer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\INTV.Core\INTV.Core.pcl.csproj">
+      <Project>{b90d8e04-5f83-45d7-bd39-0198a7c7c325}</Project>
+      <Name>INTV.Core.pcl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\INTV.Shared\INTV.Shared.desktop.csproj">
       <Project>{c852caa1-abe8-45d7-8bc5-94b61b71617a}</Project>
       <Name>INTV.Shared.desktop</Name>

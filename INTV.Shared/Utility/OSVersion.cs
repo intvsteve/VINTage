@@ -27,14 +27,14 @@ namespace INTV.Shared.Utility
     /// </summary>
     public partial class OSVersion
     {
-        /// <summary>
-        /// The current operating system version.
-        /// </summary>
-        public static readonly OSVersion Current = new OSVersion();
+        private static readonly Lazy<OSVersion> OperatingSystemVersion = new Lazy<OSVersion>(Initialize);
 
-        private OSVersion()
+        /// <summary>
+        /// Gets the current operating system version.
+        /// </summary>
+        public static OSVersion Current
         {
-            _version = Initialize();
+            get { return OperatingSystemVersion.Value; }
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace INTV.Shared.Utility
         /// <param name="patch">Patch / build version of the operating system.</param>
         public OSVersion(int major, int minor, int patch)
         {
-            _version = new System.Version(major, minor, patch);
+            _version = new Version(major, minor, patch);
         }
 
         /// <summary>

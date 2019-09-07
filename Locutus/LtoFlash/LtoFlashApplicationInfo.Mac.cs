@@ -25,10 +25,15 @@ namespace Locutus
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    internal sealed partial class ApplicationInfo
+    internal sealed partial class LtoFlashApplicationInfo
     {
         private const string OSString = "mac";
         private static readonly OSVersion OSVersionMinimum = new OSVersion(10, 7, 0); // Lion
         private static readonly OSVersion OSVersionRecommended = new OSVersion(10, 9, 0); // Mavericks
+
+        /// <summary>
+        /// Gets or sets the dummy settings.
+        /// </summary>
+        internal System.Configuration.ApplicationSettingsBase DummySettings { get; set; }
     }
 }

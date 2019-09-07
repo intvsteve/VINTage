@@ -55,7 +55,9 @@ namespace INTV.Shared.Utility
             // For reference, on Mac, Environment.OSVersion effectively returns the same value as sysctl kern.osrelease.
             // To map that to the well-known Mac releases, here's a handy dandy partial table from Stack Overflow:
             // See: https://stackoverflow.com/questions/11072804/how-do-i-determine-the-os-version-at-runtime-in-os-x-or-ios-without-using-gesta
-            // 17.x.x. macOS 10.13.x High Sierra
+            // 19.x.x  macOS 10.15.x Catalina
+            // 18.x.x  macOS 10.14.x Mojave
+            // 17.x.x  macOS 10.13.x High Sierra
             // 16.x.x  macOS 10.12.x Sierra
             // 15.x.x  OS X  10.11.x El Capitan
             // 14.x.x  OS X  10.10.x Yosemite

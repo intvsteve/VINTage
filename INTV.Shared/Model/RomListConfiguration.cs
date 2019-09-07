@@ -158,7 +158,7 @@ namespace INTV.Shared.Model
             }
             System.Diagnostics.Debug.Assert(initializedCoreStreamUtils, "Failed to initialize stream utilities!");
             Core.Model.IRomHelpers.InitializeCallbacks(GetIntvNameData);
-            var documentFolderName = SingleInstanceApplication.Instance.AppInfo.DocumentFolderName;
+            var documentFolderName = SingleInstanceApplication.AppInfo.DocumentFolderName;
             _applicationDocumentsPath = Path.Combine(PathUtils.GetDocumentsDirectory(), documentFolderName);
             if (!Directory.Exists(_applicationDocumentsPath))
             {

@@ -67,6 +67,11 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Gets the application information interface.
+        /// </summary>
+        public static IApplicationInfo AppInfo { get; private set; }
+
+        /// <summary>
         /// Gets the version of the application in the form Major.Minor.Revision (additional info).
         /// </summary>
         public static string Version
@@ -76,7 +81,7 @@ namespace INTV.Shared.Utility
                 var versionString = _versionString;
                 if (versionString == null)
                 {
-                    versionString = Instance == null ? ApplicationInfo.StandardVersion : Instance.AppInfo.Version;
+                    versionString = AppInfo == null ? ApplicationInfo.StandardVersion : AppInfo.Version;
                 }
                 return versionString;
             }
@@ -87,7 +92,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         public static string Copyright
         {
-            get { return Instance == null ? ApplicationInfo.StandardCopyright : Instance.AppInfo.Copyright; }
+            get { return AppInfo == null ? ApplicationInfo.StandardCopyright : AppInfo.Copyright; }
         }
 
         /// <summary>
@@ -160,11 +165,6 @@ namespace INTV.Shared.Utility
             }
         }
         private int _busy;
-
-        /// <summary>
-        /// Gets the application information interface.
-        /// </summary>
-        public IApplicationInfo AppInfo { get; private set; }
 
         // UNDONE One day, perhaps we can get these via MEF. Not ready yet, though.
         // [System.ComponentModel.Composition.ImportMany]

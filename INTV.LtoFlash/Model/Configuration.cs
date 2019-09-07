@@ -66,7 +66,7 @@ namespace INTV.LtoFlash.Model
             // This null check keeps the WPF XAML designer output clean.
             if (SingleInstanceApplication.Instance != null)
             {
-                ApplicationConfigurationPath = System.IO.Path.Combine(PathUtils.GetDocumentsDirectory(), SingleInstanceApplication.Instance.AppInfo.DocumentFolderName);
+                ApplicationConfigurationPath = System.IO.Path.Combine(PathUtils.GetDocumentsDirectory(), SingleInstanceApplication.AppInfo.DocumentFolderName);
                 MenuLayoutPath = System.IO.Path.Combine(ApplicationConfigurationPath, MenuLayoutFileBaseName + XmlExtension);
                 ErrorLogDirectory = System.IO.Path.Combine(ApplicationConfigurationPath, ErrorLogDir);
                 RomsStagingAreaPath = System.IO.Path.Combine(ApplicationConfigurationPath, RomsStagingArea);

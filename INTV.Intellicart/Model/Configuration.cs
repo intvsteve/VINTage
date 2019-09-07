@@ -92,7 +92,7 @@ namespace INTV.Intellicart.Model
         /// <inheritdoc />
         public void OnImportsSatisfied()
         {
-            var appInfo = INTV.Shared.Utility.SingleInstanceApplication.Instance.AppInfo;
+            var appInfo = INTV.Shared.Utility.SingleInstanceApplication.AppInfo;
             ApplicationConfigurationPath = System.IO.Path.Combine(INTV.Shared.Utility.PathUtils.GetDocumentsDirectory(), appInfo.DocumentFolderName); // applicationConfiguration.DocumentsPath;
             RomsStagingAreaPath = System.IO.Path.Combine(ApplicationConfigurationPath, RomsStagingArea);
         }

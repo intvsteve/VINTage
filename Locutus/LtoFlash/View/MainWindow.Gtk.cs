@@ -55,7 +55,7 @@ namespace Locutus.View
 
         protected override void OnDestroyed()
         {
-            LtoFlash.Properties.Settings.Default.PrimarySplitterPosition = _mainHPaned.Position;
+            Locutus.Properties.Settings.Default.PrimarySplitterPosition = _mainHPaned.Position;
             base.OnDestroyed();
         }
 
@@ -212,7 +212,7 @@ namespace Locutus.View
         private void HandleMainHPanedRealized(object sender, System.EventArgs e)
         {
             _mainHPaned.SizeAllocated -= HandleMainHPanedRealized;
-            var splitterPosition = LtoFlash.Properties.Settings.Default.PrimarySplitterPosition;
+            var splitterPosition = Locutus.Properties.Settings.Default.PrimarySplitterPosition;
             if ((splitterPosition >= _mainHPaned.MinPosition) && (splitterPosition <= _mainHPaned.MaxPosition))
             {
                 _mainHPaned.Position = splitterPosition;

@@ -29,7 +29,7 @@ namespace INTV.Shared.Utility
     public sealed class TemporaryDirectory : IDisposable
     {
         /// <summary>
-        /// Initialize a new instance of <paramref name="TemporaryDirectory"/>.
+        /// Initialize a new instance of <see cref="TemporaryDirectory"/>.
         /// </summary>
         public TemporaryDirectory()
         {
@@ -70,7 +70,7 @@ namespace INTV.Shared.Utility
         {
             if (!string.IsNullOrEmpty(Path))
             {
-                if (Path.StartsWith(System.IO.Path.GetTempPath()))
+                if (Path.StartsWith(System.IO.Path.GetTempPath(), PathComparer.DefaultPolicy))
                 {
                     try
                     {

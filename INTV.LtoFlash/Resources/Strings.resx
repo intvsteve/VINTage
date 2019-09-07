@@ -2569,4 +2569,19 @@ In order to determine if a firmware update is available for your device, please 
   <data name="SetShowTitleScreenCommand_TipDescription" xml:space="preserve">
     <value>Selects when your LTO Flash! displays the title screen. (Default: Always)</value>
   </data>
+  <data name="SettingsDescription" xml:space="preserve">
+    <value>Settings associated with the LTO Flash! menu editor plug-in to VINTage (INTV.LtoFlash).</value>
+  </data>
+  <data name="MenuLayoutLongNameColWidth" xml:space="preserve">
+    <value>Width of the column that displays the long name for a menu item (pixels)</value>
+  </data>
+  <data name="MenuLayoutManualColWidth" xml:space="preserve">
+    <value>Width of the column that displays the file name of the manual associated with a menu item (pixels)</value>
+  </data>
+  <data name="MenuLayoutSaveDataColWidth" xml:space="preserve">
+    <value>Width of the column that displays the file name for saved data associated a menu item (pixels)</value>
+  </data>
+  <data name="MenuLayoutShortNameColWidth" xml:space="preserve">
+    <value>Width of the column that displays the short name for a menu item (pixels)</value>
+  </data>
 </root>

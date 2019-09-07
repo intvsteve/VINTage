@@ -1,5 +1,5 @@
 ﻿// <copyright file="Application.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -32,7 +32,8 @@ namespace Locutus
         {
             object stupidHack = INTV.JzIntv.Model.DisplayMode.Fullscreen;
             stupidHack = INTV.LtoFlash.Model.EcsStatusFlags.AllFlags;
-            INTV.Shared.Utility.SingleInstanceApplication.RunApplication<Locutus.View.MainWindow>("Locutus-{4B53C351-EE55-46AB-8DE9-C2E4DDD1297A}", Locutus.Properties.Settings.Default, args, "Resources/Images/LTOFlashSplash.png");
+            var applicationInfo = new LtoFlashApplicationInfo();
+            INTV.Shared.Utility.SingleInstanceApplication.RunApplication<Locutus.View.MainWindow>("Locutus-{4B53C351-EE55-46AB-8DE9-C2E4DDD1297A}", applicationInfo, args, "Resources/Images/LTOFlashSplash.png");
         }
     }
 }

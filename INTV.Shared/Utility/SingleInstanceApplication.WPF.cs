@@ -1,5 +1,5 @@
 ﻿// <copyright file="SingleInstanceApplication.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -22,6 +22,8 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using INTV.Shared.ComponentModel;
+using INTV.Shared.Properties;
 using INTV.Shared.View;
 
 namespace INTV.Shared.Utility
@@ -44,10 +46,11 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Initializes a new instance of SingleInstanceApplication.
         /// </summary>
-        /// <param name="settings">The application-specific settings to save at exit.</param>
-        public SingleInstanceApplication(System.Configuration.ApplicationSettingsBase settings)
+        /// <param name="appInfo">The application-specific information.</param>
+        public SingleInstanceApplication(IApplicationInfo appInfo)
         {
-            Initialize(settings);
+            AppInfo = appInfo;
+            Initialize(appInfo.Settings);
         }
 
         #endregion // Constructors
@@ -74,10 +77,10 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <typeparam name="T">The type of the application's main window.</typeparam>
         /// <param name="uniqueInstance">A unique identifier for the application, used to enforce the single instance feature.</param>
-        /// <param name="settings">The application-specific settings data.</param>
+        /// <param name="applicationInfo">The application description.</param>
         /// <param name="args">Command line arguments to the application.</param>
         /// <param name="splashScreenImage">Image to display in the splash screen.</param>
-        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : System.Windows.Window, new()
+        public static void RunApplication<T>(string uniqueInstance, IApplicationInfo applicationInfo, string[] args, string splashScreenImage) where T : System.Windows.Window, new()
         {
             if (IsFirstInstance(uniqueInstance))
             {
@@ -85,7 +88,7 @@ namespace INTV.Shared.Utility
                 _splashScreenResource = splashScreenImage;
                 var splashScreen = new System.Windows.SplashScreen(splashScreenImage);
                 splashScreen.Show(true, false);
-                var app = new SingleInstanceApplication(settings);
+                var app = new SingleInstanceApplication(applicationInfo);
                 ////splashScreen.Close(TimeSpan.FromMilliseconds(444));
                 var window = new T();
                 app.MainWindow = window;
@@ -197,7 +200,7 @@ namespace INTV.Shared.Utility
             // used anywhere. Perhaps in Windows these are referenced via bindings in the main UI via the Settings property...
             foreach (var configuration in Configurations.OrderBy(c => c.Metadata.Weight))
             {
-                var settings = configuration.Value.Settings as System.Configuration.ApplicationSettingsBase;
+                var settings = configuration.Value.Settings as ISettings;
                 if (settings != null)
                 {
                     AddSettings(settings);

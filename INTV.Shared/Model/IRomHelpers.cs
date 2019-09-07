@@ -558,25 +558,24 @@ namespace INTV.Shared.Model
         /// <returns>An enumerable of valid program ROM files.</returns>
         public static IEnumerable<IRom> IdentifyRomFiles(this IEnumerable<string> files, Func<bool> acceptCancellation, Action<string> progressFunc)
         {
-            var potentialRomFilePaths = GetPotentialProgramRomFiles(files, acceptCancellation, progressFunc).Where(f => ProgramFileKind.Rom.IsProgramFile(f));
+            var potentialRomFilePaths = GetPotentialProgramRomFiles(files, acceptCancellation, progressFunc).Where(f => ProgramFileKind.Rom.IsProgramFile(f.Path));
             foreach (var romFilePath in potentialRomFilePaths)
             {
-                var romFileLocation = new StorageLocation(romFilePath);
                 if (acceptCancellation())
                 {
                     yield break;
                 }
                 if (progressFunc != null)
                 {
-                    progressFunc(romFilePath);
+                    progressFunc(romFilePath.Path);
                 }
-                var configFilePath = INTV.Shared.Model.Program.ProgramFileKindHelpers.GetConfigFilePath(romFileLocation);
+                var configFilePath = INTV.Shared.Model.Program.ProgramFileKindHelpers.GetConfigFilePath(romFilePath);
                 if (configFilePath.Exists())
                 {
                     INTV.Core.Model.IRom programRom = null;
                     try
                     {
-                        programRom = INTV.Core.Model.Rom.Create(romFileLocation, configFilePath);
+                        programRom = INTV.Core.Model.Rom.Create(romFilePath, configFilePath);
                     }
                     catch (IOException)
                     {
@@ -592,7 +591,7 @@ namespace INTV.Shared.Model
                     INTV.Core.Model.IRom programRom = null;
                     try
                     {
-                        programRom = INTV.Core.Model.Rom.Create(romFileLocation, StorageLocation.InvalidLocation);
+                        programRom = INTV.Core.Model.Rom.Create(romFilePath, StorageLocation.InvalidLocation);
                     }
                     catch (IOException)
                     {
@@ -608,7 +607,7 @@ namespace INTV.Shared.Model
                         IProgramInformation programInfo = null;
                         try
                         {
-                            var crc = INTV.Core.Utility.Crc32.OfFile(romFileLocation);
+                            var crc = INTV.Core.Utility.Crc32.OfFile(romFilePath);
                             programInfo = ProgramInformationTable.Default.FindProgram(crc);
                         }
                         catch (IOException)
@@ -617,9 +616,9 @@ namespace INTV.Shared.Model
                         }
                         if (programInfo != null)
                         {
-                            if (INTV.Core.Model.Rom.CheckRomFormat(romFileLocation) != RomFormat.None)
+                            if (INTV.Core.Model.Rom.CheckRomFormat(romFilePath) != RomFormat.None)
                             {
-                                yield return INTV.Core.Model.Rom.Create(romFileLocation, StorageLocation.InvalidLocation);
+                                yield return INTV.Core.Model.Rom.Create(romFilePath, StorageLocation.InvalidLocation);
                             }
                         }
                     }
@@ -716,15 +715,15 @@ namespace INTV.Shared.Model
                         {
                             if (progressFunc != null)
                             {
-                                progressFunc(subdirectoryFile);
+                                progressFunc(subdirectoryFile.Path);
                             }
-                            yield return new StorageLocation(subdirectoryFile);
+                            yield return subdirectoryFile;
                         }
                     }
                 }
                 else if (File.Exists(file))
                 {
-                    var potentialRomLocations = GetPotentialProgramRomFilesInCompressedArchive(subdirectoryFile);
+                    var potentialRomLocations = GetPotentialProgramRomFilesInCompressedArchive(new StorageLocation(file));
                     if (potentialRomLocations != null)
                     {
                         foreach (var potentialRomLocation in potentialRomLocations)
@@ -753,10 +752,10 @@ namespace INTV.Shared.Model
             }
         }
 
-        private static IEnumerable<StorageLocation> GetPotentialProgramRomFilesInCompressedArchive(string file)
+        private static IEnumerable<StorageLocation> GetPotentialProgramRomFilesInCompressedArchive(StorageLocation file)
         {
             IEnumerable<StorageLocation> potentialRomFilesInCompressedArchive = null;
-            var compressedArchiveAccess = file.GetStorageAccess() as ICompressedArchiveAccess;
+            var compressedArchiveAccess = file.StorageAccess as ICompressedArchiveAccess;
             if (compressedArchiveAccess != null)
             {
                 var compressedArchiveAccessFiles = compressedArchiveAccess.ListContents(null, includeContainers: false, recurse: true);

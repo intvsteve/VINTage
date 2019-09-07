@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSVersion.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -27,14 +27,14 @@ namespace INTV.Shared.Utility
     /// </summary>
     public partial class OSVersion
     {
-        /// <summary>
-        /// The current operating system version.
-        /// </summary>
-        public static readonly OSVersion Current = new OSVersion();
+        private static readonly Lazy<OSVersion> OperatingSystemVersion = new Lazy<OSVersion>(Initialize);
 
-        private OSVersion()
+        /// <summary>
+        /// Gets the current operating system version.
+        /// </summary>
+        public static OSVersion Current
         {
-            _version = Initialize();
+            get { return OperatingSystemVersion.Value; }
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace INTV.Shared.Utility
         /// <param name="patch">Patch / build version of the operating system.</param>
         public OSVersion(int major, int minor, int patch)
         {
-            _version = new System.Version(major, minor, patch);
+            _version = new Version(major, minor, patch);
         }
 
         /// <summary>
@@ -172,9 +172,9 @@ namespace INTV.Shared.Utility
         #region object Overrides
 
         /// <inheritdoc />
-        public override bool Equals(object other)
+        public override bool Equals(object obj)
         {
-            return Version.Equals(other);
+            return Version.Equals(obj);
         }
 
         /// <inheritdoc />

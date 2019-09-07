@@ -219,7 +219,16 @@
   <data name="ApplicationSettings" xml:space="preserve">
     <value>Settings...</value>
   </data>
+  <data name="ApplicationDisplayName" xml:space="preserve">
+    <value>LTO Flash! User Interface Software</value>
+  </data>
   <data name="MainWindowTitle" xml:space="preserve">
     <value>LTO Flash!</value>
+  </data>
+  <data name="SettingsDescription" xml:space="preserve">
+    <value>Settings associated with the LTO Flash! User Interface Software application built using VINTage.</value>
+  </data>
+  <data name="PrimarySplitterPosition" xml:space="preserve">
+    <value>Position of the main window's splitter bar from the left side of the window (pixels)</value>
   </data>
 </root>

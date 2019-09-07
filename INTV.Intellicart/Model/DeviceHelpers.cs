@@ -220,7 +220,7 @@ namespace INTV.Intellicart.Model
                 }
                 if (!romFile.Exists())
                 {
-                    var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.DownloadRom_RomConversionOutputFileNotFoundErrorFormat, rom.RomPath, System.IO.Path.GetFileNameWithoutExtension(romFile.Path));
+                    var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.DownloadRom_RomConversionOutputFileNotFoundErrorFormat, rom.RomPath, romFile.GetFileNameWithoutExtension());
                     throw new InvalidOperationException(message);
                 }
                 else if ((new System.IO.FileInfo(romFile.Path)).Length > IntellicartModel.MaxROMSize)

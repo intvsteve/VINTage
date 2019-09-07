@@ -105,11 +105,11 @@ namespace INTV.Shared.Utility
             // as expected. Perhaps it's the C#iness of it all.
 
             // show splash screen
+            AppInfo = applicationInfo;
             _mainWindowType = typeof(T);
             _splashScreenResource = splashScreenImage;
             Gtk.Application.Init(uniqueInstance, ref args);
 
-            Instance.AppInfo = applicationInfo;
             SettingsBase.LoadApplicationSettings();
             var window = new T();
             Instance.MainWindow = window;
@@ -131,7 +131,7 @@ namespace INTV.Shared.Utility
 
         private static bool FinishInitialization()
         {
-            var settings = Instance.AppInfo.Settings;
+            var settings = AppInfo.Settings;
             Instance.Initialize(settings);
             var window = Instance.MainWindow;
             InitializeMainWindow(window);

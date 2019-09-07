@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSVersion.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017-2018 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -54,10 +54,12 @@ namespace INTV.Shared.Utility
         }
         private static string _osName = null;
 
-        private static System.Version Initialize()
+        private static OSVersion Initialize()
         {
             var version = System.Environment.OSVersion.Version;
-            return version;
+            var osVersion = new OSVersion(version.Major, version.Minor, version.MajorRevision);
+            osVersion._version = version;
+            return osVersion;
         }
 
         private static string GetOSName(string fileName)

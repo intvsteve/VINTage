@@ -35,6 +35,7 @@ namespace INTV.Shared.Properties
     internal sealed partial class Settings
     {
         private const string ShowFTDIWarningSettingName = "ShowFTDIWarning";
+        private INTV.Shared.Model.SearchDirectories _romListSearchDirectories;
 
         #region Properties
 

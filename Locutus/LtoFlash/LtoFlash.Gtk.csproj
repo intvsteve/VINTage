@@ -56,8 +56,14 @@
       <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Posix" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Locutus.Resources</CustomToolNamespace>
+    </EmbeddedResource>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
@@ -77,6 +83,9 @@
     <Compile Include="Properties\Settings.cs" />
     <Compile Include="Properties\Settings.Gtk.cs" />
     <Compile Include="Properties\Settings.Mono.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="View\MainWindow.Gtk.cs" />
     <Compile Include="View\MainWindow.cs" />
     <Compile Include="gtk-gui\generated.cs" />
@@ -84,6 +93,8 @@
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="LtoFlashApplicationInfo.cs" />
+    <Compile Include="LtoFlashApplicationInfo.Gtk.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

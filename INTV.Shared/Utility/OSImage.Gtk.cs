@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSImage.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -40,7 +40,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="opacity">The opacity, in the range [0.0,1.0], where 0.0 is completely transparent, 1.0 is completely opaque.</param>
         /// <returns>A copy of the image with opacity applied to it.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeExeption">The <paramref name="opacity"/> value was outside the range [0.0, 1.0].</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">The <paramref name="opacity"/> value was outside the range [0.0, 1.0].</exception>
         public OSImage CreateNewWithOpacity(double opacity)
         {
             if ((opacity < 0) || (opacity > 1))

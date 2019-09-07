@@ -68,7 +68,7 @@ namespace INTV.Shared.Utility
         {
             try
             {
-                var oneShotTaskFile = Path.Combine(PathUtils.GetDocumentsDirectory(), SingleInstanceApplication.Instance.AppInfo.DocumentFolderName, Name + ".updatefinished");
+                var oneShotTaskFile = Path.Combine(PathUtils.GetDocumentsDirectory(), SingleInstanceApplication.AppInfo.DocumentFolderName, Name + ".updatefinished");
                 if (!File.Exists(oneShotTaskFile))
                 {
                     using (File.Create(oneShotTaskFile))

@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using INTV.Core.Model;
 
 namespace INTV.Shared.Utility
 {
@@ -30,6 +31,16 @@ namespace INTV.Shared.Utility
     /// </summary>
     public static partial class PathUtils
     {
+        /// <summary>
+        /// All supported fields to include in a date-time string.
+        /// </summary>
+        public const MetadataDateTimeFlags AllTimeStringFields = MetadataDateTimeFlags.Year
+            | MetadataDateTimeFlags.Month
+            | MetadataDateTimeFlags.Day
+            | MetadataDateTimeFlags.Hour
+            | MetadataDateTimeFlags.Minute
+            | MetadataDateTimeFlags.Second;
+
         /// <summary>
         /// Default file extension for a backup copy of a file.
         /// </summary>
@@ -79,10 +90,10 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets the common path.
         /// </summary>
-        /// <returns>The common path.</returns>
         /// <param name="paths">The paths from which to extract a common path.</param>
         /// <remarks>Modified from the C# entry from RosettaCode.org.</remarks>
         /// <see cref="http://rosettacode.org/wiki/Find_Common_Directory_Path#C.23"/>
+        /// <returns>The common path.</returns>
         public static string GetCommonPath(IEnumerable<string> paths)
         {
             char[] separator = new[] { Path.DirectorySeparatorChar };
@@ -266,7 +277,7 @@ namespace INTV.Shared.Utility
         /// <returns>The time as a specially formatted string.</returns>
         public static string GetTimeString()
         {
-            return GetTimeString(false);
+            return GetTimeString(useUTC: false);
         }
 
         /// <summary>
@@ -276,9 +287,49 @@ namespace INTV.Shared.Utility
         /// <returns>The time as a specially formatted string.</returns>
         public static string GetTimeString(bool useUTC)
         {
+            return GetTimeString(AllTimeStringFields, includeMilliseconds: true, useUTC: useUTC);
+        }
+
+        /// <summary>
+        /// Gets a string representing the current time in the format YYYY-MM-DD-HH-MM-SS-NNN based on provided flags.
+        /// </summary>
+        /// <param name="flags">Flags describing the portions of the current date and time to include.</param>
+        /// <param name="includeMilliseconds">If set to <c>true</c> include milliseconds.</param>
+        /// <param name="useUTC">If <c>true</c>, use UTC, otherwise use local time.</param>
+        /// <returns>The time as a specially formatted string.</returns>
+        public static string GetTimeString(MetadataDateTimeFlags flags, bool includeMilliseconds, bool useUTC)
+        {
             var now = useUTC ? DateTime.UtcNow : DateTime.Now;
-            var dateTimeForFileName = now.Year.ToString("D4") + "-" + now.Month.ToString("D2") + "-" + now.Day.ToString("D2");
-            dateTimeForFileName += "-" + now.Hour.ToString("D2") + "-" + now.Minute.ToString("D2") + "-" + now.Second.ToString("D2") + "-" + now.Millisecond.ToString("D3");
+            var timeStringFields = new List<string>();
+            if (flags.HasFlag(MetadataDateTimeFlags.Year))
+            {
+                timeStringFields.Add(now.Year.ToString("D4"));
+            }
+            if (flags.HasFlag(MetadataDateTimeFlags.Month))
+            {
+                timeStringFields.Add(now.Month.ToString("D2"));
+            }
+            if (flags.HasFlag(MetadataDateTimeFlags.Day))
+            {
+                timeStringFields.Add(now.Day.ToString("D2"));
+            }
+            if (flags.HasFlag(MetadataDateTimeFlags.Hour))
+            {
+                timeStringFields.Add(now.Hour.ToString("D2"));
+            }
+            if (flags.HasFlag(MetadataDateTimeFlags.Minute))
+            {
+                timeStringFields.Add(now.Minute.ToString("D2"));
+            }
+            if (flags.HasFlag(MetadataDateTimeFlags.Second))
+            {
+                timeStringFields.Add(now.Second.ToString("D2"));
+            }
+            if (includeMilliseconds)
+            {
+                timeStringFields.Add(now.Millisecond.ToString("D3"));
+            }
+            var dateTimeForFileName = string.Join("-", timeStringFields);
             return dateTimeForFileName;
         }
 

@@ -1,5 +1,5 @@
 ﻿// <copyright file="SingleInstanceApplication.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 using System.Linq;
 using INTV.Shared.ComponentModel;
+using INTV.Shared.Properties;
 using INTV.Shared.View;
 
 namespace INTV.Shared.Utility
@@ -93,10 +94,10 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <typeparam name="T">The type for the main window class.</typeparam>
         /// <param name="uniqueInstance">Unique instance string.</param>
-        /// <param name="settings">The application settings.</param>
+        /// <param name="applicationInfo">The application description.</param>
         /// <param name="args">Command line arguments.</param>
         /// <param name="splashScreenImage">Splash screen image.</param>
-        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : Gtk.Window, IMainWindow, new()
+        public static void RunApplication<T>(string uniqueInstance, IApplicationInfo applicationInfo, string[] args, string splashScreenImage) where T : Gtk.Window, IMainWindow, new()
         {
             // TODO: Single instance check / activate
             // Documentation of Gtk.Application.Init(progname, ref args) implies that
@@ -104,26 +105,34 @@ namespace INTV.Shared.Utility
             // as expected. Perhaps it's the C#iness of it all.
 
             // show splash screen
+            AppInfo = applicationInfo;
             _mainWindowType = typeof(T);
             _splashScreenResource = splashScreenImage;
             Gtk.Application.Init(uniqueInstance, ref args);
 
-            var splashImage = _mainWindowType.LoadImageResource(_splashScreenResource);
+            SettingsBase.LoadApplicationSettings();
             var window = new T();
             Instance.MainWindow = window;
             Instance.ReadyState |= AppReadyState.MainWindowSourced;
 
             Gtk.Window.DefaultIcon = window.Icon;
+            var splashImage = _mainWindowType.LoadImageResource(_splashScreenResource);
             var splashScreen = new SplashScreen(splashImage); // creating also shows
             splashScreen.TransientFor = window;
             window.Data["SplashScreen"] = splashScreen;
             GLib.Timeout.Add(1000, FinishInitialization);
             Gtk.Application.Run();
+            foreach (var settings in Instance.Settings)
+            {
+                settings.Save();
+            }
+            SettingsBase.SaveApplicationSettings();
         }
 
         private static bool FinishInitialization()
         {
-            Instance.Initialize(null);
+            var settings = AppInfo.Settings;
+            Instance.Initialize(settings);
             var window = Instance.MainWindow;
             InitializeMainWindow(window);
             return false;
@@ -204,8 +213,8 @@ namespace INTV.Shared.Utility
         /// behavior and don't necessarily have access to the implementation of the Window.
         /// (OK, we do, but it's the principle of the thing here.) The documentation of
         /// GLib.ConnectBefore suggests using that attribute breaks enapsulation:
-        /// <see cref="http://docs.go-mono.com/index.aspx?link=T%3aGLib.ConnectBeforeAttribute"/>.
-        /// This solution was found here: <see cref="https://stackoverflow.com/questions/16778919/f-mono-gtk-configureevent"/>.
+        /// <see href="http://docs.go-mono.com/index.aspx?link=T%3aGLib.ConnectBeforeAttribute"/>.
+        /// This solution was found here: <see href="https://stackoverflow.com/questions/16778919/f-mono-gtk-configureevent"/>.
         /// IMO the current behavior seems like a bug -- it's not documented to require this kind of trickery,
         /// and the technique seems to crop up more often than you'd think for something that's considered
         /// borderline bad practice. OTOH, the frequency of ConfigureEvent could have performance implications, so
@@ -362,7 +371,7 @@ namespace INTV.Shared.Utility
             // TODO: Determine if these are useless in GTK.
             foreach (var configuration in Configurations.OrderBy(c => c.Metadata.Weight))
             {
-                var settings = configuration.Value.Settings as System.Configuration.ApplicationSettingsBase;
+                var settings = configuration.Value.Settings as ISettings;
                 if (settings != null)
                 {
                     AddSettings(settings);

@@ -1,5 +1,5 @@
 ﻿// <copyright file="SettingsBase.Mono.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,7 +19,6 @@
 // </copyright>
 
 using System.Collections.Generic;
-using INTV.Core.ComponentModel;
 
 namespace INTV.Shared.Properties
 {
@@ -33,7 +32,7 @@ namespace INTV.Shared.Properties
     /// wrap the native GConf or Mac settings system. There are just enough bugs and other complaints
     /// floating around out there that this skeptic is just going to do The Wrap and
     /// deal with the extra work.</remarks>
-    public abstract partial class SettingsBase : PropertyChangedNotifier, ISettings
+    public abstract partial class SettingsBase : ISettings
     {
         private Dictionary<string, object> _defaults = new Dictionary<string, object>();
 
@@ -43,7 +42,7 @@ namespace INTV.Shared.Properties
         protected SettingsBase()
         {
             OSInitialize();
-            InitializeDefaults();
+            InitializeDefaultPropertyValues();
 
             // TODO: Consider adding support for exposing things via SettingsProperty / SettingsCollection?
             // This could lead down a rabbit hole of re-implementing provider, et. al.
@@ -91,10 +90,12 @@ namespace INTV.Shared.Properties
         /// </summary>
         /// <param name="key">The key for the setting.</param>
         /// <param name="defaultValue">The default value of the setting.</param>
-        protected void AddSetting(string key, object defaultValue)
+        /// <param name="isApplicationSetting">If <c>true</c>, indicates the setting is for the application and not
+        /// the specific instance of the Settings class.</param>
+        protected void AddSetting(string key, object defaultValue, bool isApplicationSetting = false)
         {
             _defaults.Add(key, defaultValue);
-            OSAddSetting(key, defaultValue);
+            OSAddSetting(key, defaultValue, isApplicationSetting);
         }
 
         /// <summary>
@@ -130,12 +131,19 @@ namespace INTV.Shared.Properties
             OSSetSetting(key, value);
         }
 
+        private void InitializeDefaultPropertyValues()
+        {
+            InitializeDefaults();
+        }
+
         /// <summary>
         /// OS-specific implementation to add a setting.
         /// </summary>
         /// <param name="key">The identifier for the setting.</param>
         /// <param name="defaultValue">The default value for the setting.</param>
-        partial void OSAddSetting(string key, object defaultValue);
+        /// <param name="isApplicationSetting">If <c>true</c>, indicates the setting is for the application and not
+        /// the specific instance of the Settings class.</param>
+        partial void OSAddSetting(string key, object defaultValue, bool isApplicationSetting);
 
         /// <summary>
         /// OS-specific save implementation.

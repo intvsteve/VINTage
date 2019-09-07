@@ -1732,4 +1732,38 @@ The following formats were not processed:
     <value>The nested archive '{0}' could not be found.</value>
     <comment>{0} is the name of a nested compressed archive</comment>
   </data>
+  <data name="SettingsDescription" xml:space="preserve">
+    <value>Settings associated with the primary ROM list (INTV.Shared) and main application window in VINTage.</value>
+  </data>
+  <data name="EnableMenuIcons" xml:space="preserve">
+    <value>If 'True' icons are displayed in menus; not honored on all systems</value>
+  </data>
+  <data name="RomListFeaturesColWidth" xml:space="preserve">
+    <value>Width of the column that displays the ROM feature glyphs (pixels)</value>
+  </data>
+  <data name="RomListNameColWidth" xml:space="preserve">
+    <value>Width of the column that displays the title of a ROM (pixels)</value>
+  </data>
+  <data name="RomListPathColWidth" xml:space="preserve">
+    <value>Width of the column that displays the file name of a ROM (pixels)</value>
+  </data>
+  <data name="RomListVendorColWidth" xml:space="preserve">
+    <value>Width of the column that displays the name of the publisher of a ROM (pixels)</value>
+  </data>
+  <data name="RomListYearColWidth" xml:space="preserve">
+    <value>Width of the column that displays the copyright year of a ROM (pixels)</value>
+  </data>
+  <data name="WindowPosition" xml:space="preserve">
+    <value>Last position of the main application window (x, y) (pixels)</value>
+  </data>
+  <data name="WindowSize" xml:space="preserve">
+    <value>Last size of the main application window (width, height) (pixels)</value>
+  </data>
+  <data name="WindowState" xml:space="preserve">
+    <value>Last state of the main application window (0, Iconified, Maximized, Fullscreen)</value>
+  </data>
+  <data name="SettingsDescriptionHeader" xml:space="preserve"># Common application settings
+# Settings are provided by various components in individual sections.
+#
+  </data>
 </root>

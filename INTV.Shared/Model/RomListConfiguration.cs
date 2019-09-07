@@ -74,12 +74,6 @@ namespace INTV.Shared.Model
         }
 
         /// <summary>
-        /// Gets or sets the application information interface.
-        /// </summary>
-        [System.ComponentModel.Composition.Import]
-        private IApplicationInfo AppInfo { get; set; }
-
-        /// <summary>
         /// Gets the default name for the ROM list.
         /// </summary>
         public string DefaultRomsFileName
@@ -165,7 +159,8 @@ namespace INTV.Shared.Model
             }
             System.Diagnostics.Debug.Assert(initializedCoreStreamUtils, "Failed to initialize stream utilities!");
             Core.Model.IRomHelpers.InitializeCallbacks(GetIntvNameData);
-            _applicationDocumentsPath = Path.Combine(PathUtils.GetDocumentsDirectory(), AppInfo.DocumentFolderName);
+            var documentFolderName = SingleInstanceApplication.AppInfo.DocumentFolderName;
+            _applicationDocumentsPath = Path.Combine(PathUtils.GetDocumentsDirectory(), documentFolderName);
             if (!Directory.Exists(_applicationDocumentsPath))
             {
                 Directory.CreateDirectory(_applicationDocumentsPath);

@@ -1,5 +1,5 @@
 ﻿// <copyright file="ReflectionHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace INTV.Shared.Utility
@@ -147,7 +148,28 @@ namespace INTV.Shared.Utility
             }
         }
 
-        private static System.Reflection.BindingFlags AllBindings
+        /// <summary>
+        /// Gets public instance properties that have both public get and set methods.
+        /// </summary>
+        /// <param name="type">The data type whose publicly accessible properties are desired.</param>
+        /// <param name="filter">If <c>null</c>, all publicly gettable and settable properties returned; otherwise only those satisfying the predicate.</param>
+        /// <returns>The public instance properties with public get and set methods.</returns>
+        public static IEnumerable<PropertyInfo> GetPublicInstancePropertiesWithGetAndSet(this Type type, Predicate<PropertyInfo> filter)
+        {
+            var propertyInfos = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var propertyInfo in propertyInfos.Where(p => p.CanWrite && p.CanRead))
+            {
+                if ((propertyInfo.GetGetMethod() != null) && (propertyInfo.GetSetMethod() != null))
+                {
+                    if (filter == null || filter(propertyInfo))
+                    {
+                        yield return propertyInfo;
+                    }
+                }
+            }
+        }
+
+        private static BindingFlags AllBindings
         {
             get { return BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static; }
         }

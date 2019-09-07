@@ -1,5 +1,5 @@
-﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,21 +18,24 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-// USE_CHANGESET_ENGINE is disabled because it causes this:
-// GConf-WARNING **: : You can't use a GConfEngine that has an active GConfClient wrapper object. Use GConfClient API instead.
-////#define USE_CHANGESET_ENGINE
-
-using System.Linq;
+using System.ComponentModel;
+using System.Runtime.Serialization;
+using INTV.Shared.Converter;
 using INTV.Shared.Model;
+using INTV.Shared.Utility;
 
 namespace INTV.Shared.Properties
 {
     /// <summary>
     /// GTK-specific implementation.
     /// </summary>
-    internal sealed partial class Settings
+    [DataContract(Name = ContractName, Namespace = ContractNamespace)]
+    internal sealed partial class Settings : SettingsBase<Settings>
     {
-        public const string EnableMenuIconsSettingName = "EnableMenuIcons";
+        private const string ContractName = "VINTageSharedSettings";
+        private const string ContractNamespace = "https://www.intvfunhouse.com";
+
+        private const string EnableMenuIconsSettingName = "EnableMenuIcons";
 
         private const int DefaultRomListNameColWidth = 192;
         private const int DefaultRomListVendorColWidth = 128;
@@ -77,6 +80,9 @@ namespace INTV.Shared.Properties
                 }
             }
         }
+
+        /// <inheritdoc/>
+        public override double Weight { get; } = 0.1; // see INTV.Shared.Model.RomListConfiguration
 
         /// <summary>
         /// Gets or sets the setting that stores previous window position.
@@ -173,81 +179,27 @@ namespace INTV.Shared.Properties
 ////        }
 
         /// <inheritdoc/>
-        /// <remarks>Register custom converters for point and size.
-        /// It does not seem that the bindings to GConf support schemas?
-        /// Haven't learned how these work, nor if the tools teased back in 2006
-        /// at the repo at GitHub ever panned out. Since these are few and far
-        /// between, just hand-roll things as needed.</remarks>
+        protected override void InitializeFromSettingsFile()
+        {
+            InitializeFromSettingsFile<SettingsDto>();
+        }
+
+        /// <inheritdoc/>
         protected override void AddCustomTypeConverters()
         {
             base.AddCustomTypeConverters();
-            AddCustomTypeConverter(typeof(Gdk.Point), GetPoint, SetPoint);
-            AddCustomTypeConverter(typeof(Gdk.Size), GetSize, SetSize);
-            AddCustomTypeConverter(typeof(SearchDirectories), GetSearchDirectories, SetSearchDirectories);
-        }
-
-        private object GetPoint(string key)
-        {
-            int x = (int)GetSetting(key, "X");
-            int y = (int)GetSetting(key, "Y");
-            var point = new Gdk.Point(x, y);
-            return point;
-        }
-
-        private void SetPoint(string key, object value)
-        {
-            var point = (Gdk.Point)value;
-#if USE_CHANGESET_ENGINE
-            using (var changes = new GConf.ChangeSet())
+            if (!TypeConverterRegistrar.TryRegisterAttribute<Gdk.Point, GdkPointConverter>())
             {
-                changes.Set(GetAbsoluteKey(key, "X"), point.X);
-                changes.Set(GetAbsoluteKey(key, "Y"), point.Y);
-                GConf.Engine.Default.CommitChangeSet(changes, false);
+                ApplicationLogger.RecordDebugTraceMessage($"Failed to register type converter for: {typeof(Gdk.Point)}");
             }
-#else
-            StoreSetting(key, point.X, "X");
-            StoreSetting(key, point.Y, "Y");
-#endif // USE_CHANGESET_ENGINE
-        }
-
-        private object GetSize(string key)
-        {
-            int width = (int)GetSetting(key, "Width");
-            int height = (int)GetSetting(key, "Height");
-            var size = new Gdk.Size(width, height);
-            return size;
-        }
-
-        private void SetSize(string key, object value)
-        {
-            var size = (Gdk.Size)value;
-#if USE_CHANGESET_ENGINE
-            using (var changes = new GConf.ChangeSet())
+            if (!TypeConverterRegistrar.TryRegisterAttribute<Gdk.Size, GdkSizeConverter>())
             {
-                changes.Set(GetAbsoluteKey(key, "Width"), size.Width);
-                changes.Set(GetAbsoluteKey(key, "Height"), size.Height);
-                GConf.Engine.Default.CommitChangeSet(changes, false);
+                ApplicationLogger.RecordDebugTraceMessage($"Failed to register type converter for: {typeof(Gdk.Size)}");
             }
-#else
-            StoreSetting(key, size.Width, "Width");
-            StoreSetting(key, size.Height, "Height");
-#endif // USE_CHANGESET_ENGINE
-        }
-
-        private object GetSearchDirectories(string key)
-        {
-            // TODO: Actually implement this! Supposedly, array of strings is supported by GConf...
-            var directories = GetSetting(key) as string[];
-            var searchDirectories = new SearchDirectories(directories == null ? Enumerable.Empty<string>() : directories);
-            return searchDirectories;
-        }
-
-        private void SetSearchDirectories(string key, object value)
-        {
-            // TODO: Actually implement this! Supposedly, array of strings is supported by GConf...
-            var searchDirectories = value as SearchDirectories;
-            var directories = searchDirectories == null ? searchDirectories.ToArray() : new string[] { };
-            StoreSetting(key, directories);
+            AddCustomTypeConverter(typeof(Gdk.WindowState), TypeDescriptor.GetConverter(typeof(Gdk.WindowState)));
+            AddCustomTypeConverter(typeof(Gdk.Point), TypeDescriptor.GetConverter(typeof(Gdk.Point)));
+            AddCustomTypeConverter(typeof(Gdk.Size), TypeDescriptor.GetConverter(typeof(Gdk.Size)));
+            AddCustomTypeConverter(typeof(SearchDirectories), TypeDescriptor.GetConverter(typeof(SearchDirectories)));
         }
 
         /// <summary>
@@ -255,26 +207,54 @@ namespace INTV.Shared.Properties
         /// </summary>
         partial void OSInitializeDefaults()
         {
-            AddSetting(WindowPositionSettingName, new Gdk.Point(80, 80));
-            AddSetting(WindowSizeSettingName, new Gdk.Size(1024, 768));
-            AddSetting(WindowStateSettingName, 0);
+            AddSetting(WindowPositionSettingName, new Gdk.Point(80, 80), isApplicationSetting: true);
+            AddSetting(WindowSizeSettingName, new Gdk.Size(1024, 768), isApplicationSetting: true);
+            AddSetting(WindowStateSettingName, (Gdk.WindowState)0, isApplicationSetting: true);
 
             var defaultShowMenuIconSetting = false;
-            try
-            {
-                defaultShowMenuIconSetting = (bool)Client.Get("/desktop/gnome/interface/menus_have_icons");
-            }
-            catch (GConf.NoSuchKeyException)
-            {
-            }
-            AddSetting(EnableMenuIconsSettingName, defaultShowMenuIconSetting);
+            AddSetting(EnableMenuIconsSettingName, defaultShowMenuIconSetting, isApplicationSetting: true);
 
-            AddSetting(RomListNameColWidthSettingName, DefaultRomListNameColWidth);
-            AddSetting(RomListVendorColWidthSettingName, DefaultRomListVendorColWidth);
-            AddSetting(RomListYearColWidthSettingName, DefaultRomListYearColWidth);
-            AddSetting(RomListFeaturesColWidthSettingName, DefaultRomListFeaturesColWidth);
-            AddSetting(RomListPathColWidthSettingName, DefaultRomListPathColWidth);
-            ////AddSetting(RomListManualPathColWidthSettingName, DefaultRomListManualPathColWidth);
+            AddSetting(RomListNameColWidthSettingName, DefaultRomListNameColWidth, isApplicationSetting: true);
+            AddSetting(RomListVendorColWidthSettingName, DefaultRomListVendorColWidth, isApplicationSetting: true);
+            AddSetting(RomListYearColWidthSettingName, DefaultRomListYearColWidth, isApplicationSetting: true);
+            AddSetting(RomListFeaturesColWidthSettingName, DefaultRomListFeaturesColWidth, isApplicationSetting: true);
+            AddSetting(RomListPathColWidthSettingName, DefaultRomListPathColWidth, isApplicationSetting: true);
+            ////AddSetting(RomListManualPathColWidthSettingName, DefaultRomListManualPathColWidth, isApplicationSetting: true);
+        }
+
+        [DataContract(Name = ContractName, Namespace = ContractNamespace)]
+        private sealed class SettingsDto : IExtensibleDataObject
+        {
+            public ExtensionDataObject ExtensionData
+            {
+                get { return _extensibleDataObject; }
+                set { _extensibleDataObject = value; }
+            }
+            private ExtensionDataObject _extensibleDataObject;
+
+            [DataMember]
+            public bool RomListValidateAtStartup { get; set; }
+
+            [DataMember]
+            public bool RomListSearchForRomsAtStartup { get; set; }
+
+            [DataMember]
+            public SearchDirectories RomListSearchDirectories { get; set; }
+
+            [DataMember]
+            public bool ShowRomDetails { get; set; }
+
+            [DataMember]
+            public bool DisplayRomFileNameForTitle { get; set; }
+
+            [DataMember]
+            public bool CheckForAppUpdatesAtLaunch { get; set; }
+
+            [DataMember]
+            public bool ShowDetailedErrors { get; set; }
+
+            [DataMember(EmitDefaultValue = false)]
+            public int MaxGZipEntriesSearch { get; set; }
         }
     }
 }

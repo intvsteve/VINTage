@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSColor.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -40,7 +40,7 @@ namespace INTV.Shared.Utility
         private NativeColor _color;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.Shared.View.OSColor"/> struct.
+        /// Initializes a new instance of the <see cref="OSColor"/> struct.
         /// </summary>
         /// <param name="color">A platform-specific color object.</param>
         public OSColor(NativeColor color)

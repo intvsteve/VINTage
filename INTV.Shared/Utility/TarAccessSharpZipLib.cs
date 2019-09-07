@@ -302,7 +302,7 @@ namespace INTV.Shared.Utility
                 private TarArchiveEntry _tarArchiveEntry;
 
                 /// <summary>
-                /// Initializes a new instance of <see cref="OutputDataSource"/>.
+                /// Initializes a new instance of <see cref="OutputStream"/>.
                 /// </summary>
                 /// <param name="tarAccess">The TAR archive to which the contents of <paramref name="tarArchiveEntry"/> is to be written.</param>
                 /// <param name="tarArchiveEntry">A previously created <see cref="TarEntry"/> that will be written to.</param>

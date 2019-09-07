@@ -61,13 +61,17 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Posix" />
     <Reference Include="Xamarin.Mac" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ComponentModel\ApplicationInfo.cs" />
     <Compile Include="ComponentModel\ICommand.Mono.cs" />
     <Compile Include="ComponentModel\PropertyChangedNotifierHelpers.cs" />
     <Compile Include="ComponentModel\RelayCommand.cs" />
     <Compile Include="ComponentModel\VisualRelayCommand.cs" />
+    <Compile Include="Utility\ApplicationLogger.cs" />
     <Compile Include="Utility\AsyncTaskData.cs" />
     <Compile Include="Utility\AsyncTaskWithProgress.cs" />
     <Compile Include="Utility\ColorHelpers.cs" />
@@ -75,6 +79,13 @@
     <Compile Include="Utility\FileDialogHelpers.cs" />
     <Compile Include="Utility\FileUtilities.cs" />
     <Compile Include="Utility\FixedSizeCollection`T.cs" />
+    <Compile Include="Utility\GZipAccess.cs" />
+    <Compile Include="Utility\GZipAccessNative.cs" />
+    <Compile Include="Utility\GZipAccessSharpZipLib.cs" />
+    <Compile Include="Utility\GZipMemberEntry.cs" />
+    <Compile Include="Utility\ICompressedArchiveAccess.cs" />
+    <Compile Include="Utility\ICompressedArchiveAccessExtensions.cs" />
+    <Compile Include="Utility\ICompressedArchiveEntry.cs" />
     <Compile Include="Utility\IFileBrowserDialog.cs" />
     <Compile Include="Utility\IFixedSizeCollection.cs" />
     <Compile Include="Utility\Logger.cs" />
@@ -217,6 +228,11 @@
     <Compile Include="ComponentModel\LocalizedNameAttribute.cs" />
     <Compile Include="ComponentModel\WeightAttribute.cs" />
     <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\CompressedArchiveAccess.cs" />
+    <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
+    <Compile Include="Utility\CompressedArchiveAccessMode.cs" />
+    <Compile Include="Utility\CompressedArchiveEntry.cs" />
+    <Compile Include="Utility\CompressedArchiveFormat.cs" />
     <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
     <Compile Include="Utility\ReflectionHelpers.cs" />
     <Compile Include="Model\IStreamConnection.cs" />
@@ -387,6 +403,11 @@
     <Compile Include="ComponentModel\CompositionHelpers.Mac.cs" />
     <Compile Include="ComponentModel\IVINTagePlugin.cs" />
     <Compile Include="ComponentModel\IVINTagePluginMetadata.cs" />
+    <Compile Include="Utility\TarAccessSharpZipLib.cs" />
+    <Compile Include="Utility\TemporaryDirectory.cs" />
+    <Compile Include="Utility\ZipArchiveAccess.cs" />
+    <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
+    <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\INTV.jzIntv\INTV.jzIntv.VSMac.csproj">
@@ -396,6 +417,10 @@
     <ProjectReference Include="..\INTV.Core\INTV.Core.VSMac.csproj">
       <Project>{FB5C25FD-A481-48E9-A721-24DAE07DF67A}</Project>
       <Name>INTV.Core.VSMac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpZipLib\DotNet45\src\ICSharpCode.SharpZipLib\ICSharpCode.SharpZipLib.VSMac.csproj">
+      <Project>{8E804852-42DF-4588-A9D0-774FE1340523}</Project>
+      <Name>ICSharpCode.SharpZipLib.VSMac</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />

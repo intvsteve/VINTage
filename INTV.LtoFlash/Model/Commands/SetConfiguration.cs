@@ -30,20 +30,19 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public const int DefaultResponseTimeout = 5000;
 
-        private SetConfiguration(DeviceStatusFlagsLo lowStatusFlags, DeviceStatusFlagsHi highStatusFlags)
-            : base(ProtocolCommandId.SetConfiguration, DefaultResponseTimeout, lowStatusFlags.ToConfigurationFlags(), highStatusFlags.GetLowBits(), highStatusFlags.GetHighBits())
+        private SetConfiguration(DeviceStatusFlags statusFlags)
+            : base(ProtocolCommandId.SetConfiguration, DefaultResponseTimeout, statusFlags.Lo.ToConfigurationFlags(), statusFlags.Hi.GetLowBits(), statusFlags.Hi.GetHighBits())
         {
         }
 
         /// <summary>
         /// Creates an instance of the SetConfiguration command.
         /// </summary>
-        /// <param name="lowStatusFlags">The low 64 bits of device configuration flags to set.</param>
-        /// <param name="highStatusFlags">The high 64 bits of device configuration flags to set.</param>
+        /// <param name="statusFlags">The device configuration flags to set.</param>
         /// <returns>A new instance of the command.</returns>
-        public static SetConfiguration Create(DeviceStatusFlagsLo lowStatusFlags, DeviceStatusFlagsHi highStatusFlags)
+        public static SetConfiguration Create(DeviceStatusFlags statusFlags)
         {
-            return new SetConfiguration(lowStatusFlags, highStatusFlags);
+            return new SetConfiguration(statusFlags);
         }
     }
 }

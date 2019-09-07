@@ -1,5 +1,5 @@
 ﻿// <copyright file="ResourceHelpers.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -75,7 +75,7 @@ namespace INTV.Shared.Utility
         /// Loads an image from disk.
         /// </summary>
         /// <param name="imagePath">Absolute path to an image to load from disk.</param>
-        /// <returns>The image, or <c>null</c> if not found.</returns>
+        /// <returns>The image.</returns>
         public static NSImage LoadImageFromDisk(this string imagePath)
         {
             NSImage image = null;

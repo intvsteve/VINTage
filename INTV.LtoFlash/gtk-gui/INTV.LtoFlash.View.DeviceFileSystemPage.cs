@@ -5,611 +5,612 @@ namespace INTV.LtoFlash.View
 	public partial class DeviceFileSystemPage
 	{
 		private global::Gtk.Table table9;
-		
+
 		private global::Gtk.HSeparator hseparator10;
-		
+
 		private global::Gtk.VBox vbox2;
-		
+
 		private global::Gtk.Label _physicalLifetimeLabel;
-		
+
 		private global::Gtk.HSeparator hseparator11;
-		
+
 		private global::Gtk.HBox hbox2;
-		
+
 		private global::Gtk.Label _pfsBlocksInUseDirtyLabel;
-		
+
 		private global::Gtk.Label _physicalBlocksInUse;
-		
+
 		private global::Gtk.HBox hbox7;
-		
+
 		private global::Gtk.Label _pfsCleanBlocksLabel;
-		
+
 		private global::Gtk.Label _physicalBlocksClean;
-		
+
 		private global::Gtk.HBox hbox8;
-		
+
 		private global::Gtk.Label _pfsTotalBlocks;
-		
+
 		private global::Gtk.Label _physicalBlocksTotal;
-		
+
 		private global::Gtk.VBox vbox3;
-		
+
 		private global::Gtk.Label _virtualFileSystemLabel;
-		
+
 		private global::Gtk.HSeparator hseparator12;
-		
+
 		private global::Gtk.HBox hbox9;
-		
+
 		private global::Gtk.Label _vfsBlocksInUseLabel;
-		
+
 		private global::Gtk.Label _virtualBlocksInUse;
-		
+
 		private global::Gtk.HBox hbox10;
-		
+
 		private global::Gtk.Label _vfsBlocksAvailableLabel;
-		
+
 		private global::Gtk.Label _virtualBlocksAvailable;
-		
+
 		private global::Gtk.HBox hbox11;
-		
+
 		private global::Gtk.Label _vfsTotalBlocksLabel;
-		
+
 		private global::Gtk.Label _virtualBlocksTotal;
-		
+
 		private global::Gtk.VBox vbox4;
-		
+
 		private global::Gtk.Label _flashLifetimeLabel;
-		
+
 		private global::Gtk.HSeparator hseparator13;
-		
+
 		private global::Gtk.HBox hbox15;
-		
+
 		private global::Gtk.Label _flashUsedByBlockErasuresLabel;
-		
+
 		private global::Gtk.Label _flashUsedByPhysicalBlockErasures;
-		
+
 		private global::Gtk.HBox hbox16;
-		
+
 		private global::Gtk.Label _flashUsedByFileSystemJournalLabel;
-		
+
 		private global::Gtk.Label _flashUsedByFileSystemJournal;
-		
+
 		private global::Gtk.HBox hbox17;
-		
+
 		private global::Gtk.Label _flashLifetimeRemainingLabel;
-		
+
 		private global::Gtk.Label _flashLifetimeRemaining;
-		
+
 		private global::Gtk.VBox vbox5;
-		
+
 		private global::Gtk.HBox hbox12;
-		
+
 		private global::Gtk.Label _physicalSectorErasuresLabel;
-		
+
 		private global::Gtk.Label _physicalSectorErasures;
-		
+
 		private global::Gtk.HBox hbox13;
-		
+
 		private global::Gtk.Label _metadataSectorErasuresLabel;
-		
+
 		private global::Gtk.Label _metadataSectorErasures;
-		
+
 		private global::Gtk.HBox hbox14;
-		
+
 		private global::Gtk.Label _fileSystemJournalWrapLabel;
-		
+
 		private global::Gtk.Label _fileSystemJournalWrapCount;
-		
+
 		private global::Gtk.VSeparator vseparator4;
 
-		protected virtual void Build ()
+		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget INTV.LtoFlash.View.DeviceFileSystemPage
-			global::Stetic.BinContainer.Attach (this);
+			global::Stetic.BinContainer.Attach(this);
 			this.Name = "INTV.LtoFlash.View.DeviceFileSystemPage";
 			// Container child INTV.LtoFlash.View.DeviceFileSystemPage.Gtk.Container+ContainerChild
-			this.table9 = new global::Gtk.Table (((uint)(3)), ((uint)(3)), false);
+			this.table9 = new global::Gtk.Table(((uint)(3)), ((uint)(3)), false);
 			this.table9.Name = "table9";
 			this.table9.BorderWidth = ((uint)(6));
 			// Container child table9.Gtk.Table+TableChild
-			this.hseparator10 = new global::Gtk.HSeparator ();
+			this.hseparator10 = new global::Gtk.HSeparator();
 			this.hseparator10.Name = "hseparator10";
-			this.table9.Add (this.hseparator10);
-			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table9 [this.hseparator10]));
+			this.table9.Add(this.hseparator10);
+			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table9[this.hseparator10]));
 			w1.TopAttach = ((uint)(1));
 			w1.BottomAttach = ((uint)(2));
 			w1.RightAttach = ((uint)(3));
 			w1.YOptions = ((global::Gtk.AttachOptions)(0));
 			// Container child table9.Gtk.Table+TableChild
-			this.vbox2 = new global::Gtk.VBox ();
+			this.vbox2 = new global::Gtk.VBox();
 			this.vbox2.Name = "vbox2";
 			// Container child vbox2.Gtk.Box+BoxChild
-			this._physicalLifetimeLabel = new global::Gtk.Label ();
+			this._physicalLifetimeLabel = new global::Gtk.Label();
 			this._physicalLifetimeLabel.Name = "_physicalLifetimeLabel";
 			this._physicalLifetimeLabel.Ypad = 2;
 			this._physicalLifetimeLabel.Xalign = 0F;
-			this._physicalLifetimeLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Physical File System</b>");
+			this._physicalLifetimeLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Physical File System</b>");
 			this._physicalLifetimeLabel.UseMarkup = true;
-			this.vbox2.Add (this._physicalLifetimeLabel);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this._physicalLifetimeLabel]));
+			this.vbox2.Add(this._physicalLifetimeLabel);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2[this._physicalLifetimeLabel]));
 			w2.Position = 0;
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.hseparator11 = new global::Gtk.HSeparator ();
+			this.hseparator11 = new global::Gtk.HSeparator();
 			this.hseparator11.Name = "hseparator11";
-			this.vbox2.Add (this.hseparator11);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hseparator11]));
+			this.vbox2.Add(this.hseparator11);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hseparator11]));
 			w3.Position = 1;
 			w3.Expand = false;
 			w3.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.hbox2 = new global::Gtk.HBox ();
+			this.hbox2 = new global::Gtk.HBox();
 			this.hbox2.Name = "hbox2";
 			this.hbox2.Spacing = 6;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this._pfsBlocksInUseDirtyLabel = new global::Gtk.Label ();
+			this._pfsBlocksInUseDirtyLabel = new global::Gtk.Label();
 			this._pfsBlocksInUseDirtyLabel.Name = "_pfsBlocksInUseDirtyLabel";
 			this._pfsBlocksInUseDirtyLabel.Xalign = 0F;
-			this._pfsBlocksInUseDirtyLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Blocks In Use/Dirty:</small>");
+			this._pfsBlocksInUseDirtyLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Blocks In Use/Dirty:</small>");
 			this._pfsBlocksInUseDirtyLabel.UseMarkup = true;
-			this.hbox2.Add (this._pfsBlocksInUseDirtyLabel);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this._pfsBlocksInUseDirtyLabel]));
+			this.hbox2.Add(this._pfsBlocksInUseDirtyLabel);
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox2[this._pfsBlocksInUseDirtyLabel]));
 			w4.Position = 0;
 			w4.Expand = false;
 			w4.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this._physicalBlocksInUse = new global::Gtk.Label ();
+			this._physicalBlocksInUse = new global::Gtk.Label();
 			this._physicalBlocksInUse.Name = "_physicalBlocksInUse";
 			this._physicalBlocksInUse.Xpad = 6;
 			this._physicalBlocksInUse.Xalign = 1F;
-			this._physicalBlocksInUse.LabelProp = global::Mono.Unix.Catalog.GetString ("label34");
+			this._physicalBlocksInUse.LabelProp = global::Mono.Unix.Catalog.GetString("label34");
 			this._physicalBlocksInUse.UseMarkup = true;
-			this.hbox2.Add (this._physicalBlocksInUse);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this._physicalBlocksInUse]));
+			this.hbox2.Add(this._physicalBlocksInUse);
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox2[this._physicalBlocksInUse]));
 			w5.PackType = ((global::Gtk.PackType)(1));
 			w5.Position = 2;
 			w5.Expand = false;
 			w5.Fill = false;
-			this.vbox2.Add (this.hbox2);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox2]));
+			this.vbox2.Add(this.hbox2);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox2]));
 			w6.Position = 2;
 			w6.Expand = false;
 			w6.Padding = ((uint)(3));
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.hbox7 = new global::Gtk.HBox ();
+			this.hbox7 = new global::Gtk.HBox();
 			this.hbox7.Name = "hbox7";
 			this.hbox7.Spacing = 6;
 			// Container child hbox7.Gtk.Box+BoxChild
-			this._pfsCleanBlocksLabel = new global::Gtk.Label ();
+			this._pfsCleanBlocksLabel = new global::Gtk.Label();
 			this._pfsCleanBlocksLabel.Name = "_pfsCleanBlocksLabel";
 			this._pfsCleanBlocksLabel.Xalign = 0F;
-			this._pfsCleanBlocksLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Clean Blocks:</small>");
+			this._pfsCleanBlocksLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Clean Blocks:</small>");
 			this._pfsCleanBlocksLabel.UseMarkup = true;
-			this.hbox7.Add (this._pfsCleanBlocksLabel);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this._pfsCleanBlocksLabel]));
+			this.hbox7.Add(this._pfsCleanBlocksLabel);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox7[this._pfsCleanBlocksLabel]));
 			w7.Position = 0;
 			w7.Expand = false;
 			w7.Fill = false;
 			// Container child hbox7.Gtk.Box+BoxChild
-			this._physicalBlocksClean = new global::Gtk.Label ();
+			this._physicalBlocksClean = new global::Gtk.Label();
 			this._physicalBlocksClean.Name = "_physicalBlocksClean";
 			this._physicalBlocksClean.Xpad = 6;
 			this._physicalBlocksClean.Xalign = 1F;
-			this._physicalBlocksClean.LabelProp = global::Mono.Unix.Catalog.GetString ("label36");
+			this._physicalBlocksClean.LabelProp = global::Mono.Unix.Catalog.GetString("label36");
 			this._physicalBlocksClean.UseMarkup = true;
-			this.hbox7.Add (this._physicalBlocksClean);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this._physicalBlocksClean]));
+			this.hbox7.Add(this._physicalBlocksClean);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox7[this._physicalBlocksClean]));
 			w8.PackType = ((global::Gtk.PackType)(1));
 			w8.Position = 2;
 			w8.Expand = false;
 			w8.Fill = false;
-			this.vbox2.Add (this.hbox7);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox7]));
+			this.vbox2.Add(this.hbox7);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox7]));
 			w9.Position = 3;
 			w9.Expand = false;
 			w9.Padding = ((uint)(3));
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.hbox8 = new global::Gtk.HBox ();
+			this.hbox8 = new global::Gtk.HBox();
 			this.hbox8.Name = "hbox8";
 			this.hbox8.Spacing = 6;
 			// Container child hbox8.Gtk.Box+BoxChild
-			this._pfsTotalBlocks = new global::Gtk.Label ();
+			this._pfsTotalBlocks = new global::Gtk.Label();
 			this._pfsTotalBlocks.Name = "_pfsTotalBlocks";
 			this._pfsTotalBlocks.Xalign = 0F;
-			this._pfsTotalBlocks.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Total Blocks:</small>");
+			this._pfsTotalBlocks.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Total Blocks:</small>");
 			this._pfsTotalBlocks.UseMarkup = true;
-			this.hbox8.Add (this._pfsTotalBlocks);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this._pfsTotalBlocks]));
+			this.hbox8.Add(this._pfsTotalBlocks);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox8[this._pfsTotalBlocks]));
 			w10.Position = 0;
 			w10.Expand = false;
 			// Container child hbox8.Gtk.Box+BoxChild
-			this._physicalBlocksTotal = new global::Gtk.Label ();
+			this._physicalBlocksTotal = new global::Gtk.Label();
 			this._physicalBlocksTotal.Name = "_physicalBlocksTotal";
 			this._physicalBlocksTotal.Xpad = 6;
 			this._physicalBlocksTotal.Xalign = 1F;
-			this._physicalBlocksTotal.LabelProp = global::Mono.Unix.Catalog.GetString ("label38");
+			this._physicalBlocksTotal.LabelProp = global::Mono.Unix.Catalog.GetString("label38");
 			this._physicalBlocksTotal.UseMarkup = true;
-			this.hbox8.Add (this._physicalBlocksTotal);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this._physicalBlocksTotal]));
+			this.hbox8.Add(this._physicalBlocksTotal);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox8[this._physicalBlocksTotal]));
 			w11.PackType = ((global::Gtk.PackType)(1));
 			w11.Position = 2;
 			w11.Expand = false;
-			this.vbox2.Add (this.hbox8);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox8]));
+			this.vbox2.Add(this.hbox8);
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox8]));
 			w12.Position = 4;
 			w12.Expand = false;
 			w12.Fill = false;
 			w12.Padding = ((uint)(3));
-			this.table9.Add (this.vbox2);
+			this.table9.Add(this.vbox2);
 			// Container child table9.Gtk.Table+TableChild
-			this.vbox3 = new global::Gtk.VBox ();
+			this.vbox3 = new global::Gtk.VBox();
 			this.vbox3.Name = "vbox3";
 			// Container child vbox3.Gtk.Box+BoxChild
-			this._virtualFileSystemLabel = new global::Gtk.Label ();
+			this._virtualFileSystemLabel = new global::Gtk.Label();
 			this._virtualFileSystemLabel.Name = "_virtualFileSystemLabel";
 			this._virtualFileSystemLabel.Xpad = 6;
 			this._virtualFileSystemLabel.Ypad = 2;
 			this._virtualFileSystemLabel.Xalign = 0F;
-			this._virtualFileSystemLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Virtual File System</b>");
+			this._virtualFileSystemLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Virtual File System</b>");
 			this._virtualFileSystemLabel.UseMarkup = true;
-			this.vbox3.Add (this._virtualFileSystemLabel);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this._virtualFileSystemLabel]));
+			this.vbox3.Add(this._virtualFileSystemLabel);
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox3[this._virtualFileSystemLabel]));
 			w14.Position = 0;
 			w14.Expand = false;
 			w14.Fill = false;
 			// Container child vbox3.Gtk.Box+BoxChild
-			this.hseparator12 = new global::Gtk.HSeparator ();
+			this.hseparator12 = new global::Gtk.HSeparator();
 			this.hseparator12.Name = "hseparator12";
-			this.vbox3.Add (this.hseparator12);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.hseparator12]));
+			this.vbox3.Add(this.hseparator12);
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hseparator12]));
 			w15.Position = 1;
 			w15.Expand = false;
 			w15.Fill = false;
 			// Container child vbox3.Gtk.Box+BoxChild
-			this.hbox9 = new global::Gtk.HBox ();
+			this.hbox9 = new global::Gtk.HBox();
 			this.hbox9.Name = "hbox9";
 			this.hbox9.Spacing = 6;
 			// Container child hbox9.Gtk.Box+BoxChild
-			this._vfsBlocksInUseLabel = new global::Gtk.Label ();
+			this._vfsBlocksInUseLabel = new global::Gtk.Label();
 			this._vfsBlocksInUseLabel.Name = "_vfsBlocksInUseLabel";
 			this._vfsBlocksInUseLabel.Xpad = 6;
 			this._vfsBlocksInUseLabel.Xalign = 0F;
-			this._vfsBlocksInUseLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Blocks In Use:</small>");
+			this._vfsBlocksInUseLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Blocks In Use:</small>");
 			this._vfsBlocksInUseLabel.UseMarkup = true;
-			this.hbox9.Add (this._vfsBlocksInUseLabel);
-			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.hbox9 [this._vfsBlocksInUseLabel]));
+			this.hbox9.Add(this._vfsBlocksInUseLabel);
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.hbox9[this._vfsBlocksInUseLabel]));
 			w16.Position = 0;
 			w16.Expand = false;
 			// Container child hbox9.Gtk.Box+BoxChild
-			this._virtualBlocksInUse = new global::Gtk.Label ();
+			this._virtualBlocksInUse = new global::Gtk.Label();
 			this._virtualBlocksInUse.Name = "_virtualBlocksInUse";
 			this._virtualBlocksInUse.Xalign = 1F;
-			this._virtualBlocksInUse.LabelProp = global::Mono.Unix.Catalog.GetString ("label40");
+			this._virtualBlocksInUse.LabelProp = global::Mono.Unix.Catalog.GetString("label40");
 			this._virtualBlocksInUse.UseMarkup = true;
-			this.hbox9.Add (this._virtualBlocksInUse);
-			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hbox9 [this._virtualBlocksInUse]));
+			this.hbox9.Add(this._virtualBlocksInUse);
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hbox9[this._virtualBlocksInUse]));
 			w17.PackType = ((global::Gtk.PackType)(1));
 			w17.Position = 2;
 			w17.Expand = false;
-			this.vbox3.Add (this.hbox9);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.hbox9]));
+			this.vbox3.Add(this.hbox9);
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hbox9]));
 			w18.Position = 2;
 			w18.Expand = false;
 			w18.Fill = false;
 			w18.Padding = ((uint)(3));
 			// Container child vbox3.Gtk.Box+BoxChild
-			this.hbox10 = new global::Gtk.HBox ();
+			this.hbox10 = new global::Gtk.HBox();
 			this.hbox10.Name = "hbox10";
 			this.hbox10.Spacing = 6;
 			// Container child hbox10.Gtk.Box+BoxChild
-			this._vfsBlocksAvailableLabel = new global::Gtk.Label ();
+			this._vfsBlocksAvailableLabel = new global::Gtk.Label();
 			this._vfsBlocksAvailableLabel.Name = "_vfsBlocksAvailableLabel";
 			this._vfsBlocksAvailableLabel.Xpad = 6;
 			this._vfsBlocksAvailableLabel.Xalign = 0F;
-			this._vfsBlocksAvailableLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Blocks Available:</small>");
+			this._vfsBlocksAvailableLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Blocks Available:</small>");
 			this._vfsBlocksAvailableLabel.UseMarkup = true;
-			this.hbox10.Add (this._vfsBlocksAvailableLabel);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox10 [this._vfsBlocksAvailableLabel]));
+			this.hbox10.Add(this._vfsBlocksAvailableLabel);
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox10[this._vfsBlocksAvailableLabel]));
 			w19.Position = 0;
 			w19.Expand = false;
 			w19.Fill = false;
 			// Container child hbox10.Gtk.Box+BoxChild
-			this._virtualBlocksAvailable = new global::Gtk.Label ();
+			this._virtualBlocksAvailable = new global::Gtk.Label();
 			this._virtualBlocksAvailable.Name = "_virtualBlocksAvailable";
 			this._virtualBlocksAvailable.Xalign = 1F;
-			this._virtualBlocksAvailable.LabelProp = global::Mono.Unix.Catalog.GetString ("label42");
+			this._virtualBlocksAvailable.LabelProp = global::Mono.Unix.Catalog.GetString("label42");
 			this._virtualBlocksAvailable.UseMarkup = true;
-			this.hbox10.Add (this._virtualBlocksAvailable);
-			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox10 [this._virtualBlocksAvailable]));
+			this.hbox10.Add(this._virtualBlocksAvailable);
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.hbox10[this._virtualBlocksAvailable]));
 			w20.PackType = ((global::Gtk.PackType)(1));
 			w20.Position = 2;
 			w20.Expand = false;
-			this.vbox3.Add (this.hbox10);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.hbox10]));
+			this.vbox3.Add(this.hbox10);
+			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hbox10]));
 			w21.Position = 3;
 			w21.Expand = false;
 			w21.Fill = false;
 			w21.Padding = ((uint)(3));
 			// Container child vbox3.Gtk.Box+BoxChild
-			this.hbox11 = new global::Gtk.HBox ();
+			this.hbox11 = new global::Gtk.HBox();
 			this.hbox11.Name = "hbox11";
 			this.hbox11.Spacing = 6;
 			// Container child hbox11.Gtk.Box+BoxChild
-			this._vfsTotalBlocksLabel = new global::Gtk.Label ();
+			this._vfsTotalBlocksLabel = new global::Gtk.Label();
 			this._vfsTotalBlocksLabel.Name = "_vfsTotalBlocksLabel";
 			this._vfsTotalBlocksLabel.Xpad = 6;
 			this._vfsTotalBlocksLabel.Xalign = 0F;
-			this._vfsTotalBlocksLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Total Blocks:</small>");
+			this._vfsTotalBlocksLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Total Blocks:</small>");
 			this._vfsTotalBlocksLabel.UseMarkup = true;
-			this.hbox11.Add (this._vfsTotalBlocksLabel);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this._vfsTotalBlocksLabel]));
+			this.hbox11.Add(this._vfsTotalBlocksLabel);
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.hbox11[this._vfsTotalBlocksLabel]));
 			w22.Position = 0;
 			w22.Expand = false;
 			// Container child hbox11.Gtk.Box+BoxChild
-			this._virtualBlocksTotal = new global::Gtk.Label ();
+			this._virtualBlocksTotal = new global::Gtk.Label();
 			this._virtualBlocksTotal.Name = "_virtualBlocksTotal";
 			this._virtualBlocksTotal.Xalign = 1F;
-			this._virtualBlocksTotal.LabelProp = global::Mono.Unix.Catalog.GetString ("label44");
+			this._virtualBlocksTotal.LabelProp = global::Mono.Unix.Catalog.GetString("label44");
 			this._virtualBlocksTotal.UseMarkup = true;
-			this.hbox11.Add (this._virtualBlocksTotal);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this._virtualBlocksTotal]));
+			this.hbox11.Add(this._virtualBlocksTotal);
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox11[this._virtualBlocksTotal]));
 			w23.PackType = ((global::Gtk.PackType)(1));
 			w23.Position = 2;
 			w23.Expand = false;
-			this.vbox3.Add (this.hbox11);
-			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.hbox11]));
+			this.vbox3.Add(this.hbox11);
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.hbox11]));
 			w24.Position = 4;
 			w24.Expand = false;
 			w24.Fill = false;
 			w24.Padding = ((uint)(3));
-			this.table9.Add (this.vbox3);
-			global::Gtk.Table.TableChild w25 = ((global::Gtk.Table.TableChild)(this.table9 [this.vbox3]));
+			this.table9.Add(this.vbox3);
+			global::Gtk.Table.TableChild w25 = ((global::Gtk.Table.TableChild)(this.table9[this.vbox3]));
 			w25.LeftAttach = ((uint)(2));
 			w25.RightAttach = ((uint)(3));
 			// Container child table9.Gtk.Table+TableChild
-			this.vbox4 = new global::Gtk.VBox ();
+			this.vbox4 = new global::Gtk.VBox();
 			this.vbox4.Name = "vbox4";
 			// Container child vbox4.Gtk.Box+BoxChild
-			this._flashLifetimeLabel = new global::Gtk.Label ();
+			this._flashLifetimeLabel = new global::Gtk.Label();
 			this._flashLifetimeLabel.Name = "_flashLifetimeLabel";
 			this._flashLifetimeLabel.Xpad = 6;
 			this._flashLifetimeLabel.Ypad = 2;
 			this._flashLifetimeLabel.Xalign = 0F;
-			this._flashLifetimeLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Flash Lifetime</b>");
+			this._flashLifetimeLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<b>Flash Lifetime</b>");
 			this._flashLifetimeLabel.UseMarkup = true;
-			this.vbox4.Add (this._flashLifetimeLabel);
-			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this._flashLifetimeLabel]));
+			this.vbox4.Add(this._flashLifetimeLabel);
+			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.vbox4[this._flashLifetimeLabel]));
 			w26.Position = 0;
 			w26.Expand = false;
 			w26.Fill = false;
 			// Container child vbox4.Gtk.Box+BoxChild
-			this.hseparator13 = new global::Gtk.HSeparator ();
+			this.hseparator13 = new global::Gtk.HSeparator();
 			this.hseparator13.Name = "hseparator13";
-			this.vbox4.Add (this.hseparator13);
-			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.hseparator13]));
+			this.vbox4.Add(this.hseparator13);
+			global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.hseparator13]));
 			w27.Position = 1;
 			w27.Expand = false;
 			w27.Fill = false;
 			// Container child vbox4.Gtk.Box+BoxChild
-			this.hbox15 = new global::Gtk.HBox ();
+			this.hbox15 = new global::Gtk.HBox();
 			this.hbox15.Name = "hbox15";
 			this.hbox15.Spacing = 6;
 			// Container child hbox15.Gtk.Box+BoxChild
-			this._flashUsedByBlockErasuresLabel = new global::Gtk.Label ();
+			this._flashUsedByBlockErasuresLabel = new global::Gtk.Label();
 			this._flashUsedByBlockErasuresLabel.Name = "_flashUsedByBlockErasuresLabel";
 			this._flashUsedByBlockErasuresLabel.Xpad = 6;
 			this._flashUsedByBlockErasuresLabel.Xalign = 0F;
-			this._flashUsedByBlockErasuresLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Usage due to Physical Block Erasures:</small>");
+			this._flashUsedByBlockErasuresLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Usage due to Physical Block Erasures:</small>");
 			this._flashUsedByBlockErasuresLabel.UseMarkup = true;
-			this.hbox15.Add (this._flashUsedByBlockErasuresLabel);
-			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.hbox15 [this._flashUsedByBlockErasuresLabel]));
+			this.hbox15.Add(this._flashUsedByBlockErasuresLabel);
+			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.hbox15[this._flashUsedByBlockErasuresLabel]));
 			w28.Position = 0;
 			w28.Expand = false;
 			// Container child hbox15.Gtk.Box+BoxChild
-			this._flashUsedByPhysicalBlockErasures = new global::Gtk.Label ();
+			this._flashUsedByPhysicalBlockErasures = new global::Gtk.Label();
 			this._flashUsedByPhysicalBlockErasures.Name = "_flashUsedByPhysicalBlockErasures";
 			this._flashUsedByPhysicalBlockErasures.Xalign = 1F;
-			this._flashUsedByPhysicalBlockErasures.LabelProp = global::Mono.Unix.Catalog.GetString ("label53");
+			this._flashUsedByPhysicalBlockErasures.LabelProp = global::Mono.Unix.Catalog.GetString("label53");
 			this._flashUsedByPhysicalBlockErasures.UseMarkup = true;
-			this.hbox15.Add (this._flashUsedByPhysicalBlockErasures);
-			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.hbox15 [this._flashUsedByPhysicalBlockErasures]));
+			this.hbox15.Add(this._flashUsedByPhysicalBlockErasures);
+			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.hbox15[this._flashUsedByPhysicalBlockErasures]));
 			w29.PackType = ((global::Gtk.PackType)(1));
 			w29.Position = 2;
 			w29.Expand = false;
 			w29.Fill = false;
-			this.vbox4.Add (this.hbox15);
-			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.hbox15]));
+			this.vbox4.Add(this.hbox15);
+			global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.hbox15]));
 			w30.Position = 2;
 			w30.Expand = false;
 			w30.Fill = false;
 			w30.Padding = ((uint)(3));
 			// Container child vbox4.Gtk.Box+BoxChild
-			this.hbox16 = new global::Gtk.HBox ();
+			this.hbox16 = new global::Gtk.HBox();
 			this.hbox16.Name = "hbox16";
 			this.hbox16.Spacing = 6;
 			// Container child hbox16.Gtk.Box+BoxChild
-			this._flashUsedByFileSystemJournalLabel = new global::Gtk.Label ();
+			this._flashUsedByFileSystemJournalLabel = new global::Gtk.Label();
 			this._flashUsedByFileSystemJournalLabel.Name = "_flashUsedByFileSystemJournalLabel";
 			this._flashUsedByFileSystemJournalLabel.Xpad = 6;
 			this._flashUsedByFileSystemJournalLabel.Xalign = 0F;
-			this._flashUsedByFileSystemJournalLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Usage due to File System Journal:</small>");
+			this._flashUsedByFileSystemJournalLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Usage due to File System Journal:</small>");
 			this._flashUsedByFileSystemJournalLabel.UseMarkup = true;
-			this.hbox16.Add (this._flashUsedByFileSystemJournalLabel);
-			global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.hbox16 [this._flashUsedByFileSystemJournalLabel]));
+			this.hbox16.Add(this._flashUsedByFileSystemJournalLabel);
+			global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.hbox16[this._flashUsedByFileSystemJournalLabel]));
 			w31.Position = 0;
 			w31.Expand = false;
 			// Container child hbox16.Gtk.Box+BoxChild
-			this._flashUsedByFileSystemJournal = new global::Gtk.Label ();
+			this._flashUsedByFileSystemJournal = new global::Gtk.Label();
 			this._flashUsedByFileSystemJournal.Name = "_flashUsedByFileSystemJournal";
 			this._flashUsedByFileSystemJournal.Xalign = 1F;
-			this._flashUsedByFileSystemJournal.LabelProp = global::Mono.Unix.Catalog.GetString ("label55");
+			this._flashUsedByFileSystemJournal.LabelProp = global::Mono.Unix.Catalog.GetString("label55");
 			this._flashUsedByFileSystemJournal.UseMarkup = true;
-			this.hbox16.Add (this._flashUsedByFileSystemJournal);
-			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.hbox16 [this._flashUsedByFileSystemJournal]));
+			this.hbox16.Add(this._flashUsedByFileSystemJournal);
+			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.hbox16[this._flashUsedByFileSystemJournal]));
 			w32.PackType = ((global::Gtk.PackType)(1));
 			w32.Position = 2;
 			w32.Expand = false;
-			this.vbox4.Add (this.hbox16);
-			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.hbox16]));
+			this.vbox4.Add(this.hbox16);
+			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.hbox16]));
 			w33.Position = 3;
 			w33.Expand = false;
 			w33.Fill = false;
 			w33.Padding = ((uint)(3));
 			// Container child vbox4.Gtk.Box+BoxChild
-			this.hbox17 = new global::Gtk.HBox ();
+			this.hbox17 = new global::Gtk.HBox();
 			this.hbox17.Name = "hbox17";
 			this.hbox17.Spacing = 6;
 			// Container child hbox17.Gtk.Box+BoxChild
-			this._flashLifetimeRemainingLabel = new global::Gtk.Label ();
+			this._flashLifetimeRemainingLabel = new global::Gtk.Label();
 			this._flashLifetimeRemainingLabel.Name = "_flashLifetimeRemainingLabel";
 			this._flashLifetimeRemainingLabel.Xpad = 6;
 			this._flashLifetimeRemainingLabel.Xalign = 0F;
-			this._flashLifetimeRemainingLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Overall Flash Lifetime Remaining:</small>");
+			this._flashLifetimeRemainingLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Overall Flash Lifetime Remaining:</small>");
 			this._flashLifetimeRemainingLabel.UseMarkup = true;
-			this.hbox17.Add (this._flashLifetimeRemainingLabel);
-			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.hbox17 [this._flashLifetimeRemainingLabel]));
+			this.hbox17.Add(this._flashLifetimeRemainingLabel);
+			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.hbox17[this._flashLifetimeRemainingLabel]));
 			w34.Position = 0;
 			w34.Expand = false;
 			// Container child hbox17.Gtk.Box+BoxChild
-			this._flashLifetimeRemaining = new global::Gtk.Label ();
+			this._flashLifetimeRemaining = new global::Gtk.Label();
 			this._flashLifetimeRemaining.Name = "_flashLifetimeRemaining";
 			this._flashLifetimeRemaining.Xalign = 1F;
-			this._flashLifetimeRemaining.LabelProp = global::Mono.Unix.Catalog.GetString ("label57");
+			this._flashLifetimeRemaining.LabelProp = global::Mono.Unix.Catalog.GetString("label57");
 			this._flashLifetimeRemaining.UseMarkup = true;
-			this.hbox17.Add (this._flashLifetimeRemaining);
-			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.hbox17 [this._flashLifetimeRemaining]));
+			this.hbox17.Add(this._flashLifetimeRemaining);
+			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.hbox17[this._flashLifetimeRemaining]));
 			w35.PackType = ((global::Gtk.PackType)(1));
 			w35.Position = 2;
 			w35.Expand = false;
-			this.vbox4.Add (this.hbox17);
-			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.hbox17]));
+			this.vbox4.Add(this.hbox17);
+			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.hbox17]));
 			w36.Position = 4;
 			w36.Expand = false;
 			w36.Fill = false;
 			w36.Padding = ((uint)(3));
-			this.table9.Add (this.vbox4);
-			global::Gtk.Table.TableChild w37 = ((global::Gtk.Table.TableChild)(this.table9 [this.vbox4]));
+			this.table9.Add(this.vbox4);
+			global::Gtk.Table.TableChild w37 = ((global::Gtk.Table.TableChild)(this.table9[this.vbox4]));
 			w37.TopAttach = ((uint)(2));
 			w37.BottomAttach = ((uint)(3));
 			w37.LeftAttach = ((uint)(2));
 			w37.RightAttach = ((uint)(3));
 			// Container child table9.Gtk.Table+TableChild
-			this.vbox5 = new global::Gtk.VBox ();
+			this.vbox5 = new global::Gtk.VBox();
 			this.vbox5.Name = "vbox5";
 			// Container child vbox5.Gtk.Box+BoxChild
-			this.hbox12 = new global::Gtk.HBox ();
+			this.hbox12 = new global::Gtk.HBox();
 			this.hbox12.Name = "hbox12";
 			this.hbox12.Spacing = 6;
 			// Container child hbox12.Gtk.Box+BoxChild
-			this._physicalSectorErasuresLabel = new global::Gtk.Label ();
+			this._physicalSectorErasuresLabel = new global::Gtk.Label();
 			this._physicalSectorErasuresLabel.Name = "_physicalSectorErasuresLabel";
 			this._physicalSectorErasuresLabel.Xalign = 0F;
-			this._physicalSectorErasuresLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Sector Erasures (Physical):</small>");
+			this._physicalSectorErasuresLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Sector Erasures (Physical):</small>");
 			this._physicalSectorErasuresLabel.UseMarkup = true;
-			this.hbox12.Add (this._physicalSectorErasuresLabel);
-			global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.hbox12 [this._physicalSectorErasuresLabel]));
+			this.hbox12.Add(this._physicalSectorErasuresLabel);
+			global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.hbox12[this._physicalSectorErasuresLabel]));
 			w38.Position = 0;
 			w38.Expand = false;
 			// Container child hbox12.Gtk.Box+BoxChild
-			this._physicalSectorErasures = new global::Gtk.Label ();
+			this._physicalSectorErasures = new global::Gtk.Label();
 			this._physicalSectorErasures.Name = "_physicalSectorErasures";
 			this._physicalSectorErasures.Xpad = 6;
 			this._physicalSectorErasures.Xalign = 1F;
-			this._physicalSectorErasures.LabelProp = global::Mono.Unix.Catalog.GetString ("label46");
-			this.hbox12.Add (this._physicalSectorErasures);
-			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.hbox12 [this._physicalSectorErasures]));
+			this._physicalSectorErasures.LabelProp = global::Mono.Unix.Catalog.GetString("label46");
+			this.hbox12.Add(this._physicalSectorErasures);
+			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.hbox12[this._physicalSectorErasures]));
 			w39.PackType = ((global::Gtk.PackType)(1));
 			w39.Position = 2;
 			w39.Expand = false;
-			this.vbox5.Add (this.hbox12);
-			global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.hbox12]));
+			this.vbox5.Add(this.hbox12);
+			global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox12]));
 			w40.Position = 0;
 			w40.Expand = false;
 			w40.Fill = false;
 			w40.Padding = ((uint)(3));
 			// Container child vbox5.Gtk.Box+BoxChild
-			this.hbox13 = new global::Gtk.HBox ();
+			this.hbox13 = new global::Gtk.HBox();
 			this.hbox13.Name = "hbox13";
 			this.hbox13.Spacing = 6;
 			// Container child hbox13.Gtk.Box+BoxChild
-			this._metadataSectorErasuresLabel = new global::Gtk.Label ();
+			this._metadataSectorErasuresLabel = new global::Gtk.Label();
 			this._metadataSectorErasuresLabel.Name = "_metadataSectorErasuresLabel";
 			this._metadataSectorErasuresLabel.Xalign = 0F;
-			this._metadataSectorErasuresLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>Sector Erasures (Metadata):</small>");
+			this._metadataSectorErasuresLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>Sector Erasures (Metadata):</small>");
 			this._metadataSectorErasuresLabel.UseMarkup = true;
-			this.hbox13.Add (this._metadataSectorErasuresLabel);
-			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.hbox13 [this._metadataSectorErasuresLabel]));
+			this.hbox13.Add(this._metadataSectorErasuresLabel);
+			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.hbox13[this._metadataSectorErasuresLabel]));
 			w41.Position = 0;
 			w41.Expand = false;
 			// Container child hbox13.Gtk.Box+BoxChild
-			this._metadataSectorErasures = new global::Gtk.Label ();
+			this._metadataSectorErasures = new global::Gtk.Label();
 			this._metadataSectorErasures.Name = "_metadataSectorErasures";
 			this._metadataSectorErasures.Xpad = 6;
 			this._metadataSectorErasures.Xalign = 1F;
-			this._metadataSectorErasures.LabelProp = global::Mono.Unix.Catalog.GetString ("label48");
+			this._metadataSectorErasures.LabelProp = global::Mono.Unix.Catalog.GetString("label48");
 			this._metadataSectorErasures.UseMarkup = true;
-			this.hbox13.Add (this._metadataSectorErasures);
-			global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.hbox13 [this._metadataSectorErasures]));
+			this.hbox13.Add(this._metadataSectorErasures);
+			global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.hbox13[this._metadataSectorErasures]));
 			w42.PackType = ((global::Gtk.PackType)(1));
 			w42.Position = 2;
 			w42.Expand = false;
-			this.vbox5.Add (this.hbox13);
-			global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.hbox13]));
+			this.vbox5.Add(this.hbox13);
+			global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox13]));
 			w43.Position = 1;
 			w43.Expand = false;
 			w43.Fill = false;
 			w43.Padding = ((uint)(3));
 			// Container child vbox5.Gtk.Box+BoxChild
-			this.hbox14 = new global::Gtk.HBox ();
+			this.hbox14 = new global::Gtk.HBox();
 			this.hbox14.Name = "hbox14";
 			this.hbox14.Spacing = 6;
 			// Container child hbox14.Gtk.Box+BoxChild
-			this._fileSystemJournalWrapLabel = new global::Gtk.Label ();
+			this._fileSystemJournalWrapLabel = new global::Gtk.Label();
 			this._fileSystemJournalWrapLabel.Name = "_fileSystemJournalWrapLabel";
 			this._fileSystemJournalWrapLabel.Xalign = 0F;
-			this._fileSystemJournalWrapLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("<small>File System Journal Wrap Count:</small>");
+			this._fileSystemJournalWrapLabel.LabelProp = global::Mono.Unix.Catalog.GetString("<small>File System Journal Wrap Count:</small>");
 			this._fileSystemJournalWrapLabel.UseMarkup = true;
-			this.hbox14.Add (this._fileSystemJournalWrapLabel);
-			global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.hbox14 [this._fileSystemJournalWrapLabel]));
+			this.hbox14.Add(this._fileSystemJournalWrapLabel);
+			global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.hbox14[this._fileSystemJournalWrapLabel]));
 			w44.Position = 0;
 			w44.Expand = false;
 			// Container child hbox14.Gtk.Box+BoxChild
-			this._fileSystemJournalWrapCount = new global::Gtk.Label ();
+			this._fileSystemJournalWrapCount = new global::Gtk.Label();
 			this._fileSystemJournalWrapCount.Name = "_fileSystemJournalWrapCount";
 			this._fileSystemJournalWrapCount.Xpad = 6;
 			this._fileSystemJournalWrapCount.Xalign = 1F;
-			this._fileSystemJournalWrapCount.LabelProp = global::Mono.Unix.Catalog.GetString ("label50");
-			this.hbox14.Add (this._fileSystemJournalWrapCount);
-			global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.hbox14 [this._fileSystemJournalWrapCount]));
+			this._fileSystemJournalWrapCount.LabelProp = global::Mono.Unix.Catalog.GetString("label50");
+			this.hbox14.Add(this._fileSystemJournalWrapCount);
+			global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.hbox14[this._fileSystemJournalWrapCount]));
 			w45.PackType = ((global::Gtk.PackType)(1));
 			w45.Position = 2;
 			w45.Expand = false;
-			this.vbox5.Add (this.hbox14);
-			global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.hbox14]));
+			this.vbox5.Add(this.hbox14);
+			global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox14]));
 			w46.Position = 2;
 			w46.Expand = false;
 			w46.Fill = false;
 			w46.Padding = ((uint)(3));
-			this.table9.Add (this.vbox5);
-			global::Gtk.Table.TableChild w47 = ((global::Gtk.Table.TableChild)(this.table9 [this.vbox5]));
+			this.table9.Add(this.vbox5);
+			global::Gtk.Table.TableChild w47 = ((global::Gtk.Table.TableChild)(this.table9[this.vbox5]));
 			w47.TopAttach = ((uint)(2));
 			w47.BottomAttach = ((uint)(3));
 			// Container child table9.Gtk.Table+TableChild
-			this.vseparator4 = new global::Gtk.VSeparator ();
+			this.vseparator4 = new global::Gtk.VSeparator();
 			this.vseparator4.Name = "vseparator4";
-			this.table9.Add (this.vseparator4);
-			global::Gtk.Table.TableChild w48 = ((global::Gtk.Table.TableChild)(this.table9 [this.vseparator4]));
+			this.table9.Add(this.vseparator4);
+			global::Gtk.Table.TableChild w48 = ((global::Gtk.Table.TableChild)(this.table9[this.vseparator4]));
 			w48.BottomAttach = ((uint)(3));
 			w48.LeftAttach = ((uint)(1));
 			w48.RightAttach = ((uint)(2));
 			w48.XOptions = ((global::Gtk.AttachOptions)(0));
-			this.Add (this.table9);
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+			this.Add(this.table9);
+			if ((this.Child != null))
+			{
+				this.Child.ShowAll();
 			}
-			this.Hide ();
+			this.Hide();
 		}
 	}
 }

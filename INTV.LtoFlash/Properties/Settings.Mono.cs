@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.Mono.cs" company="INTV Funhouse">
-// Copyright (c) 2017-2018 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Runtime.Serialization;
+
 namespace INTV.LtoFlash.Properties
 {
     /// <summary>
@@ -28,6 +30,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to verify that the ROMs in the menu layout are all available.
         /// </summary>
+        [DataMember]
         public bool ValidateMenuAtStartup
         {
             get { return GetSetting<bool>(ValidateMenuAtStartupSettingName); }
@@ -37,6 +40,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to search for connected devices on application launch.
         /// </summary>
+        [DataMember]
         public bool SearchForDevicesAtStartup
         {
             get { return GetSetting<bool>(SearchForDevicesAtStartupSettingName); }
@@ -46,6 +50,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to reconcile local and device menu on device connect.
         /// </summary>
+        [DataMember]
         public bool ReconcileDeviceMenuWithLocalMenu
         {
             get { return GetSetting<bool>(ReconcileDeviceMenuWithLocalMenuSettingName); }
@@ -55,6 +60,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to show advanced features in the UI.
         /// </summary>
+        [DataMember]
         public bool ShowAdvancedFeatures
         {
             get { return GetSetting<bool>(ShowAdvancedFeaturesSettingName); }
@@ -64,15 +70,17 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets the last serial port used to connect to a Locutus device.
         /// </summary>
+        [DataMember]
         public string LastActiveDevicePort
         {
             get { return GetSetting<string>(LastActiveDevicePortSettingName); }
-            set { UpdateProperty(LastActiveDevicePortSettingName, value, null, (s, v) => SetSetting(s, v)); }
+            set { UpdateSetting(LastActiveDevicePortSettingName, value, null); }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether to run garbage collection on a connected Locutus device.
         /// </summary>
+        [DataMember]
         public bool RunGCWhenConnected
         {
             get { return GetSetting<bool>(RunGCWhenConnectedSettingName) || true; } // why?
@@ -82,6 +90,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to automatically connect to any detected Locutus devices.
         /// </summary>
+        [DataMember]
         public bool AutomaticallyConnectToDevices
         {
             get { return GetSetting<bool>(AutomaticallyConnectToDevicesSettingName); }
@@ -91,6 +100,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to automatically add newly discovered ROMs to the menu layout.
         /// </summary>
+        [DataMember]
         public bool AddRomsToMenu
         {
             get { return GetSetting<bool>(AddRomsToMenuPropertyName); }
@@ -100,6 +110,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to prompt to automatically add newly discovered ROMs to the menu layout.
         /// </summary>
+        [DataMember]
         public bool PromptToAddRomsToMenu
         {
             get { return GetSetting<bool>(PromptToAddRomsToMenuPropertyName); }
@@ -109,6 +120,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to log serial port traffic to disk.
         /// </summary>
+        [DataMember]
         public bool EnablePortLogging
         {
             get { return GetSetting<bool>(EnablePortLoggingPropertyName); }
@@ -118,6 +130,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to prompt to install the FTDI driver.
         /// </summary>
+        [DataMember]
         public bool PromptToInstallFTDIDriver
         {
             get { return GetSetting<bool>(PromptToInstallFTDIDriverPropertyName); }
@@ -127,16 +140,18 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to show file system details.
         /// </summary>
+        [DataMember]
         public bool ShowFileSystemDetails
         {
             get { return _showFileSystemDetails; }
-            set { AssignAndUpdateProperty(ShowFileSystemDetailsSettingName, value, ref _showFileSystemDetails); }
+            set { AssignAndUpdateSetting(ShowFileSystemDetailsSettingName, value, ref _showFileSystemDetails); }
         }
         private bool _showFileSystemDetails; // ^^^Why is this done in this manner???
 
         /// <summary>
         /// Gets or sets a value indicating whether to prompt to import starter ROMs.
         /// </summary>
+        [DataMember]
         public bool PromptToImportStarterRoms
         {
             get { return GetSetting<bool>(PromptToImportStarterRomsPropertyName); }
@@ -147,6 +162,7 @@ namespace INTV.LtoFlash.Properties
         /// Gets or sets a value indicating whether to prompt to upgrade firmware on device attach that has older firmware than
         /// the version embedded in the shipping product if such has been built in.
         /// </summary>
+        [DataMember]
         public bool PromptForFirmwareUpgrade
         {
             get { return GetSetting<bool>(PromptForFirmwareUpgradeSettingName); }
@@ -156,6 +172,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to verify USB VID and PID before connecting to a serial port.
         /// </summary>
+        [DataMember]
         public bool VerifyVIDandPIDBeforeConnecting
         {
             get { return GetSetting<bool>(VerifyVIDandPIDBeforeConnectingSettingName); }
@@ -165,6 +182,7 @@ namespace INTV.LtoFlash.Properties
         /// <summary>
         /// Gets or sets a value indicating whether to prevent system sleep during long-running commands.
         /// </summary>
+        [DataMember]
         public bool PreventSystemSleepDuringDeviceCommands
         {
             get { return GetSetting<bool>(PreventSystemSleepDuringDeviceCommandsSettingName); }

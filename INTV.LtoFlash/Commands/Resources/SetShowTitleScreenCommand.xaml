@@ -1,6 +1,6 @@
 <!--
     <copyright file="SetShowTitleScreenCommand.xaml" company="INTV Funhouse">
-    Copyright (c) 2014-2016 All Rights Reserved
+    Copyright (c) 2014-2019 All Rights Reserved
     <author>Steven A. Orth</author>
 
     This program is free software: you can redistribute it and/or modify it
@@ -29,8 +29,8 @@
         xmlns:ltoFlashConverter="clr-namespace:INTV.LtoFlash.Converter;assembly=INTV.LtoFlash"
     Margin="4,-1,2,0" SelectionBoxWidth="112"
     SmallImageSource="{Binding Path=SmallIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommand}, Mode=OneTime}"
-    ToolTipTitle="{Binding Path=LtoFlash.ActiveLtoFlashDevice.ShowTitleScreenInfoTitle}"
-    ToolTipDescription="{Binding Path=LtoFlash.ActiveLtoFlashDevice.ShowTitleScreenInfo}"
+    ToolTipTitle="{Binding Path=ToolTipTitle, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommand}, Mode=OneWay}"
+    ToolTipDescription="{Binding Path=ToolTipDescription, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommand}, Mode=OneWay}"
     ToolTipImageSource="{Binding Path=ToolTipIcon, Source={x:Static ltoFlashCommands:DeviceCommandGroup.SetShowTitleScreenCommand}, Mode=OneTime}"
     IsEnabled="{Binding Path=LtoFlash.ActiveLtoFlashDevice.IsConfigurable}" IsReadOnly="True">
     <Ribbon:RibbonComboBox.Resources>

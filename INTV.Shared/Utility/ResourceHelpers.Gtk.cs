@@ -1,5 +1,5 @@
 ﻿// <copyright file="ResourceHelpers.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
+
 namespace INTV.Shared.Utility
 {
     /// <summary>
@@ -32,11 +34,11 @@ namespace INTV.Shared.Utility
         /// <param name="relativeResourcePath">The relative path to the resource within the type's assembly.</param>
         /// <returns>The packed resource string suitable to locate the resource.</returns>
         /// <remarks>This is hacked to support how MonoDevelop names resources by default. Should have done this trick on the Mac. Sigh.</remarks>
-        public static string CreatePackedResourceString(this System.Type type, string relativeResourcePath)
+        public static string CreatePackedResourceString(this Type type, string relativeResourcePath)
         {
             var resourceString = relativeResourcePath.Replace('/', '.');
             var prefix = type.Assembly.GetName().Name;
-            if (resourceString.StartsWith(prefix))
+            if (resourceString.StartsWith(prefix, StringComparison.InvariantCulture))
             {
                 return resourceString;
             }
@@ -50,8 +52,8 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="type">Any object whose implementation is in the assembly in which the image resource is supposed to exist.</param>
         /// <param name="relativeResourcePath">The relative path to the image resource within the type's assembly.</param>
-        /// <returns>The image resource, or <c>null</c> if not found.</returns>
-        public static Gdk.Pixbuf LoadImageResource(this System.Type type, string relativeResourcePath)
+        /// <returns>The image.</returns>
+        public static Gdk.Pixbuf LoadImageResource(this Type type, string relativeResourcePath)
         {
             var resourceName = type.CreatePackedResourceString(relativeResourcePath);
             var assembly = type.Assembly;

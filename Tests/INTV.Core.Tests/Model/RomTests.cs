@@ -1,5 +1,5 @@
 ﻿// <copyright file="RomTests.cs" company="INTV Funhouse">
-// Copyright (c) 2018 All Rights Reserved
+// Copyright (c) 2018-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -28,6 +28,29 @@ namespace INTV.Core.Tests.Model
 {
     public class RomTests
     {
+        [Theory]
+        [InlineData(TestRomResources.TestRomPath, RomFormat.Intellicart)]
+        [InlineData(TestRomResources.TestCc3Path, RomFormat.CuttleCart3)]
+        [InlineData(TestRomResources.TestAdvPath, RomFormat.CuttleCart3Advanced)]
+        [InlineData(TestRomResources.TestBinPath, RomFormat.Bin)]
+        [InlineData(TestRomResources.TestBinPathNoFileExtension, RomFormat.Bin)]
+        [InlineData(TestRomResources.TestCfgPath, RomFormat.None)]
+        [InlineData(TestRomResources.TestBinMetadataPath, RomFormat.Bin)]
+        [InlineData(TestRomResources.TestLuigiFromBinPath, RomFormat.Luigi)]
+        [InlineData(TestRomResources.TestLuigiFromRomPath, RomFormat.Luigi)]
+        [InlineData(TestRomResources.TestLuigiScrambledForAnyDevicePath, RomFormat.Luigi)]
+        [InlineData(TestRomResources.TestLuigiWithMetadataPath, RomFormat.Luigi)]
+        [InlineData(TestRomResources.TestLuigiWithMetadatdaScrambledForDevice0Path, RomFormat.Luigi)]
+        [InlineData(TestRomResources.TestRomCorruptedPath, RomFormat.Rom)]
+        public void RomFormatRom_CheckFormatFromStream_RomFormatIdentifiedCorrectly(string testRomResource, RomFormat expectedRomFormat)
+        {
+            using (var romData = TestRomResources.OpenResourceStream(testRomResource))
+            {
+                Assert.NotNull(romData);
+                Assert.Equal(expectedRomFormat, Rom.GetFormat(romData));
+            }
+        }
+
         [Fact]
         public void Rom_GetRefreshedCrcsFromNullPaths_ThrowsAgumentNullException()
         {

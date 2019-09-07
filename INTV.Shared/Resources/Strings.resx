@@ -1648,4 +1648,122 @@ Click the arrow for more commands.</value>
   <data name="ToolsDirectoryMissingMessage" xml:space="preserve">
     <value>Tools directory missing!</value>
   </data>
+  <data name="CompressedArchiveAccess_InvalidCompressionImplementationTypeErrorMessage_Format" xml:space="preserve">
+    <value>The implementation type '{0}' is not a valid implementation for compressed archive type '{1}'.</value>
+    <comment>{0} and {1} are names of internal data type values, which are not localized</comment>
+  </data>
+  <data name="CompressedArchiveAccess_UnsupportedFormatErrorMessage_Format" xml:space="preserve">
+    <value>Unable to create an instance of the compressed archive of format '{0}'. The format is not supported.</value>
+    <comment>{0} is a compressed archive format name</comment>
+  </data>
+  <data name="CompressedArchiveAccess_UnableToProcessError_Format" xml:space="preserve">
+    <value>Unable to create accessor for compressed archive file at location:
+  {0}
+
+The following formats were expected:
+  {1}
+The following formats were successfully processed:
+  {2}
+The following formats were not processed:
+  {3}</value>
+    <comment>{0} is a file path; {1}, {2} and {3} are lists of file formats converted to a string already</comment>
+  </data>
+  <data name="CompressedArchiveAccess_InvalidCompressionFormatTypeErrorMessage_Format" xml:space="preserve">
+    <value>The compressed archive type '{0}' is not a valid compressed archive type.</value>
+    <comment>{0} is an archive type, whose name is not localized</comment>
+  </data>
+  <data name="CompressedArchiveFormat_FileExtensionAlreadyInUseError_Format" xml:space="preserve">
+    <value>The file extension '{0}' is already in use by the format '{1}'.</value>
+    <comment>{0} is a file extension, {1} is a compressed archive format</comment>
+  </data>
+  <data name="CompressedArchiveFormat_CompountFileExtensionsNotSupportedError" xml:space="preserve">
+    <value>Compound file extensions are not supported.</value>
+  </data>
+  <data name="CompressedArchiveFormat_FileExtensionRequiredError" xml:space="preserve">
+    <value>At least one file extension must be provided.</value>
+  </data>
+  <data name="CompressedArchiveFormat_FormatIsNotRegisteredError_Format" xml:space="preserve">
+    <value>The format '{0}' is not registered.</value>
+    <comment>{0} us a compressed archive format, whose name is not localized</comment>
+  </data>
+  <data name="CompressedArchiveFormat_ImplementationRequired" xml:space="preserve">
+    <value>At least one implementation must be provided.</value>
+  </data>
+  <data name="CompressedArchiveFormat_InvalidFileExtensionError" xml:space="preserve">
+    <value>File extension is invalid.</value>
+  </data>
+  <data name="CompressedArchiveAccess_GZipDeleteEntryNotSupported" xml:space="preserve">
+    <value>The GZIP compresssed file format does not support deletion of an entry.</value>
+  </data>
+  <data name="GZipHeaderError_InvalidCompression" xml:space="preserve">
+    <value>Invalid GZIP header: Compression method is not 'Deflate'.</value>
+  </data>
+  <data name="GZipHeaderError_InvalidMagic" xml:space="preserve">
+    <value>Invalid GZIP header: Inititial header is not { 0x1F, 0x8B }.</value>
+  </data>
+  <data name="GZipHeaderError_ReservedFlagsSet" xml:space="preserve">
+    <value>Invalid GZIP header: Reserved flags must not be set.</value>
+  </data>
+  <data name="GZipAccess_InvalidModeForCreateEntryError" xml:space="preserve">
+    <value>The GZip file must be opened in Create mode to add content.</value>
+  </data>
+  <data name="GZipAccess_MultipleMembersNotSupportedError" xml:space="preserve">
+    <value>Only one entry may be added to a new GZip file.</value>
+  </data>
+  <data name="GZipAccess_EntriesAlreadyPresent" xml:space="preserve">
+    <value>The file must not contain any GZIP members.</value>
+  </data>
+  <data name="GZipAccess_NoEntriesFound" xml:space="preserve">
+    <value>The file is not a valid GZIP file.</value>
+  </data>
+  <data name="CompressedArchiveAccess_TarDeleteEntryNotSupported" xml:space="preserve">
+    <value>The TAR file format does not support deletion of an entry.</value>
+  </data>
+  <data name="GZipAccess_InvalidMode" xml:space="preserve">
+    <value>The GZIP file format only supports Read and Create modes.</value>
+  </data>
+  <data name="TarArchiveAccess_InvalidMode" xml:space="preserve">
+    <value>The TAR file format only supports Read and Create modes.</value>
+  </data>
+  <data name="TarArchiveAccess_InvalidModeForCreateEntryError" xml:space="preserve">
+    <value>The TAR file must be opened in Create mode to add content.</value>
+  </data>
+  <data name="CompressedArchiveAccess_NestedArchiveNotFound" xml:space="preserve">
+    <value>The nested archive '{0}' could not be found.</value>
+    <comment>{0} is the name of a nested compressed archive</comment>
+  </data>
+  <data name="SettingsDescription" xml:space="preserve">
+    <value>Settings associated with the primary ROM list (INTV.Shared) and main application window in VINTage.</value>
+  </data>
+  <data name="EnableMenuIcons" xml:space="preserve">
+    <value>If 'True' icons are displayed in menus; not honored on all systems</value>
+  </data>
+  <data name="RomListFeaturesColWidth" xml:space="preserve">
+    <value>Width of the column that displays the ROM feature glyphs (pixels)</value>
+  </data>
+  <data name="RomListNameColWidth" xml:space="preserve">
+    <value>Width of the column that displays the title of a ROM (pixels)</value>
+  </data>
+  <data name="RomListPathColWidth" xml:space="preserve">
+    <value>Width of the column that displays the file name of a ROM (pixels)</value>
+  </data>
+  <data name="RomListVendorColWidth" xml:space="preserve">
+    <value>Width of the column that displays the name of the publisher of a ROM (pixels)</value>
+  </data>
+  <data name="RomListYearColWidth" xml:space="preserve">
+    <value>Width of the column that displays the copyright year of a ROM (pixels)</value>
+  </data>
+  <data name="WindowPosition" xml:space="preserve">
+    <value>Last position of the main application window (x, y) (pixels)</value>
+  </data>
+  <data name="WindowSize" xml:space="preserve">
+    <value>Last size of the main application window (width, height) (pixels)</value>
+  </data>
+  <data name="WindowState" xml:space="preserve">
+    <value>Last state of the main application window (0, Iconified, Maximized, Fullscreen)</value>
+  </data>
+  <data name="SettingsDescriptionHeader" xml:space="preserve"># Common application settings
+# Settings are provided by various components in individual sections.
+#
+  </data>
 </root>

@@ -1,5 +1,5 @@
 ﻿// <copyright file="BinFormatRom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -263,6 +263,38 @@ namespace INTV.Core.Model
                         format = RomFormat.Bin;
                     }
                 }
+            }
+            return format;
+        }
+
+        /// <summary>
+        /// Inspects data in the stream to determine if it appears to be a BIN-format ROM.
+        /// </summary>
+        /// <param name="stream">The stream containing the data to inspect.</param>
+        /// <returns><c>RomFormat.Bin</c> if the data in stream might be a BIN-format ROM, otherwise <c>RomFormat.None</c>.</returns>
+        /// <remarks>This format check is extremely lax, so it is presumed the caller has done at least a file-name check based
+        /// on file extension before calling this method. That is, false positive results can be extremely common.</remarks>
+        internal static RomFormat CheckFormat(System.IO.Stream stream)
+        {
+            var format = RomFormat.None;
+            var fileSizeCheck = stream != null;
+            if (fileSizeCheck)
+            {
+                // Coerce allow odd ROM file size to true since certain ... shady ... ROM sites commonly
+                // have ZIPped up ROMs that somehow have an extra byte at the end.
+                var position = stream.Position;
+                try
+                {
+                    fileSizeCheck = IsValidFileSize(stream, allowOddRomFileSize: true);
+                }
+                finally
+                {
+                    stream.Seek(position, System.IO.SeekOrigin.Begin);
+                }
+            }
+            if (fileSizeCheck)
+            {
+                format = RomFormat.Bin;
             }
             return format;
         }

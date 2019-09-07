@@ -5,12 +5,18 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ItemType>GenericProject</ItemType>
     <ProjectGuid>{FABCE177-FBC7-49ED-880C-CDD3757F28FC}</ProjectGuid>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Default|AnyCPU' ">
     <OutputPath>.</OutputPath>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Build" command="make -f version_tools.mak all ALLOW_LOCAL_CHANGES=1" workingdir="${ProjectDir}/.." />
+        <Command>
+          <type>Build</type>
+          <command>make -f version_tools.mak all ALLOW_LOCAL_CHANGES=1</command>
+          <workingdir>${ProjectDir}/..</workingdir>
+        </Command>
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>

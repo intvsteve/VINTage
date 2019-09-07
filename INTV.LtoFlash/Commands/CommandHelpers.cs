@@ -1,5 +1,5 @@
 ﻿// <copyright file="CommandHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,8 +18,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using INTV.LtoFlash.Model;
+using INTV.LtoFlash.Resources;
 using INTV.LtoFlash.ViewModel;
+using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.Commands
 {
@@ -50,7 +55,43 @@ namespace INTV.LtoFlash.Commands
         internal static bool CanExecuteCommand(this Device device, VisualDeviceCommand command)
         {
             var canExecute = (device != null) && device.IsValid && !device.IsCommandInProgress && device.AllCommandsAvailable(command.RequiredProtocolCommands);
+            if (canExecute && (command.ConfigurationBits != DeviceStatusFlags.None))
+            {
+                canExecute = command.ConfigurationBits.IsConfigurableFeatureAvailable(FirmwareRevisions.GetFirmwareVersion(device.FirmwareRevisions.Current));
+            }
+            command.UpdateDeviceConfigurationCommandTipDescription(device, canExecute);
             return canExecute;
+        }
+
+        /// <summary>
+        /// Update the tool tip description of a command if feature cannot be configured due to firmware version of connected device.
+        /// </summary>
+        /// <param name="deviceCommand">The command whose tool tip description may be updated.</param>
+        /// <param name="device">The currently active device, if any.</param>
+        /// <param name="canExecute">The status of the 'can execute' of <paramref name="deviceCommand"/>.</param>
+        internal static void UpdateDeviceConfigurationCommandTipDescription(this VisualDeviceCommand deviceCommand, Device device, bool canExecute)
+        {
+            if (deviceCommand.ConfigurationBits != DeviceStatusFlags.None)
+            {
+                var descriptionResourceKey = deviceCommand.UniqueId.Split(new[] { '.' }).Last() + "_TipDescription";
+                var description = typeof(CommandHelpers).GetResourceString(descriptionResourceKey);
+                if (!canExecute && (device != null))
+                {
+                    var requiredFirmareVersion = deviceCommand.ConfigurationBits.GetMinimumRequiredFirmareVersionForFeature();
+                    var currentFirmwareVersion = FirmwareRevisions.GetFirmwareVersion(device.FirmwareRevisions.Current);
+                    if ((currentFirmwareVersion > 0) && (requiredFirmareVersion > 0))
+                    {
+                        var modifedDescription = new StringBuilder(description).AppendLine().AppendLine();
+                        modifedDescription.AppendFormat(
+                            CultureInfo.CurrentCulture,
+                            Strings.ConfigurableFeatureUnavailable_Message_Format,
+                            requiredFirmareVersion,
+                            currentFirmwareVersion);
+                        description = modifedDescription.ToString();
+                    }
+                }
+                deviceCommand.ToolTipDescription = description;
+            }
         }
     }
 }

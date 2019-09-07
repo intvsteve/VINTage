@@ -62,6 +62,17 @@ namespace INTV.Core.Tests.Utility
         }
 
         [Fact]
+        public void Crc32_OfStreamNotFromStartOfStream_IsCorrect()
+        {
+            using (var testData = new MemoryStream(new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 }))
+            {
+                testData.Seek(2, SeekOrigin.Begin);
+                var crc32 = Crc32.OfStream(testData, fromStartOfStream: false);
+                Assert.Equal(0xA1509EF8u, crc32);
+            }
+        }
+
+        [Fact]
         public void Crc32_OfStreamWithIgnoreRange_IsCorrect()
         {
             using (var testData = new MemoryStream(new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 }))

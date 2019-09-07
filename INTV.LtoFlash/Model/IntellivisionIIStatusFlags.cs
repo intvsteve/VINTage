@@ -1,5 +1,5 @@
 ﻿// <copyright file="IntellivisionIIStatusFlags.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -85,14 +85,14 @@ namespace INTV.LtoFlash.Model
         }
 
         /// <summary>
-        /// Produce <see cref="DeviceStatusFlagsLo"/> containing updated <see cref="IntellivisionIIStatusFlags"/> for a given <see cref="Device"/>.
+        /// Produce <see cref="DeviceStatusFlags"/> containing updated <see cref="IntellivisionIIStatusFlags"/> for a given <see cref="Device"/>.
         /// </summary>
         /// <param name="device">The <see cref="Device"/> whose updated flags are desired.</param>
         /// <param name="newIntellivisionIIFlags">New <see cref="IntellivisionIIStatusFlags"/> to apply to <paramref name="device"/>.</param>
-        /// <returns>A new set of <see cref="DeviceStatusFlagsLo"/> with updated IntellivisionIIStatusFlags for <paramref name="device"/>.</returns>
-        internal static DeviceStatusFlagsLo UpdateStatusFlags(this Device device, IntellivisionIIStatusFlags newIntellivisionIIFlags)
+        /// <returns>A new set of <see cref="DeviceStatusFlags"/> with updated IntellivisionIIStatusFlags for <paramref name="device"/>.</returns>
+        internal static DeviceStatusFlags UpdateStatusFlags(this Device device, IntellivisionIIStatusFlags newIntellivisionIIFlags)
         {
-            var deviceStatusFlags = device.ComposeStatusFlags() & ~DeviceStatusFlagsLo.IntellivisionIIStatusMask;
+            var deviceStatusFlags = device.DeviceStatusFlags & ~DeviceStatusFlags.IntellivisionIIStatusMask;
             deviceStatusFlags |= newIntellivisionIIFlags.ToDeviceStatusFlagsLo();
             return deviceStatusFlags;
         }

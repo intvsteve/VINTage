@@ -38,9 +38,9 @@ namespace INTV.LtoFlash.Model
         /// <param name="device">Target of the command.</param>
         /// <param name="onCompleteHandler">Called upon successful completion of the operation. This argument may be <c>null</c>.</param>
         /// <param name="errorHandler">Error handler, used to report errors to the user.</param>
-        /// <remarks>NOTE: On some older (pre-release) versions of the firmware, <see cref=">HardwareStatusFlags.NewErrorLogAvailable"/>
+        /// <remarks>NOTE: On some older (pre-release) versions of the firmware, <see cref="HardwareStatusFlags.NewErrorLogAvailable"/>
         /// was not available. This method does not check that flag -- it will read the entire error log. Reading the error log on production
-        /// and later versions of the firmware clears HardwareStatusFlags.NewErrorLogAvailable. Using the <see cref="GetErrorAndCrashLogs"/>
+        /// and later versions of the firmware clears HardwareStatusFlags.NewErrorLogAvailable. Using the <see cref="DeviceHelpers.GetErrorAndCrashLogs"/>
         /// method may be a better approach. Also note that this method is presently only directly used in DEBUG builds as a test facility.</remarks>
         [System.Diagnostics.Conditional("DEBUG")]
         public static void GetErrorLog(this Device device, Action<ErrorLog> onCompleteHandler, DeviceCommandErrorHandler errorHandler)

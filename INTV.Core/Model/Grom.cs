@@ -1,5 +1,5 @@
 ﻿// <copyright file="Grom.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using INTV.Core.Model.Device;
 using INTV.Core.Model.Program;
 
 namespace INTV.Core.Model
@@ -26,7 +27,7 @@ namespace INTV.Core.Model
     /// <summary>
     /// Models the Intellivision Graphics ROM.
     /// </summary>
-    public class Grom : INTV.Core.Model.Device.IPeripheral
+    public class Grom : IPeripheral
     {
         /// <summary>
         /// The characters supported by GROM. Note that these are ASCII, so some, such as the arrow characters, are mapped.
@@ -53,6 +54,12 @@ namespace INTV.Core.Model
         public IEnumerable<Device.IConnection> Connections
         {
             get { yield return Connection; }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<IConfigurableFeature> ConfigurableFeatures
+        {
+            get { yield break; }
         }
 
         /// <inheritdoc />

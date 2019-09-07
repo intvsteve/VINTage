@@ -31,7 +31,7 @@ namespace INTV.LtoFlash.View
     public partial class DeviceFileSystemPage : Gtk.Bin, IFakeDependencyObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="INTV.LtoFlash.DeviceFileSystemPage"/> class.
+        /// Initializes a new instance of the <see cref="INTV.LtoFlash.View.DeviceFileSystemPage"/> class.
         /// </summary>
         public DeviceFileSystemPage()
         {

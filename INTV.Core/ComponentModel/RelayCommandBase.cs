@@ -25,7 +25,7 @@ namespace INTV.Core.ComponentModel
     /// <summary>
     /// Defines a base command-like interface which does not rely upon a visual to route the command.
     /// </summary>
-    public class RelayCommandBase
+    public partial class RelayCommandBase
     {
         #region Constructors
 

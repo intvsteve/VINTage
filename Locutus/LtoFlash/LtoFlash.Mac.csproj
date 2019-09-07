@@ -103,6 +103,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LtoFlashApplicationInfo.cs" />
+    <Compile Include="LtoFlashApplicationInfo.Mac.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="View\AppDelegate.cs" />
     <Compile Include="View\AppDelegate.designer.cs">

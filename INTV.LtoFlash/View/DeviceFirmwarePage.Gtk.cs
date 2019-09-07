@@ -48,6 +48,10 @@ namespace INTV.LtoFlash.View
                 blockWhenBusy.Key.BlockWhenAppIsBusy = false;
             }
             this.Build();
+            _factoryVersion.TooltipText = FirmwareCommandGroup.FactoryFirmwareCommand.ToolTipDescription;
+            _updateVersion.TooltipText = FirmwareCommandGroup.SecondaryFirmwareCommand.ToolTipDescription;
+            _currentVersion.TooltipText = FirmwareCommandGroup.CurrentFirmwareCommand.ToolTipDescription;
+            _updateFirmware.TooltipText = FirmwareCommandGroup.UpdateFirmwareCommand.ToolTipDescription;
             CommandManager.RequerySuggested += HandleRequerySuggested;
         }
 

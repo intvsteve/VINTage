@@ -1548,7 +1548,7 @@ Would you like to proceed?</value>
     <value>Enable Keyclicks</value>
   </data>
   <data name="SetSaveMenuPositionCommand_TipDescription" xml:space="preserve">
-    <value>When enabled, your LTO Flash! will resume at the last selected menu selection.</value>
+    <value>Selects whether your LTO Flash! saves the last selected menu position. (Default: Only During Session)</value>
   </data>
   <data name="SetSaveMenuPositionCommand_TipTitle" xml:space="preserve">
     <value>Remember Menu Position</value>
@@ -2506,6 +2506,16 @@ is too small ({1} bytes)</value>
   <data name="ToolsDirectoryMissingMessage" xml:space="preserve">
     <value>Tools directory missing!</value>
   </data>
+  <data name="SetEnableConfigMenuOnCartCommand_Name" xml:space="preserve">
+    <value>Enable configuration menu</value>
+  </data>
+  <data name="SetEnableConfigMenuOnCartCommand_TipDescription" xml:space="preserve">
+    <value>When enabled, the 'Config' menu option on the LTO Flash! cartridge is available when at the menu screen on the Intellivision console.
+When disabled, the 'Config' menu is not accessible from the menu on the console. (Factory Default: ON)</value>
+  </data>
+  <data name="SetEnableConfigMenuOnCartCommand_TipTitle" xml:space="preserve">
+    <value>Enable Configuration Menu on Cartridge</value>
+  </data>
   <data name="CheckForFirmwareUpdateCommand_AlreadyUpToDateMessageFormat" xml:space="preserve">
     <value>Your LTO Flash! firmware appears to be up to date.
 
@@ -2528,5 +2538,50 @@ In order to determine if a firmware update is available for your device, please 
   </data>
   <data name="Firmware_CheckForFirmwareUpdateCommand_MenuItemName" xml:space="preserve">
     <value>Check for Firmware Update...</value>
+  </data>
+  <data name="SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Message_Format" xml:space="preserve">
+    <value>A problem occurred when setting JLP RAM randomize mode. The error was:
+
+{0}</value>
+  </data>
+  <data name="SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Title" xml:space="preserve">
+    <value>Failed to Set Randomize JLP RAM Mode</value>
+  </data>
+  <data name="SetRandomizeLtoFlashRamCommand_Name" xml:space="preserve">
+    <value>Randomize RAM before loading ROM</value>
+  </data>
+  <data name="SetRandomizeLtoFlashRamCommand_TipDescription" xml:space="preserve">
+    <value>When enabled, the contents of LTO Flash! RAM will be randomized prior to loading a ROM. When not enabled, the contents of LTO Flash! RAM will be set to zero. This setting only affects ROMs that use the extra RAM. (Factory Default: OFF)</value>
+  </data>
+  <data name="SetRandomizeLtoFlashRamCommand_TipTitle" xml:space="preserve">
+    <value>Randomize LTO Flash! RAM Before Loading ROM</value>
+  </data>
+  <data name="ConfigurableFeatureUnavailable_Message_Format" xml:space="preserve">
+    <value>NOTE: This feature requires Firmware version {0} or newer to be installed on your LTO Flash! and is not available in Firmware version {1}.</value>
+    <comment>{0} and {1} are firmware version numbers</comment>
+  </data>
+  <data name="SetEcsCompatibilityCommand_TipDescription" xml:space="preserve">
+    <value>Selects how your LTO Flash! behaves when loading a ROM with the ECS attached, and when the ECS ROM is enabled. (Default: ECS Games)</value>
+  </data>
+  <data name="SetIntellivisionIICompatibilityCommand_TipDescription" xml:space="preserve">
+    <value>Selects how your LTO Flash! decides to avoid Intellivision II compatibility problems. (Default: Always)</value>
+  </data>
+  <data name="SetShowTitleScreenCommand_TipDescription" xml:space="preserve">
+    <value>Selects when your LTO Flash! displays the title screen. (Default: Always)</value>
+  </data>
+  <data name="SettingsDescription" xml:space="preserve">
+    <value>Settings associated with the LTO Flash! menu editor plug-in to VINTage (INTV.LtoFlash).</value>
+  </data>
+  <data name="MenuLayoutLongNameColWidth" xml:space="preserve">
+    <value>Width of the column that displays the long name for a menu item (pixels)</value>
+  </data>
+  <data name="MenuLayoutManualColWidth" xml:space="preserve">
+    <value>Width of the column that displays the file name of the manual associated with a menu item (pixels)</value>
+  </data>
+  <data name="MenuLayoutSaveDataColWidth" xml:space="preserve">
+    <value>Width of the column that displays the file name for saved data associated a menu item (pixels)</value>
+  </data>
+  <data name="MenuLayoutShortNameColWidth" xml:space="preserve">
+    <value>Width of the column that displays the short name for a menu item (pixels)</value>
   </data>
 </root>

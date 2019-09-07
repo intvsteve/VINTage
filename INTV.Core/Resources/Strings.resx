@@ -226,4 +226,8 @@
     <value>Invalid LUIGI header size: {0}</value>
     <comment>{0}: size of the header that was read</comment>
   </data>
+  <data name="ConfigurableFeature_InvalidWriteOperationMessageFormat" xml:space="preserve">
+    <value>The value of the feature '{0}' cannot be modified at this time.</value>
+    <comment>{0} is the localized name of a configurable feature</comment>
+  </data>
 </root>

@@ -123,6 +123,13 @@
     <Compile Include="Model\Commands\UpdateGlobalFileTable.cs" />
     <Compile Include="Model\Commands\UploadDataBlockToRam.cs" />
     <Compile Include="Model\Commands\ValidateFirmwareImageInRam.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashBooleanFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashEcsCompatibilityFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashFeatures.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashFeature`T.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashIntellivisionIICompatibilityFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashSaveMenuPositionFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashShowTitleScreenFeature.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\ConnectionState.cs" />
     <Compile Include="Model\ControllerKeyValidationFlags.cs" />
@@ -151,6 +158,7 @@
     <Compile Include="Model\DeviceHelpers.UpdateDeviceName.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateDeviceOwner.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateFirmware.cs" />
+    <Compile Include="Model\DeviceStatusFlags.cs" />
     <Compile Include="Model\DeviceStatusFlagsHi.cs" />
     <Compile Include="Model\DeviceStatusFlagsLo.cs" />
     <Compile Include="Model\Directory.cs" />
@@ -177,6 +185,7 @@
     <Compile Include="Model\GlobalFileTable.cs" />
     <Compile Include="Model\GlobalForkTable.cs" />
     <Compile Include="Model\HardwareStatusFlags.cs" />
+    <Compile Include="Model\IConfigurableLtoFlashFeature.cs" />
     <Compile Include="Model\IDirectory.cs" />
     <Compile Include="Model\IFile.cs" />
     <Compile Include="Model\IFileContainer.cs" />
@@ -458,7 +467,13 @@
     <EmbeddedResource Include="Commands\Resources\UpdateFirmwareCommand_MenuItem.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetEnableConfigMenuOnCartCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Commands\Resources\CheckForFirmwareUpdateCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetRandomizeLtoFlashRamCommand.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Page Include="View\FileSystemStatisticsView.xaml">
@@ -702,6 +717,7 @@
     <Resource Include="Resources\Images\save_menu_position_16xLG.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\randomize_ram_16xLG.png" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />
     <Resource Include="Resources\Images\document_devicespecific_Black_16xLG.png" />
     <Resource Include="Resources\Images\document_devicespecific_Blue_16xLG.png" />

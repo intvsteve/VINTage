@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,27 +18,32 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using INTV.Core.Model;
+using INTV.Core.Model.Device;
 using INTV.Core.Model.Program;
 using INTV.LtoFlash.Commands;
 using INTV.LtoFlash.Model;
 using INTV.LtoFlash.Model.Commands;
 using INTV.Shared.Utility;
 using INTV.Shared.View;
+using INTV.Shared.ViewModel;
 
 namespace INTV.LtoFlash.ViewModel
 {
     /// <summary>
     /// ViewModel for Locutus device.
     /// </summary>
-    public partial class DeviceViewModel : INTV.Shared.ViewModel.ViewModelBase, INTV.Core.Model.Device.IPeripheral
+    public partial class DeviceViewModel : ViewModelBase, IPeripheral
     {
         #region Constants
 
         public const string IsConfigurablePropertyName = "IsConfigurable";
         public const string DisplayNamePropertyName = "DisplayName";
+        public const string RandomizeLtoFlashRamPropertyName = "RandomizeLtoFlashRam";
 
         #endregion // Constants
 
@@ -47,7 +52,9 @@ namespace INTV.LtoFlash.ViewModel
         public static readonly string ConnectedDevices = ResourceHelpers.CreatePackedResourceString(typeof(DeviceViewModel), "Resources/Images/connected_16x16.png");
         public static readonly string PowerStatusTip = Resources.Strings.ConsolePowerState_Tip;
 
-        public static readonly DeviceViewModel InvalidDevice = new DeviceViewModel(null);
+        private static readonly Lazy<DeviceViewModel> InvalidDeviceInstance = new Lazy<DeviceViewModel>(() => new DeviceViewModel(null));
+
+        private static readonly Lazy<IDictionary<string, VisualDeviceCommand>> ConfigurableFeatureCommandsToRefreshMapInstance = new Lazy<IDictionary<string, VisualDeviceCommand>>(InitializeConfigurableFeatureCommandsMapToRefresh);
 
         #region Constructors
 
@@ -60,112 +67,33 @@ namespace INTV.LtoFlash.ViewModel
             _device = device;
             if (_device == null)
             {
-                _ecsCompatibility = EcsStatusFlags.Default;
-                _intvIICompatibility = IntellivisionIIStatusFlags.Default;
-                _showTitleScreen = ShowTitleScreenFlags.Default;
-                _saveMenuPosition = SaveMenuPositionFlags.Default;
-                _backgroundGC = true;
-                _keyclicks = false;
                 _displayName = NoDevice;
             }
             else
             {
-                _ecsCompatibility = device.EcsCompatibility;
-                _intvIICompatibility = device.IntvIICompatibility;
-                _showTitleScreen = device.ShowTitleScreen;
-                _saveMenuPosition = device.SaveMenuPosition;
-                _backgroundGC = device.BackgroundGC;
-                _keyclicks = device.Keyclicks;
                 _device.ErrorHandler = ErrorHandler;
                 _device.PropertyChanged += DevicePropertyChanged;
                 UpdateDisplayName();
             }
             UpdatePowerState();
-            UpdateCompatibilityMode(DeviceStatusCategory.Ecs, (byte)EcsCompatibility);
-            UpdateCompatibilityMode(DeviceStatusCategory.IntvII, (byte)IntvIICompatibility);
-            UpdateShowTitleScreen(ShowTitleScreen);
-            UpdateSaveMenuPosition(SaveMenuPosition);
-            UpdateBackgroundGC(BackgroundGC);
-            UpdateKeyclicks(Keyclicks);
         }
 
         #endregion // Constructors
 
         #region Properties
 
-        private static Dictionary<EcsStatusFlags, string> EcsCompatiblityInfoTable
+        /// <summary>
+        /// Gets the invalid device ViewModel.
+        /// </summary>
+        public static DeviceViewModel InvalidDevice
         {
-            get
-            {
-                if (_ecsCompatiblityInfoTable == null)
-                {
-                    _ecsCompatiblityInfoTable = new Dictionary<EcsStatusFlags, string>()
-                    {
-                        { EcsStatusFlags.None, Resources.Strings.EcsCompatibilityMode_Enabled_ToolTipDescription },
-                        { EcsStatusFlags.EnabledForRequiredAndOptional, Resources.Strings.EcsCompatibilityMode_Limited_ToolTipDescription },
-                        { EcsStatusFlags.EnabledForRequired, Resources.Strings.EcsCompatibilityMode_Strict_ToolTipDescription },
-                        { EcsStatusFlags.Disabled, Resources.Strings.EcsCompatibilityMode_Disabled_ToolTipDescription }
-                    };
-                }
-                return _ecsCompatiblityInfoTable;
-            }
+            get { return InvalidDeviceInstance.Value; }
         }
-        private static Dictionary<EcsStatusFlags, string> _ecsCompatiblityInfoTable;
 
-        private static Dictionary<IntellivisionIIStatusFlags, string> IntvIICompatiblityInfoTable
+        private static IDictionary<string, VisualDeviceCommand> ConfigurableFeatureCommandsToRefreshMap
         {
-            get
-            {
-                if (_intvIICompatiblityInfoTable == null)
-                {
-                    _intvIICompatiblityInfoTable = new Dictionary<IntellivisionIIStatusFlags, string>()
-                        {
-                            { IntellivisionIIStatusFlags.None, Resources.Strings.IntellivisionIICompatibilityMode_Disabled_ToolTipDescription },
-                            { IntellivisionIIStatusFlags.Conservative, Resources.Strings.IntellivisionIICompatibilityMode_Limited_ToolTipDescription },
-                            { IntellivisionIIStatusFlags.Aggressive, Resources.Strings.IntellivisionIICompatibilityMode_Full_ToolTipDescription }
-                        };
-                }
-                return _intvIICompatiblityInfoTable;
-            }
+            get { return ConfigurableFeatureCommandsToRefreshMapInstance.Value; }
         }
-        private static Dictionary<IntellivisionIIStatusFlags, string> _intvIICompatiblityInfoTable;
-
-        private static Dictionary<ShowTitleScreenFlags, string> ShowTitleScreenInfoTable
-        {
-            get
-            {
-                if (_showTitleScreenInfoTable == null)
-                {
-                    _showTitleScreenInfoTable = new Dictionary<ShowTitleScreenFlags, string>()
-                        {
-                            { ShowTitleScreenFlags.Always, Resources.Strings.ShowTitleScreen_Always_ToolTipDescription },
-                            { ShowTitleScreenFlags.OnPowerUp, Resources.Strings.ShowTitleScreen_OnPowerUp_ToolTipDescription },
-                            { ShowTitleScreenFlags.Never, Resources.Strings.ShowTitleScreen_Never_ToolTipDescription }
-                        };
-                }
-                return _showTitleScreenInfoTable;
-            }
-        }
-        private static Dictionary<ShowTitleScreenFlags, string> _showTitleScreenInfoTable;
-
-        private static Dictionary<SaveMenuPositionFlags, string> SaveMenuPositionInfoTable
-        {
-            get
-            {
-                if (_saveMenuPositionInfoTable == null)
-                {
-                    _saveMenuPositionInfoTable = new Dictionary<SaveMenuPositionFlags, string>()
-                        {
-                            { SaveMenuPositionFlags.Always, Resources.Strings.SaveMenuPosition_Always_ToolTipDescription },
-                            { SaveMenuPositionFlags.DuringSessionOnly, Resources.Strings.SaveMenuPosition_SessionOnly_ToolTipDescription },
-                            { SaveMenuPositionFlags.Reserved, Resources.Strings.SaveMenuPosition_SessionOnly_ToolTipDescription },
-                            { SaveMenuPositionFlags.Never, Resources.Strings.SaveMenuPosition_Never_ToolTipDescription }
-                        };
-                }
-                return _saveMenuPositionInfoTable;
-            }
-        }
-        private static Dictionary<SaveMenuPositionFlags, string> _saveMenuPositionInfoTable;
 
         /// <summary>
         /// Gets a value indicating whether this ViewModel is associated with a valid device.
@@ -212,161 +140,78 @@ namespace INTV.LtoFlash.ViewModel
             get { return (Device == null) ? NoDevice : Device.UniqueId; }
         }
 
-        #region ECS Setting
-
         /// <summary>
         /// Gets or sets a value indicating how the Locutus device treats programs with known ECS compatibility problems.
         /// </summary>
         public EcsStatusFlags EcsCompatibility
         {
-            get { return (Device == null) ? _ecsCompatibility : Device.EcsCompatibility; }
-            set { AssignAndUpdateProperty(Device.EcsCompatibilityPropertyName, value, ref _ecsCompatibility, (p, v) => UpdateCompatibilityMode(DeviceStatusCategory.Ecs, (byte)v)); }
+            get { return GetConfigurableFeatureValue<EcsStatusFlags>(Device.EcsCompatibilityPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(Device.EcsCompatibilityPropertyName, value); }
         }
-        private EcsStatusFlags _ecsCompatibility;
-
-        /// <summary>
-        /// Gets the tool tip info title for ECS compatibility mode.
-        /// </summary>
-        public string EcsCompatibilityInfoTitle
-        {
-            get { return _ecsCompatibilityInfoTitle; }
-            private set { AssignAndUpdateProperty("EcsCompatibilityInfoTitle", value, ref _ecsCompatibilityInfoTitle); }
-        }
-        private string _ecsCompatibilityInfoTitle;
-
-        /// <summary>
-        /// Gets the detailed information for ECS compatibility mode tool tip.
-        /// </summary>
-        public string EcsCompatibilityInfo
-        {
-            get { return _ecsCompatibilityInfo; }
-            private set { AssignAndUpdateProperty("EcsCompatibilityInfo", value, ref _ecsCompatibilityInfo); }
-        }
-        private string _ecsCompatibilityInfo;
-
-        #endregion // ECS Setting
-
-        #region Intellivision II Setting
 
         /// <summary>
         /// Gets or sets a value indicating how the Locutus device treats programs with known Intellivision II compatibility problems.
         /// </summary>
         public IntellivisionIIStatusFlags IntvIICompatibility
         {
-            get { return (Device == null) ? _intvIICompatibility : Device.IntvIICompatibility; }
-            set { AssignAndUpdateProperty(Device.IntvIICompatibilityPropertyName, value, ref _intvIICompatibility, (p, v) => UpdateCompatibilityMode(DeviceStatusCategory.IntvII, (byte)v)); }
+            get { return GetConfigurableFeatureValue<IntellivisionIIStatusFlags>(Device.IntvIICompatibilityPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(Device.IntvIICompatibilityPropertyName, value); }
         }
-        private IntellivisionIIStatusFlags _intvIICompatibility;
-
-        /// <summary>
-        /// Gets the tool tip info title for Intellivision II compatibility mode.
-        /// </summary>
-        public string IntvIICompatibilityInfoTitle
-        {
-            get { return _intvIICompatibilityInfoTitle; }
-            private set { AssignAndUpdateProperty("IntvIICompatibilityInfoTitle", value, ref _intvIICompatibilityInfoTitle); }
-        }
-        private string _intvIICompatibilityInfoTitle;
-
-        /// <summary>
-        /// Gets the detailed information for Intellivision II compatibility mode tool tip.
-        /// </summary>
-        public string IntvIICompatibilityInfo
-        {
-            get { return _intvIICompatibilityInfo; }
-            private set { AssignAndUpdateProperty("IntvIICompatibilityInfo", value, ref _intvIICompatibilityInfo); }
-        }
-        private string _intvIICompatibilityInfo;
-
-        #endregion // Intellivision II Setting
-
-        #region Show Title Screen Setting
 
         /// <summary>
         /// Gets or sets the behavior of showing the title screen when resetting the console with Locutus plugged in.
         /// </summary>
         public ShowTitleScreenFlags ShowTitleScreen
         {
-            get { return (Device == null) ? _showTitleScreen : Device.ShowTitleScreen; }
-            set { AssignAndUpdateProperty(Device.ShowTitleScreenPropertyName, value, ref _showTitleScreen, (p, v) => UpdateShowTitleScreen(v)); }
+            get { return GetConfigurableFeatureValue<ShowTitleScreenFlags>(Device.ShowTitleScreenPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(Device.ShowTitleScreenPropertyName, value); }
         }
-        private ShowTitleScreenFlags _showTitleScreen;
-
-        /// <summary>
-        /// Gets the tool tip title for Show title screen at launch mode.
-        /// </summary>
-        public string ShowTitleScreenInfoTitle
-        {
-            get { return _showTitleScreenInfoTitle; }
-            private set { AssignAndUpdateProperty("ShowTitleScreenInfoTitle", value, ref _showTitleScreenInfoTitle); }
-        }
-        private string _showTitleScreenInfoTitle;
-
-        /// <summary>
-        /// Gets the detailed information for Show title screen at launch mode tool tip.
-        /// </summary>
-        public string ShowTitleScreenInfo
-        {
-            get { return _showTitleScreenInfo; }
-            private set { AssignAndUpdateProperty("ShowTitleScreenInfo", value, ref _showTitleScreenInfo); }
-        }
-        private string _showTitleScreenInfo;
-
-        #endregion // Show Title Screen Setting
-
-        #region Save Menu Position Setting
 
         /// <summary>
         /// Gets or sets whether LTO FLash! remembers its previous menu position when reset.
         /// </summary>
         public SaveMenuPositionFlags SaveMenuPosition
         {
-            get { return (Device == null) ? _saveMenuPosition : Device.SaveMenuPosition; }
-            set { AssignAndUpdateProperty(Device.SaveMenuPositionPropertyName, value, ref _saveMenuPosition, (p, v) => UpdateSaveMenuPosition(v)); }
+            get { return GetConfigurableFeatureValue<SaveMenuPositionFlags>(Device.SaveMenuPositionPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(Device.SaveMenuPositionPropertyName, value); }
         }
-        private SaveMenuPositionFlags _saveMenuPosition;
-
-        /// <summary>
-        /// Gets the tool tip title for Show title screen at launch mode.
-        /// </summary>
-        public string SaveMenuPositionInfoTitle
-        {
-            get { return _saveMenuPositionInfoTitle; }
-            private set { AssignAndUpdateProperty("SaveMenuPositionInfoTitle", value, ref _saveMenuPositionInfoTitle); }
-        }
-        private string _saveMenuPositionInfoTitle;
-
-        /// <summary>
-        /// Gets the detailed information for Show title screen at launch mode tool tip.
-        /// </summary>
-        public string SaveMenuPositionInfo
-        {
-            get { return _saveMenuPositionInfo; }
-            private set { AssignAndUpdateProperty("SaveMenuPositionInfo", value, ref _saveMenuPositionInfo); }
-        }
-        private string _saveMenuPositionInfo;
-
-        #endregion // Save Menu Position Setting
 
         /// <summary>
         /// Gets or sets a value indicating whether Locutus does background file system garbage collection when at the menu on the console.
         /// </summary>
         public bool BackgroundGC
         {
-            get { return (Device == null) ? _backgroundGC : Device.BackgroundGC; }
-            set { AssignAndUpdateProperty(Device.BackgroundGCPropertyName, value, ref _backgroundGC, (p, v) => UpdateBackgroundGC(v)); }
+            get { return GetConfigurableFeatureValue<bool>(Device.BackgroundGCPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(Device.BackgroundGCPropertyName, value); }
         }
-        private bool _backgroundGC;
 
         /// <summary>
         /// Gets or sets a value indicating whether the menu program on Locutus emits key click sounds when navigating.
         /// </summary>
         public bool Keyclicks
         {
-            get { return (Device == null) ? _keyclicks : Device.Keyclicks; }
-            set { AssignAndUpdateProperty(Device.KeyclicksPropertyName, value, ref _keyclicks, (p, v) => UpdateKeyclicks(v)); }
+            get { return GetConfigurableFeatureValue<bool>(Device.KeyclicksPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(Device.KeyclicksPropertyName, value); }
         }
-        private bool _keyclicks;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the Locutus device allows access to the on-cartridge configuration menu.
+        /// </summary>
+        public bool EnableConfigMenuOnCart
+        {
+            get { return GetConfigurableFeatureValue<bool>(Device.EnableConfigMenuOnCartPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(Device.EnableConfigMenuOnCartPropertyName, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to randomize RAM before loading a ROM.
+        /// </summary>
+        /// <remarks>NOTE! Hardware flag is for zeroing memory; we expose as randomizing, so it's logically inverted.</remarks>
+        public bool RandomizeLtoFlashRam
+        {
+            get { return !GetConfigurableFeatureValue<bool>(Device.ZeroLtoFlashRamPropertyName); }
+            set { SetConfigurableFeatureValueOnDevice(Device.ZeroLtoFlashRamPropertyName, !value); }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the device is in a state that allows configuration changes to be applied.
@@ -408,10 +253,21 @@ namespace INTV.LtoFlash.ViewModel
         /// <inheritdoc />
         public IEnumerable<INTV.Core.Model.Device.IConnection> Connections
         {
-            get { return (Device == null) ? Enumerable.Empty<INTV.Core.Model.Device.IConnection>() : _device.Connections; }
+            get { return (Device == null) ? Enumerable.Empty<IConnection>() : _device.Connections; }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<IConfigurableFeature> ConfigurableFeatures
+        {
+            get { return ConfigurableLtoFlashFeatures.Features; }
         }
 
         #endregion // IPeripheral Properties
+
+        private ConfigurableLtoFlashFeatures ConfigurableLtoFlashFeatures
+        {
+            get { return (Device == null) ? ConfigurableLtoFlashFeatures.Default : _device.ConfigurableLtoFlashFeatures; }
+        }
 
         #endregion // Properties
 
@@ -448,7 +304,29 @@ namespace INTV.LtoFlash.ViewModel
 
         #endregion // IPeripheral
 
-        private bool ErrorHandler(DeviceStatusFlagsLo deviceStatusFlags, ProtocolCommandId commandId, string errorMessage, System.Exception exception)
+        private static IDictionary<string, VisualDeviceCommand> InitializeConfigurableFeatureCommandsMapToRefresh()
+        {
+            var configurableFeatureCommandsToRefresh = new Dictionary<string, VisualDeviceCommand>
+            {
+                { Device.EcsCompatibilityPropertyName, DeviceCommandGroup.SetEcsCompatibilityCommand },
+                { Device.IntvIICompatibilityPropertyName, DeviceCommandGroup.SetIntellivisionIICompatibilityCommand },
+                { Device.ShowTitleScreenPropertyName, DeviceCommandGroup.SetShowTitleScreenCommand },
+                { Device.SaveMenuPositionPropertyName, DeviceCommandGroup.SetSaveMenuPositionCommand },
+            };
+            return configurableFeatureCommandsToRefresh;
+        }
+
+        private static void RefreshConfigurableFeatureCommand(string configurableFeature)
+        {
+            VisualDeviceCommand commandToRefresh;
+            if (ConfigurableFeatureCommandsToRefreshMap.TryGetValue(configurableFeature, out commandToRefresh))
+            {
+                var parameter = LtoFlashCommandGroup.LtoFlashViewModel;
+                commandToRefresh.CanExecute(parameter);
+            }
+        }
+
+        private bool ErrorHandler(DeviceStatusFlags deviceStatusFlags, ProtocolCommandId commandId, string errorMessage, System.Exception exception)
         {
             bool handled = false;
             var title = string.Empty;
@@ -459,7 +337,7 @@ namespace INTV.LtoFlash.ViewModel
                 case ProtocolCommandId.SetConfiguration:
                     handled = true;
                     showMessageBox = handled;
-                    switch (deviceStatusFlags)
+                    switch (deviceStatusFlags.Lo)
                     {
                         case DeviceStatusFlagsLo.IntellivisionIIStatusMask:
                             title = Resources.Strings.SetConfigurationCommand_IntellivisionII_Failed_Title;
@@ -485,6 +363,10 @@ namespace INTV.LtoFlash.ViewModel
                             title = Resources.Strings.SetConfigurationCommand_Keyclicks_Failed_Title;
                             messageFormat = Resources.Strings.SetConfigurationCommand_Keyclicks_Failed_Message_Format;
                             break;
+                        case DeviceStatusFlagsLo.ZeroRamBeforeLoad:
+                            title = Resources.Strings.SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Title;
+                            messageFormat = Resources.Strings.SetConfigurationCommand_RandomizeLtoFlashRam_Failed_Message_Format;
+                            break;
                     }
                     break;
                 case ProtocolCommandId.DownloadCrashLog:
@@ -503,7 +385,7 @@ namespace INTV.LtoFlash.ViewModel
                         {
                             portName = Device.Port.Name;
                         }
-                        var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.DeviceValidation_Failed_Message_Format, portName);
+                        var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.DeviceValidation_Failed_Message_Format, portName);
                         var dialog = INTV.Shared.View.ReportDialog.Create(Resources.Strings.DeviceValidation_Failed_Title, message);
                         dialog.ReportText = errorMessage;
                         dialog.ShowSendEmailButton = false;
@@ -516,7 +398,7 @@ namespace INTV.LtoFlash.ViewModel
             }
             if (showMessageBox && handled)
             {
-                var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, messageFormat, errorMessage);
+                var message = string.Format(CultureInfo.CurrentCulture, messageFormat, errorMessage);
                 OSMessageBox.Show(message, title, SingleInstanceApplication.SharedSettings.ShowDetailedErrors ? exception : null, (r) => { });
             }
             return handled;
@@ -530,7 +412,7 @@ namespace INTV.LtoFlash.ViewModel
             {
                 if (Device.IsValid)
                 {
-                    displayName = string.Format("{0} ({1})", Device.Name, port);
+                    displayName = string.Format(CultureInfo.CurrentCulture, "{0} ({1})", Device.Name, port);
                 }
                 else
                 {
@@ -560,69 +442,6 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
-        private void UpdateCompatibilityMode(DeviceStatusCategory which, byte compatibilityMode)
-        {
-            switch (which)
-            {
-                case DeviceStatusCategory.Ecs:
-                    var ecsFlags = (EcsStatusFlags)compatibilityMode;
-                    EcsCompatibilityInfo = EcsCompatiblityInfoTable[ecsFlags];
-                    EcsCompatibilityInfoTitle = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.EcsCompatibilityMode_ToolTipTitleFormat, ecsFlags.ToDisplayString());
-                    if (Device != null)
-                    {
-                        Device.EcsCompatibility = ecsFlags;
-                    }
-                    break;
-                case DeviceStatusCategory.IntvII:
-                    var intvIIFlags = (IntellivisionIIStatusFlags)compatibilityMode;
-                    IntvIICompatibilityInfo = IntvIICompatiblityInfoTable[intvIIFlags];
-                    IntvIICompatibilityInfoTitle = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.IntellivisionIICompatibilityMode_ToolTipTitleFormat, intvIIFlags.ToDisplayString());
-                    if (Device != null)
-                    {
-                        Device.IntvIICompatibility = intvIIFlags;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void UpdateShowTitleScreen(ShowTitleScreenFlags showTitleScreen)
-        {
-            if (Device != null)
-            {
-                Device.ShowTitleScreen = showTitleScreen;
-            }
-            ShowTitleScreenInfo = ShowTitleScreenInfoTable[showTitleScreen];
-            ShowTitleScreenInfoTitle = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.ShowTitleScreen_ToolTipTitleFormat, showTitleScreen.ToDisplayString());
-        }
-
-        private void UpdateSaveMenuPosition(SaveMenuPositionFlags saveMenuPosition)
-        {
-            if (Device != null)
-            {
-                Device.SaveMenuPosition = saveMenuPosition;
-            }
-            SaveMenuPositionInfo = SaveMenuPositionInfoTable[saveMenuPosition];
-            SaveMenuPositionInfoTitle = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.SaveMenuPosition_ToolTipTitleFormat, saveMenuPosition.ToDisplayString());
-        }
-
-        private void UpdateBackgroundGC(bool backgroundGC)
-        {
-            if (Device != null)
-            {
-                Device.BackgroundGC = backgroundGC;
-            }
-        }
-
-        private void UpdateKeyclicks(bool keyclicks)
-        {
-            if (Device != null)
-            {
-                Device.Keyclicks = keyclicks;
-            }
-        }
-
         private void UpdatePowerState()
         {
             var powerState = Resources.Strings.ConsolePowerState_Unknown;
@@ -632,8 +451,24 @@ namespace INTV.LtoFlash.ViewModel
                 powerOn = Device.IsConnectedToIntellivision;
                 powerState = Device.IsConnectedToIntellivision ? Resources.Strings.ConsolePowerState_On : Resources.Strings.ConsolePowerState_Off;
             }
-            PowerState = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.ConsolePowerState_Format, powerState);
+            PowerState = string.Format(CultureInfo.CurrentCulture, Resources.Strings.ConsolePowerState_Format, powerState);
             INTV.Shared.Model.Program.ProgramCollection.Roms.CanEditElements = !powerOn;
+        }
+
+        private T GetConfigurableFeatureValue<T>(string configurableFeatureUniqueId)
+        {
+            var configurableFeature = ConfigurableLtoFlashFeatures[configurableFeatureUniqueId] as ConfigurableLtoFlashFeature<T>;
+            var currentValue = configurableFeature.CurrentValue;
+            return currentValue;
+        }
+            
+        private void SetConfigurableFeatureValueOnDevice<T>(string configurableFeatureUniqueId, T newValue)
+        {
+            if (Device != null)
+            {
+                var configurableFeature = ConfigurableLtoFlashFeatures[configurableFeatureUniqueId] as ConfigurableLtoFlashFeature<T>;
+                configurableFeature.SetValueOnDevice(Device, newValue);
+            }
         }
 
         private void DevicePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -665,32 +500,16 @@ namespace INTV.LtoFlash.ViewModel
                     }
                     break;
                 case Device.EcsCompatibilityPropertyName:
-                    _ecsCompatibility = Device.EcsCompatibility;
-                    RaisePropertyChanged(e.PropertyName);
-                    UpdateCompatibilityMode(DeviceStatusCategory.Ecs, (byte)_ecsCompatibility);
-                    break;
                 case Device.IntvIICompatibilityPropertyName:
-                    _intvIICompatibility = Device.IntvIICompatibility;
-                    RaisePropertyChanged(e.PropertyName);
-                    UpdateCompatibilityMode(DeviceStatusCategory.IntvII, (byte)_intvIICompatibility);
-                    break;
                 case Device.ShowTitleScreenPropertyName:
-                    _showTitleScreen = Device.ShowTitleScreen;
-                    RaisePropertyChanged(e.PropertyName);
-                    UpdateShowTitleScreen(_showTitleScreen);
-                    break;
                 case Device.SaveMenuPositionPropertyName:
-                    _saveMenuPosition = Device.SaveMenuPosition;
-                    RaisePropertyChanged(e.PropertyName);
-                    UpdateSaveMenuPosition(_saveMenuPosition);
-                    break;
                 case Device.BackgroundGCPropertyName:
-                    _backgroundGC = Device.BackgroundGC;
+                case Device.KeyclicksPropertyName:
+                case Device.EnableConfigMenuOnCartPropertyName:
                     RaisePropertyChanged(e.PropertyName);
                     break;
-                case Device.KeyclicksPropertyName:
-                    _keyclicks = Device.Keyclicks;
-                    RaisePropertyChanged(e.PropertyName);
+                case Device.ZeroLtoFlashRamPropertyName:
+                    RaisePropertyChanged(RandomizeLtoFlashRamPropertyName);
                     break;
                 case Device.UniqueIdPropertyName:
                 case Device.FileSystemPropertyName:
@@ -730,7 +549,7 @@ namespace INTV.LtoFlash.ViewModel
         {
             if (IsValid && (Device.HardwareStatus.HasFlag(HardwareStatusFlags.NewErrorLogAvailable) || Device.HardwareStatus.HasFlag(HardwareStatusFlags.NewCrashLogAvailable)))
             {
-                Device.GetErrorAndCrashLogs(GetDeviceErrorAndCrashLogsComplete, (m, e) => ErrorHandler(DeviceStatusFlagsLo.None, ProtocolCommandId.DownloadCrashLog, m, e));
+                Device.GetErrorAndCrashLogs(GetDeviceErrorAndCrashLogsComplete, (m, e) => ErrorHandler(DeviceStatusFlags.None, ProtocolCommandId.DownloadCrashLog, m, e));
             }
         }
 
@@ -929,27 +748,16 @@ namespace INTV.LtoFlash.ViewModel
             return reportProblems;
         }
 
-        private enum DeviceStatusCategory
+        /// <summary>
+        /// Induce a refresh of configurable commands.
+        /// </summary>
+        internal void RefreshConfigurableFeatureCommands()
         {
-            /// <summary>
-            /// No category.
-            /// </summary>
-            None,
-
-            /// <summary>
-            /// Hardware category.
-            /// </summary>
-            Hardware,
-
-            /// <summary>
-            /// ECS device category.
-            /// </summary>
-            Ecs,
-
-            /// <summary>
-            /// Intellivision II device category.
-            /// </summary>
-            IntvII
+            var parameter = LtoFlashCommandGroup.LtoFlashViewModel;
+            foreach (var configurableCommandToRefresh in ConfigurableFeatureCommandsToRefreshMap.Values)
+            {
+                configurableCommandToRefresh.CanExecute(parameter);
+            }
         }
     }
 }

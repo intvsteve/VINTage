@@ -1,5 +1,5 @@
 ﻿// <copyright file="Configuration.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using INTV.Core.ComponentModel;
 using INTV.Core.Model.Device;
-using INTV.Shared.ComponentModel;
 using INTV.Shared.Utility;
 
 namespace INTV.LtoFlash.Model
@@ -32,11 +31,10 @@ namespace INTV.LtoFlash.Model
     /// <summary>
     /// This class specifies various configuration data - temporary as well as permanent - for working with Locutus devices.
     /// </summary>
-    [System.ComponentModel.Composition.Export(typeof(IApplicationInfo))]
     [System.ComponentModel.Composition.Export(typeof(IConfiguration))]
     [System.ComponentModel.Composition.ExportMetadata("FeatureName", FeatureName)]
     [System.ComponentModel.Composition.ExportMetadata("Weight", 0.8)]
-    public partial class Configuration : IApplicationInfo, IConfiguration
+    public partial class Configuration : IConfiguration
     {
         /// <summary>File extension to use for a generic LFS fork when stored as a file on disk.</summary>
         public const string ForkExtension = ".fork";
@@ -59,8 +57,6 @@ namespace INTV.LtoFlash.Model
         private const string FirmwareUpdatesDir = "FirmwareUpdates";
 
         private static Configuration _instance;
-        private string _helpPostData;
-        private string _versionCheckPostData;
 
         #region Constructors
 
@@ -68,9 +64,9 @@ namespace INTV.LtoFlash.Model
         {
             // TODO Make partial class instead of preprocessor check.
             // This null check keeps the WPF XAML designer output clean.
-            if (INTV.Shared.Utility.SingleInstanceApplication.Instance != null)
+            if (SingleInstanceApplication.Instance != null)
             {
-                ApplicationConfigurationPath = System.IO.Path.Combine(PathUtils.GetDocumentsDirectory(), DocumentFolderName); // applicationConfiguration.DocumentsPath;
+                ApplicationConfigurationPath = System.IO.Path.Combine(PathUtils.GetDocumentsDirectory(), SingleInstanceApplication.AppInfo.DocumentFolderName);
                 MenuLayoutPath = System.IO.Path.Combine(ApplicationConfigurationPath, MenuLayoutFileBaseName + XmlExtension);
                 ErrorLogDirectory = System.IO.Path.Combine(ApplicationConfigurationPath, ErrorLogDir);
                 RomsStagingAreaPath = System.IO.Path.Combine(ApplicationConfigurationPath, RomsStagingArea);
@@ -83,23 +79,6 @@ namespace INTV.LtoFlash.Model
                 StarterRomsDirectory = System.IO.Path.Combine(ApplicationConfigurationPath, RomsDir, StarterRomsDir);
                 FirmwareUpdatesDirectory = System.IO.Path.Combine(ApplicationConfigurationPath, FirmwareUpdatesDir);
                 RedistributablesPath = System.IO.Path.Combine(SingleInstanceApplication.Instance.ProgramDirectory, RedistributablesDirectoryName);
-
-                _helpPostData = "os=";
-                _versionCheckPostData = "os=";
-#if MAC
-                _helpPostData += "mac";
-                _versionCheckPostData += "mac";
-                MinimumOSVersion = new OSVersion(10,7,0);
-                RecommendedOSVersion = new OSVersion(10, 9, 0);
-#elif WIN
-                _helpPostData += "win";
-                _versionCheckPostData += "win";
-                MinimumOSVersion = new OSVersion(5, 1, 0); // Windows xp
-                RecommendedOSVersion = new OSVersion(6, 1, 0); // Windows 7 or later
-#elif GTK
-#endif // MAC
-                var versionParts = SingleInstanceApplication.Version.Split('.');
-                _helpPostData += "&ver=" + versionParts[0] + versionParts[1];
                 _instance = this;
             }
         }
@@ -240,40 +219,6 @@ namespace INTV.LtoFlash.Model
         }
 
         #endregion // IConfiguration
-
-        #region IApplicationInfo
-
-        /// <inheritdoc />
-        public string DocumentFolderName
-        {
-            get { return "LTO Flash"; }
-        }
-
-        /// <inheritdoc />
-        public OSVersion MinimumOSVersion { get; private set; }
-
-        /// <inheritdoc />
-        public OSVersion RecommendedOSVersion { get; private set; }
-
-        /// <inheritdoc />
-        public string ProductUrl
-        {
-            get { return "http://www.intvfunhouse.com/intvfunhouse/ltoflash/"; }
-        }
-
-        /// <inheritdoc />
-        public string OnlineHelpUrl
-        {
-            get { return ProductUrl + "help/?" + _helpPostData; }
-        }
-
-        /// <inheritdoc />
-        public string VersionCheckUrl
-        {
-            get { return ProductUrl + "current_version.php?" + _versionCheckPostData; }
-        }
-
-        #endregion // IApplicationInfo
 
         #endregion // Properties;
 

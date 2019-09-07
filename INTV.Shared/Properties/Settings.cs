@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -38,13 +38,14 @@ namespace INTV.Shared.Properties
         public const string WindowSizeSettingName = "WindowSize";
         public const string CheckForAppUpdatesAtLaunchSettingName = "CheckForAppUpdatesAtLaunch";
         public const string ShowDetailedErrorsSettingName = "ShowDetailedErrors";
+        public const string MaxGZipEntriesSearchSettingName = "MaxGZipEntriesSearch";
 
         #endregion // General Settings
 
         #region ROM List Settings
 
-        public const string ValidateAtLaunchSettingName = "ValidateAtLaunch";
-        public const string SearchForRomsAtLaunchSettingName = "SearchForRomsAtLaunch";
+        public const string ValidateAtLaunchSettingName = "RomListValidateAtStartup";
+        public const string SearchForRomsAtLaunchSettingName = "RomListSearchForRomsAtStartup";
         public const string RomListSearchDirectoriesSettingName = "RomListSearchDirectories";
         public const string RomListNameColWidthSettingName = "RomListNameColWidth";
         public const string RomListVendorColWidthSettingName = "RomListVendorColWidth";
@@ -69,5 +70,8 @@ namespace INTV.Shared.Properties
         /// <summary>Default value for ShowDetailedErrors option.</summary>
         public const bool DefaultShowDetailedErrorsSetting = false;
 #endif // DEBUG
+
+        /// <summary>Default value for MaxGZipEntriesSearch option.</summary>
+        public const int DefaultMaxGZipEntriesSearchSetting = 4;
     }
 }

@@ -62,13 +62,30 @@ namespace INTV.Intellicart.ViewModel
         #region ResetToDefaultWriteTimeoutCommand
 
         /// <summary>
-        /// Command to reset the serial port write timeout to its default value.
+        /// Lazy creation of the Reset to defult write timeout command.
         /// </summary>
-        public static readonly RelayCommand ResetToDefaultWriteTimeoutCommand = new RelayCommand(OnResetToDefaultWriteTimeout)
+        /// <remarks>When making <see cref="INTV.Core.ComponentModel.RelayCommandBase"/> be a subclass of NSObject,
+        /// creation of this command during MEF instantiation of this type would cause problems in newer versions
+        /// of Xamarin.Mac (5.8.0). By using <see cref="System.Lazy{T}"/> we defer long enough to allow RelayCommandBase
+        /// and NSObject types to be prepared for use. (?) Have not examined this in close detail. The issue was a
+        /// <see cref="System.ArgumentNullException"/> in NSObject's constructor when RelayCommandBase was invoking
+        /// the base class constructor.</remarks>
+        private static readonly System.Lazy<RelayCommand> LazyResetToDefultWriteTimeoutCommand = new System.Lazy<RelayCommand>(() =>
         {
-            UniqueId = "INTV.Intellicart.ViewModel.ResetToDefaultWriteTimeoutCommand",
-            BlockWhenAppIsBusy = false
-        };
+            return new RelayCommand(OnResetToDefaultWriteTimeout)
+                {
+                    UniqueId = "INTV.Intellicart.ViewModel.ResetToDefaultWriteTimeoutCommand",
+                    BlockWhenAppIsBusy = false
+                };
+        });
+
+        /// <summary>
+        /// Gets the command to reset the serial port write timeout to its default value.
+        /// </summary>
+        public static RelayCommand ResetToDefaultWriteTimeoutCommand
+        {
+            get { return LazyResetToDefultWriteTimeoutCommand.Value; }
+        }
 
         private static void OnResetToDefaultWriteTimeout(object parameter)
         {

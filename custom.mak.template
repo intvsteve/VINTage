@@ -115,6 +115,20 @@ VERSION_REVISION ?= 0
 INFO_PLIST_PATH = ./Locutus/LtoFlash/Info.plist
 
 # ------------------------------------------------------------------------- #
+# macOS deployment target.
+# This value specifies the minimum version of macOS that is required to run
+# the application. The default value is 10.7, though this is becoming
+# increasingly difficult to support -- and justify. With recent versions of
+# Xamarin Studio / Visual Studio for Mac (as of May, 2019), it is no longer
+# possible to target versions older than 10.9. Those tools are also the
+# only ones that support 64-bit macOS. Thus, the only way to continue to
+# support macOS 10.7 is to restrict the code to the MonoMac software stack,
+# which has been deprecated in favor of Xamarin.Mac -- and only supports
+# 32-bit targets.
+# ------------------------------------------------------------------------- #
+MACOS_DEPLOYMENT_TARGET ?= 10.7
+
+# ------------------------------------------------------------------------- #
 # Specify the base name for files such as the Mac installer DMG file and
 # the source .zip distribution.
 # ------------------------------------------------------------------------- #

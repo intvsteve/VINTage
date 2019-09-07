@@ -374,7 +374,7 @@ namespace INTV.LtoFlash.Commands
                     if (shortcutNumber < 10)
                     {
                         menuItem.KeyEquivalent = shortcutNumber.ToString();
-                        menuItem.KeyEquivalentModifierMask  = NSEventModifierMask.CommandKeyMask;
+                        menuItem.KeyEquivalentModifierMask = NSEventModifierMask.CommandKeyMask;
                     }
                     _deviceConnectionViewModels[menuItem.GetHashCode()] = port;
                 }
@@ -394,7 +394,12 @@ namespace INTV.LtoFlash.Commands
                 var connectionsMenuItem = ConnectToDeviceSubmenuCommand.MenuItem.NativeMenuItem;
                 if ((connectionsMenuItem != null) && connectionsMenuItem.HasSubmenu && (connectionsMenuItem.Submenu != null))
                 {
-                    foreach (var menuItem in connectionsMenuItem.Submenu.ItemArray())
+#if __UNIFIED__
+                    var menuItems = connectionsMenuItem.Submenu.Items;
+#else
+                    var menuItems = connectionsMenuItem.Submenu.ItemArray();
+#endif // __UNIFIED__
+                    foreach (var menuItem in menuItems)
                     {
                         DeviceConnectionViewModel deviceConnection = null;
                         if (_deviceConnectionViewModels.TryGetValue(menuItem.GetHashCode(), out deviceConnection))

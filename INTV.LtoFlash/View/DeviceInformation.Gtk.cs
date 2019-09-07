@@ -168,6 +168,8 @@ namespace INTV.LtoFlash.View
                 case Device.SaveMenuPositionPropertyName:
                 case Device.BackgroundGCPropertyName:
                 case Device.KeyclicksPropertyName:
+                case Device.EnableConfigMenuOnCartPropertyName:
+                case Device.ZeroLtoFlashRamPropertyName:
                     UpdateSettingsPage();
                     break;
                 default:

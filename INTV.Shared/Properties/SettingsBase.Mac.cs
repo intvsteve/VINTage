@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using INTV.Core.ComponentModel;
 using INTV.Shared.Utility;
 #if __UNIFIED__
 using Foundation;
@@ -38,7 +39,7 @@ namespace INTV.Shared.Properties
     /// <summary>
     /// Mac-specific implementation.
     /// </summary>
-    public abstract partial class SettingsBase
+    public abstract partial class SettingsBase : PropertyChangedNotifier
     {
         private NSUserDefaults _userDefaults;
         private Dictionary<Type, Converters> _converters;
@@ -79,6 +80,30 @@ namespace INTV.Shared.Properties
                 }
             }
             UserDefaults.RegisterDefaults(defaults);
+        }
+
+        /// <summary>
+        /// Updates the setting and raises a property changed event as appropriate.
+        /// </summary>
+        /// <typeparam name="T">The data type of the setting.</typeparam>
+        /// <param name="settingName">Setting name.</param>
+        /// <param name="newValue">New value.</param>
+        /// <param name="currentValue">Current value.</param>
+        protected void UpdateSetting<T>(string settingName, T newValue, T currentValue)
+        {
+            UpdateProperty(settingName, newValue, currentValue, (s, v) => SetSetting(s, v));
+        }
+
+        /// <summary>
+        /// Assigns and updates the setting value and raises a property changed event as appropriate.
+        /// </summary>
+        /// <typeparam name="T">The data type of the setting.</typeparam>
+        /// <param name="settingName">Setting name.</param>
+        /// <param name="newValue">New value.</param>
+        /// <param name="currentValue">Current value.</param>
+        protected void AssignAndUpdateSetting<T>(string settingName, T newValue, ref T currentValue)
+        {
+            AssignAndUpdateProperty(settingName, newValue, ref currentValue);
         }
 
         /// <summary>
@@ -203,7 +228,9 @@ namespace INTV.Shared.Properties
         /// </summary>
         /// <param name="key">Key for the setting.</param>
         /// <param name="defaultValue">The default value for the setting.</param>
-        partial void OSAddSetting(string key, object defaultValue)
+        /// <param name="isApplicationSetting">If <c>true</c>, indicates the setting is for the application and not
+        /// the specific instance of the Settings class.</param>
+        partial void OSAddSetting(string key, object defaultValue, bool isApplicationSetting)
         {
             NSUserDefaultsObserver.AddPreferenceChangedNotification(key, RaisePropertyChanged);
         }

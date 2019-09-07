@@ -80,7 +80,7 @@ namespace INTV.Shared.Commands
 
         private static void OnShowOnlineHelp(object parameter)
         {
-            var appInfo = SingleInstanceApplication.Instance.AppInfo;
+            var appInfo = SingleInstanceApplication.AppInfo;
             System.Diagnostics.Process.Start(appInfo.OnlineHelpUrl);
         }
 
@@ -91,7 +91,7 @@ namespace INTV.Shared.Commands
             {
                 try
                 {
-                    var appInfo = SingleInstanceApplication.Instance.AppInfo;
+                    var appInfo = SingleInstanceApplication.AppInfo;
                     canExecute = (appInfo != null) && !string.IsNullOrWhiteSpace(appInfo.OnlineHelpUrl);
                 }
                 catch (System.ComponentModel.Composition.ImportCardinalityMismatchException)
@@ -144,7 +144,7 @@ namespace INTV.Shared.Commands
             {
                 try
                 {
-                    var appInfo = SingleInstanceApplication.Instance.AppInfo;
+                    var appInfo = SingleInstanceApplication.AppInfo;
                     canExecute = (appInfo != null) && !string.IsNullOrWhiteSpace(appInfo.VersionCheckUrl);
                 }
                 catch (System.ComponentModel.Composition.ImportCardinalityMismatchException)
@@ -162,7 +162,7 @@ namespace INTV.Shared.Commands
                 // Wait a little while before checking. This gives a chance for other parallel startup tasks to finish.
                 System.Threading.Thread.Sleep(12000);
             }
-            var appInfo = SingleInstanceApplication.Instance.AppInfo;
+            var appInfo = SingleInstanceApplication.AppInfo;
             var versionCheckUrl = appInfo.VersionCheckUrl;
             var webRequest = System.Net.WebRequest.Create(versionCheckUrl);
             webRequest.Proxy = null;
@@ -193,7 +193,7 @@ namespace INTV.Shared.Commands
         private static void CheckForUpdatesComplete(AsyncTaskData taskData)
         {
             var data = (CheckForUpdatesTaskData)taskData;
-            var appInfo = SingleInstanceApplication.Instance.AppInfo;
+            var appInfo = SingleInstanceApplication.AppInfo;
             if (taskData.Error != null)
             {
                 var reportError = INTV.Shared.Properties.Settings.Default.ShowDetailedErrors;

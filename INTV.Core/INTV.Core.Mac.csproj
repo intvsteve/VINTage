@@ -77,10 +77,16 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="Model\Device\CartridgePort.cs" />
+    <Compile Include="Model\Device\ConfigurableFeature`T.cs" />
     <Compile Include="Model\Device\Connection.cs" />
     <Compile Include="Model\Device\ConnectionType.cs" />
+    <Compile Include="Model\Device\IConfigurableFeature.cs" />
+    <Compile Include="Model\Device\IConfigurableFeature`T.cs" />
+    <Compile Include="Model\Device\IConfigurableFeatureExtensions.cs" />
     <Compile Include="Model\Device\IConnection.cs" />
     <Compile Include="Model\Device\IPeripheral.cs" />
+    <Compile Include="Model\Device\IReadOnlyConfigurableFeature.cs" />
+    <Compile Include="Model\Device\IReadOnlyConfigurableFeature`T.cs" />
     <Compile Include="Model\Device\MemoryMap.cs" />
     <Compile Include="Model\Device\MemoryMap`T.cs" />
     <Compile Include="Model\Device\Peripheral.cs" />
@@ -233,6 +239,7 @@
     <Compile Include="Model\Program\XmlRomInformationDatabaseColumnName.cs" />
     <Compile Include="Model\Program\XmlRomInformationHelpers.cs" />
     <Compile Include="Model\Program\XmlRomInformationToProgramRomInformationConverter.cs" />
+    <Compile Include="ComponentModel\RelayCommandBase.Mac.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

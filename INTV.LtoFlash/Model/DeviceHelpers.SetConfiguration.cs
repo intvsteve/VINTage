@@ -36,16 +36,17 @@ namespace INTV.LtoFlash.Model
         /// Updates the device configuration settings.
         /// </summary>
         /// <param name="device">The target Locutus device whose configuration is to be set.</param>
-        /// <param name="lowStatusFlags">The lower 64 bits of configuration data.</param>
-        /// <param name="highStatusFlags">The upper 64 bits of configuration data.</param>
+        /// <param name="newConfigurationFlags">The new configuration data.</param>
+        /// <param name="onCompleteHandler">Success handler, used to report successful execution of the command.</param>
         /// <param name="errorHandler">Error handler, used to report errors to the user.</param>
-        public static void SetConfiguration(this Device device, DeviceStatusFlagsLo lowStatusFlags, DeviceStatusFlagsHi highStatusFlags, DeviceCommandErrorHandler errorHandler)
+        public static void SetConfiguration(this Device device, DeviceStatusFlags newConfigurationFlags, DeviceCommandCompleteHandler onCompleteHandler, DeviceCommandErrorHandler errorHandler)
         {
             if (device.IsSafeToStartCommand())
             {
                 var executeCommandTaskData = new ExecuteDeviceCommandAsyncTaskData(device, ProtocolCommandId.SetConfiguration)
                 {
-                    Data = new Tuple<DeviceStatusFlagsLo, DeviceStatusFlagsHi>(lowStatusFlags, highStatusFlags),
+                    Data = newConfigurationFlags,
+                    OnSuccess = onCompleteHandler,
                     OnFailure = errorHandler
                 };
                 executeCommandTaskData.StartTask(SetConfiguration);
@@ -64,8 +65,8 @@ namespace INTV.LtoFlash.Model
         {
             var data = (ExecuteDeviceCommandAsyncTaskData)taskData;
             var device = data.Device;
-            var flags = (Tuple<DeviceStatusFlagsLo, DeviceStatusFlagsHi>)data.Data;
-            data.Succeeded = Commands.SetConfiguration.Create(flags.Item1, flags.Item2).Execute<bool>(device.Port, data);
+            var flags = (DeviceStatusFlags)data.Data;
+            data.Succeeded = Commands.SetConfiguration.Create(flags).Execute<bool>(device.Port, data);
         }
 
         #endregion // SetConfiguration

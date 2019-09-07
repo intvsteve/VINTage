@@ -1,5 +1,5 @@
 ﻿// <copyright file="AssemblyInfo.cs" company="INTV Funhouse">
-// Copyright (c) 2013-2018 All Rights Reserved
+// Copyright (c) 2013-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -19,7 +19,11 @@
 // </copyright>
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+[assembly: InternalsVisibleTo("INTV.Shared.Tests")]
+[assembly: InternalsVisibleTo("INTV.TestHelpers.Shared")]
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -30,7 +34,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("INTVFunhouse")]
 [assembly: AssemblyProduct("VINTage")]
 [assembly: AssemblyCopyright("Copyright © INTV Funhouse 2013-" + INTV.VersionInfo.CurrentCopyrightYear)]
-[assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Productions. Steve Orth and INTV Funhouse are not affiliated with Intellivision Productions.")]
+[assembly: AssemblyTrademark("Intellivision® is a registered trademark of Intellivision Entertainment, LLC. Steve Orth and INTV Funhouse are not affiliated with Intellivision Entertainment, LLC.")]
 //// Stupid xp... .NET 4.5 or later required for AssemblyMetadataAttribute
 #if !WIN
 [assembly: AssemblyMetadata(INTV.Core.Utility.ResourceHelpers.AuthorKey, "Steven A. Orth")]

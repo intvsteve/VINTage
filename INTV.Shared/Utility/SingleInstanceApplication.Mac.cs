@@ -43,7 +43,7 @@ namespace INTV.Shared.Utility
         private const string ShowSplashScreenName = "LUI_SHOW_SPLASH_SCREEN";
         private const string MainWindowValueName = "mainWindow";
         private const string FirstResponderValueName = "firstResponder";
-        private static System.Configuration.ApplicationSettingsBase _launchSettings;
+        private static IApplicationInfo _applicationInfo;
         private bool _registeredObserver;
         private bool _handledDidFinishLaunching;
 
@@ -57,8 +57,8 @@ namespace INTV.Shared.Utility
         public SingleInstanceApplication(System.IntPtr handle)
             : base(handle)
         {
-            Initialize(_launchSettings);
-            _launchSettings = null;
+            Initialize(_applicationInfo.Settings);
+            _applicationInfo = null;
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace INTV.Shared.Utility
         public SingleInstanceApplication(NSCoder coder)
             : base(coder)
         {
-            Initialize(_launchSettings);
-            _launchSettings = null;
+            Initialize(_applicationInfo.Settings);
+            _applicationInfo = null;
         }
 
         #endregion // Constructors
@@ -146,12 +146,14 @@ namespace INTV.Shared.Utility
         /// Runs the application.
         /// </summary>
         /// <param name="uniqueInstance">Unique instance string.</param>
-        /// <param name="settings">The application ettings.</param>
+        /// <param name="applicationInfo">The application description.</param>
         /// <param name="args">Command line arguments.</param>
         /// <param name="splashScreenImage">Splash screen image.</param>
         /// <typeparam name="T">The type for the main window class.</typeparam>
-        public static void RunApplication<T>(string uniqueInstance, System.Configuration.ApplicationSettingsBase settings, string[] args, string splashScreenImage) where T : NSWindow
+        public static void RunApplication<T>(string uniqueInstance, IApplicationInfo applicationInfo, string[] args, string splashScreenImage) where T : NSWindow
         {
+            AppInfo = applicationInfo;
+            _applicationInfo = applicationInfo;
             _mainWindowType = typeof(T);
             _splashScreenResource = splashScreenImage;
             NSApplication.Init();

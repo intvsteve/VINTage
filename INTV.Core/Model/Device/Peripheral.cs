@@ -1,5 +1,5 @@
 ﻿// <copyright file="Peripheral.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -50,6 +50,9 @@ namespace INTV.Core.Model.Device
 
         /// <inheritdoc />
         public abstract IEnumerable<IConnection> Connections { get; protected set; }
+
+        /// <inheritdoc />
+        public abstract IEnumerable<IConfigurableFeature> ConfigurableFeatures { get; }
 
         /// <inheritdoc />
         public abstract bool IsRomCompatible(IProgramDescription programDescription);

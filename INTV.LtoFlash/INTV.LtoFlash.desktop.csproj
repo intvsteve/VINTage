@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
     <AssemblyName>INTV.LtoFlash</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -17,6 +17,7 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,6 +28,7 @@
     <DefineConstants>TRACE;DEBUG;WIN;ENABLE_PORT_LOG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,6 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <RootNamespace>INTV.LtoFlash</RootNamespace>
@@ -121,6 +124,13 @@
     <Compile Include="Model\Commands\UpdateGlobalFileTable.cs" />
     <Compile Include="Model\Commands\UploadDataBlockToRam.cs" />
     <Compile Include="Model\Commands\ValidateFirmwareImageInRam.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashBooleanFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashEcsCompatibilityFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashFeatures.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashFeature`T.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashIntellivisionIICompatibilityFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashSaveMenuPositionFeature.cs" />
+    <Compile Include="Model\ConfigurableLtoFlashShowTitleScreenFeature.cs" />
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\ConnectionState.cs" />
     <Compile Include="Model\ControllerKeyValidationFlags.cs" />
@@ -149,8 +159,10 @@
     <Compile Include="Model\DeviceHelpers.UpdateDeviceName.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateDeviceOwner.cs" />
     <Compile Include="Model\DeviceHelpers.UpdateFirmware.cs" />
+    <Compile Include="Model\DeviceStatusFlags.cs" />
     <Compile Include="Model\DeviceStatusFlagsHi.cs" />
     <Compile Include="Model\DeviceStatusFlagsLo.cs" />
+    <Compile Include="Model\IConfigurableLtoFlashFeature.cs" />
     <Compile Include="Model\LfsDifferences.cs" />
     <Compile Include="Model\EcsStatusFlags.cs" />
     <Compile Include="Model\ErrorLog.cs" />
@@ -458,7 +470,13 @@
     <EmbeddedResource Include="Commands\Resources\UpdateFirmwareCommand_MenuItem.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetEnableConfigMenuOnCartCommand.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Commands\Resources\CheckForFirmwareUpdateCommand_MenuItem.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Commands\Resources\SetRandomizeLtoFlashRamCommand.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Page Include="View\FileSystemStatisticsView.xaml">
@@ -689,6 +707,7 @@
     <Resource Include="Resources\Images\settings_32xMD.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\randomize_ram_16xLG.png" />
     <Resource Include="Resources\Images\check-for-firmware-update_16xLG.png" />
     <Resource Include="Resources\Images\check-for-firmware-update_32xLG.png" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />

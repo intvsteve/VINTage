@@ -1,5 +1,5 @@
 ﻿// <copyright file="OSVersion.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2015 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -38,9 +38,10 @@ namespace INTV.Shared.Utility
             }
         }
 
-        private Version Initialize()
+        private static OSVersion Initialize()
         {
-            var version = new Version(Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
+            var version = new OSVersion(0, 0, 0);
+            version._version = Environment.Version;
             return version;
         }
     }

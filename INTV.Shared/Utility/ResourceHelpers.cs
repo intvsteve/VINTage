@@ -1,4 +1,4 @@
-﻿// <copyright file="ResourceHelpers.cs" company="INTV Funhouse">
+// <copyright file="ResourceHelpers.cs" company="INTV Funhouse">
 // Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -58,7 +58,9 @@ namespace INTV.Shared.Utility
         /// <typeparam name="T">A type whose assembly is expected to contain a specific image resource.</typeparam>
         /// <param name="type">Any object whose implementation is in the assembly in which the image resource is supposed to exist.</param>
         /// <param name="relativeResourcePath">The relative path to the image resource within the type's assembly.</param>
-        /// <returns>The image resource, or <c>null</c> if not found.</returns>
+        /// <returns>The image.</returns>
+        /// <exception cref="IOException">Thrown if <paramref name="relativeResourcePath"/> refers to a resource that cannot be found.</exception>
+        /// <exception cref="NotSupportedException">Thrown if <paramref name="relativeResourcePath"/> refers to a resource that is not a valid image format.</exception>
         public static OSImage LoadImageResource<T>(this T type, string relativeResourcePath)
         {
             return LoadImageResource(typeof(T), relativeResourcePath);
@@ -86,25 +88,35 @@ namespace INTV.Shared.Utility
         /// <remarks>This function assumes that the string is in a resource that can be located in a namespace of [assemblyName].Resources.resourceName.</remarks>
         public static string GetResourceString(this Type type, string resourceName, string key)
         {
+            var assembly = type.Assembly;
+            resourceName = assembly.GetName().Name + ".Resources." + resourceName;
+            var value = type.GetStringFromResource(resourceName, key);
+            return value;
+        }
+
+        /// <summary>
+        /// Retrieves a string resource using the specified resource name.
+        /// </summary>
+        /// <param name="type">A type that is in the assembly containing the desired string resource.</param>
+        /// <param name="resourceManagerResourceName">Resource manager resource name.</param>
+        /// <param name="key">The name of the string resource.</param>
+        /// <returns>The string, or <c>null</c> if not found. May also be a bogus string starting with !! if an exception occurs.</returns>
+        public static string GetStringFromResource(this Type type, string resourceManagerResourceName, string key)
+        {
             var value = "!!MISSING STRING!!";
             try
             {
                 var assembly = type.Assembly;
-                resourceName = assembly.GetName().Name + ".Resources." + resourceName;
-                var resourceManager = new System.Resources.ResourceManager(resourceName, type.Assembly);
+                var resourceManager = new System.Resources.ResourceManager(resourceManagerResourceName, type.Assembly);
                 value = resourceManager.GetString(key);
             }
             catch (InvalidOperationException)
             {
-                value = "!!RESOURCE '" + resourceName + "." + key + " ' IS NOT A STRING!!";
+                value = "!!RESOURCE '" + resourceManagerResourceName + "." + key + " ' IS NOT A STRING!!";
             }
             catch (System.Resources.MissingManifestResourceException)
             {
-                value = "!!NO RESOURCES FOUND FOR '" + resourceName + "." + key + "'!!";
-            }
-            catch (System.Resources.MissingSatelliteAssemblyException)
-            {
-                value = "!!NO SATELLITE RESOURCES FOUND FOR '" + resourceName + "." + key + "'!!";
+                value = "!!NO RESOURCES FOUND FOR '" + resourceManagerResourceName + "." + key + "'!!";
             }
             return value;
         }
@@ -117,7 +129,7 @@ namespace INTV.Shared.Utility
         /// <returns>The resources with names that start with <paramref name="resourceNameFilter"/>.</returns>
         public static IEnumerable<string> GetResources(this Type typeForLocatingResources, string resourceNameFilter)
         {
-            var resources = typeForLocatingResources.Assembly.GetManifestResourceNames().Where(r => r.StartsWith(resourceNameFilter));
+            var resources = typeForLocatingResources.Assembly.GetManifestResourceNames().Where(r => r.StartsWith(resourceNameFilter, StringComparison.InvariantCulture));
             return resources;
         }
 
@@ -153,7 +165,6 @@ namespace INTV.Shared.Utility
                                 }
                             }
                             extractedResourceFiles.Add(filePath);
-                            System.Diagnostics.Debug.WriteLine(fileName);
                         }
                     }
                 }

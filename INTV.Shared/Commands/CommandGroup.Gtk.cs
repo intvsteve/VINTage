@@ -1,5 +1,5 @@
 ﻿// <copyright file="CommandGroup.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017 All Rights Reserved
+// Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -119,7 +119,7 @@ namespace INTV.Shared.Commands
         }
 
         /// <summary>
-        /// Event handler for updating the enabled state of a visual associated with an <see cref=">ICommand"/>.
+        /// Event handler for updating the enabled state of a visual associated with an <see cref="ICommand"/>.
         /// </summary>
         /// <param name="sender">The command whose associated visuals must be updated to reflect command availability.</param>
         /// <param name="e">Unused argument.</param>

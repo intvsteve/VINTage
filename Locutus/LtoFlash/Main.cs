@@ -36,7 +36,8 @@ namespace Locutus.View
             dummySettings.JzIntvUIHack = INTV.JzIntvUI.ViewModel.JzIntvSettingsPageViewModel.EmulatorPathLabel;
             dummySettings.LtoFlashHack = INTV.LtoFlash.Model.EcsStatusFlags.AllFlags;
             dummySettings.IntellicartHack = INTV.Intellicart.ViewModel.SettingsPageViewModel.SerialPortGroupName;
-            INTV.Shared.Utility.SingleInstanceApplication.RunApplication<Locutus.View.MainWindow>("Locutus-{4B53C351-EE55-46AB-8DE9-C2E4DDD1297A}", dummySettings, args, "Resources/Images/LTOFlashSplash.png");
+            var applicationInfo = new LtoFlashApplicationInfo() { DummySettings = dummySettings };
+            INTV.Shared.Utility.SingleInstanceApplication.RunApplication<Locutus.View.MainWindow>("Locutus-{4B53C351-EE55-46AB-8DE9-C2E4DDD1297A}", applicationInfo, args, "Resources/Images/LTOFlashSplash.png");
         }
 
         /// <summary>

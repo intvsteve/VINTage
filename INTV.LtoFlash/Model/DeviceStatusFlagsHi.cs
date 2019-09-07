@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceStatusFlagsHi.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,10 +18,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Collections.Generic;
+
 namespace INTV.LtoFlash.Model
 {
     /// <summary>
-    /// These flags identify the high 8 bytes of status flags available from a Locutus device.
+    /// These flags identify the high 8 bytes (64 bits) of status flags available from a Locutus device.
     /// </summary>
     [System.Flags]
     public enum DeviceStatusFlagsHi : ulong
@@ -34,19 +36,19 @@ namespace INTV.LtoFlash.Model
         /// <summary>
         /// This flag is used internally by Locutus to indicate that the file system menu position data should be
         /// considered invalid. The UI should not manipulate this flag directly, and it should always be set.
-        /// Because of this, it is still considered part of <see cref=">ReservedMask"/>.
+        /// Because of this, it is still considered part of <see cref="ReservedMask"/>.
         /// </summary>
-        ResetMenuHistory = 1ul << 62,
+        ResetMenuHistory = 1ul << DeviceStatusFlagsHiHelpers.ResetMenuHistoryBitsOffset,
 
         /// <summary>
         /// Indicates flags have been initialized. Set to zero to force 'factory reset'.
         /// </summary>
-        FlagsHaveBeenSet = 1ul << 63,
+        FlagsHaveBeenSet = 1ul << DeviceStatusFlagsHiHelpers.FlagsHaveBeenSetBitsOffset,
 
         /// <summary>
-        /// All bits are reserved.
+        /// Reserved bits. Note that the ResetMenuHistory flag is always considered reserved.
         /// </summary>
-        ReservedMask = 0x7FFFFFFFFFFFFFFF,
+        ReservedMask = ResetMenuHistory | (DeviceStatusFlagsHiHelpers.ReservedBitsMask << DeviceStatusFlagsHiHelpers.ReservedBitsOffset),
 
         /// <summary>
         /// Default, expected flags for DeviceStatusFlagsHi. If FlagsHaveBeenSet is ever cleared and sent
@@ -60,6 +62,83 @@ namespace INTV.LtoFlash.Model
     /// </summary>
     internal static class DeviceStatusFlagsHiHelpers
     {
+        #region Reserved Bits
+
+        /// <summary>
+        /// The reserved bits mask.
+        /// </summary>
+        internal const ulong ReservedBitsMask = 0x7FFFFFFFFFFFFFFF;
+
+        /// <summary>
+        /// Location in the bit array where the reserved configuration bits begin.
+        /// </summary>
+        internal const int ReservedBitsOffset = 0; // (0 --> 64)
+
+        private const int ReservedBitsCount = 62;
+
+        #endregion // Reserved Bits
+
+        #region Reset Menu History Bits
+
+        /// <summary>
+        /// Location in the bit array where the configuration bit for reset menu history bit is stored.
+        /// </summary>
+        internal const int ResetMenuHistoryBitsOffset = ReservedBitsOffset + ReservedBitsCount; // (62 --> 126)
+
+        private const int ResetMenuHistoryBitCount = 1;
+
+        #endregion // Reset Menu History Bits
+
+        #region Flags Have Been Set Bits
+
+        /// <summary>
+        /// Location in the bit array where the configuration bit for whether configuration flags are valid is stored.
+        /// </summary>
+        internal const int FlagsHaveBeenSetBitsOffset = ResetMenuHistoryBitsOffset + ResetMenuHistoryBitCount; // (63 --> 127)
+
+        private const int FlagsHaveBeenSetBitCount = 1;
+
+        #endregion // Flags Have Been Set Bits
+
+        /// <summary>
+        /// The firmware-version-specific configurable features.
+        /// </summary>
+        /// <remarks>Only configurable features introduced after the initial product release are included in this dictionary.</remarks>
+        private static readonly Dictionary<DeviceStatusFlagsHi, int> VersionSpecificConfigurableFeatures = new Dictionary<DeviceStatusFlagsHi, int>()
+        {
+        };
+
+        /// <summary>
+        /// Gets the minimum required firmware version for the given configurable feature.
+        /// </summary>
+        /// <param name="feature">The feature whose minimum required firmware version is desired.</param>
+        /// <returns>The minimum firmware version required for the feature; or <c>0</c> if the feature is available in all firmware versions.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> specified more than one configurable feature, or hardware status.</exception>
+        internal static int GetMinimumRequiredFirmareVersionForFeature(this DeviceStatusFlagsHi feature)
+        {
+            ValidateFeatureBits(feature);
+            int requiredFirmwareVersion;
+            if (!VersionSpecificConfigurableFeatures.TryGetValue(feature, out requiredFirmwareVersion))
+            {
+                requiredFirmwareVersion = 0;
+            }
+            return requiredFirmwareVersion;
+        }
+
+        /// <summary>
+        /// Determines if the given configurable feature is available in the specified firmware revision.
+        /// </summary>
+        /// <param name="feature">The feature whose availability is desired.</param>
+        /// <param name="currentFirmwareVersion">Current firmware version.</param>
+        /// <returns><c>true</c> if the configurable feature is available for the specified firmware version; otherwise, <c>false</c>.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="feature"/> specified more than one configurable feature, or hardware status.</exception>
+        internal static bool IsConfigurableFeatureAvailable(this DeviceStatusFlagsHi feature, int currentFirmwareVersion)
+        {
+            ValidateFeatureBits(feature);
+            var featureAvailable = (currentFirmwareVersion > 0) && (VersionSpecificConfigurableFeatures.Count > 0) && (currentFirmwareVersion >= feature.GetMinimumRequiredFirmareVersionForFeature());
+            return featureAvailable;
+        }
+
         /// <summary>
         /// Gets the low 32 bits from the status.
         /// </summary>
@@ -78,6 +157,26 @@ namespace INTV.LtoFlash.Model
         internal static uint GetHighBits(this DeviceStatusFlagsHi deviceStatusHi)
         {
             return (uint)(((ulong)deviceStatusHi >> 32) & 0x00000000FFFFFFFF);
+        }
+
+        private static void ValidateFeatureBits(DeviceStatusFlagsHi feature)
+        {
+            var numFeatures = 0;
+            if (feature != DeviceStatusFlagsHi.None)
+            {
+                if ((feature & DeviceStatusFlagsHi.ResetMenuHistory) != DeviceStatusFlagsHi.None)
+                {
+                    numFeatures += 2; // Totally bogus - should not have this flag!
+                }
+                if ((feature & DeviceStatusFlagsHi.FlagsHaveBeenSet) != DeviceStatusFlagsHi.None)
+                {
+                    numFeatures += 2; // Totally bogus - should not have this flag!
+                }
+            }
+            if (numFeatures > 1)
+            {
+                throw new System.ArgumentOutOfRangeException();
+            }
         }
     }
 }

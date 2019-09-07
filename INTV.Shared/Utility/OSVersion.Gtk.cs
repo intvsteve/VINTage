@@ -57,8 +57,8 @@ namespace INTV.Shared.Utility
         private static OSVersion Initialize()
         {
             var version = new OSVersion(0, 0, 0);
-            version._version = version;
-            return System.Environment.OSVersion.Version;
+            version._version = System.Environment.OSVersion.Version;
+            return version;
         }
 
         private static string GetOSName(string fileName)

@@ -38,9 +38,9 @@ namespace INTV.Shared.Utility
             }
         }
 
-        private Version Initialize()
+        private static OSVersion Initialize()
         {
-            var version = new Version(Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
+            var version = new OSVersion(Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
             return version;
         }
     }

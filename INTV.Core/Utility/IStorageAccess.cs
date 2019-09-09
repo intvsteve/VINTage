@@ -55,5 +55,12 @@ namespace INTV.Core.Utility
         /// <param name="storageLocation">Storage location whose modification time is desired.</param>
         /// <returns>The last modification time, in UTC.</returns>
         DateTime LastWriteTimeUtc(string storageLocation);
+
+        /// <summary>
+        /// Determines whether the given location within this storage access is a container of more locations.
+        /// </summary>
+        /// <param name="storageLocation">The storage location to check.</param>
+        /// <returns><c>true</c> if the given <paramref name="storageLocation"/> is a container of other locations; <c>false</c> otherwise.</returns>
+        bool IsLocationAContainer(string storageLocation);
     }
 }

@@ -54,9 +54,22 @@ namespace INTV.Core.Utility
         /// <param name="path">The path in the storage.</param>
         /// <param name="storageAccess">The storage access to use.</param>
         public StorageLocation(string path, IStorageAccess storageAccess)
+            : this(path, storageAccess, isContainer: null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StorageLocation"/> with a location, storage, and whether or not location is a container.
+        /// </summary>
+        /// <param name="path">The path in the storage.</param>
+        /// <param name="storageAccess">The storage access to use.</param>
+        /// <param name="isContainer">Indicates whether <paramref name="path"/> refers to a container (e.g. directory or archive).
+        /// A value of <c>null</c> indicates the status is not specified and will be determined later.</param>
+        public StorageLocation(string path, IStorageAccess storageAccess, bool? isContainer)
         {
             _path = path;
             _storageAccess = storageAccess;
+            _isContainer = isContainer;
         }
 
         /// <summary>
@@ -124,6 +137,28 @@ namespace INTV.Core.Utility
         {
             get { return _storageAccess is InvalidStorageAccess; }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the location is container of other locations.
+        /// </summary>
+        /// <remarks>A container is either a traditional file system directory, an archive file (e.g. .zip, .tar), or a
+        /// directory within an archive.</remarks>
+        public bool IsContainer
+        {
+            get
+            {
+                if (!IsValid)
+                {
+                    return false;
+                }
+                if (!_isContainer.HasValue)
+                {
+                    _isContainer = StorageAccess.IsLocationAContainer(Path);
+                }
+                return _isContainer.Value;
+            }
+        }
+        private bool? _isContainer;
 
         /// <summary>
         /// Gets a value indicating whether the location is using the default pseudo-storage as its storage access.
@@ -271,6 +306,12 @@ namespace INTV.Core.Utility
             public System.DateTime LastWriteTimeUtc(string storageLocation)
             {
                 return FileNotFoundTime;
+            }
+
+            /// <inheritdoc/>
+            public bool IsLocationAContainer(string storageLocation)
+            {
+                return false;
             }
         }
     }

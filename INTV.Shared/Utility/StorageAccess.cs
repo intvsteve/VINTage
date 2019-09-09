@@ -50,5 +50,11 @@ namespace INTV.Shared.Utility
         {
             return System.IO.File.GetLastWriteTimeUtc(storageLocation);
         }
+
+        /// <inheritdoc/>
+        public bool IsLocationAContainer(string storageLocation)
+        {
+            return System.IO.Directory.Exists(storageLocation);
+        }
     }
 }

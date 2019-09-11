@@ -47,6 +47,7 @@ namespace INTV.Shared.Utility
     /// </summary>
     public abstract class CompressedArchiveAccess : ICompressedArchiveAccess
     {
+        // TODO: Consider a cache of instances of compressed archive access instances based on path?
         private static readonly Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>> Factories = new Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>>(InitializeCompressedArchiveFactories);
 
         ~CompressedArchiveAccess()
@@ -230,6 +231,37 @@ namespace INTV.Shared.Utility
                 lastWriteTime = entry.LastModificationTime;
             }
             return lastWriteTime;
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ArgumentException">Thrown if <paramref name="storageLocation"/> contains invalid characters.</exception>
+        /// <remarks>Note that this method may have bugs when referring to nested containers.</remarks>
+        public bool IsLocationAContainer(string storageLocation)
+        {
+            var isLocationAContainer = false;
+            storageLocation = storageLocation.NormalizePathSeparators();
+            if (Path.IsPathRooted(storageLocation))
+            {
+                if (string.IsNullOrEmpty(RootLocation))
+                {
+                    throw new ArgumentException("Unable to determine if '" + storageLocation + "' is a container because compressed library has no root location, but absolute path was provided.");
+                }
+                if (!storageLocation.StartsWith(RootLocation, PathComparer.DefaultPolicy))
+                {
+                    throw new ArgumentException("The path '" + storageLocation + "' does not refer to a location within the compressed archive at '" + RootLocation + "'.");
+                }
+                storageLocation = storageLocation.Substring(RootLocation.Length);
+            }
+            var entry = GetEntry(storageLocation);
+            if (entry != null)
+            {
+                isLocationAContainer = entry.IsDirectory;
+                if (!isLocationAContainer)
+                {
+                    isLocationAContainer = Path.GetExtension(storageLocation).GetCompressedArchiveFormatsFromFileExtension().Any();
+                }
+            }
+            return isLocationAContainer;
         }
 
         #endregion // IStorageAccess

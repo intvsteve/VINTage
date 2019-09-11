@@ -265,15 +265,6 @@ namespace INTV.Shared.Utility
             return nestedCompressedArchive;
         }
 
-        private static string NormalizePathSeparators(this string path)
-        {
-            if (!string.IsNullOrEmpty(path))
-            {
-                path = path.Replace('\\', '/');
-            }
-            return path;
-        }
-
         private static bool IsRootLocation(this string location)
         {
             var isRootLocation = string.IsNullOrEmpty(location) || (location == ".") || (location == "/") || (location == @"\");

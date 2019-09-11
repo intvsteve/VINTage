@@ -60,6 +60,22 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Normalizes the path separators in the given string to forward slash.
+        /// </summary>
+        /// <param name="path">The path whose separators are to be normalized.</param>
+        /// <returns>The path with all backslash separators replaced by forward slashes.</returns>
+        /// <remarks>Note that this is brain-dead and does not support any form of escaped characters.</remarks>
+        public static string NormalizePathSeparators(this string path)
+        {
+            var normalizedPath = path;
+            if (!string.IsNullOrEmpty(path))
+            {
+                normalizedPath = path.Replace('\\', '/');
+            }
+            return normalizedPath;
+        }
+
+        /// <summary>
         /// Computes the relative path between two paths.
         /// </summary>
         /// <param name="file">The path for which to compute a relative path.</param>

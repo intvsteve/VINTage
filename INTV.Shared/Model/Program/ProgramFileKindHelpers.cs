@@ -134,21 +134,22 @@ namespace INTV.Shared.Model.Program
             string extension = Core.Model.Program.ProgramFileKindHelpers.RomFileExtensionsThatUseCfgFiles.FirstOrDefault(ext => string.Compare(ext, romFileExtension, true) == 0);
             if (extension != null)
             {
+                var directory = romFileLocation.GetContainingLocation();
 #if WIN
                 var searchPattern = "*" + ProgramFileKind.CfgFile.FileExtension();
                 var filesNextToRom = Directory.EnumerateFiles(Path.GetDirectoryName(romFileLocation.Path), searchPattern);
 #else
                 // Workaround for non-Windows. Don't care about file system case sensitivity.
                 var searchPattern = ProgramFileKind.CfgFile.FileExtension();
-                var files = Directory.EnumerateFiles(Path.GetDirectoryName(romFileLocation.Path));
-                var filesNextToRom = files.Where(f => f.EndsWith(searchPattern, StringComparison.InvariantCultureIgnoreCase));
+                var files = directory.EnumerateFiles();
+                var filesNextToRom = files.Where(f => f.Path.EndsWith(searchPattern, StringComparison.InvariantCultureIgnoreCase));
 #endif // WIN
-                var possibleConfigFile = Path.Combine(Path.GetDirectoryName(romFileLocation.Path), romFileLocation.GetFileNameWithoutExtension() + ProgramFileKind.CfgFile.FileExtension());
-                configFile = new StorageLocation(filesNextToRom.FirstOrDefault(f => string.Compare(f, possibleConfigFile, true) == 0));
+                var possibleConfigFile = directory.Combine(romFileLocation.GetFileNameWithoutExtension()).AddSuffix(ProgramFileKind.CfgFile.FileExtension());
+                configFile = filesNextToRom.FirstOrDefault(f => string.Compare(f.Path, possibleConfigFile.Path, true) == 0);
                 if (!configFile.IsValid)
                 {
-                    possibleConfigFile = romFileLocation + ProgramFileKind.CfgFile.FileExtension();
-                    configFile = new StorageLocation(filesNextToRom.FirstOrDefault(f => string.Compare(f, possibleConfigFile, true) == 0));
+                    possibleConfigFile = romFileLocation.AddSuffix(ProgramFileKind.CfgFile.FileExtension());
+                    configFile = filesNextToRom.FirstOrDefault(f => string.Compare(f.Path, possibleConfigFile.Path, true) == 0);
                 }
             }
             return configFile;

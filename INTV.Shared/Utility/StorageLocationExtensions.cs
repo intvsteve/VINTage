@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using INTV.Core.Utility;
+using System.Linq;
 
 namespace INTV.Shared.Utility
 {
@@ -132,6 +133,12 @@ namespace INTV.Shared.Utility
         {
             var directory = Path.GetDirectoryName(location.Path);
             var containingLocation = StorageLocation.CopyWithNewPath(location, directory);
+            if (location.StorageAccess is ICompressedArchiveAccess)
+            {
+                var updatedStorageAccess = directory.GetStorageAccess();
+                containingLocation = new StorageLocation(directory, updatedStorageAccess);
+            }
+
             return containingLocation;
         }
 
@@ -146,6 +153,43 @@ namespace INTV.Shared.Utility
             var fileName = location.GetFileName();
             var locationWithContainer = StorageLocation.CopyWithNewPath(location, Path.Combine(newContainingLocation, fileName));
             return locationWithContainer;
+        }
+
+        /// <summary>
+        /// Enumerates the entries at the given location.
+        /// </summary>
+        /// <param name="location">The location at which to enumerite entries.</param>
+        /// <returns>The entries at the provided storage location.</returns>
+        /// <remarks>This method attempts to seamlessly handle standard file system locations as well as locations within an archive.</remarks>
+        public static IEnumerable<StorageLocation> EnumerateFiles(this StorageLocation location)
+        {
+            var files = Enumerable.Empty<StorageLocation>();
+            var archiveStorage = location.StorageAccess as ICompressedArchiveAccess;
+            if (location.StorageAccess != null)
+            {
+                var rootArchivePath = string.Empty;
+                var pathRelativeToArchive = GetArchiveRelativeDirectoryPath(location.Path, out rootArchivePath);
+                if (!string.IsNullOrEmpty(pathRelativeToArchive) && !string.IsNullOrEmpty(rootArchivePath))
+                {
+                    // NOTE: May need to deal with nested situations, e.g. foo.zip/bar/baz/biz.zip/flip.
+                    // Suspect problems with nesting. Likely easier to start over, though it will have
+                    // costs w.r.t. memory and performance. Might make more sense to re-get archive storage.
+                    if (PathComparer.Instance.Compare(location.Path, rootArchivePath) != 0)
+                    {
+                        archiveStorage = rootArchivePath.GetStorageAccess() as ICompressedArchiveAccess;
+                    }
+                    if (archiveStorage != null)
+                    {
+                        var entries = archiveStorage.ListEntries(pathRelativeToArchive, includeContainers: true, recurse: false);
+                        files = GetStorageLocations(rootArchivePath, entries);
+                    }
+                }
+            }
+            else if (Directory.Exists(location.Path))
+            {
+                files = Directory.EnumerateFiles(location.Path).Select(f => new StorageLocation(f, location.StorageAccess));
+            }
+            return files;
         }
 
         #region PathUtils Behaviors
@@ -173,12 +217,71 @@ namespace INTV.Shared.Utility
             var normalizedLocation = location;
             if (location.IsValid)
             {
-                var normalizedPath = location.Path.Replace('\\', '/');
+                var normalizedPath = location.Path.NormalizePathSeparators();
                 normalizedLocation = StorageLocation.CopyWithNewPath(location, normalizedPath);
             }
             return normalizedLocation;
         }
 
         #endregion // PathUtils Behaviors
+
+        /// <summary>
+        /// Given an absolute path, get the archive-relative directory path and root archive path for a location within an archive.
+        /// </summary>
+        /// <param name="path">An absolute path that includes additional location within an archive.</param>
+        /// <param name="rootArchivePath">Receives the root archive path.</param>
+        /// <returns>The archive-relative directory path.</returns>
+        /// <remarks>The intent of this function is, given a path to a location within an archive, to extract the portion of
+        /// the path that is relative to the root archive, and the root archive path itself.  For example, given the following
+        /// Windows-style path:
+        /// C:/sub/directory/archive.zip/path/within/archive/excellent_game.rom
+        /// the returned archive-relative path would be:
+        /// path/within/archive/excellent_game.rom
+        /// and the root archive path would be:
+        /// C:/sub/directory/archive.zip
+        /// </remarks>
+        public static string GetArchiveRelativeDirectoryPath(this string path, out string rootArchivePath)
+        {
+            // A null or empty value indicates path is not within an archive.
+            string archiveRelativeDirectory = null;
+            rootArchivePath = null;
+            if (!string.IsNullOrEmpty(path) && Path.IsPathRooted(path))
+            {
+                // First, check the path itself to see looks like something that has an archive. Note that this can
+                // produce a false positive if a directory is (pathologically) named like an archive. For example,
+                // X:/foo/bar.zip/baz, where bar.zip is a directory, not a ZIP file, will have a non-empty result below.
+                if (path.GetCompressedArchiveFormatsFromFileName().Any())
+                {
+                    rootArchivePath = path;
+                    while (!string.IsNullOrEmpty(rootArchivePath) && !File.Exists(rootArchivePath))
+                    {
+                        rootArchivePath = Path.GetDirectoryName(rootArchivePath);
+                    }
+                    if (!string.IsNullOrEmpty(rootArchivePath) && File.Exists(rootArchivePath))
+                    {
+                        if (PathComparer.Instance.Compare(path, rootArchivePath) == 0)
+                        {
+                            archiveRelativeDirectory = "/";
+                        }
+                        else if ((rootArchivePath.Length < path.Length) && path.StartsWith(rootArchivePath, PathComparer.DefaultPolicy))
+                        {
+                            archiveRelativeDirectory = path.Substring(rootArchivePath.Length);
+                        }
+                    }
+                }
+            }
+            return archiveRelativeDirectory;
+        }
+
+        private static IEnumerable<StorageLocation> GetStorageLocations(string rootArchivePath, IEnumerable<ICompressedArchiveEntry> entries)
+        {
+            IStorageAccess storageAccess = rootArchivePath.GetStorageAccess();
+            foreach (var entry in entries)
+            {
+                var absolutePath = Path.Combine(rootArchivePath, entry.Name);
+                var storageLocation = new StorageLocation(absolutePath, storageAccess, entry.IsDirectory);
+                yield return storageLocation;
+            }
+        }
     }
 }

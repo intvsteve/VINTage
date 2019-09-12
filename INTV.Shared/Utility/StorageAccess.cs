@@ -19,6 +19,8 @@
 // </copyright>
 
 using System;
+using System.Linq;
+using System.IO;
 
 namespace INTV.Shared.Utility
 {
@@ -54,7 +56,9 @@ namespace INTV.Shared.Utility
         /// <inheritdoc/>
         public bool IsLocationAContainer(string storageLocation)
         {
-            return System.IO.Directory.Exists(storageLocation);
+            var lastCharacter = storageLocation.Last();
+            var isContainer = lastCharacter == Path.DirectorySeparatorChar || lastCharacter == Path.AltDirectorySeparatorChar || System.IO.Directory.Exists(storageLocation);
+            return isContainer;
         }
     }
 }

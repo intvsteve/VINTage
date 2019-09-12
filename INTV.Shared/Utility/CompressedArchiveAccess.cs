@@ -238,27 +238,31 @@ namespace INTV.Shared.Utility
         /// <remarks>Note that this method may have bugs when referring to nested containers.</remarks>
         public bool IsLocationAContainer(string storageLocation)
         {
-            var isLocationAContainer = false;
-            storageLocation = storageLocation.NormalizePathSeparators();
-            if (Path.IsPathRooted(storageLocation))
+            var lastCharacter = storageLocation.Last();
+            var isLocationAContainer = lastCharacter == Path.DirectorySeparatorChar || lastCharacter == Path.AltDirectorySeparatorChar;
+            if (!isLocationAContainer)
             {
-                if (string.IsNullOrEmpty(RootLocation))
+                storageLocation = storageLocation.NormalizePathSeparators();
+                if (Path.IsPathRooted(storageLocation))
                 {
-                    throw new ArgumentException("Unable to determine if '" + storageLocation + "' is a container because compressed library has no root location, but absolute path was provided.");
+                    if (string.IsNullOrEmpty(RootLocation))
+                    {
+                        throw new ArgumentException("Unable to determine if '" + storageLocation + "' is a container because compressed library has no root location, but absolute path was provided.");
+                    }
+                    if (!storageLocation.StartsWith(RootLocation, PathComparer.DefaultPolicy))
+                    {
+                        throw new ArgumentException("The path '" + storageLocation + "' does not refer to a location within the compressed archive at '" + RootLocation + "'.");
+                    }
+                    storageLocation = storageLocation.Substring(RootLocation.Length);
                 }
-                if (!storageLocation.StartsWith(RootLocation, PathComparer.DefaultPolicy))
+                var entry = GetEntry(storageLocation);
+                if (entry != null)
                 {
-                    throw new ArgumentException("The path '" + storageLocation + "' does not refer to a location within the compressed archive at '" + RootLocation + "'.");
-                }
-                storageLocation = storageLocation.Substring(RootLocation.Length);
-            }
-            var entry = GetEntry(storageLocation);
-            if (entry != null)
-            {
-                isLocationAContainer = entry.IsDirectory;
-                if (!isLocationAContainer)
-                {
-                    isLocationAContainer = Path.GetExtension(storageLocation).GetCompressedArchiveFormatsFromFileExtension().Any();
+                    isLocationAContainer = entry.IsDirectory;
+                    if (!isLocationAContainer)
+                    {
+                        isLocationAContainer = Path.GetExtension(storageLocation).GetCompressedArchiveFormatsFromFileExtension().Any();
+                    }
                 }
             }
             return isLocationAContainer;

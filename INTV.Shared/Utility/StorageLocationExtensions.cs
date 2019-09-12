@@ -192,6 +192,99 @@ namespace INTV.Shared.Utility
             return files;
         }
 
+        /// <summary>
+        /// Copy the specified file to the given destination.
+        /// </summary>
+        /// <param name="storageLocation">The storage location to copy from.</param>
+        /// <param name="destinationLocation">The destination location to copy to.</param>
+        /// <exception cref="UnauthorizedAccessException">Thrown if the caller does not have the required permission.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> has a
+        /// zero-length path, contains only white space, or contains one or more invalid characters as defined by <see cref="Path.GetInvalidPathChars()"/>,
+        /// or <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> specifies a directory.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> has a <c>null</c> path.</exception>
+        /// <exception cref="PathTooLongException">Thrown if the specified path, file name, or both exceed the system-defined maximum length.</exception>
+        /// <exception cref="DirectoryNotFoundException">Thrown if the path specified in <paramref name="storageLocation"/> or <paramref name="destinationLocation"/>
+        /// is invalid (for example, it is on an unmapped drive).</exception>
+        /// <exception cref="FileNotFoundException">Thrown if <paramref name="storageLocation"/> was not found.</exception>
+        /// <exception cref="IOException">Thrown if <paramref name="destinationLocation"/> exists, or an I/O error occurs.</exception>
+        /// <exception cref="NotSupportedException">Thrown if <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> is
+        /// is an invalid format, or if <paramref name="destinationLocation"/> is in an archive.</exception>
+        /// <remarks>At this time, this method does not support copying a file into a location that is within an <see cref="ICompressedArchiveAccess"/> instance.</remarks>
+        public static void Copy(this StorageLocation storageLocation, StorageLocation destinationLocation)
+        {
+            storageLocation.Copy(destinationLocation, overwrite: false);
+        }
+
+        /// <summary>
+        /// Copy the specified file to the given destination, optionally overwriting the existing file.
+        /// </summary>
+        /// <param name="storageLocation">The storage location to copy from.</param>
+        /// <param name="destinationLocation">The destination location to copy to.</param>
+        /// <param name="overwrite">If set to <c>true</c> overwrite an existing file at the destination location.</param>
+        /// <exception cref="UnauthorizedAccessException">Thrown if the caller does not have the required permission.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> has a
+        /// zero-length path, contains only white space, or contains one or more invalid characters as defined by <see cref="Path.GetInvalidPathChars()"/>,
+        /// or <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> specifies a directory.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> has a <c>null</c> path.</exception>
+        /// <exception cref="PathTooLongException">Thrown if the specified path, file name, or both exceed the system-defined maximum length.</exception>
+        /// <exception cref="DirectoryNotFoundException">Thrown if the path specified in <paramref name="storageLocation"/> or <paramref name="destinationLocation"/>
+        /// is invalid (for example, it is on an unmapped drive).</exception>
+        /// <exception cref="FileNotFoundException">Thrown if <paramref name="storageLocation"/> was not found.</exception>
+        /// <exception cref="IOException">Thrown if <paramref name="destinationLocation"/> exists and <paramref name="overwrite"/> is <c>false</c>, or an I/O error occurs.</exception>
+        /// <exception cref="NotSupportedException">Thrown if <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> is
+        /// is an invalid format, or if <paramref name="destinationLocation"/> is in an archive.</exception>
+        /// <remarks>At this time, this method does not support copying a file into a location that is within an <see cref="ICompressedArchiveAccess"/> instance.</remarks>
+        public static void Copy(this StorageLocation storageLocation, StorageLocation destinationLocation, bool overwrite)
+        {
+            if (!storageLocation.ValidateStorageLocationPath())
+            {
+                throw new ArgumentException("storageLocation.Path", "Path contains invalid characters.");
+            }
+            if (storageLocation.IsContainer)
+            {
+                throw new ArgumentException("storageLocation.Path", "Path does not refer to a file.");
+            }
+            if (!destinationLocation.ValidateStorageLocationPath("destinationLocation"))
+            {
+                throw new ArgumentException("destinationLocation.Path", "Path contains invalid characters.");
+            }
+            if (destinationLocation.StorageAccess is ICompressedArchiveAccess)
+            {
+                throw new NotSupportedException("Destination is within an archive.");
+            }
+
+            if (storageLocation.StorageAccess is ICompressedArchiveAccess)
+            {
+                // TODO: This extracts directly from the archive, and does not do any kind of
+                // modification time preservation that the archive may be able to provide. An
+                // improvement would be to offer an 'Extract' method on ICompressedArchiveAccess
+                // that could be more sophisticated.
+                var fileMode = overwrite ? FileMode.Create : FileMode.CreateNew;
+                using (var destinationStream = new FileStream(destinationLocation.Path, fileMode))
+                using (var sourceStream = storageLocation.StorageAccess.Open(storageLocation.Path))
+                {
+                    sourceStream.CopyTo(destinationStream);
+                }
+            }
+            else
+            {
+                File.Copy(storageLocation.Path, destinationLocation.Path, overwrite);
+            }
+        }
+
+        /// <summary>
+        /// Determines if the given storage location path contains any invalid characters.
+        /// </summary>
+        /// <param name="storageLocation">Storage location whose path is to be checked.</param>
+        /// <returns><c>true</c>, if invalid characters are in the path, <c>false</c> otherwise.</returns>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="storageLocation"/> has a zero-length path,
+        /// contains only white space, or contains one or more invalid characters as defined by <see cref="Path.GetInvalidPathChars()"/>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="storageLocation"/> has a <c>null</c> path.</exception>
+        public static bool ContainsInvalidCharacters(this StorageLocation storageLocation)
+        {
+            return ValidateStorageLocationPath(storageLocation);
+        }
+
         #region PathUtils Behaviors
 
         /// <summary>
@@ -242,6 +335,7 @@ namespace INTV.Shared.Utility
         /// </remarks>
         public static string GetArchiveRelativeDirectoryPath(this string path, out string rootArchivePath)
         {
+            // TODO: Is PathUtils.GetRelativePath() sufficient instead? (Once path of archive is determined.)
             // A null or empty value indicates path is not within an archive.
             string archiveRelativeDirectory = null;
             rootArchivePath = null;
@@ -282,6 +376,38 @@ namespace INTV.Shared.Utility
                 var storageLocation = new StorageLocation(absolutePath, storageAccess, entry.IsDirectory);
                 yield return storageLocation;
             }
+        }
+
+        private static bool ValidateStorageLocationPath(this StorageLocation storageLocation, string parameterName = "storageLocation")
+        {
+            if (storageLocation.Path == null)
+            {
+                throw new ArgumentNullException(parameterName + ".Path");
+            }
+            if (string.IsNullOrWhiteSpace(storageLocation.Path))
+            {
+                throw new ArgumentException(parameterName + ".Path");
+            }
+
+            var containsInvalidCharacters = false;
+            if (storageLocation.IsContainer)
+            {
+                containsInvalidCharacters = storageLocation.Path.IndexOfAny(Path.GetInvalidPathChars()) >= 0;
+            }
+            else
+            {
+                try
+                {
+                    storageLocation.GetContainingLocation();
+                    storageLocation.GetFileName();
+                }
+                catch (ArgumentException)
+                {
+                    containsInvalidCharacters = true;
+                }
+            }
+
+            return !containsInvalidCharacters;
         }
     }
 }

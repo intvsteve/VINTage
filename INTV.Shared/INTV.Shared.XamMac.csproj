@@ -231,6 +231,7 @@
     <Compile Include="ComponentModel\WeightAttribute.cs" />
     <Compile Include="Utility\ComparableObservableCollection`T.cs" />
     <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />
+    <Compile Include="Utility\CompressedArchiveAccess.CompressedArchiveFileAccess.cs" />
     <Compile Include="Utility\CompressedArchiveAccess.CompressedArchiveIdentifier.cs" />
     <Compile Include="Utility\CompressedArchiveAccess.cs" />
     <Compile Include="Utility\CompressedArchiveAccessMode.cs" />

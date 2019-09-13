@@ -194,6 +194,7 @@
     <Compile Include="Utility\ColorHelpers.cs" />
     <Compile Include="Utility\ColorHelpers.WPF.cs" />
     <Compile Include="Utility\ComparableObservableCollection`T.cs" />
+    <Compile Include="Utility\CompressedArchiveAccess.CompressedArchiveFileAccess.cs" />
     <Compile Include="Utility\CompressedArchiveAccess.CompressedArchiveIdentifier.cs" />
     <Compile Include="Utility\CompressedArchiveAccess.cs" />
     <Compile Include="Utility\CompressedArchiveAccessImplementation.cs" />

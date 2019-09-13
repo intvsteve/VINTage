@@ -79,5 +79,44 @@ namespace INTV.Shared.Utility
         /// <param name="name">The name of the entry to remove from the archive.</param>
         /// <returns><c>true</c> if the entry was removed, <c>false</c> otherwise.</returns>
         bool DeleteEntry(string name);
+
+        /// <summary>
+        /// Extracts an entry in the archive to a file.
+        /// </summary>
+        /// <param name="entry">The entry to extract.</param>
+        /// <param name="destinationFilePath">The absolute path to the extraction location that is not in an other compressed archive.</param>
+        /// <exception cref="UnauthorizedAccessException">Thrown if the caller does not have the required permission.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="destinationFilePath"/> has a zero-length path, contains only white space, or contains
+        /// one or more invalid characters as defined by <see cref="Path.GetInvalidPathChars()"/>, or <paramref name="destinationFilePath"/> specifies a directory.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="entry"/> or <paramref name="destinationFilePath"/> is <c>null</c>.</exception>
+        /// <exception cref="PathTooLongException">Thrown if the specified path, file name, or both exceed the system-defined maximum length.</exception>
+        /// <exception cref="DirectoryNotFoundException">Thrown if the path specified in <paramref name="destinationFilePath"/>
+        /// is invalid (for example, it is on an unmapped drive).</exception>
+        /// <exception cref="InvalidDataException">Thrown if the entry is missing from the archive, or is corrupt and cannot be read, or the entry has been compressed by using a compression method that is not supported.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the archive that the entry belongs to has been disposed.</exception>
+        /// <exception cref="IOException">Thrown if <paramref name="destinationFilePath"/> exists, or an I/O error occurs, or the entry is open for writing.</exception>
+        /// <exception cref="NotSupportedException">Thrown if <paramref name="destinationFilePath"/> is an invalid format, or the archive for this entry was opened in Create mode,
+        /// which does not permit the retrieval of entries, or if <paramref name="destinationFilePath"/> is in an archive.</exception>
+        void ExtractEntry(ICompressedArchiveEntry entry, string destinationFilePath);
+
+        /// <summary>
+        /// Extracts an entry in the archive to a file.
+        /// </summary>
+        /// <param name="entry">The entry to extract.</param>
+        /// <param name="destinationFilePath">The absolute path to the extraction location that is not in an other compressed archive.</param>
+        /// <param name="overwrite">If set to <c>true</c> overwrite an existing file at the destination location.</param>
+        /// <exception cref="UnauthorizedAccessException">Thrown if the caller does not have the required permission.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="destinationFilePath"/> has a zero-length path, contains only white space, or contains
+        /// one or more invalid characters as defined by <see cref="Path.GetInvalidPathChars()"/>, or <paramref name="destinationFilePath"/> specifies a directory.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="entry"/> or <paramref name="destinationFilePath"/> is <c>null</c>.</exception>
+        /// <exception cref="PathTooLongException">Thrown if the specified path, file name, or both exceed the system-defined maximum length.</exception>
+        /// <exception cref="DirectoryNotFoundException">Thrown if the path specified in <paramref name="destinationFilePath"/>
+        /// is invalid (for example, it is on an unmapped drive).</exception>
+        /// <exception cref="InvalidDataException">Thrown if the entry is missing from the archive, or is corrupt and cannot be read, or the entry has been compressed by using a compression method that is not supported.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the archive that the entry belongs to has been disposed.</exception>
+        /// <exception cref="IOException">Thrown if <paramref name="destinationFilePath"/> exists and <paramref name="overwrite"/> is <c>false</c>, or an I/O error occurs, or the entry is open for writing.</exception>
+        /// <exception cref="NotSupportedException">Thrown if <paramref name="destinationFilePath"/> is an invalid format, or the archive for this entry was opened in Create mode,
+        /// which does not permit the retrieval of entries, or if <paramref name="destinationFilePath"/> is in an archive.</exception>
+        void ExtractEntry(ICompressedArchiveEntry entry, string destinationFilePath, bool overwrite);
     }
 }

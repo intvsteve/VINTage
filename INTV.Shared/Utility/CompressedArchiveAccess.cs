@@ -1,4 +1,4 @@
-// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
+﻿// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -182,6 +182,35 @@ namespace INTV.Shared.Utility
                 removedEntry = DeleteEntry(entry);
             }
             return removedEntry;
+        }
+
+        /// <inheritdoc />
+        public void ExtractEntry(ICompressedArchiveEntry entry, string destinationFilePath)
+        {
+            ExtractEntry(entry, destinationFilePath, overwrite: false);
+        }
+        //Consider also using TemporaryFileCollection along with TemporaryDirectory
+
+        /// <inheritdoc />
+        public void ExtractEntry(ICompressedArchiveEntry entry, string destinationFilePath, bool overwrite)
+        {
+            if (entry == null)
+            {
+                throw new ArgumentNullException("entry");
+            }
+            if (!destinationFilePath.ValidatePath(Directory.Exists(destinationFilePath), "destinationFilePath"))
+            {
+                throw new ArgumentException("destinationFilePath", "Path contains invalid characters.");
+            }
+            if (!Directory.Exists(Path.GetDirectoryName(destinationFilePath)))
+            {
+                throw new DirectoryNotFoundException("Directory '" + Path.GetDirectoryName(destinationFilePath) + "' does not exist.");
+            }
+            if (!overwrite && File.Exists(destinationFilePath))
+            {
+                throw new IOException("Destination already exists: " + destinationFilePath);
+            }
+            throw new NotImplementedException();
         }
 
         #endregion // ICompressedArchiveAccess

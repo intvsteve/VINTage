@@ -1,4 +1,4 @@
-﻿// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
+// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -45,7 +45,7 @@ namespace INTV.Shared.Utility
     /// This class provides a partial implementation of <see cref="ICompressedArchiveAccess"/> and static helpers for factory method registration
     /// and creating an instance from a file.
     /// </summary>
-    public abstract class CompressedArchiveAccess : ICompressedArchiveAccess
+    public abstract partial class CompressedArchiveAccess : ICompressedArchiveAccess
     {
         // TODO: Consider a cache of instances of compressed archive access instances based on path?
         private static readonly Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>> Factories = new Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>>(InitializeCompressedArchiveFactories);
@@ -531,67 +531,6 @@ namespace INTV.Shared.Utility
                         Stream = null;
                     }
                 }
-            }
-        }
-
-        private struct CompressedArchiveIdentifier : IEqualityComparer<CompressedArchiveIdentifier>, IComparable<CompressedArchiveIdentifier>
-        {
-            /// <summary>
-            /// Initializes a new instance of <see cref="CompressedArchiveIdentifier"/>.
-            /// </summary>
-            /// <param name="format">The compressed archive format to use in the identifier.</param>
-            /// <param name="implementation">The compressed archive access implementation kind to use in the identifier.</param>
-            public CompressedArchiveIdentifier(CompressedArchiveFormat format, CompressedArchiveAccessImplementation implementation)
-            {
-                _format = format;
-                _implementation = implementation;
-            }
-
-            /// <summary>
-            /// Gets the format used in the identifier.
-            /// </summary>
-            public CompressedArchiveFormat Format
-            {
-                get { return _format; }
-            }
-            private CompressedArchiveFormat _format;
-
-            /// <summary>
-            /// Gets the implementation used in the identifier.
-            /// </summary>
-            public CompressedArchiveAccessImplementation Implementation
-            {
-                get { return _implementation; }
-            }
-            private CompressedArchiveAccessImplementation _implementation;
-
-            /// <inheritdoc />
-            public int CompareTo(CompressedArchiveIdentifier other)
-            {
-                var result = Format - other.Format;
-                if (result == 0)
-                {
-                    if (Implementation != CompressedArchiveAccessImplementation.Any)
-                    {
-                        if (other.Implementation != CompressedArchiveAccessImplementation.Any)
-                        {
-                            result = Implementation - other.Implementation;
-                        }
-                    }
-                }
-                return result;
-            }
-
-            /// <inheritdoc />
-            public bool Equals(CompressedArchiveIdentifier x, CompressedArchiveIdentifier y)
-            {
-                return x.CompareTo(y) == 0;
-            }
-
-            /// <inheritdoc />
-            public int GetHashCode(CompressedArchiveIdentifier obj)
-            {
-                return obj.Format.GetHashCode();
             }
         }
     }

@@ -414,34 +414,7 @@ namespace INTV.Shared.Utility
 
         private static bool ValidateStorageLocationPath(this StorageLocation storageLocation, string parameterName = "storageLocation")
         {
-            if (storageLocation.Path == null)
-            {
-                throw new ArgumentNullException(parameterName + ".Path");
-            }
-            if (string.IsNullOrWhiteSpace(storageLocation.Path))
-            {
-                throw new ArgumentException(parameterName + ".Path");
-            }
-
-            var containsInvalidCharacters = false;
-            if (storageLocation.IsContainer)
-            {
-                containsInvalidCharacters = storageLocation.Path.IndexOfAny(Path.GetInvalidPathChars()) >= 0;
-            }
-            else
-            {
-                try
-                {
-                    storageLocation.GetContainingLocation();
-                    storageLocation.GetFileName();
-                }
-                catch (ArgumentException)
-                {
-                    containsInvalidCharacters = true;
-                }
-            }
-
-            return !containsInvalidCharacters;
+            return storageLocation.Path.ValidatePath(storageLocation.IsContainer, parameterName + ".Path");
         }
     }
 }

@@ -21,13 +21,27 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using INTV.Core.Utility;
 using System.Linq;
+using INTV.Core.Utility;
 
 namespace INTV.Shared.Utility
 {
     public static class StorageLocationExtensions
     {
+        /// <summary>
+        /// Creates a new <see cref="StorageLocation"/> from a path.
+        /// </summary>
+        /// <param name="path">The path from which to create the storage location instance.</param>
+        /// <returns>A new <see cref="StorageLocation"/> with appropriately initialized state.</returns>
+        /// <remarks>It is assumed that <paramref name="path"/> refers to an existing file in the file system.</remarks>
+        public static StorageLocation CreateFromFilePath(string path)
+        {
+            var storageAccess = path.GetStorageAccess();
+            var isContainer = storageAccess is ICompressedArchiveAccess;
+            var storageLocation = new StorageLocation(path, storageAccess, isContainer);
+            return storageLocation;
+        }
+
         /// <summary>
         /// Appends one or more additional elements to the path in the given location.
         /// </summary>

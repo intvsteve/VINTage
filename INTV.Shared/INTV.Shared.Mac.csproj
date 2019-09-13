@@ -100,6 +100,7 @@
     <Compile Include="Utility\SingleInstanceApplication.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
     <Compile Include="Utility\StorageLocationExtensions.cs" />
+    <Compile Include="Utility\StorageLocationExtensions.Mono.cs" />
     <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="View\VisualHelpers.cs" />
     <Compile Include="Resources\Strings.Designer.cs">

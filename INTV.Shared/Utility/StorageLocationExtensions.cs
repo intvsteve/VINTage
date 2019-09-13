@@ -26,7 +26,10 @@ using INTV.Core.Utility;
 
 namespace INTV.Shared.Utility
 {
-    public static class StorageLocationExtensions
+    /// <summary>
+    /// Extension methods to make working with <see cref="StorageLocation"/> simpler.
+    /// </summary>
+    public static partial class StorageLocationExtensions
     {
         /// <summary>
         /// Creates a new <see cref="StorageLocation"/> from a path.
@@ -142,7 +145,7 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="location">The location whose containing location is desired.</param>
         /// <returns>A location for the container of the given location.</returns>
-        /// <remarks>Vollows the rules of <see cref="System.IO.Path.GetDirectoryname(string)"/>.</remarks>
+        /// <remarks>Follows the rules of <see cref="System.IO.Path.GetDirectoryname(string)"/>.</remarks>
         public static StorageLocation GetContainingLocation(this StorageLocation location)
         {
             var directory = Path.GetDirectoryName(location.Path);
@@ -172,10 +175,23 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Enumerates the entries at the given location.
         /// </summary>
-        /// <param name="location">The location at which to enumerite entries.</param>
+        /// <param name="location">The location at which to enumerate entries.</param>
         /// <returns>The entries at the provided storage location.</returns>
         /// <remarks>This method attempts to seamlessly handle standard file system locations as well as locations within an archive.</remarks>
         public static IEnumerable<StorageLocation> EnumerateFiles(this StorageLocation location)
+        {
+            var files = location.EnumerateFiles(fileExtensionMatch: null);
+            return files;
+        }
+
+        /// <summary>
+        /// Enumerates the entries at the given location.
+        /// </summary>
+        /// <param name="location">The location at which to enumerate entries.</param>
+        /// <param name="fileExtensionMatch">If not empty, only include items with the provided file extension in the results.</param>
+        /// <returns>The entries at the provided storage location.</returns>
+        /// <remarks>This method attempts to seamlessly handle standard file system locations as well as locations within an archive.</remarks>
+        public static IEnumerable<StorageLocation> EnumerateFiles(this StorageLocation location, string fileExtensionMatch)
         {
             var files = Enumerable.Empty<StorageLocation>();
             var archiveStorage = location.StorageAccess as ICompressedArchiveAccess;
@@ -194,14 +210,14 @@ namespace INTV.Shared.Utility
                     }
                     if (archiveStorage != null)
                     {
-                        var entries = archiveStorage.ListEntries(pathRelativeToArchive, includeContainers: true, recurse: false);
-                        files = GetStorageLocations(rootArchivePath, entries);
+                        var entries = archiveStorage.ListEntries(pathRelativeToArchive, includeContainers: false, recurse: false);
+                        files = GetStorageLocations(rootArchivePath, entries).Where(f => f.Path.EndsWith(fileExtensionMatch, StringComparison.InvariantCultureIgnoreCase));
                     }
                 }
             }
             else if (Directory.Exists(location.Path))
             {
-                files = Directory.EnumerateFiles(location.Path).Select(f => new StorageLocation(f, location.StorageAccess));
+                files = OSEnumerateFiles(location.Path, fileExtensionMatch).Select(f => new StorageLocation(f, location.StorageAccess));
             }
             return files;
         }

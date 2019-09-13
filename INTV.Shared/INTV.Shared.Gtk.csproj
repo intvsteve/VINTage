@@ -217,6 +217,7 @@
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
     <Compile Include="Utility\StorageLocationExtensions.cs" />
+    <Compile Include="Utility\StorageLocationExtensions.Mono.cs" />
     <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="View\DragDropImage.Gtk.cs" />
     <Compile Include="View\EcsFeaturesConfigurationPage.Gtk.cs" />

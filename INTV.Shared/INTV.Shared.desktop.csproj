@@ -272,6 +272,7 @@
     <Compile Include="Utility\StopBitsHelpers.cs" />
     <Compile Include="Utility\StorageAccess.cs" />
     <Compile Include="Utility\StorageLocationExtensions.cs" />
+    <Compile Include="Utility\StorageLocationExtensions.Win.cs" />
     <Compile Include="Utility\StringUtilities.cs" />
     <Compile Include="Utility\TarAccessSharpZipLib.cs" />
     <Compile Include="Utility\TemporaryDirectory.cs" />

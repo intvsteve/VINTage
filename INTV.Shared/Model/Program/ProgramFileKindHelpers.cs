@@ -135,15 +135,7 @@ namespace INTV.Shared.Model.Program
             if (extension != null)
             {
                 var directory = romFileLocation.GetContainingLocation();
-#if WIN
-                var searchPattern = "*" + ProgramFileKind.CfgFile.FileExtension();
-                var filesNextToRom = Directory.EnumerateFiles(Path.GetDirectoryName(romFileLocation.Path), searchPattern);
-#else
-                // Workaround for non-Windows. Don't care about file system case sensitivity.
-                var searchPattern = ProgramFileKind.CfgFile.FileExtension();
-                var files = directory.EnumerateFiles();
-                var filesNextToRom = files.Where(f => f.Path.EndsWith(searchPattern, StringComparison.InvariantCultureIgnoreCase));
-#endif // WIN
+                var filesNextToRom = directory.EnumerateFiles(ProgramFileKind.CfgFile.FileExtension());
                 var possibleConfigFile = directory.Combine(romFileLocation.GetFileNameWithoutExtension()).AddSuffix(ProgramFileKind.CfgFile.FileExtension());
                 configFile = filesNextToRom.FirstOrDefault(f => string.Compare(f.Path, possibleConfigFile.Path, true) == 0);
                 if (!configFile.IsValid)

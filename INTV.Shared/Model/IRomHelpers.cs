@@ -738,7 +738,6 @@ namespace INTV.Shared.Model
                     }
                     else
                     {
-
                         var fileInfo = new FileInfo(file);
                         if (fileInfo.Length <= Rom.MaxROMSize)
                         {

@@ -189,11 +189,11 @@ namespace INTV.Shared.Model
             }
             if (romNeedsCopy)
             {
-                File.Copy(currentRomPath.Path, localRomPath.Path, true);
+                currentRomPath.Copy(localRomPath, true);
             }
             if (cfgNeedsCopy)
             {
-                File.Copy(currentCfgPath.Path, localCfgPath.Path, true);
+                currentCfgPath.Copy(localCfgPath, true);
             }
             rom = INTV.Core.Model.Rom.Create(localRomPath, localCfgPath);
             return rom;
@@ -723,7 +723,8 @@ namespace INTV.Shared.Model
                 }
                 else if (File.Exists(file))
                 {
-                    var potentialRomLocations = GetPotentialProgramRomFilesInCompressedArchive(new StorageLocation(file));
+                    var fileStorageLocation = INTV.Shared.Utility.StorageLocationExtensions.CreateFromFilePath(file);
+                    var potentialRomLocations = GetPotentialProgramRomFilesInCompressedArchive(fileStorageLocation);
                     if (potentialRomLocations != null)
                     {
                         foreach (var potentialRomLocation in potentialRomLocations)
@@ -745,7 +746,7 @@ namespace INTV.Shared.Model
                             {
                                 progressFunc(file);
                             }
-                            yield return new StorageLocation(file);
+                            yield return fileStorageLocation;
                         }
                     }
                 }
@@ -756,10 +757,9 @@ namespace INTV.Shared.Model
         {
             IEnumerable<StorageLocation> potentialRomFilesInCompressedArchive = null;
             var compressedArchiveAccess = file.StorageAccess as ICompressedArchiveAccess;
-            if (compressedArchiveAccess != null)
+            if ((compressedArchiveAccess != null) && file.IsContainer)
             {
-                var compressedArchiveAccessFiles = compressedArchiveAccess.ListContents(null, includeContainers: false, recurse: true);
-                potentialRomFilesInCompressedArchive = compressedArchiveAccessFiles.Select(f => new StorageLocation(f, compressedArchiveAccess));
+                potentialRomFilesInCompressedArchive = file.EnumerateFiles();
             }
             return potentialRomFilesInCompressedArchive;
         }

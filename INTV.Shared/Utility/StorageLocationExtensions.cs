@@ -211,7 +211,11 @@ namespace INTV.Shared.Utility
                     if (archiveStorage != null)
                     {
                         var entries = archiveStorage.ListEntries(pathRelativeToArchive, includeContainers: false, recurse: false);
-                        files = GetStorageLocations(rootArchivePath, entries).Where(f => f.Path.EndsWith(fileExtensionMatch, StringComparison.InvariantCultureIgnoreCase));
+                        files = GetStorageLocations(rootArchivePath, entries);
+                        if (!string.IsNullOrEmpty(fileExtensionMatch))
+                        {
+                            files = files.Where(f => f.Path.EndsWith(fileExtensionMatch, StringComparison.InvariantCultureIgnoreCase));
+                        }
                     }
                 }
             }

@@ -335,10 +335,19 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Ensure the base type's underlying resources are correctly disposed.
+        /// </summary>
+        /// <param name="disposing">If <c>true</c>, Dispose() is being called, otherwise, the finalizer is executing.</param>
+        protected void Dispose(bool disposing)
+        {
+            DisposeCore(disposing);
+        }
+
+        /// <summary>
         /// Ensure the implementations underlying resources are correctly disposed.
         /// </summary>
         /// <param name="disposing">If <c>true</c>, Dispose() is being called, otherwise, the finalizer is executing.</param>
-        protected abstract void Dispose(bool disposing);
+        protected abstract void DisposeCore(bool disposing);
 
         /// <summary>
         /// Deletes an entry from the archive.
@@ -372,9 +381,5 @@ namespace INTV.Shared.Utility
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Tar, CompressedArchiveAccessImplementation.SharpZipLib)] = TarAccessSharpZipLib.Create;
             return factories;
         }
-
-        //put CompressedArchiveFileAccess into separate partial
-        //create a FileMemo<> in CompressedArchiveFileAccess so we avoid re-creating archives all the time (problems with testing??)
-        //Consider also using TemporaryFileCollection along with TemporaryDirectory
     }
 }

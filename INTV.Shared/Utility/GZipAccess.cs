@@ -151,7 +151,7 @@ namespace INTV.Shared.Utility
         }
 
         /// <inheritdoc />
-        protected override void Dispose(bool disposing)
+        protected override void DisposeCore(bool disposing)
         {
             if (BaseStream != null)
             {

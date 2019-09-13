@@ -124,7 +124,7 @@ namespace INTV.Shared.Utility
         #region IDisposable
 
         /// <inheritdoc />
-        protected override void Dispose(bool disposing)
+        protected override void DisposeCore(bool disposing)
         {
             if (_zipArchiveObject != null)
             {

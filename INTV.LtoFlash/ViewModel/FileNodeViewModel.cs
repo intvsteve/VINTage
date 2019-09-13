@@ -431,11 +431,11 @@ namespace INTV.LtoFlash.ViewModel
             }
             if (accept)
             {
-                var fileInfo = new System.IO.FileInfo(file.Path);
-                accept = (fileInfo.Length <= INTV.Core.Model.Rom.MaxROMSize) && (fileInfo.Length <= Device.TotalRAMSize);
+                var romFileLength = file.StorageAccess.Size(file.Path);
+                accept = (romFileLength <= INTV.Core.Model.Rom.MaxROMSize) && (romFileLength <= Device.TotalRAMSize);
                 if (!accept)
                 {
-                    reasonForRejection = string.Format(Resources.Strings.AddItemRejected_FileTooLargeFormat, fileInfo.Length, System.Math.Min(INTV.Core.Model.Rom.MaxROMSize, Device.TotalRAMSize));
+                    reasonForRejection = string.Format(Resources.Strings.AddItemRejected_FileTooLargeFormat, romFileLength, System.Math.Min(INTV.Core.Model.Rom.MaxROMSize, Device.TotalRAMSize));
                 }
             }
             return accept;

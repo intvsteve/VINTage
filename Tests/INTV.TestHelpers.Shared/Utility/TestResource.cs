@@ -65,6 +65,8 @@ namespace INTV.TestHelpers.Shared.Utility
     /// </summary>
     public class TestResource
     {
+        private static readonly List<TestResource> AllTestResources = new List<TestResource>();
+
         /// <summary>The default resource container.</summary>
         public const string StringsResourceName = "Strings";
 
@@ -360,6 +362,7 @@ namespace INTV.TestHelpers.Shared.Utility
             {
                 ExpectedValue = expectedValue;
             }
+            AllTestResources.Add(this);
         }
 
         /// <summary>
@@ -386,6 +389,30 @@ namespace INTV.TestHelpers.Shared.Utility
         /// Gets the first level of expected content in an archive resource.
         /// </summary>
         public IEnumerable<string> ArchiveContents { get; private set; }
+
+        /// <summary>
+        /// Gets all test resources of the given kind.
+        /// </summary>
+        /// <param name="kind">The kind of test resources to get.</param>
+        /// <returns>An enumerable of the test resources of the given kind.</returns>
+        public static IEnumerable<TestResource> GetAvailableTestResources(TestResourceKind kind)
+        {
+            return GetAvailableTestResources(t => t.Kind == kind);
+        }
+
+        /// <summary>
+        /// Gets all test resources that satisfy the given predicate.
+        /// </summary>
+        /// <param name="filter">The filter to apply; if <c>null</c>, all resources are returned.</param>
+        /// <returns>An enumerable of the test resources that satisfy the predicate provided in <paramref name="filter"/>.</returns>
+        public static IEnumerable<TestResource> GetAvailableTestResources(Predicate<TestResource> filter)
+        {
+            if (filter == null)
+            {
+                return AllTestResources;
+            }
+            return AllTestResources.Where(r => filter(r));
+        }
 
         /// <summary>
         /// Opens the resource for reading.

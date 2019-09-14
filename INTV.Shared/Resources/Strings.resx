@@ -1762,8 +1762,17 @@ The following formats were not processed:
   <data name="WindowState" xml:space="preserve">
     <value>Last state of the main application window (0, Iconified, Maximized, Fullscreen)</value>
   </data>
-  <data name="SettingsDescriptionHeader" xml:space="preserve"># Common application settings
+  <data name="SettingsDescriptionHeader" xml:space="preserve">
+    <value># Common application settings
 # Settings are provided by various components in individual sections.
-#
+#</value>
+  </data>
+  <data name="CompressedArchiveAccess_IsContainerFailed_LocationCannotExistInArchive_Format" xml:space="preserve">
+    <value>The path '{0}' does not refer to a location within the compressed archive at '{1}'.</value>
+    <comment>{0} and {1} are file paths</comment>
+  </data>
+  <data name="CompressedArchiveAccess_IsContainerFailed_NoRootLocation_Format" xml:space="preserve">
+    <value>Unable to determine if '{0}' is a container because compressed library has no root location, but absolute path was provided.</value>
+    <comment>{0} is a file path</comment>
   </data>
 </root>

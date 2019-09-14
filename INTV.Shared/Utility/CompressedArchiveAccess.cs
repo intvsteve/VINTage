@@ -262,7 +262,20 @@ namespace INTV.Shared.Utility
 
         /// <inheritdoc />
         /// <exception cref="ArgumentException">Thrown if <paramref name="storageLocation"/> contains invalid characters.</exception>
-        /// <remarks>Note that this method may have bugs when referring to nested containers.</remarks>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="storageLocation"/> is <c>null</c>.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="storageLocation"/> is <c>string.Empty</c>, or
+        /// <paramref name="storageLocation"/> is an absolute path, but the archive does not have a root location (e.g. is an in-memory only,
+        /// nested archive).</exception>
+        /// <remarks>This method does not always verify the existence of <paramref name="storageLocation"/>, only its apparent container-ness.
+        /// Depending on whether the archive is nested, or was opened from a disk location directly, can also affect the results.
+        /// This method DOES NOT check verify the contents of nested containers if given a path within a nested archive. Generally:
+        /// <list type="bullet">
+        /// <item><description>If <paramref name="storageLocation"/> ends with a path separator, return <c>true</c></description></item>
+        /// <item><description>If <paramref name="storageLocation"/> ends with file extension matching the file extension of a recognized compressed archive format, return <c>true</c></description></item>
+        /// <item><description>Otherwise, return <c>false</c></description></item>
+        /// </list>
+        /// This means that the method may return a value of <c>true</c> for a location that appears to be, or be within, a nested archive which in fact
+        /// does not exist.</remarks>
         public bool IsLocationAContainer(string storageLocation)
         {
             var lastCharacter = storageLocation.Last();
@@ -274,22 +287,28 @@ namespace INTV.Shared.Utility
                 {
                     if (string.IsNullOrEmpty(RootLocation))
                     {
-                        throw new ArgumentException("Unable to determine if '" + storageLocation + "' is a container because compressed library has no root location, but absolute path was provided.");
+                        var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_IsContainerFailed_NoRootLocation_Format, storageLocation);
+                        throw new InvalidOperationException(errorMessage);
                     }
-                    if (!storageLocation.StartsWith(RootLocation, PathComparer.DefaultPolicy))
+                    if (!storageLocation.StartsWith(RootLocation.NormalizePathSeparators(), PathComparer.DefaultPolicy))
                     {
-                        throw new ArgumentException("The path '" + storageLocation + "' does not refer to a location within the compressed archive at '" + RootLocation + "'.");
+                        var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_IsContainerFailed_LocationCannotExistInArchive_Format, storageLocation, RootLocation);
+                        throw new ArgumentException(errorMessage);
                     }
-                    storageLocation = storageLocation.Substring(RootLocation.Length);
+                    storageLocation = PathUtils.GetRelativePath(storageLocation, RootLocation);
                 }
                 var entry = GetEntry(storageLocation);
                 if (entry != null)
                 {
                     isLocationAContainer = entry.IsDirectory;
-                    if (!isLocationAContainer)
+                    if (!entry.IsDirectory)
                     {
                         isLocationAContainer = Path.GetExtension(storageLocation).GetCompressedArchiveFormatsFromFileExtension().Any();
                     }
+                }
+                else
+                {
+                    isLocationAContainer = Path.GetExtension(storageLocation).GetCompressedArchiveFormatsFromFileExtension().Any();
                 }
             }
             return isLocationAContainer;

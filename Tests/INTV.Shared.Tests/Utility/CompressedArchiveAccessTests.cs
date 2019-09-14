@@ -415,6 +415,158 @@ namespace INTV.Shared.Tests.Utility
             }
         }
 
+        [Fact]
+        public void CompressedArchiveAccess_NullLocation_IsLocationAContainerThrowsArgumentNullException()
+        {
+            var format = RegisterFakeFormatForTest(registerFormat: true);
+
+            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            {
+                Assert.Throws<ArgumentNullException>(() => archive.IsLocationAContainer(null));
+            }
+        }
+
+        [Fact]
+        public void CompressedArchiveAccess_EmptyLocation_IsLocationAContainerThrowsInvalidOperationException()
+        {
+            var format = RegisterFakeFormatForTest(registerFormat: true);
+
+            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            {
+                Assert.Throws<InvalidOperationException>(() => archive.IsLocationAContainer(string.Empty));
+            }
+        }
+
+        [Theory]
+        [InlineData(@"foo\")]
+        [InlineData(@"bar/")]
+        public void CompressedArchiveAccess_LocationEndingWithPathSeparator_IsLocationAContainerReturnsTrue(string location)
+        {
+            var format = RegisterFakeFormatForTest(registerFormat: true);
+
+            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            {
+                Assert.True(archive.IsLocationAContainer(location));
+            }
+        }
+
+        public static IEnumerable<object[]> CompressedArchiveValidRelativeLocationTestData
+        {
+            get
+            {
+                yield return new object[] { TestResource.TagalongZipWithManyNests, CompressedArchiveFormat.Zip, "tagalong_dev1.luigi", false };
+                yield return new object[] { TestResource.TagalongZipWithManyNests, CompressedArchiveFormat.Zip, "extra_nest/", true };
+                yield return new object[] { TestResource.TagalongZipWithManyNests, CompressedArchiveFormat.Zip, "extra_nest/tagalong_msys2.tgz", true };
+                yield return new object[] { TestResource.TagalongZipWithManyNests, CompressedArchiveFormat.Zip, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/", true };
+                yield return new object[] { TestResource.TagalongZipWithManyNests, CompressedArchiveFormat.Zip, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip", true };
+                yield return new object[] { TestResource.TagalongZipWithManyNests, CompressedArchiveFormat.Zip, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.bin", false };
+                yield return new object[] { TestResource.TagalongTgzManyDirs, CompressedArchiveFormat.GZip, "tagalong_many_dirs.tar", true };
+                yield return new object[] { TestResource.TagalongTgzManyDirs, CompressedArchiveFormat.GZip, "tagalong_many_dirs.tar/rootSub/sub0/", true };
+                yield return new object[] { TestResource.TagalongTgzManyDirs, CompressedArchiveFormat.GZip, "tagalong_many_dirs.tar/rootSub/sub0/.DS_Store", false };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, "tagalong_dir/", true };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, "tagalong_dir/tagalong.rom", false };
+            }
+        }
+
+        [Theory]
+        [MemberData("CompressedArchiveValidRelativeLocationTestData")]
+        public void CompressedArchiveAccess_ValidRelativeLocationInInMemoryArchive_IsLocationAContainerReturnsCorrectResult(TestResource testResource, CompressedArchiveFormat format, string relativeLocation, bool expectedIsAContainerResult)
+        {
+            var stream = testResource.OpenResourceForReading();
+            using (var archive = CompressedArchiveAccess.Open(stream, format, CompressedArchiveAccessMode.Read))
+            {
+                var isContainer = archive.IsLocationAContainer(relativeLocation);
+
+                Assert.Equal(expectedIsAContainerResult, isContainer);
+            }
+        }
+
+        [Theory]
+        [MemberData("CompressedArchiveValidRelativeLocationTestData")]
+        public void CompressedArchiveAccess_ValidAbsolutePathToLocationInArchive_IsLocationAContainerReturnsCorrectResult(TestResource testResource, CompressedArchiveFormat format, string relativeLocation, bool expectedIsAContainerResult)
+        {
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
+            using (var archive = CompressedArchiveAccess.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
+            {
+                var absoluteLocation = Path.Combine(archiveFilePath, relativeLocation);
+
+                var isContainer = archive.IsLocationAContainer(absoluteLocation);
+
+                Assert.Equal(expectedIsAContainerResult, isContainer);
+            }
+        }
+
+        public static IEnumerable<object[]> CompressedArchiveInvalidRelativeLocationTestData
+        {
+            get
+            {
+                yield return new object[] { TestResource.TagalongEmptyZip, CompressedArchiveFormat.Zip, "oof", false };
+                yield return new object[] { TestResource.TagalongEmptyZip, CompressedArchiveFormat.Zip, "biff/", true };
+                yield return new object[] { TestResource.TagalongEmptyZip, CompressedArchiveFormat.Zip, "tricky.tgz", true };
+                yield return new object[] { TestResource.TagalongBinGZip, CompressedArchiveFormat.GZip, "nada/", true };
+                yield return new object[] { TestResource.TagalongBinGZip, CompressedArchiveFormat.GZip, "kurgan.zip", true };
+                yield return new object[] { TestResource.TagalongBinGZip, CompressedArchiveFormat.GZip, "extraneous/tagalong.zip/tagalong.bin", false };
+                yield return new object[] { TestResource.TagalongBinCfgTar, CompressedArchiveFormat.Tar, "bluff/", true };
+                yield return new object[] { TestResource.TagalongBinCfgTar, CompressedArchiveFormat.Tar, "somedir/glarg.rom", false };
+                yield return new object[] { TestResource.TagalongBinCfgTar, CompressedArchiveFormat.Tar, "flippy/tagalong.rom.gz", true };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, "candlewick.tar", true };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, "sticky.tar/sub/dir/", true };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, "slippery.zip/.DS_Store", false };
+            }
+        }
+
+        [Theory]
+        [MemberData("CompressedArchiveInvalidRelativeLocationTestData")]
+        public void CompressedArchiveAccess_InvalidRelativeLocationInInMemoryArchive_IsLocationAContainerReturnsCorrectResult(TestResource testResource, CompressedArchiveFormat format, string relativeLocation, bool expectedIsAContainerResult)
+        {
+            var stream = testResource.OpenResourceForReading();
+            using (var archive = CompressedArchiveAccess.Open(stream, format, CompressedArchiveAccessMode.Read))
+            {
+                var isContainer = archive.IsLocationAContainer(relativeLocation);
+
+                Assert.Equal(expectedIsAContainerResult, isContainer);
+            }
+        }
+
+        [Theory]
+        [MemberData("CompressedArchiveInvalidRelativeLocationTestData")]
+        public void CompressedArchiveAccess_InvalidAbsolutePathToLocationInArchive_IsLocationAContainerReturnsCorrectResult(TestResource testResource, CompressedArchiveFormat format, string relativeLocation, bool expectedIsAContainerResult)
+        {
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
+            using (var archive = CompressedArchiveAccess.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
+            {
+                var absoluteLocation = Path.Combine(archiveFilePath, relativeLocation);
+
+                var isContainer = archive.IsLocationAContainer(absoluteLocation);
+
+                Assert.Equal(expectedIsAContainerResult, isContainer);
+            }
+        }
+
+        [Fact]
+        public void CompressedArchiveAccess_AbsolutePathToLocationInArchiveOpenedInMemoryOnly_IsLocationAContainerThrowsInvalidOperationException()
+        {
+            var testResource = TestResource.TagalongZipWithManyNests;
+            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            {
+                Assert.Throws<InvalidOperationException>(() => archive.IsLocationAContainer(Path.Combine(Path.GetTempPath(), "Who framed me")));
+            }
+        }
+
+        [Fact]
+        public void CompressedArchiveAccess_AbsolutePathToLocationImpossibleToBeInArchive_IsLocationAContainerThrowsArgumentException()
+        {
+            string archiveFilePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archiveFilePath))
+            using (var archive = CompressedArchiveAccess.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
+            {
+                Assert.Throws<ArgumentException>(() => archive.IsLocationAContainer(Path.Combine(Path.GetTempPath(), "Spliff Radio Show")));
+
+            }
+        }
+
         private CompressedArchiveFormat RegisterFakeFormatForTest(bool registerFormat = false, string firstEntryName = null, bool isArchive = true, bool isCompressed = true)
         {
             var format = registerFormat ? this.RegisterTestCompressedArchiveFormat() : this.GetFakeCompressedArchiveFormatForTest();

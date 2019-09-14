@@ -35,10 +35,14 @@ namespace INTV.Core.Tests.Utility
             Assert.NotNull(storageLocation.StorageAccess);
             Assert.False(storageLocation.UsesDefaultStorage);
             Assert.True(storageLocation.IsInvalid);
+            Assert.True(storageLocation.IsNull);
+            Assert.False(storageLocation.IsEmpty);
             Assert.False(storageLocation.IsValid);
             Assert.False(storageLocation.UsesDefaultStorage);
+            Assert.False(storageLocation.IsContainer);
             Assert.False(storageLocation.Exists());
             Assert.False(storageLocation.StorageAccess.Exists(null));
+            Assert.False(storageLocation.StorageAccess.IsLocationAContainer(null));
         }
 
         [Fact]
@@ -160,14 +164,179 @@ namespace INTV.Core.Tests.Utility
             Assert.NotEqual(hashA, hashB);
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData("a/b/c")]
+        public void StorageLocation_HasNonNullPath_IsNullIsFalse(string path)
+        {
+            var storageAccess = new PrivateStorageAccessA();
+            try
+            {
+                Assert.True(IStorageAccessHelpers.Initialize(storageAccess));
+
+                var location = new StorageLocation(path);
+
+                Assert.False(location.IsNull);
+            }
+            finally
+            {
+                Assert.True(IStorageAccessHelpers.Remove(storageAccess));
+            }
+        }
+
+        [Theory]
+        [InlineData("")]
+        public void StorageLocation_HasEmptyPathViaConstant_IsEmptyIsTrue(string path)
+        {
+            var storageAccess = new PrivateStorageAccessA();
+            try
+            {
+                Assert.True(IStorageAccessHelpers.Initialize(storageAccess));
+
+                var location = new StorageLocation(path);
+
+                Assert.True(location.IsEmpty);
+            }
+            finally
+            {
+                Assert.True(IStorageAccessHelpers.Remove(storageAccess));
+            }
+        }
+
         [Fact]
-        public void StorageLocation_NullStorageLocation_HasNullPathIsNotValidIsNotInvalid()
+        public void StorageLocation_HasEmptyPathViaStringDotEmpty_IsEmptyIsTrue()
+        {
+            var storageAccess = new PrivateStorageAccessA();
+            try
+            {
+                Assert.True(IStorageAccessHelpers.Initialize(storageAccess));
+
+                var location = new StorageLocation(string.Empty);
+
+                Assert.True(location.IsEmpty);
+            }
+            finally
+            {
+                Assert.True(IStorageAccessHelpers.Remove(storageAccess));
+            }
+        }
+
+        [Fact]
+        public void StorageLocation_HasNonEmptyPath_IsEmptyIsFalse()
+        {
+            var storageAccess = new PrivateStorageAccessA();
+            try
+            {
+                Assert.True(IStorageAccessHelpers.Initialize(storageAccess));
+
+                var location = new StorageLocation("biff");
+
+                Assert.False(location.IsEmpty);
+            }
+            finally
+            {
+                Assert.True(IStorageAccessHelpers.Remove(storageAccess));
+            }
+        }
+
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData(@"/", true)]
+        [InlineData(@"\", true)]
+        [InlineData(@"/a", false)]
+        [InlineData(@"\a", false)]
+        [InlineData(@"b/", true)]
+        [InlineData(@"b\", true)]
+        [InlineData(@" c/ ", false)]
+        [InlineData(@" c\ ", false)]
+        public void StorageLocation_WithPathCheckIsContainer_ReturnsExpectedValue(string path, bool expectedIsContainer)
+        {
+            var storageAccess = new PrivateStorageAccessA();
+            try
+            {
+                Assert.True(IStorageAccessHelpers.Initialize(storageAccess));
+
+                var location = new StorageLocation(path);
+
+                Assert.Equal(expectedIsContainer, location.IsContainer);
+                Assert.Equal(expectedIsContainer, location.IsContainer); // second call covers cached result
+            }
+            finally
+            {
+                Assert.True(IStorageAccessHelpers.Remove(storageAccess));
+            }
+        }
+
+        [Fact]
+        public void StorageLocation_CopyWithNewPath_RetainsStorageAccess()
+        {
+            var storageAccess = new PrivateStorageAccessA();
+            try
+            {
+                Assert.True(IStorageAccessHelpers.Initialize(storageAccess));
+
+                var location0Path = "Something/wicked";
+                var location0 = new StorageLocation(location0Path, storageAccess);
+                var location1Path = "Quoth/the/raven/Nevermore";
+                var location1 = StorageLocation.CopyWithNewPath(location0, location1Path);
+
+                Assert.True(object.ReferenceEquals(location0.StorageAccess, location1.StorageAccess));
+                Assert.Equal(location0Path, location0.Path);
+                Assert.Equal(location1Path, location1.Path);
+                Assert.NotEqual(location0.Path, location1.Path);
+            }
+            finally
+            {
+                Assert.True(IStorageAccessHelpers.Remove(storageAccess));
+            }
+        }
+
+        [Fact]
+        public void StorageLocation_NullStorageLocation_HasNullPathIsNotValidIsNotInvalidIsNull()
         {
             var nullLocation = StorageLocation.Null;
 
             Assert.Null(nullLocation.Path);
             Assert.False(nullLocation.IsValid);
             Assert.False(nullLocation.IsInvalid);
+            Assert.True(nullLocation.IsNull);
+            Assert.False(nullLocation.IsEmpty);
+            Assert.False(nullLocation.IsContainer);
+        }
+
+        [Fact]
+        public void StorageLocation_EmptyStorageLocation_HasExpectedValues()
+        {
+            var emptyLocation = StorageLocation.Empty;
+
+            Assert.NotNull(emptyLocation.Path);
+            Assert.False(emptyLocation.IsValid);
+            Assert.False(emptyLocation.IsInvalid);
+            Assert.False(emptyLocation.IsNull);
+            Assert.True(emptyLocation.IsEmpty);
+            Assert.False(emptyLocation.IsContainer);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("abc")]
+        public void StorageLocation_ToString_ReturnsPath(string path)
+        {
+            var storageAccess = new PrivateStorageAccessA();
+            try
+            {
+                Assert.True(IStorageAccessHelpers.Initialize(storageAccess));
+
+                var location = new StorageLocation(path);
+
+                Assert.Equal(path, location.ToString());
+            }
+            finally
+            {
+                Assert.True(IStorageAccessHelpers.Remove(storageAccess));
+            }
         }
 
         private sealed class PrivateStorageAccessA : TestStorageAccess

@@ -303,7 +303,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData(false)]
         public void PathUtils_ValidatePathWithInvalidCharacterInFileName_ReturnsFalse(bool allowAllInvalidCharacters)
         {
-            var path = InjectRandomInvalidFileNameCharacter("/some/file/path/data", allowAllInvalidCharacters);
+            var path = InjectRandomInvalidFileNameCharacter(Path.Combine(Path.GetTempPath(), "some/file/path/data"), allowAllInvalidCharacters);
 
             Assert.False(path.ValidatePath(isContainer: false), path);
         }

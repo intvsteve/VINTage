@@ -19,6 +19,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using INTV.Shared.Utility;
@@ -29,6 +30,92 @@ namespace INTV.Shared.Tests.Utility
 {
     public class ICompressedArchiveAccessExtensionsTests
     {
+        // NOTE: This must be manually updated when new archive formats are added!
+        private static readonly string[] SupportedCompressedArchiveFileExtensions = new[] { ".zip", ".tar", ".gz", ".gzip" };
+
+        private static readonly IDictionary<string, CompressedArchiveFormat> FileExtensionToCompressedArchiveFormatMap = new Dictionary<string, CompressedArchiveFormat>()
+        {
+            { ".zip", CompressedArchiveFormat.Zip },
+            { ".tar", CompressedArchiveFormat.Tar },
+            { ".gz", CompressedArchiveFormat.GZip },
+            { ".gzip", CompressedArchiveFormat.GZip },
+        };
+
+        [Fact]
+        public void ICompressedArchiveAccess_GetStorageAccessWithNullPath_ReturnsDefaultStorageAccess()
+        {
+            string path = null;
+            Assert.Null(path.GetStorageAccess());
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("x")]
+        [InlineData("////////////")]
+        [InlineData(@"C:\;lskdjf;alswkfj;lek;lekjfl;sakejfsa")] // hope nobody has that path!
+        public void ICompressedArchiveAccess_GetStorageAccessWithNonexistingNonArchivePath_ReturnsDefaultStorageAccess(string path)
+        {
+            Assert.Null(path.GetStorageAccess());
+        }
+
+        public static IEnumerable<object[]> CompressedArchiveTestResources
+        {
+            get
+            {
+                foreach (var compressedArchiveTestResource in TestResource.GetAvailableTestResources(IsCompressedArchiveTestResource))
+                {
+                    yield return new object[] { compressedArchiveTestResource };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("CompressedArchiveTestResources")]
+        public void ICompressedArchiveAccess_GetStorageAccessFromNonExistentCompressedArchivePath_ThrowsIOException(TestResource compressedArchiveTestResource)
+        {
+            var invalidDirectoryPathToResource = "this/will/not/be/found/" + compressedArchiveTestResource.Name;
+            var invalidFilePathToResource = Path.GetTempPath() + compressedArchiveTestResource.Name;
+
+            Assert.Throws<DirectoryNotFoundException>(() => invalidDirectoryPathToResource.GetStorageAccess());
+            Assert.Throws<FileNotFoundException>(() => invalidFilePathToResource.GetStorageAccess());
+        }
+
+        public static IEnumerable<object[]> UniqueCompressedArchiveFormatTestResources
+        {
+            get
+            {
+                var yieldedArchiveFormats = new List<string>();
+                var compressedArchiveTestResources = TestResource.GetAvailableTestResources(IsCompressedArchiveTestResource);
+                foreach (var compressedArchiveTestResource in compressedArchiveTestResources)
+                {
+                    var formatFileExtension = SupportedCompressedArchiveFileExtensions.FirstOrDefault(extension => compressedArchiveTestResource.Name.EndsWith(extension, StringComparison.OrdinalIgnoreCase));
+                    if (!yieldedArchiveFormats.Contains(formatFileExtension))
+                    {
+                        yieldedArchiveFormats.Add(formatFileExtension);
+                        var format = FileExtensionToCompressedArchiveFormatMap[formatFileExtension];
+                        yield return new object[] { compressedArchiveTestResource, format };
+                    }
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData("UniqueCompressedArchiveFormatTestResources")]
+        public void ICompressedArchiveAccess_GetStorageAccessFromKnownArchiveKind_ReturnsExpectedArchiveKind(TestResource testResource, CompressedArchiveFormat expectedCompressedStorageAccessFormat)
+        {
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
+            {
+                    var storageAccess = archiveFilePath.GetStorageAccess();
+                    var compressedArchiveStorageAccess = storageAccess as ICompressedArchiveAccess;
+
+                    Assert.NotNull(storageAccess);
+                    Assert.NotNull(compressedArchiveStorageAccess);
+                    Assert.Equal(expectedCompressedStorageAccessFormat, compressedArchiveStorageAccess.Format);
+                    compressedArchiveStorageAccess.Dispose();
+            }
+        }
+
         [Fact]
         public void ICompressedArchiveAccess_ListWithNullArchive_ThrowsArgumentNullException()
         {
@@ -554,6 +641,12 @@ namespace INTV.Shared.Tests.Utility
 
                 Assert.Empty(entries);
             }
+        }
+
+        private static bool IsCompressedArchiveTestResource(TestResource testResource)
+        {
+            var isCompressedArchiveTestResource = SupportedCompressedArchiveFileExtensions.FirstOrDefault(extension => testResource.Name.EndsWith(extension, StringComparison.OrdinalIgnoreCase)) != null;
+            return isCompressedArchiveTestResource;
         }
     }
 }

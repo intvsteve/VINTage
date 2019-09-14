@@ -162,7 +162,13 @@ namespace INTV.TestHelpers.Core.Utility
         /// <inheritdoc />
         public bool IsLocationAContainer(string storageLocation)
         {
-            return false;
+            var isContainer = !string.IsNullOrEmpty(storageLocation);
+            if (isContainer)
+            {
+                var lastCharacter = storageLocation.Last();
+                isContainer = (lastCharacter == Path.DirectorySeparatorChar) || (lastCharacter == Path.AltDirectorySeparatorChar);
+            }
+            return isContainer;
         }
 
         /// <summary>

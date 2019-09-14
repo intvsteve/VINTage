@@ -446,7 +446,7 @@ namespace INTV.Shared.Utility
                 try
                 {
                     Path.GetDirectoryName(path);
-                    Path.GetFileName(path);
+                    containsInvalidCharacters = Path.GetFileName(path).IndexOfAny(Path.GetInvalidFileNameChars()) >= 0;
                 }
                 catch (ArgumentException)
                 {

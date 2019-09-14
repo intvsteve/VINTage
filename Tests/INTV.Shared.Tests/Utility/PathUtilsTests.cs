@@ -30,6 +30,8 @@ namespace INTV.Shared.Tests.Utility
 {
     public class PathUtilsTests
     {
+        private static readonly Random Random = new Random();
+
         [Fact]
         public void PathUtils_FixUpUriPathWithNullPath_ThrowsNullReferenceException()
         {
@@ -257,6 +259,63 @@ namespace INTV.Shared.Tests.Utility
             }
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void PathUtils_ValidatePathWithNullPath_ThrowsArgumentNullException(bool isContainer)
+        {
+            string nullPath = null;
+            Assert.Throws<ArgumentNullException>(() => nullPath.ValidatePath(isContainer));
+        }
+
+        [Theory]
+        [InlineData("", false)]
+        [InlineData("", true)]
+        [InlineData(" \t \n", false)]
+        [InlineData("\n \r \t", true)]
+        public void PathUtils_ValidatePathEmptyOrWhitespacePath_ThrowsArgumentException(string path, bool isContainer)
+        {
+            Assert.Throws<ArgumentException>(() => path.ValidatePath(isContainer));
+        }
+
+        [Theory]
+        [InlineData("/a/b/c/", false)]
+        [InlineData("/ab/c/d", true)]
+        [InlineData("foo.bar", false)]
+        [InlineData("giz .mo/flapsy", true)]
+        public void PathUtils_ValidatePathWithReasonablePath_ReturnsTrue(string path, bool isContainer)
+        {
+            Assert.True(path.ValidatePath(isContainer));
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void PathUtils_ValidatePathWithInvalidCharacterInDirectory_ReturnsFalse(bool isContainer)
+        {
+            var path = InjectRandomInvalidPathCharacter("a/directory/path") + "/plus more";
+
+            Assert.False(path.ValidatePath(isContainer));
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void PathUtils_ValidatePathWithInvalidCharacterInFileName_ReturnsFalse(bool allowAllInvalidCharacters)
+        {
+            var path = InjectRandomInvalidFileNameCharacter("/some/file/path/data", allowAllInvalidCharacters);
+
+            Assert.False(path.ValidatePath(isContainer: false), path);
+        }
+
+        [Fact]
+        public void PathUtils_ValidatePathWithInvalidCharacterInFileNameButTreatedAsContainer_ReturnsTrue()
+        {
+            var path = InjectRandomInvalidFileNameCharacter("/some/file/path/data", allowAllInvalidCharacters: false);
+
+            Assert.True(path.ValidatePath(isContainer: true));
+        }
+
         #region OS-specific tests
 
         [Fact]
@@ -362,5 +421,21 @@ namespace INTV.Shared.Tests.Utility
         }
 
         #endregion OS-specific tests
+
+        private static string InjectRandomInvalidPathCharacter(string path)
+        {
+            var badPathCharacters = Path.GetInvalidPathChars().Except(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }).ToArray();
+            var randomBadCharacter = badPathCharacters[Random.Next(badPathCharacters.Length)];
+            path += randomBadCharacter + " whoopsie";
+            return path;
+        }
+
+        private static string InjectRandomInvalidFileNameCharacter(string path, bool allowAllInvalidCharacters)
+        {
+            var badFileNameCharacters = (allowAllInvalidCharacters ? Path.GetInvalidFileNameChars() : Path.GetInvalidFileNameChars().Except(Path.GetInvalidPathChars()).ToArray()).Except(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }).ToArray();
+            var randomBadCharacter = badFileNameCharacters[Random.Next(badFileNameCharacters.Length)];
+            path += Path.DirectorySeparatorChar.ToString() + randomBadCharacter + " that cannot be good.txt";
+            return path;
+        }
     }
 }

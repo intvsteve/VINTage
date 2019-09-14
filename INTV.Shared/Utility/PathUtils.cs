@@ -95,7 +95,8 @@ namespace INTV.Shared.Utility
             Uri pathUri = new Uri(file);
 
             // Folders must end in a slash
-            if (!relativeTo.EndsWith(Path.DirectorySeparatorChar.ToString(), PathComparer.DefaultPolicy) && !relativeTo.EndsWith(Path.AltDirectorySeparatorChar.ToString(), PathComparer.DefaultPolicy))
+            var lastCharacter = relativeTo.Last();
+            if ((lastCharacter != Path.DirectorySeparatorChar) && (lastCharacter != Path.AltDirectorySeparatorChar))
             {
                 relativeTo += Path.DirectorySeparatorChar;
             }

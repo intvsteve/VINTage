@@ -1,4 +1,4 @@
-﻿// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
+// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -266,7 +266,7 @@ namespace INTV.Shared.Utility
         public bool IsLocationAContainer(string storageLocation)
         {
             var lastCharacter = storageLocation.Last();
-            var isLocationAContainer = lastCharacter == Path.DirectorySeparatorChar || lastCharacter == Path.AltDirectorySeparatorChar;
+            var isLocationAContainer = (lastCharacter == Path.DirectorySeparatorChar) || (lastCharacter == Path.AltDirectorySeparatorChar);
             if (!isLocationAContainer)
             {
                 storageLocation = storageLocation.NormalizePathSeparators();
@@ -315,7 +315,8 @@ namespace INTV.Shared.Utility
         /// <returns><c>true</c> if <paramref name="name"/> indicates a directory.</returns>
         protected static bool IsDirectoryName(string name)
         {
-            var isDirectory = (name.Last() == Path.DirectorySeparatorChar) || (name.Last() == Path.AltDirectorySeparatorChar);
+            var lastCharacter = name.Last();
+            var isDirectory = (lastCharacter == Path.DirectorySeparatorChar) || (lastCharacter == Path.AltDirectorySeparatorChar);
             return isDirectory;
         }
 

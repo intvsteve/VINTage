@@ -151,7 +151,7 @@ namespace INTV.Core.Utility
                 {
                     return false;
                 }
-                if (!_isContainer.HasValue)
+                if (_isContainer == null)
                 {
                     _isContainer = StorageAccess.IsLocationAContainer(Path);
                 }

@@ -560,6 +560,7 @@ Year = 2112
         [Fact]
         public void IRomHelpers_EnsureCfgFileProvidedWhenStockCfgMissing_ReturnsFalse()
         {
+            // NOTE: This test fails intermittently due to storage access collision with other tests. :/ Bad globals! Bad!
             IReadOnlyList<StorageLocation> paths;
             IRomHelpersTestStorageAccess.Initialize(out paths, TestRomResources.TestBinPath).WithStockCfgResources(new[] { 0 });
             var rom = Rom.Create(paths[0], StorageLocation.InvalidLocation);

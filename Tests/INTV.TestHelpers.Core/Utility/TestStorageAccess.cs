@@ -159,6 +159,12 @@ namespace INTV.TestHelpers.Core.Utility
             return lastWriteTimeUtc;
         }
 
+        /// <inheritdoc />
+        public bool IsLocationAContainer(string storageLocation)
+        {
+            return false;
+        }
+
         /// <summary>
         /// Introduces a corruption into the file system by setting an existing location's data to <c>null</c>.
         /// </summary>

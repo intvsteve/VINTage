@@ -540,7 +540,7 @@ namespace INTV.Shared.Tests.Utility
                 return entry;
             }
 
-            protected override void Dispose(bool disposing)
+            protected override void DisposeCore(bool disposing)
             {
                 // nothing disposable in this version
             }

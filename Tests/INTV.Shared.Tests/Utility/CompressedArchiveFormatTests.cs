@@ -27,6 +27,10 @@ using Xunit;
 
 namespace INTV.Shared.Tests.Utility
 {
+    /// <summary>
+    /// Compressed archive tests.
+    /// </summary>
+    /// <remarks>NOTE: This must be manually updated when new archive formats are added!</remarks>
     public class CompressedArchiveFormatTests : ICompressedArchiveTest
     {
         [Theory]

@@ -238,7 +238,6 @@ namespace INTV.Shared.Utility
             catch (ArgumentOutOfRangeException)
             {
             }
-            throw new NotImplementedException();
         }
 
         #endregion // ICompressedArchiveAccess

@@ -624,6 +624,42 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Destination already exists: {0}.
+        /// </summary>
+        internal static string CompressedArchiveAccess_ExtractEntry_DestinationAlreadyExists_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_ExtractEntry_DestinationAlreadyExists_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path contains invalid characters: {0}.
+        /// </summary>
+        internal static string CompressedArchiveAccess_ExtractEntry_DestinationContainsInvalidCharacters_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_ExtractEntry_DestinationContainsInvalidCharacters_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory does not exist: {0}.
+        /// </summary>
+        internal static string CompressedArchiveAccess_ExtractEntry_DestinationDirectoryDoesNotExist_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_ExtractEntry_DestinationDirectoryDoesNotExist_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested extraction of a directory, which is not supported: {0}.
+        /// </summary>
+        internal static string CompressedArchiveAccess_ExtractEntry_EntryIsADirectory_Format {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_ExtractEntry_EntryIsADirectory_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The GZIP compresssed file format does not support deletion of an entry..
         /// </summary>
         internal static string CompressedArchiveAccess_GZipDeleteEntryNotSupported {

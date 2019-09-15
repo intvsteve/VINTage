@@ -185,6 +185,7 @@ namespace INTV.Shared.Utility
         }
 
         /// <inheritdoc />
+        /// <exception cref="InvalidOperationException">Thrown if entry is a directory.</exception>
         public void ExtractEntry(ICompressedArchiveEntry entry, string destinationFilePath)
         {
             ExtractEntry(entry, destinationFilePath, overwrite: false);
@@ -192,6 +193,7 @@ namespace INTV.Shared.Utility
         //Consider also using TemporaryFileCollection along with TemporaryDirectory
 
         /// <inheritdoc />
+        /// <exception cref="InvalidOperationException">Thrown if entry is a directory.</exception>
         public void ExtractEntry(ICompressedArchiveEntry entry, string destinationFilePath, bool overwrite)
         {
             if (entry == null)
@@ -200,15 +202,41 @@ namespace INTV.Shared.Utility
             }
             if (!destinationFilePath.ValidatePath(Directory.Exists(destinationFilePath), "destinationFilePath"))
             {
-                throw new ArgumentException("destinationFilePath", "Path contains invalid characters.");
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_ExtractEntry_DestinationContainsInvalidCharacters_Format, destinationFilePath);
+                throw new ArgumentException("destinationFilePath", errorMessage);
             }
             if (!Directory.Exists(Path.GetDirectoryName(destinationFilePath)))
             {
-                throw new DirectoryNotFoundException("Directory '" + Path.GetDirectoryName(destinationFilePath) + "' does not exist.");
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_ExtractEntry_DestinationDirectoryDoesNotExist_Format, Path.GetDirectoryName(destinationFilePath));
+                throw new DirectoryNotFoundException(errorMessage);
             }
             if (!overwrite && File.Exists(destinationFilePath))
             {
-                throw new IOException("Destination already exists: " + destinationFilePath);
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_ExtractEntry_DestinationAlreadyExists_Format, destinationFilePath);
+                throw new IOException(errorMessage);
+            }
+            if (entry.IsDirectory)
+            {
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_ExtractEntry_EntryIsADirectory_Format, entry.Name);
+                throw new InvalidOperationException(errorMessage);
+            }
+
+            var fileMode = overwrite ? FileMode.Create : FileMode.CreateNew;
+            using (var resourceStream = OpenEntry(entry))
+            using (var fileStream = new FileStream(destinationFilePath, fileMode, FileAccess.Write))
+            {
+                resourceStream.CopyTo(fileStream);
+            }
+            try
+            {
+                // Attempt to preserve original modification time.
+                File.SetLastWriteTimeUtc(destinationFilePath, entry.LastModificationTime);
+
+                // TODO: Cache the result?
+                // TODO: Explore preserving permissions where possible?
+            }
+            catch (ArgumentOutOfRangeException)
+            {
             }
             throw new NotImplementedException();
         }

@@ -563,7 +563,159 @@ namespace INTV.Shared.Tests.Utility
             using (var archive = CompressedArchiveAccess.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<ArgumentException>(() => archive.IsLocationAContainer(Path.Combine(Path.GetTempPath(), "Spliff Radio Show")));
+            }
+        }
 
+        [Fact]
+        public void CompressedArchiveAccess_ExtractNullEntry_ThrowsArgumentNullException()
+        {
+            var format = RegisterFakeFormatForTest(registerFormat: true);
+
+            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            {
+                Assert.Throws<ArgumentNullException>(() => archive.ExtractEntry(null, "biff"));
+            }
+        }
+
+        [Fact]
+        public void CompressedArchiveAccess_ExtractEntryToInvalidPath_ThrowsArgumentException()
+        {
+            var format = RegisterFakeFormatForTest(registerFormat: true);
+
+            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read) as TestCompressedArchiveAccess)
+            {
+                archive.AddFakeEntries(1);
+                var entry = archive.Entries.First();
+
+                Assert.Throws<ArgumentException>(() => archive.ExtractEntry(entry, @"\\\\\n\n\n\n::::><??***"));
+            }
+        }
+
+        [Fact]
+        public void CompressedArchiveAccess_ExtractEntryToExistingFile_ThrowsIOException()
+        {
+            var testResource = TestResource.TagalongDirZip;
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
+            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            {
+                var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "tagalong-todd-is-already-here.file");
+                File.Create(extractionPath).Close();
+                Assert.True(File.Exists(extractionPath));
+                var entry = archive.FindEntry("tagalong_dir/tagalong.luigi");
+                Assert.NotNull(entry);
+
+                Assert.Throws<IOException>(() => archive.ExtractEntry(entry, extractionPath));
+            }
+        }
+
+        [Fact]
+        public void CompressedArchiveAccess_ExtractEntryToExistingFileOverwrite_Succeeds()
+        {
+            var testResource = TestResource.TagalongDirZip;
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
+            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            {
+                var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "tagalong-todd-is-already-here.file");
+                File.Create(extractionPath).Close();
+                Assert.True(File.Exists(extractionPath));
+                var entry = archive.FindEntry("tagalong_dir/tagalong.luigi");
+                Assert.NotNull(entry);
+
+                archive.ExtractEntry(entry, extractionPath, overwrite: true);
+
+                var extractedFileInfo = new FileInfo(extractionPath);
+                Assert.True(extractedFileInfo.Exists);
+                Assert.Equal(entry.Length, extractedFileInfo.Length);
+                Assert.Equal(entry.LastModificationTime, extractedFileInfo.LastWriteTimeUtc);
+            }
+        }
+
+        [Fact]
+        public void CompressedArchiveAccess_ExtractDirectoryEntry_ThrowsInvalidOperationException()
+        {
+            var testResource = TestResource.TagalongDirZip;
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
+            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            {
+                var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "pick me!");
+                var entry = archive.FindEntry("tagalong_dir/");
+                Assert.NotNull(entry);
+
+                Assert.Throws<InvalidOperationException>(() => archive.ExtractEntry(entry, extractionPath));
+            }
+        }
+
+        [Fact]
+        public void CompressedArchiveAccess_ExtractEntryWithBadModificationTime_ExtractsUsingCurrentTime()
+        {
+            var testResource = TestResource.TagalongCfgGZip;
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
+            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read))
+            {
+                // Sneaky - we're exploiting implementation of GZip here...
+                var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "testEntry.whatever");
+                var entry = archive.FindEntry("tagalong.cfg");
+                Assert.NotNull(entry);
+                var mutableEntry = new MutableCompressedArchiveEntry(entry);
+                mutableEntry.OverrideLastModificationTime(DateTime.MinValue); // this is an invalid time
+
+                archive.ExtractEntry(mutableEntry, extractionPath);
+
+                var extractedFileInfo = new FileInfo(extractionPath);
+                Assert.True(extractedFileInfo.Exists);
+                Assert.Equal(entry.Length, extractedFileInfo.Length);
+                Assert.True(entry.LastModificationTime < extractedFileInfo.LastWriteTimeUtc);
+            }
+        }
+
+        [Fact]
+        public void CompressedArchiveAccess_ExtractEntryToNonexistantDirectory_ThrowsDirectoryNotFoundException()
+        {
+            var format = RegisterFakeFormatForTest(registerFormat: true);
+
+            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read) as TestCompressedArchiveAccess)
+            {
+                archive.AddFakeEntries(1);
+                var entry = archive.Entries.First();
+                var bogusLocation = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString(), "ghastly-ghost.tmp");
+
+                Assert.Throws<DirectoryNotFoundException>(() => archive.ExtractEntry(entry, bogusLocation));
+            }
+        }
+
+        public static IEnumerable<object[]> ExtractEntryFromArchiveTestData
+        {
+            get
+            {
+                yield return new object[] { TestResource.TagalongZip, CompressedArchiveFormat.Zip, "tagalong.cfg" };
+                yield return new object[] { TestResource.TagalongBinGZip, CompressedArchiveFormat.GZip, "tagalong.bin" };
+                yield return new object[] { TestResource.TagalongCC3RomTar, CompressedArchiveFormat.Tar, "tagalong.cc3" };
+                yield return new object[] { TestResource.TagalongZipWithManyNests, CompressedArchiveFormat.Zip, "extra_nest/tagalong_metadata.cfg" };
+            }
+        }
+
+        [Theory]
+        [MemberData("ExtractEntryFromArchiveTestData")]
+        public void CompressedArchiveAccess_ExtractEntry_ExtractsEntryAndPreservesModificationTime(TestResource testResource, CompressedArchiveFormat format, string entryName)
+        {
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
+            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), format, CompressedArchiveAccessMode.Read))
+            {
+                var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "testEntry.whatever");
+                var entry = archive.FindEntry(entryName);
+                Assert.NotNull(entry);
+
+                archive.ExtractEntry(entry, extractionPath);
+
+                var extractedFileInfo = new FileInfo(extractionPath);
+                Assert.True(extractedFileInfo.Exists);
+                Assert.Equal(entry.Length, extractedFileInfo.Length);
+                Assert.Equal(entry.LastModificationTime, extractedFileInfo.LastWriteTimeUtc);
             }
         }
 
@@ -754,6 +906,68 @@ namespace INTV.Shared.Tests.Utility
                     LastModificationTime = DateTime.UtcNow;
                     IsDirectory = isDirectory;
                 }
+            }
+        }
+
+        private class MutableCompressedArchiveEntry : CompressedArchiveEntry
+        {
+            public MutableCompressedArchiveEntry(ICompressedArchiveEntry wrappedEntry)
+            {
+                WrappedEntry = wrappedEntry;
+            }
+
+            /// <inheritdoc />
+            public override string Name
+            {
+                get { return _name == null ? WrappedEntry.Name : _name; }
+                protected set { _name = value; }
+            }
+            private string _name = null;
+
+            /// <inheritdoc />
+            public override long Length
+            {
+                get { return _length == null ? WrappedEntry.Length : _length.Value; }
+                protected set { _length = value; }
+            }
+            private long? _length = null;
+
+            /// <inheritdoc />
+            public override DateTime LastModificationTime
+            {
+                get { return _modificationTime == null ? WrappedEntry.LastModificationTime : _modificationTime.Value; }
+                protected set { _modificationTime = value; }
+            }
+            private DateTime? _modificationTime = null;
+
+            /// <inheritdoc />
+            public override bool IsDirectory
+            {
+                get { return _isDirectory == null ? WrappedEntry.IsDirectory : _isDirectory.Value; }
+                protected set { _isDirectory = value; }
+            }
+            private bool? _isDirectory = null;
+
+            private ICompressedArchiveEntry WrappedEntry { get; set; }
+
+            public void OverrideName(string name)
+            {
+                _name = name;
+            }
+
+            public void OverrideLength(long? length)
+            {
+                _length = length;
+            }
+
+            public void OverrideLastModificationTime(DateTime? modificationTime)
+            {
+                _modificationTime = modificationTime;
+            }
+
+            public void OverrideIsDirectory(bool? isDirectory)
+            {
+                _isDirectory = isDirectory;
             }
         }
     }

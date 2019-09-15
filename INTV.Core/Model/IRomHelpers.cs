@@ -446,7 +446,7 @@ namespace INTV.Core.Model
             var stockCfgUri = new Uri(DefaultToolsDirectory + stockCfgFileName);
             var stockCfgFilePath = new StorageLocation(Uri.UnescapeDataString(stockCfgUri.AbsolutePath)); // Need to unescape spaces.
 #if WIN
-            stockCfgFilePath = stockCfgFilePath.Replace('/', System.IO.Path.DirectorySeparatorChar);
+            stockCfgFilePath = new StorageLocation(stockCfgFilePath.Path.Replace('/', System.IO.Path.DirectorySeparatorChar));
 #elif PCL
             // NOTE: This will, of course, cause trouble if we build PCL for non-Windows platforms, in which case the proper
             // solution is to register the 'FixUpUri' method and use it instead... Consider having this on the IStorageAccess

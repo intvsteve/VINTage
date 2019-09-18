@@ -42,6 +42,8 @@ namespace INTV.Shared.Tests.Utility
             { ".gzip", CompressedArchiveFormat.GZip },
         };
 
+        #region GetStorageAccess Tests
+
         [Fact]
         public void ICompressedArchiveAccess_GetStorageAccessWithNullPath_ReturnsDefaultStorageAccess()
         {
@@ -151,6 +153,10 @@ namespace INTV.Shared.Tests.Utility
             }
         }
 
+        #endregion // GetStorageAccess Tests
+
+        #region GetRootArchivePath Tests
+
         public static IEnumerable<object[]> GetRootArchivePathIsNotToArchiveTestData
         {
             get
@@ -226,6 +232,52 @@ namespace INTV.Shared.Tests.Utility
                 Assert.Equal(0, PathComparer.Instance.Compare(archiveFilePath.NormalizePathSeparators(), rootArchivePath.NormalizePathSeparators()));
             }
         }
+
+        #endregion // GetRootArchivePath Tests
+
+        #region GetParentStorageAccess Tests
+
+        [Fact]
+        public void ICompressedArchiveAccess_GetParentStorageAccessOfNull_ReturnsDefaultStorageAccess()
+        {
+            IStorageAccess nullStorageAccess = null;
+
+            Assert.Equal(IStorageAccessHelpers.DefaultStorage, nullStorageAccess.GetParentStorageAccess());
+        }
+
+        [Fact]
+        public void ICompressedArchiveAccess_GetParentStorageAccessOfNestedArchive_ReturnsExpectedParentStorageAccess()
+        {
+            string archiveFilePath;
+            using (TestResource.TagalongMsys2Tgz.ExtractToTemporaryFile(out archiveFilePath))
+            {
+                var nestedPath = Path.Combine(archiveFilePath, "tagalong_msys2.tar/tagalong.zip/tagalong.cfg");
+
+                var storageAccess = nestedPath.GetStorageAccess();
+                Assert.True(storageAccess is ICompressedArchiveAccess);
+
+                var expectedCompressedArchiveFormats = new[] { CompressedArchiveFormat.Zip, CompressedArchiveFormat.Tar, CompressedArchiveFormat.GZip, CompressedArchiveFormat.None };
+                foreach (var expectedCompressedArchiveFormat in expectedCompressedArchiveFormats)
+                {
+                    switch (expectedCompressedArchiveFormat)
+                    {
+                        case CompressedArchiveFormat.None:
+                            Assert.Equal(IStorageAccessHelpers.DefaultStorage, storageAccess);
+                            break;
+                        default:
+                            var compressedStorageAccess = storageAccess as ICompressedArchiveAccess;
+                            Assert.Equal(expectedCompressedArchiveFormat, compressedStorageAccess.Format);
+                            storageAccess = storageAccess.GetParentStorageAccess();
+                            break;
+                    }
+                }
+            }
+
+        }
+
+        #endregion // GetParentStorageAccess Tests
+
+        #region ListEntries / ListContents Tests
 
         [Fact]
         public void ICompressedArchiveAccess_ListWithNullArchive_ThrowsArgumentNullException()
@@ -753,6 +805,8 @@ namespace INTV.Shared.Tests.Utility
                 Assert.Empty(entries);
             }
         }
+
+        #endregion // ListEntries / ListContents Tests
 
         private static bool IsCompressedArchiveTestResource(TestResource testResource)
         {

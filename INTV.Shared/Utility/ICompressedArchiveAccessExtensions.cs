@@ -98,6 +98,26 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Gets the parent storage access of the given compressed archive access.
+        /// </summary>
+        /// <param name="storageAccess">The storage access to get the parent storage access of.</param>
+        /// <returns>The parent storage access.</returns>
+        public static IStorageAccess GetParentStorageAccess(this IStorageAccess storageAccess)
+        {
+            var parentStorageAccess = IStorageAccessHelpers.DefaultStorage;
+            var nestedStorageAccess = storageAccess as NestedCompressedArchiveAccess;
+            if (nestedStorageAccess != null)
+            {
+                parentStorageAccess = nestedStorageAccess.ParentArchiveAccess;
+            }
+            if (parentStorageAccess == null)
+            {
+                parentStorageAccess = IStorageAccessHelpers.DefaultStorage;
+            }
+            return parentStorageAccess;
+        }
+
+        /// <summary>
         /// List the contents of the given compressed archive.
         /// </summary>
         /// <param name="compressedArchiveAccess">An instance of <see cref="ICompressedArchiveAccess"/> whose contents are to be listed.</param>
@@ -425,7 +445,7 @@ namespace INTV.Shared.Utility
 
             public IEnumerable<CompressedArchiveFormat> NestedArchiveFormats { get; private set; }
 
-            private ICompressedArchiveAccess ParentArchiveAccess { get; set; }
+            public ICompressedArchiveAccess ParentArchiveAccess { get; set; }
 
             private ICompressedArchiveAccess NestedAchiveAccess { get; set; }
 

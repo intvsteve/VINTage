@@ -723,7 +723,7 @@ namespace INTV.Shared.Model
                 }
                 else if (File.Exists(file))
                 {
-                    var fileStorageLocation = INTV.Shared.Utility.StorageLocationExtensions.CreateFromFilePath(file);
+                    var fileStorageLocation = file.CreateStorageLocationFromPath();
                     var potentialRomLocations = GetPotentialProgramRomFilesInCompressedArchive(fileStorageLocation);
                     if (potentialRomLocations != null)
                     {

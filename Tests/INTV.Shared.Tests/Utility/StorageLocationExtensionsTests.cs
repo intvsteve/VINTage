@@ -1,4 +1,4 @@
-﻿// <copyright file="StorageLocationExtensionsTests.cs" company="INTV Funhouse">
+// <copyright file="StorageLocationExtensionsTests.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -89,7 +89,9 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromNullFilePath_HasNullPath()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(null);
+            string nullPath = null;
+
+            var storageLocation = nullPath.CreateStorageLocationFromPath();
 
             Assert.Null(storageLocation.Path);
         }
@@ -104,7 +106,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("/usr/local/sub/directory/file.txt")]
         public void StorageLocationExtensions_CreateFromFilePath_HasDefaultStorageAccess(string path)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(path);
+            var storageLocation = path.CreateStorageLocationFromPath();
 
             Assert.NotNull(storageLocation.StorageAccess);
         }
@@ -112,7 +114,9 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromNullFilePath_IsNullIsTrue()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(null);
+            string nullPath = null;
+
+            var storageLocation = nullPath.CreateStorageLocationFromPath();
 
             Assert.True(storageLocation.IsNull);
         }
@@ -122,7 +126,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("")]
         public void StorageLocationExtensions_CreateFromNullOrEmptyFilePath_IsValidIsFalse(string nullOrEmpty)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(nullOrEmpty);
+            var storageLocation = nullOrEmpty.CreateStorageLocationFromPath();
 
             Assert.False(storageLocation.IsValid);
         }
@@ -137,7 +141,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("/usr/local/sub/directory/file.txt")]
         public void StorageLocationExtensions_CreateFromFilePath_IsInvalidIsFalse(string path)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(path);
+            var storageLocation = path.CreateStorageLocationFromPath();
 
             Assert.False(storageLocation.IsInvalid);
         }
@@ -145,7 +149,9 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromNullFilePath_IsContainerIsFalse()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(null);
+            string nullPath = null;
+
+            var storageLocation = nullPath.CreateStorageLocationFromPath();
 
             Assert.False(storageLocation.IsContainer);
         }
@@ -160,7 +166,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("/usr/local/sub/directory/file.txt")]
         public void StorageLocationExtensions_CreateFromNonArchiveFilePath_UsesDefaultStorageIsTrue(string path)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(path);
+            var storageLocation = path.CreateStorageLocationFromPath();
 
             Assert.True(storageLocation.UsesDefaultStorage);
         }
@@ -168,7 +174,9 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromNullFilePath_LengthCausesArgumentNullException()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(null);
+            string nullPath = null;
+
+            var storageLocation = nullPath.CreateStorageLocationFromPath();
 
             Assert.Throws<ArgumentNullException>(() => storageLocation.Length);
         }
@@ -182,7 +190,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("/usr/local/sub/directory/file.txt")]
         public void StorageLocationExtensions_CreateFromNonNullFilePath_HasNonNullPath(string path)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(path);
+            var storageLocation = path.CreateStorageLocationFromPath();
 
             Assert.NotNull(storageLocation.Path);
         }
@@ -196,7 +204,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("/usr/local/sub/directory/file.txt")]
         public void StorageLocationExtensions_CreateFromNonNullFilePath_IsNullIsFalse(string path)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(path);
+            var storageLocation = path.CreateStorageLocationFromPath();
 
             Assert.False(storageLocation.IsNull);
         }
@@ -210,7 +218,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("/usr/local/sub/directory/file.txt")]
         public void StorageLocationExtensions_CreateFromNonEmptyFilePath_IsEmptyIsFalse(string path)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(path);
+            var storageLocation = path.CreateStorageLocationFromPath();
 
             Assert.False(storageLocation.IsEmpty);
         }
@@ -223,7 +231,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("/usr/local/sub/directory/file.txt")]
         public void StorageLocationExtensions_CreateFromNonNullOrEmptyFilePath_IsValidIsTrue(string path)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(path);
+            var storageLocation = path.CreateStorageLocationFromPath();
 
             Assert.True(storageLocation.IsValid);
         }
@@ -238,7 +246,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("/usr/local/sub/directory/file.txt")]
         public void StorageLocationExtensions_CreateFromAnyFilePath_IsInvalidIsFalse(string path)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(path);
+            var storageLocation = path.CreateStorageLocationFromPath();
 
             Assert.False(storageLocation.IsInvalid);
         }
@@ -249,7 +257,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData("/usr/local/", true)]
         public void StorageLocationExtensions_CreateFromNullOrDirectoryLikeFilePath_IsContainerIsAsExpected(string path, bool expectedIsContainer)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(path);
+            var storageLocation = path.CreateStorageLocationFromPath();
 
             Assert.Equal(expectedIsContainer, storageLocation.IsContainer);
         }
@@ -257,7 +265,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromEmptyFilePath_LengthCausesArgumentException()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(string.Empty);
+            var storageLocation = string.Empty.CreateStorageLocationFromPath();
 
             Assert.Throws<ArgumentException>(() => storageLocation.Length);
         }
@@ -265,7 +273,9 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromRelativePath_IsContainer()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath("sub/directory/file.txt");
+            var relativePath = "sub/directory/file.txt";
+
+            var storageLocation = relativePath.CreateStorageLocationFromPath();
 
             Assert.Equal(false, storageLocation.IsContainer);
         }
@@ -273,7 +283,9 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromRelativePath_LengthThrows()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath("sub/directory/file.txt");
+            var relativePath = "sub/directory/file.txt";
+
+            var storageLocation = relativePath.CreateStorageLocationFromPath();
 
             Assert.Throws<FileNotFoundException>(() => storageLocation.Length);
         }
@@ -281,7 +293,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromNonexistantAbsolutePath_IsContainerThrows()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(TempPathOnly.FilePath);
+            var storageLocation = TempPathOnly.FilePath.CreateStorageLocationFromPath();
 
             Assert.False(storageLocation.IsContainer);
         }
@@ -289,7 +301,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromNonexistantAbsoluteFilePath_LengthThrowsFileNotFoundException()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(TempPathOnly.FilePath);
+            var storageLocation = TempPathOnly.FilePath.CreateStorageLocationFromPath();
 
             Assert.Throws<FileNotFoundException>(() => storageLocation.Length);
         }
@@ -299,7 +311,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var directory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()) + Path.DirectorySeparatorChar;
 
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(directory);
+            var storageLocation = directory.CreateStorageLocationFromPath();
 
             Assert.Throws<FileNotFoundException>(() => storageLocation.Length);
         }
@@ -307,7 +319,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromValidAbsoluteFilePath_IsContainerReturnsFalse()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(TempFile.FilePath);
+            var storageLocation = TempFile.FilePath.CreateStorageLocationFromPath();
 
             Assert.False(storageLocation.IsContainer);
         }
@@ -315,7 +327,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromValidAbsoluteDirectoryPath_IsContainerReturnsTrue()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(TempDir.Path);
+            var storageLocation = TempDir.Path.CreateStorageLocationFromPath();
 
             Assert.True(storageLocation.IsContainer);
         }
@@ -323,7 +335,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromValidAbsoluteFilePath_LengthReturnsExpectedValue()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(TempFile.FilePath);
+            var storageLocation = TempFile.FilePath.CreateStorageLocationFromPath();
 
             Assert.Equal(0L, storageLocation.Length);
         }
@@ -331,7 +343,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromValidAbsoluteDirectoryPath_Length()
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(TempDir.Path);
+            var storageLocation = TempDir.Path.CreateStorageLocationFromPath();
 
             Assert.Throws<FileNotFoundException>(() => storageLocation.Length);
         }
@@ -358,7 +370,7 @@ namespace INTV.Shared.Tests.Utility
         [MemberData("CreateStorageLocationFromArchivePathTestData")]
         public void StorageLocationExtensions_CreateFromCompressedArchiveNameWithNoPath_UsesDefaultStorageAccess(TestResource testResource, CompressedArchiveFormat format, bool isNestedArchivePath, string path, bool isPathToContainer)
         {
-            var storageLocation = StorageLocationExtensions.CreateFromFilePath(testResource.Name);
+            var storageLocation = testResource.Name.CreateStorageLocationFromPath();
 
             Assert.True(storageLocation.UsesDefaultStorage);
         }
@@ -373,7 +385,7 @@ namespace INTV.Shared.Tests.Utility
             {
                 var pathIntoArchive = Path.Combine(archivePath, path);
 
-                var storageLocation = StorageLocationExtensions.CreateFromFilePath(pathIntoArchive);
+                var storageLocation = pathIntoArchive.CreateStorageLocationFromPath();
 
                 Assert.True(storageLocation.StorageAccess is ICompressedArchiveAccess);
                 ((ICompressedArchiveAccess)storageLocation.StorageAccess).Dispose();
@@ -388,7 +400,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (testResource.ExtractToTemporaryFile(out archivePath))
             {
-                var storageLocation = StorageLocationExtensions.CreateFromFilePath(archivePath);
+                var storageLocation = archivePath.CreateStorageLocationFromPath();
 
                 var storageAccess = storageLocation.StorageAccess as ICompressedArchiveAccess;
                 Assert.Equal(format, storageAccess.Format);
@@ -404,7 +416,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (testResource.ExtractToTemporaryFile(out archivePath))
             {
-                var storageLocation = StorageLocationExtensions.CreateFromFilePath(archivePath);
+                var storageLocation = archivePath.CreateStorageLocationFromPath();
 
                 Assert.True(storageLocation.IsContainer);
                 ((ICompressedArchiveAccess)storageLocation.StorageAccess).Dispose();

@@ -434,7 +434,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var badFileNameCharacters = (allowAllInvalidCharacters ? Path.GetInvalidFileNameChars() : Path.GetInvalidFileNameChars().Except(Path.GetInvalidPathChars()).ToArray()).Except(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }).ToArray();
             var randomBadCharacter = badFileNameCharacters[Random.Next(badFileNameCharacters.Length)];
-            path += Path.DirectorySeparatorChar.ToString() + randomBadCharacter + " that cannot be good.txt";
+            path += Path.DirectorySeparatorChar.ToString() + "zz" + randomBadCharacter + " that cannot be good.txt";
             return path;
         }
     }

@@ -76,7 +76,7 @@ namespace INTV.Shared.Tests.Utility
         [MemberData("CompressedArchiveTestResources")]
         public void ICompressedArchiveAccess_GetStorageAccessFromNonExistentCompressedArchivePath_ReturnsDefaultStorageAccess(TestResource compressedArchiveTestResource)
         {
-            var invalidDirectoryPathToResource = "this/will/not/be/found/" + compressedArchiveTestResource.Name;
+            var invalidDirectoryPathToResource = "this/will/not/be/found/" + Guid.NewGuid() + "/" + compressedArchiveTestResource.Name;
             var invalidFilePathToResource = Path.GetTempPath() + compressedArchiveTestResource.Name;
 
             Assert.Equal(IStorageAccessHelpers.DefaultStorage, invalidDirectoryPathToResource.GetStorageAccess());
@@ -121,7 +121,7 @@ namespace INTV.Shared.Tests.Utility
 
         [Theory]
         [MemberData("GetStorageAccessToNestedArchivePathTestData")]
-        public void ICompressedArchiveAccess_GetStorageAccessFromNestedArchivePath_ReturnsCorrectArchiveKind(TestResource testResource, CompressedArchiveFormat format, bool isNestedArchivePath, string path, CompressedArchiveFormat nestedArchiveFormat, bool isPathToContainer)
+        public void ICompressedArchiveAccess_GetStorageAccessFromNestedArchivePath_ReturnsCorrectArchiveKind(TestResource testResource, string path, CompressedArchiveFormat nestedArchiveFormat)
         {
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath))
@@ -200,27 +200,27 @@ namespace INTV.Shared.Tests.Utility
         {
             get
             {
-                yield return new object[] { TestResource.TagalongDirZip, CompressedArchiveFormat.Zip, false, null, CompressedArchiveFormat.Zip, false };
-                yield return new object[] { TestResource.TagalongDirZip, CompressedArchiveFormat.Zip, false, "tagalong_dir/tagalong.luigi", CompressedArchiveFormat.Zip, false };
-                yield return new object[] { TestResource.TagalongDirZip, CompressedArchiveFormat.Zip, false, "tagalong_dir/", CompressedArchiveFormat.Zip, true };
-                yield return new object[] { TestResource.TagalongNestedZip, CompressedArchiveFormat.Zip, false, "tagalong.zip", CompressedArchiveFormat.Zip, true };
-                yield return new object[] { TestResource.TagalongBinGZip, CompressedArchiveFormat.GZip, false, null, CompressedArchiveFormat.GZip, false };
-                yield return new object[] { TestResource.TagalongBinGZip, CompressedArchiveFormat.GZip, false, "tagalong.bin", CompressedArchiveFormat.GZip, false };
-                yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, false, null, CompressedArchiveFormat.Tar, true };
-                yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, false, "tagalong_dir/tagalong.rom", CompressedArchiveFormat.Tar, false };
-                yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, false, "tagalong_dir/", CompressedArchiveFormat.Tar, true };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, null, CompressedArchiveFormat.GZip, false };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/bin/tagalong.bin", CompressedArchiveFormat.Tar, false };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/bin/", CompressedArchiveFormat.Tar, true };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, false, "tagalong_msys2.tar", CompressedArchiveFormat.Tar, true };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/tagalong.zip/tagalong.cfg", CompressedArchiveFormat.Zip, false };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/tagalong.zip", CompressedArchiveFormat.Zip, true };
+                yield return new object[] { TestResource.TagalongDirZip, null, CompressedArchiveFormat.Zip };
+                yield return new object[] { TestResource.TagalongDirZip, "tagalong_dir/tagalong.luigi", CompressedArchiveFormat.Zip };
+                yield return new object[] { TestResource.TagalongDirZip, "tagalong_dir/", CompressedArchiveFormat.Zip };
+                yield return new object[] { TestResource.TagalongNestedZip, "tagalong.zip", CompressedArchiveFormat.Zip };
+                yield return new object[] { TestResource.TagalongBinGZip, null, CompressedArchiveFormat.GZip };
+                yield return new object[] { TestResource.TagalongBinGZip, "tagalong.bin", CompressedArchiveFormat.GZip };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, null, CompressedArchiveFormat.Tar };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, "tagalong_dir/tagalong.rom", CompressedArchiveFormat.Tar };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, "tagalong_dir/", CompressedArchiveFormat.Tar };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, null, CompressedArchiveFormat.GZip };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar/bin/tagalong.bin", CompressedArchiveFormat.Tar };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar/bin/", CompressedArchiveFormat.Tar };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar", CompressedArchiveFormat.Tar };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar/tagalong.zip/tagalong.cfg", CompressedArchiveFormat.Zip };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar/tagalong.zip", CompressedArchiveFormat.Zip };
             }
         }
 
         [Theory]
         [MemberData("GetStorageAccessToNestedArchivePathTestData")]
-        public void ICompressedArchiveAccess_GetRootArchivePathOfPathToOrWithinArchive(TestResource testResource, CompressedArchiveFormat format, bool isNestedArchivePath, string path, CompressedArchiveFormat nestedArchiveFormat, bool isPathToContainer)
+        public void ICompressedArchiveAccess_GetRootArchivePathOfPathToOrWithinArchive_ReturnsCorrectRootArchivePath(TestResource testResource, string path, CompressedArchiveFormat _)
         {
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath))
@@ -234,6 +234,73 @@ namespace INTV.Shared.Tests.Utility
         }
 
         #endregion // GetRootArchivePath Tests
+
+        #region GetMostDeeplyNestedContainerLocation Tests
+
+        [Theory]
+        [MemberData("GetRootArchivePathIsNotToArchiveTestData")]
+        public void ICompressedArchiveAccess_GetMostDeeplyNestedContainerPathUsingPathNotToOrWithinArchive_ReturnsNull(string path, bool useTempDir, bool useTempFile)
+        {
+            using (var tempDirectory = new TemporaryDirectory())
+            using (var temporaryFile = new TemporaryFile(".txt", useTempFile))
+            {
+                if (useTempDir)
+                {
+                    path = Path.Combine(tempDirectory.Path, path);
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+                    if (useTempFile)
+                    {
+                        File.Create(path);
+                    }
+                }
+                else if (useTempFile)
+                {
+                    path = temporaryFile.FilePath;
+                }
+
+                Assert.Null(path.GetMostDeeplyNestedArchivePath());
+            }
+        }
+
+        public static IEnumerable<object[]> GetPathToNestedArchivePathTestData
+        {
+            get
+            {
+                yield return new object[] { TestResource.TagalongDirZip, null, null };
+                yield return new object[] { TestResource.TagalongDirZip, "tagalong_dir/tagalong.luigi", null };
+                yield return new object[] { TestResource.TagalongDirZip, "tagalong_dir/", null };
+                yield return new object[] { TestResource.TagalongNestedZip, "tagalong.zip", "tagalong.zip" };
+                yield return new object[] { TestResource.TagalongBinGZip, null, null };
+                yield return new object[] { TestResource.TagalongBinGZip, "tagalong.bin", null };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, null, null };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, "tagalong_dir/tagalong.rom", null };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, "tagalong_dir/", null };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, null, null };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar/bin/tagalong.bin", "tagalong_msys2.tar" };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar/bin/", "tagalong_msys2.tar" };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar", "tagalong_msys2.tar" };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar/tagalong.zip/tagalong.cfg", "tagalong_msys2.tar/tagalong.zip" };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, "tagalong_msys2.tar/tagalong.zip", "tagalong_msys2.tar/tagalong.zip" };
+            }
+        }
+
+        [Theory]
+        [MemberData("GetPathToNestedArchivePathTestData")]
+        public void ICompressedArchiveAccess_GetMostDeeplyNestedContainerPathToOrWithinArchive_ReturnsExpectedNestedArchivePath(TestResource testResource, string path, string nestedArchivePath)
+        {
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
+            {
+                var nestedPath = string.IsNullOrEmpty(path) ? archiveFilePath : Path.Combine(archiveFilePath, path);
+
+                var mostDeeplyNestedContainerPath = nestedPath.GetMostDeeplyNestedArchivePath();
+
+                var expectedMostDeeplyNestedContainerPath = nestedArchivePath == null ? archiveFilePath : Path.Combine(archiveFilePath, nestedArchivePath);
+                Assert.Equal(0, PathComparer.Instance.Compare(expectedMostDeeplyNestedContainerPath.NormalizePathSeparators(), mostDeeplyNestedContainerPath.NormalizePathSeparators()));
+            }
+        }
+
+        #endregion // GetMostDeeplyNestedContainerLocation Tests
 
         #region GetParentStorageAccess Tests
 

@@ -50,8 +50,7 @@ namespace INTV.Shared.Utility
             if (!string.IsNullOrEmpty(rootCompressedArchivePath))
             {
                 storageAccess = CompressedArchiveAccess.Open(rootCompressedArchivePath, CompressedArchiveAccessMode.Read);
-                string nestedArchiveRelativeLocation;
-                var nestedAchiveLocation = filePath.GetMostDeeplyNestedContainerLocation(out nestedArchiveRelativeLocation);
+                var nestedAchiveLocation = filePath.GetMostDeeplyNestedArchivePath();
                 if (PathComparer.Instance.Compare(rootCompressedArchivePath, nestedAchiveLocation) != 0)
                 {
                     nestedAchiveLocation = PathUtils.GetRelativePath(nestedAchiveLocation, rootCompressedArchivePath).NormalizePathSeparators();
@@ -96,6 +95,24 @@ namespace INTV.Shared.Utility
             }
             return rootArchivePath;
         }
+
+        /// <summary>
+        /// Gets the path to the most deeply nested archive from the given path.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public static string GetMostDeeplyNestedArchivePath(this string filePath)
+        {
+            filePath = filePath.NormalizePathSeparators();
+            var nestedAchiveLocation = filePath.GetRootArchivePath();
+            if (!string.IsNullOrEmpty(nestedAchiveLocation))
+            {
+                string _;
+                nestedAchiveLocation = filePath.GetMostDeeplyNestedContainerLocation(out _);
+            }
+            return nestedAchiveLocation;
+        }
+
 
         /// <summary>
         /// Gets the parent storage access of the given compressed archive access.

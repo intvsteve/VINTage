@@ -36,11 +36,16 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="path">The path from which to create the storage location instance.</param>
         /// <returns>A new <see cref="StorageLocation"/> with appropriately initialized state.</returns>
-        /// <remarks>It is assumed that <paramref name="path"/> refers to an existing file in the file system.</remarks>
+        /// <remarks>It is assumed that <paramref name="path"/> refers to an existing file in the file system. It is not required - though
+        /// the resulting storage location will always use the default storage access.</remarks>
         public static StorageLocation CreateFromFilePath(string path)
         {
             var storageAccess = path.GetStorageAccess();
-            var isContainer = storageAccess is ICompressedArchiveAccess;
+            bool? isContainer = null;
+            if (storageAccess is ICompressedArchiveAccess)
+            {
+                isContainer = true;
+            }
             var storageLocation = new StorageLocation(path, storageAccess, isContainer);
             return storageLocation;
         }

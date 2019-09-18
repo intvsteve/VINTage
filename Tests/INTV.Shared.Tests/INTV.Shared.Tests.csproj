@@ -70,6 +70,7 @@
     <Compile Include="Utility\ICompressedArchiveAccessExtensionsTests.cs" />
     <Compile Include="Utility\PathUtilsTests.cs" />
     <Compile Include="Utility\ResourceHelpersTests.cs" />
+    <Compile Include="Utility\StorageLocationExtensionsTests.cs" />
     <Compile Include="Utility\TarArchiveAccessTests.cs" />
     <Compile Include="Utility\TemporaryDirectoryTests.cs" />
     <Compile Include="Utility\ZipArchiveAccessTests.cs" />

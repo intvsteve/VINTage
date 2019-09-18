@@ -1,4 +1,4 @@
-﻿// <copyright file="ICompressedArchiveAccessExtensions.cs" company="INTV Funhouse">
+// <copyright file="ICompressedArchiveAccessExtensions.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -48,6 +48,37 @@ namespace INTV.Shared.Utility
                 storageAccess = CompressedArchiveAccess.Open(filePath, CompressedArchiveAccessMode.Read);
             }
             return storageAccess;
+        }
+
+        /// <summary>
+        /// Given a path that may refer to an entry within a compressed archive, locate the path to the archive file on disk.
+        /// </summary>
+        /// <param name="path">The path that may refer to an entry within a compressed archive.</param>
+        /// <returns>The path to the root archive on disk, or <c>null</c>.</returns>
+        /// <exception cref="ArgumentException">Thrown if bad characters, et. al.</exception>
+        /// <exception cref="PathTooLongException">Thrown if the path is too long. Sad!</exception>
+        public static string GetRootArchivePath(this string path)
+        {
+            string rootArchivePath = null;
+            if (!string.IsNullOrEmpty(path) && Path.IsPathRooted(path))
+            {
+                // First, check the path itself to see looks like something that is an archive. Note that this can
+                // produce a false positive if a directory is (pathologically) named like an archive. For example,
+                // X:/foo/bar.zip/baz, where bar.zip is a directory, not a ZIP file, will have a non-empty result below.
+                path = path.NormalizePathSeparators();
+                if (path.IsInNestedContainer())
+                {
+                    while (!string.IsNullOrEmpty(path) && !File.Exists(path))
+                    {
+                        path = Path.GetDirectoryName(path);
+                    }
+                    if (!string.IsNullOrEmpty(path) && File.Exists(path) && path.GetCompressedArchiveFormatsFromFileName().Any())
+                    {
+                        rootArchivePath = path;
+                    }
+                }
+            }
+            return rootArchivePath;
         }
 
         /// <summary>

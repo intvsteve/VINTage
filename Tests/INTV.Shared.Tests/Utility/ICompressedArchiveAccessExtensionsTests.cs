@@ -1,4 +1,4 @@
-﻿// <copyright file="ICompressedArchiveAccessExtensionsTests.cs" company="INTV Funhouse">
+// <copyright file="ICompressedArchiveAccessExtensionsTests.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -113,6 +113,82 @@ namespace INTV.Shared.Tests.Utility
                     Assert.NotNull(compressedArchiveStorageAccess);
                     Assert.Equal(expectedCompressedStorageAccessFormat, compressedArchiveStorageAccess.Format);
                     compressedArchiveStorageAccess.Dispose();
+            }
+        }
+
+        public static IEnumerable<object[]> GetRootArchivePathIsNotToArchiveTestData
+        {
+            get
+            {
+                yield return new object[] { null, false, false };
+                yield return new object[] { "", false, false };
+                yield return new object[] { Path.Combine(Path.GetTempPath(), "file.txt"), false, false };
+                yield return new object[] { Path.Combine(Path.GetTempPath(), "not here.zip"), false, false };
+                yield return new object[] { ".txt", false, true };
+                yield return new object[] { @"subdir/tricky.tar/games/intellivision/game.rom", true, false };
+                yield return new object[] { @"subdir/tricky.tar/games/intellivision/game.rom", true, true };
+            }
+        }
+
+        [Theory]
+        [MemberData("GetRootArchivePathIsNotToArchiveTestData")]
+        public void ICompressedArchiveAccess_GetRootArchivePathUsingPathNotToOrWithinArchive_ReturnsNull(string path, bool useTempDir, bool useTempFile)
+        {
+            using (var tempDirectory = new TemporaryDirectory())
+            using (var temporaryFile = new TemporaryFile(".txt", useTempFile))
+            {
+                if (useTempDir)
+                {
+                    path = Path.Combine(tempDirectory.Path, path);
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+                    if (useTempFile)
+                    {
+                        File.Create(path);
+                    }
+                }
+                else if (useTempFile)
+                {
+                    path = temporaryFile.FilePath;
+                }
+
+                Assert.Null(path.GetRootArchivePath());
+            }
+        }
+
+        public static IEnumerable<object[]> GetStorageAccessToNestedArchivePathTestData
+        {
+            get
+            {
+                yield return new object[] { TestResource.TagalongDirZip, CompressedArchiveFormat.Zip, false, null, CompressedArchiveFormat.Zip, false };
+                yield return new object[] { TestResource.TagalongDirZip, CompressedArchiveFormat.Zip, false, "tagalong_dir/tagalong.luigi", CompressedArchiveFormat.Zip, false };
+                yield return new object[] { TestResource.TagalongDirZip, CompressedArchiveFormat.Zip, false, "tagalong_dir/", CompressedArchiveFormat.Zip, true };
+                yield return new object[] { TestResource.TagalongNestedZip, CompressedArchiveFormat.Zip, false, "tagalong.zip", CompressedArchiveFormat.Zip, true };
+                yield return new object[] { TestResource.TagalongBinGZip, CompressedArchiveFormat.GZip, false, null, CompressedArchiveFormat.GZip, false };
+                yield return new object[] { TestResource.TagalongBinGZip, CompressedArchiveFormat.GZip, false, "tagalong.bin", CompressedArchiveFormat.GZip, false };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, false, null, CompressedArchiveFormat.Tar, true };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, false, "tagalong_dir/tagalong.rom", CompressedArchiveFormat.Tar, false };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, false, "tagalong_dir/", CompressedArchiveFormat.Tar, true };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, null, CompressedArchiveFormat.GZip, false };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/bin/tagalong.bin", CompressedArchiveFormat.Tar, false };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/bin/", CompressedArchiveFormat.Tar, true };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, false, "tagalong_msys2.tar", CompressedArchiveFormat.Tar, true };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/tagalong.zip/tagalong.cfg", CompressedArchiveFormat.Zip, false };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/tagalong.zip", CompressedArchiveFormat.Zip, true };
+            }
+        }
+
+        [Theory]
+        [MemberData("GetStorageAccessToNestedArchivePathTestData")]
+        public void ICompressedArchiveAccess_GetRootArchivePathOfPathToOrWithinArchive(TestResource testResource, CompressedArchiveFormat format, bool isNestedArchivePath, string path, CompressedArchiveFormat nestedArchiveFormat, bool isPathToContainer)
+        {
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
+            {
+                var nestedPath = string.IsNullOrEmpty(path) ? archiveFilePath : Path.Combine(archiveFilePath, path);
+
+                var rootArchivePath = nestedPath.GetRootArchivePath();
+
+                Assert.Equal(0, PathComparer.Instance.Compare(archiveFilePath.NormalizePathSeparators(), rootArchivePath.NormalizePathSeparators()));
             }
         }
 

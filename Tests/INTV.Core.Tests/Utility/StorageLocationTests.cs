@@ -40,6 +40,7 @@ namespace INTV.Core.Tests.Utility
             Assert.False(storageLocation.IsValid);
             Assert.False(storageLocation.UsesDefaultStorage);
             Assert.False(storageLocation.IsContainer);
+            Assert.Equal(-1L, storageLocation.Length);
             Assert.False(storageLocation.Exists());
             Assert.False(storageLocation.StorageAccess.Exists(null));
             Assert.False(storageLocation.StorageAccess.IsLocationAContainer(null));

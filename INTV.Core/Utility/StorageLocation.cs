@@ -131,7 +131,7 @@ namespace INTV.Core.Utility
         }
 
         /// <summary>
-        /// Gets a value indicating whether the location is a canonical invalid storage location.
+        /// Gets a value indicating whether the location is a canonical invalid storage location (uses .
         /// </summary>
         public bool IsInvalid
         {
@@ -166,6 +166,17 @@ namespace INTV.Core.Utility
         public bool UsesDefaultStorage
         {
             get { return _storageAccess == IStorageAccessHelpers.DefaultStorage; }
+        }
+
+        /// <summary>
+        /// Gets the size (in bytes) of the entity described by the path using its storage access.
+        /// </summary>
+        /// <remarks>If the location refers to a directory, this value will be -1. If this location refers to a
+        /// file or a compressed archive file, it returns the size of the file. When referring to a location within
+        /// a compressed archive, if the entry cannot be found, 0 will be returned.</remarks>
+        public long Length
+        {
+            get { return StorageAccess.Size(Path); }
         }
 
         /// <summary>

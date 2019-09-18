@@ -1,4 +1,4 @@
-// <copyright file="ICompressedArchiveAccessExtensionsTests.cs" company="INTV Funhouse">
+﻿// <copyright file="ICompressedArchiveAccessExtensionsTests.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using INTV.Core.Utility;
 using INTV.Shared.Utility;
 using INTV.TestHelpers.Shared.Utility;
 using Xunit;
@@ -71,13 +72,13 @@ namespace INTV.Shared.Tests.Utility
 
         [Theory]
         [MemberData("CompressedArchiveTestResources")]
-        public void ICompressedArchiveAccess_GetStorageAccessFromNonExistentCompressedArchivePath_ThrowsIOException(TestResource compressedArchiveTestResource)
+        public void ICompressedArchiveAccess_GetStorageAccessFromNonExistentCompressedArchivePath_ReturnsDefaultStorageAccess(TestResource compressedArchiveTestResource)
         {
             var invalidDirectoryPathToResource = "this/will/not/be/found/" + compressedArchiveTestResource.Name;
             var invalidFilePathToResource = Path.GetTempPath() + compressedArchiveTestResource.Name;
 
-            Assert.Throws<DirectoryNotFoundException>(() => invalidDirectoryPathToResource.GetStorageAccess());
-            Assert.Throws<FileNotFoundException>(() => invalidFilePathToResource.GetStorageAccess());
+            Assert.Equal(IStorageAccessHelpers.DefaultStorage, invalidDirectoryPathToResource.GetStorageAccess());
+            Assert.Equal(IStorageAccessHelpers.DefaultStorage, invalidFilePathToResource.GetStorageAccess());
         }
 
         public static IEnumerable<object[]> UniqueCompressedArchiveFormatTestResources
@@ -106,13 +107,47 @@ namespace INTV.Shared.Tests.Utility
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath))
             {
-                    var storageAccess = archiveFilePath.GetStorageAccess();
-                    var compressedArchiveStorageAccess = storageAccess as ICompressedArchiveAccess;
+                var storageAccess = archiveFilePath.GetStorageAccess();
+                var compressedArchiveStorageAccess = storageAccess as ICompressedArchiveAccess;
 
-                    Assert.NotNull(storageAccess);
-                    Assert.NotNull(compressedArchiveStorageAccess);
-                    Assert.Equal(expectedCompressedStorageAccessFormat, compressedArchiveStorageAccess.Format);
-                    compressedArchiveStorageAccess.Dispose();
+                Assert.NotNull(storageAccess);
+                Assert.NotNull(compressedArchiveStorageAccess);
+                Assert.Equal(expectedCompressedStorageAccessFormat, compressedArchiveStorageAccess.Format);
+                compressedArchiveStorageAccess.Dispose();
+            }
+        }
+
+        [Theory]
+        [MemberData("GetStorageAccessToNestedArchivePathTestData")]
+        public void ICompressedArchiveAccess_GetStorageAccessFromNestedArchivePath_ReturnsCorrectArchiveKind(TestResource testResource, CompressedArchiveFormat format, bool isNestedArchivePath, string path, CompressedArchiveFormat nestedArchiveFormat, bool isPathToContainer)
+        {
+            string archiveFilePath;
+            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
+            {
+                var nestedPath = string.IsNullOrEmpty(path) ? archiveFilePath : Path.Combine(archiveFilePath, path);
+
+                var storageAccess = nestedPath.GetStorageAccess();
+                var compressedArchiveStorageAccess = storageAccess as ICompressedArchiveAccess;
+
+                Assert.NotNull(storageAccess);
+                Assert.NotNull(compressedArchiveStorageAccess);
+                Assert.Equal(nestedArchiveFormat, compressedArchiveStorageAccess.Format);
+                compressedArchiveStorageAccess.Dispose();
+            }
+        }
+
+        [Fact]
+        public void ICompressedArchiveAccess_GetStorageAccessFromMissingNestedArchivePath_ReturnsDefaultStorageAccess()
+        {
+            string archiveFilePath;
+            using (TestResource.TagalongMsys2Tgz.ExtractToTemporaryFile(out archiveFilePath))
+            {
+                var nestedPath = Path.Combine(archiveFilePath, "tagalong_msys2.tar/tag along.zip/tagalong.cfg"); // typo in nested archive
+
+                var storageAccess = nestedPath.GetStorageAccess();
+
+                Assert.False(storageAccess is ICompressedArchiveAccess);
+                Assert.Equal(IStorageAccessHelpers.DefaultStorage, storageAccess);
             }
         }
 

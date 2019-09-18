@@ -1,4 +1,4 @@
-// <copyright file="ICompressedArchiveAccessExtensions.cs" company="INTV Funhouse">
+﻿// <copyright file="ICompressedArchiveAccessExtensions.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -35,17 +35,33 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets the storage access to use for the given location.
         /// </summary>
-        /// <param name="filePath">The file path to check.</param>
-        /// <returns>The storage access to use.</returns>
-        /// <remarks>If <paramref name="filePath"/> is not to a compressed archive, then the default storage
-        /// access will be returned.</remarks>
+        /// <param name="filePath">The absolute file path to get a storage access for.</param>
+        /// <param name="getNestedArchive">The storage access to use to access the given path.</param>
+        /// <returns>The storage access to use to access the given path.</returns>
+        /// <remarks>For a file path that refers to a nested archive, e.g. a .zip inside a .tar inside a .gz, an appropriate
+        /// storage access will be returned. Note that such a situation may cause extraction of intermediate archive contents
+        /// to temporary locations on the disk. In an error condition arises that results in a nested archive failing to be
+        /// located, this method will return the default storage access.</remarks>
         public static IStorageAccess GetStorageAccess(this string filePath)
         {
+            filePath = filePath.NormalizePathSeparators();
             var storageAccess = IStorageAccessHelpers.DefaultStorage;
-            var formats = filePath.GetCompressedArchiveFormatsFromFileName();
-            if (formats.FirstOrDefault().IsCompressedArchiveFormatSupported())
+            var rootCompressedArchivePath = filePath.GetRootArchivePath().NormalizePathSeparators();
+            if (!string.IsNullOrEmpty(rootCompressedArchivePath))
             {
-                storageAccess = CompressedArchiveAccess.Open(filePath, CompressedArchiveAccessMode.Read);
+                storageAccess = CompressedArchiveAccess.Open(rootCompressedArchivePath, CompressedArchiveAccessMode.Read);
+                string nestedArchiveRelativeLocation;
+                var nestedAchiveLocation = filePath.GetMostDeeplyNestedContainerLocation(out nestedArchiveRelativeLocation);
+                if (PathComparer.Instance.Compare(rootCompressedArchivePath, nestedAchiveLocation) != 0)
+                {
+                    nestedAchiveLocation = PathUtils.GetRelativePath(nestedAchiveLocation, rootCompressedArchivePath).NormalizePathSeparators();
+                    var dontCare = string.Empty;
+                    storageAccess = GetNestedCompressedArchive(storageAccess as ICompressedArchiveAccess, nestedAchiveLocation, ref dontCare);
+                }
+                if (storageAccess == null)
+                {
+                    storageAccess = IStorageAccessHelpers.DefaultStorage;
+                }
             }
             return storageAccess;
         }

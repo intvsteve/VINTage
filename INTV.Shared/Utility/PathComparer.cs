@@ -28,6 +28,7 @@ namespace INTV.Shared.Utility
     /// <summary>
     /// Comparison implementation suitable for file paths.
     /// </summary>
+    /// <remarks>Consider normalizing separators for ALL path comparisons.</remarks>
     public partial class PathComparer : IComparer<string>, IComparer, IEqualityComparer<string>, IEqualityComparer
     {
         /// <summary>
@@ -125,6 +126,7 @@ namespace INTV.Shared.Utility
 
         private int CompareCore(string x, string y, StringComparison comparisonMode)
         {
+            // TODO: Consider normalizing path separator in all circumstances.
             var result = string.Compare(x, y, comparisonMode);
             if (result != 0)
             {

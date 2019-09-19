@@ -36,7 +36,6 @@ namespace INTV.Shared.Utility
         /// Gets the storage access to use for the given location.
         /// </summary>
         /// <param name="filePath">The absolute file path to get a storage access for.</param>
-        /// <param name="getNestedArchive">The storage access to use to access the given path.</param>
         /// <returns>The storage access to use to access the given path.</returns>
         /// <remarks>For a file path that refers to a nested archive, e.g. a .zip inside a .tar inside a .gz, an appropriate
         /// storage access will be returned. Note that such a situation may cause extraction of intermediate archive contents
@@ -99,20 +98,19 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Gets the path to the most deeply nested archive from the given path.
         /// </summary>
-        /// <param name="location"></param>
-        /// <returns></returns>
+        /// <param name="filePath">An absolute file path that refers to a location within an existing archive on disk.</param>
+        /// <returns>The most deeply nested archive described by <paramref name="filePath"/>.</returns>
         public static string GetMostDeeplyNestedArchivePath(this string filePath)
         {
             filePath = filePath.NormalizePathSeparators();
             var nestedAchiveLocation = filePath.GetRootArchivePath();
             if (!string.IsNullOrEmpty(nestedAchiveLocation))
             {
-                string _;
-                nestedAchiveLocation = filePath.GetMostDeeplyNestedContainerLocation(out _);
+                string dontCare;
+                nestedAchiveLocation = filePath.GetMostDeeplyNestedContainerLocation(out dontCare);
             }
             return nestedAchiveLocation;
         }
-
 
         /// <summary>
         /// Gets the parent storage access of the given compressed archive access.

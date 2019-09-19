@@ -162,7 +162,7 @@ namespace INTV.Shared.Tests.Utility
             get
             {
                 yield return new object[] { null, false, false };
-                yield return new object[] { "", false, false };
+                yield return new object[] { string.Empty, false, false };
                 yield return new object[] { Path.Combine(Path.GetTempPath(), "file.txt"), false, false };
                 yield return new object[] { Path.Combine(Path.GetTempPath(), "not here.zip"), false, false };
                 yield return new object[] { ".txt", false, true };
@@ -220,7 +220,7 @@ namespace INTV.Shared.Tests.Utility
 
         [Theory]
         [MemberData("GetStorageAccessToNestedArchivePathTestData")]
-        public void ICompressedArchiveAccess_GetRootArchivePathOfPathToOrWithinArchive_ReturnsCorrectRootArchivePath(TestResource testResource, string path, CompressedArchiveFormat _)
+        public void ICompressedArchiveAccess_GetRootArchivePathOfPathToOrWithinArchive_ReturnsCorrectRootArchivePath(TestResource testResource, string path, CompressedArchiveFormat nestedArchiveFormat)
         {
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath))
@@ -339,7 +339,6 @@ namespace INTV.Shared.Tests.Utility
                     }
                 }
             }
-
         }
 
         #endregion // GetParentStorageAccess Tests

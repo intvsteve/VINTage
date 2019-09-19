@@ -673,7 +673,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void CompressedArchiveAccess_ExtractEntryToNonexistantDirectory_ThrowsDirectoryNotFoundException()
+        public void CompressedArchiveAccess_ExtractEntryToNonexistentDirectory_ThrowsDirectoryNotFoundException()
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 

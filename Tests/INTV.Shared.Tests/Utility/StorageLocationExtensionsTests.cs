@@ -291,7 +291,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void StorageLocationExtensions_CreateFromNonexistantAbsolutePath_IsContainerThrows()
+        public void StorageLocationExtensions_CreateFromNonexistentAbsolutePath_IsContainerThrows()
         {
             var storageLocation = TempPathOnly.FilePath.CreateStorageLocationFromPath();
 
@@ -299,7 +299,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void StorageLocationExtensions_CreateFromNonexistantAbsoluteFilePath_LengthThrowsFileNotFoundException()
+        public void StorageLocationExtensions_CreateFromNonexistentAbsoluteFilePath_LengthThrowsFileNotFoundException()
         {
             var storageLocation = TempPathOnly.FilePath.CreateStorageLocationFromPath();
 
@@ -307,7 +307,7 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Fact]
-        public void StorageLocationExtensions_CreateFromNonexistantAbsoluteDirectoryPath_LengthThrowsFileNotFoundException()
+        public void StorageLocationExtensions_CreateFromNonexistentAbsoluteDirectoryPath_LengthThrowsFileNotFoundException()
         {
             var directory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()) + Path.DirectorySeparatorChar;
 

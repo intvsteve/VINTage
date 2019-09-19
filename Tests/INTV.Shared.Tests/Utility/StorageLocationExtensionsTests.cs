@@ -424,5 +424,230 @@ namespace INTV.Shared.Tests.Utility
         }
 
         #endregion // CreateFromFilePath Tests
+
+        #region Combine Tests
+
+        [Fact]
+        public void StorageLocationExtensions_CombineWithInvalidLocation_ThrowsInvalidOperationException()
+        {
+            var location = StorageLocation.InvalidLocation;
+
+            Assert.Throws<InvalidOperationException>(() => location.Combine(null));
+        }
+
+        public static IEnumerable<object[]> CombineStorageLocationPathTestData
+        {
+            get
+            {
+                // Combine with null.
+                yield return new object[] { null, null, null, null };
+                yield return new object[] { null, null, new string[] { }, null };
+                yield return new object[] { null, null, new string[] { string.Empty, string.Empty }, string.Empty };
+                yield return new object[] { null, null, new string[] { "a", string.Empty }, "a" };
+
+                // Combine with empty.
+                yield return new object[] { null, string.Empty, null, null };
+                yield return new object[] { null, string.Empty, new string[] { }, null };
+                yield return new object[] { null, string.Empty, new string[] { string.Empty, string.Empty }, string.Empty };
+                yield return new object[] { null, string.Empty, new string[] { string.Empty, "x" }, "x" };
+
+                // Combine with relative.
+                yield return new object[] { null, "relative", null, "relative" };
+                yield return new object[] { null, "relative", new string[] { }, "relative" };
+                yield return new object[] { null, "relative", new string[] { string.Empty, string.Empty }, "relative" };
+                yield return new object[] { null, "relative", new string[] { "a", string.Empty, "b.zip", "c" }, "relative/a/b.zip/c" };
+
+                // Combine with absolute, nonexistent.
+                var nonExistentPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                yield return new object[] { null, nonExistentPath, null, nonExistentPath };
+                yield return new object[] { null, nonExistentPath, new string[] { }, nonExistentPath };
+                yield return new object[] { null, nonExistentPath, new string[] { string.Empty, string.Empty, string.Empty }, nonExistentPath };
+                yield return new object[] { null, nonExistentPath, new string[] { "a", string.Empty, "b.zip", "c" }, Path.Combine(nonExistentPath, "a", string.Empty, "b.zip", "c") };
+
+                // Combine with absolute, existent.
+                yield return new object[] { null, "<<::TEMPDIR::>>", null, null };
+                yield return new object[] { null, "<<::TEMPDIR::>>", new string[] { }, null };
+                yield return new object[] { null, "<<::TEMPDIR::>>", new string[] { string.Empty, string.Empty }, null };
+                yield return new object[] { null, "<<::TEMPDIR::>>", new string[] { "a", "b.zip", "c" }, "a/b.zip/c" };
+
+                // Combine with absolute "archive", nonexistent.
+                var nonExistentArchivePath = Path.Combine(Path.GetTempPath(), "whistler.zip");
+                yield return new object[] { null, nonExistentArchivePath, null, nonExistentArchivePath };
+                yield return new object[] { null, nonExistentArchivePath, new string[] { }, nonExistentArchivePath };
+                yield return new object[] { null, nonExistentArchivePath, new string[] { string.Empty }, nonExistentArchivePath };
+                yield return new object[] { null, nonExistentArchivePath, new string[] { "subdir", "nested.tar" }, Path.Combine(nonExistentArchivePath, "subdir/nested.tar") };
+
+                // Combine with actual archive.
+                yield return new object[] { TestResource.TagalongEmptyZip, null, null, null };
+                yield return new object[] { TestResource.TagalongEmptyZip, null, new string[] { }, null };
+                yield return new object[] { TestResource.TagalongEmptyZip, null, new string[] { string.Empty, string.Empty }, null };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, "tagalong_dir/", new string[] { }, "tagalong_dir/" };
+                yield return new object[] { TestResource.TagalongDirLuigiRomTar, "tagalong_dir/", new string[] { string.Empty, string.Empty }, "tagalong_dir/" };
+                yield return new object[] { TestResource.TagalongZipWithManyNests, "extra_nest/tagalong_msys2.tgz", new string[] { "tagalong_msys2.tar", "tagalong.zip", "tagalong.bin" }, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.bin" };
+            }
+        }
+
+        [Theory]
+        [MemberData("CombineStorageLocationPathTestData")]
+        public void StorageLocationExtensions_CombineNullLocationWithPath_ProducesExpectedPathAndStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
+        {
+            var location = StorageLocation.Null;
+            using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
+            {
+                var newStorageLocation = location.Combine(pathElement, pathElements);
+
+                Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                Assert.Equal(archiveResource == null, newStorageLocation.UsesDefaultStorage);
+            }
+        }
+
+        [Theory]
+        [MemberData("CombineStorageLocationPathTestData")]
+        public void StorageLocationExtensions_CombineEmptyLocationWithPath_ProducesExpectedPathAndStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
+        {
+            var location = StorageLocation.Empty;
+            using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
+            {
+                var newStorageLocation = location.Combine(pathElement, pathElements);
+
+                Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                Assert.Equal(archiveResource == null, newStorageLocation.UsesDefaultStorage);
+            }
+        }
+
+        [Theory]
+        [MemberData("CombineStorageLocationPathTestData")]
+        public void StorageLocationExtensions_CombineRelativeLocationWithPath_ProducesExpectedPathAndStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
+        {
+            var location = "some/relative/location/".CreateStorageLocationFromPath();
+            using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
+            {
+                var newStorageLocation = location.Combine(pathElement, pathElements);
+
+                Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                Assert.Equal(archiveResource == null, newStorageLocation.UsesDefaultStorage);
+            }
+        }
+
+        [Theory]
+        [MemberData("CombineStorageLocationPathTestData")]
+        public void StorageLocationExtensions_CombineAbsoluteNonexistentLocationWithPath_ProducesExpectedPathAndStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
+        {
+            var location = TempPathOnly.FilePath.CreateStorageLocationFromPath();
+            using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
+            {
+                var newStorageLocation = location.Combine(pathElement, pathElements);
+
+                Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                Assert.Equal(archiveResource == null, newStorageLocation.UsesDefaultStorage);
+            }
+        }
+
+        [Theory]
+        [MemberData("CombineStorageLocationPathTestData")]
+        public void StorageLocationExtensions_CombineAbsoluteExistentLocationWithPath_ProducesExpectedPathAndStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
+        {
+            var location = TempDir.Path.CreateStorageLocationFromPath();
+            using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
+            {
+                var newStorageLocation = location.Combine(pathElement, pathElements);
+
+                Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                Assert.Equal(archiveResource == null, newStorageLocation.UsesDefaultStorage);
+            }
+        }
+
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData("extra_nest/", false)]
+        [InlineData("extra_nest/tagalong_metadata.bin", false)]
+        [InlineData("extra_nest/tagalong_msys2.tgz", true)]
+        [InlineData("extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.rom", true)]
+        [InlineData("tagalong_dev0.luigi", false)]
+        [InlineData("extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip", true)]
+        [InlineData("extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.cfg", true)]
+        [InlineData("extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tag-a-long.zip", true)] // does not exist, may break if / when caching implemented
+        [InlineData("extra_nest/tag-a-long_msys2.tgz/tagalong_msys2.tar/tag-a-long.zip", true)] // does not exist, may break if / when caching implemented
+        public void StorageLocationExtensions_CombinePathIntoArchiveWithRelativePath_ProducesExpectedPathAndStorageAccess(string relativePath, bool shouldStorageAccessChange)
+        {
+            string archiveRoot;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archiveRoot))
+            {
+                var location = archiveRoot.CreateStorageLocationFromPath();
+                Assert.False(location.UsesDefaultStorage);
+
+                var newStorageLocation = location.Combine(relativePath);
+
+                var expectedNewPath = string.IsNullOrEmpty(relativePath) ? archiveRoot : Path.Combine(archiveRoot, relativePath);
+                Assert.Equal(expectedNewPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                Assert.False(location.UsesDefaultStorage);
+                Assert.Equal(shouldStorageAccessChange, !object.ReferenceEquals(location.StorageAccess, newStorageLocation.StorageAccess));
+            }
+        }
+
+        #endregion // Combine Tests
+
+        private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)
+        {
+            IDisposable temporaryLocation = null;
+            if (archiveResource != null)
+            {
+                string archivePath;
+                temporaryLocation = archiveResource.ExtractToTemporaryFile(out archivePath);
+                if (string.IsNullOrEmpty(pathElement))
+                {
+                    pathElement = archivePath;
+                }
+                else
+                {
+                    pathElement = Path.Combine(archivePath, pathElement);
+                }
+                if (string.IsNullOrEmpty(expectedPath))
+                {
+                    expectedPath = archivePath;
+                }
+                else
+                {
+                    expectedPath = Path.Combine(archivePath, expectedPath);
+                }
+            }
+            else if (pathElement == "<<::TEMPDIR::>>")
+            {
+                pathElement = TempDir.Path;
+                if (string.IsNullOrEmpty(expectedPath))
+                {
+                    expectedPath = TempDir.Path;
+                }
+                else
+                {
+                    expectedPath = Path.Combine(TempDir.Path, expectedPath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(expectedPath));
+                    File.Create(expectedPath).Dispose();
+                }
+            }
+            else
+            {
+                if (location.IsEmpty)
+                {
+                    if (expectedPath == null)
+                    {
+                        expectedPath = string.Empty;
+                    }
+                }
+                else if (location.IsValid)
+                {
+                    if (string.IsNullOrEmpty(expectedPath))
+                    {
+                        expectedPath = location.Path;
+                    }
+                    else
+                    {
+                        expectedPath = Path.Combine(location.Path, expectedPath);
+                    }
+                }
+            }
+            return temporaryLocation;
+        }
     }
 }

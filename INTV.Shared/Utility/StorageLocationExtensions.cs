@@ -56,10 +56,13 @@ namespace INTV.Shared.Utility
         /// <param name="location">An existing storage location.</param>
         /// <param name="pathElement">The first element to add to the path in <paramref name="location"/>.</param>
         /// <param name="pathElements">Additional elements to append.</param>
-        /// <returns>A StorageLocation with the additional path elements appended to its path, using the same StorageAcess.</returns>
+        /// <returns>A <see cref="StorageLocation"/> with the additional path elements appended to its path. If necessary, the storage access will be updated.</returns>
         /// <remarks>If <paramref name="location"/> is a null or empty location, then only the elements defined in the
-        /// <paramref name="pathElement"/> and additional <paramref name="pathElements"/> parameters will be used.
-        /// Also <see cref="System.IO.Path.Combine"/> for further information.</remarks>
+        /// <paramref name="pathElement"/> and additional <paramref name="pathElements"/> parameters will be used. If <paramref name="pathElement"/>
+        /// or any values in <paramref name="pathElements"/> are absolute (rooted) paths, then regardless of the path already
+        /// in <paramref name="location.Path"/>, the absolute path in the other arguments will take precedence.
+        /// Also <see cref="System.IO.Path.Combine"/> for further information. Also note that this method's behavior with
+        /// regard to relative path arguments such as <c>..</c> and <c>.</c> is untested - and should be considered unsupported.</remarks>
         /// <exception cref="InvalidOperationException">Thrown if <paramref name="location"/> is an invalid StorageLocation.</exception>
         public static StorageLocation Combine(this StorageLocation location, string pathElement, params string[] pathElements)
         {
@@ -72,13 +75,26 @@ namespace INTV.Shared.Utility
             {
                 elements.Add(location.Path);
             }
-            elements.Add(pathElement);
-            if (pathElements.Length > 0)
+            if (!string.IsNullOrEmpty(pathElement))
+            {
+                elements.Add(pathElement);
+            }
+            if ((pathElements != null) && (pathElements.Length > 0))
             {
                 elements.AddRange(pathElements);
             }
-            var path = Path.Combine(elements.ToArray());
-            var newLocation = StorageLocation.CopyWithNewPath(location, path);
+
+            var newLocation = StorageLocation.InvalidLocation;
+            var newPath = (elements.Count > 0) ? Path.Combine(elements.ToArray()) : location.Path;
+            if (DoesNewLocationRequireDifferentStorageAccess(location, newPath))
+            {
+                newLocation = newPath.CreateStorageLocationFromPath();
+            }
+            else
+            {
+                newLocation = StorageLocation.CopyWithNewPath(location, newPath);
+            }
+
             return newLocation;
         }
 
@@ -420,6 +436,36 @@ namespace INTV.Shared.Utility
         private static bool ValidateStorageLocationPath(this StorageLocation storageLocation, string parameterName = "storageLocation")
         {
             return storageLocation.Path.ValidatePath(storageLocation.IsContainer, parameterName + ".Path");
+        }
+
+        private static bool DoesNewLocationRequireDifferentStorageAccess(StorageLocation currentLocation, string newPath)
+        {
+            var currentPath = currentLocation.Path.NormalizePathSeparators();
+            newPath = newPath.NormalizePathSeparators();
+            if (PathComparer.Instance.Compare(currentPath, newPath) == 0)
+            {
+                return false;
+            }
+
+            // Check if current and new are both null / empty / relative.
+            if (!currentLocation.IsValid || !Path.IsPathRooted(currentPath))
+            {
+                if (string.IsNullOrEmpty(newPath) || !Path.IsPathRooted(newPath))
+                {
+                    return false; // both are null / empty / relative
+                }
+                return true; // current is null / empty / relative, but new is absolute
+            }
+
+            if (currentLocation.UsesDefaultStorage)
+            {
+                return !string.IsNullOrEmpty(newPath.GetRootArchivePath()); // new path refers to or is within an archive
+            }
+
+            // Current location refers to an archive. Check if new location refers to same one.
+            var currentNestedArchivePath = currentPath.GetMostDeeplyNestedArchivePath().NormalizePathSeparators();
+            var newNestedArchivePath = newPath.GetMostDeeplyNestedArchivePath().NormalizePathSeparators();
+            return PathComparer.Instance.Compare(currentNestedArchivePath, newNestedArchivePath) != 0;
         }
     }
 }

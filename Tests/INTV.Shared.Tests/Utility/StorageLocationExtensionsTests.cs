@@ -713,6 +713,162 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // GetExtension Tests
 
+        #region ChangeExtension Tests
+
+        [Fact]
+        public void StorageLocationExtensions_ChangeExtensionOnInvalidLocation_RemainsInvalid()
+        {
+            var location = StorageLocation.InvalidLocation.ChangeExtension(".foo");
+
+            Assert.Null(location.Path);
+            Assert.True(location.IsInvalid);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ChangeExtensionOnNullLocation_RemainsNull()
+        {
+            var location = StorageLocation.Null.ChangeExtension(".bar");
+
+            Assert.Null(location.Path);
+            Assert.True(location.IsNull);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ChangeExtensionOnEmptyLocation_RemainsEmpty()
+        {
+            var location = StorageLocation.Empty.ChangeExtension(".baz");
+
+            Assert.Empty(location.Path);
+            Assert.True(location.IsEmpty);
+        }
+
+        [Theory]
+        [InlineData("/file.txt", "a", "/file.a")]
+        [InlineData("/a/b/c/.o", "..b", "/a/b/c/..b")]
+        [InlineData("a/b.zip/f/", ".x.y.z", "a/b.zip/f/.x.y.z")]
+        [InlineData(@"C:\local\path", "b", @"C:\local\path.b")]
+        [InlineData(@"C:\local\path", "b", @"C:\local\path.b")]
+        [InlineData(@"C:\local\path.a.b.c.", "b", @"C:\local\path.a.b.c.b")]
+        [InlineData(@"C:\local\path.a.b.c..", "b", @"C:\local\path.a.b.c..b")]
+        [InlineData(@"C:\local\path.a.b.c.d", "b", @"C:\local\path.a.b.c.b")]
+        public void StorageLocationExtensions_ChangeExtension_ReturnsExpectedPath(string path, string newExtension, string expectedPath)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var newLocation = location.ChangeExtension(newExtension);
+
+            Assert.Equal(expectedPath.NormalizePathSeparators(), newLocation.Path.NormalizePathSeparators());
+        }
+
+        [Theory]
+        [InlineData("/file.txt", "/file")]
+        [InlineData("/a/b/c/.o", "/a/b/c/")]
+        [InlineData("a/b.zip/f/", "a/b.zip/f/")]
+        [InlineData(@"C:\local\path", @"C:\local\path")]
+        [InlineData(@"C:\local\path.a.b.c.", @"C:\local\path.a.b.c")]
+        [InlineData(@"C:\local\path.a.b.c..", @"C:\local\path.a.b.c.")]
+        [InlineData(@"C:\local\path.a.b.c.d", @"C:\local\path.a.b.c")]
+        public void StorageLocationExtensions_ChangeExtensionWithNullExtension_RemovesExtension(string path, string expectedPath)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var newLocation = location.ChangeExtension(null);
+
+            Assert.Equal(expectedPath.NormalizePathSeparators(), newLocation.Path.NormalizePathSeparators());
+        }
+
+        [Theory]
+        [InlineData("/file.txt", "/file.")]
+        [InlineData("/a/b/c/.o", "/a/b/c/.")]
+        [InlineData("a/b.zip/f/", "a/b.zip/f/.")]
+        [InlineData(@"C:\local\path", @"C:\local\path.")]
+        [InlineData(@"C:\local\path.a.b.c.", @"C:\local\path.a.b.c.")]
+        [InlineData(@"C:\local\path.a.b.c..", @"C:\local\path.a.b.c..")]
+        [InlineData(@"C:\local\path.a.b.c.d", @"C:\local\path.a.b.c.")]
+        public void StorageLocationExtensions_ChangeExtensionWithEmptyExtension_RemovesCharactersAfterLastPeriodAddsPeriodIfNone(string path, string expectedPath)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var newLocation = location.ChangeExtension(string.Empty);
+
+            Assert.Equal(expectedPath.NormalizePathSeparators(), newLocation.Path.NormalizePathSeparators());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ChangeExtensionFromArchiveToNonArchive_ChangeStorageAccessToDefault()
+        {
+            string archivePath;
+            using (TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = archivePath.CreateStorageLocationFromPath();
+                Assert.True(location.StorageAccess is ICompressedArchiveAccess);
+
+                var newLocation = location.ChangeExtension(".txt");
+
+                Assert.True(newLocation.UsesDefaultStorage);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ChangeExtensionFromNonArchiveToArchive_ChangesStorageAccessToNonDefault()
+        {
+            string archivePath;
+            using (TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out archivePath))
+            {
+                var path = Path.ChangeExtension(archivePath, "txt");
+                var location = path.CreateStorageLocationFromPath();
+                Assert.True(location.UsesDefaultStorage);
+
+                var newLocation = location.ChangeExtension(".zip");
+
+                Assert.True(newLocation.StorageAccess is ICompressedArchiveAccess);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ChangeExtensionFromOneArchiveToAnother_ChangesStorageAccess()
+        {
+            string zipArchivePath;
+            string tarArchivePath;
+            using (TestResource.TagalongZip.ExtractToTemporaryFile(out zipArchivePath))
+            using (TestResource.TagalongTar.ExtractToTemporaryFile(out tarArchivePath))
+            {
+                File.Move(tarArchivePath, Path.Combine(Path.GetDirectoryName(zipArchivePath), Path.GetFileName(tarArchivePath)));
+                var zipLocation = zipArchivePath.CreateStorageLocationFromPath();
+                Assert.False(zipLocation.UsesDefaultStorage);
+                var storageAccess = zipLocation.StorageAccess as ICompressedArchiveAccess;
+                var initialArchiveFormat = storageAccess.Format;
+
+                var tarLocation = zipLocation.ChangeExtension(".tar");
+
+                storageAccess = tarLocation.StorageAccess as ICompressedArchiveAccess;
+                Assert.NotNull(storageAccess);
+                Assert.NotEqual(initialArchiveFormat, storageAccess.Format);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ChangeExtensionFromOneNestedArchiveToAnotherViaFileExtension_ChangesStorageAccess()
+        {
+            string archivePath;
+            using (TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out archivePath))
+            {
+                var path = Path.Combine(archivePath, "tagalong.tar");
+                var location = path.CreateStorageLocationFromPath();
+                Assert.False(location.UsesDefaultStorage);
+                var storageAccess = location.StorageAccess as ICompressedArchiveAccess;
+                var initialArchiveFormat = storageAccess.Format;
+
+                var newLocation = location.ChangeExtension(".zip");
+
+                storageAccess = newLocation.StorageAccess as ICompressedArchiveAccess;
+                Assert.NotNull(storageAccess);
+                Assert.NotEqual(initialArchiveFormat, storageAccess.Format);
+            }
+        }
+
+        #endregion // ChangeExtension Tests
+
         #region Combine Tests Helpers
 
         private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)

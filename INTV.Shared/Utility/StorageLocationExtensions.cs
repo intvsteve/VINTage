@@ -84,17 +84,8 @@ namespace INTV.Shared.Utility
                 elements.AddRange(pathElements);
             }
 
-            var newLocation = StorageLocation.InvalidLocation;
             var newPath = (elements.Count > 0) ? Path.Combine(elements.ToArray()) : location.Path;
-            if (DoesNewLocationRequireDifferentStorageAccess(location, newPath))
-            {
-                newLocation = newPath.CreateStorageLocationFromPath();
-            }
-            else
-            {
-                newLocation = StorageLocation.CopyWithNewPath(location, newPath);
-            }
-
+            var newLocation = GetStorageLocationForChangedPath(location, newPath);
             return newLocation;
         }
 
@@ -140,12 +131,14 @@ namespace INTV.Shared.Utility
         /// <param name="location">The location whose extension is to be changed.</param>
         /// <param name="extension">The new extension.</param>
         /// <returns>A location with the new extension.</returns>
-        /// <remarks>Follows the rules of <see cref="System.IO.Path.ChangeExtension(string, string)"/>.</remarks>
+        /// <remarks>Follows the rules of <see cref="System.IO.Path.ChangeExtension(string, string)"/>. Note that if
+        /// <paramref name="location"/> refers to a location that causes a change in storage access, the returned
+        /// location will use the appropriate storage access.</remarks>
         public static StorageLocation ChangeExtension(this StorageLocation location, string extension)
         {
-            var path = Path.ChangeExtension(location.Path, extension);
-            var locationWithNewExtension = StorageLocation.CopyWithNewPath(location, path);
-            return locationWithNewExtension;
+            var newPath = Path.ChangeExtension(location.Path, extension);
+            var newLocation = GetStorageLocationForChangedPath(location, newPath);
+            return newLocation;
         }
 
         /// <summary>
@@ -436,6 +429,20 @@ namespace INTV.Shared.Utility
         private static bool ValidateStorageLocationPath(this StorageLocation storageLocation, string parameterName = "storageLocation")
         {
             return storageLocation.Path.ValidatePath(storageLocation.IsContainer, parameterName + ".Path");
+        }
+
+        private static StorageLocation GetStorageLocationForChangedPath(StorageLocation currentLocation, string newPath)
+        {
+            var newLocation = StorageLocation.InvalidLocation;
+            if (DoesNewLocationRequireDifferentStorageAccess(currentLocation, newPath))
+            {
+                newLocation = newPath.CreateStorageLocationFromPath();
+            }
+            else
+            {
+                newLocation = StorageLocation.CopyWithNewPath(currentLocation, newPath);
+            }
+            return newLocation;
         }
 
         private static bool DoesNewLocationRequireDifferentStorageAccess(StorageLocation currentLocation, string newPath)

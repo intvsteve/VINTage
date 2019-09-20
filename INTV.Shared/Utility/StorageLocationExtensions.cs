@@ -130,7 +130,7 @@ namespace INTV.Shared.Utility
         /// <remarks>Follows the behavior of <see cref="System.IO.Path.GetExtension(string)"/>.</remarks>
         public static string GetExtension(this StorageLocation location)
         {
-            var extension = Path.GetExtension(location.Path);
+            var extension = location.IsValid ? Path.GetExtension(location.Path) : null;
             return extension;
         }
 

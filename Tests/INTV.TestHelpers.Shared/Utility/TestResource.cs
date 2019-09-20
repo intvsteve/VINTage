@@ -1,4 +1,4 @@
-﻿// <copyright file="TestResource.cs" company="INTV Funhouse">
+// <copyright file="TestResource.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -104,6 +104,12 @@ namespace INTV.TestHelpers.Shared.Utility
         public static readonly TestResource TagalongZip = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong.zip")
         {
             ArchiveContents = new[] { "tagalong.bin", "tagalong.cfg" }
+        };
+
+        /// <summary>An embedded TAR file.</summary>
+        public static readonly TestResource TagalongTar = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong.tar")
+        {
+            ArchiveContents = new[] { "tagalong.bin", "tagalong.cfg", }
         };
 
         /// <summary>An embedded ZIP file that contains files in a subdirectory.</summary>
@@ -347,6 +353,30 @@ namespace INTV.TestHelpers.Shared.Utility
                 "tagalong_many_dirs.tar/rootSub/sub3/subSub8/tagalong_v0.luigi",
                 "tagalong_many_dirs.tar/rootSub/sub3/tagalong_from_rom.luigi",
                 "tagalong_many_dirs.tar/rootSub/tagalong",
+            }
+        };
+
+        /// <summary>An embedded resource .zip that contains three nested archives with the same name, but different of different types.</summary>
+        public static readonly TestResource TagalongMultipleNested = new TestResource(TestResourceKind.EmbeddedResourceFile, ResourcePrefix + "tagalong_multiple_nested.zip")
+        {
+            ArchiveContents = new[]
+            {
+                "tagalong.tar",
+                "tagalong.tar/tagalong.bin",
+                "tagalong.tar/tagalong.cfg",
+                "tagalong.tgz",
+                "tagalong.tgz/tagalong.tar",
+                "tagalong.tgz/tagalong.tar/bin/",
+                "tagalong.tgz/tagalong.tar/bin/tagalong.bin",
+                "tagalong.tgz/tagalong.tar/bin/tagalong.cfg",
+                "tagalong.tgz/tagalong.tar/tagalong.luigi",
+                "tagalong.tgz/tagalong.tar/tagalong.rom",
+                "tagalong.tgz/tagalong.tar/tagalong.zip",
+                "tagalong.tgz/tagalong.tar/tagalong.zip/tagalong.bin",
+                "tagalong.tgz/tagalong.tar/tagalong.zip/tagalong.cfg",
+                "tagalong.zip",
+                "tagalong.zip/tagalong.bin",
+                "tagalong.zip/tagalong.cfg",
             }
         };
 

@@ -587,6 +587,48 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // Combine Tests
 
+        #region GetFileName Tests
+
+        [Fact]
+        public void StorageLocationExtensions_GetFileNameFromInvalidLocation_ReturnsNull()
+        {
+            Assert.Null(StorageLocation.InvalidLocation.GetFileName());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetFileNameFromNullLocation_ReturnsNull()
+        {
+            Assert.Null(StorageLocation.Null.GetFileName());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetFileNameFromEmptyLocation_ReturnsNull()
+        {
+            Assert.Null(StorageLocation.Empty.GetFileName());
+        }
+
+        [Theory]
+        [InlineData("/", "")]
+        [InlineData("/a/b/c/", "")]
+        [InlineData("/a/b/c/d.txt", "d.txt")]
+        [InlineData("a/b.zip/f", "f")]
+        [InlineData(@"C:\local\path.txt", "path.txt")]
+        [InlineData(@"\\", "")]
+        [InlineData(@"\\server\loc", "loc")]
+        [InlineData(@"X:", "")]
+        [InlineData(@"Z:\", "")]
+        [InlineData(@"P:\stuff/things\data.tar.gz", "data.tar.gz")]
+        public void StorageLocationExtensions_GetFileName_ReturnsExpectedFileName(string path, string expectedFileName)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var fileName = location.GetFileName();
+
+            Assert.Equal(expectedFileName, fileName);
+        }
+
+        #endregion // GetFileName Tests
+
         private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)
         {
             IDisposable temporaryLocation = null;

@@ -151,10 +151,15 @@ namespace INTV.Shared.Utility
         /// <param name="location">A location whose path will be used to have a suffix appended.</param>
         /// <param name="suffix">The suffix to append.</param>
         /// <returns>A location with a path having the given suffix appended.</returns>
+        /// <remarks>No strong validation of the new path is done.</remarks>
         public static StorageLocation AddSuffix(this StorageLocation location, string suffix)
         {
-            var updatedPath = location.Path + suffix;
-            var updatedLocation = StorageLocation.CopyWithNewPath(location, updatedPath);
+            var updatedLocation = location;
+            if (location.IsValid)
+            {
+                var updatedPath = location.Path + suffix;
+                updatedLocation = GetStorageLocationForChangedPath(location, updatedPath);
+            }
             return updatedLocation;
         }
 

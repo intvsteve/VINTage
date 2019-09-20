@@ -869,6 +869,116 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // ChangeExtension Tests
 
+        #region AddSuffix Tests
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("x")]
+        [InlineData(" b")]
+        [InlineData(".biff")]
+        public void StorageLocationExtensions_AddSuffixToInvalidLocation_(string suffix)
+        {
+            var location = StorageLocation.InvalidLocation.AddSuffix(suffix);
+
+            Assert.Null(location.Path);
+            Assert.True(location.IsInvalid);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("x")]
+        [InlineData(" b")]
+        [InlineData(".biff")]
+        public void StorageLocationExtensions_AddSuffixToNullLocation_(string suffix)
+        {
+            var location = StorageLocation.Null.AddSuffix(suffix);
+
+            Assert.Null(location.Path);
+            Assert.True(location.IsNull);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("x")]
+        [InlineData(" b")]
+        [InlineData(".biff")]
+        public void StorageLocationExtensions_AddSuffixToEmptyLocation_(string suffix)
+        {
+            var location = StorageLocation.Empty.AddSuffix(suffix);
+
+            Assert.Empty(location.Path);
+            Assert.True(location.IsEmpty);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("x")]
+        [InlineData(" b")]
+        [InlineData(".biff")]
+        public void StorageLocationExtensions_AddSuffixToLocation_AddsSuffix(string suffix)
+        {
+            var path = "/path/to/something";
+            var location = path.CreateStorageLocationFromPath().AddSuffix(suffix);
+
+            var expectedLocationPath = path + suffix;
+            Assert.Equal(expectedLocationPath, location.Path);
+            Assert.True(location.UsesDefaultStorage);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AddSuffixToCausePathToAppearAsNonexistentArchive_AddsSuffixRetainsDefaultStorage()
+        {
+            var filePath = TemporaryFile.GenerateUniqueFilePath(string.Empty, string.Empty);
+            var location = filePath.CreateStorageLocationFromPath();
+            Assert.True(location.UsesDefaultStorage);
+
+            var suffix = "_biff.zip";
+            var newLocation = location.AddSuffix(suffix);
+
+            Assert.Equal(filePath + suffix, newLocation.Path);
+            Assert.True(newLocation.UsesDefaultStorage);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AddSuffixCausesPathToMatchArchive_StorageAccessChanges()
+        {
+            string archiveLocation;
+            using (TestResource.TagalongBinCfgTar.ExtractToTemporaryFile(out archiveLocation))
+            {
+                var path = archiveLocation.Substring(0, archiveLocation.LastIndexOf('_'));
+                var location = path.CreateStorageLocationFromPath();
+                Assert.True(location.UsesDefaultStorage);
+
+                var newLocation = location.AddSuffix("_bc.tar");
+
+                Assert.False(newLocation.UsesDefaultStorage);
+                Assert.True(newLocation.StorageAccess is ICompressedArchiveAccess);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AddSuffixCausesPathToNoLongerMatchArchive_StorageAccessChanges()
+        {
+            string archiveLocation;
+            using (TestResource.TagalongBinGZip.ExtractToTemporaryFile(out archiveLocation))
+            {
+                var location = archiveLocation.CreateStorageLocationFromPath();
+                Assert.False(location.UsesDefaultStorage);
+                Assert.True(location.StorageAccess is ICompressedArchiveAccess);
+
+                var newLocation = location.AddSuffix("booger.tar");
+
+                Assert.True(newLocation.UsesDefaultStorage);
+                Assert.False(newLocation.StorageAccess is ICompressedArchiveAccess);
+            }
+        }
+
+        #endregion // AddSuffix Tests
+
         #region Combine Tests Helpers
 
         private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)

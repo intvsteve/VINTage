@@ -1,4 +1,4 @@
-// <copyright file="TestResource.cs" company="INTV Funhouse">
+﻿// <copyright file="TestResource.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -515,7 +515,7 @@ namespace INTV.TestHelpers.Shared.Utility
             /// <returns>A unique directory path.</returns>
             public static string GenerateUniqueDirectoryPath()
             {
-                var directoryPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "VINT_" + Guid.NewGuid());
+                var directoryPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "VINTTest", "VINT_" + Guid.NewGuid());
                 return directoryPath;
             }
 

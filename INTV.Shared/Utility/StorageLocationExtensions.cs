@@ -136,8 +136,12 @@ namespace INTV.Shared.Utility
         /// location will use the appropriate storage access.</remarks>
         public static StorageLocation ChangeExtension(this StorageLocation location, string extension)
         {
-            var newPath = Path.ChangeExtension(location.Path, extension);
-            var newLocation = GetStorageLocationForChangedPath(location, newPath);
+            var newLocation = location;
+            if (location.IsValid)
+            {
+                var newPath = Path.ChangeExtension(location.Path, extension);
+                newLocation = GetStorageLocationForChangedPath(location, newPath);
+            }
             return newLocation;
         }
 

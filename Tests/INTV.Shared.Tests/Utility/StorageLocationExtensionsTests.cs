@@ -629,6 +629,50 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // GetFileName Tests
 
+        #region GetFileNameWithoutExtension Tests
+
+        [Fact]
+        public void StorageLocationExtensions_GetFileNameWithoutExtensionFromInvalidLocation_ReturnsNull()
+        {
+            Assert.Null(StorageLocation.InvalidLocation.GetFileNameWithoutExtension());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetFileNameWithoutExtensionFromNullLocation_ReturnsNull()
+        {
+            Assert.Null(StorageLocation.Null.GetFileNameWithoutExtension());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetFileNameWithoutExtensionFromEmptyLocation_ReturnsNull()
+        {
+            Assert.Null(StorageLocation.Empty.GetFileNameWithoutExtension());
+        }
+
+        [Theory]
+        [InlineData("/", "")]
+        [InlineData("/a/b/c/", "")]
+        [InlineData("/a/b/c/d.txt", "d")]
+        [InlineData("a/b.zip/f", "f")]
+        [InlineData(@"C:\local\path.txt", "path")]
+        [InlineData(@"\\", "")]
+        [InlineData(@"\\server\loc", "loc")]
+        [InlineData(@"X:", "")]
+        [InlineData(@"Z:\", "")]
+        [InlineData(@"P:\stuff/things\data.tar.gz", "data.tar")]
+        public void StorageLocationExtensions_GetFileNameWithoutExtension_ReturnsExpectedFileName(string path, string expectedExtension)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var extension = location.GetFileNameWithoutExtension();
+
+            Assert.Equal(expectedExtension, extension);
+        }
+
+        #endregion // GetFileNameWithoutExtension Tests
+
+        #region Combine Tests Helpers
+
         private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)
         {
             IDisposable temporaryLocation = null;

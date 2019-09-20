@@ -118,7 +118,7 @@ namespace INTV.Shared.Utility
         /// <remarks>Follows the behavior of <see cref="System.IO.Path.GetFielnameWithoutExtension(string)"/>.</remarks>
         public static string GetFileNameWithoutExtension(this StorageLocation location)
         {
-            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(location.Path);
+            var fileNameWithoutExtension = location.IsValid ? Path.GetFileNameWithoutExtension(location.Path) : null;
             return fileNameWithoutExtension;
         }
 

@@ -445,6 +445,18 @@ namespace INTV.TestHelpers.Shared.Utility
         }
 
         /// <summary>
+        /// Creates a temporary directory on disk, returning the path. When returned object disposed, the temporary directory is deleted.
+        /// </summary>
+        /// <param name="directoryPath">Receives the path to the temporary directory.</param>
+        /// <returns>An <see cref="IDisposable"/> to remove the temporary directory.</returns>
+        public static IDisposable Directory(out string directoryPath)
+        {
+            var temporaryDirectory = new TemporaryDirectoryForResource();
+            directoryPath = temporaryDirectory.Path;
+            return temporaryDirectory;
+        }
+
+        /// <summary>
         /// Opens the resource for reading.
         /// </summary>
         /// <param name="typeForResource">The data type whose implementing assembly is checked for the given resource.</param>
@@ -496,7 +508,7 @@ namespace INTV.TestHelpers.Shared.Utility
             public TemporaryDirectoryForResource()
             {
                 Path = GenerateUniqueDirectoryPath();
-                Directory.CreateDirectory(Path);
+                System.IO.Directory.CreateDirectory(Path);
             }
 
             ~TemporaryDirectoryForResource()
@@ -536,9 +548,9 @@ namespace INTV.TestHelpers.Shared.Utility
                     {
                         try
                         {
-                            if (Directory.Exists(Path))
+                            if (System.IO.Directory.Exists(Path))
                             {
-                                Directory.Delete(Path, recursive: true);
+                                System.IO.Directory.Delete(Path, recursive: true);
                             }
                         }
                         catch

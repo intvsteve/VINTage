@@ -132,10 +132,21 @@ namespace INTV.Shared.Utility
             {
                 if (!string.IsNullOrWhiteSpace(x) && !string.IsNullOrWhiteSpace(y))
                 {
-                    result = string.Compare(
-                        Path.GetFullPath(x).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
-                        Path.GetFullPath(y).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
-                        comparisonMode);
+                    if (Path.IsPathRooted(x) == Path.IsPathRooted(y))
+                    {
+                        try
+                        {
+                            result = string.Compare(
+                                Path.GetFullPath(x).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                                Path.GetFullPath(y).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                                comparisonMode);
+                        }
+                        catch (ArgumentException)
+                        {
+                            // This can happen for malformed UNC paths -- the call to Path.GetFullPath() may throw when a path
+                            // of the form \\server is being checked.
+                        }
+                    }
                 }
             }
             return result;

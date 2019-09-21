@@ -28,7 +28,7 @@ using Xunit;
 
 namespace INTV.Shared.Tests.Utility
 {
-    public sealed class StorageLocationExtensionsTests : ICompressedArchiveTest, IDisposable
+    public sealed class StorageLocationExtensionsTests : IDisposable, ICompressedArchiveTest
     {
         public StorageLocationExtensionsTests()
         {
@@ -43,9 +43,6 @@ namespace INTV.Shared.Tests.Utility
         public void Dispose()
         {
             INTV.Core.Utility.IStorageAccessHelpers.Remove(Storage);
-
-            //GC.Collect();
-            //GC.WaitForPendingFinalizers();
         }
 
         #endregion // State

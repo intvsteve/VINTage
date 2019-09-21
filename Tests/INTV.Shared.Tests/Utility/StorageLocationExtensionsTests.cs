@@ -34,39 +34,18 @@ namespace INTV.Shared.Tests.Utility
         {
             Storage = new StorageAccess();
             INTV.Core.Utility.IStorageAccessHelpers.Initialize(Storage);
-            TempFile = new TemporaryFile(".test", createFile: true);
-            TempPathOnly = new TemporaryFile(".fake", createFile: false);
         }
 
         #region State
 
         private StorageAccess Storage { get; set; }
 
-        private TemporaryFile TempFile { get; set; }
-
-        private TemporaryFile TempPathOnly { get; set; }
-
         public void Dispose()
         {
             INTV.Core.Utility.IStorageAccessHelpers.Remove(Storage);
-            if (TempPathOnly != null)
-            {
-                var tempPathOnly = TempPathOnly;
-                TempPathOnly = null;
-                if (tempPathOnly != null)
-                {
-                    tempPathOnly.Dispose();
-                }
-            }
-            if (TempFile != null)
-            {
-                var tempFile = TempFile;
-                TempFile = null;
-                if (tempFile != null)
-                {
-                    tempFile.Dispose();
-                }
-            }
+
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
         }
 
         #endregion // State
@@ -280,7 +259,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromNonexistentAbsolutePath_IsContainerThrows()
         {
-            var storageLocation = TempPathOnly.FilePath.CreateStorageLocationFromPath();
+            var storageLocation = TemporaryFile.GenerateUniqueFilePath("INTV_StorageLocationExtensions_CreateFromNonexistentAbsolutePath_IsContainerThrows", ".test").CreateStorageLocationFromPath();
 
             Assert.False(storageLocation.IsContainer);
         }
@@ -288,7 +267,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromNonexistentAbsoluteFilePath_LengthThrowsFileNotFoundException()
         {
-            var storageLocation = TempPathOnly.FilePath.CreateStorageLocationFromPath();
+            var storageLocation = TemporaryFile.GenerateUniqueFilePath("INTV_StorageLocationExtensions_CreateFromNonexistentAbsoluteFilePath_LengthThrowsFileNotFoundException", ".test").CreateStorageLocationFromPath();
 
             Assert.Throws<FileNotFoundException>(() => storageLocation.Length);
         }
@@ -306,9 +285,12 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromValidAbsoluteFilePath_IsContainerReturnsFalse()
         {
-            var storageLocation = TempFile.FilePath.CreateStorageLocationFromPath();
+            using (var tempFile = new TemporaryFile(".test", createFile: true))
+            {
+                var storageLocation = tempFile.FilePath.CreateStorageLocationFromPath();
 
-            Assert.False(storageLocation.IsContainer);
+                Assert.False(storageLocation.IsContainer);
+            }
         }
 
         [Fact]
@@ -326,9 +308,12 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromValidAbsoluteFilePath_LengthReturnsExpectedValue()
         {
-            var storageLocation = TempFile.FilePath.CreateStorageLocationFromPath();
+            using (var tempFile = new TemporaryFile(".test", createFile: true))
+            {
+                var storageLocation = tempFile.FilePath.CreateStorageLocationFromPath();
 
-            Assert.Equal(0L, storageLocation.Length);
+                Assert.Equal(0L, storageLocation.Length);
+            }
         }
 
         [Fact]
@@ -528,7 +513,7 @@ namespace INTV.Shared.Tests.Utility
         [MemberData("CombineStorageLocationPathTestData")]
         public void StorageLocationExtensions_CombineAbsoluteNonexistentLocationWithPath_ProducesExpectedPathAndStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
         {
-            var location = TempPathOnly.FilePath.CreateStorageLocationFromPath();
+            var location = TemporaryFile.GenerateUniqueFilePath("INTV_StorageLocationExtensions_CombineAbsoluteNonexistentLocationWithPath_ProducesExpectedPathAndStorageAccess", ".test").CreateStorageLocationFromPath();
             using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
             {
                 var newStorageLocation = location.Combine(pathElement, pathElements);

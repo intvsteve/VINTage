@@ -34,7 +34,6 @@ namespace INTV.Shared.Tests.Utility
         {
             Storage = new StorageAccess();
             INTV.Core.Utility.IStorageAccessHelpers.Initialize(Storage);
-            TempDir = new TemporaryDirectory();
             TempFile = new TemporaryFile(".test", createFile: true);
             TempPathOnly = new TemporaryFile(".fake", createFile: false);
         }
@@ -42,8 +41,6 @@ namespace INTV.Shared.Tests.Utility
         #region State
 
         private StorageAccess Storage { get; set; }
-
-        private TemporaryDirectory TempDir { get; set; }
 
         private TemporaryFile TempFile { get; set; }
 
@@ -68,15 +65,6 @@ namespace INTV.Shared.Tests.Utility
                 if (tempFile != null)
                 {
                     tempFile.Dispose();
-                }
-            }
-            if (TempDir != null)
-            {
-                var tempDir = TempDir;
-                TempDir = null;
-                if (tempDir != null)
-                {
-                    tempDir.Dispose();
                 }
             }
         }
@@ -326,9 +314,13 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromValidAbsoluteDirectoryPath_IsContainerReturnsTrue()
         {
-            var storageLocation = TempDir.Path.CreateStorageLocationFromPath();
+            string directoryPath;
+            using (TestResource.Directory(out directoryPath))
+            {
+                var storageLocation = directoryPath.CreateStorageLocationFromPath();
 
-            Assert.True(storageLocation.IsContainer);
+                Assert.True(storageLocation.IsContainer);
+            }
         }
 
         [Fact]
@@ -342,9 +334,13 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void StorageLocationExtensions_CreateFromValidAbsoluteDirectoryPath_Length()
         {
-            var storageLocation = TempDir.Path.CreateStorageLocationFromPath();
+            string directoryPath;
+            using (TestResource.Directory(out directoryPath))
+            {
+                var storageLocation = directoryPath.CreateStorageLocationFromPath();
 
-            Assert.Throws<FileNotFoundException>(() => storageLocation.Length);
+                Assert.Throws<FileNotFoundException>(() => storageLocation.Length);
+            }
         }
 
         public static IEnumerable<object[]> CreateStorageLocationFromArchivePathTestData
@@ -546,13 +542,17 @@ namespace INTV.Shared.Tests.Utility
         [MemberData("CombineStorageLocationPathTestData")]
         public void StorageLocationExtensions_CombineAbsoluteExistentLocationWithPath_ProducesExpectedPathAndStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
         {
-            var location = TempDir.Path.CreateStorageLocationFromPath();
-            using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
+            string directoryPath;
+            using (TestResource.Directory(out directoryPath))
             {
-                var newStorageLocation = location.Combine(pathElement, pathElements);
+                var location = directoryPath.CreateStorageLocationFromPath();
+                using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
+                {
+                    var newStorageLocation = location.Combine(pathElement, pathElements);
 
-                Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
-                Assert.Equal(archiveResource == null, newStorageLocation.UsesDefaultStorage);
+                    Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                    Assert.Equal(archiveResource == null, newStorageLocation.UsesDefaultStorage);
+                }
             }
         }
 
@@ -1125,14 +1125,14 @@ namespace INTV.Shared.Tests.Utility
             }
             else if (pathElement == "<<::TEMPDIR::>>")
             {
-                pathElement = TempDir.Path;
+                temporaryLocation = TestResource.Directory(out pathElement);
                 if (string.IsNullOrEmpty(expectedPath))
                 {
-                    expectedPath = TempDir.Path;
+                    expectedPath = pathElement;
                 }
                 else
                 {
-                    expectedPath = Path.Combine(TempDir.Path, expectedPath);
+                    expectedPath = Path.Combine(pathElement, expectedPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(expectedPath));
                     File.Create(expectedPath).Dispose();
                 }
@@ -1160,5 +1160,7 @@ namespace INTV.Shared.Tests.Utility
             }
             return temporaryLocation;
         }
+
+        #endregion // Combine Tests Helpers
     }
 }

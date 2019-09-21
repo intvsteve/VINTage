@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using INTV.Core.Utility;
 using INTV.Shared.Utility;
 using INTV.TestHelpers.Shared.Utility;
@@ -1298,6 +1299,132 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // AlterContainingLocation Tests
 
+        #region EnumerateFiles Tests
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesOnDisk_ReturnsExpectedFiles()
+        {
+            var numberOfFiles = 12;
+            string directoryPath;
+            using (DirectoryContainingFiles(numberOfFiles, out directoryPath))
+            {
+                var files = directoryPath.CreateStorageLocationFromPath().EnumerateFiles();
+
+                Assert.Equal(numberOfFiles, files.Count());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesOnDiskWithFileExtension_ReturnsFilesWithCorrectExtension()
+        {
+            var numberOfFiles = 16;
+            string directoryPath;
+            using (DirectoryContainingFiles(numberOfFiles, out directoryPath, ".txt", ".luigi", ".rom", ".bin", ".cfg"))
+            {
+                var fileExtension = ".cfg";
+                var files = directoryPath.CreateStorageLocationFromPath().EnumerateFiles(fileExtension).ToList();
+
+                Assert.All(files, f => Assert.Equal(fileExtension, Path.GetExtension(f.Path)));
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesOnDiskWithFileExtensionNotFoundInDirectory_ReturnsEmtpyFileList()
+        {
+            var numberOfFiles = 16;
+            string directoryPath;
+            using (DirectoryContainingFiles(numberOfFiles, out directoryPath, ".txt", ".luigi", ".rom", ".bin", ".cfg"))
+            {
+                var fileExtension = ".pdf";
+                var files = directoryPath.CreateStorageLocationFromPath().EnumerateFiles(fileExtension);
+
+                Assert.Empty(files);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesAtRootOfArchiveWithOnlyFiles_ReturnsExpectedFiles()
+        {
+            var testResource = TestResource.TagalongZip;
+            string archivePath;
+            using (testResource.ExtractToTemporaryFile(out archivePath))
+            {
+                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles();
+
+                Assert.Equal(testResource.ArchiveContents.Count(), files.Count());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesAtRootOfArchiveWithOnlyArchive_ReturnsNoFiles()
+        {
+            var testResource = TestResource.TagalongMsys2Tgz;
+            string archivePath;
+            using (testResource.ExtractToTemporaryFile(out archivePath))
+            {
+                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles();
+
+                Assert.Empty(files);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesAtRootOfArchiveWithOnlyDirectories_ReturnsNoFiles()
+        {
+            var testResource = TestResource.TagalongDirLuigiRomTar;
+            string archivePath;
+            using (testResource.ExtractToTemporaryFile(out archivePath))
+            {
+                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles();
+
+                Assert.Empty(files);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesInNestedArchiveWithFilesDirsAndArchives_ReturnsOnlyFiles()
+        {
+            var testResource = TestResource.TagalongMsys2Tgz;
+            string archivePath;
+            using (testResource.ExtractToTemporaryFile(out archivePath))
+            {
+                var files = Path.Combine(archivePath, "tagalong_msys2.tar").CreateStorageLocationFromPath().EnumerateFiles();
+
+                // kinda hacky -- we "know" this because of the known layout of the test resource.
+                Assert.Equal(2, files.Count());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesInArchiveWithFileExtension_ReturnsFilesWithCorrectExtension()
+        {
+            var testResource = TestResource.TagalongCC3RomTar;
+            string archivePath;
+            using (testResource.ExtractToTemporaryFile(out archivePath))
+            {
+                var fileExtension = ".rom";
+                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles(fileExtension).ToList();
+
+                Assert.All(files, f => Assert.Equal(fileExtension, Path.GetExtension(f.Path)));
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesInArchiveWithFileExtensionNotFoundInDirectory_ReturnsEmtpyFileList()
+        {
+            var testResource = TestResource.TagalongCC3RomTar;
+            string archivePath;
+            using (testResource.ExtractToTemporaryFile(out archivePath))
+            {
+                var fileExtension = ".pdf";
+                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles(fileExtension);
+
+                Assert.Empty(files);
+            }
+        }
+
+        #endregion // EnumerateFiles Tests
+
         #region Combine Tests Helpers
 
         private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)
@@ -1363,5 +1490,27 @@ namespace INTV.Shared.Tests.Utility
         }
 
         #endregion // Combine Tests Helpers
+
+        #region EnumerateFiles Tests Helpers
+
+        private static IDisposable DirectoryContainingFiles(int numFiles, out string directoryPath, params string[] fileExtensions)
+        {
+            var directory = TestResource.Directory(out directoryPath);
+            var fileExtensionsForGeneration = new List<string>(fileExtensions);
+            if (!fileExtensions.Any())
+            {
+                fileExtensionsForGeneration.Add(".txt");
+            }
+            var numFileExtensions = fileExtensionsForGeneration.Count;
+            for (var i = 0; i < numFiles; ++i)
+            {
+                var fileExtension = fileExtensionsForGeneration[i % numFileExtensions];
+                var fileName = "test-" + i.ToString("D4") + fileExtension;
+                File.Create(Path.Combine(directoryPath, fileName)).Dispose();
+            }
+            return directory;
+        }
+
+        #endregion // EnumerateFiles Tests Helpers
     }
 }

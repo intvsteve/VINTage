@@ -37,7 +37,7 @@ namespace INTV.Shared.Utility
         private static IEnumerable<string> OSEnumerateFiles(string directory, string fileExtensionMatch)
         {
             var searchPattern = "*" + fileExtensionMatch;
-            var files = string.IsNullOrEmpty(fileExtensionMatch) ? Directory.EnumerateFiles(directory, searchPattern) : Directory.EnumerateFiles(directory);
+            var files = string.IsNullOrEmpty(fileExtensionMatch) ? Directory.EnumerateFiles(directory) : Directory.EnumerateFiles(directory, searchPattern);
             return files;
         }
     }

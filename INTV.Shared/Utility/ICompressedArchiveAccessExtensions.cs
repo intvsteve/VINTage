@@ -485,6 +485,8 @@ namespace INTV.Shared.Utility
                 {
                     TemporaryDirectory temporaryLocation = null;
                     var entryData = parentArchiveAccess.OpenEntry(entry);
+
+                    // always extract nested archives??
                     if (FormatMustBeExtracted(parentArchiveAccess.Format) || FormatMustBeExtracted(nestedArchiveFormat))
                     {
                         // We can't fully navigate the nested stream, so extract to disk, then proceed.
@@ -568,11 +570,13 @@ namespace INTV.Shared.Utility
 
             private static bool FormatMustBeExtracted(CompressedArchiveFormat format)
             {
+                // Perhaps we should always extract nested archives??
                 var requiresExtraction = false;
                 switch (format)
                 {
                     case CompressedArchiveFormat.GZip:
-                        // GZIP streams must be extracted.
+                    case CompressedArchiveFormat.Tar:
+                        // GZIP, TAR streams must be extracted.
                         requiresExtraction = true;
                         break;
                     default:

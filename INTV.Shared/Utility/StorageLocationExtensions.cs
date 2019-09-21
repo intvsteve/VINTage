@@ -171,14 +171,12 @@ namespace INTV.Shared.Utility
         /// <remarks>Follows the rules of <see cref="System.IO.Path.GetDirectoryname(string)"/>.</remarks>
         public static StorageLocation GetContainingLocation(this StorageLocation location)
         {
-            var directory = Path.GetDirectoryName(location.Path);
-            var containingLocation = StorageLocation.CopyWithNewPath(location, directory);
-            if (location.StorageAccess is ICompressedArchiveAccess)
+            var containingLocation = location;
+            if (location.IsValid)
             {
-                var updatedStorageAccess = directory.GetStorageAccess();
-                containingLocation = new StorageLocation(directory, updatedStorageAccess);
+                var directory = Path.GetDirectoryName(location.Path);
+                containingLocation = GetStorageLocationForChangedPath(location, directory);
             }
-
             return containingLocation;
         }
 

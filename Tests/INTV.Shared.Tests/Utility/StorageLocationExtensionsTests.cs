@@ -979,6 +979,124 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // AddSuffix Tests
 
+        #region GetContainingLocation Tests
+
+        [Fact]
+        public void StorageLocationExtensions_GetContainingLocationOfInvalidLocation_ReturnsInvalidLocation()
+        {
+            Assert.True(StorageLocation.InvalidLocation.GetContainingLocation().IsInvalid);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetContainingLocationOfNullLocation_ReturnsNullLocation()
+        {
+            Assert.True(StorageLocation.Null.GetContainingLocation().IsNull);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetContainingLocationOfEmptyLocation_ReturnsEmptyLocation()
+        {
+            Assert.True(StorageLocation.Empty.GetContainingLocation().IsEmpty);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetContainingLocationOfSingleElementRelativeLocation_ReturnsEmptyLocation()
+        {
+            var location = "abcde".CreateStorageLocationFromPath();
+
+            var containingLocation = location.GetContainingLocation();
+
+            Assert.True(containingLocation.IsEmpty);
+        }
+
+        [Theory]
+        [InlineData("x/")]
+        [InlineData("/a/abc/")]
+        [InlineData(@"V:\aaa\bbb\")]
+        [InlineData(@"def\")]
+        public void StorageLocationExtensions_GetContainingLocationOfLocationEndingInSeparator_ReturnsLocationWithoutSeparator(string path)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var containingLocation = location.GetContainingLocation();
+
+            var expectedLocation = path.Substring(0, path.Length - 1).NormalizePathSeparators();
+            Assert.Equal(expectedLocation, containingLocation.Path.NormalizePathSeparators());
+        }
+
+        [Theory]
+        [InlineData("/")]
+        [InlineData("//server")]
+        [InlineData("A:/")]
+        [InlineData(@"\")]
+        [InlineData(@"V:\")]
+        [InlineData(@"\\server")]
+        public void StorageLocationExtensions_GetContainingLocationOfRootLocation_ReturnsNullLocation(string path)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            Assert.True(location.GetContainingLocation().IsNull);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetContainingLocationOfArchiveEndingInSeparator_ReturnsArchiveWithSameStorageAccess()
+        {
+            string archivePath;
+            using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath))
+            {
+                var path = archivePath + Path.DirectorySeparatorChar;
+                var location = path.CreateStorageLocationFromPath();
+
+                var containingLocation = location.GetContainingLocation();
+
+                Assert.True(object.ReferenceEquals(location.StorageAccess, containingLocation.StorageAccess));
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetContainingLocationOfArchive_ReturnsLocationWithDefaultStorageAccess()
+        {
+            string archivePath;
+            using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = archivePath.CreateStorageLocationFromPath();
+
+                var containingLocation = location.GetContainingLocation();
+
+                Assert.True(containingLocation.UsesDefaultStorage);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetContainingLocationOfDirectoryWithinArchive_ReturnsLocationWithSameStorageAccess()
+        {
+            string archivePath;
+            using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "tagalong_dir/").CreateStorageLocationFromPath();
+
+                var containingLocation = location.GetContainingLocation();
+
+                Assert.True(object.ReferenceEquals(location.StorageAccess, containingLocation.StorageAccess));
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_GetContainingLocationOfNestedArchive_ReturnsLocationWithStorageAccessOfContainingArchive()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip").CreateStorageLocationFromPath();
+
+                var containingLocation = location.GetContainingLocation();
+
+                Assert.False(object.ReferenceEquals(location.StorageAccess, containingLocation.StorageAccess));
+            }
+        }
+
+        #endregion // GetContainingLocation
+
         #region Combine Tests Helpers
 
         private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)

@@ -1,4 +1,4 @@
-// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
+﻿// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -188,9 +188,14 @@ namespace INTV.Shared.Utility
         /// <returns>A location with the same file name, but using the updated container location.</returns>
         public static StorageLocation AlterContainingLocation(this StorageLocation location, string newContainingLocation)
         {
-            var fileName = location.GetFileName();
-            var locationWithContainer = StorageLocation.CopyWithNewPath(location, Path.Combine(newContainingLocation, fileName));
-            return locationWithContainer;
+            var updatedLocation = location;
+            if (location.IsValid)
+            {
+                var fileName = location.GetFileName();
+                var newPath = Path.Combine(newContainingLocation, fileName);
+                updatedLocation = GetStorageLocationForChangedPath(location, newPath);
+            }
+            return updatedLocation;
         }
 
         /// <summary>

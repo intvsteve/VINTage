@@ -1079,6 +1079,225 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // GetContainingLocation
 
+        #region AlterContainingLocation Tests
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfInvalidLocation_ReturnsInvalidLocation()
+        {
+            Assert.True(StorageLocation.InvalidLocation.AlterContainingLocation(null).IsInvalid);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfNullLocation_ReturnsNullLocation()
+        {
+            Assert.True(StorageLocation.Null.AlterContainingLocation(null).IsNull);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfEmptyLocation_ReturnsEmptyLocation()
+        {
+            Assert.True(StorageLocation.Empty.AlterContainingLocation(null).IsEmpty);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfSingleElementRelativeLocationToNull_ThrowsArgumentNullException()
+        {
+            var location = "abcde".CreateStorageLocationFromPath();
+
+            Assert.Throws<ArgumentNullException>(()  => location.AlterContainingLocation(null));
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfSingleElementRelativeLocationToEmpty_ReturnsSameLocation()
+        {
+            var location = "abcde".CreateStorageLocationFromPath();
+
+            var alteredLocation = location.AlterContainingLocation(string.Empty);
+
+            Assert.Equal(location, alteredLocation);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfSingleElementRelativeLocationToNewRelativeLocation_ReturnsLocationWithNewContainingPath()
+        {
+            var location = "abcde".CreateStorageLocationFromPath();
+
+            var newContainingPath = "new parent";
+            var alteredLocation = location.AlterContainingLocation(newContainingPath);
+
+            var expectedPath = Path.Combine(newContainingPath, "abcde").NormalizePathSeparators();
+            Assert.Equal(expectedPath, alteredLocation.Path.NormalizePathSeparators());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfSingleElementRelativeLocationToNewAbsoluteLocation_ReturnsLocationWithNewContainingPath()
+        {
+            var location = "abcde".CreateStorageLocationFromPath();
+
+            var newContainingPath = Path.GetTempPath();
+            var alteredLocation = location.AlterContainingLocation(newContainingPath);
+
+            var expectedPath = Path.Combine(newContainingPath, "abcde").NormalizePathSeparators();
+            Assert.Equal(expectedPath, alteredLocation.Path.NormalizePathSeparators());
+        }
+
+        [Theory]
+        [InlineData("x/")]
+        [InlineData("/a/abc/")]
+        [InlineData(@"V:\aaa\bbb\")]
+        [InlineData(@"def\")]
+        [InlineData(@"\\server\")]
+        [InlineData(@"\\server\share\")]
+        [InlineData(@"\\server\share\folder\")]
+        public void StorageLocationExtensions_AlterContainingLocationOfLocationEndingInSeparatorToNewRelativeLocation_ReturnsNewRelativeLocationOnly(string path)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var newContainingPath = "origami/brain/";
+            var alteredLocation = location.AlterContainingLocation(newContainingPath);
+
+            var expectedPath = newContainingPath.NormalizePathSeparators();
+            Assert.Equal(expectedPath, alteredLocation.Path.NormalizePathSeparators());
+        }
+
+        [Theory]
+        [InlineData("x/")]
+        [InlineData("/a/abc/")]
+        [InlineData(@"V:\aaa\bbb\")]
+        [InlineData(@"def\")]
+        ////[InlineData(@"\\server\")] // excluded -- PathComparer throws ArgumentException due to UNC rules
+        [InlineData(@"\\server\share\")]
+        [InlineData(@"\\server\share\folder\")]
+        public void StorageLocationExtensions_AlterContainingLocationOfLocationEndingInSeparatorToAbsoluteLocation_ReturnsNewAbsoluteLocationOnly(string path)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var newContainingPath = Path.GetTempPath();
+            var alteredLocation = location.AlterContainingLocation(newContainingPath);
+
+            var expectedPath = newContainingPath.NormalizePathSeparators();
+            Assert.Equal(expectedPath, alteredLocation.Path.NormalizePathSeparators());
+        }
+
+        [Theory]
+        [InlineData("/")]
+        [InlineData("//")]
+        [InlineData("A:/")]
+        [InlineData(@"\")]
+        [InlineData(@"V:\")]
+        [InlineData(@"\\")]
+        public void StorageLocationExtensions_AlterContainingLocationOfRootNonUNCLocationToRelativeLocation_ReturnsEmptyLocation(string path)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var alteredLocation = location.AlterContainingLocation(string.Empty);
+
+            Assert.True(alteredLocation.IsEmpty);
+        }
+
+        [Theory]
+        [InlineData(@"\\", "")]
+        [InlineData("//server", "server")]
+        [InlineData(@"\\server", "server")]
+        [InlineData(@"\\server\share", "share")]
+        [InlineData(@"\\server\share\folder", "folder")]
+        [InlineData(@"\\server\share\folder\subfolder", "subfolder")]
+        public void StorageLocationExtensions_AlterContainingLocationOfUNCLocationToEmpty_ReturnsLocationWithPathRootRemoved(string path, string expectedPath)
+        {
+            var location = path.CreateStorageLocationFromPath();
+
+            var alteredLocation = location.AlterContainingLocation(string.Empty);
+
+            Assert.Equal(expectedPath, alteredLocation.Path);
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfArchiveToEmpty_ReturnsLocationWithFileNameAndDefaultStorageAccess()
+        {
+            string archivePath;
+            using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = archivePath.CreateStorageLocationFromPath();
+                Assert.False(location.UsesDefaultStorage);
+
+                var alteredLocation = location.AlterContainingLocation(string.Empty);
+
+                var expectedPath = Path.GetFileName(archivePath);
+                Assert.Equal(expectedPath, alteredLocation.Path);
+                Assert.True(alteredLocation.UsesDefaultStorage);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfArchiveToNonArchiveLocation_ReturnsLocationWithDefaultStorageAccess()
+        {
+            string archivePath;
+            string directoryPath;
+            using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
+            using (TestResource.Directory(out directoryPath))
+            {
+                var location = archivePath.CreateStorageLocationFromPath();
+                Assert.False(location.UsesDefaultStorage);
+
+                var alteredLocation = location.AlterContainingLocation(directoryPath);
+
+                Assert.True(alteredLocation.Path.NormalizePathSeparators().StartsWith(directoryPath.NormalizePathSeparators()));
+                Assert.True(alteredLocation.UsesDefaultStorage);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfDirectoryWithinSameArchive_ReturnsLocationWithSameStorageAccess()
+        {
+            string archivePath;
+            using (TestResource.TagalongTgzManyDirs.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "tagalong_many_dirs.tar/rootSub/sub0/.DS_Store").CreateStorageLocationFromPath();
+
+                var newContainingPath = Path.Combine(archivePath, "tagalong_many_dirs.tar/rootSub/sub1");
+                var alteredLocation = location.AlterContainingLocation(newContainingPath);
+
+                Assert.True(object.ReferenceEquals(location.StorageAccess, alteredLocation.StorageAccess));
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfArchiveToOneInDifferentArchive_ReturnsLocationWithStorageAccessOfNewContainingArchive()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.bin").CreateStorageLocationFromPath();
+                Assert.Equal(CompressedArchiveFormat.Zip, ((ICompressedArchiveAccess)location.StorageAccess).Format);
+
+                var newContainingPath = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin");
+                var alteredLocation = location.AlterContainingLocation(newContainingPath);
+
+                Assert.False(object.ReferenceEquals(location.StorageAccess, alteredLocation.StorageAccess));
+                Assert.Equal(CompressedArchiveFormat.Tar, ((ICompressedArchiveAccess)alteredLocation.StorageAccess).Format);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_AlterContainingLocationOfArchiveToDifferentLocationOnDisk_ReturnsLocationWithStorageAccessOfNewContainingArchive()
+        {
+            string archivePath0;
+            string archivePath1;
+            using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath0))
+            using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath1))
+            {
+                var location = archivePath0.CreateStorageLocationFromPath();
+
+                var newContainingPath = Path.GetDirectoryName(archivePath1);
+                var alteredLocation = location.AlterContainingLocation(newContainingPath);
+
+                Assert.False(object.ReferenceEquals(location.StorageAccess, alteredLocation.StorageAccess));
+                Assert.False(alteredLocation.UsesDefaultStorage);
+            }
+        }
+
+        #endregion // AlterContainingLocation Tests
+
         #region Combine Tests Helpers
 
         private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)

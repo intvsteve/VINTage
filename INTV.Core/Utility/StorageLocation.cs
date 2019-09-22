@@ -32,12 +32,20 @@ namespace INTV.Core.Utility
     /// </summary>
     /// <remarks>Though incorrect in case-sensitive file systems, locations are considered equal in a case-insensitive manner.</remarks>
     [System.Diagnostics.DebuggerDisplay("{Path,nq}, {_storageAccess}")]
-    public struct StorageLocation : IEquatable<StorageLocation>, IComparable<StorageLocation>
+    public sealed class StorageLocation : IEquatable<StorageLocation>, IComparable<StorageLocation>
     {
         /// <summary>
         /// The invalid storage location.
         /// </summary>
         public static readonly StorageLocation InvalidLocation = new StorageLocation(null, new InvalidStorageAccess());
+
+        /// <summary>
+        /// Creates a storage location with a <c>null</c> Path and undefined storage access.
+        /// </summary>
+        public StorageLocation()
+            : this(null, null, null)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of <see cref="StorageLocation"/> with a location, using default storage.
@@ -95,7 +103,7 @@ namespace INTV.Core.Utility
         {
             get { return _path; }
         }
-        private string _path;
+        private readonly string _path;
 
         /// <summary>
         /// Gets the storage for the path.
@@ -104,7 +112,7 @@ namespace INTV.Core.Utility
         {
             get { return _storageAccess.GetStorageAccess(); }
         }
-        private IStorageAccess _storageAccess;
+        private readonly IStorageAccess _storageAccess;
 
         /// <summary>
         /// Gets a value indicating whether <see cref="Path"/> is <c>null</c>.

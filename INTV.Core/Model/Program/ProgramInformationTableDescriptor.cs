@@ -23,10 +23,18 @@ using INTV.Core.Utility;
 
 namespace INTV.Core.Model.Program
 {
-    public struct ProgramInformationTableDescriptor
+    public sealed class ProgramInformationTableDescriptor
     {
-        private StorageLocation _location;
-        private Func<StorageLocation, IProgramInformationTable> _factory;
+        private readonly StorageLocation _location;
+        private readonly Func<StorageLocation, IProgramInformationTable> _factory;
+
+        /// <summary>
+        /// Creates a new instance with default data (null location and factory).
+        /// </summary>
+        public ProgramInformationTableDescriptor()
+            : this(StorageLocation.Null, null)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of ProgramInformationTableDescriptor.

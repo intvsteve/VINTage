@@ -432,7 +432,7 @@ namespace INTV.Shared.Tests.Utility
 
         private static string InjectRandomInvalidFileNameCharacter(string path, bool allowAllInvalidCharacters)
         {
-            var badFileNameCharacters = (allowAllInvalidCharacters ? Path.GetInvalidFileNameChars() : Path.GetInvalidFileNameChars().Except(Path.GetInvalidPathChars()).ToArray()).Except(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }).ToArray();
+            var badFileNameCharacters = (allowAllInvalidCharacters ? Path.GetInvalidFileNameChars() : Path.GetInvalidFileNameChars().Except(Path.GetInvalidPathChars()).ToArray()).Except(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, ':' }).ToArray();
             var randomBadCharacter = badFileNameCharacters[Random.Next(badFileNameCharacters.Length)];
             path += Path.DirectorySeparatorChar.ToString() + "zz" + randomBadCharacter + " that cannot be good.txt";
             return path;

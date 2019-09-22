@@ -47,6 +47,15 @@ namespace INTV.Core.Model
         public static TimeSpan AccumulatedRefreshCrcsTime { get; set; }
 #endif // REPORT_PERFORMANCE
 
+        /// <summary>
+        /// Default initialization for the type.
+        /// </summary>
+        protected Rom()
+        {
+            _romPath = StorageLocation.InvalidLocation;
+            _configPath = StorageLocation.InvalidLocation;
+        }
+
         #region IRom
 
         /// <summary>
@@ -61,10 +70,20 @@ namespace INTV.Core.Model
         public abstract RomFormat Format { get; protected set; }
 
         /// <inheritdoc />
-        public virtual StorageLocation RomPath { get; protected set; }
+        public virtual StorageLocation RomPath
+        {
+            get { return _romPath; }
+            protected set { _romPath = value; }
+        }
+        private StorageLocation _romPath;
 
         /// <inheritdoc />
-        public virtual StorageLocation ConfigPath { get; protected set; }
+        public virtual StorageLocation ConfigPath
+        {
+            get { return _configPath; }
+            protected set { _configPath = value; }
+        }
+        private StorageLocation _configPath;
 
         /// <inheritdoc />
         public virtual bool IsValid { get; protected set; }

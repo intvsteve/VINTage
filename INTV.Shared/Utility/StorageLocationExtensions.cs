@@ -1,4 +1,4 @@
-﻿// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
+// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using INTV.Core.Utility;
@@ -301,19 +302,23 @@ namespace INTV.Shared.Utility
         {
             if (!storageLocation.ValidateStorageLocationPath())
             {
-                throw new ArgumentException("storageLocation.Path", "Path contains invalid characters.");
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathContainsInvalidCharacters_Format, storageLocation);
+                throw new ArgumentException("storageLocation.Path", errorMessage);
             }
             if (storageLocation.IsContainer)
             {
-                throw new ArgumentException("storageLocation.Path", "Path does not refer to a file.");
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathDoesNotReferToAFile_Format, storageLocation);
+                throw new ArgumentException("storageLocation.Path", errorMessage);
             }
             if (!destinationLocation.ValidateStorageLocationPath("destinationLocation"))
             {
-                throw new ArgumentException("destinationLocation.Path", "Path contains invalid characters.");
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathContainsInvalidCharacters_Format, destinationLocation);
+                throw new ArgumentException("destinationLocation.Path", errorMessage);
             }
             if (destinationLocation.StorageAccess is ICompressedArchiveAccess)
             {
-                throw new NotSupportedException("Destination is within an archive.");
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.DestinationPathIsInArchive_Format, destinationLocation);
+                throw new NotSupportedException(errorMessage);
             }
 
             if (storageLocation.StorageAccess is ICompressedArchiveAccess)

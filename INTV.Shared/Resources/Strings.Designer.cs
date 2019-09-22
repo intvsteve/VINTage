@@ -624,24 +624,6 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Destination already exists: {0}.
-        /// </summary>
-        internal static string CompressedArchiveAccess_ExtractEntry_DestinationAlreadyExists_Format {
-            get {
-                return ResourceManager.GetString("CompressedArchiveAccess_ExtractEntry_DestinationAlreadyExists_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Path contains invalid characters: {0}.
-        /// </summary>
-        internal static string CompressedArchiveAccess_ExtractEntry_DestinationContainsInvalidCharacters_Format {
-            get {
-                return ResourceManager.GetString("CompressedArchiveAccess_ExtractEntry_DestinationContainsInvalidCharacters_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Directory does not exist: {0}.
         /// </summary>
         internal static string CompressedArchiveAccess_ExtractEntry_DestinationDirectoryDoesNotExist_Format {
@@ -817,6 +799,15 @@ namespace INTV.Shared.Resources {
         internal static string ControlMustBeTextBoxErrorMessage {
             get {
                 return ResourceManager.GetString("ControlMustBeTextBoxErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destination already exists: {0}.
+        /// </summary>
+        internal static string CopyFile_DestinationAlreadyExists_Format {
+            get {
+                return ResourceManager.GetString("CopyFile_DestinationAlreadyExists_Format", resourceCulture);
             }
         }
         
@@ -1105,6 +1096,15 @@ namespace INTV.Shared.Resources {
         internal static string DeleteFileError_Title {
             get {
                 return ResourceManager.GetString("DeleteFileError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destination is within an archive: {0}.
+        /// </summary>
+        internal static string DestinationPathIsInArchive_Format {
+            get {
+                return ResourceManager.GetString("DestinationPathIsInArchive_Format", resourceCulture);
             }
         }
         
@@ -3369,6 +3369,24 @@ namespace INTV.Shared.Resources {
         internal static string PalFeatureCompatibility_Tolerates {
             get {
                 return ResourceManager.GetString("PalFeatureCompatibility_Tolerates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path contains invalid characters: {0}.
+        /// </summary>
+        internal static string PathContainsInvalidCharacters_Format {
+            get {
+                return ResourceManager.GetString("PathContainsInvalidCharacters_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path does not refer to a file: {0}.
+        /// </summary>
+        internal static string PathDoesNotReferToAFile_Format {
+            get {
+                return ResourceManager.GetString("PathDoesNotReferToAFile_Format", resourceCulture);
             }
         }
         

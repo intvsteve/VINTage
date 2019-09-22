@@ -202,7 +202,7 @@ namespace INTV.Shared.Utility
             }
             if (!destinationFilePath.ValidatePath(Directory.Exists(destinationFilePath), "destinationFilePath"))
             {
-                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_ExtractEntry_DestinationContainsInvalidCharacters_Format, destinationFilePath);
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathContainsInvalidCharacters_Format, destinationFilePath);
                 throw new ArgumentException("destinationFilePath", errorMessage);
             }
             if (!Directory.Exists(Path.GetDirectoryName(destinationFilePath)))
@@ -212,7 +212,7 @@ namespace INTV.Shared.Utility
             }
             if (!overwrite && File.Exists(destinationFilePath))
             {
-                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_ExtractEntry_DestinationAlreadyExists_Format, destinationFilePath);
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CopyFile_DestinationAlreadyExists_Format, destinationFilePath);
                 throw new IOException(errorMessage);
             }
             if (entry.IsDirectory)

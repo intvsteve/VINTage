@@ -1767,11 +1767,11 @@ The following formats were not processed:
 # Settings are provided by various components in individual sections.
 #</value>
   </data>
-  <data name="CompressedArchiveAccess_ExtractEntry_DestinationAlreadyExists_Format" xml:space="preserve">
+  <data name="CopyFile_DestinationAlreadyExists_Format" xml:space="preserve">
     <value>Destination already exists: {0}</value>
     <comment>{0} is a file path</comment>
   </data>
-  <data name="CompressedArchiveAccess_ExtractEntry_DestinationContainsInvalidCharacters_Format" xml:space="preserve">
+  <data name="PathContainsInvalidCharacters_Format" xml:space="preserve">
     <value>Path contains invalid characters: {0}</value>
     <comment>{0} is a file path</comment>
   </data>
@@ -1789,6 +1789,14 @@ The following formats were not processed:
   </data>
   <data name="CompressedArchiveAccess_IsContainerFailed_NoRootLocation_Format" xml:space="preserve">
     <value>Unable to determine if '{0}' is a container because compressed library has no root location, but absolute path was provided.</value>
+    <comment>{0} is a file path</comment>
+  </data>
+  <data name="DestinationPathIsInArchive_Format" xml:space="preserve">
+    <value>Destination is within an archive: {0}</value>
+    <comment>{0} is a path</comment>
+  </data>
+  <data name="PathDoesNotReferToAFile_Format" xml:space="preserve">
+    <value>Path does not refer to a file: {0}</value>
     <comment>{0} is a file path</comment>
   </data>
 </root>

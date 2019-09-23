@@ -1799,4 +1799,12 @@ The following formats were not processed:
     <value>Path does not refer to a file: {0}</value>
     <comment>{0} is a file path</comment>
   </data>
+  <data name="PathMustBeRooted_Format" xml:space="preserve">
+    <value>The path must have a root: {0}</value>
+    <comment>{0} is a file path</comment>
+  </data>
+  <data name="StorageArgumentPathIsInvalid" xml:space="preserve">
+    <value>{0} is an invalid storage location</value>
+    <comment>{0} is a function argument name</comment>
+  </data>
 </root>

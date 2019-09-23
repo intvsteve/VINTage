@@ -42,12 +42,8 @@ namespace INTV.Shared.Utility
         public static StorageLocation CreateStorageLocationFromPath(this string path)
         {
             var storageAccess = path.GetStorageAccess();
-            bool? isContainer = null;
-            if (storageAccess is ICompressedArchiveAccess)
-            {
-                isContainer = true;
-            }
-            var storageLocation = new StorageLocation(path, storageAccess, isContainer);
+            var archiveAccess = storageAccess as ICompressedArchiveAccess;
+            var storageLocation = new StorageLocation(path, storageAccess);
             return storageLocation;
         }
 

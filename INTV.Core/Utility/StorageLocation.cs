@@ -206,7 +206,12 @@ namespace INTV.Core.Utility
         /// <returns><c>true</c> if the values are equal; <c>false</c> otherwise.</returns>
         public static bool operator ==(StorageLocation lhs, StorageLocation rhs)
         {
-            return lhs.Equals(rhs);
+            var areEqual = object.ReferenceEquals(lhs, rhs);
+            if (!areEqual && !object.ReferenceEquals(lhs, null) && !object.ReferenceEquals(rhs, null))
+            {
+                areEqual = lhs.CompareTo(rhs) == 0;
+            }
+            return areEqual;
         }
 
         /// <summary>

@@ -81,6 +81,25 @@ namespace INTV.Core.Tests.Utility
         }
 
         [Fact]
+        public void StorageLocation_CompareTwoNullInstances_ReturnsEqual()
+        {
+            StorageLocation lhs = null;
+            StorageLocation rhs = null;
+
+            Assert.True(lhs == rhs);
+            Assert.True(rhs == lhs);
+        }
+
+        [Fact]
+        public void StorageLocation_CompareInstanceToNull_ReturnsFalse()
+        {
+            StorageLocation location = null;
+
+            Assert.False(StorageLocation.Null == location);
+            Assert.False(location == StorageLocation.Null);
+        }
+
+        [Fact]
         public void StorageLocation_CreateDefaultInstance_UsesDefaultStorageAccess()
         {
             var storageAccess = new PrivateStorageAccessA();

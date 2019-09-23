@@ -239,13 +239,11 @@ namespace INTV.Shared.Tests.Utility
 
             string tgzFile; // necessary to get archive being identified via file extension
             using (tgzResource.ExtractToTemporaryFile(out tgzFile))
+            using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
             {
-                using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
-                {
-                    var entry = tgz.Entries.Single();
+                var entry = tgz.Entries.Single();
 
-                    Assert.Equal("tagalong_msys2.tar", entry.Name);
-                }
+                Assert.Equal("tagalong_msys2.tar", entry.Name);
             }
         }
 

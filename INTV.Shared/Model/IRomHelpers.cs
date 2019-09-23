@@ -189,11 +189,11 @@ namespace INTV.Shared.Model
             }
             if (romNeedsCopy)
             {
-                currentRomPath.Copy(localRomPath, true);
+                currentRomPath.CopyFile(localRomPath, true);
             }
             if (cfgNeedsCopy)
             {
-                currentCfgPath.Copy(localCfgPath, true);
+                currentCfgPath.CopyFile(localCfgPath, true);
             }
             rom = INTV.Core.Model.Rom.Create(localRomPath, localCfgPath);
             return rom;

@@ -274,9 +274,9 @@ namespace INTV.Shared.Utility
         /// <exception cref="NotSupportedException">Thrown if <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> is
         /// is an invalid format, or if <paramref name="destinationLocation"/> is in an archive.</exception>
         /// <remarks>At this time, this method does not support copying a file into a location that is within an <see cref="ICompressedArchiveAccess"/> instance.</remarks>
-        public static void Copy(this StorageLocation storageLocation, StorageLocation destinationLocation)
+        public static void CopyFile(this StorageLocation storageLocation, StorageLocation destinationLocation)
         {
-            storageLocation.Copy(destinationLocation, overwrite: false);
+            storageLocation.CopyFile(destinationLocation, overwrite: false);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace INTV.Shared.Utility
         /// <exception cref="NotSupportedException">Thrown if <paramref name="storageLocation"/> or <paramref name="destinationLocation"/> is
         /// is an invalid format, or if <paramref name="destinationLocation"/> is in an archive.</exception>
         /// <remarks>At this time, this method does not support copying a file into a location that is within an <see cref="ICompressedArchiveAccess"/> instance.</remarks>
-        public static void Copy(this StorageLocation storageLocation, StorageLocation destinationLocation, bool overwrite)
+        public static void CopyFile(this StorageLocation storageLocation, StorageLocation destinationLocation, bool overwrite)
         {
             if (!storageLocation.ValidateStorageLocationPath())
             {

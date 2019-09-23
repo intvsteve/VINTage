@@ -107,16 +107,14 @@ namespace INTV.Shared.Tests.Utility
         public void ICompressedArchiveAccess_GetStorageAccessFromKnownArchiveKind_ReturnsExpectedArchiveKind(TestResource testResource, CompressedArchiveFormat expectedCompressedStorageAccessFormat)
         {
             string archiveFilePath;
-            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
-            {
-                var storageAccess = archiveFilePath.GetStorageAccess();
-                var compressedArchiveStorageAccess = storageAccess as ICompressedArchiveAccess;
+            testResource.ExtractToTemporaryFile(out archiveFilePath);
+            var storageAccess = archiveFilePath.GetStorageAccess();
+            var compressedArchiveStorageAccess = storageAccess as ICompressedArchiveAccess;
 
-                Assert.NotNull(storageAccess);
-                Assert.NotNull(compressedArchiveStorageAccess);
-                Assert.Equal(expectedCompressedStorageAccessFormat, compressedArchiveStorageAccess.Format);
-                compressedArchiveStorageAccess.Dispose();
-            }
+            Assert.NotNull(storageAccess);
+            Assert.NotNull(compressedArchiveStorageAccess);
+            Assert.Equal(expectedCompressedStorageAccessFormat, compressedArchiveStorageAccess.Format);
+            compressedArchiveStorageAccess.Dispose();
         }
 
         [Theory]
@@ -124,33 +122,29 @@ namespace INTV.Shared.Tests.Utility
         public void ICompressedArchiveAccess_GetStorageAccessFromNestedArchivePath_ReturnsCorrectArchiveKind(TestResource testResource, string path, CompressedArchiveFormat nestedArchiveFormat)
         {
             string archiveFilePath;
-            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
-            {
-                var nestedPath = string.IsNullOrEmpty(path) ? archiveFilePath : Path.Combine(archiveFilePath, path);
+            testResource.ExtractToTemporaryFile(out archiveFilePath);
+            var nestedPath = string.IsNullOrEmpty(path) ? archiveFilePath : Path.Combine(archiveFilePath, path);
 
-                var storageAccess = nestedPath.GetStorageAccess();
-                var compressedArchiveStorageAccess = storageAccess as ICompressedArchiveAccess;
+            var storageAccess = nestedPath.GetStorageAccess();
 
-                Assert.NotNull(storageAccess);
-                Assert.NotNull(compressedArchiveStorageAccess);
-                Assert.Equal(nestedArchiveFormat, compressedArchiveStorageAccess.Format);
-                compressedArchiveStorageAccess.Dispose();
-            }
+            var compressedArchiveStorageAccess = storageAccess as ICompressedArchiveAccess;
+            Assert.NotNull(storageAccess);
+            Assert.NotNull(compressedArchiveStorageAccess);
+            Assert.Equal(nestedArchiveFormat, compressedArchiveStorageAccess.Format);
+            compressedArchiveStorageAccess.Dispose();
         }
 
         [Fact]
         public void ICompressedArchiveAccess_GetStorageAccessFromMissingNestedArchivePath_ReturnsDefaultStorageAccess()
         {
             string archiveFilePath;
-            using (TestResource.TagalongMsys2Tgz.ExtractToTemporaryFile(out archiveFilePath))
-            {
-                var nestedPath = Path.Combine(archiveFilePath, "tagalong_msys2.tar/tag along.zip/tagalong.cfg"); // typo in nested archive
+            TestResource.TagalongMsys2Tgz.ExtractToTemporaryFile(out archiveFilePath);
+            var nestedPath = Path.Combine(archiveFilePath, "tagalong_msys2.tar/tag along.zip/tagalong.cfg"); // typo in nested archive
 
-                var storageAccess = nestedPath.GetStorageAccess();
+            var storageAccess = nestedPath.GetStorageAccess();
 
-                Assert.False(storageAccess is ICompressedArchiveAccess);
-                Assert.Equal(IStorageAccessHelpers.DefaultStorage, storageAccess);
-            }
+            Assert.False(storageAccess is ICompressedArchiveAccess);
+            Assert.Equal(IStorageAccessHelpers.DefaultStorage, storageAccess);
         }
 
         #endregion // GetStorageAccess Tests
@@ -223,14 +217,12 @@ namespace INTV.Shared.Tests.Utility
         public void ICompressedArchiveAccess_GetRootArchivePathOfPathToOrWithinArchive_ReturnsCorrectRootArchivePath(TestResource testResource, string path, CompressedArchiveFormat nestedArchiveFormat)
         {
             string archiveFilePath;
-            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
-            {
-                var nestedPath = string.IsNullOrEmpty(path) ? archiveFilePath : Path.Combine(archiveFilePath, path);
+            testResource.ExtractToTemporaryFile(out archiveFilePath);
+            var nestedPath = string.IsNullOrEmpty(path) ? archiveFilePath : Path.Combine(archiveFilePath, path);
 
-                var rootArchivePath = nestedPath.GetRootArchivePath();
+            var rootArchivePath = nestedPath.GetRootArchivePath();
 
-                Assert.Equal(0, PathComparer.Instance.Compare(archiveFilePath.NormalizePathSeparators(), rootArchivePath.NormalizePathSeparators()));
-            }
+            Assert.Equal(0, PathComparer.Instance.Compare(archiveFilePath.NormalizePathSeparators(), rootArchivePath.NormalizePathSeparators()));
         }
 
         #endregion // GetRootArchivePath Tests
@@ -289,15 +281,13 @@ namespace INTV.Shared.Tests.Utility
         public void ICompressedArchiveAccess_GetMostDeeplyNestedContainerPathToOrWithinArchive_ReturnsExpectedNestedArchivePath(TestResource testResource, string path, string nestedArchivePath)
         {
             string archiveFilePath;
-            using (testResource.ExtractToTemporaryFile(out archiveFilePath))
-            {
-                var nestedPath = string.IsNullOrEmpty(path) ? archiveFilePath : Path.Combine(archiveFilePath, path);
+            testResource.ExtractToTemporaryFile(out archiveFilePath);
+            var nestedPath = string.IsNullOrEmpty(path) ? archiveFilePath : Path.Combine(archiveFilePath, path);
 
-                var mostDeeplyNestedContainerPath = nestedPath.GetMostDeeplyNestedArchivePath();
+            var mostDeeplyNestedContainerPath = nestedPath.GetMostDeeplyNestedArchivePath();
 
-                var expectedMostDeeplyNestedContainerPath = nestedArchivePath == null ? archiveFilePath : Path.Combine(archiveFilePath, nestedArchivePath);
-                Assert.Equal(0, PathComparer.Instance.Compare(expectedMostDeeplyNestedContainerPath.NormalizePathSeparators(), mostDeeplyNestedContainerPath.NormalizePathSeparators()));
-            }
+            var expectedMostDeeplyNestedContainerPath = nestedArchivePath == null ? archiveFilePath : Path.Combine(archiveFilePath, nestedArchivePath);
+            Assert.Equal(0, PathComparer.Instance.Compare(expectedMostDeeplyNestedContainerPath.NormalizePathSeparators(), mostDeeplyNestedContainerPath.NormalizePathSeparators()));
         }
 
         #endregion // GetMostDeeplyNestedContainerLocation Tests
@@ -316,27 +306,25 @@ namespace INTV.Shared.Tests.Utility
         public void ICompressedArchiveAccess_GetParentStorageAccessOfNestedArchive_ReturnsExpectedParentStorageAccess()
         {
             string archiveFilePath;
-            using (TestResource.TagalongMsys2Tgz.ExtractToTemporaryFile(out archiveFilePath))
+            TestResource.TagalongMsys2Tgz.ExtractToTemporaryFile(out archiveFilePath);
+            var nestedPath = Path.Combine(archiveFilePath, "tagalong_msys2.tar/tagalong.zip/tagalong.cfg");
+
+            var storageAccess = nestedPath.GetStorageAccess();
+            Assert.True(storageAccess is ICompressedArchiveAccess);
+
+            var expectedCompressedArchiveFormats = new[] { CompressedArchiveFormat.Zip, CompressedArchiveFormat.Tar, CompressedArchiveFormat.GZip, CompressedArchiveFormat.None };
+            foreach (var expectedCompressedArchiveFormat in expectedCompressedArchiveFormats)
             {
-                var nestedPath = Path.Combine(archiveFilePath, "tagalong_msys2.tar/tagalong.zip/tagalong.cfg");
-
-                var storageAccess = nestedPath.GetStorageAccess();
-                Assert.True(storageAccess is ICompressedArchiveAccess);
-
-                var expectedCompressedArchiveFormats = new[] { CompressedArchiveFormat.Zip, CompressedArchiveFormat.Tar, CompressedArchiveFormat.GZip, CompressedArchiveFormat.None };
-                foreach (var expectedCompressedArchiveFormat in expectedCompressedArchiveFormats)
+                switch (expectedCompressedArchiveFormat)
                 {
-                    switch (expectedCompressedArchiveFormat)
-                    {
-                        case CompressedArchiveFormat.None:
-                            Assert.Equal(IStorageAccessHelpers.DefaultStorage, storageAccess);
-                            break;
-                        default:
-                            var compressedStorageAccess = storageAccess as ICompressedArchiveAccess;
-                            Assert.Equal(expectedCompressedArchiveFormat, compressedStorageAccess.Format);
-                            storageAccess = storageAccess.GetParentStorageAccess();
-                            break;
-                    }
+                    case CompressedArchiveFormat.None:
+                        Assert.Equal(IStorageAccessHelpers.DefaultStorage, storageAccess);
+                        break;
+                    default:
+                        var compressedStorageAccess = storageAccess as ICompressedArchiveAccess;
+                        Assert.Equal(expectedCompressedArchiveFormat, compressedStorageAccess.Format);
+                        storageAccess = storageAccess.GetParentStorageAccess();
+                        break;
                 }
             }
         }
@@ -454,20 +442,18 @@ namespace INTV.Shared.Tests.Utility
             var tgzResource = TestResource.TagalongMsys2Tgz;
 
             string tgzFile; // necessary to get archive being identified via file extension
-            using (tgzResource.ExtractToTemporaryFile(out tgzFile))
+            tgzResource.ExtractToTemporaryFile(out tgzFile);
+            using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
             {
-                using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
-                {
-                    var entries = tgz.ListEntries(null, includeContainers);
+                var entries = tgz.ListEntries(null, includeContainers);
 
-                    if (includeContainers)
-                    {
-                        Assert.NotEmpty(entries);
-                    }
-                    else
-                    {
-                        Assert.Empty(entries);
-                    }
+                if (includeContainers)
+                {
+                    Assert.NotEmpty(entries);
+                }
+                else
+                {
+                    Assert.Empty(entries);
                 }
             }
         }
@@ -509,15 +495,13 @@ namespace INTV.Shared.Tests.Utility
             var location = "tagalong_msys2.tar/bin/";
 
             string tgzFile;
-            using (tgzResource.ExtractToTemporaryFile(out tgzFile))
+            tgzResource.ExtractToTemporaryFile(out tgzFile);
+            using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
             {
-                using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
-                {
-                    var entries = tgz.ListEntries(location, includeContainers: true);
+                var entries = tgz.ListEntries(location, includeContainers: true);
 
-                    var expectedEntries = new[] { "tagalong_msys2.tar/bin/tagalong.bin", "tagalong_msys2.tar/bin/tagalong.cfg" };
-                    Assert.Equal(expectedEntries, entries.Select(e => e.Name));
-                }
+                var expectedEntries = new[] { "tagalong_msys2.tar/bin/tagalong.bin", "tagalong_msys2.tar/bin/tagalong.cfg" };
+                Assert.Equal(expectedEntries, entries.Select(e => e.Name));
             }
         }
 
@@ -643,7 +627,7 @@ namespace INTV.Shared.Tests.Utility
                 "tagalong_w10.tar/tagalong.rom",
             };
 
-            using (tgzNested.ExtractToTemporaryFile(out tgzFilePath))
+            tgzNested.ExtractToTemporaryFile(out tgzFilePath);
             using (var tgz = CompressedArchiveAccess.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(locationInArchive: null, includeContainers: true, recurse: true);
@@ -659,7 +643,7 @@ namespace INTV.Shared.Tests.Utility
             var tgzManyDirs = TestResource.TagalongTgzManyDirs;
             var tgzFilePath = string.Empty;
 
-            using (tgzManyDirs.ExtractToTemporaryFile(out tgzFilePath))
+            tgzManyDirs.ExtractToTemporaryFile(out tgzFilePath);
             using (var tgz = CompressedArchiveAccess.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(locationInArchive: null, includeContainers: true, recurse: true);
@@ -691,7 +675,7 @@ namespace INTV.Shared.Tests.Utility
                 "tagalong_many_dirs.tar/rootSub/sub3/tagalong_from_rom.luigi",
             };
 
-            using (tgzManyDirs.ExtractToTemporaryFile(out tgzFilePath))
+            tgzManyDirs.ExtractToTemporaryFile(out tgzFilePath);
             using (var tgz = CompressedArchiveAccess.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(location, includeContainers: false, recurse: true);
@@ -720,7 +704,7 @@ namespace INTV.Shared.Tests.Utility
                 "tagalong_many_dirs.tar/rootSub/sub0/tagalong_any.luigi",
             };
 
-            using (tgzManyDirs.ExtractToTemporaryFile(out tgzFilePath))
+            tgzManyDirs.ExtractToTemporaryFile(out tgzFilePath);
             using (var tgz = CompressedArchiveAccess.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(location, includeContainers: true, recurse: true);
@@ -863,7 +847,7 @@ namespace INTV.Shared.Tests.Utility
             var location = @"tagalong_w10.tar/scrambler/";
             var gzipFile = string.Empty;
 
-            using (gzipWithSubdirectory.ExtractToTemporaryFile(out gzipFile))
+            gzipWithSubdirectory.ExtractToTemporaryFile(out gzipFile);
             using (var gzip = CompressedArchiveAccess.Open(gzipFile, CompressedArchiveAccessMode.Read))
             {
                 var entries = gzip.ListContents(location, includeContainers: true);

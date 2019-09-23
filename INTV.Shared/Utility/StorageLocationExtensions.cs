@@ -1,4 +1,4 @@
-// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
+﻿// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -296,20 +296,47 @@ namespace INTV.Shared.Utility
         /// <remarks>At this time, this method does not support copying a file into a location that is within an <see cref="ICompressedArchiveAccess"/> instance.</remarks>
         public static void CopyFile(this StorageLocation storageLocation, StorageLocation destinationLocation, bool overwrite)
         {
-            if (!storageLocation.ValidateStorageLocationPath())
+            if (storageLocation == null)
             {
-                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathContainsInvalidCharacters_Format, storageLocation);
-                throw new ArgumentException("storageLocation.Path", errorMessage);
+                throw new ArgumentNullException("storageLocation");
+            }
+            if (storageLocation.IsInvalid)
+            {
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.StorageArgumentPathIsInvalid, "storageLocation");
+                throw new InvalidOperationException(errorMessage);
+            }
+            if (!storageLocation.IsValid)
+            {
+                throw new ArgumentException("storageLocation");
+            }
+            if (!Path.IsPathRooted(storageLocation.Path))
+            {
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathMustBeRooted_Format, storageLocation);
+                throw new ArgumentException("storageLocation", errorMessage);
             }
             if (storageLocation.IsContainer)
             {
                 var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathDoesNotReferToAFile_Format, storageLocation);
-                throw new ArgumentException("storageLocation.Path", errorMessage);
+                throw new ArgumentException("storageLocation", errorMessage);
             }
-            if (!destinationLocation.ValidateStorageLocationPath("destinationLocation"))
+            if (destinationLocation == null)
             {
                 var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathContainsInvalidCharacters_Format, destinationLocation);
-                throw new ArgumentException("destinationLocation.Path", errorMessage);
+                throw new ArgumentNullException("destinationLocation");
+            }
+            if (destinationLocation.IsInvalid)
+            {
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.StorageArgumentPathIsInvalid, "destinationLocation");
+                throw new InvalidOperationException(errorMessage);
+            }
+            if (!destinationLocation.IsValid)
+            {
+                throw new ArgumentException("destinationLocation");
+            }
+            if (!Path.IsPathRooted(destinationLocation.Path))
+            {
+                var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathMustBeRooted_Format, destinationLocation);
+                throw new ArgumentException("destinationLocation", errorMessage);
             }
             if (destinationLocation.StorageAccess is ICompressedArchiveAccess)
             {
@@ -317,22 +344,18 @@ namespace INTV.Shared.Utility
                 throw new NotSupportedException(errorMessage);
             }
 
-            if (storageLocation.StorageAccess is ICompressedArchiveAccess)
+            if (storageLocation.UsesDefaultStorage)
             {
-                // TODO: This extracts directly from the archive, and does not do any kind of
-                // modification time preservation that the archive may be able to provide. An
-                // improvement would be to offer an 'Extract' method on ICompressedArchiveAccess
-                // that could be more sophisticated.
-                var fileMode = overwrite ? FileMode.Create : FileMode.CreateNew;
-                using (var destinationStream = new FileStream(destinationLocation.Path, fileMode))
-                using (var sourceStream = storageLocation.StorageAccess.Open(storageLocation.Path))
-                {
-                    sourceStream.CopyTo(destinationStream);
-                }
+                File.Copy(storageLocation.Path, destinationLocation.Path, overwrite);
             }
             else
             {
-                File.Copy(storageLocation.Path, destinationLocation.Path, overwrite);
+                var archiveAccess = storageLocation.StorageAccess as ICompressedArchiveAccess;
+                if (archiveAccess != null)
+                {
+                    var entry = archiveAccess.FindEntry(storageLocation.Path);
+                    archiveAccess.ExtractEntry(entry, destinationLocation.Path, overwrite);
+                }
             }
         }
 
@@ -401,19 +424,16 @@ namespace INTV.Shared.Utility
         {
             // A null or empty value indicates path is not within an archive.
             string archiveRelativeDirectory = null;
-            rootArchivePath = path.GetRootArchivePath();
+            rootArchivePath = path.GetMostDeeplyNestedArchivePath();
             if (!string.IsNullOrEmpty(rootArchivePath))
             {
                 archiveRelativeDirectory = "/";
                 if (PathComparer.Instance.Compare(rootArchivePath, path.NormalizePathSeparators()) != 0)
                 {
                     archiveRelativeDirectory = PathUtils.GetRelativePath(path, rootArchivePath).NormalizePathSeparators();
-                    if (archiveRelativeDirectory.GetCompressedArchiveFormatsFromFileName().Any())
+                    if (archiveRelativeDirectory.Last() != '/')
                     {
-                        if (archiveRelativeDirectory.Last() != '/')
-                        {
-                            archiveRelativeDirectory += '/';
-                        }
+                        archiveRelativeDirectory += '/';
                     }
                 }
             }

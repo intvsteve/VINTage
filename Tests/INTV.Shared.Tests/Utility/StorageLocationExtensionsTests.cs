@@ -1402,9 +1402,182 @@ namespace INTV.Shared.Tests.Utility
         }
 
         #endregion // EnumerateFiles Tests
+
+        #region CopyFile Tests
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileOnNullStorageLocation_ThrowsArgumentNullException()
+        {
+            StorageLocation location = null;
+
+            Assert.Throws<ArgumentNullException>(() => location.CopyFile(StorageLocation.Null));
         }
 
-        #endregion // EnumerateFiles Tests
+        [Fact]
+        public void StorageAccessExtensions_CopyFileOnInvalidStorageAccess_ThrowsInvalidOperationException()
+        {
+            Assert.Throws<InvalidOperationException>(() => StorageLocation.InvalidLocation.CopyFile(StorageLocation.Null));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileOnNullPathStorageAccess_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => StorageLocation.Null.CopyFile(StorageLocation.Null));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileOnEmptyPathStorageAccess_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => StorageLocation.Empty.CopyFile(StorageLocation.Null));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileOnUnRootedStorageAccess_ThrowsArgumentException()
+        {
+            var location = "some/kind/of/path".CreateStorageLocationFromPath();
+
+            Assert.Throws<ArgumentException>(() => location.CopyFile(StorageLocation.Null));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileOnStorageAccessOfDirectory_ThrowsArgumentException()
+        {
+            var location = Path.GetTempPath().CreateStorageLocationFromPath();
+
+            Assert.Throws<ArgumentException>(() => location.CopyFile(StorageLocation.Null));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileToNullDestinationLocation_ThrowsArgumentNullException()
+        {
+            var location = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()).CreateStorageLocationFromPath();
+
+            Assert.Throws<ArgumentNullException>(() => location.CopyFile(null));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileToInvalidDestinationLocation_ThrowsInvalidOperationException()
+        {
+            var location = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()).CreateStorageLocationFromPath();
+
+            Assert.Throws<InvalidOperationException>(() => location.CopyFile(StorageLocation.InvalidLocation));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileToNullPathDestinationLocation_ThrowsArgumentException()
+        {
+            var location = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()).CreateStorageLocationFromPath();
+
+            Assert.Throws<ArgumentException>(() => location.CopyFile(StorageLocation.Null));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileToEmptyPathDestinationLocation_ThrowsArgumentException()
+        {
+            var location = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()).CreateStorageLocationFromPath();
+
+            Assert.Throws<ArgumentException>(() => location.CopyFile(StorageLocation.Empty));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileToUnRootedDestinationLocation_ThrowsArgumentException()
+        {
+            var location = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()).CreateStorageLocationFromPath();
+            var destination = "a/path/to/nowhere".CreateStorageLocationFromPath();
+
+            Assert.Throws<ArgumentException>(() => location.CopyFile(destination));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFile_Succeeds()
+        {
+            string directoryPath;
+            using (TestResource.Directory(out directoryPath))
+            {
+                var testFile = Path.Combine(directoryPath, "test.file");
+                File.Create(testFile).Dispose();
+                var source = testFile.CreateStorageLocationFromPath();
+                var targetFile = Path.Combine(directoryPath, "test-copy.file");
+                var target = targetFile.CreateStorageLocationFromPath();
+
+                source.CopyFile(target);
+
+                Assert.True(File.Exists(targetFile));
+            }
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileWhenTargetExists_ThrowsIOException()
+        {
+            string directoryPath;
+            using (TestResource.Directory(out directoryPath))
+            {
+                var sourceFile = Path.Combine(directoryPath, "test.file");
+                File.Create(sourceFile).Dispose();
+                var targetFile = Path.Combine(directoryPath, "test-copy.file");
+                File.Create(targetFile).Dispose();
+                var source = sourceFile.CreateStorageLocationFromPath();
+                var target = targetFile.CreateStorageLocationFromPath();
+
+                Assert.Throws<IOException>(() => source.CopyFile(target));
+            }
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileWhenTargetExistsOverwriteIsTrue_Succeeds()
+        {
+            string directoryPath;
+            using (TestResource.Directory(out directoryPath))
+            {
+                var sourceFile = Path.Combine(directoryPath, "test.file");
+                var dataLength = 128L;
+                using (var s = File.Create(sourceFile))
+                {
+                    var data = new byte[dataLength];
+                    s.Write(data, 0, data.Length);
+                }
+                var targetFile = Path.Combine(directoryPath, "test-copy.file");
+                File.Create(targetFile).Dispose();
+                var source = sourceFile.CreateStorageLocationFromPath();
+                var target = targetFile.CreateStorageLocationFromPath();
+
+                source.CopyFile(target, overwrite: true);
+
+                var fileInfo = new FileInfo(targetFile);
+                Assert.True(fileInfo.Exists);
+                Assert.Equal(dataLength, fileInfo.Length);
+            }
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileToArchiveDestinationLocation_ThrowsNotSupportedException()
+        {
+            var location = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()).CreateStorageLocationFromPath();
+            string archivePath;
+            TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath);
+            var destination = archivePath.CreateStorageLocationFromPath();
+
+            Assert.Throws<NotSupportedException>(() => location.CopyFile(destination));
+        }
+
+        [Fact]
+        public void StorageAccessExtensions_CopyFileInNestedArchiveToDirectory_CopiesFile()
+        {
+            string directoryPath;
+            string rootArchivePath;
+            TestResource.Directory(out directoryPath);
+            TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out rootArchivePath);
+            var sourceLocation = Path.Combine(rootArchivePath, "tagalong.tgz/tagalong.tar/tagalong.zip/tagalong.cfg").CreateStorageLocationFromPath();
+
+            var destinationLocation = Path.Combine(directoryPath, "tagalong.cfg").CreateStorageLocationFromPath();
+            sourceLocation.CopyFile(destinationLocation);
+
+            var fileInfo = new FileInfo(destinationLocation.Path);
+            Assert.True(fileInfo.Exists);
+            Assert.True(fileInfo.Length > 12);
+        }
+
+        #endregion // CopyFile Tests
 
         #region Combine Tests Helpers
 

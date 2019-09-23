@@ -309,21 +309,7 @@ namespace INTV.Shared.Utility
             var isLocationAContainer = (lastCharacter == Path.DirectorySeparatorChar) || (lastCharacter == Path.AltDirectorySeparatorChar);
             if (!isLocationAContainer)
             {
-                storageLocation = storageLocation.NormalizePathSeparators();
-                if (Path.IsPathRooted(storageLocation))
-                {
-                    if (string.IsNullOrEmpty(RootLocation))
-                    {
-                        var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_IsContainerFailed_NoRootLocation_Format, storageLocation);
-                        throw new InvalidOperationException(errorMessage);
-                    }
-                    if (!storageLocation.StartsWith(RootLocation.NormalizePathSeparators(), PathComparer.DefaultPolicy))
-                    {
-                        var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_IsContainerFailed_LocationCannotExistInArchive_Format, storageLocation, RootLocation);
-                        throw new ArgumentException(errorMessage);
-                    }
-                    storageLocation = PathUtils.GetRelativePath(storageLocation, RootLocation);
-                }
+                storageLocation = ResolveArchiveRelativeLocation(storageLocation);
                 var entry = GetEntry(storageLocation);
                 if (entry != null)
                 {
@@ -456,6 +442,44 @@ namespace INTV.Shared.Utility
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.SharpZipLib)] = GZipAccessSharpZipLib.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Tar, CompressedArchiveAccessImplementation.SharpZipLib)] = TarAccessSharpZipLib.Create;
             return factories;
+        }
+
+        private string ResolveArchiveRelativeLocation(string storageLocation)
+        {
+            storageLocation = storageLocation.NormalizePathSeparators();
+            if (Path.IsPathRooted(storageLocation))
+            {
+                var rootLocation = RootLocation;
+                if (string.IsNullOrEmpty(rootLocation))
+                {
+                    rootLocation = storageLocation.GetMostDeeplyNestedArchivePath();// RootLocation;
+                }
+                if (string.IsNullOrEmpty(rootLocation))
+                {
+                    var parentAccess = this.GetParentStorageAccess() as CompressedArchiveAccess;
+                    while (parentAccess != null)
+                    {
+                        rootLocation = parentAccess.RootLocation;
+                        if (!string.IsNullOrEmpty(rootLocation))
+                        {
+                            break;
+                        }
+                        parentAccess = parentAccess.GetParentStorageAccess() as CompressedArchiveAccess;
+                    }
+                }
+                if (string.IsNullOrEmpty(rootLocation))
+                {
+                    var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_IsContainerFailed_NoRootLocation_Format, storageLocation);
+                    throw new InvalidOperationException(errorMessage);
+                }
+                if (!storageLocation.StartsWith(rootLocation.NormalizePathSeparators(), PathComparer.DefaultPolicy))
+                {
+                    var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_IsContainerFailed_LocationCannotExistInArchive_Format, storageLocation, RootLocation);
+                    throw new ArgumentException(errorMessage);
+                }
+                storageLocation = PathUtils.GetRelativePath(storageLocation, rootLocation);
+            }
+            return storageLocation;
         }
     }
 }

@@ -359,15 +359,12 @@ namespace INTV.Shared.Tests.Utility
         {
             string archivePath;
 
-            using (testResource.ExtractToTemporaryFile(out archivePath))
-            {
-                var pathIntoArchive = Path.Combine(archivePath, path);
+            testResource.ExtractToTemporaryFile(out archivePath);
+            var pathIntoArchive = Path.Combine(archivePath, path);
 
-                var storageLocation = pathIntoArchive.CreateStorageLocationFromPath();
+            var storageLocation = pathIntoArchive.CreateStorageLocationFromPath();
 
-                Assert.True(storageLocation.StorageAccess is ICompressedArchiveAccess);
-                ((ICompressedArchiveAccess)storageLocation.StorageAccess).Dispose();
-            }
+            Assert.True(storageLocation.StorageAccess is ICompressedArchiveAccess);
         }
 
         [Theory]
@@ -376,14 +373,11 @@ namespace INTV.Shared.Tests.Utility
         {
             string archivePath;
 
-            using (testResource.ExtractToTemporaryFile(out archivePath))
-            {
-                var storageLocation = archivePath.CreateStorageLocationFromPath();
+            testResource.ExtractToTemporaryFile(out archivePath);
+            var storageLocation = archivePath.CreateStorageLocationFromPath();
 
-                var storageAccess = storageLocation.StorageAccess as ICompressedArchiveAccess;
-                Assert.Equal(format, storageAccess.Format);
-                storageAccess.Dispose();
-            }
+            var storageAccess = storageLocation.StorageAccess as ICompressedArchiveAccess;
+            Assert.Equal(format, storageAccess.Format);
         }
 
         [Theory]
@@ -392,13 +386,11 @@ namespace INTV.Shared.Tests.Utility
         {
             string archivePath;
 
-            using (testResource.ExtractToTemporaryFile(out archivePath))
-            {
-                var storageLocation = archivePath.CreateStorageLocationFromPath();
+            testResource.ExtractToTemporaryFile(out archivePath);
+            var storageLocation = archivePath.CreateStorageLocationFromPath();
 
-                Assert.True(storageLocation.IsContainer);
-                ((ICompressedArchiveAccess)storageLocation.StorageAccess).Dispose();
-            }
+            Assert.True(storageLocation.IsContainer);
+            //((ICompressedArchiveAccess)storageLocation.StorageAccess).Dispose();
         }
 
         #endregion // CreateFromFilePath Tests
@@ -554,18 +546,16 @@ namespace INTV.Shared.Tests.Utility
         public void StorageLocationExtensions_CombinePathIntoArchiveWithRelativePath_ProducesExpectedPathAndStorageAccess(string relativePath, bool shouldStorageAccessChange)
         {
             string archiveRoot;
-            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archiveRoot))
-            {
-                var location = archiveRoot.CreateStorageLocationFromPath();
-                Assert.False(location.UsesDefaultStorage);
+            TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archiveRoot);
+            var location = archiveRoot.CreateStorageLocationFromPath();
+            Assert.False(location.UsesDefaultStorage);
 
-                var newStorageLocation = location.Combine(relativePath);
+            var newStorageLocation = location.Combine(relativePath);
 
-                var expectedNewPath = string.IsNullOrEmpty(relativePath) ? archiveRoot : Path.Combine(archiveRoot, relativePath);
-                Assert.Equal(expectedNewPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
-                Assert.False(location.UsesDefaultStorage);
-                Assert.Equal(shouldStorageAccessChange, !object.ReferenceEquals(location.StorageAccess, newStorageLocation.StorageAccess));
-            }
+            var expectedNewPath = string.IsNullOrEmpty(relativePath) ? archiveRoot : Path.Combine(archiveRoot, relativePath);
+            Assert.Equal(expectedNewPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+            Assert.False(location.UsesDefaultStorage);
+            Assert.Equal(shouldStorageAccessChange, !object.ReferenceEquals(location.StorageAccess, newStorageLocation.StorageAccess));
         }
 
         #endregion // Combine Tests
@@ -781,31 +771,27 @@ namespace INTV.Shared.Tests.Utility
         public void StorageLocationExtensions_ChangeExtensionFromArchiveToNonArchive_ChangeStorageAccessToDefault()
         {
             string archivePath;
-            using (TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out archivePath))
-            {
-                var location = archivePath.CreateStorageLocationFromPath();
-                Assert.True(location.StorageAccess is ICompressedArchiveAccess);
+            TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out archivePath);
+            var location = archivePath.CreateStorageLocationFromPath();
+            Assert.True(location.StorageAccess is ICompressedArchiveAccess);
 
-                var newLocation = location.ChangeExtension(".txt");
+            var newLocation = location.ChangeExtension(".txt");
 
-                Assert.True(newLocation.UsesDefaultStorage);
-            }
+            Assert.True(newLocation.UsesDefaultStorage);
         }
 
         [Fact]
         public void StorageLocationExtensions_ChangeExtensionFromNonArchiveToArchive_ChangesStorageAccessToNonDefault()
         {
             string archivePath;
-            using (TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out archivePath))
-            {
-                var path = Path.ChangeExtension(archivePath, "txt");
-                var location = path.CreateStorageLocationFromPath();
-                Assert.True(location.UsesDefaultStorage);
+            TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out archivePath);
+            var path = Path.ChangeExtension(archivePath, "txt");
+            var location = path.CreateStorageLocationFromPath();
+            Assert.True(location.UsesDefaultStorage);
 
-                var newLocation = location.ChangeExtension(".zip");
+            var newLocation = location.ChangeExtension(".zip");
 
-                Assert.True(newLocation.StorageAccess is ICompressedArchiveAccess);
-            }
+            Assert.True(newLocation.StorageAccess is ICompressedArchiveAccess);
         }
 
         [Fact]
@@ -813,41 +799,37 @@ namespace INTV.Shared.Tests.Utility
         {
             string zipArchivePath;
             string tarArchivePath;
-            using (TestResource.TagalongZip.ExtractToTemporaryFile(out zipArchivePath))
-            using (TestResource.TagalongTar.ExtractToTemporaryFile(out tarArchivePath))
-            {
-                File.Move(tarArchivePath, Path.Combine(Path.GetDirectoryName(zipArchivePath), Path.GetFileName(tarArchivePath)));
-                var zipLocation = zipArchivePath.CreateStorageLocationFromPath();
-                Assert.False(zipLocation.UsesDefaultStorage);
-                var storageAccess = zipLocation.StorageAccess as ICompressedArchiveAccess;
-                var initialArchiveFormat = storageAccess.Format;
+            TestResource.TagalongZip.ExtractToTemporaryFile(out zipArchivePath);
+            TestResource.TagalongTar.ExtractToTemporaryFile(out tarArchivePath);
+            File.Move(tarArchivePath, Path.Combine(Path.GetDirectoryName(zipArchivePath), Path.GetFileName(tarArchivePath)));
+            var zipLocation = zipArchivePath.CreateStorageLocationFromPath();
+            Assert.False(zipLocation.UsesDefaultStorage);
+            var storageAccess = zipLocation.StorageAccess as ICompressedArchiveAccess;
+            var initialArchiveFormat = storageAccess.Format;
 
-                var tarLocation = zipLocation.ChangeExtension(".tar");
+            var tarLocation = zipLocation.ChangeExtension(".tar");
 
-                storageAccess = tarLocation.StorageAccess as ICompressedArchiveAccess;
-                Assert.NotNull(storageAccess);
-                Assert.NotEqual(initialArchiveFormat, storageAccess.Format);
-            }
+            storageAccess = tarLocation.StorageAccess as ICompressedArchiveAccess;
+            Assert.NotNull(storageAccess);
+            Assert.NotEqual(initialArchiveFormat, storageAccess.Format);
         }
 
         [Fact]
         public void StorageLocationExtensions_ChangeExtensionFromOneNestedArchiveToAnotherViaFileExtension_ChangesStorageAccess()
         {
             string archivePath;
-            using (TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out archivePath))
-            {
-                var path = Path.Combine(archivePath, "tagalong.tar");
-                var location = path.CreateStorageLocationFromPath();
-                Assert.False(location.UsesDefaultStorage);
-                var storageAccess = location.StorageAccess as ICompressedArchiveAccess;
-                var initialArchiveFormat = storageAccess.Format;
+            TestResource.TagalongMultipleNested.ExtractToTemporaryFile(out archivePath);
+            var path = Path.Combine(archivePath, "tagalong.tar");
+            var location = path.CreateStorageLocationFromPath();
+            Assert.False(location.UsesDefaultStorage);
+            var storageAccess = location.StorageAccess as ICompressedArchiveAccess;
+            var initialArchiveFormat = storageAccess.Format;
 
-                var newLocation = location.ChangeExtension(".zip");
+            var newLocation = location.ChangeExtension(".zip");
 
-                storageAccess = newLocation.StorageAccess as ICompressedArchiveAccess;
-                Assert.NotNull(storageAccess);
-                Assert.NotEqual(initialArchiveFormat, storageAccess.Format);
-            }
+            storageAccess = newLocation.StorageAccess as ICompressedArchiveAccess;
+            Assert.NotNull(storageAccess);
+            Assert.NotEqual(initialArchiveFormat, storageAccess.Format);
         }
 
         #endregion // ChangeExtension Tests
@@ -930,34 +912,30 @@ namespace INTV.Shared.Tests.Utility
         public void StorageLocationExtensions_AddSuffixCausesPathToMatchArchive_StorageAccessChanges()
         {
             string archiveLocation;
-            using (TestResource.TagalongBinCfgTar.ExtractToTemporaryFile(out archiveLocation))
-            {
-                var path = archiveLocation.Substring(0, archiveLocation.LastIndexOf('_'));
-                var location = path.CreateStorageLocationFromPath();
-                Assert.True(location.UsesDefaultStorage);
+            TestResource.TagalongBinCfgTar.ExtractToTemporaryFile(out archiveLocation);
+            var path = archiveLocation.Substring(0, archiveLocation.LastIndexOf('_'));
+            var location = path.CreateStorageLocationFromPath();
+            Assert.True(location.UsesDefaultStorage);
 
-                var newLocation = location.AddSuffix("_bc.tar");
+            var newLocation = location.AddSuffix("_bc.tar");
 
-                Assert.False(newLocation.UsesDefaultStorage);
-                Assert.True(newLocation.StorageAccess is ICompressedArchiveAccess);
-            }
+            Assert.False(newLocation.UsesDefaultStorage);
+            Assert.True(newLocation.StorageAccess is ICompressedArchiveAccess);
         }
 
         [Fact]
         public void StorageLocationExtensions_AddSuffixCausesPathToNoLongerMatchArchive_StorageAccessChanges()
         {
             string archiveLocation;
-            using (TestResource.TagalongBinGZip.ExtractToTemporaryFile(out archiveLocation))
-            {
-                var location = archiveLocation.CreateStorageLocationFromPath();
-                Assert.False(location.UsesDefaultStorage);
-                Assert.True(location.StorageAccess is ICompressedArchiveAccess);
+            TestResource.TagalongBinGZip.ExtractToTemporaryFile(out archiveLocation);
+            var location = archiveLocation.CreateStorageLocationFromPath();
+            Assert.False(location.UsesDefaultStorage);
+            Assert.True(location.StorageAccess is ICompressedArchiveAccess);
 
-                var newLocation = location.AddSuffix("booger.tar");
+            var newLocation = location.AddSuffix("booger.tar");
 
-                Assert.True(newLocation.UsesDefaultStorage);
-                Assert.False(newLocation.StorageAccess is ICompressedArchiveAccess);
-            }
+            Assert.True(newLocation.UsesDefaultStorage);
+            Assert.False(newLocation.StorageAccess is ICompressedArchiveAccess);
         }
 
         #endregion // AddSuffix Tests
@@ -1025,57 +1003,49 @@ namespace INTV.Shared.Tests.Utility
         public void StorageLocationExtensions_GetContainingLocationOfArchiveEndingInSeparator_ReturnsArchiveWithSameStorageAccess()
         {
             string archivePath;
-            using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath))
-            {
-                var path = archivePath + Path.DirectorySeparatorChar;
-                var location = path.CreateStorageLocationFromPath();
+            TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath);
+            var path = archivePath + Path.DirectorySeparatorChar;
+            var location = path.CreateStorageLocationFromPath();
 
-                var containingLocation = location.GetContainingLocation();
+            var containingLocation = location.GetContainingLocation();
 
-                Assert.True(object.ReferenceEquals(location.StorageAccess, containingLocation.StorageAccess));
-            }
+            Assert.True(object.ReferenceEquals(location.StorageAccess, containingLocation.StorageAccess));
         }
 
         [Fact]
         public void StorageLocationExtensions_GetContainingLocationOfArchive_ReturnsLocationWithDefaultStorageAccess()
         {
             string archivePath;
-            using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
-            {
-                var location = archivePath.CreateStorageLocationFromPath();
+            TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath);
+            var location = archivePath.CreateStorageLocationFromPath();
 
-                var containingLocation = location.GetContainingLocation();
+            var containingLocation = location.GetContainingLocation();
 
-                Assert.True(containingLocation.UsesDefaultStorage);
-            }
+            Assert.True(containingLocation.UsesDefaultStorage);
         }
 
         [Fact]
         public void StorageLocationExtensions_GetContainingLocationOfDirectoryWithinArchive_ReturnsLocationWithSameStorageAccess()
         {
             string archivePath;
-            using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
-            {
-                var location = Path.Combine(archivePath, "tagalong_dir/").CreateStorageLocationFromPath();
+            TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath);
+            var location = Path.Combine(archivePath, "tagalong_dir/").CreateStorageLocationFromPath();
 
-                var containingLocation = location.GetContainingLocation();
+            var containingLocation = location.GetContainingLocation();
 
-                Assert.True(object.ReferenceEquals(location.StorageAccess, containingLocation.StorageAccess));
-            }
+            Assert.True(object.ReferenceEquals(location.StorageAccess, containingLocation.StorageAccess));
         }
 
         [Fact]
         public void StorageLocationExtensions_GetContainingLocationOfNestedArchive_ReturnsLocationWithStorageAccessOfContainingArchive()
         {
             string archivePath;
-            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
-            {
-                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip").CreateStorageLocationFromPath();
+            TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath);
+            var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip").CreateStorageLocationFromPath();
 
-                var containingLocation = location.GetContainingLocation();
+            var containingLocation = location.GetContainingLocation();
 
-                Assert.False(object.ReferenceEquals(location.StorageAccess, containingLocation.StorageAccess));
-            }
+            Assert.False(object.ReferenceEquals(location.StorageAccess, containingLocation.StorageAccess));
         }
 
         #endregion // GetContainingLocation
@@ -1216,17 +1186,15 @@ namespace INTV.Shared.Tests.Utility
         public void StorageLocationExtensions_AlterContainingLocationOfArchiveToEmpty_ReturnsLocationWithFileNameAndDefaultStorageAccess()
         {
             string archivePath;
-            using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath))
-            {
-                var location = archivePath.CreateStorageLocationFromPath();
-                Assert.False(location.UsesDefaultStorage);
+            TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath);
+            var location = archivePath.CreateStorageLocationFromPath();
+            Assert.False(location.UsesDefaultStorage);
 
-                var alteredLocation = location.AlterContainingLocation(string.Empty);
+            var alteredLocation = location.AlterContainingLocation(string.Empty);
 
-                var expectedPath = Path.GetFileName(archivePath);
-                Assert.Equal(expectedPath, alteredLocation.Path);
-                Assert.True(alteredLocation.UsesDefaultStorage);
-            }
+            var expectedPath = Path.GetFileName(archivePath);
+            Assert.Equal(expectedPath, alteredLocation.Path);
+            Assert.True(alteredLocation.UsesDefaultStorage);
         }
 
         [Fact]
@@ -1234,49 +1202,43 @@ namespace INTV.Shared.Tests.Utility
         {
             string archivePath;
             string directoryPath;
-            using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
-            using (TestResource.Directory(out directoryPath))
-            {
-                var location = archivePath.CreateStorageLocationFromPath();
-                Assert.False(location.UsesDefaultStorage);
+            TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath);
+            TestResource.Directory(out directoryPath);
+            var location = archivePath.CreateStorageLocationFromPath();
+            Assert.False(location.UsesDefaultStorage);
 
-                var alteredLocation = location.AlterContainingLocation(directoryPath);
+            var alteredLocation = location.AlterContainingLocation(directoryPath);
 
-                Assert.True(alteredLocation.Path.NormalizePathSeparators().StartsWith(directoryPath.NormalizePathSeparators()));
-                Assert.True(alteredLocation.UsesDefaultStorage);
-            }
+            Assert.True(alteredLocation.Path.NormalizePathSeparators().StartsWith(directoryPath.NormalizePathSeparators()));
+            Assert.True(alteredLocation.UsesDefaultStorage);
         }
 
         [Fact]
         public void StorageLocationExtensions_AlterContainingLocationOfDirectoryWithinSameArchive_ReturnsLocationWithSameStorageAccess()
         {
             string archivePath;
-            using (TestResource.TagalongTgzManyDirs.ExtractToTemporaryFile(out archivePath))
-            {
-                var location = Path.Combine(archivePath, "tagalong_many_dirs.tar/rootSub/sub0/.DS_Store").CreateStorageLocationFromPath();
+            TestResource.TagalongTgzManyDirs.ExtractToTemporaryFile(out archivePath);
+            var location = Path.Combine(archivePath, "tagalong_many_dirs.tar/rootSub/sub0/.DS_Store").CreateStorageLocationFromPath();
 
-                var newContainingPath = Path.Combine(archivePath, "tagalong_many_dirs.tar/rootSub/sub1");
-                var alteredLocation = location.AlterContainingLocation(newContainingPath);
+            var newContainingPath = Path.Combine(archivePath, "tagalong_many_dirs.tar/rootSub/sub1");
+            var alteredLocation = location.AlterContainingLocation(newContainingPath);
 
-                Assert.True(object.ReferenceEquals(location.StorageAccess, alteredLocation.StorageAccess));
-            }
+            Assert.True(object.ReferenceEquals(location.StorageAccess, alteredLocation.StorageAccess));
         }
 
         [Fact]
         public void StorageLocationExtensions_AlterContainingLocationOfArchiveToOneInDifferentArchive_ReturnsLocationWithStorageAccessOfNewContainingArchive()
         {
             string archivePath;
-            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
-            {
-                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.bin").CreateStorageLocationFromPath();
-                Assert.Equal(CompressedArchiveFormat.Zip, ((ICompressedArchiveAccess)location.StorageAccess).Format);
+            TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath);
+            var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.bin").CreateStorageLocationFromPath();
+            Assert.Equal(CompressedArchiveFormat.Zip, ((ICompressedArchiveAccess)location.StorageAccess).Format);
 
-                var newContainingPath = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin");
-                var alteredLocation = location.AlterContainingLocation(newContainingPath);
+            var newContainingPath = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin");
+            var alteredLocation = location.AlterContainingLocation(newContainingPath);
 
-                Assert.False(object.ReferenceEquals(location.StorageAccess, alteredLocation.StorageAccess));
-                Assert.Equal(CompressedArchiveFormat.Tar, ((ICompressedArchiveAccess)alteredLocation.StorageAccess).Format);
-            }
+            Assert.False(object.ReferenceEquals(location.StorageAccess, alteredLocation.StorageAccess));
+            Assert.Equal(CompressedArchiveFormat.Tar, ((ICompressedArchiveAccess)alteredLocation.StorageAccess).Format);
         }
 
         [Fact]
@@ -1284,17 +1246,15 @@ namespace INTV.Shared.Tests.Utility
         {
             string archivePath0;
             string archivePath1;
-            using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath0))
-            using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath1))
-            {
-                var location = archivePath0.CreateStorageLocationFromPath();
+            TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath0);
+            TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath1);
+            var location = archivePath0.CreateStorageLocationFromPath();
 
-                var newContainingPath = Path.GetDirectoryName(archivePath1);
-                var alteredLocation = location.AlterContainingLocation(newContainingPath);
+            var newContainingPath = Path.GetDirectoryName(archivePath1);
+            var alteredLocation = location.AlterContainingLocation(newContainingPath);
 
-                Assert.False(object.ReferenceEquals(location.StorageAccess, alteredLocation.StorageAccess));
-                Assert.False(alteredLocation.UsesDefaultStorage);
-            }
+            Assert.False(object.ReferenceEquals(location.StorageAccess, alteredLocation.StorageAccess));
+            Assert.False(alteredLocation.UsesDefaultStorage);
         }
 
         #endregion // AlterContainingLocation Tests
@@ -1347,12 +1307,10 @@ namespace INTV.Shared.Tests.Utility
         {
             var testResource = TestResource.TagalongZip;
             string archivePath;
-            using (testResource.ExtractToTemporaryFile(out archivePath))
-            {
-                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles();
+            testResource.ExtractToTemporaryFile(out archivePath);
+            var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles();
 
-                Assert.Equal(testResource.ArchiveContents.Count(), files.Count());
-            }
+            Assert.Equal(testResource.ArchiveContents.Count(), files.Count());
         }
 
         [Fact]
@@ -1360,12 +1318,10 @@ namespace INTV.Shared.Tests.Utility
         {
             var testResource = TestResource.TagalongMsys2Tgz;
             string archivePath;
-            using (testResource.ExtractToTemporaryFile(out archivePath))
-            {
-                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles();
+            testResource.ExtractToTemporaryFile(out archivePath);
+            var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles();
 
-                Assert.Empty(files);
-            }
+            Assert.Empty(files);
         }
 
         [Fact]
@@ -1373,12 +1329,10 @@ namespace INTV.Shared.Tests.Utility
         {
             var testResource = TestResource.TagalongDirLuigiRomTar;
             string archivePath;
-            using (testResource.ExtractToTemporaryFile(out archivePath))
-            {
-                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles();
+            testResource.ExtractToTemporaryFile(out archivePath);
+            var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles();
 
-                Assert.Empty(files);
-            }
+            Assert.Empty(files);
         }
 
         [Fact]
@@ -1386,13 +1340,39 @@ namespace INTV.Shared.Tests.Utility
         {
             var testResource = TestResource.TagalongMsys2Tgz;
             string archivePath;
-            using (testResource.ExtractToTemporaryFile(out archivePath))
-            {
-                var files = Path.Combine(archivePath, "tagalong_msys2.tar").CreateStorageLocationFromPath().EnumerateFiles();
+            testResource.ExtractToTemporaryFile(out archivePath);
 
-                // kinda hacky -- we "know" this because of the known layout of the test resource.
-                Assert.Equal(2, files.Count());
-            }
+            var files = Path.Combine(archivePath, "tagalong_msys2.tar/tagalong.zip").CreateStorageLocationFromPath().EnumerateFiles();
+
+            // kinda hacky -- we "know" this because of the known layout of the test resource.
+            Assert.Equal(2, files.Count());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesInDirectoryInNestedArchive_ReturnsExpectedFiles()
+        {
+            var testResource = TestResource.TagalongMultipleNested;
+            string archivePath;
+            testResource.ExtractToTemporaryFile(out archivePath);
+
+            var files = Path.Combine(archivePath, "tagalong.tgz/tagalong.tar/bin/").CreateStorageLocationFromPath().EnumerateFiles();
+
+            // kinda hacky -- we "know" this because of the known layout of the test resource.
+            Assert.Equal(2, files.Count());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesInDirectoryMissingTrailingSeparatorInNestedArchive_ReturnsExpectedFiles()
+        {
+            var testResource = TestResource.TagalongMultipleNested;
+            string archivePath;
+            testResource.ExtractToTemporaryFile(out archivePath);
+            var location = Path.Combine(archivePath, "tagalong.tgz/tagalong.tar/bin").CreateStorageLocationFromPath();
+
+            var files = location.EnumerateFiles();
+
+            // kinda hacky -- we "know" this because of the known layout of the test resource.
+            Assert.Equal(2, files.Count());
         }
 
         [Fact]
@@ -1400,13 +1380,12 @@ namespace INTV.Shared.Tests.Utility
         {
             var testResource = TestResource.TagalongCC3RomTar;
             string archivePath;
-            using (testResource.ExtractToTemporaryFile(out archivePath))
-            {
-                var fileExtension = ".rom";
-                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles(fileExtension).ToList();
+            testResource.ExtractToTemporaryFile(out archivePath);
 
-                Assert.All(files, f => Assert.Equal(fileExtension, Path.GetExtension(f.Path)));
-            }
+            var fileExtension = ".rom";
+            var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles(fileExtension).ToList();
+
+            Assert.All(files, f => Assert.Equal(fileExtension, Path.GetExtension(f.Path)));
         }
 
         [Fact]
@@ -1414,13 +1393,15 @@ namespace INTV.Shared.Tests.Utility
         {
             var testResource = TestResource.TagalongCC3RomTar;
             string archivePath;
-            using (testResource.ExtractToTemporaryFile(out archivePath))
-            {
-                var fileExtension = ".pdf";
-                var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles(fileExtension);
+            testResource.ExtractToTemporaryFile(out archivePath);
 
-                Assert.Empty(files);
-            }
+            var fileExtension = ".pdf";
+            var files = archivePath.CreateStorageLocationFromPath().EnumerateFiles(fileExtension);
+
+            Assert.Empty(files);
+        }
+
+        #endregion // EnumerateFiles Tests
         }
 
         #endregion // EnumerateFiles Tests

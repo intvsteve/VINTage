@@ -425,9 +425,9 @@ namespace INTV.Shared.Utility
         /// <returns>The entry, or <c>null</c> if not found.</returns>
         protected ICompressedArchiveEntry GetEntry(string name)
         {
-            if (!string.IsNullOrEmpty(RootLocation) && Path.IsPathRooted(name))
+            if (Path.IsPathRooted(name))
             {
-                name = PathUtils.GetRelativePath(name, RootLocation);
+                name = ResolveArchiveRelativeLocation(name);
             }
             var entry = Entries.FirstOrDefault(e => PathComparer.Instance.Compare(e.Name, name) == 0);
             return entry;

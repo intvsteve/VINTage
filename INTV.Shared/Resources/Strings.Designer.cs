@@ -3391,6 +3391,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The path must have a root: {0}.
+        /// </summary>
+        internal static string PathMustBeRooted_Format {
+            get {
+                return ResourceManager.GetString("PathMustBeRooted_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Path not rooted..
         /// </summary>
         internal static string PathNotRootedError {
@@ -4589,6 +4598,15 @@ namespace INTV.Shared.Resources {
         internal static string StartupActionError_Title {
             get {
                 return ResourceManager.GetString("StartupActionError_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is an invalid storage location.
+        /// </summary>
+        internal static string StorageArgumentPathIsInvalid {
+            get {
+                return ResourceManager.GetString("StorageArgumentPathIsInvalid", resourceCulture);
             }
         }
         

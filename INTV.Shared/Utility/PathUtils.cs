@@ -421,7 +421,7 @@ namespace INTV.Shared.Utility
         /// <param name="path">Path to be checked.</param>
         /// <param name="isContainer">If <c>true</c>, treat path as a directory path, otherwise treat as a file path.</param>
         /// <param name="parameterName">If specified, override the default parameter name to report in any exceptions thrown by the method.</param>
-        /// <returns><c>true</c>, if invalid characters are in the path, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c>, if no invalid characters are in the path, <c>false</c> otherwise.</returns>
         /// <exception cref="ArgumentException">Thrown if <paramref name="path"/> is zero-length,
         /// contains only white space, or contains one or more invalid characters as defined by <see cref="Path.GetInvalidPathChars()"/>.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> has a <c>null</c> path.</exception>

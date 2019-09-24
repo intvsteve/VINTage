@@ -1579,6 +1579,71 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // CopyFile Tests
 
+        #region EnsureUniqueTests
+
+        [Fact]
+        public void StorageLocationExtensions_EnsureUniquePathOnInvalidLocation_ThrowsInvalidOperationException()
+        {
+            Assert.Throws<InvalidOperationException>(() => StorageLocation.InvalidLocation.EnsureUnique());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnsureUniquePathForNonexistentFile_ReturnsFile()
+        {
+            var fileName = TemporaryFile.GenerateUniqueFilePath(string.Empty, ".txt");
+            var location = fileName.CreateStorageLocationFromPath();
+
+            var uniqueLocation = location.EnsureUnique();
+
+            Assert.Equal(fileName, uniqueLocation.Path);
+            Assert.False(uniqueLocation.Exists());
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnsureUniquePath_ReturnsUniquePath()
+        {
+            using (var tempFile = new TemporaryFile(".txt", createFile: true))
+            {
+                var location = tempFile.FilePath.CreateStorageLocationFromPath();
+
+                var uniqueLocation = location.EnsureUnique();
+
+                Assert.True(uniqueLocation.Path.Length > tempFile.FilePath.Length);
+                Assert.False(uniqueLocation.Exists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnsureUniquePathForNonexistentFileInArchive_ReturnsUniquePath()
+        {
+            string archivePath;
+            TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath);
+            var location = archivePath.CreateStorageLocationFromPath().Combine("nothing to see here.txt");
+
+            var uniqueLocation = location.EnsureUnique();
+
+            Assert.Equal(location.Path, uniqueLocation.Path);
+            Assert.False(uniqueLocation.Exists());
+            Assert.True(object.ReferenceEquals(location.StorageAccess, uniqueLocation.StorageAccess));
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnsureUniquePathInArchive_ReturnsUniquePath()
+        {
+            string archivePath;
+            TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath);
+            var location = archivePath.CreateStorageLocationFromPath().Combine("tagalong_dir/tagalong.luigi");
+            Assert.True(location.Exists());
+
+            var uniqueLocation = location.EnsureUnique();
+
+            Assert.True(uniqueLocation.Path.Length > location.Path.Length);
+            Assert.False(uniqueLocation.Exists());
+            Assert.True(object.ReferenceEquals(location.StorageAccess, uniqueLocation.StorageAccess));
+        }
+
+        #endregion // EnsureUniqueTests
+
         #region Combine Tests Helpers
 
         private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)

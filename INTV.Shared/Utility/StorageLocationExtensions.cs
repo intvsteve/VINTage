@@ -369,10 +369,14 @@ namespace INTV.Shared.Utility
         /// </summary>
         /// <param name="location">The location that needs to be unique.</param>
         /// <returns>A unique location.</returns>
-        /// <remarks>Really only works on disk paths...</remarks>
+        /// <exception cref="InvalidOperationException">Thrown if storage location does not have a valid storage access.</exception>
         public static StorageLocation EnsureUnique(this StorageLocation location)
         {
-            var uniquePath = location.Path.EnsureUniqueFileName();
+            if (location.IsInvalid)
+            {
+                throw new InvalidOperationException();
+            }
+            var uniquePath = location.Path.EnsureUniqueFileName(location.StorageAccess.Exists);
             var uniqueLocation = StorageLocation.CopyWithNewPath(location, uniquePath);
             return uniqueLocation;
         }

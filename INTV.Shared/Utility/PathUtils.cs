@@ -236,18 +236,19 @@ namespace INTV.Shared.Utility
         /// Ensures that a file name is unique in a directory.
         /// </summary>
         /// <param name="path">The path to check for uniqueness.</param>
+        /// <param name="fileExists">If <c>null</c>, uses file system to test for file uniqueness.
+        /// Otherwise, uses provided predicate to assist in creation of unique file name.</param>
         /// <returns>A unique file path, made unique using the current system time.</returns>
-        public static string EnsureUniqueFileName(this string path)
+        public static string EnsureUniqueFileName(this string path, Predicate<string> fileExists = null)
         {
-            var extension = Path.GetExtension(path);
-            var directory = Path.GetDirectoryName(path);
-            var filename = Path.GetFileName(path);
-            var validfileName = filename.EnsureValidFileName();
-            if (validfileName != filename)
+            string extension;
+            string directory;
+            path = path.EnsureValidFilePath(out directory, out extension);
+            if (fileExists == null)
             {
-                path = Path.Combine(directory, validfileName);
+                fileExists = File.Exists;
             }
-            while (File.Exists(path))
+            while (fileExists(path))
             {
                 System.Threading.Thread.Sleep(1);
                 var fileName = Path.GetFileNameWithoutExtension(path) + "_" + GetTimeString() + extension;
@@ -455,6 +456,27 @@ namespace INTV.Shared.Utility
             }
 
             return !containsInvalidCharacters;
+        }
+
+        /// <summary>
+        /// Ensures that the file name for the given path is valid (no invalid characters or reserved name).
+        /// </summary>
+        /// <param name="path">The path whose file name to validate.</param>
+        /// <param name="directory">Receives the directory portion of the path.</param>
+        /// <param name="extension">Receives the file extension.</param>
+        /// <returns>The path with a valid file name.</returns>
+        /// <remarks>Invalid characters will be replaced with underscores. An invalid file name will have an underscore appended.</remarks>
+        internal static string EnsureValidFilePath(this string path, out string directory, out string extension)
+        {
+            extension = Path.GetExtension(path);
+            directory = Path.GetDirectoryName(path);
+            var filename = Path.GetFileName(path);
+            var validFileName = filename.EnsureValidFileName();
+            if (validFileName != filename)
+            {
+                path = Path.Combine(directory, validFileName);
+            }
+            return path;
         }
     }
 }

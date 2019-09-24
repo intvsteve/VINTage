@@ -1,4 +1,4 @@
-﻿// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
+// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -39,6 +39,9 @@ namespace INTV.Shared.Utility
         /// <returns>A new <see cref="StorageLocation"/> with appropriately initialized state.</returns>
         /// <remarks>It is assumed that <paramref name="path"/> refers to an existing file in the file system. It is not required - though
         /// the resulting storage location will always use the default storage access.</remarks>
+        /// <remarks>This method may throw various sorts of exceptions as it does file path operations to determine
+        /// the proper storage access to use. Some are documented.</remarks>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="path"/> contains invalid characters.</exception>
         public static StorageLocation CreateStorageLocationFromPath(this string path)
         {
             var storageAccess = path.GetStorageAccess();

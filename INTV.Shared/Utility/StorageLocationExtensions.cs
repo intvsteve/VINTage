@@ -1,4 +1,4 @@
-// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
+﻿// <copyright file="StorageLocationExtensions.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -362,19 +362,6 @@ namespace INTV.Shared.Utility
             }
         }
 
-        /// <summary>
-        /// Determines if the given storage location path contains any invalid characters.
-        /// </summary>
-        /// <param name="storageLocation">Storage location whose path is to be checked.</param>
-        /// <returns><c>true</c>, if invalid characters are in the path, <c>false</c> otherwise.</returns>
-        /// <exception cref="ArgumentException">Thrown if <paramref name="storageLocation"/> has a zero-length path,
-        /// contains only white space, or contains one or more invalid characters as defined by <see cref="Path.GetInvalidPathChars()"/>.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="storageLocation"/> has a <c>null</c> path.</exception>
-        public static bool ContainsInvalidCharacters(this StorageLocation storageLocation)
-        {
-            return ValidateStorageLocationPath(storageLocation);
-        }
-
         #region PathUtils Behaviors
 
         /// <summary>
@@ -452,11 +439,6 @@ namespace INTV.Shared.Utility
                 var storageLocation = new StorageLocation(absolutePath, storageAccess, entry.IsDirectory);
                 yield return storageLocation;
             }
-        }
-
-        private static bool ValidateStorageLocationPath(this StorageLocation storageLocation, string parameterName = "storageLocation")
-        {
-            return storageLocation.Path.ValidatePath(storageLocation.IsContainer, parameterName + ".Path");
         }
 
         private static StorageLocation GetStorageLocationForChangedPath(StorageLocation currentLocation, string newPath)

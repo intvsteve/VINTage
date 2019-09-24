@@ -452,7 +452,7 @@ namespace INTV.Shared.Utility
                 var rootLocation = RootLocation;
                 if (string.IsNullOrEmpty(rootLocation))
                 {
-                    rootLocation = storageLocation.GetMostDeeplyNestedArchivePath();// RootLocation;
+                    rootLocation = storageLocation.GetMostDeeplyNestedArchivePath();
                 }
                 if (string.IsNullOrEmpty(rootLocation))
                 {
@@ -471,6 +471,15 @@ namespace INTV.Shared.Utility
                 {
                     var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_IsContainerFailed_NoRootLocation_Format, storageLocation);
                     throw new InvalidOperationException(errorMessage);
+                }
+                if (rootLocation.Length == (storageLocation.Length + 1))
+                {
+                    // storageLocation refers directly to nested archive, e.g. foo.zip - and a trailing slash as appended.
+                    // Remove it. This means the path is actually referring to itself -- the root of a nested archive.
+                    if (rootLocation.Last() == '/')
+                    {
+                        rootLocation = rootLocation.Substring(0, rootLocation.Length - 1);
+                    }
                 }
                 if (!storageLocation.StartsWith(rootLocation.NormalizePathSeparators(), PathComparer.DefaultPolicy))
                 {

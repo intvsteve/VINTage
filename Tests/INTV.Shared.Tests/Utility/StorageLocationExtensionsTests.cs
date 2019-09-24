@@ -1,4 +1,4 @@
-// <copyright file="StorageLocationExtensionsTests.cs" company="INTV Funhouse">
+﻿// <copyright file="StorageLocationExtensionsTests.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -330,23 +330,24 @@ namespace INTV.Shared.Tests.Utility
         {
             get
             {
+                // test archive resource, archive format, is container referred to by relative path to nested a archive, relative path in archive, relative is container
                 yield return new object[] { TestResource.TagalongDirZip, CompressedArchiveFormat.Zip, false, "tagalong_dir/tagalong.luigi", false };
                 yield return new object[] { TestResource.TagalongDirZip, CompressedArchiveFormat.Zip, false, "tagalong_dir/", true };
-                yield return new object[] { TestResource.TagalongNestedZip, CompressedArchiveFormat.Zip, false, "tagalong.zip", true };
+                yield return new object[] { TestResource.TagalongNestedZip, CompressedArchiveFormat.Zip, true, "tagalong.zip", true };
                 yield return new object[] { TestResource.TagalongBinGZip, CompressedArchiveFormat.GZip, false, "tagalong.bin", false };
                 yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, false, "tagalong_dir/tagalong.rom", false };
                 yield return new object[] { TestResource.TagalongDirLuigiRomTar, CompressedArchiveFormat.Tar, false, "tagalong_dir/", true };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/bin/tagalong.bin", false };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/bin/", true };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, false, "tagalong_msys2.tar", true };
-                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/tagalong.zip/tagalong.cfg", false };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, false, "tagalong_msys2.tar/bin/tagalong.bin", false };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, false, "tagalong_msys2.tar/bin/", true };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar", true };
+                yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, false, "tagalong_msys2.tar/tagalong.zip/tagalong.cfg", false };
                 yield return new object[] { TestResource.TagalongMsys2Tgz, CompressedArchiveFormat.GZip, true, "tagalong_msys2.tar/tagalong.zip", true };
             }
         }
 
         [Theory]
         [MemberData("CreateStorageLocationFromArchivePathTestData")]
-        public void StorageLocationExtensions_CreateFromCompressedArchiveNameWithNoPath_UsesDefaultStorageAccess(TestResource testResource, CompressedArchiveFormat format, bool isNestedArchivePath, string path, bool isPathToContainer)
+        public void StorageLocationExtensions_CreateFromCompressedArchiveNameWithNoPath_UsesDefaultStorageAccess(TestResource testResource, CompressedArchiveFormat _1, bool _2, string _3, bool _4)
         {
             var storageLocation = testResource.Name.CreateStorageLocationFromPath();
 
@@ -355,11 +356,11 @@ namespace INTV.Shared.Tests.Utility
 
         [Theory]
         [MemberData("CreateStorageLocationFromArchivePathTestData")]
-        public void StorageLocationExtensions_CreateFromPathIntoCompressedArchivePath_UsesCompressedArchiveStorageAccess(TestResource testResource, CompressedArchiveFormat format, bool isNestedArchivePath, string path, bool isPathToContainer)
+        public void StorageLocationExtensions_CreateFromPathIntoCompressedArchivePath_UsesCompressedArchiveStorageAccess(TestResource testResource, CompressedArchiveFormat _1, bool _2, string path, bool _4)
         {
             string archivePath;
-
             testResource.ExtractToTemporaryFile(out archivePath);
+
             var pathIntoArchive = Path.Combine(archivePath, path);
 
             var storageLocation = pathIntoArchive.CreateStorageLocationFromPath();
@@ -369,11 +370,11 @@ namespace INTV.Shared.Tests.Utility
 
         [Theory]
         [MemberData("CreateStorageLocationFromArchivePathTestData")]
-        public void StorageLocationExtensions_CreateFromPathToCompressedArchive_UsesCompressedArchiveStorageAccessOfCorrectFormat(TestResource testResource, CompressedArchiveFormat format, bool isNestedArchivePath, string path, bool isPathToContainer)
+        public void StorageLocationExtensions_CreateFromPathToCompressedArchive_UsesCompressedArchiveStorageAccessOfCorrectFormat(TestResource testResource, CompressedArchiveFormat format, bool _2, string _3, bool _4)
         {
             string archivePath;
-
             testResource.ExtractToTemporaryFile(out archivePath);
+
             var storageLocation = archivePath.CreateStorageLocationFromPath();
 
             var storageAccess = storageLocation.StorageAccess as ICompressedArchiveAccess;
@@ -382,15 +383,43 @@ namespace INTV.Shared.Tests.Utility
 
         [Theory]
         [MemberData("CreateStorageLocationFromArchivePathTestData")]
-        public void StorageLocationExtensions_CreateFromPathToCompressedArchive_IsContainerIsTrue(TestResource testResource, CompressedArchiveFormat format, bool isNestedArchivePath, string path, bool isPathToContainer)
+        public void StorageLocationExtensions_CreateFromPathToCompressedArchive_IsContainerIsTrue(TestResource testResource, CompressedArchiveFormat _1, bool _2, string _3, bool _4)
         {
             string archivePath;
-
             testResource.ExtractToTemporaryFile(out archivePath);
+
             var storageLocation = archivePath.CreateStorageLocationFromPath();
 
             Assert.True(storageLocation.IsContainer);
-            //((ICompressedArchiveAccess)storageLocation.StorageAccess).Dispose();
+        }
+
+        [Theory]
+        [MemberData("CreateStorageLocationFromArchivePathTestData")]
+        public void StorageLocationExtensions_CreateFromPathWithinCompressedArchive_IsContainerIsCorrect(TestResource testResource, CompressedArchiveFormat _1, bool _2, string pathWithinArchive, bool expectedIsContainer)
+        {
+            string archivePath;
+            testResource.ExtractToTemporaryFile(out archivePath);
+
+            var storageLocation = Path.Combine(archivePath, pathWithinArchive).CreateStorageLocationFromPath();
+
+            Assert.Equal(expectedIsContainer, storageLocation.IsContainer);
+        }
+
+        [Theory]
+        [MemberData("CreateStorageLocationFromArchivePathTestData")]
+        public void StorageLocationExtensions_CreateFromPathWithinCompressedArchiveIfPathIsToNestedContainer_IsToNestedArchive(TestResource testResource, CompressedArchiveFormat _1, bool isToNestedArchive, string pathWithinArchive, bool _4)
+        {
+            if (isToNestedArchive)
+            {
+                string archivePath;
+                testResource.ExtractToTemporaryFile(out archivePath);
+                var storageLocation = Path.Combine(archivePath, pathWithinArchive).CreateStorageLocationFromPath();
+
+                var parentStorageAccess = storageLocation.StorageAccess.GetParentStorageAccess();
+
+                Assert.NotNull(parentStorageAccess);
+                Assert.True(parentStorageAccess is ICompressedArchiveAccess);
+            }
         }
 
         #endregion // CreateFromFilePath Tests

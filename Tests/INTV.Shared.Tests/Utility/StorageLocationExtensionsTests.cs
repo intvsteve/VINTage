@@ -1579,7 +1579,7 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // CopyFile Tests
 
-        #region EnsureUniqueTests
+        #region EnsureUnique Tests
 
         [Fact]
         public void StorageLocationExtensions_EnsureUniquePathOnInvalidLocation_ThrowsInvalidOperationException()
@@ -1642,11 +1642,69 @@ namespace INTV.Shared.Tests.Utility
             Assert.True(object.ReferenceEquals(location.StorageAccess, uniqueLocation.StorageAccess));
         }
 
-        #endregion // EnsureUniqueTests
+        #endregion // EnsureUnique Tests
+
+        #region NormalizeSeparators Tests
+
+        [Fact]
+        public void StorageLocationExtensions_NormalizeSeparatorsOnInvalidStorageLocation_RetainsStorageAccess()
+        {
+            var location = StorageLocation.InvalidLocation;
+
+            var normalizedLocation = location.NormalizeSeparators();
+
+            Assert.True(object.ReferenceEquals(location.StorageAccess, normalizedLocation.StorageAccess));
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_NormalizeSeparatorsOnNullStorageLocation_RetainsStorageAccess()
+        {
+            var location = StorageLocation.Null;
+
+            var normalizedLocation = location.NormalizeSeparators();
+
+            Assert.True(object.ReferenceEquals(location.StorageAccess, normalizedLocation.StorageAccess));
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_NormalizeSeparatorsOnEmptyStorageLocation_RetainsStorageAccess()
+        {
+            var location = StorageLocation.Empty;
+
+            var normalizedLocation = location.NormalizeSeparators();
+
+            Assert.True(object.ReferenceEquals(location.StorageAccess, normalizedLocation.StorageAccess));
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_NormalizeSeparatorsOnNormalPath_RetainsStorageAccess()
+        {
+            var location = TemporaryFile.GenerateUniqueFilePath(string.Empty, ".thag").CreateStorageLocationFromPath();
+
+            var normalizedLocation = location.NormalizeSeparators();
+
+            Assert.False(normalizedLocation.Path.Contains('\\'));
+            Assert.True(object.ReferenceEquals(location.StorageAccess, normalizedLocation.StorageAccess));
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_NormalizeSeparatorsInArchive_RetainsStorageAccess()
+        {
+            string archivePath;
+            TestResource.TagalongEmptyZip.ExtractToTemporaryFile(out archivePath);
+            var location = archivePath.CreateStorageLocationFromPath();
+
+            var normalizedLocation = location.NormalizeSeparators();
+
+            Assert.False(normalizedLocation.Path.Contains('\\'));
+            Assert.True(object.ReferenceEquals(location.StorageAccess, normalizedLocation.StorageAccess));
+        }
+
+        #endregion // NormalizeSeparators Tests
 
         #region Combine Tests Helpers
 
-        private IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)
+        private static IDisposable PrepareExpectedPathAndPathElementForTest(StorageLocation location, TestResource archiveResource, ref string expectedPath, ref string pathElement)
         {
             IDisposable temporaryLocation = null;
             if (archiveResource != null)

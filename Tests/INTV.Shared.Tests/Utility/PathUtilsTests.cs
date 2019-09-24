@@ -56,6 +56,18 @@ namespace INTV.Shared.Tests.Utility
         }
 
         [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData(@"\", "/")]
+        [InlineData(@"a\b/c\d\", "a/b/c/d/")]
+        public void PathUtils_NormalizePathSeparators(string path, string expectedPath)
+        {
+            var normalizedPath = path.NormalizePathSeparators();
+
+            Assert.Equal(expectedPath, normalizedPath);
+        }
+
+        [Theory]
         [InlineData(null, @"don't care", @"")]
         [InlineData(@"", @"don't care", @"")]
         [InlineData(@"c", null, @"c")]

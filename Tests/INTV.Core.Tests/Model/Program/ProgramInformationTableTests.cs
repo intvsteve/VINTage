@@ -31,7 +31,7 @@ namespace INTV.Core.Tests.Model.Program
     public class ProgramInformationTableTests
     {
         [Fact]
-        public void ProgramInformationTable_Initialize_()
+        public void ProgramInformationTable_Initialize_CreatesValidTable()
         {
             IReadOnlyList<StorageLocation> romPaths;
             var storageAccess = ProgramInformationTableTestsStorageAccess.Initialize(out romPaths, null);

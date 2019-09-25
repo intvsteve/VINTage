@@ -828,19 +828,21 @@ namespace INTV.Shared.Tests.Utility
         {
             string zipArchivePath;
             string tarArchivePath;
-            TestResource.TagalongZip.ExtractToTemporaryFile(out zipArchivePath);
-            TestResource.TagalongTar.ExtractToTemporaryFile(out tarArchivePath);
-            File.Move(tarArchivePath, Path.Combine(Path.GetDirectoryName(zipArchivePath), Path.GetFileName(tarArchivePath)));
-            var zipLocation = zipArchivePath.CreateStorageLocationFromPath();
-            Assert.False(zipLocation.UsesDefaultStorage);
-            var storageAccess = zipLocation.StorageAccess as ICompressedArchiveAccess;
-            var initialArchiveFormat = storageAccess.Format;
+            using (TestResource.TagalongZip.ExtractToTemporaryFile(out zipArchivePath))
+            using (TestResource.TagalongTar.ExtractToTemporaryFile(out tarArchivePath))
+            {
+                File.Move(tarArchivePath, Path.Combine(Path.GetDirectoryName(zipArchivePath), Path.GetFileName(tarArchivePath)));
+                var zipLocation = zipArchivePath.CreateStorageLocationFromPath();
+                Assert.False(zipLocation.UsesDefaultStorage);
+                var storageAccess = zipLocation.StorageAccess as ICompressedArchiveAccess;
+                var initialArchiveFormat = storageAccess.Format;
 
-            var tarLocation = zipLocation.ChangeExtension(".tar");
+                var tarLocation = zipLocation.ChangeExtension(".tar");
 
-            storageAccess = tarLocation.StorageAccess as ICompressedArchiveAccess;
-            Assert.NotNull(storageAccess);
-            Assert.NotEqual(initialArchiveFormat, storageAccess.Format);
+                storageAccess = tarLocation.StorageAccess as ICompressedArchiveAccess;
+                Assert.NotNull(storageAccess);
+                Assert.NotEqual(initialArchiveFormat, storageAccess.Format);
+            }
         }
 
         [Fact]

@@ -32,6 +32,34 @@ namespace INTV.Shared.Utility
     /// </summary>
     public static class ICompressedArchiveAccessExtensions
     {
+        private static bool _disableCompressedArchiveAccess = false;
+
+        /// <summary>
+        /// Gets a value indicating whether or not compressed archive access is enabled.
+        /// </summary>
+        public static bool IsCompressedArchiveAccessEnabled
+        {
+            get { return !_disableCompressedArchiveAccess; }
+        }
+
+        /// <summary>
+        /// Enables access to compressed archives.
+        /// </summary>
+        /// <returns>The value of <see cref="IsCompressedArchiveAccessEnabled"/> prior to calling this function.</returns>
+        public static bool EnableCompressedArchiveAccess()
+        {
+            return EnableCompressedArchiveAccess(true);
+        }
+
+        /// <summary>
+        /// Disables access to compressed archives.
+        /// </summary>
+        /// <returns>The value of <see cref="IsCompressedArchiveAccessEnabled"/> prior to calling this function.</returns>
+        public static bool DisableCompressedArchiveAccess()
+        {
+            return EnableCompressedArchiveAccess(false);
+        }
+
         /// <summary>
         /// Gets the storage access to use for the given location.
         /// </summary>
@@ -43,22 +71,25 @@ namespace INTV.Shared.Utility
         /// located, this method will return the default storage access.</remarks>
         public static IStorageAccess GetStorageAccess(this string filePath)
         {
-            filePath = filePath.NormalizePathSeparators();
             var storageAccess = IStorageAccessHelpers.DefaultStorage;
-            var rootCompressedArchivePath = filePath.GetRootArchivePath().NormalizePathSeparators();
-            if (!string.IsNullOrEmpty(rootCompressedArchivePath))
+            if (IsCompressedArchiveAccessEnabled)
             {
-                storageAccess = CompressedArchiveAccess.Open(rootCompressedArchivePath, CompressedArchiveAccessMode.Read);
-                var nestedAchiveLocation = filePath.GetMostDeeplyNestedArchivePath();
-                if (PathComparer.Instance.Compare(rootCompressedArchivePath, nestedAchiveLocation) != 0)
+                filePath = filePath.NormalizePathSeparators();
+                var rootCompressedArchivePath = filePath.GetRootArchivePath().NormalizePathSeparators();
+                if (!string.IsNullOrEmpty(rootCompressedArchivePath))
                 {
-                    nestedAchiveLocation = PathUtils.GetRelativePath(nestedAchiveLocation, rootCompressedArchivePath).NormalizePathSeparators();
-                    var dontCare = string.Empty;
-                    storageAccess = GetNestedCompressedArchive(storageAccess as ICompressedArchiveAccess, nestedAchiveLocation, ref dontCare);
-                }
-                if (storageAccess == null)
-                {
-                    storageAccess = IStorageAccessHelpers.DefaultStorage;
+                    storageAccess = CompressedArchiveAccess.Open(rootCompressedArchivePath, CompressedArchiveAccessMode.Read);
+                    var nestedAchiveLocation = filePath.GetMostDeeplyNestedArchivePath();
+                    if (PathComparer.Instance.Compare(rootCompressedArchivePath, nestedAchiveLocation) != 0)
+                    {
+                        nestedAchiveLocation = PathUtils.GetRelativePath(nestedAchiveLocation, rootCompressedArchivePath).NormalizePathSeparators();
+                        var dontCare = string.Empty;
+                        storageAccess = GetNestedCompressedArchive(storageAccess as ICompressedArchiveAccess, nestedAchiveLocation, ref dontCare);
+                    }
+                    if (storageAccess == null)
+                    {
+                        storageAccess = IStorageAccessHelpers.DefaultStorage;
+                    }
                 }
             }
             return storageAccess;
@@ -245,6 +276,18 @@ namespace INTV.Shared.Utility
                 }
             }
             return entries.OrderBy(e => e.Name);
+        }
+
+        /// <summary>
+        /// Enables or disables access to compressed archives.
+        /// </summary>
+        /// <param name="enable">If true, enable compressed archive access. Otherwise, disable it.</param>
+        /// <returns>The previous value of whether access to compressed archives is enabled.</returns>
+        internal static bool EnableCompressedArchiveAccess(bool enable)
+        {
+            var previousSetting = IsCompressedArchiveAccessEnabled;
+            _disableCompressedArchiveAccess = !enable;
+            return previousSetting;
         }
 
         private static IEnumerable<ICompressedArchiveEntry> ListEntriesInCompressedArchive(ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers)

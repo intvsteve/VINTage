@@ -42,6 +42,44 @@ namespace INTV.Shared.Tests.Utility
             { ".gzip", CompressedArchiveFormat.GZip },
         };
 
+        #region IsCompressedArchiveAccessEnabled Tests
+
+        [Fact]
+        public void ICompressedArchiveAccess_DefaultValueOfIsCompressedArchiveAccessEnabled_IsTrue()
+        {
+            Assert.True(ICompressedArchiveAccessExtensions.IsCompressedArchiveAccessEnabled);
+        }
+
+        [Fact]
+        public void ICompressedArchiveAccess_DisableCompressedArchiveAccess_CorrectlyDisablesCompressedArchiveAccess()
+        {
+            try
+            {
+                Assert.True(ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess());
+                Assert.False(ICompressedArchiveAccessExtensions.IsCompressedArchiveAccessEnabled);
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Fact]
+        public void ICompressedArchiveAccess_DisableThenEnableCompressedArchiveAccess_CorrectlyDisablesThenEnablesArchiveAccess()
+        {
+            try
+            {
+                Assert.True(ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess());
+                Assert.False(ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        #endregion // IsCompressedArchiveAccessEnabled Tests
+
         #region GetStorageAccess Tests
 
         [Fact]
@@ -115,6 +153,25 @@ namespace INTV.Shared.Tests.Utility
             Assert.NotNull(compressedArchiveStorageAccess);
             Assert.Equal(expectedCompressedStorageAccessFormat, compressedArchiveStorageAccess.Format);
             compressedArchiveStorageAccess.Dispose();
+        }
+
+        [Theory]
+        [MemberData("UniqueCompressedArchiveFormatTestResources")]
+        public void ICompressedArchiveAccess_DisableArchiveAccessGetStorageAccessFromKnownArchiveKind_ReturnsDefaultStorageAccess(TestResource testResource, CompressedArchiveFormat _1)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess();
+                string archiveFilePath;
+                testResource.ExtractToTemporaryFile(out archiveFilePath);
+                var storageAccess = archiveFilePath.GetStorageAccess();
+
+                Assert.False(storageAccess is ICompressedArchiveAccess);
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
         }
 
         [Theory]

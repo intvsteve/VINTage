@@ -456,19 +456,6 @@ namespace INTV.Shared.Utility
                 }
                 if (string.IsNullOrEmpty(rootLocation))
                 {
-                    var parentAccess = this.GetParentStorageAccess() as CompressedArchiveAccess;
-                    while (parentAccess != null)
-                    {
-                        rootLocation = parentAccess.RootLocation;
-                        if (!string.IsNullOrEmpty(rootLocation))
-                        {
-                            break;
-                        }
-                        parentAccess = parentAccess.GetParentStorageAccess() as CompressedArchiveAccess;
-                    }
-                }
-                if (string.IsNullOrEmpty(rootLocation))
-                {
                     var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_IsContainerFailed_NoRootLocation_Format, storageLocation);
                     throw new InvalidOperationException(errorMessage);
                 }

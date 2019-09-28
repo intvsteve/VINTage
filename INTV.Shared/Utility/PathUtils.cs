@@ -410,7 +410,7 @@ namespace INTV.Shared.Utility
                 var formats = path.GetCompressedArchiveFormatsFromFileName();
                 if (formats.Any())
                 {
-                    isPathInArchive = path.GetCompressedArchiveFormatsFromFileName().All(f => f.IsCompressedArchiveFormatSupported());
+                    isPathInArchive = path.GetCompressedArchiveFormatsFromFileName().All(f => f.IsCompressedArchiveFormatSupportedAndEnabled());
                 }
             }
             return isPathInArchive;

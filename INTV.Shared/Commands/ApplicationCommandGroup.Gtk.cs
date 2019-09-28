@@ -107,10 +107,10 @@ namespace INTV.Shared.Commands
             aboutDialog.Authors = weightedAuthors.Select(wa => wa.Key).ToArray();
 
 #if SCALE_DOWN
-            var image = SingleInstanceApplication.MainWindowType.LoadImageResource(SingleInstanceApplication.SplashScreenResource);
+            var image = SingleInstanceApplication.SplashScreenResourceType.LoadImageResource(SingleInstanceApplication.SplashScreenResource);
             aboutDialog.Logo = image.ScaleSimple(Convert.ToInt32(image.Width * 0.75), Convert.ToInt32(image.Height * 0.75), Gdk.InterpType.Bilinear);
 #else
-            aboutDialog.Logo = SingleInstanceApplication.MainWindowType.LoadImageResource(SingleInstanceApplication.SplashScreenResource);
+            aboutDialog.Logo = SingleInstanceApplication.SplashScreenResourceType.LoadImageResource(SingleInstanceApplication.SplashScreenResource);
 #endif
             try
             {

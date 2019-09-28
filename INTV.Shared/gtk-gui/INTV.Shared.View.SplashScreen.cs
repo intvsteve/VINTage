@@ -6,9 +6,9 @@ namespace INTV.Shared.View
 	{
 		private global::Gtk.Image _splashImage;
 
-		protected virtual void Build ()
+		protected virtual void Build()
 		{
-			global::Stetic.Gui.Initialize (this);
+			global::Stetic.Gui.Initialize(this);
 			// Widget INTV.Shared.View.SplashScreen
 			this.Name = "INTV.Shared.View.SplashScreen";
 			this.Title = "";
@@ -19,15 +19,16 @@ namespace INTV.Shared.View
 			this.Decorated = false;
 			this.SkipTaskbarHint = true;
 			// Container child INTV.Shared.View.SplashScreen.Gtk.Container+ContainerChild
-			this._splashImage = new global::Gtk.Image ();
+			this._splashImage = new global::Gtk.Image();
 			this._splashImage.Name = "_splashImage";
-			this.Add (this._splashImage);
-			if ((this.Child != null)) {
-				this.Child.ShowAll ();
+			this.Add(this._splashImage);
+			if ((this.Child != null))
+			{
+				this.Child.ShowAll();
 			}
 			this.DefaultWidth = 400;
 			this.DefaultHeight = 300;
-			this.Hide ();
+			this.Hide();
 		}
 	}
 }

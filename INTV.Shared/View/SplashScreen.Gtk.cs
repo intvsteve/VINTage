@@ -45,9 +45,18 @@ namespace INTV.Shared.View
         {
             WidthRequest = splashScreenImage.Width;
             HeightRequest = splashScreenImage.Height;
-            _splashImage.Pixbuf = splashScreenImage;
+            SetImage(splashScreenImage);
             SetPosition(Gtk.WindowPosition.CenterAlways);
             Show();
+        }
+
+        /// <summary>
+        /// Sets the splash screen image.
+        /// </summary>
+        /// <param name="splashScreenImage">Splash screen image.</param>
+        internal void SetImage(Gdk.Pixbuf splashScreenImage)
+        {
+            _splashImage.Pixbuf = splashScreenImage;
         }
     }
 }

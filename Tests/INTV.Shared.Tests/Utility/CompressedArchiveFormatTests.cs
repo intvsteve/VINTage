@@ -371,5 +371,33 @@ namespace INTV.Shared.Tests.Utility
             Assert.Equal(newPreferredImplementation, format.GetPreferredCompressedArchiveImplementation());
             Assert.Equal(newPreferredImplementation, format.GetAvailableCompressedArchiveImplementations().First());
         }
+
+        [Fact]
+        public void CompressedArchiveFormat_IsCompressedArchiveFormatEnabledAfterDisablingFormat_ReturnsExpectedValue()
+        {
+            var zip = CompressedArchiveFormat.Zip;
+            try
+            {
+                Assert.True(zip.IsCompressedArchiveFormatSupported());
+                Assert.True(zip.IsCompressedArchiveFormatEnabled());
+                Assert.True(zip.IsCompressedArchiveFormatSupportedAndEnabled());
+
+                zip.DisableCompressedArchiveFormat();
+
+                Assert.False(zip.IsCompressedArchiveFormatEnabled());
+                Assert.True(zip.IsCompressedArchiveFormatSupported());
+                Assert.False(zip.IsCompressedArchiveFormatSupportedAndEnabled());
+
+                zip.EnableCompressedArchiveFormat();
+
+                Assert.True(zip.IsCompressedArchiveFormatSupported());
+                Assert.True(zip.IsCompressedArchiveFormatEnabled());
+                Assert.True(zip.IsCompressedArchiveFormatSupportedAndEnabled());
+            }
+            finally
+            {
+                zip.EnableCompressedArchiveFormat();
+            }
+        }
     }
 }

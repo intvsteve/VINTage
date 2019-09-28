@@ -67,7 +67,7 @@ namespace INTV.Shared.Utility
         private static readonly Lazy<IDictionary<CompressedArchiveFormat, List<string>>> CompressedArchiveFormatFileExtensions = new Lazy<IDictionary<CompressedArchiveFormat, List<string>>>(InitializeCompressedArchiveFormatFileExtensions);
         private static readonly Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>> CompressedArchiveAccessImplementations = new Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>>(InitializeCompressedArchiveFormatImplementations);
         private static readonly Lazy<IDictionary<string, IList<CompressedArchiveFormat>>> FileExtensionsForCompoundCompressedArchiveFormats = new Lazy<IDictionary<string, IList<CompressedArchiveFormat>>>(InitializeFileExtensionsForCompoundCompressedArchiveFormats);
-
+        private static readonly Lazy<HashSet<CompressedArchiveFormat>> DisabledFormats = new Lazy<HashSet<CompressedArchiveFormat>>();
         private static readonly HashSet<CompressedArchiveFormat> AvailableFormats = new HashSet<CompressedArchiveFormat>()
         {
             CompressedArchiveFormat.Zip,
@@ -83,6 +83,47 @@ namespace INTV.Shared.Utility
         public static bool IsCompressedArchiveFormatSupported(this CompressedArchiveFormat format)
         {
             return AvailableFormats.Contains(format);
+        }
+
+        /// <summary>
+        /// Checks whether the given <see cref="CompressedArchiveFormat"/> is enabled for use.
+        /// </summary>
+        /// <param name="format">The compressed archive format to check the enabled status for.</param>
+        /// <returns><c>true</c> if the archive format is enabled, <c>false</c> otherwise.</returns>
+        public static bool IsCompressedArchiveFormatEnabled(this CompressedArchiveFormat format)
+        {
+            return !DisabledFormats.Value.Contains(format);
+        }
+
+        /// <summary>
+        /// Checks whether the given <see cref="CompressedArchiveFormat"/> is currently supported and enabled.
+        /// </summary>
+        /// <param name="format">The compressed archive format to check.</param>
+        /// <returns><c>true</c> if the archive format is both available and enabled, <c>false</c> otherwise.</returns>
+        public static bool IsCompressedArchiveFormatSupportedAndEnabled(this CompressedArchiveFormat format)
+        {
+            return format.IsCompressedArchiveFormatEnabled() && format.IsCompressedArchiveFormatSupported();
+        }
+
+        /// <summary>
+        /// Enables a previously disabled compressed archive format.
+        /// </summary>
+        /// <param name="format">The compressed archive format to enable.</param>
+        public static void EnableCompressedArchiveFormat(this CompressedArchiveFormat format)
+        {
+            DisabledFormats.Value.Remove(format);
+        }
+
+        /// <summary>
+        /// Disables a previously enabled compressed archive format.
+        /// </summary>
+        /// <param name="format">The compressed archive format to disable.</param>
+        /// <remarks>Any archives that may already be open and in use will remain accessible, but no new archives of the format
+        /// may be accessed after the format is disabled - unless the format is re-enabled by subsequently calling
+        /// <see cref="EnableCompresedArchiveFormat(CompressedArchiveFormat)"/>.</remarks>
+        public static void DisableCompressedArchiveFormat(this CompressedArchiveFormat format)
+        {
+            DisabledFormats.Value.Add(format);
         }
 
         /// <summary>

@@ -524,7 +524,7 @@ namespace INTV.Shared.Utility
                 var nestedArchiveFormats = Path.GetExtension(entryName).GetCompressedArchiveFormatsFromFileExtension();
                 var nestedArchiveFormat = nestedArchiveFormats.FirstOrDefault();
 
-                if (nestedArchiveFormat.IsCompressedArchiveFormatSupported())
+                if (nestedArchiveFormat.IsCompressedArchiveFormatSupportedAndEnabled())
                 {
                     TemporaryDirectory temporaryLocation = null;
                     var entryData = parentArchiveAccess.OpenEntry(entry);

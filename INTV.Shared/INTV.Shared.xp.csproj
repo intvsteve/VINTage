@@ -146,6 +146,7 @@
     <Compile Include="Model\Device\NamedPipeConnection.cs" />
     <Compile Include="Model\Device\SerialPortConnection.cs" />
     <Compile Include="Model\Device\SerialPortConnection.WPF.cs" />
+    <Compile Include="Model\EnabledCompressedArchiveFormats.cs" />
     <Compile Include="Model\IRomHelpers.cs" />
     <Compile Include="Model\IStreamConnection.cs" />
     <Compile Include="Model\Program\AddRomsFromFilesBeginEventArgs.cs" />

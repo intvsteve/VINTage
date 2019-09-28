@@ -210,6 +210,7 @@
     <Compile Include="ViewModel\SerialPortViewModel.cs" />
     <Compile Include="Model\CanonicalRomComparer.cs" />
     <Compile Include="Model\CanonicalRomComparerStrict.cs" />
+    <Compile Include="Model\EnabledCompressedArchiveFormats.cs" />
     <Compile Include="Model\IRomHelpers.cs" />
     <Compile Include="Model\Program\Bee3FeatureSet.cs" />
     <Compile Include="Model\Program\CuttleCart3FeatureSet.cs" />

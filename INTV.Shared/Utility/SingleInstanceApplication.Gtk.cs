@@ -35,6 +35,7 @@ namespace INTV.Shared.Utility
         private static readonly SingleInstanceApplication GtkInstance = new SingleInstanceApplication();
 
         private static bool _initiatedExit;
+        private static System.Type _splashScreenResourceType = null;
 
         #region Properties
 
@@ -49,6 +50,11 @@ namespace INTV.Shared.Utility
         internal static string SplashScreenResource
         {
             get { return _splashScreenResource; }
+        }
+
+        internal static System.Type SplashScreenResourceType
+        {
+            get { return _splashScreenResourceType ?? MainWindowType; }
         }
 
         internal static System.Type MainWindowType
@@ -127,6 +133,20 @@ namespace INTV.Shared.Utility
                 settings.Save();
             }
             SettingsBase.SaveApplicationSettings();
+        }
+
+        /// <summary>
+        /// Replaces the splash screen image.
+        /// </summary>
+        /// <param name="typeForResource">Type for resource.</param>
+        /// <param name="splashScreenResource">Splash screen resource.</param>
+        public void ReplaceSplashScreenImage(System.Type typeForResource, string splashScreenResource)
+        {
+            _splashScreenResourceType = typeForResource;
+            _splashScreenResource = splashScreenResource;
+            var splashScreen = MainWindow.Data["SplashScreen"] as SplashScreen;
+            var splashImage = typeForResource.LoadImageResource(splashScreenResource);
+            splashScreen.SetImage(splashImage);
         }
 
         private static bool FinishInitialization()

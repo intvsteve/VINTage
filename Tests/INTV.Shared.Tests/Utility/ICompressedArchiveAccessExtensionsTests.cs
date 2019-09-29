@@ -80,6 +80,44 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // IsCompressedArchiveAccessEnabled Tests
 
+        #region IsNestedArchiveAccessEnabled Tests
+
+        [Fact]
+        public void ICompressedArchiveAccess_DefaultValueOfIsNestedArchiveAccessEnabled_IsTrue()
+        {
+            Assert.True(ICompressedArchiveAccessExtensions.IsNestedArchiveAccessEnabled);
+        }
+
+        [Fact]
+        public void ICompressedArchiveAccess_DisableNestedArchiveAccess_CorrectlyDisablesNestedArchiveAccess()
+        {
+            try
+            {
+                Assert.True(ICompressedArchiveAccessExtensions.DisableNestedArchiveAccess());
+                Assert.False(ICompressedArchiveAccessExtensions.IsNestedArchiveAccessEnabled);
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess(true);
+            }
+        }
+
+        [Fact]
+        public void ICompressedArchiveAccess_DisableThenEnableNestedArchiveAccess_CorrectlyDisablesThenEnablesArchiveAccess()
+        {
+            try
+            {
+                Assert.True(ICompressedArchiveAccessExtensions.DisableNestedArchiveAccess());
+                Assert.False(ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess(true);
+            }
+        }
+
+        #endregion // IsNestedArchiveAccessEnabled Tests
+
         #region GetStorageAccess Tests
 
         [Fact]
@@ -491,13 +529,34 @@ namespace INTV.Shared.Tests.Utility
             }
         }
 
+        [Fact]
+        public void ICompressedArchive_ListRecursivelyInArchiveWithNestedArchiveWhenNestingDisabled_DoesNotListNestedArchiveContents()
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableNestedArchiveAccess();
+                string tgzFile; // necessary to get archive being identified via file extension
+                var tgzResource = TestResource.TagalongMsys2Tgz;
+                tgzResource.ExtractToTemporaryFile(out tgzFile);
+                using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
+                {
+                    var entries = tgz.ListEntries(null, includeContainers: true, recurse: true);
+
+                    Assert.Equal(1, entries.Count());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess();
+            }
+        }
+
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
         public void ICompressedArchive_ListInGZipArchiveContainingNestedTarArchive_FiltersAsExpected(bool includeContainers)
         {
             var tgzResource = TestResource.TagalongMsys2Tgz;
-
             string tgzFile; // necessary to get archive being identified via file extension
             tgzResource.ExtractToTemporaryFile(out tgzFile);
             using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
@@ -520,7 +579,6 @@ namespace INTV.Shared.Tests.Utility
         {
             var zipContainingOneSubdirectory = TestResource.TagalongDirZip;
             var location = "tagalong_dir/";
-
             using (var zip = CompressedArchiveAccess.Open(zipContainingOneSubdirectory.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(location, includeContainers: false);
@@ -535,7 +593,6 @@ namespace INTV.Shared.Tests.Utility
         {
             var zipContainingOneNestedZip = TestResource.TagalongNestedZip;
             var location = @"tagalong.zip\";
-
             using (var zip = CompressedArchiveAccess.Open(zipContainingOneNestedZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(location, false);
@@ -544,6 +601,28 @@ namespace INTV.Shared.Tests.Utility
                 Assert.Equal(expectedEntries, entries.Select(e => e.Name));
             }
         }
+
+        [Fact]
+        public void ICompressedArchive_ListInNestedArchiveLocationNoRecursionWhenNestingDisabled_ReturnsEmptyEntries()
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableNestedArchiveAccess();
+                var zipContainingOneNestedZip = TestResource.TagalongNestedZip;
+                var location = @"tagalong.zip\";
+                using (var zip = CompressedArchiveAccess.Open(zipContainingOneNestedZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+                {
+                    var entries = zip.ListEntries(location, false);
+
+                    Assert.Empty(entries);
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess();
+            }
+        }
+
 
         [Fact]
         public void ICompressedArchive_ListInGZipArchiveContainingNestedTarArchiveFolderLocationNoRecursion_ReturnsExpectedItems()

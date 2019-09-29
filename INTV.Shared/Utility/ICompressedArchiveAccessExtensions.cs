@@ -33,6 +33,7 @@ namespace INTV.Shared.Utility
     public static class ICompressedArchiveAccessExtensions
     {
         private static bool _disableCompressedArchiveAccess = false;
+        private static bool _enableNestedArchiveSupport = true;
 
         /// <summary>
         /// Gets a value indicating whether or not compressed archive access is enabled.
@@ -40,6 +41,15 @@ namespace INTV.Shared.Utility
         public static bool IsCompressedArchiveAccessEnabled
         {
             get { return !_disableCompressedArchiveAccess; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether access to nested archives is enabled.
+        /// </summary>
+        /// <returns><c>true</c> if access to nested archives is enabled; <c>false</c> otherwise.</returns>
+        public static bool IsNestedArchiveAccessEnabled
+        {
+            get { return _enableNestedArchiveSupport; }
         }
 
         /// <summary>
@@ -58,6 +68,24 @@ namespace INTV.Shared.Utility
         public static bool DisableCompressedArchiveAccess()
         {
             return EnableCompressedArchiveAccess(false);
+        }
+
+        /// <summary>
+        /// Enables access to nested archives.
+        /// </summary>
+        /// <returns>The value of <see cref="IsNestedArchiveAccessEnabled"/> prior to calling this function.</returns>
+        public static bool EnableNestedArchiveAccess()
+        {
+            return EnableNestedArchiveAccess(true);
+        }
+
+        /// <summary>
+        /// Disables access to nested archives.
+        /// </summary>
+        /// <returns>The value of <see cref="IsNestedArchiveAccessEnabled"/> prior to calling this function.</returns>
+        public static bool DisableNestedArchiveAccess()
+        {
+            return EnableNestedArchiveAccess(false);
         }
 
         /// <summary>
@@ -250,20 +278,25 @@ namespace INTV.Shared.Utility
                         {
                             var dontCare = string.Empty;
                             nestedCompressedArchiveAccess = GetNestedCompressedArchive(compressedArchiveAccess, nestedAchiveLocation, ref dontCare);
-                            nestedCompressedArchives[nestedAchiveLocation] = nestedCompressedArchiveAccess;
+                            if (nestedCompressedArchiveAccess != null)
+                            {
+                                nestedCompressedArchives[nestedAchiveLocation] = nestedCompressedArchiveAccess;
+                            }
                         }
                     }
                     else
                     {
                         nestedCompressedArchiveAccess = compressedArchiveAccess;
                     }
-
-                    var childEntries = ListEntriesInCompressedArchive(nestedCompressedArchiveAccess, nestedArchiveRelativeLocation, includeContainers: true).Select(e => e.MakeAbsoluteEntry(nestedAchiveLocation));
-                    entries.AddRange(childEntries);
-                    var childContainers = childEntries.Where(e => e.IsDirectory || e.Name.IsContainer());
-                    foreach (var childContainer in childContainers)
+                    if (IsNestedArchiveAccessEnabled)
                     {
-                        containers.Enqueue(childContainer);
+                        var childEntries = ListEntriesInCompressedArchive(nestedCompressedArchiveAccess, nestedArchiveRelativeLocation, includeContainers: true).Select(e => e.MakeAbsoluteEntry(nestedAchiveLocation));
+                        entries.AddRange(childEntries);
+                        var childContainers = childEntries.Where(e => e.IsDirectory || e.Name.IsContainer());
+                        foreach (var childContainer in childContainers)
+                        {
+                            containers.Enqueue(childContainer);
+                        }
                     }
                 }
                 if (!includeContainers)
@@ -281,12 +314,24 @@ namespace INTV.Shared.Utility
         /// <summary>
         /// Enables or disables access to compressed archives.
         /// </summary>
-        /// <param name="enable">If true, enable compressed archive access. Otherwise, disable it.</param>
+        /// <param name="enable">If <c>true</c>, enable compressed archive access. Otherwise, disable it.</param>
         /// <returns>The previous value of whether access to compressed archives is enabled.</returns>
         internal static bool EnableCompressedArchiveAccess(bool enable)
         {
             var previousSetting = IsCompressedArchiveAccessEnabled;
             _disableCompressedArchiveAccess = !enable;
+            return previousSetting;
+        }
+
+        /// <summary>
+        /// Enables or disables access to nested archives.
+        /// </summary>
+        /// <param name="enable">If <c>true</c>, allow listing contents of nested archives; otherwise, do not.</param>
+        /// <returns>The previous value of whether access to nested archives is enabled.</returns>
+        internal static bool EnableNestedArchiveAccess(bool enable)
+        {
+            var previousSetting = IsNestedArchiveAccessEnabled;
+            _enableNestedArchiveSupport = enable;
             return previousSetting;
         }
 
@@ -311,12 +356,15 @@ namespace INTV.Shared.Utility
             var locationIsInNestedContainer = locationInArchive.IsInNestedContainer();
             if (locationIsInNestedContainer)
             {
-                normalizedLocationInArchive = string.Empty;
-                compressedArchiveAccess = GetNestedCompressedArchive(compressedArchiveAccess, locationInArchive, ref normalizedLocationInArchive);
-                if (compressedArchiveAccess == null)
+                if (IsNestedArchiveAccessEnabled)
                 {
-                    var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_NestedArchiveNotFound, locationInArchive);
-                    throw new FileNotFoundException(message, locationInArchive);
+                    normalizedLocationInArchive = string.Empty;
+                    compressedArchiveAccess = GetNestedCompressedArchive(compressedArchiveAccess, locationInArchive, ref normalizedLocationInArchive);
+                    if (compressedArchiveAccess == null)
+                    {
+                        var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_NestedArchiveNotFound, locationInArchive);
+                        throw new FileNotFoundException(message, locationInArchive);
+                    }
                 }
             }
 
@@ -520,37 +568,39 @@ namespace INTV.Shared.Utility
             public static NestedCompressedArchiveAccess Create(ICompressedArchiveAccess parentArchiveAccess, ICompressedArchiveEntry entry)
             {
                 NestedCompressedArchiveAccess nestedCompressedArchive = null;
-                var entryName = entry.Name;
-                var nestedArchiveFormats = Path.GetExtension(entryName).GetCompressedArchiveFormatsFromFileExtension();
-                var nestedArchiveFormat = nestedArchiveFormats.FirstOrDefault();
-
-                if (nestedArchiveFormat.IsCompressedArchiveFormatSupportedAndEnabled())
+                if (IsNestedArchiveAccessEnabled)
                 {
-                    TemporaryDirectory temporaryLocation = null;
-                    var entryData = parentArchiveAccess.OpenEntry(entry);
+                    var entryName = entry.Name;
+                    var nestedArchiveFormats = Path.GetExtension(entryName).GetCompressedArchiveFormatsFromFileExtension();
+                    var nestedArchiveFormat = nestedArchiveFormats.FirstOrDefault();
 
-                    // always extract nested archives??
-                    if (FormatMustBeExtracted(parentArchiveAccess.Format) || FormatMustBeExtracted(nestedArchiveFormat))
+                    if (nestedArchiveFormat.IsCompressedArchiveFormatSupportedAndEnabled())
                     {
-                        // We can't fully navigate the nested stream, so extract to disk, then proceed.
-                        temporaryLocation = new TemporaryDirectory();
-                        var temporaryEntryFilePath = Path.Combine(temporaryLocation.Path, entryName);
-                        if (Directory.CreateDirectory(Path.GetDirectoryName(temporaryEntryFilePath)).Exists)
+                        TemporaryDirectory temporaryLocation = null;
+                        var entryData = parentArchiveAccess.OpenEntry(entry);
+
+                        // always extract nested archives??
+                        if (FormatMustBeExtracted(parentArchiveAccess.Format) || FormatMustBeExtracted(nestedArchiveFormat))
                         {
-                            System.Diagnostics.Debug.WriteLine("Extracted entry " + entryName + " to " + temporaryLocation.Path);
-                            var fileStream = new FileStream(temporaryEntryFilePath, FileMode.Create, FileAccess.ReadWrite);
-                            entryData.CopyTo(fileStream);
-                            fileStream.Seek(0, SeekOrigin.Begin);
-                            entryData.Dispose();
-                            entryData = fileStream;
+                            // We can't fully navigate the nested stream, so extract to disk, then proceed.
+                            temporaryLocation = new TemporaryDirectory();
+                            var temporaryEntryFilePath = Path.Combine(temporaryLocation.Path, entryName);
+                            if (Directory.CreateDirectory(Path.GetDirectoryName(temporaryEntryFilePath)).Exists)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Extracted entry " + entryName + " to " + temporaryLocation.Path);
+                                var fileStream = new FileStream(temporaryEntryFilePath, FileMode.Create, FileAccess.ReadWrite);
+                                entryData.CopyTo(fileStream);
+                                fileStream.Seek(0, SeekOrigin.Begin);
+                                entryData.Dispose();
+                                entryData = fileStream;
+                            }
                         }
+
+                        var compressedArchive = CompressedArchiveAccess.Open(entryData, nestedArchiveFormat, CompressedArchiveAccessMode.Read);
+                        nestedCompressedArchive = new NestedCompressedArchiveAccess(parentArchiveAccess, compressedArchive, temporaryLocation);
+                        nestedCompressedArchive.NestedArchiveFormats = nestedArchiveFormats;
                     }
-
-                    var compressedArchive = CompressedArchiveAccess.Open(entryData, nestedArchiveFormat, CompressedArchiveAccessMode.Read);
-                    nestedCompressedArchive = new NestedCompressedArchiveAccess(parentArchiveAccess, compressedArchive, temporaryLocation);
-                    nestedCompressedArchive.NestedArchiveFormats = nestedArchiveFormats;
                 }
-
                 return nestedCompressedArchive;
             }
 

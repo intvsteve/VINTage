@@ -400,7 +400,7 @@ namespace INTV.Shared.Utility
         /// Ensure the base type's underlying resources are correctly disposed.
         /// </summary>
         /// <param name="disposing">If <c>true</c>, Dispose() is being called, otherwise, the finalizer is executing.</param>
-        protected void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             DisposeCore(disposing);
         }

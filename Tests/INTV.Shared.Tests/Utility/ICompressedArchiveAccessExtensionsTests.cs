@@ -118,6 +118,82 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // IsNestedArchiveAccessEnabled Tests
 
+        #region MaxAllowedArchiveSize Tests
+
+        [Fact]
+        public void ICompressedArchiveAccess_SetMaxAllowedArchiveSizeInMegabytes_SetsToCorrectValue()
+        {
+            try
+            {
+                var newSizeInMegabytes = 2;
+
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInMegabytes(newSizeInMegabytes);
+
+                var expectedMaxSizeInBytes = (long)newSizeInMegabytes << 20;
+                Assert.Equal(expectedMaxSizeInBytes, ICompressedArchiveAccessExtensions.MaxAllowedArchiveSize);
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(0);
+            }
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-3)]
+        public void ICompressedArchiveAccess_SetMaxAllowedArchiveSizeInMegabytesToZeroOrNegative_SetsToZero(int newSizeInMegabytes)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInMegabytes(newSizeInMegabytes);
+
+                Assert.Equal(0, ICompressedArchiveAccessExtensions.MaxAllowedArchiveSize);
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(0);
+            }
+        }
+
+        [Fact]
+        public void ICompressedArchiveAccess_GetMaxAllowedArchiveSizeInMegabytes_ReturnsCorrectValue()
+        {
+            try
+            {
+                var testMaxSizeInBytes = 0x02000000;
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(testMaxSizeInBytes);
+
+                var maxSizeInMegabytes = ICompressedArchiveAccessExtensions.GetMaxAllowedArchiveSizeInMegabytes();
+
+                var expectedMaxSizeInMegabytes = testMaxSizeInBytes >> 20;
+                Assert.Equal(expectedMaxSizeInMegabytes, maxSizeInMegabytes);
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(0);
+            }
+        }
+
+        [Fact]
+        public void ICompressedArchiveAccess_GetMaxAllowedArchiveSizeInMegabytesWhenSizeIsSmall_ReturnsOneMegabyte()
+        {
+            try
+            {
+                var testMaxSizeInBytes = 1;
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(testMaxSizeInBytes);
+
+                var maxSizeInMegabytes = ICompressedArchiveAccessExtensions.GetMaxAllowedArchiveSizeInMegabytes();
+
+                Assert.Equal(1, maxSizeInMegabytes);
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(0);
+            }
+        }
+
+        #endregion // MaxAllowedArchiveSize Tests
+
         #region GetStorageAccess Tests
 
         [Fact]
@@ -209,6 +285,44 @@ namespace INTV.Shared.Tests.Utility
             finally
             {
                 ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [MemberData("UniqueCompressedArchiveFormatTestResources")]
+        public void ICompressedArchiveAccess_SetMaxArchiveSizeToOneMegabyteGetStorageAccessFromKnownArchiveKind_ReturnsCompressedArchiveStorageAccess(TestResource testResource, CompressedArchiveFormat _1)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInMegabytes(1);
+                string archiveFilePath;
+                testResource.ExtractToTemporaryFile(out archiveFilePath);
+                var storageAccess = archiveFilePath.GetStorageAccess();
+
+                Assert.True(storageAccess is ICompressedArchiveAccess);
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(0);
+            }
+        }
+
+        [Theory]
+        [MemberData("UniqueCompressedArchiveFormatTestResources")]
+        public void ICompressedArchiveAccess_SetMaxArchiveSizeToOneByteGetStorageAccessFromKnownArchiveKind_ReturnsDefaultStorageAccess(TestResource testResource, CompressedArchiveFormat _1)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(1);
+                string archiveFilePath;
+                testResource.ExtractToTemporaryFile(out archiveFilePath);
+                var storageAccess = archiveFilePath.GetStorageAccess();
+
+                Assert.False(storageAccess is ICompressedArchiveAccess);
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(0);
             }
         }
 

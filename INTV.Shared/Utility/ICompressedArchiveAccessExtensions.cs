@@ -34,6 +34,7 @@ namespace INTV.Shared.Utility
     {
         private static bool _disableCompressedArchiveAccess = false;
         private static bool _enableNestedArchiveSupport = true;
+        private static long _maxArchiveSize = 0;
 
         /// <summary>
         /// Gets a value indicating whether or not compressed archive access is enabled.
@@ -50,6 +51,17 @@ namespace INTV.Shared.Utility
         public static bool IsNestedArchiveAccessEnabled
         {
             get { return _enableNestedArchiveSupport; }
+        }
+
+        /// <summary>
+        /// Gets the maximum supported archive size in bytes.
+        /// </summary>
+        /// <remarks>If greater than zero, only archives at or below this value will be accessed using
+        /// an appropriate <see cref="ICompressedArchiveAccess"/>. Otherwise, a file will be treated as
+        /// a standard file system file.</remarks>
+        public static long MaxAllowedArchiveSize
+        {
+            get { return _maxArchiveSize; }
         }
 
         /// <summary>
@@ -89,6 +101,37 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Gets the maximum allowed archive size in megabytes.
+        /// </summary>
+        /// <returns>The maximum allowed archive size, in megabytes. If the value if <see cref="MaxAllowedArchiveSize"/>
+        /// (which is expressed in bytes) is less than one megabyte, this function returns <c>1</c>.</returns>
+        public static int GetMaxAllowedArchiveSizeInMegabytes()
+        {
+            var maxSizeMB = 0;
+            if (_maxArchiveSize > 0)
+            {
+                var maxSizeMegabytes = _maxArchiveSize >> 20;
+                if (maxSizeMegabytes == 0)
+                {
+                    maxSizeMegabytes = 1; // minimum non-zero value
+                }
+                maxSizeMB = (int)maxSizeMegabytes;
+            }
+            return maxSizeMB;
+        }
+
+        /// <summary>
+        /// Sets the maximum allowed archive size in megabytes.
+        /// </summary>
+        /// <param name="maxAllowedArchiveSize">The maximum allowed archive size, in megabytes.</param>
+        public static void SetMaxAllowedArchiveSizeInMegabytes(int maxAllowedArchiveSize)
+        {
+            long newMaxInMegabytes = maxAllowedArchiveSize;
+            var newMaxSizeInBytes = maxAllowedArchiveSize > 0 ? newMaxInMegabytes << 20 : 0;
+            SetMaxAllowedArchiveSizeInBytes(newMaxSizeInBytes);
+        }
+
+        /// <summary>
         /// Gets the storage access to use for the given location.
         /// </summary>
         /// <param name="filePath">The absolute file path to get a storage access for.</param>
@@ -106,6 +149,14 @@ namespace INTV.Shared.Utility
                 var rootCompressedArchivePath = filePath.GetRootArchivePath().NormalizePathSeparators();
                 if (!string.IsNullOrEmpty(rootCompressedArchivePath))
                 {
+                    if (MaxAllowedArchiveSize > 0)
+                    {
+                        var length = new FileInfo(rootCompressedArchivePath).Length;
+                        if (length > MaxAllowedArchiveSize)
+                        {
+                            return IStorageAccessHelpers.DefaultStorage;
+                        }
+                    }
                     storageAccess = CompressedArchiveAccess.Open(rootCompressedArchivePath, CompressedArchiveAccessMode.Read);
                     var nestedAchiveLocation = filePath.GetMostDeeplyNestedArchivePath();
                     if (PathComparer.Instance.Compare(rootCompressedArchivePath, nestedAchiveLocation) != 0)
@@ -333,6 +384,15 @@ namespace INTV.Shared.Utility
             var previousSetting = IsNestedArchiveAccessEnabled;
             _enableNestedArchiveSupport = enable;
             return previousSetting;
+        }
+
+        /// <summary>
+        /// Sets the max allowed archive size in bytes.
+        /// </summary>
+        /// <param name="maxAllowedArchiveSize">The maximum allowed archive size, in bytes.</param>
+        internal static void SetMaxAllowedArchiveSizeInBytes(long maxAllowedArchiveSize)
+        {
+            _maxArchiveSize = maxAllowedArchiveSize;
         }
 
         private static IEnumerable<ICompressedArchiveEntry> ListEntriesInCompressedArchive(ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers)

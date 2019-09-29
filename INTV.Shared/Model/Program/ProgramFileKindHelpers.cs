@@ -138,7 +138,7 @@ namespace INTV.Shared.Model.Program
                 var filesNextToRom = directory.EnumerateFiles(ProgramFileKind.CfgFile.FileExtension());
                 var possibleConfigFile = directory.Combine(romFileLocation.GetFileNameWithoutExtension()).AddSuffix(ProgramFileKind.CfgFile.FileExtension());
                 configFile = filesNextToRom.FirstOrDefault(f => string.Compare(f.Path, possibleConfigFile.Path, true) == 0);
-                if (!configFile.IsValid)
+                if ((configFile == null) || !configFile.IsValid)
                 {
                     possibleConfigFile = romFileLocation.AddSuffix(ProgramFileKind.CfgFile.FileExtension());
                     configFile = filesNextToRom.FirstOrDefault(f => string.Compare(f.Path, possibleConfigFile.Path, true) == 0);

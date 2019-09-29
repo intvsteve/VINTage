@@ -39,6 +39,14 @@ namespace INTV.Core.Tests.Utility
         }
 
         [Fact]
+        public void StorageLocation_NullstorageLocationExists_ReturnsFalse()
+        {
+            StorageLocation nullStorageLocation = null;
+
+            Assert.False(nullStorageLocation.Exists());
+        }
+
+        [Fact]
         public void StorageLocation_InvalidStorageLocationExists_ReturnsFalse()
         {
             var storageLocation = StorageLocation.InvalidLocation;

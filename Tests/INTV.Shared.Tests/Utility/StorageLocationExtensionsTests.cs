@@ -544,6 +544,28 @@ namespace INTV.Shared.Tests.Utility
 
         [Theory]
         [MemberData("CombineStorageLocationPathTestData")]
+        public void StorageLocationExtensions_CombineAbsoluteNonexistentLocationWithPathWhenArchiveAccessDisabled_ProducesExpectedPathAndDefaultStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess();
+                var location = TemporaryFile.GenerateUniqueFilePath("INTV_StorageLocationExtensions_CombineAbsoluteNonexistentLocationWithPath_ProducesExpectedPathAndStorageAccess", ".test").CreateStorageLocationFromPath();
+                using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
+                {
+                    var newStorageLocation = location.Combine(pathElement, pathElements);
+
+                    Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                    Assert.True(newStorageLocation.UsesDefaultStorage);
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess();
+            }
+        }
+
+        [Theory]
+        [MemberData("CombineStorageLocationPathTestData")]
         public void StorageLocationExtensions_CombineAbsoluteExistentLocationWithPath_ProducesExpectedPathAndStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
         {
             string directoryPath;
@@ -557,6 +579,32 @@ namespace INTV.Shared.Tests.Utility
                     Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
                     Assert.Equal(archiveResource == null, newStorageLocation.UsesDefaultStorage);
                 }
+            }
+        }
+
+        [Theory]
+        [MemberData("CombineStorageLocationPathTestData")]
+        public void StorageLocationExtensions_CombineAbsoluteExistentLocationWithPathWhenArchiveAccessDisabled_ProducesExpectedPathAndDefaultStorageAccess(TestResource archiveResource, string pathElement, string[] pathElements, string expectedPath)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess();
+                string directoryPath;
+                using (TestResource.Directory(out directoryPath))
+                {
+                    var location = directoryPath.CreateStorageLocationFromPath();
+                    using (PrepareExpectedPathAndPathElementForTest(location, archiveResource, ref expectedPath, ref pathElement))
+                    {
+                        var newStorageLocation = location.Combine(pathElement, pathElements);
+
+                        Assert.Equal(expectedPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                        Assert.True(newStorageLocation.UsesDefaultStorage);
+                    }
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess();
             }
         }
 
@@ -585,6 +633,41 @@ namespace INTV.Shared.Tests.Utility
             Assert.Equal(expectedNewPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
             Assert.False(location.UsesDefaultStorage);
             Assert.Equal(shouldStorageAccessChange, !object.ReferenceEquals(location.StorageAccess, newStorageLocation.StorageAccess));
+        }
+
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData("extra_nest/", false)]
+        [InlineData("extra_nest/tagalong_metadata.bin", false)]
+        [InlineData("extra_nest/tagalong_msys2.tgz", true)]
+        [InlineData("extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.rom", true)]
+        [InlineData("tagalong_dev0.luigi", false)]
+        [InlineData("extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip", true)]
+        [InlineData("extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.cfg", true)]
+        [InlineData("extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tag-a-long.zip", true)] // does not exist, may break if / when caching implemented
+        [InlineData("extra_nest/tag-a-long_msys2.tgz/tagalong_msys2.tar/tag-a-long.zip", true)] // does not exist, may break if / when caching implemented
+        public void StorageLocationExtensions_CombinePathIntoArchiveWithRelativePathWhenNestedArchiveAccessDisabled_ProducesExpectedPathAndDoesNotChangeStorageAccess(string relativePath, bool _2)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableNestedArchiveAccess();
+                string archiveRoot;
+                TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archiveRoot);
+                var location = archiveRoot.CreateStorageLocationFromPath();
+                Assert.False(location.UsesDefaultStorage);
+
+                var newStorageLocation = location.Combine(relativePath);
+
+                var expectedNewPath = string.IsNullOrEmpty(relativePath) ? archiveRoot : Path.Combine(archiveRoot, relativePath);
+                Assert.Equal(expectedNewPath.NormalizePathSeparators(), newStorageLocation.Path.NormalizePathSeparators());
+                Assert.False(location.UsesDefaultStorage);
+                Assert.True(object.ReferenceEquals(location.StorageAccess, newStorageLocation.StorageAccess));
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess();
+            }
         }
 
         #endregion // Combine Tests

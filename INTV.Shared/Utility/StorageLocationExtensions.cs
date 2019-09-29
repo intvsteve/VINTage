@@ -486,7 +486,12 @@ namespace INTV.Shared.Utility
             // Current location refers to an archive. Check if new location refers to same one.
             var currentNestedArchivePath = currentPath.GetMostDeeplyNestedArchivePath().NormalizePathSeparators();
             var newNestedArchivePath = newPath.GetMostDeeplyNestedArchivePath().NormalizePathSeparators();
-            return PathComparer.Instance.Compare(currentNestedArchivePath, newNestedArchivePath) != 0;
+            var refersToDifferntArchiveLocation = PathComparer.Instance.Compare(currentNestedArchivePath, newNestedArchivePath) != 0;
+            if (refersToDifferntArchiveLocation)
+            {
+                refersToDifferntArchiveLocation = ICompressedArchiveAccessExtensions.IsNestedArchiveAccessEnabled;
+            }
+            return refersToDifferntArchiveLocation;
         }
     }
 }

@@ -142,6 +142,7 @@
     <Compile Include="Interop\SetupDi\NativeMethods.xp.cs" />
     <Compile Include="Model\CanonicalRomComparer.cs" />
     <Compile Include="Model\CanonicalRomComparerStrict.cs" />
+    <Compile Include="Model\CompressedArchiveAccessConfiguration.cs" />
     <Compile Include="Model\Device\ConnectionMonitor.cs" />
     <Compile Include="Model\Device\NamedPipeConnection.cs" />
     <Compile Include="Model\Device\SerialPortConnection.cs" />

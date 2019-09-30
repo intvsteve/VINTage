@@ -38,7 +38,6 @@ namespace INTV.Shared.Properties
         public const string WindowSizeSettingName = "WindowSize";
         public const string CheckForAppUpdatesAtLaunchSettingName = "CheckForAppUpdatesAtLaunch";
         public const string ShowDetailedErrorsSettingName = "ShowDetailedErrors";
-        public const string MaxGZipEntriesSearchSettingName = "MaxGZipEntriesSearch";
 
         #endregion // General Settings
 
@@ -58,8 +57,17 @@ namespace INTV.Shared.Properties
 
         #endregion // ROM List Settings
 
+        #region Compressed Archive Access Settings
+
+        public const string EnabledArchiveFormatsSettingName = "EnabledArchiveFormats";
+        public const string SearchNestedArchivesSettingName = "SearchNestedArchives";
+        public const string MaxArchiveSizeMBSettingName = "MaxArchiveSizeMB";
+        public const string MaxGZipEntriesSearchSettingName = "MaxGZipEntriesSearch";
+
+        #endregion // Compressed Archive Access Settings
+
         #endregion // Setting Names
-        
+
         /// <summary>The default setting for whether to check for updates at launch.</summary>
         public const bool DefaultCheckForUpdatesAtLaunchSetting = true;
 

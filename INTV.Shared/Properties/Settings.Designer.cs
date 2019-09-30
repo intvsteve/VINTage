@@ -249,5 +249,41 @@ namespace INTV.Shared.Properties {
                 this["MaxGZipEntriesSearch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public global::INTV.Shared.Model.EnabledCompressedArchiveFormats EnabledArchiveFormats {
+            get {
+                return ((global::INTV.Shared.Model.EnabledCompressedArchiveFormats)(this["EnabledArchiveFormats"]));
+            }
+            set {
+                this["EnabledArchiveFormats"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SearchNestedArchives {
+            get {
+                return ((bool)(this["SearchNestedArchives"]));
+            }
+            set {
+                this["SearchNestedArchives"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("32")]
+        public int MaxArchiveSizeMB {
+            get {
+                return ((int)(this["MaxArchiveSizeMB"]));
+            }
+            set {
+                this["MaxArchiveSizeMB"] = value;
+            }
+        }
     }
 }

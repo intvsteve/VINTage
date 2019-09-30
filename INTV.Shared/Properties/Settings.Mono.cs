@@ -116,6 +116,33 @@ namespace INTV.Shared.Properties
             set { SetSetting(MaxGZipEntriesSearchSettingName, value); }
         }
 
+        /// <summary>
+        /// Gets or sets a value that controls which compressed archive formats are enabled.
+        /// </summary>
+        public EnabledCompressedArchiveFormats EnabledArchiveFormats
+        {
+            get { return GetSetting<EnabledCompressedArchiveFormats>(EnabledArchiveFormatsSettingName); }
+            set { SetSetting(EnabledArchiveFormatsSettingName, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether accessing a compressed archive nested within another archive is enabled.
+        /// </summary>
+        public bool SearchNestedArchives
+        {
+            get { return GetSetting<bool>(SearchNestedArchivesSettingName); }
+            set { SetSetting(SearchNestedArchivesSettingName, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets a value that controls the largest sized (in Megabytes) compressed archive that will be accessed.
+        /// </summary>
+        public int MaxArchiveSizeMB
+        {
+            get { return GetSetting<int>(MaxArchiveSizeMBSettingName); }
+            set { SetSetting(MaxArchiveSizeMBSettingName, value); }
+        }
+
         #endregion // Properties
 
         #region ISettings

@@ -1,4 +1,4 @@
-﻿// <copyright file="CompressedArchiveFormats.cs" company="INTV Funhouse">
+﻿// <copyright file="EnabledCompressedArchiveFormats.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -64,12 +64,12 @@ namespace INTV.Shared.Model
     {
         private static readonly IDictionary<EnabledCompressedArchiveFormats, CompressedArchiveFormat> FlagToFormatData = new Dictionary<EnabledCompressedArchiveFormats, CompressedArchiveFormat>()
         {
-            { EnabledCompressedArchiveFormats.None , CompressedArchiveFormat.None },
-            { EnabledCompressedArchiveFormats.All , CompressedArchiveFormat.None },
-            { EnabledCompressedArchiveFormats.Zip , CompressedArchiveFormat .Zip },
-            { EnabledCompressedArchiveFormats.GZip , CompressedArchiveFormat.GZip },
-            { EnabledCompressedArchiveFormats.Tar , CompressedArchiveFormat.Tar },
-            { EnabledCompressedArchiveFormats.BZip2 , CompressedArchiveFormat.BZip2 },
+            { EnabledCompressedArchiveFormats.None, CompressedArchiveFormat.None },
+            { EnabledCompressedArchiveFormats.All, CompressedArchiveFormat.None },
+            { EnabledCompressedArchiveFormats.Zip, CompressedArchiveFormat.Zip },
+            { EnabledCompressedArchiveFormats.GZip, CompressedArchiveFormat.GZip },
+            { EnabledCompressedArchiveFormats.Tar, CompressedArchiveFormat.Tar },
+            { EnabledCompressedArchiveFormats.BZip2, CompressedArchiveFormat.BZip2 },
             { EnabledCompressedArchiveFormats.Unknown, CompressedArchiveFormat.None },
         };
 
@@ -145,7 +145,7 @@ namespace INTV.Shared.Model
         /// </summary>
         /// <param name="formats">The compressed archive formats from which the bit array is created.</param>
         /// <param name="onlyIncludeAvailableFormats">If <c>true</c>, only compressed archive formats with a supporting implementation are included in the result.
-        /// <c>If <c>false</c>, all recognized compressed archive formats will be represented.</param>
+        /// If <c>false</c>, all recognized compressed archive formats will be represented.</param>
         /// <returns>A <see cref="EnabledCompressedArchiveFormats"/> bit array representing the <see cref="CompressedArchiveFormat"/>s in <paramref name="formats"/>,
         /// depending upon the value of <paramref name="onlyIncludeAvailableFormats"/>.</returns>
         public static EnabledCompressedArchiveFormats FromCompressedArchiveFormats(this IEnumerable<CompressedArchiveFormat> formats, bool onlyIncludeAvailableFormats)

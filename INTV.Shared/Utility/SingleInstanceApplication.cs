@@ -54,7 +54,7 @@ namespace INTV.Shared.Utility
         // actions that must not run in parallel, such as updating file formats, et. al. The "asynchronous" actions are
         // usually activities such as ROM or device discovery, which are relatively low impact.
         private static ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>> _postStartupActions = new ConcurrentDictionary<string, Tuple<Action, StartupTaskPriority>>();
-        private List<ISettings> _settings = new List<ISettings>();
+        private HashSet<ISettings> _settings = new HashSet<ISettings>();
 
         #region Properties
 

@@ -66,6 +66,15 @@ namespace INTV.Shared.Tests.Utility
             Assert.Equal(expectedExtensions, extensions, StringComparer.InvariantCultureIgnoreCase);
         }
 
+        [Fact]
+        public void CompressedArchiveFormat_CompoundArchiveFormats_ContainsTgz()
+        {
+            var compoundFormats = CompressedArchiveFormatExtensions.CompoundArchiveFormats;
+
+            Assert.NotEmpty(compoundFormats);
+            Assert.True(compoundFormats.Keys.Contains(".tgz"));
+        }
+
         public static IEnumerable<object[]> CompressedFormatsFromFileNameTestData
         {
             get

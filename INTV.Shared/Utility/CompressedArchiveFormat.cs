@@ -66,7 +66,7 @@ namespace INTV.Shared.Utility
         private static readonly object Lock = new object();
         private static readonly Lazy<IDictionary<CompressedArchiveFormat, List<string>>> CompressedArchiveFormatFileExtensions = new Lazy<IDictionary<CompressedArchiveFormat, List<string>>>(InitializeCompressedArchiveFormatFileExtensions);
         private static readonly Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>> CompressedArchiveAccessImplementations = new Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>>(InitializeCompressedArchiveFormatImplementations);
-        private static readonly Lazy<IDictionary<string, IList<CompressedArchiveFormat>>> FileExtensionsForCompoundCompressedArchiveFormats = new Lazy<IDictionary<string, IList<CompressedArchiveFormat>>>(InitializeFileExtensionsForCompoundCompressedArchiveFormats);
+        private static readonly Lazy<IDictionary<string, IEnumerable<CompressedArchiveFormat>>> FileExtensionsForCompoundCompressedArchiveFormats = new Lazy<IDictionary<string, IEnumerable<CompressedArchiveFormat>>>(InitializeFileExtensionsForCompoundCompressedArchiveFormats);
         private static readonly Lazy<HashSet<CompressedArchiveFormat>> DisabledFormats = new Lazy<HashSet<CompressedArchiveFormat>>();
         private static readonly HashSet<CompressedArchiveFormat> AvailableFormats = new HashSet<CompressedArchiveFormat>()
         {
@@ -74,6 +74,14 @@ namespace INTV.Shared.Utility
             CompressedArchiveFormat.GZip,
             CompressedArchiveFormat.Tar,
         };
+
+        /// <summary>
+        /// Gets a dictionary of file extensions that describe compound file formats that use an abbreviated file extension to describe themselves.
+        /// </summary>
+        public static IDictionary<string, IEnumerable<CompressedArchiveFormat>> CompoundArchiveFormats
+        {
+            get { return FileExtensionsForCompoundCompressedArchiveFormats.Value; }
+        }
 
         /// <summary>
         /// Checks whether the given <see cref="CompressedArchiveFormat"/> is currently supported.
@@ -190,7 +198,7 @@ namespace INTV.Shared.Utility
                     }
                     else
                     {
-                        IList<CompressedArchiveFormat> compoundFormats;
+                        IEnumerable<CompressedArchiveFormat> compoundFormats;
                         if (FileExtensionsForCompoundCompressedArchiveFormats.Value.TryGetValue(fileExtension, out compoundFormats))
                         {
                             formats.AddRange(compoundFormats);
@@ -450,9 +458,9 @@ namespace INTV.Shared.Utility
             return compressedArchiveFormatImplementations;
         }
 
-        private static IDictionary<string, IList<CompressedArchiveFormat>> InitializeFileExtensionsForCompoundCompressedArchiveFormats()
+        private static IDictionary<string, IEnumerable<CompressedArchiveFormat>> InitializeFileExtensionsForCompoundCompressedArchiveFormats()
         {
-            var fileExtensionsForCompoundCompressedArchiveFormats = new Dictionary<string, IList<CompressedArchiveFormat>>(StringComparer.OrdinalIgnoreCase)
+            var fileExtensionsForCompoundCompressedArchiveFormats = new Dictionary<string, IEnumerable<CompressedArchiveFormat>>(StringComparer.OrdinalIgnoreCase)
             {
                 { ".tgz", new[] { CompressedArchiveFormat.GZip, CompressedArchiveFormat.Tar } },
                 { ".tbz", new[] { CompressedArchiveFormat.BZip2, CompressedArchiveFormat.Tar } },

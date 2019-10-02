@@ -116,6 +116,8 @@
     <Compile Include="Interop\DeviceManagement\DeviceChangeEvent.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceChangeEventArgs.cs" />
     <Compile Include="Interop\DeviceManagement\DeviceType.cs" />
+    <Compile Include="ViewModel\CompressedArchiveAccessSettingsViewModel.cs" />
+    <Compile Include="ViewModel\CompressedArchiveFormatViewModel.cs" />
     <Compile Include="ViewModel\ControllerElementViewModel.cs" />
     <Compile Include="ViewModel\IObservableViewModelCollection.cs" />
     <Compile Include="ViewModel\ISettingsPage.cs" />

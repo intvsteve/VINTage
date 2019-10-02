@@ -269,6 +269,8 @@
     <Compile Include="View\VisualHelpers.Gtk.cs" />
     <Compile Include="ViewModel\BackupInfoViewModel.cs" />
     <Compile Include="ViewModel\BaudRateViewModel.cs" />
+    <Compile Include="ViewModel\CompressedArchiveAccessSettingsViewModel.cs" />
+    <Compile Include="ViewModel\CompressedArchiveFormatViewModel.cs" />
     <Compile Include="ViewModel\ControllerElementViewModel.cs" />
     <Compile Include="ViewModel\EcsFeaturesConfigurationPageViewModel.cs" />
     <Compile Include="ViewModel\GeneralFeaturesConfigurationPageViewModel.cs" />

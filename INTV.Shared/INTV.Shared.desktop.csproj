@@ -283,6 +283,8 @@
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
     <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />
+    <Compile Include="ViewModel\CompressedArchiveAccessSettingsViewModel.cs" />
+    <Compile Include="ViewModel\CompressedArchiveFormatViewModel.cs" />
     <Compile Include="ViewModel\OSViewModelBase.WPF.cs" />
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
     <Compile Include="View\IMainWindow.cs" />

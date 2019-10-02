@@ -263,6 +263,9 @@
     <Compile Include="ViewModel\CompressedArchiveFormatViewModel.cs" />
     <Compile Include="ViewModel\OSViewModelBase.WPF.cs" />
     <Compile Include="ViewModel\SerialPortReadWriteBlockSizeViewModel.cs" />
+    <Compile Include="View\CompressedArchiveAccessSettings.xaml.cs">
+      <DependentUpon>CompressedArchiveAccessSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\IMainWindow.cs" />
     <Compile Include="View\OSMenuItem.cs" />
     <Compile Include="View\OSMenuItem.WPF.cs" />
@@ -603,6 +606,10 @@
     <EmbeddedResource Include="Commands\Resources\EmptyRibbonMenuItem_MenuItem.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Page Include="View\CompressedArchiveAccessSettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\EcsFeaturesConfigurationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -869,6 +869,9 @@
     <Resource Include="Resources\Images\lto_rom_only_9xSM.png" />
     <Resource Include="Resources\Images\lto_rom_unknown_device_9xSM.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\compressed_archive_32xLG.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

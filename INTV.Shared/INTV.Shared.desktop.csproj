@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -896,6 +896,9 @@
     <Resource Include="Resources\Images\lto_rom_incompatible_9xSM.png" />
     <Resource Include="Resources\Images\lto_rom_only_9xSM.png" />
     <Resource Include="Resources\Images\lto_rom_unknown_device_9xSM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\compressed_archive_32xLG.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

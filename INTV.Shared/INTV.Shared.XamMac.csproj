@@ -888,5 +888,8 @@
     <EmbeddedResource Include="Resources\Images\restore_32xLG.png">
       <LogicalName>Resources/Images/restore_32xLG.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Images\compressed_archive_32xLG.png">
+      <LogicalName>Resources/Images/compressed_archive_32xLG.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -522,6 +522,7 @@
     <EmbeddedResource Include="Resources\Images\rom_32xMD.png" />
     <EmbeddedResource Include="Resources\Images\rom_16xSM.png" />
     <EmbeddedResource Include="Resources\Images\roms_16xSM.png" />
+    <EmbeddedResource Include="Resources\Images\compressed_archive_32xLG.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="license.txt" />

@@ -624,6 +624,60 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use all supported compressed archive file types.
+        /// </summary>
+        internal static string CompressedArchiveAccess_All {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable using all compressed archive formats currently supported.
+        /// </summary>
+        internal static string CompressedArchiveAccess_All_Tip {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_All_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select compressed archive file types to use.
+        /// </summary>
+        internal static string CompressedArchiveAccess_Custom {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_Custom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select which compressed archive formats to use.
+        /// </summary>
+        internal static string CompressedArchiveAccess_Custom_Tip {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_Custom_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not use compressed archives.
+        /// </summary>
+        internal static string CompressedArchiveAccess_Disabled {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable compressed archive support.
+        /// </summary>
+        internal static string CompressedArchiveAccess_Disabled_Tip {
+            get {
+                return ResourceManager.GetString("CompressedArchiveAccess_Disabled_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Directory does not exist: {0}.
         /// </summary>
         internal static string CompressedArchiveAccess_ExtractEntry_DestinationDirectoryDoesNotExist_Format {
@@ -731,6 +785,24 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BZIP2 files.
+        /// </summary>
+        internal static string CompressedArchiveFormat_BZip2_DisplayName {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_BZip2_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following files will also be recognized:.
+        /// </summary>
+        internal static string CompressedArchiveFormat_CompoundFormatsAvailable {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_CompoundFormatsAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compound file extensions are not supported..
         /// </summary>
         internal static string CompressedArchiveFormat_CompountFileExtensionsNotSupportedError {
@@ -767,6 +839,15 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to GZIP files.
+        /// </summary>
+        internal static string CompressedArchiveFormat_GZip_DisplayName {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_GZip_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to At least one implementation must be provided..
         /// </summary>
         internal static string CompressedArchiveFormat_ImplementationRequired {
@@ -781,6 +862,89 @@ namespace INTV.Shared.Resources {
         internal static string CompressedArchiveFormat_InvalidFileExtensionError {
             get {
                 return ResourceManager.GetString("CompressedArchiveFormat_InvalidFileExtensionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum archive size supported (MB).
+        /// </summary>
+        internal static string CompressedArchiveFormat_MaxSizeConsidered {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_MaxSizeConsidered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compressed archive files larger than this size (in Megabytes) are ignored.
+        ///Set this value to zero (0) to remove the size limitation. You can set this value to 0 - 1024 MB..
+        /// </summary>
+        internal static string CompressedArchiveFormat_MaxSizeConsidered_Tip {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_MaxSizeConsidered_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include nested archives.
+        /// </summary>
+        internal static string CompressedArchiveFormat_SearchNestedArchives {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_SearchNestedArchives", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If this option is enabled, and an archive contains another archive within it, include it when searching for ROMs, et. al.
+        ///Note that this may result in increased memory usage and create copies of nested archives on your system..
+        /// </summary>
+        internal static string CompressedArchiveFormat_SearchNestedArchives_Tip {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_SearchNestedArchives_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TAR files.
+        /// </summary>
+        internal static string CompressedArchiveFormat_Tar_DisplayName {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_Tar_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BZIP2 compressed TAR.
+        /// </summary>
+        internal static string CompressedArchiveFormat_TarBzip2_DisplayName {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_TarBzip2_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GZIP compressed TAR.
+        /// </summary>
+        internal static string CompressedArchiveFormat_TarGzip_DisplayName {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_TarGzip_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ZIP files.
+        /// </summary>
+        internal static string CompressedArchiveFormat_Zip_DisplayName {
+            get {
+                return ResourceManager.GetString("CompressedArchiveFormat_Zip_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compressed Files.
+        /// </summary>
+        internal static string CompressedArchiveSettingsPage_Title {
+            get {
+                return ResourceManager.GetString("CompressedArchiveSettingsPage_Title", resourceCulture);
             }
         }
         

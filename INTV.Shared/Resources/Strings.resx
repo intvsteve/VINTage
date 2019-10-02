@@ -1807,4 +1807,60 @@ The following formats were not processed:
     <value>{0} is an invalid storage location</value>
     <comment>{0} is a function argument name</comment>
   </data>
+  <data name="CompressedArchiveAccess_All" xml:space="preserve">
+    <value>Use all supported compressed archive file types</value>
+  </data>
+  <data name="CompressedArchiveAccess_All_Tip" xml:space="preserve">
+    <value>Enable using all compressed archive formats currently supported</value>
+  </data>
+  <data name="CompressedArchiveAccess_Custom" xml:space="preserve">
+    <value>Select compressed archive file types to use</value>
+  </data>
+  <data name="CompressedArchiveAccess_Custom_Tip" xml:space="preserve">
+    <value>Select which compressed archive formats to use</value>
+  </data>
+  <data name="CompressedArchiveAccess_Disabled" xml:space="preserve">
+    <value>Do not use compressed archives</value>
+  </data>
+  <data name="CompressedArchiveAccess_Disabled_Tip" xml:space="preserve">
+    <value>Disable compressed archive support</value>
+  </data>
+  <data name="CompressedArchiveFormat_BZip2_DisplayName" xml:space="preserve">
+    <value>BZIP2 files</value>
+  </data>
+  <data name="CompressedArchiveFormat_CompoundFormatsAvailable" xml:space="preserve">
+    <value>The following files will also be recognized:</value>
+  </data>
+  <data name="CompressedArchiveFormat_GZip_DisplayName" xml:space="preserve">
+    <value>GZIP files</value>
+  </data>
+  <data name="CompressedArchiveFormat_MaxSizeConsidered" xml:space="preserve">
+    <value>Maximum archive size supported (MB)</value>
+  </data>
+  <data name="CompressedArchiveFormat_MaxSizeConsidered_Tip" xml:space="preserve">
+    <value>Compressed archive files larger than this size (in Megabytes) are ignored.
+Set this value to zero (0) to remove the size limitation. You can set this value to 0 - 1024 MB.</value>
+  </data>
+  <data name="CompressedArchiveFormat_SearchNestedArchives" xml:space="preserve">
+    <value>Include nested archives</value>
+  </data>
+  <data name="CompressedArchiveFormat_SearchNestedArchives_Tip" xml:space="preserve">
+    <value>If this option is enabled, and an archive contains another archive within it, include it when searching for ROMs, et. al.
+Note that this may result in increased memory usage and create copies of nested archives on your system.</value>
+  </data>
+  <data name="CompressedArchiveFormat_TarBzip2_DisplayName" xml:space="preserve">
+    <value>BZIP2 compressed TAR</value>
+  </data>
+  <data name="CompressedArchiveFormat_TarGzip_DisplayName" xml:space="preserve">
+    <value>GZIP compressed TAR</value>
+  </data>
+  <data name="CompressedArchiveFormat_Tar_DisplayName" xml:space="preserve">
+    <value>TAR files</value>
+  </data>
+  <data name="CompressedArchiveFormat_Zip_DisplayName" xml:space="preserve">
+    <value>ZIP files</value>
+  </data>
+  <data name="CompressedArchiveSettingsPage_Title" xml:space="preserve">
+    <value>Compressed Files</value>
+  </data>
 </root>

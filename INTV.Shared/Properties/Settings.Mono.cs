@@ -19,6 +19,7 @@
 // </copyright>
 
 using System.Runtime.Serialization;
+using INTV.Shared.Model;
 
 namespace INTV.Shared.Properties
 {
@@ -156,8 +157,11 @@ namespace INTV.Shared.Properties
             AddSetting(ShowRomDetailsSettingName, false);
             AddSetting(DisplayRomFileNameForTitleSettingName, false);
             AddSetting(ShowDetailedErrorsSettingName, DefaultShowDetailedErrorsSetting);
-            AddSetting(MaxGZipEntriesSearchSettingName, DefaultMaxGZipEntriesSearchSetting);
             AddSetting(CheckForAppUpdatesAtLaunchSettingName, DefaultCheckForUpdatesAtLaunchSetting);
+            AddSetting(EnabledArchiveFormatsSettingName, DefaultEnabledArchiveFormats);
+            AddSetting(SearchNestedArchivesSettingName, DefaultSearchNestedArchives);
+            AddSetting(MaxArchiveSizeMBSettingName, DefaultMaxArchiveSizeMBSetting);
+            AddSetting(MaxGZipEntriesSearchSettingName, DefaultMaxGZipEntriesSearchSetting);
             OSInitializeDefaults();
         }
 

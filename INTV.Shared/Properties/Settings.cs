@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.Shared.Model;
+
 namespace INTV.Shared.Properties
 {
     /// <summary>
@@ -78,6 +80,15 @@ namespace INTV.Shared.Properties
         /// <summary>Default value for ShowDetailedErrors option.</summary>
         public const bool DefaultShowDetailedErrorsSetting = false;
 #endif // DEBUG
+
+        /// <summary>Default value for EnabledArchiveFormats option.</summary>
+        public const EnabledCompressedArchiveFormats DefaultEnabledArchiveFormats = EnabledCompressedArchiveFormats.None;
+
+        /// <summary>Default value for SearchNestedArchives option.</summary>
+        public const bool DefaultSearchNestedArchives = false;
+
+        /// <summary>Default value for MaxArchiveSizeMBSetting option.</summary>
+        public const int DefaultMaxArchiveSizeMBSetting = 32;
 
         /// <summary>Default value for MaxGZipEntriesSearch option.</summary>
         public const int DefaultMaxGZipEntriesSearchSetting = 4;

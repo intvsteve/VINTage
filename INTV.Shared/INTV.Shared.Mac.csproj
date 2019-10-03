@@ -418,6 +418,11 @@
     <Compile Include="Utility\ZipArchiveAccess.cs" />
     <Compile Include="Utility\ZipArchiveAccess.ZipArchive.cs" />
     <Compile Include="Utility\ZipArchiveAccessSharpZipLib.cs" />
+    <Compile Include="View\CompressedArchiveAccessSettingsPageController.Mac.cs" />
+    <Compile Include="View\CompressedArchiveAccessSettingsPage.Mac.cs" />
+    <Compile Include="View\CompressedArchiveAccessSettingsPage.Mac.designer.cs">
+      <DependentUpon>CompressedArchiveAccessSettingsPage.Mac.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
@@ -632,6 +637,7 @@
     <InterfaceDefinition Include="View\GeneralSettingsPage.xib" />
     <InterfaceDefinition Include="View\SelectBackupDialog.xib" />
     <InterfaceDefinition Include="View\SplashScreen.xib" />
+    <InterfaceDefinition Include="View\CompressedArchiveAccessSettingsPage.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="license.txt" />

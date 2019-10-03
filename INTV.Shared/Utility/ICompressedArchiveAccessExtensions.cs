@@ -561,6 +561,21 @@ namespace INTV.Shared.Utility
         private static string[] GetArchiveRelativePathSegments(this string archivePath)
         {
             var segments = string.IsNullOrEmpty(archivePath) ? Enumerable.Empty<string>().ToArray() : archivePath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // On Mac / Linux, need to be sure we preserve root of path.
+            if (!string.IsNullOrEmpty(archivePath))
+            {
+                if (Path.IsPathRooted(archivePath))
+                {
+                    if (archivePath.First() == '/')
+                    {
+                        var rootPreservingSegments = new List<string>(segments);
+                        rootPreservingSegments.Insert(0, string.Empty);
+                        segments = rootPreservingSegments.ToArray();
+                    }
+                }
+            }
+
             return segments;
         }
 

@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -39,7 +40,7 @@ using OSColor = AppKit.NSColor;
 using OSColor = MonoMac.AppKit.NSColor;
 #endif // __UNIFIED__
 using Settings = INTV.Shared.Properties.Settings;
-using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettingsController;
+using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettingsPageController;
 #elif GTK
 using Settings = INTV.Shared.Properties.Settings;
 #endif // WIN
@@ -116,7 +117,7 @@ namespace INTV.Shared.ViewModel
 
             // kind of roundabout, but flexible...
             var availableFormats = EnabledCompressedArchiveFormats.All.ToCompressedArchiveFormats().Select(f => new[] { f }.FromCompressedArchiveFormats());
-            CompressedArchiveFormats = availableFormats.Select(f => new CompressedArchiveFormatViewModel(this, f, EnabledFormats.HasFlag(f))).ToList();
+            CompressedArchiveFormats = new ObservableCollection<CompressedArchiveFormatViewModel>(availableFormats.Select(f => new CompressedArchiveFormatViewModel(this, f, EnabledFormats.HasFlag(f))));
         }
 
         /// <summary>
@@ -152,7 +153,7 @@ namespace INTV.Shared.ViewModel
         /// <summary>
         /// Gets the compressed archive formats that the user can individually determine support for within the application.
         /// </summary>
-        public IEnumerable<CompressedArchiveFormatViewModel> CompressedArchiveFormats { get; private set; }
+        public ObservableCollection<CompressedArchiveFormatViewModel> CompressedArchiveFormats { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether or not custom mode selection is available to the user interface.
@@ -208,6 +209,14 @@ namespace INTV.Shared.ViewModel
         {
             EnabledFormats = newFormats;
             Properties.Settings.Default.EnabledArchiveFormats = EnabledFormats;
+            if (EnabledFormats.ToCompressedArchiveFormats().Any())
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess();
+            }
+            else
+            {
+                ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess();
+            }
             EnabledFormats.UpdateAvailableCompressedArchiveFormats();
             this.RaisePropertyChanged("EnableCustomModeSelection");
             this.RaisePropertyChanged("EnableOtherOptions");

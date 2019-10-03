@@ -56,6 +56,7 @@ namespace INTV.Shared.ViewModel
 
             CompressedArchiveFormat = format.ToCompressedArchiveFormats().Single();
             FileExtensions = "(" + string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator + " ", CompressedArchiveFormat.FileExtensions().Select(x => "*" + x)) + ")";
+            DisplayNameWithFileExtensions = DisplayName + " " + FileExtensions;
         }
 
         /// <summary>
@@ -74,8 +75,15 @@ namespace INTV.Shared.ViewModel
         public string FileExtensions { get; private set; }
 
         /// <summary>
+        /// Gets the user-friendly display name with file extensions.
+        /// </summary>
+        [OSExport("DisplayNameWithFileExtensions")]
+        public string DisplayNameWithFileExtensions { get; private set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the compressed archive format should be available for use in the application.
         /// </summary>
+        [OSExport("Enabled")]
         public bool Enabled
         {
             get { return _enabled; }

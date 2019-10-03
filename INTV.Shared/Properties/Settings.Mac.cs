@@ -54,6 +54,7 @@ namespace INTV.Shared.Properties
         {
             base.AddCustomTypeConverters();
             AddCustomTypeConverter(typeof(SearchDirectories), GetRomListSearchDirectories, SetRomListSearchDirectories, _ => new NSArray());
+            AddCustomTypeConverter(typeof(EnabledCompressedArchiveFormats), GetEnabledCompressedArchiveFormats, SetEnabledCompressedArchiveFormats, v => new NSString(v.ToString()));
         }
 
         private object GetRomListSearchDirectories(string key)
@@ -71,6 +72,26 @@ namespace INTV.Shared.Properties
         {
             var directories = NSArray.FromStrings(((SearchDirectories)value).ToArray());
             UserDefaults[key] = directories;
+        }
+
+        private object GetEnabledCompressedArchiveFormats(string key)
+        {
+            var enabledCompressedArchiveFormats = EnabledCompressedArchiveFormats.None;
+            var userDefaultsValue = UserDefaults.StringForKey(key);
+            if (!string.IsNullOrEmpty(userDefaultsValue))
+            {
+                if (!System.Enum.TryParse(userDefaultsValue, out enabledCompressedArchiveFormats))
+                {
+                    enabledCompressedArchiveFormats = EnabledCompressedArchiveFormats.None;
+                }
+            }
+            return enabledCompressedArchiveFormats;
+        }
+
+        private void SetEnabledCompressedArchiveFormats(string key, object value)
+        {
+            var stringValue = value.ToString();
+            UserDefaults[key] = new NSString(stringValue);
         }
 
         private void HandleSearchDirectoriesChanged(object sender, NotifyCollectionChangedEventArgs e)

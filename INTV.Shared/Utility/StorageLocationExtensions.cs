@@ -45,7 +45,6 @@ namespace INTV.Shared.Utility
         public static StorageLocation CreateStorageLocationFromPath(this string path)
         {
             var storageAccess = path.GetStorageAccess();
-            var archiveAccess = storageAccess as ICompressedArchiveAccess;
             var storageLocation = new StorageLocation(path, storageAccess);
             return storageLocation;
         }
@@ -325,7 +324,7 @@ namespace INTV.Shared.Utility
             if (destinationLocation == null)
             {
                 var errorMessage = string.Format(CultureInfo.CurrentCulture, Resources.Strings.PathContainsInvalidCharacters_Format, destinationLocation);
-                throw new ArgumentNullException("destinationLocation");
+                throw new ArgumentNullException("destinationLocation", errorMessage);
             }
             if (destinationLocation.IsInvalid)
             {

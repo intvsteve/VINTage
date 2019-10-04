@@ -118,6 +118,7 @@ namespace INTV.Shared.ViewModel
             // kind of roundabout, but flexible...
             var availableFormats = EnabledCompressedArchiveFormats.All.ToCompressedArchiveFormats().Select(f => new[] { f }.FromCompressedArchiveFormats());
             CompressedArchiveFormats = new ObservableCollection<CompressedArchiveFormatViewModel>(availableFormats.Select(f => new CompressedArchiveFormatViewModel(this, f, EnabledFormats.HasFlag(f))));
+            UpdateCompoundArchiveFormatsText();
         }
 
         /// <summary>

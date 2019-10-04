@@ -46,19 +46,19 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <RadioButton x:Name="_none" Grid.Row="0" Margin="8,6,0,0" GroupName="CommandLineMode"
+        <RadioButton x:Name="_none" Grid.Row="0" Margin="8,6,8,0" GroupName="CommandLineMode"
                      Content="{x:Static viewModel:CompressedArchiveAccessSettingsViewModel.Disabled}"
                      ToolTip="{x:Static viewModel:CompressedArchiveAccessSettingsViewModel.DisabledTip}"
                      IsChecked="{Binding Mode, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static viewModel:CompressedArchiveSelection.Disabled}}"/>
-        <RadioButton x:Name="_all" Grid.Row="1" Margin="8,4,0,0" GroupName="CommandLineMode"
+        <RadioButton x:Name="_all" Grid.Row="1" Margin="8,4,8,0" GroupName="CommandLineMode"
                      Content="{x:Static viewModel:CompressedArchiveAccessSettingsViewModel.All}"
                      ToolTip="{x:Static viewModel:CompressedArchiveAccessSettingsViewModel.AllTip}"
                      IsChecked="{Binding Mode, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static viewModel:CompressedArchiveSelection.All}}"/>
-        <RadioButton x:Name="_custom" Grid.Row="2" Margin="8,4,0,0" GroupName="CommandLineMode"
+        <RadioButton x:Name="_custom" Grid.Row="2" Margin="8,4,8,0" GroupName="CommandLineMode"
                      Content="{x:Static viewModel:CompressedArchiveAccessSettingsViewModel.Custom}"
                      ToolTip="{x:Static viewModel:CompressedArchiveAccessSettingsViewModel.CustomTip}"
                      IsChecked="{Binding Mode, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static viewModel:CompressedArchiveSelection.Custom}}"/>
-        <Grid Grid.Row="3" Margin="28,4,0,0">
+        <Grid Grid.Row="3" Margin="28,4,8,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>

@@ -120,6 +120,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets a value that controls which compressed archive formats are enabled.
         /// </summary>
+        [DataMember]
         public EnabledCompressedArchiveFormats EnabledArchiveFormats
         {
             get { return GetSetting<EnabledCompressedArchiveFormats>(EnabledArchiveFormatsSettingName); }
@@ -129,6 +130,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets a value indicating whether accessing a compressed archive nested within another archive is enabled.
         /// </summary>
+        [DataMember]
         public bool SearchNestedArchives
         {
             get { return GetSetting<bool>(SearchNestedArchivesSettingName); }
@@ -138,6 +140,7 @@ namespace INTV.Shared.Properties
         /// <summary>
         /// Gets or sets a value that controls the largest sized (in Megabytes) compressed archive that will be accessed.
         /// </summary>
+        [DataMember]
         public int MaxArchiveSizeMB
         {
             get { return GetSetting<int>(MaxArchiveSizeMBSettingName); }

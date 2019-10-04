@@ -255,6 +255,15 @@ namespace INTV.Shared.Properties
 
             [DataMember(EmitDefaultValue = false)]
             public int MaxGZipEntriesSearch { get; set; }
+
+            [DataMember]
+            public EnabledCompressedArchiveFormats EnabledArchiveFormats { get; set; }
+
+            [DataMember]
+            public bool SearchNestedArchives { get; set; }
+
+            [DataMember]
+            public int MaxArchiveSizeMB { get; set; }
         }
     }
 }

@@ -213,6 +213,35 @@ namespace INTV.Shared.View
             ((Gtk.CellRendererPixbuf)cell).Pixbuf = imageGetter(data);
         }
 
+        /// <summary>
+        /// Cell renderer helper function for Boolean toggle (checkbox) cell rendering.
+        /// </summary>
+        /// <typeparam name="T">The data type of the element in the model.</typeparam>
+        /// <param name="column">The column in which the cell is being rendered.</param>
+        /// <param name="cell">The renderer attached to the cell.</param>
+        /// <param name="model">The model containing data for the cell.</param>
+        /// <param name="iter">The iterator into the model data.</param>
+        /// <param name="boolGetter">The delegate to call to get the Boolean value to render.</param>
+        public static void CellToggleColumnRenderer<T>(Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter, System.Func<T, bool> boolGetter) where T : class
+        {
+            CellToggleRenderer<T>((Gtk.CellLayout)column, cell, model, iter, boolGetter);
+        }
+
+        /// <summary>
+        /// Cell renderer helper function for Boolean toggle (checkbox) cell rendering.
+        /// </summary>
+        /// <typeparam name="T">The data type of the element in the model.</typeparam>
+        /// <param name="cellLayout">The cell layout element being rendered.</param>
+        /// <param name="cell">The renderer attached to the cell.</param>
+        /// <param name="model">The model containing data for the cell.</param>
+        /// <param name="iter">The iterator into the model data.</param>
+        /// <param name="boolGetter">The delegate to call to get the Boolean value to render.</param>
+        public static void CellToggleRenderer<T>(Gtk.CellLayout cellLayout, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter, System.Func<T, bool> boolGetter) where T : class
+        {
+            var data = model.GetValue(iter, 0) as T;
+            ((Gtk.CellRendererToggle)cell).Active = boolGetter(data);
+        }
+
         #region ComboBox Helpers
 
         /// <summary>

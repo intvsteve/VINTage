@@ -223,6 +223,7 @@
     <Compile Include="Utility\StorageLocationExtensions.cs" />
     <Compile Include="Utility\StorageLocationExtensions.Mono.cs" />
     <Compile Include="Utility\StringUtilities.cs" />
+    <Compile Include="View\CompressedArchiveAccessSettings.Gtk.cs" />
     <Compile Include="View\DragDropImage.Gtk.cs" />
     <Compile Include="View\EcsFeaturesConfigurationPage.Gtk.cs" />
     <Compile Include="View\FileBrowserDialog.Gtk.cs" />
@@ -309,6 +310,7 @@
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\ViewModelHelpers.cs" />
     <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="gtk-gui\INTV.Shared.View.CompressedArchiveAccessSettings.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.DragDropImage.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.EcsFeaturesConfigurationPage.cs" />
     <Compile Include="gtk-gui\INTV.Shared.View.GeneralFeaturesConfigurationPage.cs" />

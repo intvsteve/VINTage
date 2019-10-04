@@ -18,13 +18,10 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using INTV.Shared.ComponentModel;
 using INTV.Shared.Model;
 using INTV.Shared.Utility;
@@ -43,6 +40,7 @@ using Settings = INTV.Shared.Properties.Settings;
 using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettingsPageController;
 #elif GTK
 using Settings = INTV.Shared.Properties.Settings;
+using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettings;
 #endif // WIN
 
 namespace INTV.Shared.ViewModel

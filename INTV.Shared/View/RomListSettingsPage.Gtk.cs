@@ -78,6 +78,13 @@ namespace INTV.Shared.View
 
         #endregion // IFakeDependencyObject
 
+        /// <inheritdoc />
+        protected override void OnDestroyed()
+        {
+            Properties.Settings.Default.PropertyChanged -= HandleSettingChanged;
+            base.OnDestroyed();
+        }
+
         protected void HandleValidateAtLaunchToggled(object sender, System.EventArgs e)
         {
             if (Properties.Settings.Default.RomListValidateAtStartup != _validateAtLaunch.Active)

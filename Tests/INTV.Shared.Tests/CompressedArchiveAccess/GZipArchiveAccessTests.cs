@@ -30,7 +30,7 @@ using Xunit;
 
 namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
-    public class GZipAccessTests
+    public class GZipArchiveAccessTests
     {
         [Theory]
         [InlineData(CompressedArchiveImplementation.Native)]

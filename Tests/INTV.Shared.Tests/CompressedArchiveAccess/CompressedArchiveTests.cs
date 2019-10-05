@@ -31,7 +31,7 @@ using Xunit;
 
 namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
-    public class CompressedArchiveAccessTests : ICompressedArchiveTest
+    public class CompressedArchiveTests : ICompressedArchiveTest
     {
         [Fact]
         public void CompressedArchiveAccess_RegisterFactory_Succeeds()
@@ -785,7 +785,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
 
             public static TestCompressedArchiveAccess GetFromCompressedArchiveFileAccess(ICompressedArchiveAccess archive)
             {
-                var fileAccessArchiveType = typeof(INTV.Shared.CompressedArchiveAccess.CompressedArchive).Assembly.GetType("INTV.Shared.Utility.CompressedArchiveAccess+CompressedArchiveFileAccess");
+                var fileAccessArchiveType = typeof(INTV.Shared.CompressedArchiveAccess.CompressedArchive).Assembly.GetType("INTV.Shared.CompressedArchiveAccess.CompressedArchive+CompressedArchiveFile");
                 var instanceFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
                 var property = fileAccessArchiveType.GetProperty("CompressedArchiveAccess", instanceFlags);
                 var testArchive = property.GetValue(archive) as TestCompressedArchiveAccess;

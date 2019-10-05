@@ -31,23 +31,23 @@ using System.Linq;
 namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
-    /// Implementation of <see cref="CompressedArchiveFileAccess"/>.
+    /// Implementation of <see cref="CompressedArchiveFile"/>.
     /// </summary>
     public abstract partial class CompressedArchiveAccess
     {
         /// <summary>
         /// Wraps a compressed archive accessor created from a file stream.
         /// </summary>
-        private class CompressedArchiveFileAccess : CompressedArchiveAccess
+        private class CompressedArchiveFile : CompressedArchiveAccess
         {
             private readonly object _lock = new object();
 
             /// <summary>
-            /// Initializes a new instance of <see cref="CompressedArchiveFileAccess"/>.
+            /// Initializes a new instance of <see cref="CompressedArchiveFile"/>.
             /// </summary>
             /// <param name="filePath">The absolute path to the compressed archive file.</param>
             /// <param name="compressedArchiveAccess">The compressed archive to wrap.</param>
-            private CompressedArchiveFileAccess(string filePath, ICompressedArchiveAccess compressedArchiveAccess)
+            private CompressedArchiveFile(string filePath, ICompressedArchiveAccess compressedArchiveAccess)
             {
                 RootLocation = filePath;
                 CompressedArchiveAccess = compressedArchiveAccess;
@@ -82,12 +82,12 @@ namespace INTV.Shared.CompressedArchiveAccess
             private Stream Stream { get; set; }
 
             /// <summary>
-            /// Creates an instance of <see cref="CompressedArchiveFileAccess"/>, depending on <paramref name="mode"/>.
+            /// Creates an instance of <see cref="CompressedArchiveFile"/>, depending on <paramref name="mode"/>.
             /// </summary>
             /// <param name="filePath">The absolute path for the compressed archive.</param>
             /// <param name="mode">The access mode to use for operations on the compressed archive.</param>
             /// <param name="implementation">If not <c>null</c>, use a specific implementation if possible. Otherwise, use default, or any.</param>
-            /// <returns>An instance of <see cref="CompressedArchiveFileAccess"/> that provides access to the compressed archive located at <paramref name="filePath"/>.</returns>
+            /// <returns>An instance of <see cref="CompressedArchiveFile"/> that provides access to the compressed archive located at <paramref name="filePath"/>.</returns>
             /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="filePath"/> is <c>null</c>.</exception>
             /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the file is accessed incorrectly for the given <paramref name="mode"/>.</exception>
             /// <exception cref="System.ArgumentException">Thrown if <paramref name="filePath"/> is empty or white space, contains invalid characters, or is otherwise invalid</exception>
@@ -98,9 +98,9 @@ namespace INTV.Shared.CompressedArchiveAccess
             /// <exception cref="System.IO.DirectoryNotFoundException">Thrown if the directory cannot be found, e.g. an unavailable network drive forms part of the file path.</exception>
             /// <exception cref="System.UnauthorizedAccessException">Thrown if access is denied, e.g. read/write access requested for a read-only file or directory.</exception>
             /// <exception cref="System.IO.PathTooLongException">Thrown if <paramref name="filePath"/> is too long.</exception>
-            /// <exception cref="System.InvalidOperationException">Thrown if it is not possible to create an instance of <see cref="CompressedArchiveFileAccess"/> from the file at <paramref name="filePath"/>,
+            /// <exception cref="System.InvalidOperationException">Thrown if it is not possible to create an instance of <see cref="CompressedArchiveFile"/> from the file at <paramref name="filePath"/>,
             /// despite the file appearing to be valid.</exception>
-            public static CompressedArchiveFileAccess Create(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation)
+            public static CompressedArchiveFile Create(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation)
             {
                 var fileMode = CompressedArchiveAccessModeToFileMode(mode);
                 var fileAccess = CompressedArchiveAccessModeToFileAccess(mode);
@@ -153,7 +153,7 @@ namespace INTV.Shared.CompressedArchiveAccess
                     throw new InvalidOperationException(errorMessage);
                 }
 
-                var compressedArchiveFileAccess = new CompressedArchiveFileAccess(filePath, compressedArchiveAccess) { Stream = fileStream };
+                var compressedArchiveFileAccess = new CompressedArchiveFile(filePath, compressedArchiveAccess) { Stream = fileStream };
                 return compressedArchiveFileAccess;
             }
 

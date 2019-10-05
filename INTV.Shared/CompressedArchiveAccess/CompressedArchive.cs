@@ -96,7 +96,7 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <exception cref="System.IO.IOException">Thrown if <paramref name="filePath"/> is not empty and archive was opened in Create mode.</exception>
         public static ICompressedArchiveAccess Open(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation = null)
         {
-            var archive = CompressedArchiveFileAccess.Create(filePath, mode, implementation);
+            var archive = CompressedArchiveFile.Create(filePath, mode, implementation);
             return archive;
         }
 

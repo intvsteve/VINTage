@@ -122,18 +122,18 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         {
             get
             {
-                yield return new object[] { CompressedArchiveFormat.None, Enumerable.Empty<CompressedArchiveAccessImplementation>() };
-                yield return new object[] { CompressedArchiveFormat.Zip, new[] { CompressedArchiveAccessImplementation.Native, CompressedArchiveAccessImplementation.SharpZipLib } };
-                yield return new object[] { CompressedArchiveFormat.GZip, new[] { CompressedArchiveAccessImplementation.Native, CompressedArchiveAccessImplementation.SharpZipLib } };
-                yield return new object[] { CompressedArchiveFormat.Tar, new[] { CompressedArchiveAccessImplementation.SharpZipLib } };
-                yield return new object[] { CompressedArchiveFormat.BZip2, Enumerable.Empty<CompressedArchiveAccessImplementation>() }; // new[] { CompressedArchiveAccessImplementation.SharpZipLib }
-                yield return new object[] { (CompressedArchiveFormat)987654, Enumerable.Empty<CompressedArchiveAccessImplementation>() };
+                yield return new object[] { CompressedArchiveFormat.None, Enumerable.Empty<CompressedArchiveImplementation>() };
+                yield return new object[] { CompressedArchiveFormat.Zip, new[] { CompressedArchiveImplementation.Native, CompressedArchiveImplementation.SharpZipLib } };
+                yield return new object[] { CompressedArchiveFormat.GZip, new[] { CompressedArchiveImplementation.Native, CompressedArchiveImplementation.SharpZipLib } };
+                yield return new object[] { CompressedArchiveFormat.Tar, new[] { CompressedArchiveImplementation.SharpZipLib } };
+                yield return new object[] { CompressedArchiveFormat.BZip2, Enumerable.Empty<CompressedArchiveImplementation>() }; // new[] { CompressedArchiveAccessImplementation.SharpZipLib }
+                yield return new object[] { (CompressedArchiveFormat)987654, Enumerable.Empty<CompressedArchiveImplementation>() };
             }
         }
 
         [Theory]
         [MemberData("CompressedArchiveFormatImplementationsTestData")]
-        public void CompressedArchiveFormat_GetAvailableCompressedArchiveImplementations_ReturnsExpectedImplementations(CompressedArchiveFormat format, IEnumerable<CompressedArchiveAccessImplementation> expectedImplementations)
+        public void CompressedArchiveFormat_GetAvailableCompressedArchiveImplementations_ReturnsExpectedImplementations(CompressedArchiveFormat format, IEnumerable<CompressedArchiveImplementation> expectedImplementations)
         {
             var implementations = format.GetAvailableCompressedArchiveImplementations();
 
@@ -141,13 +141,13 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveFormat.None, CompressedArchiveAccessImplementation.None)]
-        [InlineData(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.Native)] // SharpZipLib
-        [InlineData(CompressedArchiveFormat.Tar, CompressedArchiveAccessImplementation.SharpZipLib)] // SharpZipLib
-        [InlineData(CompressedArchiveFormat.BZip2, CompressedArchiveAccessImplementation.None)] // SharpZipLib
-        [InlineData((CompressedArchiveFormat)24680, CompressedArchiveAccessImplementation.None)]
-        public void CompressedArchiveFormat_GetPreferredCompressedArchiveImplementation_ReturnsExpectedPreferredImplementation(CompressedArchiveFormat format, CompressedArchiveAccessImplementation expectedPreferredImplementation)
+        [InlineData(CompressedArchiveFormat.None, CompressedArchiveImplementation.None)]
+        [InlineData(CompressedArchiveFormat.Zip, CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveFormat.GZip, CompressedArchiveImplementation.Native)] // SharpZipLib
+        [InlineData(CompressedArchiveFormat.Tar, CompressedArchiveImplementation.SharpZipLib)] // SharpZipLib
+        [InlineData(CompressedArchiveFormat.BZip2, CompressedArchiveImplementation.None)] // SharpZipLib
+        [InlineData((CompressedArchiveFormat)24680, CompressedArchiveImplementation.None)]
+        public void CompressedArchiveFormat_GetPreferredCompressedArchiveImplementation_ReturnsExpectedPreferredImplementation(CompressedArchiveFormat format, CompressedArchiveImplementation expectedPreferredImplementation)
         {
             var preferredImplementation = format.GetPreferredCompressedArchiveImplementation();
 
@@ -158,7 +158,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         public void CompressedArchiveFormat_RegisterCompressedArchiveFormatWithInvalidFormat_ThrowsArgumentOutOfRangeException()
         {
             var fileExtensions = new[] { ".none", ".NONE" };
-            var implementations = new[] { CompressedArchiveAccessImplementation.Other, CompressedArchiveAccessImplementation.Native };
+            var implementations = new[] { CompressedArchiveImplementation.Other, CompressedArchiveImplementation.Native };
 
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchiveFormat.None.RegisterCompressedArchiveFormat(fileExtensions, implementations));
             Assert.Equal("format", exception.ParamName);
@@ -167,7 +167,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         [Fact]
         public void CompressedArchiveFormat_RegisterCompressedArchiveFormatWithNullFileExtensions_ThrowsArgumentNullException()
         {
-            var implementations = new[] { CompressedArchiveAccessImplementation.Other, CompressedArchiveAccessImplementation.Native };
+            var implementations = new[] { CompressedArchiveImplementation.Other, CompressedArchiveImplementation.Native };
 
             var exception = Assert.Throws<ArgumentNullException>(() => CompressedArchiveFormat.Zip.RegisterCompressedArchiveFormat(null, implementations));
             Assert.Equal("fileExtensions", exception.ParamName);
@@ -176,7 +176,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         [Fact]
         public void CompressedArchiveFormat_RegisterCompressedArchiveFormatWithEmptyFileExtensions_ThrowsArgumentException()
         {
-            var implementations = new[] { CompressedArchiveAccessImplementation.Other, CompressedArchiveAccessImplementation.Native };
+            var implementations = new[] { CompressedArchiveImplementation.Other, CompressedArchiveImplementation.Native };
 
             var exception = Assert.Throws<ArgumentException>(() => CompressedArchiveFormat.GZip.RegisterCompressedArchiveFormat(Enumerable.Empty<string>(), implementations));
             Assert.Equal("fileExtensions", exception.ParamName);
@@ -196,7 +196,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         {
             var fileExtensions = new[] { ".bz2", ".BZ2" };
 
-            var exception = Assert.Throws<ArgumentException>(() => CompressedArchiveFormat.BZip2.RegisterCompressedArchiveFormat(fileExtensions, Enumerable.Empty<CompressedArchiveAccessImplementation>()));
+            var exception = Assert.Throws<ArgumentException>(() => CompressedArchiveFormat.BZip2.RegisterCompressedArchiveFormat(fileExtensions, Enumerable.Empty<CompressedArchiveImplementation>()));
             Assert.Equal("implementations", exception.ParamName);
         }
 
@@ -331,14 +331,14 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         [Fact]
         public void CompressedArchiveFormat_AddImplementationToFormatNone_ThrowsArgumentOutOfRangeException()
         {
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchiveFormat.None.AddImplementation(CompressedArchiveAccessImplementation.Native, makePreferred: false));
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchiveFormat.None.AddImplementation(CompressedArchiveImplementation.Native, makePreferred: false));
             Assert.Equal(exception.ParamName, "format");
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.None)]
-        [InlineData(CompressedArchiveAccessImplementation.Any)]
-        public void CompressedArchiveFormat_AddInvalidImplementationToFormat_ThrowsArgumentOutOfRangeException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.None)]
+        [InlineData(CompressedArchiveImplementation.Any)]
+        public void CompressedArchiveFormat_AddInvalidImplementationToFormat_ThrowsArgumentOutOfRangeException(CompressedArchiveImplementation implementation)
         {
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchiveFormat.BZip2.AddImplementation(implementation, makePreferred: false));
             Assert.Equal(exception.ParamName, "implementation");
@@ -349,7 +349,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         {
             var format = this.GetFakeCompressedArchiveFormatForTest();
 
-            var exception = Assert.Throws<ArgumentException>(() => format.AddImplementation(CompressedArchiveAccessImplementation.Native, makePreferred: false));
+            var exception = Assert.Throws<ArgumentException>(() => format.AddImplementation(CompressedArchiveImplementation.Native, makePreferred: false));
             Assert.Equal(exception.ParamName, "format");
         }
 

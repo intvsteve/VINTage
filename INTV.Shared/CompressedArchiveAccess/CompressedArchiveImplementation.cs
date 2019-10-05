@@ -24,7 +24,7 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// Different compressed archive implementations to choose from. Not all archive
     /// formats are necessarily compressed.
     /// </summary>
-    public enum CompressedArchiveAccessImplementation
+    public enum CompressedArchiveImplementation
     {
         /// <summary>
         /// Do not provide access to any compression / archive formats.

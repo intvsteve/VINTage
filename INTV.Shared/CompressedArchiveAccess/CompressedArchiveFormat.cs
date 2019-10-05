@@ -65,7 +65,7 @@ namespace INTV.Shared.CompressedArchiveAccess
     {
         private static readonly object Lock = new object();
         private static readonly Lazy<IDictionary<CompressedArchiveFormat, List<string>>> CompressedArchiveFormatFileExtensions = new Lazy<IDictionary<CompressedArchiveFormat, List<string>>>(InitializeCompressedArchiveFormatFileExtensions);
-        private static readonly Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>> CompressedArchiveAccessImplementations = new Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>>(InitializeCompressedArchiveFormatImplementations);
+        private static readonly Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveImplementation>>> CompressedArchiveAccessImplementations = new Lazy<IDictionary<CompressedArchiveFormat, IList<CompressedArchiveImplementation>>>(InitializeCompressedArchiveFormatImplementations);
         private static readonly Lazy<IDictionary<string, IEnumerable<CompressedArchiveFormat>>> FileExtensionsForCompoundCompressedArchiveFormats = new Lazy<IDictionary<string, IEnumerable<CompressedArchiveFormat>>>(InitializeFileExtensionsForCompoundCompressedArchiveFormats);
         private static readonly Lazy<HashSet<CompressedArchiveFormat>> DisabledFormats = new Lazy<HashSet<CompressedArchiveFormat>>();
         private static readonly HashSet<CompressedArchiveFormat> AvailableFormats = new HashSet<CompressedArchiveFormat>()
@@ -214,12 +214,12 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// </summary>
         /// <param name="format">The compressed archive format whose available implementations are desired.</param>
         /// <returns>The available implementations. If unsupported, an empty enumerable is returned.</returns>
-        public static IEnumerable<CompressedArchiveAccessImplementation> GetAvailableCompressedArchiveImplementations(this CompressedArchiveFormat format)
+        public static IEnumerable<CompressedArchiveImplementation> GetAvailableCompressedArchiveImplementations(this CompressedArchiveFormat format)
         {
             lock (Lock)
             {
-                var implementations = Enumerable.Empty<CompressedArchiveAccessImplementation>();
-                IList<CompressedArchiveAccessImplementation> registeredImplementations;
+                var implementations = Enumerable.Empty<CompressedArchiveImplementation>();
+                IList<CompressedArchiveImplementation> registeredImplementations;
                 if (format.IsCompressedArchiveFormatSupported() && CompressedArchiveAccessImplementations.Value.TryGetValue(format, out registeredImplementations))
                 {
                     implementations = registeredImplementations;
@@ -232,8 +232,8 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// Gets the preferred implementation of the given compressed archive format.
         /// </summary>
         /// <param name="format">The format whose preferred implementation is desired.</param>
-        /// <returns>The preferred implementation, or <see cref="CompressedArchiveAccessImplementation.None"/> if none is available.</returns>
-        public static CompressedArchiveAccessImplementation GetPreferredCompressedArchiveImplementation(this CompressedArchiveFormat format)
+        /// <returns>The preferred implementation, or <see cref="CompressedArchiveImplementation.None"/> if none is available.</returns>
+        public static CompressedArchiveImplementation GetPreferredCompressedArchiveImplementation(this CompressedArchiveFormat format)
         {
             var preferredImplementation = format.GetAvailableCompressedArchiveImplementations().FirstOrDefault();
             return preferredImplementation;
@@ -253,7 +253,7 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <exception cref="System.ArgumentException">Thrown if <paramref name="fileExtension"/> is null, empty, whitespace, contains invalid characters,
         /// does not begin with a period, or contains multiple periods. This exception is also thrown if <paramref name="format"/> has not already
         /// been registered as an available format, either as a format automatically included in the implementation, or registered via
-        /// <see cref="RegisterCompressedArchiveFormat(CompressedArchiveFormat, IEnumerable{string}, IEnumerable{CompressedArchiveAccessImplementation})"/>.
+        /// <see cref="RegisterCompressedArchiveFormat(CompressedArchiveFormat, IEnumerable{string}, IEnumerable{CompressedArchiveImplementation})"/>.
         /// This exception is also thrown if <paramref name="fileExtension"/> is already in use by a previously registered <paramref name="format"/>.</exception>
         public static bool AddFileExtension(this CompressedArchiveFormat format, string fileExtension, bool makeDefault)
         {
@@ -306,24 +306,24 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <param name="makePreferred">If <c>true</c>, <paramref name="implementation"/> becomes the implementation returned by <see cref="GetPreferredCompressedArchiveImplementation(CompressedArchiveFormat)"/>.</param>
         /// <returns><c>true</c> if <paramref name="implementation"/> was added, <c>false</c> otherwise.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if <paramref name="format"/> is <see cref="CompressedArchiveFormat.None"/>. Also thrown if the
-        /// value of <paramref name="implementation"/> is <see cref="CompressedArchiveAccessImplementation.Any"/> or <see cref="CompressedArchiveAccessImplementation.None"/>.</exception>
+        /// value of <paramref name="implementation"/> is <see cref="CompressedArchiveImplementation.Any"/> or <see cref="CompressedArchiveImplementation.None"/>.</exception>
         /// <exception cref="System.ArgumentException">Thrown if <paramref name="format"/>has not already been registered as an available format,
         /// either as a format automatically included in the implementation, or registered via
-        /// <see cref="RegisterCompressedArchiveFormat(CompressedArchiveFormat, IEnumerable{string}, IEnumerable{CompressedArchiveAccessImplementation})"/>.</exception>
-        public static bool AddImplementation(this CompressedArchiveFormat format, CompressedArchiveAccessImplementation implementation, bool makePreferred)
+        /// <see cref="RegisterCompressedArchiveFormat(CompressedArchiveFormat, IEnumerable{string}, IEnumerable{CompressedArchiveImplementation})"/>.</exception>
+        public static bool AddImplementation(this CompressedArchiveFormat format, CompressedArchiveImplementation implementation, bool makePreferred)
         {
             if (format == CompressedArchiveFormat.None)
             {
                 throw new ArgumentOutOfRangeException("format");
             }
-            if ((implementation == CompressedArchiveAccessImplementation.None) || (implementation == CompressedArchiveAccessImplementation.Any))
+            if ((implementation == CompressedArchiveImplementation.None) || (implementation == CompressedArchiveImplementation.Any))
             {
                 throw new ArgumentOutOfRangeException("implementation");
             }
 
             lock (Lock)
             {
-                IList<CompressedArchiveAccessImplementation> existingImplementationsForFormat;
+                IList<CompressedArchiveImplementation> existingImplementationsForFormat;
                 var formatAlreadyRegistered = CompressedArchiveAccessImplementations.Value.TryGetValue(format, out existingImplementationsForFormat);
 
                 var added = false;
@@ -350,9 +350,9 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <remarks>If this method is called multiple times with the same <paramref name="format"/> and other arguments, no net effect results. If it is
         /// called with values in the <paramref name="fileExtensions"/> and <paramref name="implementations"/> arguments that are not already associated
         /// with <paramref name="format"/>, they will be added, subject to the restrictions documented in the <see cref="AddFileExtension(CompressedArchiveFormat, string, bool)"/>
-        /// and <see cref="AddImplementation(CompressedArchiveFormat, CompressedArchiveAccessImplementation, bool)"/> methods respectively. Note that in this
+        /// and <see cref="AddImplementation(CompressedArchiveFormat, CompressedArchiveImplementation, bool)"/> methods respectively. Note that in this
         /// usage, the default / preferred file extension and implementation will not be changed.</remarks>
-        public static bool RegisterCompressedArchiveFormat(this CompressedArchiveFormat format, IEnumerable<string> fileExtensions, IEnumerable<CompressedArchiveAccessImplementation> implementations)
+        public static bool RegisterCompressedArchiveFormat(this CompressedArchiveFormat format, IEnumerable<string> fileExtensions, IEnumerable<CompressedArchiveImplementation> implementations)
         {
             if (format == CompressedArchiveFormat.None)
             {
@@ -391,7 +391,7 @@ namespace INTV.Shared.CompressedArchiveAccess
             {
                 if (!CompressedArchiveAccessImplementations.Value.Keys.Contains(format))
                 {
-                    CompressedArchiveAccessImplementations.Value[format] = new List<CompressedArchiveAccessImplementation>();
+                    CompressedArchiveAccessImplementations.Value[format] = new List<CompressedArchiveImplementation>();
                 }
             }
             foreach (var implementation in implementations)
@@ -445,15 +445,15 @@ namespace INTV.Shared.CompressedArchiveAccess
             return compressedArchiveFormatFileExtensions;
         }
 
-        private static IDictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>> InitializeCompressedArchiveFormatImplementations()
+        private static IDictionary<CompressedArchiveFormat, IList<CompressedArchiveImplementation>> InitializeCompressedArchiveFormatImplementations()
         {
-            var compressedArchiveFormatImplementations = new Dictionary<CompressedArchiveFormat, IList<CompressedArchiveAccessImplementation>>()
+            var compressedArchiveFormatImplementations = new Dictionary<CompressedArchiveFormat, IList<CompressedArchiveImplementation>>()
             {
-                { CompressedArchiveFormat.None, new List<CompressedArchiveAccessImplementation>() },
-                { CompressedArchiveFormat.Zip, new[] { CompressedArchiveAccessImplementation.Native, CompressedArchiveAccessImplementation.SharpZipLib } },
-                { CompressedArchiveFormat.GZip, new[] { CompressedArchiveAccessImplementation.Native, CompressedArchiveAccessImplementation.SharpZipLib } },
-                { CompressedArchiveFormat.Tar, new[] { CompressedArchiveAccessImplementation.SharpZipLib } },
-                { CompressedArchiveFormat.BZip2, new[] { CompressedArchiveAccessImplementation.SharpZipLib } },
+                { CompressedArchiveFormat.None, new List<CompressedArchiveImplementation>() },
+                { CompressedArchiveFormat.Zip, new[] { CompressedArchiveImplementation.Native, CompressedArchiveImplementation.SharpZipLib } },
+                { CompressedArchiveFormat.GZip, new[] { CompressedArchiveImplementation.Native, CompressedArchiveImplementation.SharpZipLib } },
+                { CompressedArchiveFormat.Tar, new[] { CompressedArchiveImplementation.SharpZipLib } },
+                { CompressedArchiveFormat.BZip2, new[] { CompressedArchiveImplementation.SharpZipLib } },
             };
             return compressedArchiveFormatImplementations;
         }

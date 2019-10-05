@@ -35,7 +35,7 @@ namespace INTV.Shared.CompressedArchiveAccess
             /// </summary>
             /// <param name="format">The compressed archive format to use in the identifier.</param>
             /// <param name="implementation">The compressed archive access implementation kind to use in the identifier.</param>
-            public CompressedArchiveIdentifier(CompressedArchiveFormat format, CompressedArchiveAccessImplementation implementation)
+            public CompressedArchiveIdentifier(CompressedArchiveFormat format, CompressedArchiveImplementation implementation)
             {
                 _format = format;
                 _implementation = implementation;
@@ -53,11 +53,11 @@ namespace INTV.Shared.CompressedArchiveAccess
             /// <summary>
             /// Gets the implementation used in the identifier.
             /// </summary>
-            public CompressedArchiveAccessImplementation Implementation
+            public CompressedArchiveImplementation Implementation
             {
                 get { return _implementation; }
             }
-            private CompressedArchiveAccessImplementation _implementation;
+            private CompressedArchiveImplementation _implementation;
 
             /// <inheritdoc />
             public int CompareTo(CompressedArchiveIdentifier other)
@@ -65,9 +65,9 @@ namespace INTV.Shared.CompressedArchiveAccess
                 var result = Format - other.Format;
                 if (result == 0)
                 {
-                    if (Implementation != CompressedArchiveAccessImplementation.Any)
+                    if (Implementation != CompressedArchiveImplementation.Any)
                     {
-                        if (other.Implementation != CompressedArchiveAccessImplementation.Any)
+                        if (other.Implementation != CompressedArchiveImplementation.Any)
                         {
                             result = Implementation - other.Implementation;
                         }

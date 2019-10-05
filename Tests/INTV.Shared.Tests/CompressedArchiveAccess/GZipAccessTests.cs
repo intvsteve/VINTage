@@ -35,9 +35,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
     public class GZipAccessTests
     {
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_OpenNonGZip_ThrowsInvalidDataException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_OpenNonGZip_ThrowsInvalidDataException(CompressedArchiveImplementation implementation)
         {
             var nonGZipResource = TestResource.TextEmbeddedResourceFile;
 
@@ -48,9 +48,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_OpenWithInvalidMode_ThrowsArgumentOutOfRangeException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_OpenWithInvalidMode_ThrowsArgumentOutOfRangeException(CompressedArchiveImplementation implementation)
         {
             var gzipResource = TestResource.TagalongBinGZip;
 
@@ -61,9 +61,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_OpenNonEmptyGZipForUpdate_ThrowsInvalidOperationException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_OpenNonEmptyGZipForUpdate_ThrowsInvalidOperationException(CompressedArchiveImplementation implementation)
         {
             var gzipResource = TestResource.TagalongBinGZip;
 
@@ -74,9 +74,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_OpenNonEmptyGZipForCreate_ThrowsInvalidOperationException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_OpenNonEmptyGZipForCreate_ThrowsInvalidOperationException(CompressedArchiveImplementation implementation)
         {
             var gzipResource = TestResource.TagalongBinGZip;
 
@@ -87,9 +87,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_DeleteEntry_ThrowsNotSupportedException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_DeleteEntry_ThrowsNotSupportedException(CompressedArchiveImplementation implementation)
         {
             var gzipResource = TestResource.TagalongCfgGZip;
             var entryName = gzipResource.ArchiveContents.First();
@@ -102,9 +102,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_CreateEntryWhenOpenInDecompressMode_ThrowsInvalidOperationException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_CreateEntryWhenOpenInDecompressMode_ThrowsInvalidOperationException(CompressedArchiveImplementation implementation)
         {
             var gzipResource = TestResource.TagalongCfgGZip;
 
@@ -116,9 +116,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_OpenSingleMemberFileWithEntryName_HasExpectedContents(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_OpenSingleMemberFileWithEntryName_HasExpectedContents(CompressedArchiveImplementation implementation)
         {
             var gzipResource = TestResource.TagalongBinGZip;
 
@@ -138,9 +138,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_OpenSecondMemberEntry_HasExpectedContents(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_OpenSecondMemberEntry_HasExpectedContents(CompressedArchiveImplementation implementation)
         {
             var gzipResource = TestResource.TagalongBinCfgYYGZip;
 
@@ -160,9 +160,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_IsArchive_IsFalse(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_IsArchive_IsFalse(CompressedArchiveImplementation implementation)
         {
             var stream = new MemoryStream();
             using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
@@ -172,9 +172,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_IsCompressed_IsTrue(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_IsCompressed_IsTrue(CompressedArchiveImplementation implementation)
         {
             var stream = new MemoryStream();
             using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
@@ -184,9 +184,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_Format_IsGZip(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_Format_IsGZip(CompressedArchiveImplementation implementation)
         {
             var stream = new MemoryStream();
             using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
@@ -196,9 +196,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_CreateEntryInEmptyStream_Succeeds(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_CreateEntryInEmptyStream_Succeeds(CompressedArchiveImplementation implementation)
         {
             var stream = new MemoryStream();
             using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
@@ -208,9 +208,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_CreateSecondEntry_ThrowsNotSupportedException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_CreateSecondEntry_ThrowsNotSupportedException(CompressedArchiveImplementation implementation)
         {
             var stream = new MemoryStream();
             using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
@@ -222,9 +222,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_OpenFromDisk_HasExpectedContent(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_OpenFromDisk_HasExpectedContent(CompressedArchiveImplementation implementation)
         {
             string testResourcePath;
             using (TestResource.TagalongBinCfgNNGZip.ExtractToTemporaryFile(out testResourcePath))
@@ -250,9 +250,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_WriteRomResourceToGZip_ProducesExpectedResult(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_WriteRomResourceToGZip_ProducesExpectedResult(CompressedArchiveImplementation implementation)
         {
             var inputCrc = 0u;
             var inputLength = 0L;
@@ -293,9 +293,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void GZipAccess_WriteRomResourceToGZipFile_ProducesExpectedResult(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void GZipAccess_WriteRomResourceToGZipFile_ProducesExpectedResult(CompressedArchiveImplementation implementation)
         {
             var gzipFileName = TemporaryFile.GenerateUniqueFilePath("tagalong", ".luigi.gz");
 

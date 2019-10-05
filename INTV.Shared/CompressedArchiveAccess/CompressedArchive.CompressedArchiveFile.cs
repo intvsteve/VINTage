@@ -100,7 +100,7 @@ namespace INTV.Shared.CompressedArchiveAccess
             /// <exception cref="System.IO.PathTooLongException">Thrown if <paramref name="filePath"/> is too long.</exception>
             /// <exception cref="System.InvalidOperationException">Thrown if it is not possible to create an instance of <see cref="CompressedArchiveFile"/> from the file at <paramref name="filePath"/>,
             /// despite the file appearing to be valid.</exception>
-            public static CompressedArchiveFile Create(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation)
+            public static CompressedArchiveFile Create(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveImplementation? implementation)
             {
                 var fileMode = CompressedArchiveAccessModeToFileMode(mode);
                 var fileAccess = CompressedArchiveAccessModeToFileAccess(mode);

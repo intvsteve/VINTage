@@ -70,9 +70,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.None)]
-        [InlineData(CompressedArchiveAccessImplementation.Any)]
-        public void CompressedArchiveAccess_RegisterFactoryWithForbiddenImplementationValue_ThrowsArgumentOutOfRangeException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.None)]
+        [InlineData(CompressedArchiveImplementation.Any)]
+        public void CompressedArchiveAccess_RegisterFactoryWithForbiddenImplementationValue_ThrowsArgumentOutOfRangeException(CompressedArchiveImplementation implementation)
         {
             var format = this.GetFakeCompressedArchiveFormatForTest();
 
@@ -762,7 +762,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
             }
             private CompressedArchiveFormat _format;
 
-            public CompressedArchiveAccessImplementation Implementation { get; private set; }
+            public CompressedArchiveImplementation Implementation { get; private set; }
 
             private CompressedArchiveAccessMode Mode { get; set; }
 
@@ -770,7 +770,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
                 Stream stream,
                 CompressedArchiveAccessMode mode,
                 CompressedArchiveFormat format,
-                CompressedArchiveAccessImplementation implementation,
+                CompressedArchiveImplementation implementation,
                 string firstEntryName = null,
                 bool isArchive = true,
                 bool isCompressed = true)

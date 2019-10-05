@@ -56,14 +56,14 @@ namespace INTV.TestHelpers.Shared.CompressedArchiveAccess
         /// </summary>
         /// <param name="test">The test that wishes to use the mixin.</param>
         /// <returns>A unique fake compressed archive implementation value.</returns>
-        public static CompressedArchiveAccessImplementation GetFakeCompressedArchiveAccessImplementationForTest(this ICompressedArchiveTest test)
+        public static CompressedArchiveImplementation GetFakeCompressedArchiveAccessImplementationForTest(this ICompressedArchiveTest test)
         {
-            var fakeImplementation = CompressedArchiveAccessImplementation.Other + Interlocked.Increment(ref _fakeImplementationOffset);
+            var fakeImplementation = CompressedArchiveImplementation.Other + Interlocked.Increment(ref _fakeImplementationOffset);
             return fakeImplementation;
         }
 
         /// <summary>
-        /// Creates fake <see cref="CompressedArchiveFormat"/> and <see cref="CompressedArchiveAccessImplementation"/> values and registers them for use.
+        /// Creates fake <see cref="CompressedArchiveFormat"/> and <see cref="CompressedArchiveImplementation"/> values and registers them for use.
         /// </summary>
         /// <param name="test">The test that wishes to use the mixin.</param>
         /// <param name="numberOfFileExtensionsAndImplementations">The number of file extensions and implementations to register.</param>
@@ -71,7 +71,7 @@ namespace INTV.TestHelpers.Shared.CompressedArchiveAccess
         public static CompressedArchiveFormat RegisterTestCompressedArchiveFormat(this ICompressedArchiveTest test, int numberOfFileExtensionsAndImplementations = 1)
         {
             var format = test.GetFakeCompressedArchiveFormatForTest();
-            var implementations = new List<CompressedArchiveAccessImplementation>();
+            var implementations = new List<CompressedArchiveImplementation>();
             var fileExtensions = new List<string>();
 
             for (var i = 0; i < numberOfFileExtensionsAndImplementations; ++i)

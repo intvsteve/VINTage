@@ -62,14 +62,14 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <param name="factory">The factory method.</param>
         /// <returns><c>true</c> if the factory was successfully registered; <c>false</c> otherwise.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown if the value of <paramref name="format"/> or <paramref name="implementation"/> is not valid.</exception>
-        public static bool RegisterFactory(CompressedArchiveFormat format, CompressedArchiveAccessImplementation implementation, CompressedArchiveAccessFactory factory)
+        public static bool RegisterFactory(CompressedArchiveFormat format, CompressedArchiveImplementation implementation, CompressedArchiveAccessFactory factory)
         {
             if (format == CompressedArchiveFormat.None)
             {
                 var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_InvalidCompressionFormatTypeErrorMessage_Format, format);
                 throw new ArgumentOutOfRangeException("format", message);
             }
-            if ((implementation == CompressedArchiveAccessImplementation.None) || (implementation == CompressedArchiveAccessImplementation.Any))
+            if ((implementation == CompressedArchiveImplementation.None) || (implementation == CompressedArchiveImplementation.Any))
             {
                 var message = string.Format(CultureInfo.CurrentCulture, Resources.Strings.CompressedArchiveAccess_InvalidCompressionImplementationTypeErrorMessage_Format, implementation, format);
                 throw new ArgumentOutOfRangeException("implementation", message);
@@ -94,7 +94,7 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <exception cref="System.ArgumentException">Thrown if invalid file access, sharing, and mode combinations are used.</exception>
         /// <exception cref="System.IO.FileFormatException">Thrown if archive was opened for reading, but is of zero size.</exception>
         /// <exception cref="System.IO.IOException">Thrown if <paramref name="filePath"/> is not empty and archive was opened in Create mode.</exception>
-        public static ICompressedArchiveAccess Open(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation = null)
+        public static ICompressedArchiveAccess Open(string filePath, CompressedArchiveAccessMode mode, CompressedArchiveImplementation? implementation = null)
         {
             var archive = CompressedArchiveFile.Create(filePath, mode, implementation);
             return archive;
@@ -116,7 +116,7 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <exception cref="System.ArgumentException">Thrown if invalid file access, sharing, and mode combinations are used.</exception>
         /// <exception cref="System.IO.FileFormatException">Thrown if archive was opened for reading, but is of zero size.</exception>
         /// <exception cref="System.IO.IOException">Thrown if <paramref name="stream"/> is not empty and archive was opened in Create mode.</exception>
-        public static ICompressedArchiveAccess Open(Stream stream, CompressedArchiveFormat format, CompressedArchiveAccessMode mode, CompressedArchiveAccessImplementation? implementation = null)
+        public static ICompressedArchiveAccess Open(Stream stream, CompressedArchiveFormat format, CompressedArchiveAccessMode mode, CompressedArchiveImplementation? implementation = null)
         {
             if (!implementation.HasValue)
             {
@@ -127,7 +127,7 @@ namespace INTV.Shared.CompressedArchiveAccess
             CompressedArchiveAccessFactory factory;
             if (!Factories.Value.TryGetValue(identifier, out factory))
             {
-                identifier = new CompressedArchiveIdentifier(format, CompressedArchiveAccessImplementation.Any);
+                identifier = new CompressedArchiveIdentifier(format, CompressedArchiveImplementation.Any);
                 Factories.Value.TryGetValue(identifier, out factory);
             }
 
@@ -438,11 +438,11 @@ namespace INTV.Shared.CompressedArchiveAccess
         private static ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory> InitializeCompressedArchiveFactories()
         {
             var factories = new ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>(new CompressedArchiveIdentifier());
-            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.Native)] = ZipArchiveAccess.Create;
-            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveAccessImplementation.SharpZipLib)] = ZipArchiveAccessSharpZipLib.Create;
-            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.Native)] = GZipAccessNative.Create;
-            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveAccessImplementation.SharpZipLib)] = GZipAccessSharpZipLib.Create;
-            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Tar, CompressedArchiveAccessImplementation.SharpZipLib)] = TarAccessSharpZipLib.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveImplementation.Native)] = ZipArchiveAccess.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveImplementation.SharpZipLib)] = ZipArchiveAccessSharpZipLib.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveImplementation.Native)] = GZipAccessNative.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveImplementation.SharpZipLib)] = GZipAccessSharpZipLib.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Tar, CompressedArchiveImplementation.SharpZipLib)] = TarAccessSharpZipLib.Create;
             return factories;
         }
 

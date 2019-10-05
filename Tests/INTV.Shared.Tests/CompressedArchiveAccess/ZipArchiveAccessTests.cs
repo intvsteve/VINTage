@@ -33,9 +33,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
     public class ZipArchiveAccessTests
     {
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void ZipArchiveAccess_OpenNonZip_ThrowsInvalidDataException(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_OpenNonZip_ThrowsInvalidDataException(CompressedArchiveImplementation implementation)
         {
             var nonZipResource = TestResource.TextEmbeddedResourceFile;
 
@@ -45,9 +45,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void ZipArchiveAccess_OpenForRead_HasExpectedContents(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_OpenForRead_HasExpectedContents(CompressedArchiveImplementation implementation)
         {
             var zipResource = TestResource.TagalongZip;
 
@@ -69,9 +69,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void ZipArchiveAccess_OpenEntryForRead_SuccessfullyOpensEntry(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_OpenEntryForRead_SuccessfullyOpensEntry(CompressedArchiveImplementation implementation)
         {
             var zipResource = TestResource.TagalongDirZip;
 
@@ -100,9 +100,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         /// as testing the Windows path separator rather than the standard forward slash. Further,
         /// it validates the results of zip creation by also verifying the contents afterwards.</remarks>
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void ZipArchiveAccess_CreateNewZip_SuccessfullyAddDirectoryAndFileEntries(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_CreateNewZip_SuccessfullyAddDirectoryAndFileEntries(CompressedArchiveImplementation implementation)
         {
             var zipTestEntryName = @"test\entry";
             var zipTestEntryContent = "Here is some text to write!";
@@ -126,9 +126,9 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Theory]
-        [InlineData(CompressedArchiveAccessImplementation.Native)]
-        [InlineData(CompressedArchiveAccessImplementation.SharpZipLib)]
-        public void ZipArchiveAccess_DeleteAnEntryFromExistingZipArchive_RemovesEntry(CompressedArchiveAccessImplementation implementation)
+        [InlineData(CompressedArchiveImplementation.Native)]
+        [InlineData(CompressedArchiveImplementation.SharpZipLib)]
+        public void ZipArchiveAccess_DeleteAnEntryFromExistingZipArchive_RemovesEntry(CompressedArchiveImplementation implementation)
         {
             var numberOfEntriesToCreate = 4;
             var zipTestEntryNameFormat = "testEntry_{0}";
@@ -175,7 +175,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
             Assert.True(header.SequenceEqual(magicKey));
         }
 
-        private static void VerifyTestZipContents(string testZipFilePath, string zipTestEntryName, string zipTestEntryContent, CompressedArchiveAccessImplementation implementation)
+        private static void VerifyTestZipContents(string testZipFilePath, string zipTestEntryName, string zipTestEntryContent, CompressedArchiveImplementation implementation)
         {
             using (var tempFile = TemporaryFile.CreateTemporaryFileWithPath(testZipFilePath, createEmptyFile: false))
             using (var zipArchive = CompressedArchive.Open(testZipFilePath, CompressedArchiveAccessMode.Read, implementation))
@@ -192,7 +192,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
             }
         }
 
-        private static void VerifyNumberOfEntries(string testZipFilePath, int expectedNumberOfEntries, CompressedArchiveAccessImplementation implementation)
+        private static void VerifyNumberOfEntries(string testZipFilePath, int expectedNumberOfEntries, CompressedArchiveImplementation implementation)
         {
             using (var zipArchive = CompressedArchive.Open(testZipFilePath, CompressedArchiveAccessMode.Read, implementation))
             {

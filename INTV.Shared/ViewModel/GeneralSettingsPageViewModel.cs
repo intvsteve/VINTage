@@ -60,6 +60,7 @@ namespace INTV.Shared.ViewModel
 
         public const string CheckForAppUpdatesAtLaunchPropertyName = "CheckForAppUpdatesAtLaunch";
         public const string ShowDetailedErrorsPropertyName = "ShowDetailedErrors";
+        public const string ClearTemporaryFilesOnStartupPropertyName = "ClearTemporaryFilesOnStartup";
 
         #endregion // Property Names
 
@@ -104,6 +105,9 @@ namespace INTV.Shared.ViewModel
 
         public static readonly string CheckForUpdatesAtLaunchPreferenceText = Resources.Strings.GeneralSettingsPage_CheckForUpdates;
         public static readonly string CheckForUpdatesAtLaunchTip = Resources.Strings.GeneralSettingsPage_CheckForUpdates_Tip;
+
+        public static readonly string ClearTemporaryFilesOnStartupPreferenceText = Resources.Strings.GeneralSettingsPage_ShowDetailedErrors;
+        public static readonly string ClearTemporaryFilesOnStartupTip = Resources.Strings.GeneralSettingsPage_ShowDetailedErrors_Tip;
 
         #endregion // UI Strings
 
@@ -159,6 +163,7 @@ namespace INTV.Shared.ViewModel
         {
             _showDetailedErrors = Properties.Settings.Default.ShowDetailedErrors;
             _checkForAppUpdatesAtLaunch = Properties.Settings.Default.CheckForAppUpdatesAtLaunch;
+            _clearTemporaryFilesOnStartup = Properties.Settings.Default.ClearTemporaryFilesOnStartup;
         }
 
         /// <summary>
@@ -180,6 +185,16 @@ namespace INTV.Shared.ViewModel
             set { AssignAndUpdateProperty(ShowDetailedErrorsPropertyName, value, ref _showDetailedErrors, (n, v) => Properties.Settings.Default.ShowDetailedErrors = v); }
         }
         private bool _showDetailedErrors;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to clear temporary files location at startup.
+        /// </summary>
+        public bool ClearTemporaryFilesOnStartup
+        {
+            get { return _clearTemporaryFilesOnStartup; }
+            set { AssignAndUpdateProperty(ClearTemporaryFilesOnStartupPropertyName, value, ref _clearTemporaryFilesOnStartup, (n, v) => Properties.Settings.Default.ClearTemporaryFilesOnStartup = v); }
+        }
+        private bool _clearTemporaryFilesOnStartup;
 
         /// <summary>
         /// Gets the ROMs directory.

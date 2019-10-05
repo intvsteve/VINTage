@@ -1884,6 +1884,24 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear application temporary files at startup.
+        /// </summary>
+        internal static string GeneralSettingsPage_ClearTemporaryFilesOnStartup {
+            get {
+                return ResourceManager.GetString("GeneralSettingsPage_ClearTemporaryFilesOnStartup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this setting to have the application delete any abandoned temporary files from a previous session when it launches.
+        /// </summary>
+        internal static string GeneralSettingsPage_ClearTemporaryFilesOnStartup_Tip {
+            get {
+                return ResourceManager.GetString("GeneralSettingsPage_ClearTemporaryFilesOnStartup_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error Logs:.
         /// </summary>
         internal static string GeneralSettingsPage_ErrorLogDirLabel {

@@ -1872,4 +1872,10 @@ Note that this may result in increased memory usage and create copies of nested 
   <data name="GeneralSettingsPage_TempFilesDirTip" xml:space="preserve">
     <value>Temporary files will be placed in this directory</value>
   </data>
+  <data name="GeneralSettingsPage_ClearTemporaryFilesOnStartup" xml:space="preserve">
+    <value>Clear application temporary files at startup</value>
+  </data>
+  <data name="GeneralSettingsPage_ClearTemporaryFilesOnStartup_Tip" xml:space="preserve">
+    <value>Enable this setting to have the application delete any abandoned temporary files from a previous session when it launches</value>
+  </data>
 </root>

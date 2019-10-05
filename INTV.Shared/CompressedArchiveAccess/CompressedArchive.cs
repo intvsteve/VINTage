@@ -440,7 +440,7 @@ namespace INTV.Shared.CompressedArchiveAccess
             var factories = new ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>(new CompressedArchiveIdentifier());
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveImplementation.Native)] = ZipArchiveAccess.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveImplementation.SharpZipLib)] = ZipArchiveAccessSharpZipLib.Create;
-            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveImplementation.Native)] = GZipAccessNative.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveImplementation.Native)] = GZipArchiveAccessNative.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveImplementation.SharpZipLib)] = GZipArchiveAccessSharpZipLib.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Tar, CompressedArchiveImplementation.SharpZipLib)] = TarArchiveAccessSharpZipLib.Create;
             return factories;

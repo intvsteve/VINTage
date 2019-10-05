@@ -27,9 +27,9 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// <summary>
     /// Provides access to a GZIP-formatted stream. Multiple-entry treatment is semi-supported. Don't have your hopes up too high, though.
     /// </summary>
-    internal sealed class GZipAccessNative : GZipAccess
+    internal sealed class GZipArchiveAccessNative : GZipAccess
     {
-        private GZipAccessNative(Stream stream, CompressedArchiveAccessMode mode)
+        private GZipArchiveAccessNative(Stream stream, CompressedArchiveAccessMode mode)
             : base(stream, mode)
         {
             Mode = CompressedArchiveAccessModeToCompressionMode(mode);
@@ -38,15 +38,15 @@ namespace INTV.Shared.CompressedArchiveAccess
         private CompressionMode Mode { get; set; }
 
         /// <summary>
-        /// Creates a new instance of <see cref="GZipAccessNative"/> using the given mode.
+        /// Creates a new instance of <see cref="GZipArchiveAccessNative"/> using the given mode.
         /// </summary>
         /// <param name="stream">Stream containing data in GZIP compressed format.</param>
         /// <param name="mode">The access mode to use for GZIP operations.</param>
-        /// <returns>A new instance of <see cref="GZipAccessNative"/>.</returns>
+        /// <returns>A new instance of <see cref="GZipArchiveAccessNative"/>.</returns>
         /// <remarks>The GZIP implementation assumes ownership of <paramref name="stream"/> and will dispose it.</remarks>
-        public static GZipAccessNative Create(Stream stream, CompressedArchiveAccessMode mode)
+        public static GZipArchiveAccessNative Create(Stream stream, CompressedArchiveAccessMode mode)
         {
-            var gzipAccess = new GZipAccessNative(stream, ValidateMode(mode));
+            var gzipAccess = new GZipArchiveAccessNative(stream, ValidateMode(mode));
             return gzipAccess;
         }
 

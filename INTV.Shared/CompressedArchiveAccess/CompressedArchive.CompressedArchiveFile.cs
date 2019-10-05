@@ -33,12 +33,12 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// <summary>
     /// Implementation of <see cref="CompressedArchiveFile"/>.
     /// </summary>
-    public abstract partial class CompressedArchiveAccess
+    public abstract partial class CompressedArchive
     {
         /// <summary>
         /// Wraps a compressed archive accessor created from a file stream.
         /// </summary>
-        private class CompressedArchiveFile : CompressedArchiveAccess
+        private class CompressedArchiveFile : CompressedArchive
         {
             private readonly object _lock = new object();
 
@@ -140,7 +140,7 @@ namespace INTV.Shared.CompressedArchiveAccess
                 var format = formats.FirstOrDefault();
                 if (format != CompressedArchiveFormat.None)
                 {
-                    compressedArchiveAccess = Shared.CompressedArchiveAccess.CompressedArchiveAccess.Open(fileStream, format, mode, implementation);
+                    compressedArchiveAccess = Shared.CompressedArchiveAccess.CompressedArchive.Open(fileStream, format, mode, implementation);
                 }
 #endif
 

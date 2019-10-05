@@ -21,7 +21,7 @@
 namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
-    /// Access modes for working with a <see cref=" CompressedArchiveAccess"/> instance.
+    /// Access modes for working with a <see cref=" CompressedArchive"/> instance.
     /// </summary>
     public enum CompressedArchiveAccessMode
     {

@@ -26,7 +26,7 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// <summary>
     /// Implementation of <see cref="CompressedArchiveIdentifier"/>.
     /// </summary>
-    public abstract partial class CompressedArchiveAccess
+    public abstract partial class CompressedArchive
     {
         private struct CompressedArchiveIdentifier : IEqualityComparer<CompressedArchiveIdentifier>, IComparable<CompressedArchiveIdentifier>
         {

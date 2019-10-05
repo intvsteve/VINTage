@@ -33,7 +33,7 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// <remarks>NOTE: Unlike the standard .NET ZIP API, the SharpZipLib implementation requires read/write access to the
     /// underlying stream when creating a new <see cref="ICSharpCode.SharpZipLib.Zip.ZipFile"/>. (The .NET version only
     /// requires write access.) This may be a snag if consumers of this interface make the assumption that write is sufficient.</remarks>
-    internal sealed class ZipArchiveAccessSharpZipLib : CompressedArchiveAccess
+    internal sealed class ZipArchiveAccessSharpZipLib : CompressedArchive
     {
         /// <summary>
         /// Initialize a new instance of the type from the given stream.

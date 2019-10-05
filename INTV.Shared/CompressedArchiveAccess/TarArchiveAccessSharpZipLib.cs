@@ -37,7 +37,7 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// operations on TAR in-memory-only streams appears to work, while write operations only seem to work
     /// when using actual disk-based file streams. A glimpse into the implementation in SharpZipLib reveals
     /// numerous places that assume to be dealing with file-based streams.</remarks>
-    internal sealed class TarArchiveAccessSharpZipLib : CompressedArchiveAccess
+    internal sealed class TarArchiveAccessSharpZipLib : CompressedArchive
     {
         /// <summary>
         /// Initialize a new instance of the type from the given stream.

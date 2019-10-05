@@ -158,7 +158,7 @@ namespace INTV.Shared.CompressedArchiveAccess
                             return IStorageAccessHelpers.DefaultStorage;
                         }
                     }
-                    storageAccess = CompressedArchiveAccess.Open(rootCompressedArchivePath, CompressedArchiveAccessMode.Read);
+                    storageAccess = CompressedArchive.Open(rootCompressedArchivePath, CompressedArchiveAccessMode.Read);
                     var nestedAchiveLocation = filePath.GetMostDeeplyNestedArchivePath();
                     if (PathComparer.Instance.Compare(rootCompressedArchivePath, nestedAchiveLocation) != 0)
                     {
@@ -590,7 +590,7 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// This wrapper ensures that the temporary location that a nested archive is extracted to can be
         /// properly cleaned up upon disposal of the nested archive.
         /// </summary>
-        private class NestedCompressedArchiveAccess : CompressedArchiveAccess
+        private class NestedCompressedArchiveAccess : CompressedArchive
         {
             private NestedCompressedArchiveAccess(ICompressedArchiveAccess parentArchiveAccess, ICompressedArchiveAccess nestedArchiveAccess, TemporaryDirectory temporaryLocation)
             {
@@ -672,7 +672,7 @@ namespace INTV.Shared.CompressedArchiveAccess
                             }
                         }
 
-                        var compressedArchive = CompressedArchiveAccess.Open(entryData, nestedArchiveFormat, CompressedArchiveAccessMode.Read);
+                        var compressedArchive = CompressedArchive.Open(entryData, nestedArchiveFormat, CompressedArchiveAccessMode.Read);
                         nestedCompressedArchive = new NestedCompressedArchiveAccess(parentArchiveAccess, compressedArchive, temporaryLocation);
                         nestedCompressedArchive.NestedArchiveFormats = nestedArchiveFormats;
                     }

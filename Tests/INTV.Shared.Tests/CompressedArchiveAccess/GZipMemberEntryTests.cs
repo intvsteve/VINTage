@@ -28,8 +28,6 @@ using INTV.TestHelpers.Core.Utility;
 using INTV.TestHelpers.Shared.Utility;
 using Xunit;
 
-using CompressedArchive = INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess;
-
 namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
     public class GZipMemberEntryTests

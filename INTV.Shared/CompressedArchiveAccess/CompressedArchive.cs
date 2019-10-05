@@ -44,12 +44,12 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// This class provides a partial implementation of <see cref="ICompressedArchiveAccess"/> and static helpers for factory method registration
     /// and creating an instance from a file.
     /// </summary>
-    public abstract partial class CompressedArchiveAccess : ICompressedArchiveAccess
+    public abstract partial class CompressedArchive : ICompressedArchiveAccess
     {
         // TODO: Consider a cache of instances of compressed archive access instances based on path?
         private static readonly Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>> Factories = new Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>>(InitializeCompressedArchiveFactories);
 
-        ~CompressedArchiveAccess()
+        ~CompressedArchive()
         {
             Dispose(false);
         }

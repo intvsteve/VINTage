@@ -29,8 +29,6 @@ using INTV.TestHelpers.Shared.CompressedArchiveAccess;
 using INTV.TestHelpers.Shared.Utility;
 using Xunit;
 
-using CompressedArchive = INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess;
-
 namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
     public class CompressedArchiveAccessTests : ICompressedArchiveTest
@@ -731,7 +729,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
             return format;
         }
 
-        private class TestCompressedArchiveAccess : INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess
+        private class TestCompressedArchiveAccess : INTV.Shared.CompressedArchiveAccess.CompressedArchive
         {
             private readonly Dictionary<string, TestCompressedArchiveEntry> _entries = new Dictionary<string, TestCompressedArchiveEntry>();
 
@@ -787,7 +785,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
 
             public static TestCompressedArchiveAccess GetFromCompressedArchiveFileAccess(ICompressedArchiveAccess archive)
             {
-                var fileAccessArchiveType = typeof(INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess).Assembly.GetType("INTV.Shared.Utility.CompressedArchiveAccess+CompressedArchiveFileAccess");
+                var fileAccessArchiveType = typeof(INTV.Shared.CompressedArchiveAccess.CompressedArchive).Assembly.GetType("INTV.Shared.Utility.CompressedArchiveAccess+CompressedArchiveFileAccess");
                 var instanceFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
                 var property = fileAccessArchiveType.GetProperty("CompressedArchiveAccess", instanceFlags);
                 var testArchive = property.GetValue(archive) as TestCompressedArchiveAccess;

@@ -38,7 +38,7 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// Informed and augmented by examining reference source, here:
     /// https://referencesource.microsoft.com/#WindowsBase/Base/MS/Internal/IO/Zip/ZipArchive.cs
     /// </summary>
-    internal sealed partial class ZipArchiveAccess : CompressedArchiveAccess
+    internal sealed partial class ZipArchiveAccess : CompressedArchive
     {
         private const BindingFlags StaticFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
         private const BindingFlags InstanceFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;

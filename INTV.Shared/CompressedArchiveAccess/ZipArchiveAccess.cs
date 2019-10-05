@@ -42,7 +42,7 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// <summary>
     /// Provides a .NET-agnostic mechanism to access ZIP archives.
     /// </summary>
-    internal sealed partial class ZipArchiveAccess : CompressedArchiveAccess
+    internal sealed partial class ZipArchiveAccess : CompressedArchive
     {
         private IDisposable _zipArchiveObject; // the backing object
 

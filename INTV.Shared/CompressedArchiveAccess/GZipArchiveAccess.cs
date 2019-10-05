@@ -28,7 +28,7 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// <summary>
     /// Provides common implementation for GZIP access.
     /// </summary>
-    internal abstract class GZipArchiveAccess : CompressedArchiveAccess
+    internal abstract class GZipArchiveAccess : CompressedArchive
     {
         protected GZipArchiveAccess(Stream stream, CompressedArchiveAccessMode mode)
         {

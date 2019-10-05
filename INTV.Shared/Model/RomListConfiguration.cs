@@ -49,6 +49,7 @@ namespace INTV.Shared.Model
         private const string RomsFile = "ROMs.xml";
         private const string LocalRomDefintions = "UserDefinedROMs.xml";
         private const string ErrorLogDir = "ErrorLog";
+        private const string TempDirParent = "VINTtemp";
 
         private static RomListConfiguration _instance;
 
@@ -121,6 +122,11 @@ namespace INTV.Shared.Model
         /// </summary>
         public string LabelsDirectory { get; private set; }
 
+        /// <summary>
+        /// Gets the absolute path to the temporary files directory.
+        /// </summary>
+        public string TemporaryFilesDirectory { get; private set; }
+
         #region IConfiguration
 
         /// <inheritdoc />
@@ -158,13 +164,12 @@ namespace INTV.Shared.Model
                 INTV.Core.Utility.StringUtilities.RegisterHtmlEncoder(Shared.Utility.StringUtilities.HtmlEncode);
             }
             System.Diagnostics.Debug.Assert(initializedCoreStreamUtils, "Failed to initialize stream utilities!");
+
             Core.Model.IRomHelpers.InitializeCallbacks(GetIntvNameData);
+
             var documentFolderName = SingleInstanceApplication.AppInfo.DocumentFolderName;
+
             _applicationDocumentsPath = Path.Combine(PathUtils.GetDocumentsDirectory(), documentFolderName);
-            if (!Directory.Exists(_applicationDocumentsPath))
-            {
-                Directory.CreateDirectory(_applicationDocumentsPath);
-            }
             BackupDataDirectory = System.IO.Path.Combine(_applicationDocumentsPath, BackupDataArea);
             ErrorLogDirectory = Path.Combine(_applicationDocumentsPath, ErrorLogDir);
             RomsDirectory = Path.Combine(_applicationDocumentsPath, RomsDir);
@@ -172,8 +177,20 @@ namespace INTV.Shared.Model
             BoxesDirectory = Path.Combine(_applicationDocumentsPath, BoxesDir);
             OverlaysDirectory = Path.Combine(_applicationDocumentsPath, OverlaysDir);
             LabelsDirectory = Path.Combine(_applicationDocumentsPath, LabelsDir);
+            TemporaryFilesDirectory = Path.Combine(Path.GetTempPath(), TempDirParent, documentFolderName);
 
-            var directories = new[] { _applicationDocumentsPath, RomsDirectory, ManualsDirectory, BoxesDirectory, OverlaysDirectory, LabelsDirectory, BackupDataDirectory, ErrorLogDirectory };
+            var directories = new[]
+            {
+                _applicationDocumentsPath,
+                RomsDirectory,
+                ManualsDirectory,
+                BoxesDirectory,
+                OverlaysDirectory,
+                LabelsDirectory,
+                BackupDataDirectory,
+                ErrorLogDirectory,
+                TemporaryFilesDirectory,
+            };
             FileUtilities.EnsureDirectoriesExist(directories);
 
             RomFilesPath = Path.Combine(_applicationDocumentsPath, RomsFile);

@@ -317,7 +317,7 @@ namespace INTV.Shared.CompressedArchiveAccess
                 // Nested archives are kept around as discovered so subsequent listings that may cause actual extraction to temporary
                 // locations on disk is somewhat mitigated.
                 var nestedCompressedArchives = new Dictionary<string, ICompressedArchiveAccess>();
-                var containers = new Queue<ICompressedArchiveEntry>(entries.Where(e => e.IsDirectory || e.Name.IsContainer()));
+                var containers = new Queue<ICompressedArchiveEntry>(entries.Where(e => e.IsDirectory || e.Name.IsContainer()).ToList());
                 while (containers.Any())
                 {
                     var container = containers.Dequeue();

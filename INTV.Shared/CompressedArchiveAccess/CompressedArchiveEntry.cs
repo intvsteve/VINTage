@@ -20,7 +20,7 @@
 
 using System;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Primary purpose, honestly, is to make debugging these guys easier.

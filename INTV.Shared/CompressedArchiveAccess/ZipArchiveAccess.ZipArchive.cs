@@ -24,7 +24,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Wraps access to the native ZipArchive implementation from System.IO.Compression in .NET 4.5 and later.

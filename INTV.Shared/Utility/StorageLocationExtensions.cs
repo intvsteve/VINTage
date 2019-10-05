@@ -24,6 +24,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using INTV.Core.Utility;
+using INTV.Shared.CompressedArchiveAccess;
 
 namespace INTV.Shared.Utility
 {

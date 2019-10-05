@@ -24,11 +24,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using INTV.Core.Utility;
-using INTV.Shared.Utility;
+using INTV.Shared.CompressedArchiveAccess;
+using INTV.TestHelpers.Shared.CompressedArchiveAccess;
 using INTV.TestHelpers.Shared.Utility;
 using Xunit;
 
-namespace INTV.Shared.Tests.Utility
+using CompressedArchive = INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess;
+
+namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
     public class CompressedArchiveAccessTests : ICompressedArchiveTest
     {
@@ -38,7 +41,7 @@ namespace INTV.Shared.Tests.Utility
             var format = this.GetFakeCompressedArchiveFormatForTest();
             var implementation = this.GetFakeCompressedArchiveAccessImplementationForTest();
 
-            var succeeded = CompressedArchiveAccess.RegisterFactory(format, implementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementation));
+            var succeeded = CompressedArchive.RegisterFactory(format, implementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementation));
 
             Assert.True(succeeded);
         }
@@ -48,9 +51,9 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = this.GetFakeCompressedArchiveFormatForTest();
             var implementation = this.GetFakeCompressedArchiveAccessImplementationForTest();
-            Assert.True(CompressedArchiveAccess.RegisterFactory(format, implementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementation)));
+            Assert.True(CompressedArchive.RegisterFactory(format, implementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementation)));
 
-            var succeeded = CompressedArchiveAccess.RegisterFactory(format, implementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementation));
+            var succeeded = CompressedArchive.RegisterFactory(format, implementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementation));
 
             Assert.False(succeeded);
         }
@@ -60,7 +63,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var implementation = this.GetFakeCompressedArchiveAccessImplementationForTest();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchiveAccess.RegisterFactory(
+            Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchive.RegisterFactory(
                 CompressedArchiveFormat.None,
                 implementation,
                 (s, m) => TestCompressedArchiveAccess.Create(s, m, CompressedArchiveFormat.None, implementation)));
@@ -73,7 +76,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = this.GetFakeCompressedArchiveFormatForTest();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchiveAccess.RegisterFactory(
+            Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchive.RegisterFactory(
                 format,
                 implementation,
                 (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementation)));
@@ -103,7 +106,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData(CompressedArchiveAccessMode.Update)]
         public void CompressedArchiveAccess_OpenUnknownFormatFromStream_ThrowsNotSupportedException(CompressedArchiveAccessMode mode)
         {
-            Assert.Throws<NotSupportedException>(() => CompressedArchiveAccess.Open(Stream.Null, this.GetFakeCompressedArchiveFormatForTest(), mode));
+            Assert.Throws<NotSupportedException>(() => CompressedArchive.Open(Stream.Null, this.GetFakeCompressedArchiveFormatForTest(), mode));
         }
 
         [Fact]
@@ -111,10 +114,10 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest();
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.NotNull(archive);
-                Assert.Null(((CompressedArchiveAccess)archive).RootLocation);
+                Assert.Null(((CompressedArchive)archive).RootLocation);
                 Assert.Equal(format, ((TestCompressedArchiveAccess)archive).Format);
             }
         }
@@ -124,7 +127,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest();
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.NotNull(archive);
                 Assert.False(archive.DeleteEntry("booger"));
@@ -136,7 +139,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest();
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.NotNull(archive);
                 Assert.Null(archive.FindEntry("glrb"));
@@ -148,7 +151,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest();
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.NotNull(archive);
                 Assert.Null(archive.Open("fleen"));
@@ -160,7 +163,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest();
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.NotNull(archive);
                 Assert.False(archive.Exists("Klern"));
@@ -172,7 +175,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest();
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.NotNull(archive);
                 Assert.Equal(0L, archive.Size("pLEf"));
@@ -184,7 +187,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest();
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.NotNull(archive);
                 Assert.Equal(DateTime.MinValue, archive.LastWriteTimeUtc("Scrallette"));
@@ -196,7 +199,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 var testArchive = (TestCompressedArchiveAccess)archive;
                 var firstEntryName = testArchive.AddFakeEntries(4);
@@ -212,7 +215,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 var testArchive = (TestCompressedArchiveAccess)archive;
                 var firstEntryName = testArchive.AddFakeEntries(2);
@@ -226,7 +229,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 var testArchive = (TestCompressedArchiveAccess)archive;
                 var firstEntryName = testArchive.AddFakeEntries(5);
@@ -240,7 +243,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Update))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Update))
             {
                 var testArchive = (TestCompressedArchiveAccess)archive;
                 var firstEntryName = testArchive.AddFakeEntries(3);
@@ -254,7 +257,7 @@ namespace INTV.Shared.Tests.Utility
             var format = RegisterFakeFormatForTest(registerFormat: true);
             var initialImplementation = format.GetPreferredCompressedArchiveImplementation();
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.NotNull(archive);
             }
@@ -262,8 +265,8 @@ namespace INTV.Shared.Tests.Utility
             Assert.True(format.AddImplementation(this.GetFakeCompressedArchiveAccessImplementationForTest(), makePreferred: true));
             var newImplementation = format.GetPreferredCompressedArchiveImplementation();
             Assert.NotEqual(initialImplementation, newImplementation);
-            Assert.True(CompressedArchiveAccess.RegisterFactory(format, newImplementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, newImplementation)));
-            Assert.NotNull(CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Create));
+            Assert.True(CompressedArchive.RegisterFactory(format, newImplementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, newImplementation)));
+            Assert.NotNull(CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Create));
         }
 
         [Fact]
@@ -279,12 +282,12 @@ namespace INTV.Shared.Tests.Utility
                 };
             Assert.True(format.AddImplementation(implementations[1], makePreferred: false));
             Assert.True(format.AddImplementation(implementations[2], makePreferred: false));
-            Assert.True(CompressedArchiveAccess.RegisterFactory(format, implementations[1], (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementations[1])));
-            Assert.True(CompressedArchiveAccess.RegisterFactory(format, implementations[2], (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementations[2])));
+            Assert.True(CompressedArchive.RegisterFactory(format, implementations[1], (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementations[1])));
+            Assert.True(CompressedArchive.RegisterFactory(format, implementations[2], (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementations[2])));
 
             foreach (var implementation in implementations)
             {
-                using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Create, implementation) as TestCompressedArchiveAccess)
+                using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Create, implementation) as TestCompressedArchiveAccess)
                 {
                     Assert.NotNull(archive);
                     Assert.Equal(implementation, archive.Implementation);
@@ -297,7 +300,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest();
 
-            CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read);
+            CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read);
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -309,7 +312,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var tempFile = new TemporaryFile(".fake", createFile: true))
             {
-                Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read));
+                Assert.Throws<InvalidOperationException>(() => CompressedArchive.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read));
             }
         }
 
@@ -321,7 +324,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var tempFile = new TemporaryFile(fileExtension, createFile: true))
             {
-                Assert.Throws<NotSupportedException>(() => CompressedArchiveAccess.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read));
+                Assert.Throws<NotSupportedException>(() => CompressedArchive.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read));
             }
         }
 
@@ -333,7 +336,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var tempFile = new TemporaryFile(fileExtension, createFile: true))
             {
-                using (var archive = CompressedArchiveAccess.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read))
+                using (var archive = CompressedArchive.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read))
                 {
                     Assert.NotNull(archive);
                     Assert.True(archive.IsArchive);
@@ -352,7 +355,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var tempFile = new TemporaryFile(fileExtension, createFile: true))
             {
-                using (var archive = CompressedArchiveAccess.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read))
+                using (var archive = CompressedArchive.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read))
                 {
                     var testArchive = TestCompressedArchiveAccess.GetFromCompressedArchiveFileAccess(archive);
                     var firstEntryName = testArchive.AddFakeEntries(3);
@@ -370,7 +373,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var tempFile = new TemporaryFile(fileExtension, createFile: false))
             {
-                using (var archive = CompressedArchiveAccess.Open(tempFile.FilePath, CompressedArchiveAccessMode.Create))
+                using (var archive = CompressedArchive.Open(tempFile.FilePath, CompressedArchiveAccessMode.Create))
                 {
                     var newEntryName = "FindTesting123";
                     var newEntry = archive.CreateEntry(newEntryName);
@@ -388,7 +391,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var tempFile = new TemporaryFile(fileExtension, createFile: true))
             {
-                using (var archive = CompressedArchiveAccess.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read))
+                using (var archive = CompressedArchive.Open(tempFile.FilePath, CompressedArchiveAccessMode.Read))
                 {
                     var testArchive = TestCompressedArchiveAccess.GetFromCompressedArchiveFileAccess(archive);
                     var openEntryName = testArchive.AddFakeEntries(2);
@@ -406,7 +409,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var tempFile = new TemporaryFile(fileExtension, createFile: true))
             {
-                using (var archive = CompressedArchiveAccess.Open(tempFile.FilePath, CompressedArchiveAccessMode.Update))
+                using (var archive = CompressedArchive.Open(tempFile.FilePath, CompressedArchiveAccessMode.Update))
                 {
                     var testArchive = TestCompressedArchiveAccess.GetFromCompressedArchiveFileAccess(archive);
                     var entryName = testArchive.AddFakeEntries(2);
@@ -420,7 +423,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<ArgumentNullException>(() => archive.IsLocationAContainer(null));
             }
@@ -431,7 +434,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<InvalidOperationException>(() => archive.IsLocationAContainer(string.Empty));
             }
@@ -444,7 +447,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.True(archive.IsLocationAContainer(location));
             }
@@ -473,7 +476,7 @@ namespace INTV.Shared.Tests.Utility
         public void CompressedArchiveAccess_ValidRelativeLocationInInMemoryArchive_IsLocationAContainerReturnsCorrectResult(TestResource testResource, CompressedArchiveFormat format, string relativeLocation, bool expectedIsAContainerResult)
         {
             var stream = testResource.OpenResourceForReading();
-            using (var archive = CompressedArchiveAccess.Open(stream, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(stream, format, CompressedArchiveAccessMode.Read))
             {
                 var isContainer = archive.IsLocationAContainer(relativeLocation);
 
@@ -487,7 +490,7 @@ namespace INTV.Shared.Tests.Utility
         {
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath))
-            using (var archive = CompressedArchiveAccess.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
             {
                 var absoluteLocation = Path.Combine(archiveFilePath, relativeLocation);
 
@@ -521,7 +524,7 @@ namespace INTV.Shared.Tests.Utility
         public void CompressedArchiveAccess_InvalidRelativeLocationInInMemoryArchive_IsLocationAContainerReturnsCorrectResult(TestResource testResource, CompressedArchiveFormat format, string relativeLocation, bool expectedIsAContainerResult)
         {
             var stream = testResource.OpenResourceForReading();
-            using (var archive = CompressedArchiveAccess.Open(stream, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(stream, format, CompressedArchiveAccessMode.Read))
             {
                 var isContainer = archive.IsLocationAContainer(relativeLocation);
 
@@ -535,7 +538,7 @@ namespace INTV.Shared.Tests.Utility
         {
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath))
-            using (var archive = CompressedArchiveAccess.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
             {
                 var absoluteLocation = Path.Combine(archiveFilePath, relativeLocation);
 
@@ -549,7 +552,7 @@ namespace INTV.Shared.Tests.Utility
         public void CompressedArchiveAccess_AbsolutePathToLocationInArchiveOpenedInMemoryOnly_IsLocationAContainerThrowsInvalidOperationException()
         {
             var testResource = TestResource.TagalongZipWithManyNests;
-            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<InvalidOperationException>(() => archive.IsLocationAContainer(Path.Combine(Path.GetTempPath(), "Who framed me")));
             }
@@ -560,7 +563,7 @@ namespace INTV.Shared.Tests.Utility
         {
             string archiveFilePath;
             using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archiveFilePath))
-            using (var archive = CompressedArchiveAccess.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(archiveFilePath, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<ArgumentException>(() => archive.IsLocationAContainer(Path.Combine(Path.GetTempPath(), "Spliff Radio Show")));
             }
@@ -571,7 +574,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<ArgumentNullException>(() => archive.ExtractEntry(null, "biff"));
             }
@@ -582,7 +585,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read) as TestCompressedArchiveAccess)
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read) as TestCompressedArchiveAccess)
             {
                 archive.AddFakeEntries(1);
                 var entry = archive.Entries.First();
@@ -597,7 +600,7 @@ namespace INTV.Shared.Tests.Utility
             var testResource = TestResource.TagalongDirZip;
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
-            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "tagalong-todd-is-already-here.file");
                 File.Create(extractionPath).Close();
@@ -615,7 +618,7 @@ namespace INTV.Shared.Tests.Utility
             var testResource = TestResource.TagalongDirZip;
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
-            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "tagalong-todd-is-already-here.file");
                 File.Create(extractionPath).Close();
@@ -638,7 +641,7 @@ namespace INTV.Shared.Tests.Utility
             var testResource = TestResource.TagalongDirZip;
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
-            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "pick me!");
                 var entry = archive.FindEntry("tagalong_dir/");
@@ -654,7 +657,7 @@ namespace INTV.Shared.Tests.Utility
             var testResource = TestResource.TagalongCfgGZip;
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
-            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read))
             {
                 // Sneaky - we're exploiting implementation of GZip here...
                 var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "testEntry.whatever");
@@ -677,7 +680,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = RegisterFakeFormatForTest(registerFormat: true);
 
-            using (var archive = CompressedArchiveAccess.Open(Stream.Null, format, CompressedArchiveAccessMode.Read) as TestCompressedArchiveAccess)
+            using (var archive = CompressedArchive.Open(Stream.Null, format, CompressedArchiveAccessMode.Read) as TestCompressedArchiveAccess)
             {
                 archive.AddFakeEntries(1);
                 var entry = archive.Entries.First();
@@ -704,7 +707,7 @@ namespace INTV.Shared.Tests.Utility
         {
             string archiveFilePath;
             using (testResource.ExtractToTemporaryFile(out archiveFilePath)) // we don't actually want the archive - just the path
-            using (var archive = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), format, CompressedArchiveAccessMode.Read))
+            using (var archive = CompressedArchive.Open(testResource.OpenResourceForReading(), format, CompressedArchiveAccessMode.Read))
             {
                 var extractionPath = Path.Combine(Path.GetDirectoryName(archiveFilePath), "testEntry.whatever");
                 var entry = archive.FindEntry(entryName);
@@ -723,12 +726,12 @@ namespace INTV.Shared.Tests.Utility
         {
             var format = registerFormat ? this.RegisterTestCompressedArchiveFormat() : this.GetFakeCompressedArchiveFormatForTest();
             var implementation = registerFormat ? format.GetPreferredCompressedArchiveImplementation() : this.GetFakeCompressedArchiveAccessImplementationForTest();
-            var registered = CompressedArchiveAccess.RegisterFactory(format, implementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementation, firstEntryName, isArchive, isCompressed));
+            var registered = CompressedArchive.RegisterFactory(format, implementation, (s, m) => TestCompressedArchiveAccess.Create(s, m, format, implementation, firstEntryName, isArchive, isCompressed));
             Assert.True(registered);
             return format;
         }
 
-        private class TestCompressedArchiveAccess : CompressedArchiveAccess
+        private class TestCompressedArchiveAccess : INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess
         {
             private readonly Dictionary<string, TestCompressedArchiveEntry> _entries = new Dictionary<string, TestCompressedArchiveEntry>();
 
@@ -784,7 +787,7 @@ namespace INTV.Shared.Tests.Utility
 
             public static TestCompressedArchiveAccess GetFromCompressedArchiveFileAccess(ICompressedArchiveAccess archive)
             {
-                var fileAccessArchiveType = typeof(INTV.Shared.Utility.CompressedArchiveAccess).Assembly.GetType("INTV.Shared.Utility.CompressedArchiveAccess+CompressedArchiveFileAccess");
+                var fileAccessArchiveType = typeof(INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess).Assembly.GetType("INTV.Shared.Utility.CompressedArchiveAccess+CompressedArchiveFileAccess");
                 var instanceFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
                 var property = fileAccessArchiveType.GetProperty("CompressedArchiveAccess", instanceFlags);
                 var testArchive = property.GetValue(archive) as TestCompressedArchiveAccess;

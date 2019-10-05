@@ -24,8 +24,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using INTV.Core.Utility;
+using INTV.Shared.Utility;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Extension methods to simplify navigating the contents of compressed archives.

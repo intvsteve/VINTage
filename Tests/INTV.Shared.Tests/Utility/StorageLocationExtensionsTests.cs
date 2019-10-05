@@ -23,7 +23,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using INTV.Core.Utility;
+using INTV.Shared.CompressedArchiveAccess;
 using INTV.Shared.Utility;
+using INTV.TestHelpers.Shared.CompressedArchiveAccess;
 using INTV.TestHelpers.Shared.Utility;
 using Xunit;
 

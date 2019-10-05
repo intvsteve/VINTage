@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using INTV.Core.Model;
+using INTV.Shared.CompressedArchiveAccess;
 
 namespace INTV.Shared.Utility
 {

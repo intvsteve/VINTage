@@ -25,7 +25,7 @@ using System.Linq;
 using System.Threading;
 using ICSharpCode.SharpZipLib.Zip;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Provides access to ZIP file contents using SharpZipLib. See: https://github.com/icsharpcode/SharpZipLib

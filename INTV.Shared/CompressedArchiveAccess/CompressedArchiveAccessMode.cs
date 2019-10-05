@@ -18,7 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Access modes for working with a <see cref=" CompressedArchiveAccess"/> instance.

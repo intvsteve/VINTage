@@ -21,7 +21,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Implementation of <see cref="CompressedArchiveIdentifier"/>.

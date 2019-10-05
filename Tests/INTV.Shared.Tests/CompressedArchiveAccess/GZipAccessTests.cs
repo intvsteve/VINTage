@@ -23,12 +23,14 @@ using System.IO;
 using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Utility;
-using INTV.Shared.Utility;
+using INTV.Shared.CompressedArchiveAccess;
 using INTV.TestHelpers.Core.Utility;
 using INTV.TestHelpers.Shared.Utility;
 using Xunit;
 
-namespace INTV.Shared.Tests.Utility
+using CompressedArchive = INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess;
+
+namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
     public class GZipAccessTests
     {
@@ -41,7 +43,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var stream = nonGZipResource.OpenResourceForReading())
             {
-                Assert.Throws<InvalidDataException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation));
+                Assert.Throws<InvalidDataException>(() => CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation));
             }
         }
 
@@ -54,7 +56,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var stream = gzipResource.OpenResourceForReading())
             {
-                Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, (CompressedArchiveAccessMode)100, implementation));
+                Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, (CompressedArchiveAccessMode)100, implementation));
             }
         }
 
@@ -67,7 +69,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var stream = gzipResource.OpenResourceForReading())
             {
-                Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Update, implementation));
+                Assert.Throws<InvalidOperationException>(() => CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Update, implementation));
             }
         }
 
@@ -80,7 +82,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var stream = gzipResource.OpenResourceForReading())
             {
-                Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation));
+                Assert.Throws<InvalidOperationException>(() => CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation));
             }
         }
 
@@ -93,7 +95,7 @@ namespace INTV.Shared.Tests.Utility
             var entryName = gzipResource.ArchiveContents.First();
 
             var stream = gzipResource.OpenResourceForReading();
-            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
+            using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
             {
                 Assert.Throws<NotSupportedException>(() => gzip.DeleteEntry(entryName));
             }
@@ -107,7 +109,7 @@ namespace INTV.Shared.Tests.Utility
             var gzipResource = TestResource.TagalongCfgGZip;
 
             var stream = gzipResource.OpenResourceForReading();
-            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
+            using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
             {
                 Assert.Throws<InvalidOperationException>(() => gzip.CreateEntry("derp"));
             }
@@ -121,7 +123,7 @@ namespace INTV.Shared.Tests.Utility
             var gzipResource = TestResource.TagalongBinGZip;
 
             var stream = gzipResource.OpenResourceForReading();
-            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
+            using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
             {
                 var entry = gzip.Entries.Single();
                 var crc = 0u;
@@ -143,7 +145,7 @@ namespace INTV.Shared.Tests.Utility
             var gzipResource = TestResource.TagalongBinCfgYYGZip;
 
             var stream = gzipResource.OpenResourceForReading();
-            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
+            using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
             {
                 var entry = gzip.Entries.Last();
                 var crc = 0u;
@@ -163,7 +165,7 @@ namespace INTV.Shared.Tests.Utility
         public void GZipAccess_IsArchive_IsFalse(CompressedArchiveAccessImplementation implementation)
         {
             var stream = new MemoryStream();
-            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
+            using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
             {
                 Assert.False(gzip.IsArchive);
             }
@@ -175,7 +177,7 @@ namespace INTV.Shared.Tests.Utility
         public void GZipAccess_IsCompressed_IsTrue(CompressedArchiveAccessImplementation implementation)
         {
             var stream = new MemoryStream();
-            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
+            using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
             {
                 Assert.True(gzip.IsCompressed);
             }
@@ -187,7 +189,7 @@ namespace INTV.Shared.Tests.Utility
         public void GZipAccess_Format_IsGZip(CompressedArchiveAccessImplementation implementation)
         {
             var stream = new MemoryStream();
-            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
+            using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
             {
                 Assert.Equal(CompressedArchiveFormat.GZip, gzip.Format);
             }
@@ -199,7 +201,7 @@ namespace INTV.Shared.Tests.Utility
         public void GZipAccess_CreateEntryInEmptyStream_Succeeds(CompressedArchiveAccessImplementation implementation)
         {
             var stream = new MemoryStream();
-            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
+            using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
             {
                 Assert.NotNull(gzip.CreateEntry("newEntry"));
             }
@@ -211,7 +213,7 @@ namespace INTV.Shared.Tests.Utility
         public void GZipAccess_CreateSecondEntry_ThrowsNotSupportedException(CompressedArchiveAccessImplementation implementation)
         {
             var stream = new MemoryStream();
-            using (var gzip = CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
+            using (var gzip = CompressedArchive.Open(stream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
             {
                 gzip.CreateEntry("newEntry");
 
@@ -226,7 +228,7 @@ namespace INTV.Shared.Tests.Utility
         {
             string testResourcePath;
             using (TestResource.TagalongBinCfgNNGZip.ExtractToTemporaryFile(out testResourcePath))
-            using (var gzip = CompressedArchiveAccess.Open(testResourcePath, CompressedArchiveAccessMode.Read, implementation))
+            using (var gzip = CompressedArchive.Open(testResourcePath, CompressedArchiveAccessMode.Read, implementation))
             {
                 var expectedCrc32s = new[] { TestRomResources.TestBinCrc, TestRomResources.TestCfgCrc };
                 var i = 0;
@@ -258,7 +260,7 @@ namespace INTV.Shared.Tests.Utility
             // Create in-memory GZIP
             var newMemoryStream = new MemoryStream();
             var copyMemoryStream = new MemoryStream();
-            using (var gzip = CompressedArchiveAccess.Open(newMemoryStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
+            using (var gzip = CompressedArchive.Open(newMemoryStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
             {
                 var testResourceName = "INTV.TestHelpers.Core.Resources.tagalong.luigi";
                 var newGZipEntryName = "tagalong.luigi";
@@ -276,7 +278,7 @@ namespace INTV.Shared.Tests.Utility
                 newMemoryStream.CopyTo(copyMemoryStream);
             }
 
-            using (var gzip = CompressedArchiveAccess.Open(copyMemoryStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
+            using (var gzip = CompressedArchive.Open(copyMemoryStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Read, implementation))
             {
                 Assert.True(inputLength > copyMemoryStream.Length); // let's assume some kind of compression happened!
                 Assert.True(gzip.Entries.Any());
@@ -302,7 +304,7 @@ namespace INTV.Shared.Tests.Utility
                 // Create on-disk GZIP
                 var inputLength = 0L;
                 var fileStream = new FileStream(gzipFileName, FileMode.Create, FileAccess.Write);
-                using (var gzip = CompressedArchiveAccess.Open(fileStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
+                using (var gzip = CompressedArchive.Open(fileStream, CompressedArchiveFormat.GZip, CompressedArchiveAccessMode.Create, implementation))
                 {
                     var testResourceName = "INTV.TestHelpers.Core.Resources.tagalong.luigi";
                     var newGZipEntryName = "tagalong.luigi";
@@ -322,7 +324,7 @@ namespace INTV.Shared.Tests.Utility
                     var fileInfo = new FileInfo(gzipFileName);
                     Assert.True(fileInfo.Exists);
                     Assert.True(inputLength > fileInfo.Length); // Compressed we must be! On this, all depends.
-                    using (var gzip = CompressedArchiveAccess.Open(gzipFileName, CompressedArchiveAccessMode.Read, implementation))
+                    using (var gzip = CompressedArchive.Open(gzipFileName, CompressedArchiveAccessMode.Read, implementation))
                     {
                         Assert.True(gzip.Entries.Any());
                         var entry = gzip.Entries.Single();

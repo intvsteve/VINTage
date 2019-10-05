@@ -23,12 +23,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using INTV.Core.Utility;
+using INTV.Shared.CompressedArchiveAccess;
 using INTV.Shared.Utility;
 using INTV.TestHelpers.Core.Utility;
 using INTV.TestHelpers.Shared.Utility;
 using Xunit;
 
-namespace INTV.Shared.Tests.Utility
+using CompressedArchive = INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess;
+
+namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
     public class TarArchiveAccessTests
     {
@@ -39,7 +42,7 @@ namespace INTV.Shared.Tests.Utility
 
             using (var stream = nonGZipResource.OpenResourceForReading())
             {
-                Assert.Throws<System.IO.InvalidDataException>(() => CompressedArchiveAccess.Open(stream, CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read));
+                Assert.Throws<System.IO.InvalidDataException>(() => CompressedArchive.Open(stream, CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read));
             }
         }
 
@@ -48,7 +51,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var tarResource = TestResource.TagalongBinCfgTar;
 
-            Assert.Throws<InvalidOperationException>(() => CompressedArchiveAccess.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Update));
+            Assert.Throws<InvalidOperationException>(() => CompressedArchive.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Update));
         }
 
         [Fact]
@@ -56,7 +59,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var tarResource = TestResource.TagalongBinCfgTar;
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchiveAccess.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, (CompressedArchiveAccessMode)100));
+            Assert.Throws<ArgumentOutOfRangeException>(() => CompressedArchive.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, (CompressedArchiveAccessMode)100));
         }
 
         [Fact]
@@ -65,7 +68,7 @@ namespace INTV.Shared.Tests.Utility
             var tarResource = TestResource.TagalongBinCfgTar;
             var entryName = tarResource.ArchiveContents.First();
 
-            using (var tar = CompressedArchiveAccess.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read))
+            using (var tar = CompressedArchive.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<NotSupportedException>(() => tar.DeleteEntry(entryName));
             }
@@ -85,7 +88,7 @@ namespace INTV.Shared.Tests.Utility
         [MemberData("OpenTarTestData")]
         public void TarArchiveAccess_OpenTar_HasExpectedEntries(TestResource testResource, bool expectAtLeastOneDirectoryEntry)
         {
-            using (var tar = CompressedArchiveAccess.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read))
+            using (var tar = CompressedArchive.Open(testResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read))
             {
                 Assert.True(tar.IsArchive);
                 Assert.False(tar.IsCompressed);
@@ -112,7 +115,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var tarResource = TestResource.TagalongDirLuigiRomTar;
 
-            using (var tar = CompressedArchiveAccess.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read))
+            using (var tar = CompressedArchive.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read))
             {
                 var entry = tar.Entries.Last();
                 Assert.Equal(tarResource.ArchiveContents.Last(), entry.Name);
@@ -132,7 +135,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var tarResource = TestResource.TagalongBinCfgTar;
 
-            using (var tar = CompressedArchiveAccess.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read))
+            using (var tar = CompressedArchive.Open(tarResource.OpenResourceForReading(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<InvalidOperationException>(() => tar.CreateEntry("derp"));
             }
@@ -141,7 +144,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void TarArchiveAccess_CreateEntryWithNullName_ThrowsArgumentNullException()
         {
-            using (var tar = CompressedArchiveAccess.Open(new MemoryStream(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Create))
+            using (var tar = CompressedArchive.Open(new MemoryStream(), CompressedArchiveFormat.Tar, CompressedArchiveAccessMode.Create))
             {
                 Assert.Throws<ArgumentNullException>(() => tar.CreateEntry(null));
             }
@@ -155,7 +158,7 @@ namespace INTV.Shared.Tests.Utility
                 var entryNames = new[] { "tagalong.adv", "sub/tagalong.luigi", @"sub\tagalong.rom" };
                 var entryCrcs = new List<uint>();
                 var tarFilePath = Path.Combine(temporaryDirectory.Path, "test_tagalong.tar");
-                using (var tar = CompressedArchiveAccess.Open(tarFilePath, CompressedArchiveAccessMode.Create))
+                using (var tar = CompressedArchive.Open(tarFilePath, CompressedArchiveAccessMode.Create))
                 {
                     foreach (var entryName in entryNames)
                     {
@@ -172,7 +175,7 @@ namespace INTV.Shared.Tests.Utility
                     }
                 }
 
-                using (var tar = CompressedArchiveAccess.Open(tarFilePath, CompressedArchiveAccessMode.Read))
+                using (var tar = CompressedArchive.Open(tarFilePath, CompressedArchiveAccessMode.Read))
                 {
                     Assert.Equal(entryNames.Length, tar.Entries.Count());
                     for (var i = 0; i < entryNames.Length; ++i)
@@ -208,7 +211,7 @@ namespace INTV.Shared.Tests.Utility
                 }
 
                 var tarFilePath = Path.Combine(temporaryDirectory.Path, "test_tagalong.tar");
-                using (var tar = CompressedArchiveAccess.Open(tarFilePath, CompressedArchiveAccessMode.Create))
+                using (var tar = CompressedArchive.Open(tarFilePath, CompressedArchiveAccessMode.Create))
                 {
                     foreach (var entryName in entryNames)
                     {
@@ -220,7 +223,7 @@ namespace INTV.Shared.Tests.Utility
                     }
                 }
 
-                using (var tar = CompressedArchiveAccess.Open(tarFilePath, CompressedArchiveAccessMode.Read))
+                using (var tar = CompressedArchive.Open(tarFilePath, CompressedArchiveAccessMode.Read))
                 {
                     Assert.Equal(entryNames.Length, tar.Entries.Count());
                     for (var i = 0; i < entryNames.Length; ++i)
@@ -289,7 +292,7 @@ namespace INTV.Shared.Tests.Utility
                 }
 
                 var tarFilePath = Path.Combine(temporaryDirectory.Path, "test_tagalong_with_subdirectories.tar");
-                using (var tar = CompressedArchiveAccess.Open(tarFilePath, CompressedArchiveAccessMode.Create))
+                using (var tar = CompressedArchive.Open(tarFilePath, CompressedArchiveAccessMode.Create))
                 {
                     foreach (var rootTagalong in rootTagalongs)
                     {
@@ -311,7 +314,7 @@ namespace INTV.Shared.Tests.Utility
                     }
                 }
 
-                using (var tar = CompressedArchiveAccess.Open(tarFilePath, CompressedArchiveAccessMode.Read))
+                using (var tar = CompressedArchive.Open(tarFilePath, CompressedArchiveAccessMode.Read))
                 {
                     Assert.Equal(expectedEntryNames.Count, tar.Entries.Count());
                     for (int i = 0; i < expectedEntryNames.Count; ++i)

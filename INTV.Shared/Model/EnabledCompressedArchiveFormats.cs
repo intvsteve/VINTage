@@ -21,9 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using INTV.Shared.Utility;
+using INTV.Shared.CompressedArchiveAccess;
 
 namespace INTV.Shared.Model
 {

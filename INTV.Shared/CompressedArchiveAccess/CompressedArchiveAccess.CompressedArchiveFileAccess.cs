@@ -28,7 +28,7 @@ using System.Linq;
 
 //create a FileMemo<> in CompressedArchiveFileAccess so we avoid re-creating archives all the time (problems with testing??)
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Implementation of <see cref="CompressedArchiveFileAccess"/>.
@@ -140,7 +140,7 @@ namespace INTV.Shared.Utility
                 var format = formats.FirstOrDefault();
                 if (format != CompressedArchiveFormat.None)
                 {
-                    compressedArchiveAccess = Utility.CompressedArchiveAccess.Open(fileStream, format, mode, implementation);
+                    compressedArchiveAccess = Shared.CompressedArchiveAccess.CompressedArchiveAccess.Open(fileStream, format, mode, implementation);
                 }
 #endif
 

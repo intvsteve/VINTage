@@ -24,8 +24,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using ICSharpCode.SharpZipLib.Tar;
+using INTV.Shared.Utility;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Provides access to TAR archives using the SharpZipLib implementation.

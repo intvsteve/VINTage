@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using INTV.Core.Utility;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// A basic interface that provides access to an archive, which may or may not be compressed.

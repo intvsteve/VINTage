@@ -20,7 +20,7 @@
 
 using System;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// This interface describes a basic archive entry.

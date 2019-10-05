@@ -23,11 +23,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using INTV.Core.Utility;
+using INTV.Shared.CompressedArchiveAccess;
 using INTV.Shared.Utility;
 using INTV.TestHelpers.Shared.Utility;
 using Xunit;
 
-namespace INTV.Shared.Tests.Utility
+using CompressedArchive = INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess;
+
+namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
     public class ICompressedArchiveAccessExtensionsTests
     {
@@ -554,7 +557,7 @@ namespace INTV.Shared.Tests.Utility
         [Fact]
         public void ICompressedArchiveAccess_ListWithMalformedLocationInContainer_ThrowsArgumentException()
         {
-            using (var zip = CompressedArchiveAccess.Open(TestResource.TagalongZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(TestResource.TagalongZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<ArgumentException>(() => zip.ListEntries("where's the beef!", includeContainers: true));
                 Assert.Throws<ArgumentException>(() => zip.ListContents("did you check under the dash?", includeContainers: true));
@@ -566,7 +569,7 @@ namespace INTV.Shared.Tests.Utility
         [InlineData(@"nothing/to\see\here\")]
         public void ICompressedArchiveAccess_ListItemsWithNonexistentLocation_ReturnsEmpty(string location)
         {
-            using (var zip = CompressedArchiveAccess.Open(TestResource.TagalongZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(TestResource.TagalongZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries0 = zip.ListEntries(location, includeContainers: false);
                 var entries1 = zip.ListContents(location, includeContainers: false);
@@ -586,7 +589,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var testZipResource = TestResource.TagalongZip;
 
-            using (var zip = CompressedArchiveAccess.Open(testZipResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(testZipResource.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries0 = zip.ListEntries(root, includeContainers: false);
                 var entries1 = zip.ListContents(root, includeContainers: false);
@@ -606,7 +609,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var zipContainingOneSubdirectory = TestResource.TagalongDirZip;
 
-            using (var zip = CompressedArchiveAccess.Open(zipContainingOneSubdirectory.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipContainingOneSubdirectory.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(null, includeContainers);
 
@@ -628,7 +631,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var zipContainingOneNestedZip = TestResource.TagalongNestedZip;
 
-            using (var zip = CompressedArchiveAccess.Open(zipContainingOneNestedZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipContainingOneNestedZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(null, includeContainers);
 
@@ -652,7 +655,7 @@ namespace INTV.Shared.Tests.Utility
                 string tgzFile; // necessary to get archive being identified via file extension
                 var tgzResource = TestResource.TagalongMsys2Tgz;
                 tgzResource.ExtractToTemporaryFile(out tgzFile);
-                using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
+                using (var tgz = CompressedArchive.Open(tgzFile, CompressedArchiveAccessMode.Read))
                 {
                     var entries = tgz.ListEntries(null, includeContainers: true, recurse: true);
 
@@ -673,7 +676,7 @@ namespace INTV.Shared.Tests.Utility
             var tgzResource = TestResource.TagalongMsys2Tgz;
             string tgzFile; // necessary to get archive being identified via file extension
             tgzResource.ExtractToTemporaryFile(out tgzFile);
-            using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
+            using (var tgz = CompressedArchive.Open(tgzFile, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(null, includeContainers);
 
@@ -693,7 +696,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var zipContainingOneSubdirectory = TestResource.TagalongDirZip;
             var location = "tagalong_dir/";
-            using (var zip = CompressedArchiveAccess.Open(zipContainingOneSubdirectory.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipContainingOneSubdirectory.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(location, includeContainers: false);
 
@@ -707,7 +710,7 @@ namespace INTV.Shared.Tests.Utility
         {
             var zipContainingOneNestedZip = TestResource.TagalongNestedZip;
             var location = @"tagalong.zip\";
-            using (var zip = CompressedArchiveAccess.Open(zipContainingOneNestedZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipContainingOneNestedZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(location, false);
 
@@ -724,7 +727,7 @@ namespace INTV.Shared.Tests.Utility
                 ICompressedArchiveAccessExtensions.DisableNestedArchiveAccess();
                 var zipContainingOneNestedZip = TestResource.TagalongNestedZip;
                 var location = @"tagalong.zip\";
-                using (var zip = CompressedArchiveAccess.Open(zipContainingOneNestedZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+                using (var zip = CompressedArchive.Open(zipContainingOneNestedZip.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
                 {
                     var entries = zip.ListEntries(location, false);
 
@@ -746,7 +749,7 @@ namespace INTV.Shared.Tests.Utility
 
             string tgzFile;
             tgzResource.ExtractToTemporaryFile(out tgzFile);
-            using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
+            using (var tgz = CompressedArchive.Open(tgzFile, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(location, includeContainers: true);
 
@@ -761,7 +764,7 @@ namespace INTV.Shared.Tests.Utility
             var zipWithMultiNesting = TestResource.TagalongZipWithManyNests;
             var location = @"extra_nest/tagalong_msys2.tgz\tagalong_msys2.tar/tagalong.zip\";
 
-            using (var zip = CompressedArchiveAccess.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(location, false);
 
@@ -788,7 +791,7 @@ namespace INTV.Shared.Tests.Utility
                 "tagalong_dev1.luigi",
             };
 
-            using (var zip = CompressedArchiveAccess.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(locationInArchive: null, includeContainers: false, recurse: true);
                 var entryNames = entries.Select(e => e.Name);
@@ -814,7 +817,7 @@ namespace INTV.Shared.Tests.Utility
                 "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.cfg",
             };
 
-            using (var zip = CompressedArchiveAccess.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(location, includeContainers: false, recurse: true);
                 var entryNames = entries.Select(e => e.Name);
@@ -846,7 +849,7 @@ namespace INTV.Shared.Tests.Utility
                 "tagalong_dev1.luigi",
             };
 
-            using (var zip = CompressedArchiveAccess.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(locationInArchive: null, includeContainers: true, recurse: true);
                 var entryNames = entries.Select(e => e.Name);
@@ -878,7 +881,7 @@ namespace INTV.Shared.Tests.Utility
             };
 
             tgzNested.ExtractToTemporaryFile(out tgzFilePath);
-            using (var tgz = CompressedArchiveAccess.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
+            using (var tgz = CompressedArchive.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(locationInArchive: null, includeContainers: true, recurse: true);
                 var entryNames = entries.Select(e => e.Name);
@@ -894,7 +897,7 @@ namespace INTV.Shared.Tests.Utility
             var tgzFilePath = string.Empty;
 
             tgzManyDirs.ExtractToTemporaryFile(out tgzFilePath);
-            using (var tgz = CompressedArchiveAccess.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
+            using (var tgz = CompressedArchive.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(locationInArchive: null, includeContainers: true, recurse: true);
                 var entryNames = entries.Select(e => e.Name);
@@ -926,7 +929,7 @@ namespace INTV.Shared.Tests.Utility
             };
 
             tgzManyDirs.ExtractToTemporaryFile(out tgzFilePath);
-            using (var tgz = CompressedArchiveAccess.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
+            using (var tgz = CompressedArchive.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(location, includeContainers: false, recurse: true);
                 var entryNames = entries.Select(e => e.Name);
@@ -955,7 +958,7 @@ namespace INTV.Shared.Tests.Utility
             };
 
             tgzManyDirs.ExtractToTemporaryFile(out tgzFilePath);
-            using (var tgz = CompressedArchiveAccess.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
+            using (var tgz = CompressedArchive.Open(tgzFilePath, CompressedArchiveAccessMode.Read))
             {
                 var entries = tgz.ListEntries(location, includeContainers: true, recurse: true);
                 var entryNames = entries.Select(e => e.Name);
@@ -985,7 +988,7 @@ namespace INTV.Shared.Tests.Utility
                 "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.cfg",
             };
 
-            using (var zip = CompressedArchiveAccess.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(location, includeContainers: true, recurse: true);
                 var entryNames = entries.Select(e => e.Name);
@@ -1009,7 +1012,7 @@ namespace INTV.Shared.Tests.Utility
                 "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/tagalong.cfg",
             };
 
-            using (var zip = CompressedArchiveAccess.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(location, includeContainers, recurse);
                 var entryNames = entries.Select(e => e.Name);
@@ -1029,7 +1032,7 @@ namespace INTV.Shared.Tests.Utility
                 "tagalong_dev1.luigi",
             };
 
-            using (var zip = CompressedArchiveAccess.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(null, includeContainers: true, recurse: false);
                 Assert.Equal(expectedEntryNames.Length, entries.Count());
@@ -1063,7 +1066,7 @@ namespace INTV.Shared.Tests.Utility
                 "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.zip/tagalong.cfg",
             };
 
-            using (var zip = CompressedArchiveAccess.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 var entries = zip.ListEntries(location, includeContainers: false, recurse: false);
                 Assert.Equal(expectedEntryNames.Length, entries.Count());
@@ -1084,7 +1087,7 @@ namespace INTV.Shared.Tests.Utility
             var zipWithMultiNesting = TestResource.TagalongZipWithManyNests;
             var location = @"extra_nest/tagalong_msys2.tgz/tagalong_mystery.tar/tagalong.zip/";
 
-            using (var zip = CompressedArchiveAccess.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
+            using (var zip = CompressedArchive.Open(zipWithMultiNesting.OpenResourceForReading(), CompressedArchiveFormat.Zip, CompressedArchiveAccessMode.Read))
             {
                 Assert.Throws<FileNotFoundException>(() => zip.ListEntries(location, includeContainers: false, recurse: false));
             }
@@ -1098,7 +1101,7 @@ namespace INTV.Shared.Tests.Utility
             var gzipFile = string.Empty;
 
             gzipWithSubdirectory.ExtractToTemporaryFile(out gzipFile);
-            using (var gzip = CompressedArchiveAccess.Open(gzipFile, CompressedArchiveAccessMode.Read))
+            using (var gzip = CompressedArchive.Open(gzipFile, CompressedArchiveAccessMode.Read))
             {
                 var entries = gzip.ListContents(location, includeContainers: true);
 

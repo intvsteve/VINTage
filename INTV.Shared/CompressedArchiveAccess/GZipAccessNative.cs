@@ -22,7 +22,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Provides access to a GZIP-formatted stream. Multiple-entry treatment is semi-supported. Don't have your hopes up too high, though.

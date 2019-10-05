@@ -21,11 +21,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using INTV.Shared.Utility;
-using INTV.TestHelpers.Shared.Utility;
+using INTV.Shared.CompressedArchiveAccess;
+using INTV.TestHelpers.Shared.CompressedArchiveAccess;
 using Xunit;
 
-namespace INTV.Shared.Tests.Utility
+namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
     /// <summary>
     /// Compressed archive tests.

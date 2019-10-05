@@ -23,12 +23,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using INTV.Shared.Utility;
+using INTV.Shared.CompressedArchiveAccess;
 using INTV.TestHelpers.Core.Utility;
 using INTV.TestHelpers.Shared.Utility;
 using Xunit;
 
-namespace INTV.Shared.Tests.Utility
+using CompressedArchive = INTV.Shared.CompressedArchiveAccess.CompressedArchiveAccess;
+
+namespace INTV.Shared.Tests.CompressedArchiveAccess
 {
     public class GZipMemberEntryTests
     {
@@ -239,7 +241,7 @@ namespace INTV.Shared.Tests.Utility
 
             string tgzFile; // necessary to get archive being identified via file extension
             using (tgzResource.ExtractToTemporaryFile(out tgzFile))
-            using (var tgz = CompressedArchiveAccess.Open(tgzFile, CompressedArchiveAccessMode.Read))
+            using (var tgz = CompressedArchive.Open(tgzFile, CompressedArchiveAccessMode.Read))
             {
                 var entry = tgz.Entries.Single();
 

@@ -64,7 +64,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
-    <Compile Include="Utility\ICompressedArchiveTest.cs" />
+    <Compile Include="CompressedArchiveAccess\ICompressedArchiveTest.cs" />
     <Compile Include="Utility\TemporaryFile.cs" />
     <Compile Include="Utility\TestCultureInfo.cs" />
     <Compile Include="Utility\TestResource.cs" />

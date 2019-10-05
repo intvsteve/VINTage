@@ -23,12 +23,10 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using INTV.Shared.ComponentModel;
+using INTV.Shared.CompressedArchiveAccess;
 using INTV.Shared.Model;
-using INTV.Shared.Utility;
 
 #if WIN
-using OSColor = System.Windows.Media.Color;
-using Settings = INTV.Shared.Properties.Settings;
 using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettings;
 #elif MAC
 #if __UNIFIED__

@@ -24,8 +24,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using INTV.Shared.Utility;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// This delegate defines the factory method for creating an instance of <see cref="ICompressedArchiveAccess"/>.

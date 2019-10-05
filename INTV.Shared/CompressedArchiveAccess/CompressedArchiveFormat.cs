@@ -24,7 +24,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// The various archive formats that can be used. Note that not all formats are archives

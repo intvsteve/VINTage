@@ -27,6 +27,7 @@ using System.Linq;
 using INTV.Core.Model;
 using INTV.Core.Model.Program;
 using INTV.Core.Utility;
+using INTV.Shared.CompressedArchiveAccess;
 using INTV.Shared.Model.Program;
 using INTV.Shared.Utility;
 

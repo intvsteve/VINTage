@@ -21,7 +21,7 @@
 using System.IO;
 using ICSharpCode.SharpZipLib.GZip;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Provides access to a GZIP-formatted stream using SharpZipLib.

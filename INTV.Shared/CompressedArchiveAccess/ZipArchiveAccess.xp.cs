@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace INTV.Shared.Utility
+namespace INTV.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Implements a .NET 4.0 mechanism to access ZIP archives in a manner that does not require

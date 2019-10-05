@@ -21,9 +21,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using INTV.Shared.Utility;
+using INTV.Shared.CompressedArchiveAccess;
 
-namespace INTV.TestHelpers.Shared.Utility
+namespace INTV.TestHelpers.Shared.CompressedArchiveAccess
 {
     /// <summary>
     /// Test mixin interface for tests that work with <see cref="INTV.Shared.Utility.CompressedArchiveFormat"/>.

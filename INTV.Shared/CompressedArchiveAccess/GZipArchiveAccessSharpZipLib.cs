@@ -27,23 +27,23 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// Provides access to a GZIP-formatted stream using SharpZipLib.
     /// Multiple-entry treatment is semi-supported. Don't have your hopes up too high, though.
     /// </summary>
-    internal sealed class GZipAccessSharpZipLib : GZipAccess
+    internal sealed class GZipArchiveAccessSharpZipLib : GZipAccess
     {
-        private GZipAccessSharpZipLib(Stream stream, CompressedArchiveAccessMode mode)
+        private GZipArchiveAccessSharpZipLib(Stream stream, CompressedArchiveAccessMode mode)
             : base(stream, mode)
         {
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="GZipAccessSharpZipLib"/> using the given mode.
+        /// Creates a new instance of <see cref="GZipArchiveAccessSharpZipLib"/> using the given mode.
         /// </summary>
         /// <param name="stream">Stream containing data in GZIP compressed format.</param>
         /// <param name="mode">The access mode to use for GZIP operations.</param>
-        /// <returns>A new instance of <see cref="GZipAccessSharpZipLib"/>.</returns>
+        /// <returns>A new instance of <see cref="GZipArchiveAccessSharpZipLib"/>.</returns>
         /// <remarks>The GZIP implementation assumes ownership of <paramref name="stream"/> and will dispose it.</remarks>
-        public static GZipAccessSharpZipLib Create(Stream stream, CompressedArchiveAccessMode mode)
+        public static GZipArchiveAccessSharpZipLib Create(Stream stream, CompressedArchiveAccessMode mode)
         {
-            var gzipAccess = new GZipAccessSharpZipLib(stream, ValidateMode(mode));
+            var gzipAccess = new GZipArchiveAccessSharpZipLib(stream, ValidateMode(mode));
             return gzipAccess;
         }
 

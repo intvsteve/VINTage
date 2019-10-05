@@ -27,7 +27,7 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// Provides access to a GZIP-formatted stream using SharpZipLib.
     /// Multiple-entry treatment is semi-supported. Don't have your hopes up too high, though.
     /// </summary>
-    internal sealed class GZipArchiveAccessSharpZipLib : GZipAccess
+    internal sealed class GZipArchiveAccessSharpZipLib : GZipArchiveAccess
     {
         private GZipArchiveAccessSharpZipLib(Stream stream, CompressedArchiveAccessMode mode)
             : base(stream, mode)

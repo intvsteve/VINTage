@@ -37,14 +37,14 @@ namespace INTV.Shared.CompressedArchiveAccess
     /// operations on TAR in-memory-only streams appears to work, while write operations only seem to work
     /// when using actual disk-based file streams. A glimpse into the implementation in SharpZipLib reveals
     /// numerous places that assume to be dealing with file-based streams.</remarks>
-    internal sealed class TarAccessSharpZipLib : CompressedArchiveAccess
+    internal sealed class TarArchiveAccessSharpZipLib : CompressedArchiveAccess
     {
         /// <summary>
         /// Initialize a new instance of the type from the given stream.
         /// </summary>
         /// <param name="stream">Stream containing data in TAR format.</param>
         /// <param name="mode">The access mode to use for TAR operations.</param>
-        private TarAccessSharpZipLib(Stream stream, CompressedArchiveAccessMode mode)
+        private TarArchiveAccessSharpZipLib(Stream stream, CompressedArchiveAccessMode mode)
         {
             IsReadOnly = mode == CompressedArchiveAccessMode.Read;
             _entries = ListTarEntries(stream);
@@ -98,15 +98,15 @@ namespace INTV.Shared.CompressedArchiveAccess
         private TemporaryDirectory ExtractLocation { get; set; }
 
         /// <summary>
-        /// Creates a new instance of <see cref="TarAccessSharpZipLib"/> using the given mode.
+        /// Creates a new instance of <see cref="TarArchiveAccessSharpZipLib"/> using the given mode.
         /// </summary>
         /// <param name="stream">Stream containing data in TAR format.</param>
         /// <param name="mode">The access mode to use for TAR operations.</param>
-        /// <returns>A new instance of <see cref="TarAccessSharpZipLib"/>.</returns>
+        /// <returns>A new instance of <see cref="TarArchiveAccessSharpZipLib"/>.</returns>
         /// <remarks>The TAR implementation assumes ownership of <paramref name="stream"/> and will dispose it.</remarks>
-        public static TarAccessSharpZipLib Create(Stream stream, CompressedArchiveAccessMode mode)
+        public static TarArchiveAccessSharpZipLib Create(Stream stream, CompressedArchiveAccessMode mode)
         {
-            var tarAccess = new TarAccessSharpZipLib(stream, ValidateMode(mode));
+            var tarAccess = new TarArchiveAccessSharpZipLib(stream, ValidateMode(mode));
             return tarAccess;
         }
 
@@ -284,7 +284,7 @@ namespace INTV.Shared.CompressedArchiveAccess
             /// </summary>
             /// <param name="tarAccess">The archive that will contain this entry.</param>
             /// <returns>The stream to write to.</returns>
-            public Stream OpenOutputStream(TarAccessSharpZipLib tarAccess)
+            public Stream OpenOutputStream(TarArchiveAccessSharpZipLib tarAccess)
             {
                 var stream = new OutputStream(tarAccess, this);
                 return stream;
@@ -299,7 +299,7 @@ namespace INTV.Shared.CompressedArchiveAccess
             private class OutputStream : MemoryStream
             {
                 private int _disposed;
-                private TarAccessSharpZipLib _tarAccess;
+                private TarArchiveAccessSharpZipLib _tarAccess;
                 private TarArchiveEntry _tarArchiveEntry;
 
                 /// <summary>
@@ -307,7 +307,7 @@ namespace INTV.Shared.CompressedArchiveAccess
                 /// </summary>
                 /// <param name="tarAccess">The TAR archive to which the contents of <paramref name="tarArchiveEntry"/> is to be written.</param>
                 /// <param name="tarArchiveEntry">A previously created <see cref="TarEntry"/> that will be written to.</param>
-                public OutputStream(TarAccessSharpZipLib tarAccess, TarArchiveEntry tarArchiveEntry)
+                public OutputStream(TarArchiveAccessSharpZipLib tarAccess, TarArchiveEntry tarArchiveEntry)
                 {
                     _tarAccess = tarAccess;
                     _tarArchiveEntry = tarArchiveEntry;

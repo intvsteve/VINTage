@@ -442,7 +442,7 @@ namespace INTV.Shared.CompressedArchiveAccess
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Zip, CompressedArchiveImplementation.SharpZipLib)] = ZipArchiveAccessSharpZipLib.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveImplementation.Native)] = GZipAccessNative.Create;
             factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.GZip, CompressedArchiveImplementation.SharpZipLib)] = GZipAccessSharpZipLib.Create;
-            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Tar, CompressedArchiveImplementation.SharpZipLib)] = TarAccessSharpZipLib.Create;
+            factories[new CompressedArchiveIdentifier(CompressedArchiveFormat.Tar, CompressedArchiveImplementation.SharpZipLib)] = TarArchiveAccessSharpZipLib.Create;
             return factories;
         }
 

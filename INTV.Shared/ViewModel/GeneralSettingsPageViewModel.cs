@@ -93,6 +93,10 @@ namespace INTV.Shared.ViewModel
         public static readonly string ErrorLogDirTip = Resources.Strings.GeneralSettingsPage_ErrorLogDirTip;
         public static readonly string ShowErrorLogButtonTip = Resources.Strings.GeneralSettingsPage_ShowErrorLogDirTip;
 
+        public static readonly string TemporaryFilesDirLabel = Resources.Strings.GeneralSettingsPage_TempFilesDirLabel;
+        public static readonly string TemporaryFilesDirTip = Resources.Strings.GeneralSettingsPage_TempFilesDirTip;
+        public static readonly string ShowTemporaryFilesDirButtonTip = Resources.Strings.GeneralSettingsPage_ShowTempFilesDirTip;
+
         public static readonly string ShowInExplorerButtonText = Resources.Strings.GeneralSettingsPage_ShowInExplorerButtonText;
 
         public static readonly string ShowDetailedErrorsPreferenceText = Resources.Strings.GeneralSettingsPage_ShowDetailedErrors;
@@ -138,6 +142,9 @@ namespace INTV.Shared.ViewModel
                         break;
                     case DirectoryToShow.ErrorLog:
                         RomListConfiguration.Instance.ErrorLogDirectory.RevealInFileSystem();
+                        break;
+                    case DirectoryToShow.TemporaryFiles:
+                        RomListConfiguration.Instance.TemporaryFilesDirectory.RevealInFileSystem();
                         break;
                     default:
                         break;
@@ -230,6 +237,14 @@ namespace INTV.Shared.ViewModel
             get { return RomListConfiguration.Instance.ErrorLogDirectory; }
         }
 
+        /// <summary>
+        /// Gets the temporary files directory.
+        /// </summary>
+        public string TempFilesDir
+        {
+            get { return RomListConfiguration.Instance.TemporaryFilesDirectory; }
+        }
+
         /// <inheritdoc />
         protected override void RaiseAllPropertiesChanged()
         {
@@ -278,7 +293,12 @@ namespace INTV.Shared.ViewModel
             /// <summary>
             /// The error log directory.
             /// </summary>
-            ErrorLog
+            ErrorLog,
+
+            /// <summary>
+            /// The directory to use for temporary data.
+            /// </summary>
+            TemporaryFiles,
         }
     }
 }

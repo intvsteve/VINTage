@@ -2064,6 +2064,33 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show the directory used to store temporary files.
+        /// </summary>
+        internal static string GeneralSettingsPage_ShowTempFilesDirTip {
+            get {
+                return ResourceManager.GetString("GeneralSettingsPage_ShowTempFilesDirTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temporary Files:.
+        /// </summary>
+        internal static string GeneralSettingsPage_TempFilesDirLabel {
+            get {
+                return ResourceManager.GetString("GeneralSettingsPage_TempFilesDirLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temporary files will be placed in this directory.
+        /// </summary>
+        internal static string GeneralSettingsPage_TempFilesDirTip {
+            get {
+                return ResourceManager.GetString("GeneralSettingsPage_TempFilesDirTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
         internal static string GeneralSettingsPage_Title {

@@ -1863,4 +1863,13 @@ Note that this may result in increased memory usage and create copies of nested 
   <data name="CompressedArchiveSettingsPage_Title" xml:space="preserve">
     <value>Compressed Files</value>
   </data>
+  <data name="GeneralSettingsPage_ShowTempFilesDirTip" xml:space="preserve">
+    <value>Show the directory used to store temporary files</value>
+  </data>
+  <data name="GeneralSettingsPage_TempFilesDirLabel" xml:space="preserve">
+    <value>Temporary Files:</value>
+  </data>
+  <data name="GeneralSettingsPage_TempFilesDirTip" xml:space="preserve">
+    <value>Temporary files will be placed in this directory</value>
+  </data>
 </root>

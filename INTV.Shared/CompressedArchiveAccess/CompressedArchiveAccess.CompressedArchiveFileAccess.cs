@@ -26,6 +26,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
+//create a FileMemo<> in CompressedArchiveFileAccess so we avoid re-creating archives all the time (problems with testing??)
+
 namespace INTV.Shared.Utility
 {
     /// <summary>

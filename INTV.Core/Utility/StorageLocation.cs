@@ -37,7 +37,7 @@ namespace INTV.Core.Utility
         /// <summary>
         /// The invalid storage location.
         /// </summary>
-        public static readonly StorageLocation InvalidLocation = new StorageLocation(null, new InvalidStorageAccess());
+        public static readonly StorageLocation InvalidLocation = new StorageLocation(null, InvalidStorageAccess.Instance);
 
         /// <summary>
         /// Creates a storage location with a <c>null</c> Path and undefined storage access.
@@ -307,6 +307,16 @@ namespace INTV.Core.Utility
         {
             // See https://docs.microsoft.com/en-us/dotnet/api/system.io.file.getlastwritetime?view=netframework-4.0
             private static readonly System.DateTime FileNotFoundTime = new System.DateTime(1601, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
+
+            private static readonly Lazy<InvalidStorageAccess> LazyInstance = new Lazy<InvalidStorageAccess>();
+
+            /// <summary>
+            /// Gets the single instance.
+            /// </summary>
+            public static IStorageAccess Instance
+            {
+                get { return LazyInstance.Value; }
+            }
 
             /// <inheritdoc/>
             public System.IO.Stream Open(string storageLocation)

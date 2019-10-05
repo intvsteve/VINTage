@@ -43,7 +43,9 @@ namespace INTV.Core.Tests.Utility
             Assert.Equal(-1L, storageLocation.Length);
             Assert.False(storageLocation.Exists());
             Assert.False(storageLocation.StorageAccess.Exists(null));
+            Assert.Equal(1601, storageLocation.StorageAccess.LastWriteTimeUtc(null).Year);
             Assert.False(storageLocation.StorageAccess.IsLocationAContainer(null));
+            Assert.Throws<System.InvalidOperationException>(() => storageLocation.StorageAccess.Open(null));
         }
 
         [Fact]

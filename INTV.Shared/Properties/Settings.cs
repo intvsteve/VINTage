@@ -40,6 +40,7 @@ namespace INTV.Shared.Properties
         public const string WindowSizeSettingName = "WindowSize";
         public const string CheckForAppUpdatesAtLaunchSettingName = "CheckForAppUpdatesAtLaunch";
         public const string ShowDetailedErrorsSettingName = "ShowDetailedErrors";
+        public const string ClearTemporaryFilesOnStartupSettingName = "ClearTemporaryFilesOnStartup";
 
         #endregion // General Settings
 
@@ -80,6 +81,9 @@ namespace INTV.Shared.Properties
         /// <summary>Default value for ShowDetailedErrors option.</summary>
         public const bool DefaultShowDetailedErrorsSetting = false;
 #endif // DEBUG
+
+        /// <summary>Default value for ClearTemporaryFilesOnStartup option.</summary>
+        public const bool DefaultClearTemporaryFilesOnStartupSetting = false;
 
         /// <summary>Default value for EnabledArchiveFormats option.</summary>
         public const EnabledCompressedArchiveFormats DefaultEnabledArchiveFormats = EnabledCompressedArchiveFormats.None;

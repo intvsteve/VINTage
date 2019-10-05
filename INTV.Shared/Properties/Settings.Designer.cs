@@ -285,5 +285,17 @@ namespace INTV.Shared.Properties {
                 this["MaxArchiveSizeMB"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ClearTemporaryFilesOnStartup {
+            get {
+                return ((bool)(this["ClearTemporaryFilesOnStartup"]));
+            }
+            set {
+                this["ClearTemporaryFilesOnStartup"] = value;
+            }
+        }
     }
 }

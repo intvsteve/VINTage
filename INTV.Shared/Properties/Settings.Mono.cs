@@ -108,6 +108,16 @@ namespace INTV.Shared.Properties
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to delete temporary files from previous session at launch.
+        /// </summary>
+        [DataMember]
+        public bool ClearTemporaryFilesOnStartup
+        {
+            get { return GetSetting<bool>(ClearTemporaryFilesOnStartupSettingName); }
+            set { SetSetting(ClearTemporaryFilesOnStartupSettingName, value); }
+        }
+
+        /// <summary>
         /// Gets or sets the maximum number of GZIP members to attempt to parse from a .gz file.
         /// </summary>
         [DataMember(EmitDefaultValue = false)]
@@ -161,6 +171,7 @@ namespace INTV.Shared.Properties
             AddSetting(DisplayRomFileNameForTitleSettingName, false);
             AddSetting(ShowDetailedErrorsSettingName, DefaultShowDetailedErrorsSetting);
             AddSetting(CheckForAppUpdatesAtLaunchSettingName, DefaultCheckForUpdatesAtLaunchSetting);
+            AddSetting(ClearTemporaryFilesOnStartupSettingName, DefaultClearTemporaryFilesOnStartupSetting);
             AddSetting(EnabledArchiveFormatsSettingName, DefaultEnabledArchiveFormats);
             AddSetting(SearchNestedArchivesSettingName, DefaultSearchNestedArchives);
             AddSetting(MaxArchiveSizeMBSettingName, DefaultMaxArchiveSizeMBSetting);

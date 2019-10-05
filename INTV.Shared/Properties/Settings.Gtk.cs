@@ -251,6 +251,9 @@ namespace INTV.Shared.Properties
             public bool CheckForAppUpdatesAtLaunch { get; set; }
 
             [DataMember]
+            public bool ClearTemporaryFilesOnStartup { get; set; }
+
+            [DataMember]
             public bool ShowDetailedErrors { get; set; }
 
             [DataMember(EmitDefaultValue = false)]

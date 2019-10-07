@@ -1,4 +1,4 @@
-﻿// <copyright file="CompressedArchiveAccessTests.cs" company="INTV Funhouse">
+﻿// <copyright file="CompressedArchiveTests.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //

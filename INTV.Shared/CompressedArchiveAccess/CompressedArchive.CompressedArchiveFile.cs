@@ -1,4 +1,4 @@
-﻿// <copyright file="CompressedArchiveAccess.CompressedArchiveFileAccess.cs" company="INTV Funhouse">
+﻿// <copyright file="CompressedArchive.CompressedArchiveFile.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -25,8 +25,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-
-//create a FileMemo<> in CompressedArchiveFileAccess so we avoid re-creating archives all the time (problems with testing??)
 
 namespace INTV.Shared.CompressedArchiveAccess
 {

@@ -738,7 +738,6 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
             }
         }
 
-
         [Fact]
         public void ICompressedArchive_ListInGZipArchiveContainingNestedTarArchiveFolderLocationNoRecursion_ReturnsExpectedItems()
         {

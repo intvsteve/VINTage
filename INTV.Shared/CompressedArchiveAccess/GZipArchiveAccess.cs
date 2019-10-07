@@ -1,4 +1,4 @@
-﻿// <copyright file="GZipAccess.cs" company="INTV Funhouse">
+﻿// <copyright file="GZipArchiveAccess.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //

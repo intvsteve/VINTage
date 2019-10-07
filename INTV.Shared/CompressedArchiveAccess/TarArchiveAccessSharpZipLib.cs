@@ -1,4 +1,4 @@
-﻿// <copyright file="TarAccessSharpZipLib.cs" company="INTV Funhouse">
+﻿// <copyright file="TarArchiveAccessSharpZipLib.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //

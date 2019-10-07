@@ -1,4 +1,4 @@
-﻿// <copyright file="CompressedArchiveAccess.cs" company="INTV Funhouse">
+// <copyright file="CompressedArchive.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -184,8 +184,6 @@ namespace INTV.Shared.CompressedArchiveAccess
             }
             return removedEntry;
         }
-
-           //Consider also using TemporaryFileCollection along with TemporaryDirectory / FileMemo<>
 
         /// <inheritdoc />
         /// <exception cref="InvalidOperationException">Thrown if entry is a directory.</exception>

@@ -247,7 +247,7 @@ namespace INTV.Shared.Utility
                         files = GetStorageLocations(rootArchivePath, entries);
                         if (!string.IsNullOrEmpty(fileExtensionMatch))
                         {
-                            files = files.Where(f => f.Path.EndsWith(fileExtensionMatch, StringComparison.InvariantCultureIgnoreCase));
+                            files = files.Where(f => f.Path.EndsWith(fileExtensionMatch, StringComparison.InvariantCultureIgnoreCase)).ToList();
                         }
                     }
                 }

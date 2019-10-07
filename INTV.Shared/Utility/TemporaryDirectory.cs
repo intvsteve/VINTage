@@ -32,8 +32,17 @@ namespace INTV.Shared.Utility
         /// Initialize a new instance of <see cref="TemporaryDirectory"/>.
         /// </summary>
         public TemporaryDirectory()
+            : this(GenerateUniqueDirectoryPath())
         {
-            Path = GenerateUniqueDirectoryPath();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="TemporaryDirectory"/> with a specified path.
+        /// </summary>
+        /// <param name="temporaryDirectoryPath">The absolute path to use for the temporary directory.</param>
+        public TemporaryDirectory(string temporaryDirectoryPath)
+        {
+            Path = temporaryDirectoryPath;
             Directory.CreateDirectory(Path);
         }
 

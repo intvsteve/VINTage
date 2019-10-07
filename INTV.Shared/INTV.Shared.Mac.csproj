@@ -239,6 +239,7 @@
     <Compile Include="CompressedArchiveAccess\CompressedArchive.CompressedArchiveFile.cs" />
     <Compile Include="CompressedArchiveAccess\CompressedArchive.CompressedArchiveIdentifier.cs" />
     <Compile Include="CompressedArchiveAccess\CompressedArchive.cs" />
+    <Compile Include="CompressedArchiveAccess\CompressedArchive.EntryMemo.cs" />
     <Compile Include="CompressedArchiveAccess\CompressedArchiveImplementation.cs" />
     <Compile Include="CompressedArchiveAccess\CompressedArchiveAccessMode.cs" />
     <Compile Include="CompressedArchiveAccess\CompressedArchiveEntry.cs" />

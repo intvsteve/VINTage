@@ -1,4 +1,4 @@
-// <copyright file="CompressedArchive.cs" company="INTV Funhouse">
+﻿// <copyright file="CompressedArchive.cs" company="INTV Funhouse">
 // Copyright (c) 2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -48,6 +48,11 @@ namespace INTV.Shared.CompressedArchiveAccess
     {
         // TODO: Consider a cache of instances of compressed archive access instances based on path?
         private static readonly Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>> Factories = new Lazy<ConcurrentDictionary<CompressedArchiveIdentifier, CompressedArchiveAccessFactory>>(InitializeCompressedArchiveFactories);
+
+        protected CompressedArchive()
+        {
+            _memos = new Lazy<EntryMemo>(() => new EntryMemo(RootLocation));
+        }
 
         ~CompressedArchive()
         {
@@ -146,6 +151,12 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <remarks>If <c>null</c>, the compressed archive accessor was created directly from a <see cref="Stream"/> and does not have a file system location.</remarks>
         public string RootLocation { get; protected set; }
 
+        private EntryMemo Memos
+        {
+            get { return _memos.Value; }
+        }
+        private Lazy<EntryMemo> _memos;
+
         #region ICompressedArchiveAccess
 
         /// <inheritdoc />
@@ -223,20 +234,8 @@ namespace INTV.Shared.CompressedArchiveAccess
 
             var fileMode = overwrite ? FileMode.Create : FileMode.CreateNew;
             using (var resourceStream = OpenEntry(entry))
-            using (var fileStream = new FileStream(destinationFilePath, fileMode, FileAccess.Write))
             {
-                resourceStream.CopyTo(fileStream);
-            }
-            try
-            {
-                // Attempt to preserve original modification time.
-                File.SetLastWriteTimeUtc(destinationFilePath, entry.LastModificationTime);
-
-                // TODO: Cache the result?
-                // TODO: Explore preserving permissions where possible?
-            }
-            catch (ArgumentOutOfRangeException)
-            {
+                ExtractEntryFromStream(entry, resourceStream, destinationFilePath, overwrite);
             }
         }
 
@@ -245,13 +244,40 @@ namespace INTV.Shared.CompressedArchiveAccess
         #region IStorageAccess
 
         /// <inheritdoc />
+        /// <remarks>When accessing an entry via the <see cref="IStorageAccess"/> interface, we assume that the caller
+        /// may wish to have full seek access to the stream that is returned. Therefore, if necessary the returned
+        /// stream will be tested for seek access. If the returned stream does not support seeking, then the entry
+        /// will be extracted to a temporary location, and that file's stream will be used.</remarks>
         public Stream Open(string storageLocation)
         {
             Stream stream = null;
             var entry = GetEntry(storageLocation);
             if (entry != null)
             {
-                return OpenEntry(entry);
+                stream = OpenEntry(entry);
+                if (stream != null)
+                {
+                    if (stream.CanRead)
+                    {
+                        if (!string.IsNullOrEmpty(RootLocation))
+                        {
+                            if (!stream.CanSeek)
+                            {
+                                string memo;
+                                var memoData = new EntryMemoData(this, entry, stream);
+                                if (Memos.CheckAddMemo(new Core.Utility.StorageLocation(storageLocation, this), memoData, out memo))
+                                {
+                                    var memoPath = Memos.GetMemoPath(memo);
+                                    if (File.Exists(memoPath))
+                                    {
+                                        stream.Dispose();
+                                        stream = new FileStream(memoPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             return stream;
         }
@@ -476,6 +502,23 @@ namespace INTV.Shared.CompressedArchiveAccess
                 storageLocation = PathUtils.GetRelativePath(storageLocation, rootLocation);
             }
             return storageLocation;
+        }
+
+        private void ExtractEntryFromStream(ICompressedArchiveEntry entry, Stream resourceStream, string destinationFilePath, bool overwrite)
+        {
+            var fileMode = overwrite ? FileMode.Create : FileMode.CreateNew;
+            using (var fileStream = new FileStream(destinationFilePath, fileMode, FileAccess.Write))
+            {
+                resourceStream.CopyTo(fileStream);
+            }
+            try
+            {
+                // Attempt to preserve original modification time.
+                File.SetLastWriteTimeUtc(destinationFilePath, entry.LastModificationTime);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+            }
         }
     }
 }

@@ -45,78 +45,6 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
-        /// Gets whether or not the given path exists on a removable device.
-        /// </summary>
-        /// <param name="path">The path to check.</param>
-        /// <returns><c>true</c> if the path refers to a file on some type of removable device.</returns>
-        public static bool IsPathOnRemovableDevice(this string path)
-        {
-            if (!Path.IsPathRooted(path))
-            {
-                throw new System.ArgumentException(Resources.Strings.PathNotRootedError, path);
-            }
-            var root = Path.GetPathRoot(path);
-            var driveInfo = new DriveInfo(root);
-            var isRemovable = false;
-            switch (driveInfo.DriveType)
-            {
-                case DriveType.Fixed:
-                    isRemovable = false;
-                    break;
-                case DriveType.Unknown:
-                case DriveType.NoRootDirectory:
-                case DriveType.Removable:
-                case DriveType.Network:
-                case DriveType.CDRom:
-                case DriveType.Ram:
-                default:
-                    isRemovable = true;
-                    break;
-            }
-            if (!isRemovable)
-            {
-                var ephemeralPath = System.IO.Path.GetTempPath(); // treat temp dir as ephemeral
-                if (!string.IsNullOrEmpty(ephemeralPath))
-                {
-                   isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
-                }
-            }
-            if (!isRemovable)
-            {
-                var ephemeralPath = NativeMethods.GetDownloadsPath(); // treat downloads path as ephemeral
-                if (!string.IsNullOrEmpty(ephemeralPath))
-                {
-                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
-                }
-            }
-            if (!isRemovable)
-            {
-                var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.History);
-                if (!string.IsNullOrEmpty(ephemeralPath))
-                {
-                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
-                }
-            }
-            if (!isRemovable)
-            {
-                var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.InternetCache);
-                if (!string.IsNullOrEmpty(ephemeralPath))
-                {
-                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
-                }
-            }
-            if (!isRemovable)
-            {
-                var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.CDBurning);
-                if (!string.IsNullOrEmpty(ephemeralPath))
-                {
-                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
-                }
-            }
-            return isRemovable;
-        }
-
-        /// <summary>
         /// Reveals the given path in file system.
         /// </summary>
         /// <param name="path">Absolute path to the file to show in Explorer.</param>
@@ -174,6 +102,74 @@ namespace INTV.Shared.Utility
         {
             // TODO: Consider supporting Url syntax.
             return path;
+        }
+
+        /// <summary>
+        /// Gets whether or not the given path exists on a removable device.
+        /// </summary>
+        /// <param name="path">The path to check.</param>
+        /// <returns><c>true</c> if the path refers to a file on some type of removable device.</returns>
+        private static bool OSIsPathOnRemovableDevice(this string path)
+        {
+            var root = Path.GetPathRoot(path);
+            var driveInfo = new DriveInfo(root);
+            var isRemovable = false;
+            switch (driveInfo.DriveType)
+            {
+                case DriveType.Fixed:
+                    isRemovable = false;
+                    break;
+                case DriveType.Unknown:
+                case DriveType.NoRootDirectory:
+                case DriveType.Removable:
+                case DriveType.Network:
+                case DriveType.CDRom:
+                case DriveType.Ram:
+                default:
+                    isRemovable = true;
+                    break;
+            }
+            if (!isRemovable)
+            {
+                var ephemeralPath = System.IO.Path.GetTempPath(); // treat temp dir as ephemeral
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            if (!isRemovable)
+            {
+                var ephemeralPath = NativeMethods.GetDownloadsPath(); // treat downloads path as ephemeral
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            if (!isRemovable)
+            {
+                var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.History);
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            if (!isRemovable)
+            {
+                var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.InternetCache);
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            if (!isRemovable)
+            {
+                var ephemeralPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.CDBurning);
+                if (!string.IsNullOrEmpty(ephemeralPath))
+                {
+                    isRemovable = path.StartsWith(ephemeralPath, System.StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            return isRemovable;
         }
 
         private static string OSFixUpSeparators(string path)

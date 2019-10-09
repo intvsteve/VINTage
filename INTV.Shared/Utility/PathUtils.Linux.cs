@@ -62,16 +62,70 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Reveals the given path in file system.
+        /// </summary>
+        /// <param name="path">Absolute path to the file to show in Explorer.</param>
+        public static void RevealInFileSystem(this string path)
+        {
+            RevealInFileSystem(new[] { path });
+        }
+
+        /// <summary>
+        /// Reveals the given paths in the file system.
+        /// </summary>
+        /// <param name="files">Absolute paths to the files to show in Explorer.</param>
+        /// <remarks>Adapted from this article: http://ask.webatall.com/windows/16424_programatically-select-multiple-files-in-windows-explorer.html </remarks>
+        public static void RevealInFileSystem(this IEnumerable<string> files)
+        {
+            var folders = new Dictionary<string, List<string>>(PathComparer.Instance);
+            foreach (var file in files.Where(f => File.Exists(f) || Directory.Exists(f)))
+            {
+                var folder = File.GetAttributes(file).HasFlag(FileAttributes.Directory) ? file : Path.GetDirectoryName(file);
+                List<string> filesInFolder;
+                if (folders.TryGetValue(folder, out filesInFolder))
+                {
+                    filesInFolder.Add(file);
+                }
+                else
+                {
+                    folders[folder] = new List<string>(new[] { file });
+                }
+            }
+
+            // Use technique from StackOverflow...
+            // See: https://stackoverflow.com/questions/22637461/how-to-open-file-location-or-open-folder-location-in-monodevelop-gtk
+            foreach (var folder in folders.Keys.Distinct(PathComparer.Instance))
+            {
+                // Given the unpredictability of things... just open folder? How many times?
+                // gnome-open? full path opens in app.... but it hangs if you give directory?
+                // nautilus?
+                // configure the command to run? Ugh!
+                Uri path;
+                if (Uri.TryCreate(folder, UriKind.RelativeOrAbsolute, out path))
+                {
+                    System.Diagnostics.Process.Start(path.AbsoluteUri);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolves the path for settings.
+        /// </summary>
+        /// <param name="path">The file path to resolve into settings-friendly format.</param>
+        /// <returns>The path for settings.</returns>
+        public static string ResolvePathForSettings(string path)
+        {
+            // TODO: Consider supporting Url syntax.
+            return path;
+        }
+
+        /// <summary>
         /// Gets whether or not the given path exists on a removable device.
         /// </summary>
         /// <param name="path">The path to check.</param>
         /// <returns><c>true</c> if the path refers to a file on some type of removable device.</returns>
-        public static bool IsPathOnRemovableDevice(this string path)
+        private static bool OSIsPathOnRemovableDevice(this string path)
         {
-            if (!Path.IsPathRooted(path))
-            {
-                throw new System.ArgumentException("Path not rooted.", path);
-            }
             var root = Path.GetPathRoot(path);
             var driveInfo = new DriveInfo(root);
             var isRemovable = false;
@@ -129,64 +183,6 @@ namespace INTV.Shared.Utility
                 }
             }
             return isRemovable;
-        }
-
-        /// <summary>
-        /// Reveals the given path in file system.
-        /// </summary>
-        /// <param name="path">Absolute path to the file to show in Explorer.</param>
-        public static void RevealInFileSystem(this string path)
-        {
-            RevealInFileSystem(new[] { path });
-        }
-
-        /// <summary>
-        /// Reveals the given paths in the file system.
-        /// </summary>
-        /// <param name="files">Absolute paths to the files to show in Explorer.</param>
-        /// <remarks>Adapted from this article: http://ask.webatall.com/windows/16424_programatically-select-multiple-files-in-windows-explorer.html </remarks>
-        public static void RevealInFileSystem(this IEnumerable<string> files)
-        {
-            var folders = new Dictionary<string, List<string>>(PathComparer.Instance);
-            foreach (var file in files.Where(f => File.Exists(f) || Directory.Exists(f)))
-            {
-                var folder = File.GetAttributes(file).HasFlag(FileAttributes.Directory) ? file : Path.GetDirectoryName(file);
-                List<string> filesInFolder;
-                if (folders.TryGetValue(folder, out filesInFolder))
-                {
-                    filesInFolder.Add(file);
-                }
-                else
-                {
-                    folders[folder] = new List<string>(new[] { file });
-                }
-            }
-
-            // Use technique from StackOverflow...
-            // See: https://stackoverflow.com/questions/22637461/how-to-open-file-location-or-open-folder-location-in-monodevelop-gtk
-            foreach (var folder in folders.Keys.Distinct(PathComparer.Instance))
-            {
-                // Given the unpredictability of things... just open folder? How many times?
-                // gnome-open? full path opens in app.... but it hangs if you give directory?
-                // nautilus?
-                // configure the command to run? Ugh!
-                Uri path;
-                if (Uri.TryCreate(folder, UriKind.RelativeOrAbsolute, out path))
-                {
-                    System.Diagnostics.Process.Start(path.AbsoluteUri);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Resolves the path for settings.
-        /// </summary>
-        /// <param name="path">The file path to resolve into settings-friendly format.</param>
-        /// <returns>The path for settings.</returns>
-        public static string ResolvePathForSettings(string path)
-        {
-            // TODO: Consider supporting Url syntax.
-            return path;
         }
 
         private static string OSFixUpSeparators(string path)

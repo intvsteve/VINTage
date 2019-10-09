@@ -61,11 +61,41 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Reveals the given path in file system.
+        /// </summary>
+        /// <param name="path">Absolute path to the file to show in Finder.</param>
+        public static void RevealInFileSystem(this string path)
+        {
+            RevealInFileSystem(new[] { path });
+        }
+
+        /// <summary>
+        /// Reveals the given paths in the file system.
+        /// </summary>
+        /// <param name="files">Absolute paths to the files to show in Finder.</param>
+        public static void RevealInFileSystem(this IEnumerable<string> files)
+        {
+            NSWorkspace.SharedWorkspace.ActivateFileViewer(files.Select(f => NSUrl.FromFilename(f)).ToArray());
+        }
+
+        /// <summary>
+        /// Resolves the path for settings.
+        /// </summary>
+        /// <param name="path">The file path to resolve into settings-friendly format.</param>
+        /// <returns>The path for settings.</returns>
+        public static string ResolvePathForSettings(string path)
+        {
+            var url = NSUrl.FromFilename(path);
+            path = url.AbsoluteString;
+            return path;
+        }
+
+        /// <summary>
         /// Gets whether or not the given path exists on a removable device.
         /// </summary>
         /// <param name="path">The path to check.</param>
         /// <returns><c>true</c> if the path refers to a file on some type of removable device.</returns>
-        public static bool IsPathOnRemovableDevice(this string path)
+        private static bool OSIsPathOnRemovableDevice(this string path)
         {
             var isRemovable = true;
             var writeable = false;
@@ -142,36 +172,6 @@ namespace INTV.Shared.Utility
                 NSApplication.CheckForIllegalCrossThreadCalls = check;
             }
             return isRemovable;
-        }
-
-        /// <summary>
-        /// Reveals the given path in file system.
-        /// </summary>
-        /// <param name="path">Absolute path to the file to show in Finder.</param>
-        public static void RevealInFileSystem(this string path)
-        {
-            RevealInFileSystem(new[] { path });
-        }
-
-        /// <summary>
-        /// Reveals the given paths in the file system.
-        /// </summary>
-        /// <param name="files">Absolute paths to the files to show in Finder.</param>
-        public static void RevealInFileSystem(this IEnumerable<string> files)
-        {
-            NSWorkspace.SharedWorkspace.ActivateFileViewer(files.Select(f => NSUrl.FromFilename(f)).ToArray());
-        }
-
-        /// <summary>
-        /// Resolves the path for settings.
-        /// </summary>
-        /// <param name="path">The file path to resolve into settings-friendly format.</param>
-        /// <returns>The path for settings.</returns>
-        public static string ResolvePathForSettings(string path)
-        {
-            var url = NSUrl.FromFilename(path);
-            path = url.AbsoluteString;
-            return path;
         }
 
         private static string OSFixUpSeparators(string path)

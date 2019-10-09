@@ -418,6 +418,26 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Gets whether or not the given path exists on a removable device.
+        /// </summary>
+        /// <param name="path">The path to check.</param>
+        /// <returns><c>true</c> if the path refers to a file on some type of removable device.</returns>
+        public static bool IsPathOnRemovableDevice(this string path)
+        {
+            if (!Path.IsPathRooted(path))
+            {
+                throw new System.ArgumentException(Resources.Strings.PathNotRootedError, path);
+            }
+
+            var isOnRemovableDevice = path.IsPathInSupportedArchive();
+            if (!isOnRemovableDevice)
+            {
+                isOnRemovableDevice = path.OSIsPathOnRemovableDevice();
+            }
+            return isOnRemovableDevice;
+        }
+
+        /// <summary>
         /// Determines if the given path contains any invalid characters.
         /// </summary>
         /// <param name="path">Path to be checked.</param>

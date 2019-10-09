@@ -198,10 +198,10 @@ namespace INTV.LtoFlash.Model
             {
                 cachedRomPath.Path.ClearReadOnlyAttribute();
                 cachedConfigPath.Path.ClearReadOnlyAttribute();
-                System.IO.File.Copy(rom.RomPath.Path, cachedRomPath.Path, true);
+                rom.RomPath.CopyFile(cachedRomPath, overwrite: true);
                 if (cachedConfigPath.IsValid && rom.ConfigPath.IsValid && rom.ConfigPath.Exists() && (rom.ConfigPath != rom.RomPath))
                 {
-                    System.IO.File.Copy(rom.ConfigPath.Path, cachedConfigPath.Path, true);
+                    rom.ConfigPath.CopyFile(cachedConfigPath, overwrite: true);
                 }
                 else if (!rom.ConfigPath.Exists() && cachedConfigPath.Exists())
                 {

@@ -161,7 +161,7 @@ namespace INTV.LtoFlash.Model
                     var cacheEntry = new CacheIndexEntry();
                     cacheEntry.LuigiPath = cachedLuigiRom.RomPath.Path.Substring(cacheDirectoryLength);
                     cacheEntry.LuigiCrc24 = INTV.Core.Utility.Crc24.OfFile(cachedLuigiRom.RomPath);
-                    cacheEntry.LuigiSize = (uint)(new FileInfo(cachedLuigiRom.RomPath.Path)).Length;
+                    cacheEntry.LuigiSize = (uint)cachedLuigiRom.RomPath.Size();
 
                     // Now fetch or recreate the ROM if missing. RomFormat.None indicates that the
                     // original has been located on disk. Otherwise, indicates the format to recreate from the LUIGI file.
@@ -175,7 +175,7 @@ namespace INTV.LtoFlash.Model
                         if (originalRom != null)
                         {
                             cacheEntry.RomPath = originalRom.RomPath.Path.Substring(cacheDirectoryLength);
-                            cacheEntry.RomSize = (uint)(new FileInfo(originalRom.RomPath.Path)).Length;
+                            cacheEntry.RomSize = (uint)originalRom.RomPath.Size();
                             restoredCacheEntries.Add(cacheEntry);
                             nonLuigiRoms.RemoveAll(r => (r.Format == luigiHeader.OriginalRomFormat) && r.IsEquivalentTo(cachedLuigiRom, comparer));
                         }
@@ -189,31 +189,31 @@ namespace INTV.LtoFlash.Model
                     {
                         // Check for a .bin or .rom file.
                         originalRomFormat = RomFormat.Rom;
-                        var originalFile = System.IO.Path.ChangeExtension(cachedLuigiRom.RomPath.Path, originalRomFormat.FileExtension());
-                        if (!File.Exists(originalFile))
+                        var originalFile = cachedLuigiRom.RomPath.ChangeExtension(originalRomFormat.FileExtension());
+                        if (!originalFile.Exists())
                         {
                             originalRomFormat = RomFormat.Bin;
                             foreach (var binFormatExtension in ProgramFileKindHelpers.RomFileExtensionsThatUseCfgFiles)
                             {
                                 if (!string.IsNullOrEmpty(binFormatExtension))
                                 {
-                                    originalFile = System.IO.Path.ChangeExtension(cachedLuigiRom.RomPath.Path, binFormatExtension);
+                                    originalFile = cachedLuigiRom.RomPath.ChangeExtension(binFormatExtension);
                                 }
                                 else
                                 {
-                                    originalFile = cachedLuigiRom.RomPath.GetFileNameWithoutExtension();
+                                    originalFile = cachedLuigiRom.RomPath.GetFileNameWithoutExtension().CreateStorageLocationFromPath();
                                 }
-                                if (File.Exists(originalFile))
+                                if (originalFile.Exists())
                                 {
                                     break;
                                 }
                             }
                         }
-                        if (File.Exists(originalFile))
+                        if (originalFile.Exists())
                         {
-                            cacheEntry.RomCrc32 = INTV.Core.Utility.Crc32.OfFile(new StorageLocation(originalFile));
-                            cacheEntry.RomPath = originalFile.Substring(cacheDirectoryLength);
-                            cacheEntry.RomSize = (uint)(new FileInfo(originalFile)).Length;
+                            cacheEntry.RomCrc32 = INTV.Core.Utility.Crc32.OfFile(originalFile);
+                            cacheEntry.RomPath = originalFile.Path.Substring(cacheDirectoryLength);
+                            cacheEntry.RomSize = (uint)originalFile.Size();
 
                             if (originalRomFormat == RomFormat.Bin)
                             {
@@ -279,7 +279,7 @@ namespace INTV.LtoFlash.Model
                     var cacheEntry = new CacheIndexEntry();
                     cacheEntry.RomPath = nonLuigiRom.RomPath.Path.Substring(cacheDirectoryLength);
                     cacheEntry.RomCrc32 = nonLuigiRom.Crc;
-                    cacheEntry.RomSize = (uint)(new FileInfo(nonLuigiRom.RomPath.Path)).Length;
+                    cacheEntry.RomSize = (uint)nonLuigiRom.RomPath.Size();
 
                     if (nonLuigiRom.Format == RomFormat.Bin)
                     {

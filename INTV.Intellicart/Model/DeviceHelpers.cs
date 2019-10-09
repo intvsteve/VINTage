@@ -223,7 +223,7 @@ namespace INTV.Intellicart.Model
                     var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.DownloadRom_RomConversionOutputFileNotFoundErrorFormat, rom.RomPath, romFile.GetFileNameWithoutExtension());
                     throw new InvalidOperationException(message);
                 }
-                else if ((new System.IO.FileInfo(romFile.Path)).Length > IntellicartModel.MaxROMSize)
+                else if (romFile.Size() > IntellicartModel.MaxROMSize)
                 {
                     var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.DownloadRom_RomTooLargeErrorFormat, rom.RomPath, romFile);
                     throw new InvalidOperationException(message);

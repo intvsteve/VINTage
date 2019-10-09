@@ -205,6 +205,58 @@ namespace INTV.Shared.Model.Program
                 }));
         }
 
+        private static bool DoesNewRomInArchiveMatchExistingRomInArchive(IRom existingRom, IRom newRom)
+        {
+            // For a newly discovered ROM that does not use default storage (i.e. one in a compressed archive), it
+            // can be the case that an existing copy is already in the list. However, at the time of this code being
+            // added, those locations are treated as ephemeral, and during ROM list XML parsing, we skip creating
+            // compressed archive instances for each entry in the ROM list. The primary driver for that is going to
+            // be performance and memory related, so the degenerate case of all ROMs being in archives won't require
+            // opening a large number of compressed archive accessors simultaneously.
+            //
+            // The reason no match is found is the byproduct of treating ROMs in archives as being at an ephemeral
+            // location. So even though a saved CRC exists, it is being ignored because the ROM does not appear to
+            // be valid -- due to the lack of a complete construction of the ROM's image and cfg storage locations.
+            //
+            // In light of this, we will look for a matching entry that has matching paths for the main ROM as well
+            // as its alternate location. If the paths match, and the alternate paths match, and the CRCs of the alternates
+            // match, one of which is this newly discovered ROM, then it _is_ a match, and is already in the list.
+            //
+            // Better alternative: Fix up "resolving" ROMs from the XML load. An idea on what to do is to implement
+            // a lazier kind of storage access for compressed archives that can be used to confirm values but not
+            // keep around the access to the underlying storage the way the existing implementations do.
+            //
+            // Mechanisms for this may go something like this:
+            // a) Add a "resolve storage access" mechanism to INTV.Core -- possibly via a callback registration
+            //    or by adding the method to the existing storage access interface
+            // b) Modify existing storage access registration system in INTV.Core to provide a "Resolve" system
+            //    that accepts a hint (path)
+            // c) Implement another level of indirection (see above) for compressed archives
+            // d) Other ideas?
+            var matches = false;
+            var isNewRomInArchive = !newRom.RomPath.UsesDefaultStorage;
+            if (isNewRomInArchive)
+            {
+                var xRomPath = existingRom.RomPath.Path.NormalizePathSeparators();
+                var xCfgPath = existingRom.ConfigPath.Path.NormalizePathSeparators();
+                var yRomPath = newRom.RomPath.Path.NormalizePathSeparators();
+                var yCfgPath = newRom.ConfigPath.Path.NormalizePathSeparators();
+
+                var pathsMatch = PathComparer.Instance.Compare(xRomPath, yRomPath) == 0
+                    && PathComparer.Instance.Compare(xCfgPath, yCfgPath) == 0;
+
+                if (pathsMatch)
+                {
+                    var existingRomPath = xRomPath.CreateStorageLocationFromPath();
+                    var existingCfgPath = xCfgPath.CreateStorageLocationFromPath();
+                    var romCrc = Crc32.OfFile(existingRomPath);
+                    var cfgCrc = Crc32.OfFile(existingCfgPath);
+                    matches = romCrc == newRom.Crc && cfgCrc == newRom.CfgCrc;
+                }
+            }
+            return matches;
+        }
+
         /// <summary>
         /// Identifies ROMs in a list of files and returns them.
         /// </summary>
@@ -244,7 +296,7 @@ namespace INTV.Shared.Model.Program
                         var programInfo = romFile.GetProgramInformation();
                         if ((filter == null) || filter(programInfo))
                         {
-                            var haveIt = existingRoms.Any(d => d.Rom.IsEquivalentTo(romFile, programInfo, comparer));
+                            var haveIt = existingRoms.Any(d => d.Rom.IsEquivalentTo(romFile, programInfo, comparer) || DoesNewRomInArchiveMatchExistingRomInArchive(d.Rom, romFile));
                             if (!haveIt)
                             {
                                 IRom localRomCopy = null;

@@ -164,6 +164,36 @@ namespace INTV.Shared.Utility
         }
 
         /// <summary>
+        /// Check that the given storage location is a valid directory.
+        /// </summary>
+        /// <param name="location">The storage location to check.</param>
+        /// <returns><c>true</c> if the given location refers to a directory, either on disk or as determined by the
+        /// <see cref="IStorageAccess"/> used by <paramref name="location"/>.</returns>
+        /// <remarks>Note that the result of this function is affected by whether particular storage access related
+        /// behaviors are enabled. For example, if compressed archive access or nested archive access modes are disabled,
+        /// and <paramref name="location"/> requires them to be enabled, the method will return false.</remarks>
+        public static bool DirectoryExists(this StorageLocation location)
+        {
+            var directoryExists = ContainerLocationExists(location, considerArchiveAsContainer: false);
+            return directoryExists;
+        }
+
+        /// <summary>
+        /// Check that the given storage location is a valid directory or other kind of file container.
+        /// </summary>
+        /// <param name="location">The storage location to check.</param>
+        /// <returns><c>true</c> if the given location refers to a directory or other kind of container, such as a compressed
+        /// archive, as defined by the location's <see cref="IStorageAccess"/>.</returns>
+        /// <remarks>Note that the result of this function is affected by whether particular storage access related
+        /// behaviors are enabled. For example, if compressed archive access or nested archive access modes are disabled,
+        /// and <paramref name="location"/> requires them to be enabled, the method will return false.</remarks>
+        public static bool ContainerExists(this StorageLocation location)
+        {
+            var containerExists = ContainerLocationExists(location, considerArchiveAsContainer: true);
+            return containerExists;
+        }
+
+        /// <summary>
         /// Gets the containing location of the given location.
         /// </summary>
         /// <param name="location">The location whose containing location is desired.</param>
@@ -492,6 +522,49 @@ namespace INTV.Shared.Utility
                 refersToDifferntArchiveLocation = ICompressedArchiveAccessExtensions.IsNestedArchiveAccessEnabled;
             }
             return refersToDifferntArchiveLocation;
+        }
+
+        private static bool ContainerLocationExists(StorageLocation location, bool considerArchiveAsContainer)
+        {
+            var containerLocationExists = false;
+            if (location.UsesDefaultStorage)
+            {
+                containerLocationExists = Directory.Exists(location.Path);
+            }
+            if (!containerLocationExists && ICompressedArchiveAccessExtensions.IsCompressedArchiveAccessEnabled)
+            {
+                var mostDeeplyNestedArchivePath = location.Path.GetMostDeeplyNestedArchivePath();
+                if (!string.IsNullOrEmpty(mostDeeplyNestedArchivePath))
+                {
+                    var nestedPathForEqualityCheck = mostDeeplyNestedArchivePath.NormalizePathSeparators().TrimEnd(new[] { '/' });
+                    var locationPathForEqualityCheck = location.Path.NormalizePathSeparators().TrimEnd(new[] { '/' });
+                    containerLocationExists = PathComparer.Instance.Compare(nestedPathForEqualityCheck,  locationPathForEqualityCheck) == 0;
+                    if (containerLocationExists)
+                    {
+                        containerLocationExists = considerArchiveAsContainer;
+                        if (containerLocationExists)
+                        {
+                            var testLocation = mostDeeplyNestedArchivePath.CreateStorageLocationFromPath();
+                            containerLocationExists = !testLocation.UsesDefaultStorage;
+                        }
+                    }
+                    else
+                    {
+                        var testLocation = mostDeeplyNestedArchivePath.CreateStorageLocationFromPath();
+                        var archiveAccess = testLocation.StorageAccess as ICompressedArchiveAccess;
+                        if (archiveAccess != null)
+                        {
+                            var entryName = location.Path.Substring(mostDeeplyNestedArchivePath.Length);
+                            var entry = archiveAccess.FindEntry(entryName);
+                            if (entry != null)
+                            {
+                                containerLocationExists = entry.IsDirectory;
+                            }
+                        }
+                    }
+                }
+            }
+            return containerLocationExists;
         }
     }
 }

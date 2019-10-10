@@ -1056,6 +1056,454 @@ namespace INTV.Shared.Tests.Utility
 
         #endregion // AddSuffix Tests
 
+        #region DirectoryExists Tests
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_DirectoryExistsOfInvalidLocation_ReturnsFalse(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+
+                Assert.False(StorageLocation.InvalidLocation.DirectoryExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_DirectoryExistsOfNullLocation_ReturnsFalse(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+
+                Assert.False(StorageLocation.Null.DirectoryExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_DirectoryExistsOfEmptyLocation_ReturnsFalse(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+
+                Assert.False(StorageLocation.Empty.DirectoryExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_TemporaryDirectoryExists_ReturnsTrue(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+                var location = Path.GetTempPath().CreateStorageLocationFromPath();
+
+                Assert.True(location.DirectoryExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_InvalidDirectoryExists_ReturnsFalse(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+                var location = TemporaryDirectory.GenerateUniqueDirectoryPath().CreateStorageLocationFromPath();
+
+                Assert.False(location.DirectoryExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_DirectoryExistsOfArchive_ReturnsFalse(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+                string archivePath;
+                using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath))
+                {
+                    var location = archivePath.CreateStorageLocationFromPath();
+
+                    Assert.False(location.DirectoryExists());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_DirectoryExistsOfDirectoryInArchiveWithArchiveAccessDisabled_ReturnsFalse()
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess();
+                string archivePath;
+                using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
+                {
+                    var location = Path.Combine(archivePath, "tagalong_dir/").CreateStorageLocationFromPath();
+
+                    Assert.False(location.DirectoryExists());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess();
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_DirectoryExistsOfDirectoryInArchiveWithArchiveAccessEnabled_ReturnsTrue()
+        {
+            string archivePath;
+            using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "tagalong_dir/").CreateStorageLocationFromPath();
+
+                Assert.True(location.DirectoryExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_DirectoryExistsOfNonexistentDirectoryInArchiveWithArchiveAccessEnabled_ReturnsFalse()
+        {
+            string archivePath;
+            using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "tagalong_dir/eep/").CreateStorageLocationFromPath();
+
+                Assert.False(location.DirectoryExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_DirectoryExistsOfDirectoryInNestedArchiveWithNestedArchiveDisabled_ReturnsFalse()
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableNestedArchiveAccess();
+                string archivePath;
+                using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+                {
+                    var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/").CreateStorageLocationFromPath();
+
+                    Assert.False(location.DirectoryExists());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess();
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_DirectoryExistsOfDirectoryInNestedArchiveWithNestedArchiveEnabled_ReturnsTrue()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/").CreateStorageLocationFromPath();
+
+                Assert.True(location.DirectoryExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_DirectoryExistsNestedArchiveWithNestedArchiveEnabled_ReturnsFalse()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar").CreateStorageLocationFromPath();
+
+                Assert.False(location.DirectoryExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_DirectoryExistsFileInNestedArchiveWithNestedArchiveEnabled_ReturnsFalse()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.luigi").CreateStorageLocationFromPath();
+
+                Assert.False(location.DirectoryExists());
+            }
+        }
+
+        #endregion // DirectoryExists Tests
+
+        #region ContainerExists Tests
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_ContainerExistsOfInvalidLocation_ReturnsFalse(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+
+                Assert.False(StorageLocation.InvalidLocation.ContainerExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_ContainerExistsOfNullLocation_ReturnsFalse(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+
+                Assert.False(StorageLocation.Null.ContainerExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_ContainerExistsOfEmptyLocation_ReturnsFalse(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+
+                Assert.False(StorageLocation.Empty.ContainerExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_TemporaryDirectoryContainerExists_ReturnsTrue(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+                var location = Path.GetTempPath().CreateStorageLocationFromPath();
+
+                Assert.True(location.ContainerExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void StorageLocationExtensions_InvalidDirectoryContainerExists_ReturnsFalse(bool enableArchiveAccess)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+                var location = TemporaryDirectory.GenerateUniqueDirectoryPath().CreateStorageLocationFromPath();
+
+                Assert.False(location.ContainerExists());
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(true);
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsOfArchiveWithArchivesDisabled_ReturnsFalse()
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess();
+                string archivePath;
+                using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath))
+                {
+                    var location = archivePath.CreateStorageLocationFromPath();
+
+                    Assert.False(location.ContainerExists());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess();
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsOfArchiveWithArchivesEnabled_ReturnsTrue()
+        {
+            string archivePath;
+            using (TestResource.TagalongZip.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = archivePath.CreateStorageLocationFromPath();
+
+                Assert.True(location.ContainerExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsOfDirectoryInArchiveWithArchiveAccessDisabled_ReturnsFalse()
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess();
+                string archivePath;
+                using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
+                {
+                    var location = Path.Combine(archivePath, "tagalong_dir/").CreateStorageLocationFromPath();
+
+                    Assert.False(location.ContainerExists());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess();
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsOfDirectoryInArchiveWithArchiveAccessEnabled_ReturnsTrue()
+        {
+            string archivePath;
+            using (TestResource.TagalongDirZip.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "tagalong_dir/").CreateStorageLocationFromPath();
+
+                Assert.True(location.ContainerExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsOfDirectoryInNestedArchiveWithNestedArchiveDisabled_ReturnsFalse()
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableNestedArchiveAccess();
+                string archivePath;
+                using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+                {
+                    var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/").CreateStorageLocationFromPath();
+
+                    Assert.False(location.ContainerExists());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess();
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsOfDirectoryInNestedArchiveWithNestedArchiveEnabled_ReturnsTrue()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/").CreateStorageLocationFromPath();
+
+                Assert.True(location.ContainerExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsOfNonexistentDirectoryInNestedArchiveWithNestedArchiveEnabled_ReturnsFalse()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/bin/biff/").CreateStorageLocationFromPath();
+
+                Assert.False(location.ContainerExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsNestedArchiveWithNestedArchiveEnabled_ReturnsTrue()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar").CreateStorageLocationFromPath();
+
+                Assert.True(location.ContainerExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsNonexistentNestedArchiveWithNestedArchiveEnabled_ReturnsFalse()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/Tagling.zip").CreateStorageLocationFromPath();
+
+                Assert.False(location.ContainerExists());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_ContainerExistsFileInNestedArchiveWithNestedArchiveEnabled_ReturnsFalse()
+        {
+            string archivePath;
+            using (TestResource.TagalongZipWithManyNests.ExtractToTemporaryFile(out archivePath))
+            {
+                var location = Path.Combine(archivePath, "extra_nest/tagalong_msys2.tgz/tagalong_msys2.tar/tagalong.luigi").CreateStorageLocationFromPath();
+
+                Assert.False(location.ContainerExists());
+            }
+        }
+
+        #endregion // ContainerExists Tests
+
         #region GetContainingLocation Tests
 
         [Fact]

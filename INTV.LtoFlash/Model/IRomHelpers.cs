@@ -225,7 +225,7 @@ namespace INTV.LtoFlash.Model
                 var result = -1;
                 if (JustCopy == converterApp.Item1)
                 {
-                    System.IO.File.Copy(rom.RomPath.Path, luigiFile.Path, true);
+                    rom.RomPath.CopyFile(luigiFile, overwrite: true);
                     result = 0;
                 }
                 else

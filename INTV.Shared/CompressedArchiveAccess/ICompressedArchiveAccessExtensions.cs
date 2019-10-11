@@ -321,6 +321,7 @@ namespace INTV.Shared.CompressedArchiveAccess
                 while (containers.Any())
                 {
                     var container = containers.Dequeue();
+                    var visitContainer = IsNestedArchiveAccessEnabled;
                     ICompressedArchiveAccess nestedCompressedArchiveAccess;
                     string nestedArchiveRelativeLocation;
                     var nestedAchiveLocation = container.Name.GetMostDeeplyNestedContainerLocation(out nestedArchiveRelativeLocation);
@@ -338,9 +339,11 @@ namespace INTV.Shared.CompressedArchiveAccess
                     }
                     else
                     {
+                        // not a nested archive, but a subdirectory -- so visit!
+                        visitContainer = true;
                         nestedCompressedArchiveAccess = compressedArchiveAccess;
                     }
-                    if (IsNestedArchiveAccessEnabled)
+                    if (visitContainer)
                     {
                         var childEntries = ListEntriesInCompressedArchive(nestedCompressedArchiveAccess, nestedArchiveRelativeLocation, includeContainers: true).Select(e => e.MakeAbsoluteEntry(nestedAchiveLocation));
                         entries.AddRange(childEntries);

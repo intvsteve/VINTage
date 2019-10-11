@@ -255,10 +255,42 @@ namespace INTV.Shared.Utility
         /// argument of .zip will NOT include those entries!</remarks>
         public static IEnumerable<StorageLocation> EnumerateFiles(this StorageLocation location, string fileExtensionMatch)
         {
+            return location.EnumerateFiles(fileExtensionMatch, recurse: false);
+        }
+
+        /// <summary>
+        /// Enumerates the entries at the given location, optionally recursing and filtering.
+        /// </summary>
+        /// <param name="location">The location at which to enumerate entries.</param>
+        /// <param name="fileExtensionMatch">If not empty, only include items with the provided file extension in the results.</param>
+        /// <param name="recurse">If <c>true</c>, files are listed in subdirectories as well. If archive access and nested archive
+        /// access are also enabled, then files contained in archives are listed as well.</param>
+        /// <returns>The entries at the provided storage location.</returns>
+        /// <remarks>This method attempts to seamlessly handle standard file system locations as well as locations within an archive.
+        /// Note the following idiosyncrasy: When listing files within an archive, recall that nested archives are treated as
+        /// directories on a traditional file system. Thus, calling this method in an archive location with a file extension
+        /// argument of .zip will NOT include those entries!</remarks>
+        public static IEnumerable<StorageLocation> EnumerateFiles(this StorageLocation location, string fileExtensionMatch, bool recurse)
+        {
             var files = Enumerable.Empty<StorageLocation>();
             if (location.UsesDefaultStorage && Directory.Exists(location.Path))
             {
-                files = OSEnumerateFiles(location.Path, fileExtensionMatch).Select(f => new StorageLocation(f, location.StorageAccess));
+                if (recurse)
+                {
+                    files = Directory.EnumerateFiles(location.Path, "*.*", SearchOption.AllDirectories).Select(f => f.CreateStorageLocationFromPath());
+
+                    // Now, if archive support is enabled, identify the files that appear to be compressed archives and concatenate their
+                    // contents by recursing into this function.
+                    foreach (var compressedArchiveLocation in files.Where(f => !f.UsesDefaultStorage).ToList())
+                    {
+                        files = files.Concat(compressedArchiveLocation.EnumerateFiles(fileExtensionMatch, recurse));
+                    }
+                    files = FilterForFileExtension(files, fileExtensionMatch);
+                }
+                else
+                {
+                    files = OSEnumerateFiles(location.Path, fileExtensionMatch).Select(f => new StorageLocation(f, location.StorageAccess));
+                }
             }
             else if (location.StorageAccess is ICompressedArchiveAccess)
             {
@@ -273,12 +305,8 @@ namespace INTV.Shared.Utility
                     }
                     if (archiveStorage != null)
                     {
-                        var entries = archiveStorage.ListEntries(pathRelativeToArchive, includeContainers: false, recurse: false);
-                        files = GetStorageLocations(rootArchivePath, entries);
-                        if (!string.IsNullOrEmpty(fileExtensionMatch))
-                        {
-                            files = files.Where(f => f.Path.EndsWith(fileExtensionMatch, StringComparison.InvariantCultureIgnoreCase)).ToList();
-                        }
+                        var entries = archiveStorage.ListEntries(pathRelativeToArchive, includeContainers: false, recurse: recurse);
+                        files = FilterForFileExtension(GetStorageLocations(rootArchivePath, entries), fileExtensionMatch);
                     }
                 }
             }
@@ -565,6 +593,18 @@ namespace INTV.Shared.Utility
                 }
             }
             return containerLocationExists;
+        }
+
+        private static IEnumerable<StorageLocation> FilterForFileExtension(IEnumerable<StorageLocation> files, string fileExtensionMatch)
+        {
+            if (!string.IsNullOrEmpty(fileExtensionMatch))
+            {
+                if (fileExtensionMatch != "*.*")
+                {
+                    files = files.Where(f => f.Path.EndsWith(fileExtensionMatch, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                }
+            }
+            return files;
         }
     }
 }

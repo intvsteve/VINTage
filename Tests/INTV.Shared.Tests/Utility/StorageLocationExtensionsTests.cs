@@ -1965,6 +1965,148 @@ namespace INTV.Shared.Tests.Utility
             Assert.Empty(files);
         }
 
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        public void StorageLocationExtensions_EnumerateFilesInTraditionalDirectoryHierarchy(bool enableArchiveAccess, bool enableNestedArchives)
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess(enableNestedArchives);
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess(enableArchiveAccess);
+                var levels = 2;
+                var subdirectoriesPerLevel = 2;
+                var numberOfFiles = 3;
+                var totalDirectories = (levels + 1) * subdirectoriesPerLevel;
+                var totalFiles = (totalDirectories + 1) * numberOfFiles;
+                string directoryPath;
+                using (DirectoryHierarchyContainingFiles(numberOfFiles, subdirectoriesPerLevel, levels, out directoryPath))
+                {
+                    var location = directoryPath.CreateStorageLocationFromPath();
+
+                    var files = location.EnumerateFiles("*.*", recurse: true).ToList();
+
+                    Assert.Equal(totalFiles, files.Count());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess();
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess();
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesInDirectoryHierarchyContainingMultipleArchivesWhenArchiveAccessDisabled_IncludesArchivesAsFilesNoArchiveContents()
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableCompressedArchiveAccess();
+                var levels = 2;
+                var subdirectoriesPerLevel = 2;
+                var numberOfFiles = 3;
+                var totalDirectories = (levels + 1) * subdirectoriesPerLevel;
+                var totalFiles = ((totalDirectories + 1) * numberOfFiles) + 2; // 2 archives
+                string directoryPath;
+                using (DirectoryHierarchyContainingFiles(numberOfFiles, subdirectoriesPerLevel, levels, out directoryPath))
+                {
+                    string zipFile;
+                    TestResource.TagalongZip.ExtractToTemporaryFile(directoryPath, out zipFile);
+                    string zipNestyFile;
+                    TestResource.TagalongMultipleNested.ExtractToTemporaryFile(Path.Combine(directoryPath, "subdir_1", "subdir_0"), out zipNestyFile);
+                    var location = directoryPath.CreateStorageLocationFromPath();
+
+                    var files = location.EnumerateFiles("*.*", recurse: true).ToList();
+
+                    Assert.Equal(totalFiles, files.Count());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableCompressedArchiveAccess();
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesInDirectoryHierarchyContainingMultipleArchivesWhenArchiveAccessEnabledNestedArchivesDisabled_IncludesArchiveFilesNoNestedArchiveFiles()
+        {
+            try
+            {
+                ICompressedArchiveAccessExtensions.DisableNestedArchiveAccess();
+                var levels = 2;
+                var subdirectoriesPerLevel = 2;
+                var numberOfFiles = 3;
+                var totalDirectories = (levels + 1) * subdirectoriesPerLevel;
+                var totalFiles = ((totalDirectories + 1) * numberOfFiles) + 2 + 2 + 0; // 2 archives, 2 files in zip, 0 in other because it's only got archives at first level
+                string directoryPath;
+                using (DirectoryHierarchyContainingFiles(numberOfFiles, subdirectoriesPerLevel, levels, out directoryPath))
+                {
+                    string zipFile;
+                    TestResource.TagalongDirZip.ExtractToTemporaryFile(Path.Combine(directoryPath, "subdir_0"), out zipFile);
+                    string zipNestyFile;
+                    TestResource.TagalongMultipleNested.ExtractToTemporaryFile(Path.Combine(directoryPath, "subdir_0", "subdir_1"), out zipNestyFile);
+                    var location = directoryPath.CreateStorageLocationFromPath();
+
+                    var files = location.EnumerateFiles("*.*", recurse: true).ToList();
+
+                    Assert.Equal(totalFiles, files.Count());
+                }
+            }
+            finally
+            {
+                ICompressedArchiveAccessExtensions.EnableNestedArchiveAccess();
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesInDirectoryHierarchyContainingMultipleArchivesWhenArchiveAccessAndNestingEnabled_IncludesArchiveFilesAndOtherContents()
+        {
+            var levels = 2;
+            var subdirectoriesPerLevel = 2;
+            var numberOfFiles = 3;
+            var totalDirectories = (levels + 1) * subdirectoriesPerLevel;
+            var totalFiles = ((totalDirectories + 1) * numberOfFiles) + 2 + 2 + 10; // 2 archives, 2 files in zip, 10 in other zip
+            string directoryPath;
+            using (DirectoryHierarchyContainingFiles(numberOfFiles, subdirectoriesPerLevel, levels, out directoryPath))
+            {
+                string zipFile;
+                TestResource.TagalongDirZip.ExtractToTemporaryFile(Path.Combine(directoryPath, "subdir_0"), out zipFile);
+                string zipNestyFile;
+                TestResource.TagalongMultipleNested.ExtractToTemporaryFile(Path.Combine(directoryPath, "subdir_0", "subdir_1"), out zipNestyFile);
+                var location = directoryPath.CreateStorageLocationFromPath();
+
+                var files = location.EnumerateFiles("*.*", recurse: true).ToList();
+
+                Assert.Equal(totalFiles, files.Count());
+            }
+        }
+
+        [Fact]
+        public void StorageLocationExtensions_EnumerateFilesInDirectoryHierarchyContainingMultipleArchivesWhenArchiveAccessAndNestingEnabledWithFileExtension_IncludesArchiveFilesAndOtherContents()
+        {
+            var levels = 2;
+            var subdirectoriesPerLevel = 2;
+            var numberOfFiles = 3;
+            var totalDirectories = (levels + 1) * subdirectoriesPerLevel;
+            var numFileExtensions = 3;
+            var totalFiles = (((totalDirectories + 1) * numberOfFiles) / numFileExtensions) + 0 + 0 + 4; // 0 .cfg files, 0 .cfg files in zip, 4 .cfg files in other zip
+            string directoryPath;
+            using (DirectoryHierarchyContainingFiles(numberOfFiles, subdirectoriesPerLevel, levels, out directoryPath, ".cfg", ".bin", ".rom"))
+            {
+                string zipFile;
+                TestResource.TagalongDirZip.ExtractToTemporaryFile(Path.Combine(directoryPath, "subdir_0"), out zipFile);
+                string zipNestyFile;
+                TestResource.TagalongMultipleNested.ExtractToTemporaryFile(Path.Combine(directoryPath, "subdir_0", "subdir_1"), out zipNestyFile);
+                var location = directoryPath.CreateStorageLocationFromPath();
+
+                var files = location.EnumerateFiles(".cfg", recurse: true).ToList();
+
+                Assert.Equal(totalFiles, files.Count());
+            }
+        }
+
         #endregion // EnumerateFiles Tests
 
         #region CopyFile Tests
@@ -2337,6 +2479,35 @@ namespace INTV.Shared.Tests.Utility
         private static IDisposable DirectoryContainingFiles(int numFiles, out string directoryPath, params string[] fileExtensions)
         {
             var directory = TestResource.Directory(out directoryPath);
+            CreateDummyFiles(directoryPath, numFiles, fileExtensions);
+            return directory;
+        }
+
+        private static IDisposable DirectoryHierarchyContainingFiles(int numFilesPerDirectory, int numSubdirectories, int depth, out string directoryPath, params string[] fileExtensions)
+        {
+            var directory = TestResource.Directory(out directoryPath);
+            var directories = new HashSet<string>();
+            directories.Add(directoryPath);
+
+            var subdirectoryNames = Enumerable.Range(0, numSubdirectories).Select(n => "subdir_" + n).ToList();
+            for (var i = 0; i < depth; ++i)
+            {
+                var subdirectoryPaths = subdirectoryNames.SelectMany(s => directories.Select(d => Path.Combine(d, s)));
+                foreach (var subdirectoryPath in subdirectoryPaths.ToList())
+                {
+                    directories.Add(subdirectoryPath);
+                }
+            }
+            foreach (var dir in directories)
+            {
+                Directory.CreateDirectory(dir);
+                CreateDummyFiles(dir, numFilesPerDirectory, fileExtensions);
+            }
+            return directory;
+        }
+
+        private static void CreateDummyFiles(string directory, int numFiles, params string[] fileExtensions)
+        {
             var fileExtensionsForGeneration = new List<string>(fileExtensions);
             if (!fileExtensions.Any())
             {
@@ -2347,9 +2518,8 @@ namespace INTV.Shared.Tests.Utility
             {
                 var fileExtension = fileExtensionsForGeneration[i % numFileExtensions];
                 var fileName = "test-" + i.ToString("D4") + fileExtension;
-                File.Create(Path.Combine(directoryPath, fileName)).Dispose();
+                File.Create(Path.Combine(directory, fileName)).Dispose();
             }
-            return directory;
         }
 
         #endregion // EnumerateFiles Tests Helpers

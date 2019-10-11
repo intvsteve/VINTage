@@ -488,16 +488,25 @@ namespace INTV.TestHelpers.Shared.Utility
         public IDisposable ExtractToTemporaryFile(out string resourceFilePath)
         {
             var temporaryDirectory = new TemporaryDirectoryForResource();
+            ExtractToTemporaryFile(temporaryDirectory.Path, out resourceFilePath);
+            return temporaryDirectory;
+        }
+
+        /// <summary>
+        /// Creates a disk copy of the resource in the given location.
+        /// </summary>
+        /// <param name="directory">The directory to extract to.</param>
+        /// <param name="resourceFilePath">Receives the path to the disk copy of the resource.</param>
+        public void ExtractToTemporaryFile(string directory, out string resourceFilePath)
+        {
             var resourceFileName = Name.Substring(TestResource.ResourcePrefix.Length);
-            resourceFilePath = Path.Combine(temporaryDirectory.Path, resourceFileName);
+            resourceFilePath = Path.Combine(directory, resourceFileName);
 
             using (var resourceStream = OpenResourceForReading())
             using (var fileStream = new FileStream(resourceFilePath, FileMode.CreateNew, FileAccess.Write))
             {
                 resourceStream.CopyTo(fileStream);
             }
-
-            return temporaryDirectory;
         }
 
         private sealed class TemporaryDirectoryForResource : IDisposable

@@ -254,7 +254,7 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="compressedArchiveAccess"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="locationInArchive"/> is malformed i.e. is not null or empty, or does not end with a directory separator character.</exception>
         /// <exception cref="FileNotFoundException">Thrown if <paramref name="locationInArchive"/> identifies a nested archive that cannot be located.</exception>
-        public static IEnumerable<string> ListContents(this ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers)
+        public static IEnumerable<StorageLocation> ListContents(this ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers)
         {
             return compressedArchiveAccess.ListContents(locationInArchive, includeContainers, recurse: false);
         }
@@ -272,10 +272,10 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="compressedArchiveAccess"/> is <c>null</c>.</exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="locationInArchive"/> is malformed i.e. is not null or empty, or does not end with a directory separator character.</exception>
         /// <exception cref="FileNotFoundException">Thrown if <paramref name="locationInArchive"/> identifies a nested archive that cannot be located.</exception>
-        public static IEnumerable<string> ListContents(this ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers, bool recurse)
+        public static IEnumerable<StorageLocation> ListContents(this ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers, bool recurse)
         {
-            var entries = compressedArchiveAccess.ListEntries(locationInArchive, includeContainers, recurse);
-            var contents = entries.Select(e => e.Name);
+            var entries = ListEntries(compressedArchiveAccess, locationInArchive, includeContainers, recurse, includeStorageAccess: true);
+            var contents = entries.Select(e => new StorageLocation(e.Entry.Name, e.Storage));
             return contents;
         }
 
@@ -310,60 +310,8 @@ namespace INTV.Shared.CompressedArchiveAccess
         /// <exception cref="FileNotFoundException">Thrown if <paramref name="locationInArchive"/> identifies a nested archive that cannot be located.</exception>
         public static IEnumerable<ICompressedArchiveEntry> ListEntries(this ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers, bool recurse)
         {
-            var entries = new List<ICompressedArchiveEntry>(ListEntriesInCompressedArchive(compressedArchiveAccess, locationInArchive, includeContainers || recurse));
-            if (recurse)
-            {
-                // Uses a simple queue to process nested contents in a breadth-first-ish fashion.
-                // Nested archives are kept around as discovered so subsequent listings that may cause actual extraction to temporary
-                // locations on disk is somewhat mitigated.
-                var nestedCompressedArchives = new Dictionary<string, ICompressedArchiveAccess>();
-                var containers = new Queue<ICompressedArchiveEntry>(entries.Where(e => e.IsDirectory || e.Name.IsContainer()).ToList());
-                while (containers.Any())
-                {
-                    var container = containers.Dequeue();
-                    var visitContainer = IsNestedArchiveAccessEnabled;
-                    ICompressedArchiveAccess nestedCompressedArchiveAccess;
-                    string nestedArchiveRelativeLocation;
-                    var nestedAchiveLocation = container.Name.GetMostDeeplyNestedContainerLocation(out nestedArchiveRelativeLocation);
-                    if (nestedAchiveLocation != null)
-                    {
-                        if (!nestedCompressedArchives.TryGetValue(nestedAchiveLocation, out nestedCompressedArchiveAccess))
-                        {
-                            var dontCare = string.Empty;
-                            nestedCompressedArchiveAccess = GetNestedCompressedArchive(compressedArchiveAccess, nestedAchiveLocation, ref dontCare);
-                            if (nestedCompressedArchiveAccess != null)
-                            {
-                                nestedCompressedArchives[nestedAchiveLocation] = nestedCompressedArchiveAccess;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // not a nested archive, but a subdirectory -- so visit!
-                        visitContainer = true;
-                        nestedCompressedArchiveAccess = compressedArchiveAccess;
-                    }
-                    if (visitContainer)
-                    {
-                        var childEntries = ListEntriesInCompressedArchive(nestedCompressedArchiveAccess, nestedArchiveRelativeLocation, includeContainers: true).Select(e => e.MakeAbsoluteEntry(nestedAchiveLocation));
-                        entries.AddRange(childEntries);
-                        var childContainers = childEntries.Where(e => e.IsDirectory || e.Name.IsContainer());
-                        foreach (var childContainer in childContainers)
-                        {
-                            containers.Enqueue(childContainer);
-                        }
-                    }
-                }
-                if (!includeContainers)
-                {
-                    entries = entries.Where(e => !e.IsDirectory && !e.Name.IsContainer()).ToList();
-                }
-                foreach (var nestedCompresedArchive in nestedCompressedArchives.Values)
-                {
-                    nestedCompresedArchive.Dispose();
-                }
-            }
-            return entries.OrderBy(e => e.Name);
+            var entries = ListEntries(compressedArchiveAccess, locationInArchive, includeContainers, recurse, includeStorageAccess: false);
+            return entries.Select(e => e.Entry).ToList();
         }
 
         /// <summary>
@@ -399,7 +347,69 @@ namespace INTV.Shared.CompressedArchiveAccess
             _maxArchiveSize = maxAllowedArchiveSize;
         }
 
-        private static IEnumerable<ICompressedArchiveEntry> ListEntriesInCompressedArchive(ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers)
+        private static IEnumerable<ArchiveEntryWithStorageAccess> ListEntries(ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers, bool recurse, bool includeStorageAccess)
+        {
+            var entries = new List<ArchiveEntryWithStorageAccess>(ListEntriesInCompressedArchive(compressedArchiveAccess, locationInArchive, includeContainers || recurse, includeStorageAccess));
+            if (recurse)
+            {
+                // Uses a simple queue to process nested contents in a breadth-first-ish fashion.
+                // Nested archives are kept around as discovered so subsequent listings that may cause actual extraction to temporary
+                // locations on disk is somewhat mitigated.
+                var nestedCompressedArchives = new Dictionary<string, ICompressedArchiveAccess>();
+                var containers = new Queue<ICompressedArchiveEntry>(entries.Select(e => e.Entry).Where(e => e.IsDirectory || e.Name.IsContainer()).ToList());
+                while (containers.Any())
+                {
+                    var container = containers.Dequeue();
+                    var visitContainer = IsNestedArchiveAccessEnabled;
+                    ICompressedArchiveAccess nestedCompressedArchiveAccess;
+                    string nestedArchiveRelativeLocation;
+                    var nestedAchiveLocation = container.Name.GetMostDeeplyNestedContainerLocation(out nestedArchiveRelativeLocation);
+                    if (nestedAchiveLocation != null)
+                    {
+                        if (!nestedCompressedArchives.TryGetValue(nestedAchiveLocation, out nestedCompressedArchiveAccess))
+                        {
+                            var dontCare = string.Empty;
+                            nestedCompressedArchiveAccess = GetNestedCompressedArchive(compressedArchiveAccess, nestedAchiveLocation, ref dontCare);
+                            if (nestedCompressedArchiveAccess != null)
+                            {
+                                nestedCompressedArchives[nestedAchiveLocation] = nestedCompressedArchiveAccess;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // not a nested archive, but a subdirectory -- so visit!
+                        visitContainer = true;
+                        nestedCompressedArchiveAccess = compressedArchiveAccess;
+                    }
+                    if (visitContainer)
+                    {
+                        var childEntries = ListEntriesInCompressedArchive(nestedCompressedArchiveAccess, nestedArchiveRelativeLocation, includeContainers: true, includeStorageAccess: includeStorageAccess)
+                            .Select(e => e.MakeAbsoluteEntry(nestedAchiveLocation));
+                        entries.AddRange(childEntries);
+                        var childContainers = childEntries.Select(e => e.Entry).Where(e => e.IsDirectory || e.Name.IsContainer());
+                        foreach (var childContainer in childContainers)
+                        {
+                            containers.Enqueue(childContainer);
+                        }
+                    }
+                }
+                if (!includeContainers)
+                {
+                    entries = entries.Where(e => !e.Entry.IsDirectory && !e.Entry.Name.IsContainer()).ToList();
+                }
+                if (!includeStorageAccess)
+                {
+                    foreach (var nestedCompresedArchive in nestedCompressedArchives.Values)
+                    {
+                        nestedCompresedArchive.Dispose();
+                    }
+                }
+            }
+            return entries.OrderBy(e => e.Entry.Name);
+        }
+
+        private static IEnumerable<ArchiveEntryWithStorageAccess> ListEntriesInCompressedArchive(ICompressedArchiveAccess compressedArchiveAccess, string locationInArchive, bool includeContainers, bool includeStorageAccess)
         {
             if (compressedArchiveAccess == null)
             {
@@ -432,10 +442,11 @@ namespace INTV.Shared.CompressedArchiveAccess
                 }
             }
 
-            var entries = compressedArchiveAccess.Entries.Select(e => new NormalizedCompressedArchiveEntry(e, normalizedLocationInArchive, locationIsInNestedContainer));
+            var entries = compressedArchiveAccess.Entries
+                .Select(e => new ArchiveEntryWithStorageAccess(new NormalizedCompressedArchiveEntry(e, normalizedLocationInArchive, locationIsInNestedContainer), includeStorageAccess ? compressedArchiveAccess : null));
             if (!includeContainers)
             {
-                entries = entries.Where(e => !e.IsDirectory && !e.Name.IsContainer());
+                entries = entries.Where(e => !e.Entry.IsDirectory && !e.Entry.Name.IsContainer());
             }
 
             if (locationInArchive.IsRootLocation())
@@ -444,18 +455,19 @@ namespace INTV.Shared.CompressedArchiveAccess
                 if (includeContainers)
                 {
                     // When listing, there are cases in which there may no direct entry for a directory. Add one.
-                    var entryNames = entries.Select(e => e.Name).ToList();
+                    var entryNames = entries.Select(e => e.Entry.Name).ToList();
                     var nestedEntryNames = entryNames.Select(n => n.GetArchiveRelativePathSegments()).Where(s => s.Length > 1).Select(s => s.First() + '/').Distinct().ToList();
                     nestedEntryNames.RemoveAll(n => entryNames.Contains(n));
                     virtualEntriesToAdd.AddRange(nestedEntryNames.Select(n => new NormalizedCompressedArchiveEntry(n, locationInArchive, locationIsInNestedContainer)));
                 }
-                entries = entries.Where(e => e.Name.GetArchiveRelativePathSegments().Length < 2);
-                entries = entries.Concat(virtualEntriesToAdd);
+                entries = entries.Where(e => e.Entry.Name.GetArchiveRelativePathSegments().Length < 2);
+                entries = entries.Concat(virtualEntriesToAdd
+                    .Select(e => new ArchiveEntryWithStorageAccess(e, includeStorageAccess ? compressedArchiveAccess : null)));
             }
             else
             {
-                entries = entries.Where(e => e.Name.StartsWith(locationInArchive, PathComparer.DefaultPolicy) && (e.Name.Length > locationInArchive.Length));
-                entries = entries.Where(e => e.Name.Substring(locationInArchive.Length + 1).GetArchiveRelativePathSegments().Length < 2);
+                entries = entries.Where(e => e.Entry.Name.StartsWith(locationInArchive, PathComparer.DefaultPolicy) && (e.Entry.Name.Length > locationInArchive.Length));
+                entries = entries.Where(e => e.Entry.Name.Substring(locationInArchive.Length + 1).GetArchiveRelativePathSegments().Length < 2);
             }
 
             if (!object.ReferenceEquals(compressedArchiveAccess, originalArchiveAccess))
@@ -824,6 +836,44 @@ namespace INTV.Shared.CompressedArchiveAccess
                 {
                     _name = prefix + _name;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Helper class for aggregating archive entries when listing contents recursively.
+        /// </summary>
+        private class ArchiveEntryWithStorageAccess
+        {
+            /// <summary>
+            /// Initialize the instance with the given entry and storage.
+            /// </summary>
+            /// <param name="entry">A compressed archive entry.</param>
+            /// <param name="storageAccess">The storage access from which <paramref name="entry"/> was retrieved.</param>
+            public ArchiveEntryWithStorageAccess(ICompressedArchiveEntry entry, ICompressedArchiveAccess storageAccess)
+            {
+                Entry = entry;
+                Storage = storageAccess;
+            }
+
+            /// <summary>
+            /// Gets the storage entry.
+            /// </summary>
+            public ICompressedArchiveEntry Entry { get; private set; }
+
+            /// <summary>
+            /// Gets the storage from which <see cref="Entry"/> was retrieved.
+            /// </summary>
+            public ICompressedArchiveAccess Storage { get; private set; }
+
+            /// <summary>
+            /// Changes the name of the entry to be an absolute path rather than relative to its containing archive.
+            /// </summary>
+            /// <param name="location">The absolute portion of the path to prepend.</param>
+            /// <returns>The modified version of itself.</returns>
+            public ArchiveEntryWithStorageAccess MakeAbsoluteEntry(string location)
+            {
+                Entry.MakeAbsoluteEntry(location);
+                return this;
             }
         }
     }

@@ -940,7 +940,7 @@ namespace INTV.Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compressed Files.
+        ///   Looks up a localized string similar to Compressed Archives.
         /// </summary>
         internal static string CompressedArchiveSettingsPage_Title {
             get {

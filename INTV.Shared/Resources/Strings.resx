@@ -1861,7 +1861,7 @@ Note that this may result in increased memory usage and create copies of nested 
     <value>ZIP files</value>
   </data>
   <data name="CompressedArchiveSettingsPage_Title" xml:space="preserve">
-    <value>Compressed Files</value>
+    <value>Compressed Archives</value>
   </data>
   <data name="GeneralSettingsPage_ShowTempFilesDirTip" xml:space="preserve">
     <value>Show the directory used to store temporary files</value>

@@ -249,6 +249,8 @@ namespace INTV.Shared.Model
         /// <param name="multiselect">If <c>true</c>, instructs the file browser to allow the user to select multiple files.</param>
         /// <param name="prompt">The prompt to show in the file browser. If <c>null</c> or empty, a default will be used.</param>
         /// <returns>The files selected, or an empty enumerable.</returns>
+        /// <remarks>This should not be in the Model namespace - it should be in <see cref="FileDialogHelpers"/>.
+        /// <see href="https://github.com/intvsteve/VINTage/issues/331"/></remarks>
         public static IEnumerable<string> BrowseForRoms(bool multiselect, string prompt)
         {
             var selectedFiles = System.Linq.Enumerable.Empty<string>();
@@ -559,17 +561,15 @@ namespace INTV.Shared.Model
         /// <returns>An enumerable of valid program ROM files.</returns>
         public static IEnumerable<IRom> IdentifyRomFiles(this IEnumerable<string> files, Func<bool> acceptCancellation, Action<string> progressFunc)
         {
-            var potentialRomFilePaths = GetPotentialProgramRomFiles(files, acceptCancellation, progressFunc).Where(f => ProgramFileKind.Rom.IsProgramFile(f.Path));
+            var locations = files.Select(f => f.CreateStorageLocationFromPath());
+            var potentialRomFilePaths = GetPotentialProgramRomFiles(locations, acceptCancellation, progressFunc).Where(f => ProgramFileKind.Rom.IsProgramFile(f.Path));
             foreach (var romFilePath in potentialRomFilePaths)
             {
                 if (acceptCancellation())
                 {
                     yield break;
                 }
-                if (progressFunc != null)
-                {
-                    progressFunc(romFilePath.Path);
-                }
+                UpdateProgressForGetPotentialRoms(romFilePath, progressFunc);
                 var configFilePath = INTV.Shared.Model.Program.ProgramFileKindHelpers.GetConfigFilePath(romFilePath);
                 if (configFilePath.Exists())
                 {
@@ -684,7 +684,7 @@ namespace INTV.Shared.Model
             return programRom;
         }
 
-        private static IEnumerable<StorageLocation> GetPotentialProgramRomFiles(IEnumerable<string> files, Func<bool> acceptCancellation, Action<string> progressFunc)
+        private static IEnumerable<StorageLocation> GetPotentialProgramRomFiles(IEnumerable<StorageLocation> files, Func<bool> acceptCancellation, Action<string> progressFunc)
         {
             foreach (var file in files)
             {
@@ -692,9 +692,9 @@ namespace INTV.Shared.Model
                 {
                     yield break;
                 }
-                if (Directory.Exists(file))
+                if (file.ContainerExists())
                 {
-                    foreach (var subdirectoryFile in GetPotentialProgramRomFiles(Directory.EnumerateFiles(file, "*.*", SearchOption.AllDirectories), acceptCancellation, progressFunc))
+                    foreach (var subdirectoryFile in GetPotentialProgramRomFiles(file.EnumerateFiles("*.*", recurse: true), acceptCancellation, progressFunc))
                     {
                         if (acceptCancellation())
                         {
@@ -705,52 +705,43 @@ namespace INTV.Shared.Model
                         {
                             foreach (var potentialRomLocation in potentialRomLocations)
                             {
-                                if (progressFunc != null)
-                                {
-                                    progressFunc(potentialRomLocation.Path);
-                                }
-                                yield return potentialRomLocation;
+                                yield return UpdateProgressForGetPotentialRoms(potentialRomLocation, progressFunc);
                             }
                         }
                         else
                         {
-                            if (progressFunc != null)
-                            {
-                                progressFunc(subdirectoryFile.Path);
-                            }
-                            yield return subdirectoryFile;
+                            yield return UpdateProgressForGetPotentialRoms(subdirectoryFile, progressFunc);
                         }
                     }
                 }
-                else if (File.Exists(file))
+                else if (file.Exists())
                 {
-                    var fileStorageLocation = file.CreateStorageLocationFromPath();
-                    var potentialRomLocations = GetPotentialProgramRomFilesInCompressedArchive(fileStorageLocation);
+                    var potentialRomLocations = GetPotentialProgramRomFilesInCompressedArchive(file);
                     if (potentialRomLocations != null)
                     {
                         foreach (var potentialRomLocation in potentialRomLocations)
                         {
-                            if (progressFunc != null)
-                            {
-                                progressFunc(potentialRomLocation.Path);
-                            }
-                            yield return potentialRomLocation;
+                            yield return UpdateProgressForGetPotentialRoms(potentialRomLocation, progressFunc);
                         }
                     }
                     else
                     {
-                        var fileInfo = new FileInfo(file);
-                        if (fileInfo.Length <= Rom.MaxROMSize)
+                        if (file.Size() <= Rom.MaxROMSize)
                         {
-                            if (progressFunc != null)
-                            {
-                                progressFunc(file);
-                            }
-                            yield return fileStorageLocation;
+                            yield return UpdateProgressForGetPotentialRoms(file, progressFunc);
                         }
                     }
                 }
             }
+        }
+
+        private static StorageLocation UpdateProgressForGetPotentialRoms(StorageLocation location, Action<string> progressFunction)
+        {
+            if (progressFunction != null)
+            {
+                progressFunction(location.Path);
+            }
+            return location;
         }
 
         private static IEnumerable<StorageLocation> GetPotentialProgramRomFilesInCompressedArchive(StorageLocation file)

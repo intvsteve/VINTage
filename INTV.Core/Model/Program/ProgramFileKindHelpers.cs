@@ -174,12 +174,14 @@ namespace INTV.Core.Model.Program
         /// Checks whether the file extension is valid for the given program file kind.
         /// </summary>
         /// <param name="fileKind">The kind of program file for which the extension is to be validated.</param>
-        /// <param name="filePath">The file path to be checked.</param>
+        /// <param name="fileName">The file name to be checked.</param>
         /// <returns>If the file has an extension that is valid for the given file kind, returns <c>true</c>; <c>false</c> otherwise.</returns>
-        public static bool HasCorrectExtension(this ProgramFileKind fileKind, string filePath)
+        /// <remarks>Note that the <paramref name="fileName"/> argument should be exactly that - just the file name. If the name includes directory
+        /// portions, the check may fail if any part of the entry contains a period.</remarks>
+        public static bool HasCorrectExtension(this ProgramFileKind fileKind, string fileName)
         {
             var fileTypes = fileKind.FileExtensions();
-            var extension = GetExtension(filePath);
+            var extension = GetExtension(fileName);
             var hasStandardExtension = (extension != null) && fileTypes.Any(e => e.Equals(extension, System.StringComparison.OrdinalIgnoreCase));
             return hasStandardExtension;
         }
@@ -189,15 +191,17 @@ namespace INTV.Core.Model.Program
         /// </summary>
         /// <returns><c>true</c> if the file has a custom rom extension; otherwise, <c>false</c>.</returns>
         /// <param name="fileKind">File kind.</param>
-        /// <param name="filePath">File path.</param>
-        public static bool HasCustomRomExtension(this ProgramFileKind fileKind, string filePath)
+        /// <param name="fileName">File path.</param>
+        /// <remarks>Note that the <paramref name="fileName"/> argument should be exactly that - just the file name. If the name includes directory
+        /// portions, the check may fail if any part of the entry contains a period.</remarks>
+        public static bool HasCustomRomExtension(this ProgramFileKind fileKind, string fileName)
         {
             var hasCustomRomExtension = false;
-            if (filePath != null)
+            if (fileName != null)
             {
                 if (fileKind == ProgramFileKind.Rom)
                 {
-                    var extension = GetExtension(filePath);
+                    var extension = GetExtension(fileName);
                     if (extension == null)
                     {
                         extension = string.Empty;

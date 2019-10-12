@@ -400,6 +400,24 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
         }
 
         [Fact]
+        public void CompressedArchiveAccess_FileBasedArchiveOpenDeeplyNestedEntry_Succeeds()
+        {
+            string archivePath;
+            using (TestResource.TagalongMsys2Tgz.ExtractToTemporaryFile(out archivePath))
+            {
+                var deeplyNestedPath = Path.Combine(archivePath, "tagalong_msys2.tar/tagalong.zip/tagalong.bin");
+                var archive = deeplyNestedPath.GetStorageAccess();
+                using (var stream = archive.Open(deeplyNestedPath))
+                {
+                    Assert.NotNull(stream);
+                    Assert.True(stream.CanRead);
+                    Assert.True(stream.CanSeek);
+                    Assert.NotEqual(0L, stream.Length);
+                }
+            }
+        }
+
+        [Fact]
         public void CompressedArchiveAccess_FileBasedArchiveDeleteEntry_Succeeds()
         {
             var format = this.RegisterFakeFormatForTest(registerFormat: true);

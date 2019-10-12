@@ -259,20 +259,33 @@ namespace INTV.Shared.CompressedArchiveAccess
                 {
                     if (stream.CanRead)
                     {
-                        if (!string.IsNullOrEmpty(RootLocation))
+                        var requiresMemo = !stream.CanSeek && Path.IsPathRooted(storageLocation);
+                        if (requiresMemo)
                         {
-                            if (!stream.CanSeek)
+                            var rootLocation = RootLocation;
+                            var storage = this;
+                            while (string.IsNullOrEmpty(rootLocation))
                             {
-                                string memo;
-                                var memoData = new EntryMemoData(this, entry, stream);
-                                if (Memos.CheckAddMemo(new Core.Utility.StorageLocation(storageLocation, this), memoData, out memo))
+                                storage = storage.GetParentStorageAccess() as CompressedArchive;
+                                rootLocation = storage.RootLocation;
+                            }
+                            requiresMemo = !string.IsNullOrEmpty(rootLocation);
+                            if (requiresMemo)
+                            {
+                                RootLocation = storageLocation.Substring(0, storageLocation.Length - entry.Name.Length - 1);
+                            }
+                        }
+                        if (requiresMemo)
+                        {
+                            string memo;
+                            var memoData = new EntryMemoData(this, entry, stream);
+                            if (Memos.CheckAddMemo(new Core.Utility.StorageLocation(storageLocation, this), memoData, out memo))
+                            {
+                                var memoPath = Memos.GetMemoPath(memo);
+                                if (File.Exists(memoPath))
                                 {
-                                    var memoPath = Memos.GetMemoPath(memo);
-                                    if (File.Exists(memoPath))
-                                    {
-                                        stream.Dispose();
-                                        stream = new FileStream(memoPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                                    }
+                                    stream.Dispose();
+                                    stream = new FileStream(memoPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                                 }
                             }
                         }

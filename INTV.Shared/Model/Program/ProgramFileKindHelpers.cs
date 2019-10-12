@@ -76,8 +76,9 @@ namespace INTV.Shared.Model.Program
             }
 
             // Now, check if it has appropriate extension. If rootFile is not null or empty, check that FilePath has the same 'base name'.
-            var hasExpectedExtension = fileKind.HasCorrectExtension(filePath);
-            var hasCustomRomExtension = !hasExpectedExtension && fileKind.HasCustomRomExtension(filePath);
+            var fileName = Path.GetFileName(filePath);
+            var hasExpectedExtension = fileKind.HasCorrectExtension(fileName);
+            var hasCustomRomExtension = !hasExpectedExtension && fileKind.HasCustomRomExtension(fileName);
             if (hasCustomRomExtension)
             {
                 DebugOutput("We have a custom extension!");

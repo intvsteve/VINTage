@@ -305,7 +305,7 @@ namespace INTV.Shared.Utility
                     }
                     if (archiveStorage != null)
                     {
-                        var entries = archiveStorage.ListEntries(pathRelativeToArchive, includeContainers: false, recurse: recurse);
+                        var entries = archiveStorage.ListContents(pathRelativeToArchive, includeContainers: false, recurse: recurse);
                         files = FilterForFileExtension(GetStorageLocations(rootArchivePath, entries), fileExtensionMatch);
                     }
                 }
@@ -492,13 +492,12 @@ namespace INTV.Shared.Utility
             return archiveRelativeDirectory;
         }
 
-        private static IEnumerable<StorageLocation> GetStorageLocations(string rootArchivePath, IEnumerable<ICompressedArchiveEntry> entries)
+        private static IEnumerable<StorageLocation> GetStorageLocations(string rootArchivePath, IEnumerable<StorageLocation> entries)
         {
-            IStorageAccess storageAccess = rootArchivePath.GetStorageAccess();
             foreach (var entry in entries)
             {
-                var absolutePath = Path.Combine(rootArchivePath, entry.Name);
-                var storageLocation = new StorageLocation(absolutePath, storageAccess, entry.IsDirectory);
+                var absolutePath = Path.Combine(rootArchivePath, entry.Path);
+                var storageLocation = StorageLocation.CopyWithNewPath(entry, absolutePath);
                 yield return storageLocation;
             }
         }

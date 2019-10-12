@@ -358,6 +358,11 @@
     </Compile>
     <Compile Include="View\GeneralSettingsPageController.Mac.cs" />
     <Compile Include="ViewModel\GeneralSettingsPageViewModel.cs" />
+    <Compile Include="View\CompressedArchiveAccessSettingsPageController.Mac.cs" />
+    <Compile Include="View\CompressedArchiveAccessSettingsPage.Mac.cs" />
+    <Compile Include="View\CompressedArchiveAccessSettingsPage.Mac.designer.cs">
+      <DependentUpon>CompressedArchiveAccessSettingsPage.Mac.cs</DependentUpon>
+    </Compile>
     <Compile Include="ComponentModel\IconAttribute.cs" />
     <Compile Include="ViewModel\BackupInfoViewModel.cs" />
     <Compile Include="ViewModel\SelectBackupDialogViewModel.cs" />
@@ -630,6 +635,7 @@
     <InterfaceDefinition Include="View\GeneralSettingsPage.xib" />
     <InterfaceDefinition Include="View\SelectBackupDialog.xib" />
     <InterfaceDefinition Include="View\SplashScreen.xib" />
+    <InterfaceDefinition Include="View\CompressedArchiveAccessSettingsPage.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="license.txt" />

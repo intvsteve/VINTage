@@ -29,12 +29,6 @@ using INTV.Shared.Model;
 #if WIN
 using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettings;
 #elif MAC
-#if __UNIFIED__
-using OSColor = AppKit.NSColor;
-#else
-using OSColor = MonoMac.AppKit.NSColor;
-#endif // __UNIFIED__
-using Settings = INTV.Shared.Properties.Settings;
 using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettingsPageController;
 #elif GTK
 using Settings = INTV.Shared.Properties.Settings;

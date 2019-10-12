@@ -356,7 +356,7 @@ namespace INTV.Shared.CompressedArchiveAccess
                 // Nested archives are kept around as discovered so subsequent listings that may cause actual extraction to temporary
                 // locations on disk is somewhat mitigated.
                 var nestedCompressedArchives = new Dictionary<string, ICompressedArchiveAccess>();
-                var containers = new Queue<ICompressedArchiveEntry>(entries.Select(e => e.Entry).Where(e => e.IsDirectory || e.Name.IsContainer()).ToList());
+                var containers = new Queue<ICompressedArchiveEntry>(entries.Select(e => e.Entry).Where(e => e.IsDirectory || e.Name.IsSupportedContainer()).ToList());
                 while (containers.Any())
                 {
                     var container = containers.Dequeue();
@@ -387,7 +387,7 @@ namespace INTV.Shared.CompressedArchiveAccess
                         var childEntries = ListEntriesInCompressedArchive(nestedCompressedArchiveAccess, nestedArchiveRelativeLocation, includeContainers: true, includeStorageAccess: includeStorageAccess)
                             .Select(e => e.MakeAbsoluteEntry(nestedAchiveLocation));
                         entries.AddRange(childEntries);
-                        var childContainers = childEntries.Select(e => e.Entry).Where(e => e.IsDirectory || e.Name.IsContainer());
+                        var childContainers = childEntries.Select(e => e.Entry).Where(e => e.IsDirectory || e.Name.IsSupportedContainer());
                         foreach (var childContainer in childContainers)
                         {
                             containers.Enqueue(childContainer);
@@ -524,6 +524,13 @@ namespace INTV.Shared.CompressedArchiveAccess
         {
             var formats = entryName.GetCompressedArchiveFormatsFromFileName();
             var allFormatsSupported = formats.Any() && formats.All(f => f.IsCompressedArchiveFormatSupported());
+            return allFormatsSupported;
+        }
+
+        private static bool IsSupportedContainer(this string entryName)
+        {
+            var formats = entryName.GetCompressedArchiveFormatsFromFileName();
+            var allFormatsSupported = formats.Any() && formats.All(f => f.IsCompressedArchiveFormatSupportedAndEnabled());
             return allFormatsSupported;
         }
 

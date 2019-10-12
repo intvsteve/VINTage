@@ -131,7 +131,7 @@ namespace INTV.Shared.CompressedArchiveAccess
             }
         }
 
-        private class EntryMemoData : Tuple<CompressedArchive, ICompressedArchiveEntry, Stream>
+        private class EntryMemoData
         {
             /// <summary>
             /// Initialize the instance of memo creation data.
@@ -140,33 +140,26 @@ namespace INTV.Shared.CompressedArchiveAccess
             /// <param name="entry">The entry to extract.</param>
             /// <param name="resourceStream">The resource stream of the entry.</param>
             public EntryMemoData(CompressedArchive archive, ICompressedArchiveEntry entry, Stream resourceStream)
-                : base(archive, entry, resourceStream)
             {
+                Archive = archive;
+                Entry = entry;
+                ResourceStream = resourceStream;
             }
 
             /// <summary>
             /// Gets the compressed archive.
             /// </summary>
-            public CompressedArchive Archive
-            {
-                get { return Item1; }
-            }
+            public CompressedArchive Archive { get; private set; }
 
             /// <summary>
             /// Gets the entry.
             /// </summary>
-            public ICompressedArchiveEntry Entry
-            {
-                get { return Item2; }
-            }
+            public ICompressedArchiveEntry Entry { get; private set; }
 
             /// <summary>
             /// Gets the resource stream.
             /// </summary>
-            public Stream ResourceStream
-            {
-                get { return Item3; }
-            }
+            public Stream ResourceStream { get; private set; }
         }
     }
 }

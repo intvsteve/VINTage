@@ -31,7 +31,6 @@ using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettings;
 #elif MAC
 using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettingsPageController;
 #elif GTK
-using Settings = INTV.Shared.Properties.Settings;
 using SettingsPageVisualType = INTV.Shared.View.CompressedArchiveAccessSettings;
 #endif // WIN
 

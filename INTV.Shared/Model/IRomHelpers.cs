@@ -561,7 +561,7 @@ namespace INTV.Shared.Model
         /// <returns>An enumerable of valid program ROM files.</returns>
         public static IEnumerable<IRom> IdentifyRomFiles(this IEnumerable<string> files, Func<bool> acceptCancellation, Action<string> progressFunc)
         {
-            var locations = files.Select(f => f.CreateStorageLocationFromPath());
+            var locations = files.ConvertPathsToStorageLocations();
             var potentialRomFilePaths = GetPotentialProgramRomFiles(locations, acceptCancellation, progressFunc).Where(f => ProgramFileKind.Rom.IsProgramFile(f.Path));
             foreach (var romFilePath in potentialRomFilePaths)
             {
@@ -682,6 +682,25 @@ namespace INTV.Shared.Model
                 }
             }
             return programRom;
+        }
+
+        private static IEnumerable<StorageLocation> ConvertPathsToStorageLocations(this IEnumerable<string> files)
+        {
+            foreach (var file in files)
+            {
+                if (Directory.Exists(file))
+                {
+                    yield return file.CreateStorageLocationFromPath();
+                }
+                else
+                {
+                    var formats = file.GetCompressedArchiveFormatsFromFileName();
+                    if (!formats.Any() || formats.All(f => f.IsCompressedArchiveFormatSupportedAndEnabled()))
+                    {
+                        yield return file.CreateStorageLocationFromPath();
+                    }
+                }
+            }
         }
 
         private static IEnumerable<StorageLocation> GetPotentialProgramRomFiles(IEnumerable<StorageLocation> files, Func<bool> acceptCancellation, Action<string> progressFunc)

@@ -327,6 +327,20 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
             }
         }
 
+        [Fact]
+        public void ICompressedArchiveAccess_SetMaxArchiveSizeToZeroGetStorageAccess_ReturnsValidStorageAccess()
+        {
+            string archivePath;
+            using (TestResource.TagalongMsys2Tgz.ExtractToTemporaryFile(out archivePath))
+            {
+                ICompressedArchiveAccessExtensions.SetMaxAllowedArchiveSizeInBytes(0);
+                using (archivePath.GetStorageAccess() as IDisposable)
+                {
+                    Assert.NotNull(archivePath);
+                }
+            }
+        }
+
         [Theory]
         [MemberData("GetStorageAccessToNestedArchivePathTestData")]
         public void ICompressedArchiveAccess_GetStorageAccessFromNestedArchivePath_ReturnsCorrectArchiveKind(TestResource testResource, string path, CompressedArchiveFormat nestedArchiveFormat)
@@ -596,7 +610,7 @@ namespace INTV.Shared.Tests.CompressedArchiveAccess
                 Assert.Equal(expectedEntryNames.Count, entries0.Count());
                 Assert.Equal(expectedEntryNames.Count, entries1.Count());
                 Assert.Equal(expectedEntryNames, entries0.Select(e => e.Name));
-                Assert.Equal(expectedEntryNames, entries1);
+                Assert.Equal(expectedEntryNames, entries1.Select(c => c.Path));
             }
         }
 

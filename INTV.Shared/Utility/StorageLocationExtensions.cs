@@ -543,12 +543,12 @@ namespace INTV.Shared.Utility
             // Current location refers to an archive. Check if new location refers to same one.
             var currentNestedArchivePath = currentPath.GetMostDeeplyNestedArchivePath().NormalizePathSeparators();
             var newNestedArchivePath = newPath.GetMostDeeplyNestedArchivePath().NormalizePathSeparators();
-            var refersToDifferntArchiveLocation = PathComparer.Instance.Compare(currentNestedArchivePath, newNestedArchivePath) != 0;
-            if (refersToDifferntArchiveLocation)
+            var refersToDifferentArchiveLocation = PathComparer.Instance.Compare(currentNestedArchivePath, newNestedArchivePath) != 0;
+            if (refersToDifferentArchiveLocation && !string.IsNullOrEmpty(newNestedArchivePath))
             {
-                refersToDifferntArchiveLocation = ICompressedArchiveAccessExtensions.IsNestedArchiveAccessEnabled;
+                refersToDifferentArchiveLocation = ICompressedArchiveAccessExtensions.IsNestedArchiveAccessEnabled;
             }
-            return refersToDifferntArchiveLocation;
+            return refersToDifferentArchiveLocation;
         }
 
         private static bool ContainerLocationExists(StorageLocation location, bool considerArchiveAsContainer)

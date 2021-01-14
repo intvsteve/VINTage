@@ -358,7 +358,18 @@ namespace INTV.LtoFlash.ViewModel
             var dragArgs = dragEventArgs as DragEventArgs;
             if (!dragArgs.Handled)
             {
-                AcceptDragData(dragArgs);
+                if (AcceptDragData(dragArgs))
+                {
+                    if (!dragArgs.Data.GetDataPresent(MenuLayoutViewModel.DragMenuLayoutDataFormat))
+                    {
+                        // This scenario can happen when the root cannot accept items, but sub-folders
+                        // CAN. E.g. the root has 254 items in it, and two or more items are being
+                        // being dragged over a child file within a folder that DOES have room.
+                        // See: https://github.com/intvsteve/VINTage/issues/343
+                        var menuLayout = CompositionHelpers.Container.GetExportedValue<LtoFlashViewModel>().HostPCMenuLayout;
+                        dragArgs.Data.SetData(MenuLayoutViewModel.DragMenuLayoutDataFormat, menuLayout);
+                    }
+                }
             }
         }
 

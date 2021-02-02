@@ -1,5 +1,5 @@
 // <copyright file="MainWindow.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,9 +26,11 @@ using Locutus.ViewModel;
 #if __UNIFIED__
 using AppKit;
 using Foundation;
+using ObjCRuntime;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
+using MonoMac.ObjCRuntime;
 #endif // __UNIFIED__
 
 namespace Locutus.View
@@ -65,7 +67,11 @@ namespace Locutus.View
         private void Initialize()
         {
 #if __UNIFIED__
-            NSWindow.AllowsAutomaticWindowTabbing = false;
+            var setAllowsAutomaticWindowTabbingSelector = new Selector("setAllowsAutomaticWindowTabbing:");
+            if (RespondsToSelector(setAllowsAutomaticWindowTabbingSelector))
+            {
+                NSWindow.AllowsAutomaticWindowTabbing = false;
+            }
 #endif // __UNIFIED__
             var viewModel = new Locutus.ViewModel.MainWindowViewModel();
             SingleInstanceApplication.Instance.DataContext = viewModel;

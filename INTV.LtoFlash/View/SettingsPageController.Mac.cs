@@ -1,5 +1,5 @@
 // <copyright file="SettingsPageController.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -138,6 +138,36 @@ namespace INTV.LtoFlash.View
         private NSNumber _selectedReadChunkSize;
         private bool _initializedReadChunkSizes;
 
+        /// <summary>
+        /// Gets or sets the serial port write chunk size.
+        /// </summary>
+        [INTV.Shared.Utility.OSExport("SelectedWriteChunkSize")]
+        public NSNumber SelectedWriteChunkSize
+        {
+            get
+            {
+                if (!_initializedWriteChunkSizes)
+                {
+                    var selectedChunkSizeViewModel = ViewModel.SelectedWriteChunkSizeViewModel;
+                    var selectedChunkSize = selectedChunkSizeViewModel.BlockSize;
+                    var selectionIndex = ViewModel.AvailableSerialPortWriteBlockSizes.IndexOf(selectedChunkSizeViewModel);
+                    if (selectionIndex < SerialPortWriteChunkSizesArrayController.ArrangedObjects().Length)
+                    {
+                        _selectedWriteChunkSize = selectionIndex;
+                    }
+                }
+                return _selectedWriteChunkSize;
+            }
+
+            set
+            {
+                _selectedWriteChunkSize = value;
+                ViewModel.SelectedWriteChunkSizeViewModel = ViewModel.AvailableSerialPortWriteBlockSizes[_selectedWriteChunkSize.Int32Value];
+            }
+        }
+        private NSNumber _selectedWriteChunkSize;
+        private bool _initializedWriteChunkSizes;
+
         private SettingsPageViewModel ViewModel
         {
             get { return DataContext as SettingsPageViewModel; }
@@ -149,6 +179,8 @@ namespace INTV.LtoFlash.View
             View.Controller = this;
             SerialPortReadChunkSizesArrayController.SynchronizeCollection(ViewModel.AvailableSerialPortReadBlockSizes);
             _initializedReadChunkSizes = true;
+            SerialPortWriteChunkSizesArrayController.SynchronizeCollection(ViewModel.AvailableSerialPortWriteBlockSizes);
+            _initializedWriteChunkSizes = true;
         }
     }
 }

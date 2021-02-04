@@ -23,17 +23,25 @@ namespace INTV.LtoFlash.View
 		[Outlet]
 		NSArrayController SerialPortReadChunkSizesArrayController { get; set; }
 
+		[Outlet]
+		NSArrayController SerialPortWriteChunkSizesArrayController { get; set; }
+
 		[Action ("_reconcileDeviceMenuToLocalMenu:")]
 		partial void _reconcileDeviceMenuToLocalMenu (NSObject sender);
 
 		[Action ("_searchAtStartupAction:")]
-        partial void _searchAtStartupAction (NSObject sender);
+		partial void _searchAtStartupAction (NSObject sender);
 
 		[Action ("_validateMenuAtStartupAction:")]
 		partial void _validateMenuAtStartupAction (NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (SerialPortWriteChunkSizesArrayController != null) {
+				SerialPortWriteChunkSizesArrayController.Dispose ();
+				SerialPortWriteChunkSizesArrayController = null;
+			}
+
 			if (SerialPortReadChunkSizesArrayController != null) {
 				SerialPortReadChunkSizesArrayController.Dispose ();
 				SerialPortReadChunkSizesArrayController = null;

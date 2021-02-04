@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -43,6 +43,21 @@ namespace INTV.LtoFlash.Model
         public static bool IsSafeToStartCommand(this Device device)
         {
             return (device != null) && !device.IsCommandInProgress;
+        }
+
+        /// <summary>
+        /// Estimates the amount of time it will take to transfer the given number of bytes, in milliseconds.
+        /// </summary>
+        /// <param name="port">The port to compute the estimate for.</param>
+        /// <param name="numberOfBytes">The number of bytes in the data transfer.</param>
+        /// <param name="scottyFactor">The Scotty factor to apply to the estimate.</param>
+        /// <returns>The estimated data transfer time in milliseconds including the Scotty Factor.
+        /// <see href="http://wiki.c2.com/?ScottyFactor#:~:text=The%20ScottyFactor%20is%20a%20factor%20you%20apply%20to,Star%20Trek%20III,%20when%20Kirk%20asks%20%22Mr.%20Scott."/></returns>
+        public static int EstimateDataTransferTime(this IStreamConnection port, long numberOfBytes, int scottyFactor)
+        {
+            var minTimeout = port.EstimateDataTransferTime(numberOfBytes);
+            var scottyTimeout = (int)(minTimeout * scottyFactor);
+            return scottyTimeout;
         }
 
         /// <summary>

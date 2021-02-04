@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProtocolCommand.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -255,6 +255,9 @@ namespace INTV.LtoFlash.Model.Commands
         {
             var updatedReadChunkSize = Properties.Settings.Default.LtoFlashSerialReadChunkSize;
             DownloadDataBlockFromRam.ReadChunkSize = updatedReadChunkSize;
+
+            var updatedWriteChunkSize = Properties.Settings.Default.LtoFlashSerialWriteChunkSize;
+            UploadDataBlockToRam.WriteChunkSize = updatedWriteChunkSize;
         }
 
 #if DEBUG
@@ -432,6 +435,20 @@ namespace INTV.LtoFlash.Model.Commands
         {
             var response = ExecuteCore(target, taskData, null, inflate, null, out succeeded);
             return response;
+        }
+
+        /// <summary>
+        /// Sends the command payload.
+        /// </summary>
+        /// <param name="sourceDataStream">The source data stream containing the payload.</param>
+        /// <param name="sourceLengthInBytes">The number of bytes of data in the source payload.</param>
+        /// <param name="target">The target stream to which the data payload is sent.</param>
+        /// <remarks>It is required that all streams are already positioned correctly for reading and
+        /// writing of data, respectively. No further manipluation of stream position shall be made by
+        /// the impementation - it is assumed both streams advance by <paramref name="sourceLengthInBytes"/>.</remarks>
+        protected virtual void SendCommandPayload(System.IO.Stream sourceDataStream, long sourceLengthInBytes, IStreamConnection target)
+        {
+            sourceDataStream.CopyTo(target.WriteStream);
         }
 
         /// <summary>
@@ -828,13 +845,14 @@ namespace INTV.LtoFlash.Model.Commands
 
         private void SendCommandPayload(IStreamConnection target, System.IO.Stream sourceDataStream, System.IO.MemoryStream resultStream)
         {
+            var sourceLengthInBytes = sourceDataStream.Length;
             if ((target != null) && target.WriteStream.CanTimeout)
             {
-                var minTimeout = target.EstimateDataTransferTime(sourceDataStream.Length);
-                target.WriteStream.WriteTimeout = (int)(minTimeout * 4);
+                const int ScottyFactor = 8; // 4;
+                var timeout = target.EstimateDataTransferTime(sourceLengthInBytes, ScottyFactor);
+                target.WriteStream.WriteTimeout = timeout;
             }
-            sourceDataStream.CopyTo(target.WriteStream);
-            var commandBytesWritten = (int)sourceDataStream.Length;
+            SendCommandPayload(sourceDataStream, sourceLengthInBytes, target);
             sourceDataStream.Seek(0, System.IO.SeekOrigin.Begin);
             sourceDataStream.CopyTo(resultStream);
         }

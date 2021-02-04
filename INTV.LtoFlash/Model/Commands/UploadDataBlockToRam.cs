@@ -1,5 +1,5 @@
 ﻿// <copyright file="UploadDataBlockToRam.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+////#define ENABLE_DIAGNOSTIC_OUTPUT
+
 namespace INTV.LtoFlash.Model.Commands
 {
     /// <summary>
@@ -29,6 +31,26 @@ namespace INTV.LtoFlash.Model.Commands
         /// Default timeout for reading response data in milliseconds.
         /// </summary>
         public const int DefaultResponseTimeout = 10000;
+
+        /// <summary>
+        /// The default size of the write chunk.
+        /// </summary>
+        /// <remarks>The default value of zero means to send the entire requested chunk as one large write. This can be
+        /// overridden at any time. Most specifically, on some newer versions of macOS, this needs to be changed.
+        /// Writing chunks up to 768 bytes has been confirmed working in xxxxx. Larger (1024 bytes or more)
+        /// will time out partway through the read. Users can configure the write chunk size to be smaller if needed. It turns
+        /// out the driver uses a 512 byte buffer, so we'll just happen to choose that as our default chunk size.</remarks>
+        private const int DefaultWriteChunkSize = 0;
+
+        /// <summary>
+        /// Gets or sets the size of the chunk to write to the port, in bytes.
+        /// </summary>
+        internal static int WriteChunkSize
+        {
+            get { return _writeChunkSize; }
+            set { _writeChunkSize = value; }
+        }
+        private static int _writeChunkSize = DefaultWriteChunkSize;
 
         private UploadDataBlockToRam(uint address, INTV.Core.Utility.ByteSerializer data, uint runningCrc24)
             : base(ProtocolCommandId.LfsUploadDataBlockToRam, DefaultResponseTimeout, address, (uint)data.SerializeByteCount)
@@ -69,6 +91,56 @@ namespace INTV.LtoFlash.Model.Commands
                 succeeded = ExecuteCommandWithData(target, taskData, data, null);
             }
             return succeeded;
+        }
+
+        /// <inheritdoc />
+        protected override void SendCommandPayload(System.IO.Stream sourceDataStream, long sourceLengthInBytes, INTV.Shared.Model.IStreamConnection target)
+        {
+            var chunkSize = WriteChunkSize;
+
+            DebugOutput("----------BEGIN WRITE PAYLOAD sourceLengthInBytes: " + sourceLengthInBytes + ", ChunkSize: " + chunkSize);
+
+            if (chunkSize <= 0)
+            {
+                DebugOutput("WRITE PAYLOAD AS SINGLE CHUNK");
+                base.SendCommandPayload(sourceDataStream, sourceLengthInBytes, target);
+            }
+            else
+            {
+                var bytesRemaining = (int)sourceLengthInBytes;
+                var chunkNumber = 0;
+                var buffer = new byte[chunkSize];
+                do
+                {
+                    var bytesToWrite = (bytesRemaining / chunkSize) > 0 ? chunkSize : bytesRemaining;
+                    var bytesRead = sourceDataStream.Read(buffer, 0, bytesToWrite);
+#if DEBUG
+                    if (bytesRead != bytesToWrite)
+                    {
+                        throw new System.InvalidOperationException("Failed to correctly compute data transfer!");
+                    }
+#endif
+                    if (bytesRead == 0)
+                    {
+                        DebugOutput("NO BYTES REMAINING");
+                        break;
+                    }
+
+                    DebugOutput("WRITING CHUNK # " + chunkNumber++ + ", numToWrite: " + bytesToWrite);
+
+                    target.WriteStream.Write(buffer, 0, bytesRead);
+                    bytesRemaining -= bytesRead;
+                }
+                while (bytesRemaining > 0);
+            }
+
+            DebugOutput("----------END WRITE PAYLOAD: " + sourceLengthInBytes);
+        }
+
+        [System.Diagnostics.Conditional("ENABLE_DIAGNOSTIC_OUTPUT")]
+        private static void DebugOutput(object message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
         }
     }
 }

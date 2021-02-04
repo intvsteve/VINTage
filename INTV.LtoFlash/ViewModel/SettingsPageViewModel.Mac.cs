@@ -1,5 +1,5 @@
 ﻿// <copyright file="SettingsPageViewModel.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -43,6 +43,11 @@ namespace INTV.LtoFlash.ViewModel
         public const string SerialPortReadChunkSizePropertyName = "SerialPortReadChunkSize";
 
         /// <summary>
+        /// The name of the serial port write chunk size property.
+        /// </summary>
+        public const string SerialPortWriteChunkSizePropertyName = "SerialPortWriteChunkSize";
+
+        /// <summary>
         /// Gets the available serial port read block sizes.
         /// </summary>
         public ObservableCollection<SerialPortReadWriteBlockSizeViewModel> AvailableSerialPortReadBlockSizes { get; private set; }
@@ -68,10 +73,42 @@ namespace INTV.LtoFlash.ViewModel
         }
         private int _serialPortReadChunkSize;
 
+        /// <summary>
+        /// Gets the available serial port write block sizes.
+        /// </summary>
+        public ObservableCollection<SerialPortReadWriteBlockSizeViewModel> AvailableSerialPortWriteBlockSizes { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the selected write chunk size ViewModel.
+        /// </summary>
+        public SerialPortReadWriteBlockSizeViewModel SelectedWriteChunkSizeViewModel
+        {
+            get { return _selectedWriteChunkSizeViewModel; }
+            set { AssignAndUpdateProperty("SelectedWriteChunkSizeViewModel", value, ref _selectedWriteChunkSizeViewModel, (p, v) => UpdateWriteChunkSize(v.BlockSize)); }
+        }
+        private SerialPortReadWriteBlockSizeViewModel _selectedWriteChunkSizeViewModel;
+
+        /// <summary>
+        /// Gets or sets the serial port write chunk size.
+        /// </summary>
+        [OSExport(SerialPortWriteChunkSizePropertyName)]
+        public int SerialPortWriteChunkSize
+        {
+            get { return _serialPortWriteChunkSize; }
+            set { AssignAndUpdateProperty(SerialPortWriteChunkSizePropertyName, value, ref _serialPortWriteChunkSize); }
+        }
+        private int _serialPortWriteChunkSize;
+
         private void UpdateReadChunkSize(int chunkSize)
         {
             SerialPortReadChunkSize = chunkSize;
             Properties.Settings.Default.LtoFlashSerialReadChunkSize = chunkSize;
+        }
+
+        private void UpdateWriteChunkSize(int chunkSize)
+        {
+            SerialPortWriteChunkSize = chunkSize;
+            Properties.Settings.Default.LtoFlashSerialWriteChunkSize = chunkSize;
         }
 
         private string GetDisplayNameForByteSize(int readBlockSize, int defaultChunkSize)
@@ -102,6 +139,15 @@ namespace INTV.LtoFlash.ViewModel
                 _selectedReadChunkSizeViewModel = AvailableSerialPortReadBlockSizes.First(s => s.BlockSize == Properties.Settings.DefaultReadChunkSize);
             }
             _serialPortReadChunkSize = _selectedReadChunkSizeViewModel.BlockSize;
+
+            var writeBlockSizes = new[] { 0, 768, 512, 256, 128, 64 };
+            AvailableSerialPortWriteBlockSizes = new ObservableCollection<SerialPortReadWriteBlockSizeViewModel>(writeBlockSizes.Select(s => new SerialPortReadWriteBlockSizeViewModel(s, GetDisplayNameForByteSize(s, Properties.Settings.DefaultWriteChunkSize))));
+            _selectedWriteChunkSizeViewModel = AvailableSerialPortWriteBlockSizes.FirstOrDefault(s => s.BlockSize == Properties.Settings.Default.LtoFlashSerialWriteChunkSize);
+            if (_selectedWriteChunkSizeViewModel == null)
+            {
+                _selectedWriteChunkSizeViewModel = AvailableSerialPortWriteBlockSizes.First(s => s.BlockSize == Properties.Settings.DefaultWriteChunkSize);
+            }
+            _serialPortWriteChunkSize = _selectedWriteChunkSizeViewModel.BlockSize;
         }
     }
 }

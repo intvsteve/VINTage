@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.Gtk.cs" company="INTV Funhouse">
-// Copyright (c) 2017-2019 All Rights Reserved
+// Copyright (c) 2017-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -80,6 +80,15 @@ namespace INTV.LtoFlash.Properties
             set { SetSetting(LtoFlashSerialReadChunkSizeSettingName, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the serial port read block size to use.
+        /// </summary>
+        [DataMember(EmitDefaultValue = false)]
+        public int LtoFlashSerialWriteChunkSize {
+            get { return GetSetting<int> (LtoFlashSerialWriteChunkSizeSettingName); }
+            set { SetSetting (LtoFlashSerialWriteChunkSizeSettingName, value); }
+        }
+
         /// <inheritdoc/>
         protected override void InitializeFromSettingsFile()
         {
@@ -96,6 +105,7 @@ namespace INTV.LtoFlash.Properties
             AddSetting(MenuLayoutManualColWidthSettingName, 168, isApplicationSetting: true);
             AddSetting(MenuLayoutSaveDataColWidthSettingName, 128, isApplicationSetting: true);
             AddSetting(LtoFlashSerialReadChunkSizeSettingName, 0);
+            AddSetting(LtoFlashSerialWriteChunkSizeSettingName, 0);
         }
 
         [DataContract(Name = ContractName, Namespace = ContractNamespace)]
@@ -176,6 +186,10 @@ namespace INTV.LtoFlash.Properties
             /// <inheritdoc cref="Settings.LtoFlashSerialReadChunkSize"/>
             [DataMember(EmitDefaultValue = false)]
             public int LtoFlashSerialReadChunkSize { get; set; }
+
+            /// <inheritdoc cref="Settings.LtoFlashSerialWriteChunkSize"/>
+            [DataMember(EmitDefaultValue = false)]
+            public int LtoFlashSerialWriteChunkSize { get; set; }
         }
     }
 }

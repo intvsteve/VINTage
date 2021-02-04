@@ -1,5 +1,5 @@
 ﻿// <copyright file="Settings.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -28,14 +28,14 @@ namespace INTV.LtoFlash.Properties
     internal sealed partial class Settings
     {
         /// <summary>
-        /// The name of the Locutus serial port write chunk size setting.
-        /// </summary>
-        public const string LtoFlashSerialWriteChunkSizeSettingName = "LtoFlashSerialWriteChunkSize";
-
-        /// <summary>
         /// The minimum OS version requiring restricted read block sizes.
         /// </summary>
         public static readonly OSVersion OSVersionRequiringRestrictedReadBlockSize = new OSVersion(10, 13, 0);
+
+        /// <summary>
+        /// The minimum OS version requiring restricted write block sizes.
+        /// </summary>
+        public static readonly OSVersion OSVersionRequiringRestrictedWriteBlockSize = new OSVersion(10, 15, 0);
 
         /// <summary>
         /// Gets the default size of the serial port read chunk in bytes.
@@ -65,8 +65,17 @@ namespace INTV.LtoFlash.Properties
         {
             get
             {
-                // Provisionally preparing for this...
-                return 0;
+                var defaultChunkSize = 0;
+                if (OSVersion.Current >= OSVersionRequiringRestrictedWriteBlockSize)
+                {
+                    // It has been found that trying to write 'large' blocks to Locutus encounters timeout
+                    // errors. We suspect it's an inter-byte timeout problem -- possibly due to the out-of-band
+                    // bytes the FTDI serial interface uses. This has not been confirmed.
+                    // Further, the issue seems specific to macOS Catalina (10.15) and later -- at least that
+                    // was the earliest macOS version against which the problem was reported.
+                    defaultChunkSize = 512;
+                }
+                return defaultChunkSize;
             }
         }
 

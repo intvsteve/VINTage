@@ -286,5 +286,17 @@ namespace INTV.LtoFlash.Properties {
                 this["LtoFlashSerialReadChunkSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int LtoFlashSerialWriteChunkSize {
+            get {
+                return ((int)(this["LtoFlashSerialWriteChunkSize"]));
+            }
+            set {
+                this["LtoFlashSerialWriteChunkSize"] = value;
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-// <copyright file="SettingsBase.Gtk.cs" company="INTV Funhouse">
+﻿// <copyright file="SettingsBase.Gtk.cs" company="INTV Funhouse">
 // Copyright (c) 2017-2019 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
@@ -270,7 +270,7 @@ namespace INTV.Shared.Properties
         {
             if (errors.Any())
             {
-                var errorMessageBuilder = new System.Text.StringBuilder(string.Format(CultureInfo.CurrentCulture, "The following errors were reported when initializng settings for: {0}", settingsTypeName)).AppendLine();
+                var errorMessageBuilder = new System.Text.StringBuilder(string.Format(CultureInfo.CurrentCulture, "The following errors were reported when initializing settings for: {0}", settingsTypeName)).AppendLine();
                 foreach (var error in errors)
                 {
                     errorMessageBuilder.AppendLine($"  {error}");
@@ -286,7 +286,7 @@ namespace INTV.Shared.Properties
         {
             var reportSettingsDataContractErrors = new Action(() =>
             {
-                var errorMessageHeader = string.Format(CultureInfo.CurrentCulture, "The following errors were reported when initializng settings for: {0}", settingsTypeName);
+                var errorMessageHeader = string.Format(CultureInfo.CurrentCulture, "The following errors were reported when initializing settings for: {0}", settingsTypeName);
                 var errorMessageBuilder = new System.Text.StringBuilder();
                 foreach (var error in errors)
                 {

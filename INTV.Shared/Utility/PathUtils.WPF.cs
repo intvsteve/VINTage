@@ -1,5 +1,5 @@
 ﻿// <copyright file="PathUtils.WPF.cs" company="INTV Funhouse">
-// Copyright (c) 2015-2018 All Rights Reserved
+// Copyright (c) 2015-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -33,6 +33,38 @@ namespace INTV.Shared.Utility
         /// Default file extension for a program.
         /// </summary>
         public static readonly string ProgramSuffix = ".exe";
+
+        /// <summary>
+        /// Enumerates the files in the given directory matching the provided file extension.
+        /// </summary>
+        /// <param name="directory">The directory in which to enumerate files.</param>
+        /// <param name="fileExtension">The file extension to match.</param>
+        /// <returns>The files in <paramref name="directory"/> whose file names end with <paramref name="fileExtension"/>.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if <paramref name="directory"/> is a zero-length string,
+        /// contains only white space, or contains invalid characters as defined by System.IO.Path.GetInvalidPathChars(),
+        /// or if <paramref name="fileExtension"/> does not contain a valid file extension.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="directory"/> or <paramref name="fileExtension"/> is <c>null</c>.</exception>
+        /// <exception cref="System.IO.DirectoryNotFoundException">Thrown if <paramref name="directory"/> is invalid, such as referring to an unmapped drive.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if <paramref name="directory"/> is a file name.</exception>
+        /// <exception cref="System.IO.PathTooLongException">Thrown if <paramref name="directory"/> combined with a resulting matching file name
+        /// specifies a path whose length exceeds the system-defined maximum length. For example, on Windows-based platforms, paths must be less than
+        ///  248 characters and file names must be less than 260 characters.</exception>
+        /// <exception cref="System.Security.SecurityException">Thrown if the caller does not have the required permission.</exception>
+        /// <exception cref="System.UnauthorizedAccessException">Thrown if the caller does not have the required permission.</exception>
+        public static IEnumerable<string> EnumerateFilesWithPattern(this string directory, string fileExtension)
+        {
+            var searchPattern = fileExtension;
+            switch (fileExtension[0])
+            {
+                case '*':
+                    break;
+                default:
+                    searchPattern = "*" + fileExtension;
+                    break;
+            }
+            var results = Directory.EnumerateFiles(directory, searchPattern, SearchOption.TopDirectoryOnly);
+            return results;
+        }
 
         /// <summary>
         /// Gets the Documents directory.

@@ -1,5 +1,5 @@
 ﻿// <copyright file="ProgramFileKindHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using INTV.Core.Model.Program;
+using INTV.Shared.Utility;
 
 namespace INTV.Shared.Model.Program
 {
@@ -68,7 +69,7 @@ namespace INTV.Shared.Model.Program
         public static bool IsProgramSupportFile(this ProgramFileKind fileKind, string filePath, string rootFile)
         {
             // First, check if file is in the blacklist.
-            if (!string.IsNullOrEmpty(filePath) && _romFileBlacklist.Contains(Path.GetFileName(filePath), INTV.Shared.Utility.PathComparer.Instance))
+            if (!string.IsNullOrEmpty(filePath) && _romFileBlacklist.Contains(Path.GetFileName(filePath), PathComparer.Instance))
             {
                 return false;
             }
@@ -93,7 +94,7 @@ namespace INTV.Shared.Model.Program
                 {
                     // Check if it's in a proper directory.
                     var subdirectoriesForFile = fileKind.GetSubdirectories();
-                    isProgramFile = !subdirectoriesForFile.Any() || subdirectoriesForFile.Contains(Path.GetFileName(Path.GetDirectoryName(filePath)), INTV.Shared.Utility.PathComparer.Instance);
+                    isProgramFile = !subdirectoriesForFile.Any() || subdirectoriesForFile.Contains(Path.GetFileName(Path.GetDirectoryName(filePath)), PathComparer.Instance);
                 }
             }
             return isProgramFile;
@@ -132,15 +133,7 @@ namespace INTV.Shared.Model.Program
             string extension = Core.Model.Program.ProgramFileKindHelpers.RomFileExtensionsThatUseCfgFiles.FirstOrDefault(ext => string.Compare(ext, romFileExtension, true) == 0);
             if (extension != null)
             {
-#if WIN
-                var searchPattern = "*" + ProgramFileKind.CfgFile.FileExtension();
-                var filesNextToRom = Directory.EnumerateFiles(Path.GetDirectoryName(romFilePath), searchPattern);
-#else
-                // Workaround for non-Windows. Don't care about file system case sensitivity.
-                var searchPattern = ProgramFileKind.CfgFile.FileExtension();
-                var files = Directory.EnumerateFiles(Path.GetDirectoryName(romFilePath));
-                var filesNextToRom = files.Where(f => f.EndsWith(searchPattern, StringComparison.InvariantCultureIgnoreCase));
-#endif // WIN
+                var filesNextToRom = Path.GetDirectoryName(romFilePath).EnumerateFilesWithPattern(ProgramFileKind.CfgFile.FileExtension());
                 var possibleConfigFile = Path.Combine(Path.GetDirectoryName(romFilePath), Path.GetFileNameWithoutExtension(romFilePath) + ProgramFileKind.CfgFile.FileExtension());
                 configFile = filesNextToRom.FirstOrDefault(f => string.Compare(f, possibleConfigFile, true) == 0);
                 if (string.IsNullOrEmpty(configFile))
@@ -169,7 +162,7 @@ namespace INTV.Shared.Model.Program
                 string file = Path.GetFileNameWithoutExtension(supportFile);
                 string directory = Path.GetDirectoryName(supportFile);
                 string subdirectory = Path.GetFileName(directory);
-                if (INTV.Core.Model.Program.ProgramFileKindHelpers.SupportFileSubdirectories.Contains(subdirectory, INTV.Shared.Utility.PathComparer.Instance))
+                if (INTV.Core.Model.Program.ProgramFileKindHelpers.SupportFileSubdirectories.Contains(subdirectory, PathComparer.Instance))
                 {
                     directory = Path.GetDirectoryName(directory); // strip the subdirectory
                     romFile = Path.Combine(directory, file);

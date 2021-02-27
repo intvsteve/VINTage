@@ -1,5 +1,5 @@
 ﻿// <copyright file="NSTreeNodeHelpers.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -38,9 +38,10 @@ namespace INTV.LtoFlash.View
     internal static class NSTreeNodeHelpers
     {
 #if __UNIFIED__
-        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
+        [System.Runtime.InteropServices.DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSend")]
         private static extern System.IntPtr IntPtr_objc_msgSend(System.IntPtr receiver, System.IntPtr selector);
-        [System.Runtime.InteropServices.DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSend")]
+
+        [System.Runtime.InteropServices.DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSend")]
         private static extern void void_objc_msgSend_IntPtr(System.IntPtr receiver, System.IntPtr selector, System.IntPtr arg1);
 #endif // __UNIFIED__
 

@@ -1,5 +1,5 @@
 ﻿// <copyright file="NativeMethods.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,9 +26,13 @@ using System.Threading.Tasks;
 #if __UNIFIED__
 using CoreFoundation;
 using Foundation;
+
+using Constants = ObjCRuntime.Constants;
 #else
 using MonoMac.CoreFoundation;
 using MonoMac.Foundation;
+
+using Constants = MonoMac.Constants;
 #endif // __UNIFIED__
 
 namespace INTV.Shared.Interop
@@ -55,7 +59,7 @@ namespace INTV.Shared.Interop
             CFRunLoopAddSource(loop.Handle, source, mode.Handle);
         }
 
-        [DllImport("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")]
+        [DllImport(Constants.CoreFoundationLibrary)]
         private static extern void CFRunLoopAddSource(System.IntPtr loop, System.IntPtr source, System.IntPtr mode);
 
         /// <summary>
@@ -74,7 +78,7 @@ namespace INTV.Shared.Interop
             return CFRunLoopRemoveSource(loop.Handle, source, mode.Handle);
         }
 
-        [DllImport("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")]
+        [DllImport(Constants.CoreFoundationLibrary)]
         private static extern bool CFRunLoopRemoveSource(System.IntPtr loop, System.IntPtr source, System.IntPtr mode);
    }
 }

@@ -1,5 +1,5 @@
 ﻿// <copyright file="ErrorLog.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,20 +18,19 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
-////#define ENABLE_YAML_ERROR_DATABASE
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using INTV.Shared.Utility;
 
-namespace INTV.LtoFlash.Model.Commands
+namespace INTV.LtoFlash.Model
 {
     /// <summary>
     /// Generates a user-readable error log retrieved from a Locutus device.
     /// </summary>
-    public class ErrorLog : INTV.Core.Utility.ByteSerializer, IComparable<ErrorLog>, IComparable
+    public partial class ErrorLog : INTV.Core.Utility.ByteSerializer, IComparable<ErrorLog>, IComparable
     {
         #region Constants
 
@@ -40,21 +39,18 @@ namespace INTV.LtoFlash.Model.Commands
         /// </summary>
         public const int FlatSizeInBytes = (BufferSize * sizeof(ushort)) + sizeof(ushort);
 
-        /// <summary>
-        /// The name of the error database file.
-        /// </summary>
-        internal const string ErrorDatabaseFileName = "error_db.yaml";
-
         private const int BufferSize = 128;
 
         private static readonly Dictionary<ErrorLogId, string> ErrorLogIdStrings = new Dictionary<ErrorLogId, string>()
         {
             { ErrorLogId.Ftl, "FTLv2" },
             { ErrorLogId.Lfs, "LFSv2" },
-            { ErrorLogId.ExtFlash, "Ext Flash" },
+            { ErrorLogId.Spi, "SPI" },
             { ErrorLogId.Luigi, "Decode Luigi" },
             { ErrorLogId.Unknown, "??" }
         };
+
+        private static readonly Lazy<string> DefaultDatabaseName = new Lazy<string>(GetDefaultErrorDatabaseName);
 
         #endregion // Constants
 
@@ -63,48 +59,12 @@ namespace INTV.LtoFlash.Model.Commands
         #region Properties
 
         /// <summary>
-        /// Gets the error IDs in the log.
+        /// Gets the default name of the error database file or resource to use.
         /// </summary>
-        public IEnumerable<ErrorLogId> ErrorIds { get; private set; }
-
-        /// <summary>
-        /// Gets the error line numbers.
-        /// </summary>
-        public IEnumerable<int> ErrorLineNumbers { get; private set; }
-
-        /// <summary>
-        /// Gets the error data.
-        /// </summary>
-        public IEnumerable<string> ErrorData { get; private set; }
-
-        private IEnumerable<ErrorLogEntry> ErrorLogEntries { get; set; }
-
-        private ErrorDatabase ErrorsDatabase
+        public static string DefaultErrorDatabaseName
         {
-            get
-            {
-                if (_errorsDatabase == null)
-                {
-                    _errorsDatabase = ErrorDatabase.Create();
-                }
-                return _errorsDatabase;
-            }
+            get { return DefaultDatabaseName.Value; }
         }
-
-        private ErrorDatabase _errorsDatabase;
-
-        /// <summary>
-        /// Gets a value indicating whether the error log is empty.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get { return (ErrorLogEntries == null) || !ErrorLogEntries.Any(); }
-        }
-
-        /// <summary>
-        /// Gets the index of the error in the log.
-        /// </summary>
-        public ushort ErrorIndex { get; private set; }
 
         #region ByteSerializer Properties
 
@@ -121,6 +81,36 @@ namespace INTV.LtoFlash.Model.Commands
         }
 
         #endregion // ByteSerializer Properties
+
+        /// <summary>
+        /// Gets the error IDs in the log.
+        /// </summary>
+        public IEnumerable<ErrorLogId> ErrorIds { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the error log is empty.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return (ErrorLogEntries == null) || !ErrorLogEntries.Any(); }
+        }
+
+        /// <summary>
+        /// Gets or sets the error line numbers.
+        /// </summary>
+        private IEnumerable<int> ErrorLineNumbers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the error data.
+        /// </summary>
+        private IEnumerable<string> ErrorData { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index of the error in the log.
+        /// </summary>
+        private ushort ErrorIndex { get; set; }
+
+        private IEnumerable<ErrorLogEntry> ErrorLogEntries { get; set; }
 
         #endregion Properties
 
@@ -230,13 +220,19 @@ namespace INTV.LtoFlash.Model.Commands
                 reportBuilder.AppendLine("---------------------------------------------------------------------");
 
                 // Append friendly output.
-                if ((currentFirmwareVersion != FirmwareRevisions.UnavailableFirmwareVersion) && (ErrorsDatabase != null))
+                var errorDatabases = GetErrorDatabases(currentFirmwareVersion);
+                if ((currentFirmwareVersion != FirmwareRevisions.UnavailableFirmwareVersion) && errorDatabases.Any())
                 {
                     reportBuilder.AppendLine("Details");
                     reportBuilder.AppendLine("--------------------------------------------------------------");
                     foreach (var entry in ErrorLogEntries)
                     {
-                        var errorDetail = ErrorsDatabase.GetErrorString(currentFirmwareVersion, entry);
+                        ErrorDatabase errorDatabase;
+                        string errorDetail = null;
+                        if (errorDatabases.TryGetValue(entry.LogId, out errorDatabase))
+                        {
+                            errorDetail = errorDatabase.GetErrorString(currentFirmwareVersion, entry);
+                        }
                         if (string.IsNullOrEmpty(errorDetail))
                         {
                             errorDetail = "<Error Detail Unavailable>";
@@ -265,11 +261,27 @@ namespace INTV.LtoFlash.Model.Commands
             return GetDetailedErrorReport(FirmwareRevisions.UnavailableFirmwareVersion);
         }
 
+        private static string GetDefaultErrorDatabaseName()
+        {
+            var defaultErrorDatabaseName = IsYamlSupported() ? ErrorDatabase.ErrorDatabaseYamlFileName : ErrorDatabase.ErrorDatabaseXmlFileName;
+            return defaultErrorDatabaseName;
+        }
+
+        private IDictionary<ErrorLogId, ErrorDatabase> GetErrorDatabases(int rawFirmwareVersion)
+        {
+            var errorDatabases = new Dictionary<ErrorLogId, ErrorDatabase>();
+            foreach (var errorLogKind in ErrorLogEntries.Select(l => l.LogId).Distinct())
+            {
+                errorDatabases[errorLogKind] = ErrorDatabase.GetErrorDatabase(rawFirmwareVersion, errorLogKind);
+            }
+            return errorDatabases;
+        }
+
         private void DecodeRawResults()
         {
             /*  Interpret error log.  Error log needs to be processed in reverse.   */
             /*      15:14   size of the entry (0, 1, 2, or 3 extra words)           */
-            /*      13:12   file ID (0 = FTL, 1 = LFS, 2 = ExtFlash, 3 = Luigi)     */
+            /*      13:12   file ID (0 = FTL, 1 = LFS, 2 = SPI, 3 = LUIGI)     */
             /*      11:0    line number of the error.                               */
             var errorReport = new StringBuilder();
             var errorIds = new List<ErrorLogId>();
@@ -329,33 +341,56 @@ namespace INTV.LtoFlash.Model.Commands
             ErrorLogEntries = errorLogEntries;
         }
 
+        /// <summary>
+        /// Describes a decoded error log entry.
+        /// </summary>
         private class ErrorLogEntry : Tuple<ushort, ErrorLogId, int, IEnumerable<int>>
         {
+            /// <summary>
+            /// Initialize a new instance with specific values.
+            /// </summary>
+            /// <param name="logIndex">The index of the error log entry.</param>
+            /// <param name="logId">The identifier of which specific part of the firmware the firmware error originated in.</param>
+            /// <param name="lineNumber">The original line number in the firmware source where the error occurred.</param>
+            /// <param name="errorDetails">Data to provide for the error format string from the error database.</param>
             public ErrorLogEntry(ushort logIndex, ErrorLogId logId, int lineNumber, IEnumerable<int> errorDetails)
                 : base(logIndex, logId, lineNumber, errorDetails)
             {
             }
 
+            /// <summary>
+            /// Gets the error log index.
+            /// </summary>
             public ushort LogIndex
             {
                 get { return Item1; }
             }
 
+            /// <summary>
+            /// Gets the area of firmware in which the error occurred.
+            /// </summary>
             public ErrorLogId LogId
             {
                 get { return Item2; }
             }
 
+            /// <summary>
+            /// Gets the line number in the firmware source where the error occurred.
+            /// </summary>
             public int LineNumber
             {
                 get { return Item3; }
             }
 
+            /// <summary>
+            /// Gets data values to provide to the error format string, if any.
+            /// </summary>
             public IEnumerable<int> ErrorDetails
             {
                 get { return Item4; }
             }
 
+            /// <inheritdoc />
             public override string ToString()
             {
                 var entryStringBuilder = new StringBuilder();
@@ -368,54 +403,80 @@ namespace INTV.LtoFlash.Model.Commands
             }
         }
 
-        private class ErrorDatabase
+        /// <summary>
+        /// This class represents an error database for one or more versions of Locutus firmware.
+        /// </summary>
+        private partial class ErrorDatabase
         {
+            /// <summary>
+            /// The base name for a general purpose error database file or resource.
+            /// </summary>
+            internal const string ErrorDatabaseRootName = "error_db";
+
+            /// <summary>
+            /// The name of the YAML error database file.
+            /// </summary>
+            internal const string ErrorDatabaseYamlFileName = ErrorDatabaseRootName + YamlFileExtension;
+
+            /// <summary>
+            /// The name of the XML error database file.
+            /// </summary>
+            internal const string ErrorDatabaseXmlFileName = ErrorDatabaseRootName + XmlFileExtension;
+
+            /// <summary>
+            /// Gets the default error database.
+            /// </summary>
+            /// <remarks>The default database is the one defined by an embedded resource in this assembly, named either
+            /// error_db.yaml or error_db.xml, depending on the supported formats. The YAML format is the canonical form,
+            /// with XML being added later to avoid licensing conflicts between the YAML assemblies initially adopted.
+            /// Starting around version 5050, the error database format was upgraded in two ways:
+            /// The format became inclusive of all prior firmware releases (tools improvement by Joe Zbiciak)
+            /// XML format and schema were established for more widely supportable error database in C# (Steve Orth, Joe Zbiciak)</remarks>
+            internal static ErrorDatabase Default
+            {
+                get { return DefaultErrorDatabase.Value; }
+            }
+            private static readonly Lazy<ErrorDatabase> DefaultErrorDatabase = new Lazy<ErrorDatabase>(() => new ErrorDatabase(DefaultErrorDatabaseResource));
+
+            private static string DefaultErrorDatabaseResource
+            {
+                get { return DefaultDatabaseResource.Value; }
+            }
+            private static readonly Lazy<string> DefaultDatabaseResource = new Lazy<string>(GetDefaultErrorDatabaseResource);
+            private static readonly Lazy<IEnumerable<string>> ErrorDatabaseResources = new Lazy<IEnumerable<string>>(GetEmbeddedErrorDatabases);
+            private static readonly Dictionary<string, string> ErrorDatabaseFileTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { YamlFileExtension, YamlFileExtension },
+                { XmlFileExtension, XmlFileExtension },
+            };
             private const string StringsKey = "strings";
             private const string ErrorMapKey = "err_map";
 
-            private ErrorDatabase(string errorDatabasePath)
+            private const string DefaultBaseDatabaseResourceName = FirmwareRevisions.FirmwareUpdateResourcePrefix + ErrorDatabaseRootName;
+            private const string DefaultXmlDatabaseResourceName = DefaultBaseDatabaseResourceName + XmlFileExtension;
+            private const string DefaultYamlDatabaseResourceName = DefaultBaseDatabaseResourceName + YamlFileExtension;
+
+            /// <summary>
+            /// Initialize a new instance of an error database from a file on disk or embedded resource.
+            /// </summary>
+            /// <param name="errorDatabaseSource">Absolute path to an error database file, or name of resource embedded in this assembly.</param>
+            /// <remarks>Supported formats are XML and YAML. Note that at this time, YAML support is not shipped in the release product
+            /// due to Ms-PL / GPL license incompatibility problems.</remarks>
+            private ErrorDatabase(string errorDatabaseSource)
             {
-#if ENABLE_YAML_ERROR_DATABASE
-                var rawErrorDatabaseData = YaTools.Yaml.YamlLanguage.FileTo(errorDatabasePath) as IDictionary;
-                if ((rawErrorDatabaseData != null) && rawErrorDatabaseData.Contains(StringsKey) && rawErrorDatabaseData.Contains(ErrorMapKey))
+                string databaseType;
+                errorDatabaseSource = GetErrorDatabaseSource(errorDatabaseSource, out databaseType);
+                if ((errorDatabaseSource != null) && (databaseType != null))
                 {
-                    var errorMaps = new Dictionary<ErrorLogId, IDictionary<int, IDictionary<int, int>>>();
-                    var rawErrorMap = rawErrorDatabaseData[ErrorMapKey] as IList;
-                    for (int errorIdType = 0; errorIdType < rawErrorMap.Count; ++errorIdType)
+                    if (System.IO.Path.IsPathRooted(errorDatabaseSource))
                     {
-                        var firmwareVersionToLineNumberToStringIndicies = new Dictionary<int, IDictionary<int, int>>();
-                        var rawFirmwareVersionToLineNumberToStringIndicies = rawErrorMap[errorIdType] as IDictionary;
-                        if (rawFirmwareVersionToLineNumberToStringIndicies == null)
-                        {
-                            // Ran into an empty table, so just fake it.
-                            rawFirmwareVersionToLineNumberToStringIndicies = new Hashtable();
-                        }
-                        foreach (DictionaryEntry entry in rawFirmwareVersionToLineNumberToStringIndicies)
-                        {
-                            int firmwareVersion;
-                            if (int.TryParse(entry.Key as string, out firmwareVersion))
-                            {
-                                var lineNumberToStringIndexMap = new Dictionary<int, int>();
-                                var rawLineNumberToStringIndexMap = entry.Value as IDictionary;
-                                foreach (DictionaryEntry lineToStringIndexEntry in rawLineNumberToStringIndexMap)
-                                {
-                                    int lineNumber;
-                                    int stringIndex;
-                                    if (int.TryParse(lineToStringIndexEntry.Key as string, out lineNumber) && int.TryParse(lineToStringIndexEntry.Value as string, out stringIndex))
-                                    {
-                                        lineNumberToStringIndexMap[lineNumber] = stringIndex;
-                                    }
-                                }
-                                firmwareVersionToLineNumberToStringIndicies[firmwareVersion] = lineNumberToStringIndexMap;
-                            }
-                        }
-                        errorMaps[(ErrorLogId)errorIdType] = firmwareVersionToLineNumberToStringIndicies;
+                        InitializeDatabaseFromFile(errorDatabaseSource, databaseType);
                     }
-                    ErrorMaps = errorMaps;
-                    var strings = rawErrorDatabaseData[StringsKey] as IList;
-                    Strings = strings.Cast<string>().Select(s => s.Replace(@"\n", string.Empty)).ToList();
+                    else
+                    {
+                        InitializeDatabaseFromResource(errorDatabaseSource, databaseType);
+                    }
                 }
-#endif // ENABLE_YAML_ERROR_DATABASE
             }
 
             /// <summary>
@@ -427,31 +488,67 @@ namespace INTV.LtoFlash.Model.Commands
             /// string in the Strings list. The string may contain format specifiers for more detail in the error string.</remarks>
             internal IDictionary<ErrorLogId, IDictionary<int, IDictionary<int, int>>> ErrorMaps { get; private set; }
 
+            /// <summary>
+            /// Gets the error message strings.
+            /// </summary>
             internal IList<string> Strings { get; private set; }
 
-            internal static ErrorDatabase Create()
+            /// <summary>
+            /// Gets the database best capable of providing meaningful error messages given a firmware version and error log identifier.
+            /// </summary>
+            /// <param name="rawFirmwareVersion">The raw firmware version for which an error log is to be parsed.</param>
+            /// <param name="errorLogId">Which section of the error log is requested.</param>
+            /// <param name="errorDatabaseFilesDirectory">Where to look for potential updated version of the error log.</param>
+            /// <returns>An error database most likely to support error log parsing given the input parameters.</returns>
+            internal static ErrorDatabase GetErrorDatabase(int rawFirmwareVersion, ErrorLogId errorLogId, string errorDatabaseFilesDirectory = null)
             {
-                ErrorDatabase errorDatabase = null;
-                try
+                // First, check default map for exact match.
+                ErrorDatabase matchingDatabase = Default;
+                var errorMapFirmwareVersion = GetFirmwareVersionForLookup(rawFirmwareVersion);
+                var matchingMap = Default.GetClosestMatchingErrorMap(errorLogId, errorMapFirmwareVersion);
+                if (matchingMap.Item1 != errorMapFirmwareVersion)
                 {
-                    var errorDatabasePath = System.IO.Path.Combine(Configuration.Instance.FirmwareUpdatesDirectory, ErrorDatabaseFileName);
-                    errorDatabase = new ErrorDatabase(errorDatabasePath);
+                    // Did not find exact match in default database. Next, check on disk in default location for a better match.
+                    if (string.IsNullOrWhiteSpace(errorDatabaseFilesDirectory))
+                    {
+                        errorDatabaseFilesDirectory = Configuration.Instance.FirmwareUpdatesDirectory;
+                    }
+                    Tuple<int, IDictionary<int, int>> onDiskMatchingMap;
+                    var onDiskDatabaseMatch = GetClosestMatchingErrorDatabase(rawFirmwareVersion, errorLogId, errorDatabaseFilesDirectory, out onDiskMatchingMap);
+                    if (onDiskMatchingMap.Item1 > matchingMap.Item1)
+                    {
+                        matchingMap = onDiskMatchingMap;
+                        matchingDatabase = onDiskDatabaseMatch;
+                    }
+
+                    // Finally, check embedded resources for a better match.
+                    if (matchingMap.Item1 != errorMapFirmwareVersion)
+                    {
+                        Tuple<int, IDictionary<int, int>> resourcesMatchingMap;
+                        var resourcesDatabaseMatch = GetClosestMatchingErrorDatabase(rawFirmwareVersion, errorLogId, FirmwareRevisions.FirmwareUpdateResourcePrefix, out resourcesMatchingMap);
+                        if (resourcesMatchingMap.Item1 > matchingMap.Item1)
+                        {
+                            matchingMap = resourcesMatchingMap;
+                            matchingDatabase = resourcesDatabaseMatch;
+                        }
+                    }
                 }
-                catch (Exception)
-                {
-                    // If a problem arises, we'll just use the raw error log data to report any problems.
-                }
-                return errorDatabase;
+                return matchingDatabase;
             }
 
-            internal string GetErrorString(int firmwareVersion, ErrorLogEntry errorLogEntry)
+            /// <summary>
+            /// Gets an error string given an error log entry and a raw firmware version.
+            /// </summary>
+            /// <param name="rawFirmwareVersion">The raw current firmware version from a Locutus device.</param>
+            /// <param name="errorLogEntry">An error log entry to convert to a more meaningful error message.</param>
+            /// <returns>An error string describing the issue described by <paramref name="errorLogEntry"/>.</returns>
+            internal string GetErrorString(int rawFirmwareVersion, ErrorLogEntry errorLogEntry)
             {
                 var errorString = string.Empty;
                 IDictionary<int, IDictionary<int, int>> firmwareVersionEntries;
                 if ((ErrorMaps != null) && ErrorMaps.TryGetValue(errorLogEntry.LogId, out firmwareVersionEntries))
                 {
-                    var isUnreleased = firmwareVersion & FirmwareRevisions.UnofficialReleaseMask;
-                    var firmwareVersionKey = ((firmwareVersion & FirmwareRevisions.BaseVersionMask) >> 1) + isUnreleased;
+                    var firmwareVersionKey = GetFirmwareVersionForLookup(rawFirmwareVersion);
                     IDictionary<int, int> lineNumberToErrorString;
                     if (firmwareVersionEntries.TryGetValue(firmwareVersionKey, out lineNumberToErrorString))
                     {
@@ -465,24 +562,277 @@ namespace INTV.LtoFlash.Model.Commands
                             catch (Exception e)
                             {
                                 // Don't care if this fails.
-                                ReportErrorStringLookupFailure(firmwareVersion, errorLogEntry, "Failed to format output" + "; " + e.Message);
+                                ReportErrorStringLookupFailure(rawFirmwareVersion, errorLogEntry, "Failed to format output" + "; " + e.Message);
                             }
                         }
                         else
                         {
-                            ReportErrorStringLookupFailure(firmwareVersion, errorLogEntry, "Failed to look up line number");
+                            ReportErrorStringLookupFailure(rawFirmwareVersion, errorLogEntry, "Failed to look up line number");
                         }
                     }
                     else
                     {
-                        ReportErrorStringLookupFailure(firmwareVersion, errorLogEntry, "Failed to locate data for firmware revision");
+                        ReportErrorStringLookupFailure(rawFirmwareVersion, errorLogEntry, "Failed to locate data for firmware revision");
                     }
                 }
                 else
                 {
-                    ReportErrorStringLookupFailure(firmwareVersion, errorLogEntry, "Failed to locate database for log kind");
+                    ReportErrorStringLookupFailure(rawFirmwareVersion, errorLogEntry, "Failed to locate database for log kind");
                 }
                 return errorString;
+            }
+
+            private static string GetDefaultErrorDatabaseResource()
+            {
+                var defaultErrorDatabaseResource = IsYamlSupported() ? DefaultYamlDatabaseResourceName : DefaultXmlDatabaseResourceName;
+                return defaultErrorDatabaseResource;
+            }
+
+            private static string GetErrorDatabaseSource(string errorDatabase, out string databaseType)
+            {
+                var isValidErrorDatabase = false;
+                databaseType = GetErrorDatabaseType(errorDatabase);
+                if (databaseType != null)
+                {
+                    isValidErrorDatabase = IsValidDatabaseSource(errorDatabase);
+                    if (isValidErrorDatabase)
+                    {
+                        if (!IsDatabaseTypeSupported(databaseType))
+                        {
+                            databaseType = GetOtherDatabaseType(databaseType);
+                            errorDatabase = System.IO.Path.ChangeExtension(errorDatabase, databaseType);
+                            isValidErrorDatabase = IsValidDatabaseSource(errorDatabase);
+                        }
+                    }
+                }
+                if (!isValidErrorDatabase)
+                {
+                    errorDatabase = null;
+                    databaseType = null;
+                }
+                return errorDatabase;
+            }
+
+            private static string MakeVersionedDatabaseSourceName(int userFriendyFirmwareVersion, string databaseType)
+            {
+                var versionedDatabaseSourceName = string.Format(
+                                                                System.Globalization.CultureInfo.InvariantCulture,
+                                                                "{0}-{1}{2}",
+                                                                ErrorDatabaseRootName,
+                                                                userFriendyFirmwareVersion,
+                                                                databaseType);
+                return versionedDatabaseSourceName;
+            }
+
+            private static string MakeFullyQualifiedVersionedDatabaseSourceName(int userFriendyFirmwareVersion, string databaseLocation, string databaseType)
+            {
+                var baseDatabaseSourceName = MakeVersionedDatabaseSourceName(userFriendyFirmwareVersion, databaseType);
+                string fullyQualifiedDatabaseSourceName;
+                if (System.IO.Path.IsPathRooted(databaseLocation))
+                {
+                    fullyQualifiedDatabaseSourceName = System.IO.Path.Combine(databaseLocation, baseDatabaseSourceName);
+                }
+                else
+                {
+                    fullyQualifiedDatabaseSourceName = FirmwareRevisions.FirmwareUpdateResourcePrefix + baseDatabaseSourceName;
+                }
+                return fullyQualifiedDatabaseSourceName;
+            }
+
+            private static string GetErrorDatabaseType(string errorDatabase)
+            {
+                string databaseType = null;
+                if (!string.IsNullOrWhiteSpace(errorDatabase))
+                {
+                    databaseType = System.IO.Path.GetExtension(errorDatabase);
+                }
+                if (string.IsNullOrWhiteSpace(databaseType) || !ErrorDatabaseFileTypes.TryGetValue(databaseType, out databaseType))
+                {
+                    databaseType = null;
+                }
+                return databaseType;
+            }
+
+            private static bool IsDatabaseTypeSupported(string databaseType)
+            {
+                var isFileTypeSupported = false;
+                switch (databaseType)
+                {
+                    case XmlFileExtension:
+                        isFileTypeSupported = IsXmlSupported();
+                        break;
+                    case YamlFileExtension:
+                        isFileTypeSupported = IsYamlSupported();
+                        break;
+                    default:
+                        break;
+                }
+                return isFileTypeSupported;
+            }
+
+            private static string GetOtherDatabaseType(string databaseType)
+            {
+                string otherFileType = null;
+                switch (databaseType)
+                {
+                    case XmlFileExtension:
+                        otherFileType = YamlFileExtension;
+                        break;
+                    case YamlFileExtension:
+                        otherFileType = XmlFileExtension;
+                        break;
+                    default:
+                        break;
+                }
+                return otherFileType;
+            }
+
+            private static bool IsValidDatabaseSource(string errorDatabase)
+            {
+                var isValidErrorDatabase = false;
+                if (System.IO.Path.IsPathRooted(errorDatabase))
+                {
+                    isValidErrorDatabase = System.IO.File.Exists(errorDatabase);
+                }
+                else
+                {
+                    isValidErrorDatabase = ErrorDatabaseResources.Value.Contains(errorDatabase);
+                }
+                return isValidErrorDatabase;
+            }
+
+            private static int GetFirmwareVersionForLookup(int firmwareVersion)
+            {
+                var isUnreleased = firmwareVersion & FirmwareRevisions.UnofficialReleaseMask;
+                var firmwareVersionKey = ((firmwareVersion & FirmwareRevisions.BaseVersionMask) >> 1) + isUnreleased;
+                return firmwareVersionKey;
+            }
+
+            private static int GetFirmwareVersionForResource(int firmwareVersion)
+            {
+                var baseFirmwareVersionNumber = (firmwareVersion & FirmwareRevisions.BaseVersionMask) >> FirmwareRevisions.BaseVersionBitOffset;
+                return baseFirmwareVersionNumber;
+            }
+
+            private static string GetErrorDatabaseSchemaName(string errorDatabase)
+            {
+                string schema = null;
+                if (!string.IsNullOrWhiteSpace(errorDatabase))
+                {
+                    var errorDatabaseFormat = GetErrorDatabaseType(errorDatabase);
+                    switch (errorDatabaseFormat)
+                    {
+                        case XmlFileExtension:
+                            schema = System.IO.Path.ChangeExtension(errorDatabase, XmlSchemaFileExtension);
+                            break;
+                        case YamlFileExtension:
+                            schema = System.IO.Path.ChangeExtension(errorDatabase, YamlSchemaFileExtension);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    var isFileOnDisk = System.IO.Path.IsPathRooted(errorDatabase);
+                    var schemaExists = new Predicate<string>(s => isFileOnDisk ? System.IO.File.Exists(s) : ErrorDatabaseResources.Value.Contains(schema));
+                    if (!schemaExists(schema))
+                    {
+                        schema = null;
+                    }
+                }
+
+                return schema;
+            }
+
+            private static ErrorDatabase GetClosestMatchingErrorDatabase(int rawFirmwareVersion, ErrorLogId errorLogId, string databaseRoot, out Tuple<int, IDictionary<int, int>> matchingMap)
+            {
+                matchingMap = null;
+                ErrorDatabase errorDatabase = null;
+                var userFriendlyFirmwareVersion = GetFirmwareVersionForResource(rawFirmwareVersion);
+                int closestFirmwareVersion = -1;
+                string databaseTypeForClosestFirmwareVersion = null;
+                foreach (var databaseType in ErrorDatabaseFileTypes.Keys.Where(t => IsDatabaseTypeSupported(t)))
+                {
+                    var closestFirmwareVersionMatch = GetClosestMatchForErrorDatabase(userFriendlyFirmwareVersion, databaseType, databaseRoot);
+                    if (closestFirmwareVersionMatch > closestFirmwareVersion)
+                    {
+                        closestFirmwareVersion = closestFirmwareVersionMatch;
+                        databaseTypeForClosestFirmwareVersion = databaseType;
+                    }
+                    if (closestFirmwareVersion == userFriendlyFirmwareVersion)
+                    {
+                        break;
+                    }
+                }
+                if (closestFirmwareVersion > 0)
+                {
+                    // load this database and find best match
+                    var databasePath = MakeFullyQualifiedVersionedDatabaseSourceName(closestFirmwareVersion, databaseRoot, databaseTypeForClosestFirmwareVersion);
+                    errorDatabase = new ErrorDatabase(databasePath);
+                    var errorMapFirmwareVersion = GetFirmwareVersionForLookup(rawFirmwareVersion);
+                    matchingMap = errorDatabase.GetClosestMatchingErrorMap(errorLogId, errorMapFirmwareVersion);
+                }
+                return errorDatabase;
+            }
+
+            private static int GetClosestMatchForErrorDatabase(int userFriendlyFirmwareVersion, string errorDatabaseFormat, string directory)
+            {
+                var potentialMatchingErrorDatabases = Enumerable.Empty<string>();
+                if (!string.IsNullOrEmpty(directory) && System.IO.Directory.Exists(directory))
+                {
+                    potentialMatchingErrorDatabases = directory.EnumerateFilesWithPattern(errorDatabaseFormat);
+                }
+                else
+                {
+                    potentialMatchingErrorDatabases = ErrorDatabaseResources.Value.Where(r => r.EndsWith(errorDatabaseFormat, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+
+                var matchingFirmwareVersion = -1;
+                var perfectMatchDatabaseName = MakeVersionedDatabaseSourceName(userFriendlyFirmwareVersion, errorDatabaseFormat);
+                var match = potentialMatchingErrorDatabases.FirstOrDefault(d => d.EndsWith(perfectMatchDatabaseName, StringComparison.OrdinalIgnoreCase));
+                if (match != null)
+                {
+                    matchingFirmwareVersion = userFriendlyFirmwareVersion;
+                }
+                else
+                {
+                    // No perfect match found. Get the "Price is Right" match.
+                    var versionedDatabaseNames = new List<Tuple<int, string>>();
+                    foreach (var databaseName in potentialMatchingErrorDatabases)
+                    {
+                        var baseName = System.IO.Path.GetFileNameWithoutExtension(databaseName);
+                        var nameParts = baseName.Split('-');
+                        int version;
+                        if (nameParts.Length > 1 && int.TryParse(nameParts.Last(), out version))
+                        {
+                            versionedDatabaseNames.Add(new Tuple<int, string>(version, databaseName));
+                        }
+                    }
+
+                    var priceIsRightVersion = -1;
+                    foreach (var versionedDatabaseName in versionedDatabaseNames.OrderBy(d => d.Item1))
+                    {
+                        if (versionedDatabaseName.Item1 <= userFriendlyFirmwareVersion)
+                        {
+                            priceIsRightVersion = versionedDatabaseName.Item1;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    matchingFirmwareVersion = priceIsRightVersion;
+                }
+                return matchingFirmwareVersion;
+            }
+
+            private static string RemoveNewline(string errorLogFormatString)
+            {
+                var sanitized = string.Empty;
+                if (!string.IsNullOrWhiteSpace(errorLogFormatString))
+                {
+                    sanitized = errorLogFormatString.TrimEnd('\n');
+                }
+                return sanitized;
             }
 
             private static void ReportErrorStringLookupFailure(int firmwareVersion, ErrorLogEntry errorLogEntry, string detail)
@@ -492,6 +842,86 @@ namespace INTV.LtoFlash.Model.Commands
                 System.Diagnostics.Debug.WriteLine("  LogId: " + errorLogEntry.LogId);
                 System.Diagnostics.Debug.WriteLine("  Line Number: " + errorLogEntry.LineNumber);
                 System.Diagnostics.Debug.WriteLine("  Reason: " + detail);
+            }
+
+            private static IEnumerable<string> GetEmbeddedErrorDatabases()
+            {
+                var errorDatabases = new HashSet<string>(typeof(ErrorLog).GetResources(DefaultBaseDatabaseResourceName), StringComparer.OrdinalIgnoreCase);
+                return errorDatabases;
+            }
+
+            private void InitializeDatabaseFromFile(string errorDatabasePath, string databaseType)
+            {
+                var schema = GetErrorDatabaseSchemaName(errorDatabasePath);
+                using (var textReader = new System.IO.StreamReader(errorDatabasePath))
+                using (var schemaReader = schema == null ? null : new System.IO.StreamReader(schema))
+                {
+                    InitializeDatabaseFromStreams(textReader, schemaReader, databaseType);
+                }
+            }
+
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "IDispose.Dispose() should be handling properly.")]
+            private void InitializeDatabaseFromResource(string errorDatabaseResource, string databaseType)
+            {
+                var schema = GetErrorDatabaseSchemaName(errorDatabaseResource);
+                var assembly = typeof(ErrorLog).Assembly;
+                using (var resourceStream = assembly.GetManifestResourceStream(errorDatabaseResource))
+                using (var textReader = new System.IO.StreamReader(resourceStream))
+                using (var schemaStream = schema == null ? null : assembly.GetManifestResourceStream(schema))
+                using (var schemaReader = schema == null ? null : new System.IO.StreamReader(schemaStream))
+                {
+                    InitializeDatabaseFromStreams(textReader, schemaReader, databaseType);
+                }
+            }
+
+            private void InitializeDatabaseFromStreams(System.IO.TextReader textReader, System.IO.TextReader schemaReader, string databaseType)
+            {
+                ErrorMaps = new Dictionary<ErrorLogId, IDictionary<int, IDictionary<int, int>>>();
+                Strings = new List<string>();
+
+                switch (databaseType)
+                {
+                    case XmlFileExtension:
+                        PopulateFromXml(textReader, schemaReader);
+                        break;
+                    case YamlFileExtension:
+                        PopulateFromYaml(textReader, schemaReader);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            private Tuple<int, IDictionary<int, int>> GetClosestMatchingErrorMap(ErrorLogId logId, int errorMapFirmwareVersion)
+            {
+                var matchingMap = new Tuple<int, IDictionary<int, int>>(-1, null);
+                IDictionary<int, IDictionary<int, int>> firmwareVersionEntries;
+                if (ErrorMaps.TryGetValue(logId, out firmwareVersionEntries))
+                {
+                    IDictionary<int, int> closestMatchErrorMap;
+                    if (firmwareVersionEntries.TryGetValue(errorMapFirmwareVersion, out closestMatchErrorMap))
+                    {
+                        matchingMap = new Tuple<int, IDictionary<int, int>>(errorMapFirmwareVersion, closestMatchErrorMap);
+                    }
+                    else
+                    {
+                        var closestMatchFirmwareVersion = -1;
+                        foreach (var firmwareVersionEntry in firmwareVersionEntries)
+                        {
+                            var firmwareVersion = firmwareVersionEntry.Key;
+                            if ((firmwareVersion > closestMatchFirmwareVersion) && (firmwareVersion < errorMapFirmwareVersion))
+                            {
+                                closestMatchFirmwareVersion = firmwareVersion;
+                                closestMatchErrorMap = firmwareVersionEntry.Value;
+                            }
+                        }
+                        if ((closestMatchFirmwareVersion > 0) && (closestMatchErrorMap != null))
+                        {
+                            matchingMap = new Tuple<int, IDictionary<int, int>>(closestMatchFirmwareVersion, closestMatchErrorMap);
+                        }
+                    }
+                }
+                return matchingMap;
             }
         }
     }

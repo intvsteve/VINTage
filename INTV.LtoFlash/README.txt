@@ -130,6 +130,7 @@ This assembly provides the following general categories of services:
           residing on LTO Flash! itself), the Model namespace provides
           access to the error log and crash log implemented in the device
           firmware, as well as facilities to update firmware, and more.
+          See notes below regarding firmware error log processing.
 
  - Properties: Contains assembly information and configurable settings.
 
@@ -166,15 +167,48 @@ This assembly provides the following general categories of services:
               NOTE: This may undergo somewhat radical changes if significant
               changes to the multi-device user interface experience are made
 
+FIRMWARE ERROR LOGS
+=============================================================================
+In some rare instances, the cartridge firmware may report an error. These
+error logs are reported with data that encodes data that can be used to
+produce a human-readable error message useful to the firmware author(s).
+A typical firmware release contains a companion file, error_db.yaml, that
+contains data for one or more versions of the firmware. It may also contain
+error_db.xml in newer releases. These newer releases conform to the XML
+schema defined in the error_db.xsd embedded in this assembly.
+
+Ideally here we'd just consume a ready-made YAML parser for .NET and be done.
+Not so fast! Early on, a pretty handy library was identified and back-ported
+to work in .NET 4.0 and work for Windows, Mac and Linux (GTK). Sadly, upon
+completion of basic testing of that port, it was noted that the license for
+the code harvested from http://yaml.codeplex.com is released under the
+Microsoft Public License (Ms-PL), which is incompatible with the GPL. Thus,
+this occasionally handy feature has not been released....
+
+Until now!
+
+It is super easy to transform YAML into XML. This project uses the free
+online utility here:
+
+    https://onlinexmltools.com/convert-yaml-to-xml
+
+This tool produces valid XML that needs only a minuscule modification to
+work with this assembly: Wrap the XML the above tool produces in a valid
+root tag. This code assumes the following:
+
+  <?xml version="1.0"?>
+  <error_db>
+
+  ... OUTPUT FROM https://onlinexmltools.com/convert-yaml-to-xml
+
+  </error_db>
+
+Of course, it would be handy to also just upgrade this codebase to a newer
+version of .NET that has more alternatives for direct handling of YAML and
+just ditch Windows xp support...
+
 FURTHER WORK
 =============================================================================
-During development, a small effort was put in to support decoding the error
-log produced by LTO Flash to map the encoded message back to information
-defined in the specific version of the firmware running on the device. To
-do this, a YAML parser is necessary. This work was begun, but discontinued
-as the firmware - and file system - have proven highly reliable. That is,
-the feature was deemed unnecessary.
-
 The most interesting and compelling future work is more extensive, and is
 to improve and augment the situation in which multiple LTO Flash! devices
 are in use simultaneously. Visually, instead of a single menu, the editor
@@ -184,7 +218,7 @@ Copying data among the various sources and destinations would be accomplished
 by dragging and dropping among the various nodes in this tree.
 
 A simpler improvement will be to allow multiple item selection in the
-Menu Layout editor.
+Menu Layout editor in Windows.
 
 OTHER
 =============================================================================

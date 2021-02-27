@@ -1,0 +1,39 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="error_db">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="subsystem">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="subsystem_name" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="error_mapping" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType mixed="true">
+            <xs:sequence>
+              <xs:element name="firmware" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="message_index" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:short">
+                            <xs:attribute type="xs:short" name="line" use="optional"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute type="xs:short" name="version" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:byte" name="subsystem_index" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element type="xs:string" name="message" maxOccurs="unbounded" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

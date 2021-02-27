@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceCommandFailedException.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using INTV.LtoFlash.Model;
 using INTV.LtoFlash.Model.Commands;
 
 namespace INTV.LtoFlash

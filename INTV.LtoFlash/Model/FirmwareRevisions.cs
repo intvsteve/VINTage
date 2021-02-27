@@ -67,6 +67,11 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public static readonly FirmwareRevisions Unavailable = new FirmwareRevisions();
 
+        /// <summary>
+        /// Prefix used to locate embedded resources related to firmware updates and error databases.
+        /// </summary>
+        internal const string FirmwareUpdateResourcePrefix = "INTV.LtoFlash.Resources.FirmwareUpdates.";
+
         private const long FirmwareUpdateVersionOffset = 0xC0;
         private const int FirmwareVersionSizeInBytes = 3;
         private const int FirmwareRevisionNeedsDoublingAfter = 0x08A2;

@@ -168,6 +168,8 @@
     <Compile Include="Model\DeviceStatusFlagsLo.cs" />
     <Compile Include="Model\EcsStatusFlags.cs" />
     <Compile Include="Model\ErrorLog.cs" />
+    <Compile Include="Model\ErrorLog.ErrorDatabase.Xml.cs" />
+    <Compile Include="Model\ErrorLog.ErrorDatabase.Yaml.cs" />
     <Compile Include="Model\ErrorLogId.cs" />
     <Compile Include="Model\ExecuteDeviceCommandAsyncTaskData.cs" />
     <Compile Include="Model\ExecuteDeviceCommandProgressUpdateMode.cs" />
@@ -794,6 +796,22 @@
     <EmbeddedResource Include="Resources\Images\remove_32xLG.png">
       <LogicalName>Resources/Images/remove_32xLG.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-2638.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-2893.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-3994.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-4416.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-4764.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5050.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5505.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db.xsd" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-2638.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-2893.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-3994.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-4416.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-4764.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5050.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5505.yaml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db.yaml" />
   </ItemGroup>
   <ItemGroup>

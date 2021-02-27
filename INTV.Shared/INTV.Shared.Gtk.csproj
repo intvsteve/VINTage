@@ -203,6 +203,7 @@
     <Compile Include="Utility\PathComparer.Linux.cs" />
     <Compile Include="Utility\PathComparer.cs" />
     <Compile Include="Utility\PathUtils.Linux.cs" />
+    <Compile Include="Utility\PathUtils.Mono.cs" />
     <Compile Include="Utility\PathUtils.cs" />
     <Compile Include="Utility\ProgramFeaturesHelpers.cs" />
     <Compile Include="Utility\ReflectionHelpers.cs" />

@@ -1,5 +1,5 @@
 ﻿// <copyright file="LtoFlashVIewModel.Simulator.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2016 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -280,7 +280,7 @@ namespace INTV.LtoFlash.ViewModel
             return deviceViewModel.IsValid;
         }
 
-        private static void GetErrorLogComplete(INTV.LtoFlash.Model.Commands.ErrorLog errorLog)
+        private static void GetErrorLogComplete(INTV.LtoFlash.Model.ErrorLog errorLog)
         {
             var message = "Retrieved error log:\n\n";
             if (errorLog == null)
@@ -319,7 +319,7 @@ namespace INTV.LtoFlash.ViewModel
             }
         }
 
-        private static void GetErrorAndCrashLogsComplete(INTV.LtoFlash.Model.Commands.ErrorLog errorLog, CrashLog crashLog)
+        private static void GetErrorAndCrashLogsComplete(INTV.LtoFlash.Model.ErrorLog errorLog, CrashLog crashLog)
         {
             System.Diagnostics.Debug.WriteLine("Got logs");
         }

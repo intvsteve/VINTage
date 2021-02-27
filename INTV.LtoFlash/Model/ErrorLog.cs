@@ -1,5 +1,5 @@
-﻿// <copyright file="ErrorLog.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2018 All Rights Reserved
+// <copyright file="ErrorLog.cs" company="INTV Funhouse">
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace INTV.LtoFlash.Model.Commands
+namespace INTV.LtoFlash.Model
 {
     /// <summary>
     /// Generates a user-readable error log retrieved from a Locutus device.

@@ -371,6 +371,6 @@ This software is not perfect. Here are some troubleshooting suggestions:
 OTHER
 -----
 
-Intellivision (R) is a trademark of Intellivision, Productions, Inc.
+Intellivision (R) is a trademark of Intellivision, Entertainment, Inc.
 Left Turn Only, LLC and INTV Funhouse are not affiliated with
-Intellivision Productions, Inc.
+Intellivision Entertainment, Inc.

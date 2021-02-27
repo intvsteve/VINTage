@@ -67,6 +67,13 @@
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-2638.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-2893.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-3994.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-4416.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-4764.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5050.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5505.yaml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.txt" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\LTO_Flash_FW.upg" />
     <EmbeddedResource Include="Resources\Images\addtomenu_16x.png" />

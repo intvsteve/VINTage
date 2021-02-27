@@ -803,6 +803,7 @@
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-4764.xml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5050.xml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5505.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db.xsd" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-2638.yaml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-2893.yaml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-3994.yaml" />

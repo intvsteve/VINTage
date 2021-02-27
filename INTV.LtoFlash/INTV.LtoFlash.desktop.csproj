@@ -544,6 +544,9 @@
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-4764.yaml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5050.yaml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5505.yaml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\connected_16x16.png" />

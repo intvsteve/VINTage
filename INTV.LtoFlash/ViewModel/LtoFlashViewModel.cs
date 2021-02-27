@@ -70,8 +70,6 @@ namespace INTV.LtoFlash.ViewModel
 
         public const string ShowFileSystemsDifferIconPropertyName = "ShowFileSystemsDifferIcon";
 
-        private const string FirmwareUpdateResourcePrefix = "INTV.LtoFlash.Resources.FirmwareUpdates.";
-
         #endregion // Constants
 
         private static readonly MenuLayout EmptyMenuLayout = new MenuLayout(new FileSystem(FileSystemOrigin.None), string.Empty);
@@ -579,9 +577,9 @@ namespace INTV.LtoFlash.ViewModel
 
         private static string GetNewestFirmwareUpdateFile(LtoFlashViewModel viewModel, out int newestFirmwareVersion)
         {
-            var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(FirmwareUpdateResourcePrefix);
+            var embeddedFirmwareUpdates = typeof(LtoFlashViewModel).GetResources(LtoFlash.Model.FirmwareRevisions.FirmwareUpdateResourcePrefix);
             var firmwareVersionSuffix = viewModel.GetFirmwareUpgradeFileSuffix();
-            typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, FirmwareUpdateResourcePrefix, Configuration.Instance.FirmwareUpdatesDirectory, (n, s) => viewModel.GetFirmwareUpdateFileName(n, firmwareVersionSuffix));
+            typeof(LtoFlashViewModel).ExtractResourcesToFiles(embeddedFirmwareUpdates, LtoFlash.Model.FirmwareRevisions.FirmwareUpdateResourcePrefix, Configuration.Instance.FirmwareUpdatesDirectory, (n, s) => viewModel.GetFirmwareUpdateFileName(n, firmwareVersionSuffix));
 
             newestFirmwareVersion = INTV.LtoFlash.Model.FirmwareRevisions.UnavailableFirmwareVersion;
             var firmwareUpdateFile = string.Empty;
@@ -1195,7 +1193,7 @@ namespace INTV.LtoFlash.ViewModel
             int? firmwareVersion = null;
             try
             {
-                var firmwareImageResource = FirmwareUpdateResourcePrefix + "LTO_Flash_FW.upg";
+                var firmwareImageResource = LtoFlash.Model.FirmwareRevisions.FirmwareUpdateResourcePrefix + "LTO_Flash_FW.upg";
                 var assembly = typeof(LtoFlashViewModel).Assembly;
                 using (var resourceStream = assembly.GetManifestResourceStream(firmwareImageResource))
                 {
@@ -1222,7 +1220,7 @@ namespace INTV.LtoFlash.ViewModel
 
         private string GetFirmwareUpdateFileName(string resourceName, string firmwareVersionSuffix)
         {
-            var defaultFileName = resourceName.Substring(FirmwareUpdateResourcePrefix.Length);
+            var defaultFileName = resourceName.Substring(LtoFlash.Model.FirmwareRevisions.FirmwareUpdateResourcePrefix.Length);
             var fileName = defaultFileName;
             if (!string.IsNullOrEmpty(firmwareVersionSuffix))
             {

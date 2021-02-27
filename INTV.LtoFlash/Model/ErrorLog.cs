@@ -45,7 +45,7 @@ namespace INTV.LtoFlash.Model
         {
             { ErrorLogId.Ftl, "FTLv2" },
             { ErrorLogId.Lfs, "LFSv2" },
-            { ErrorLogId.ExtFlash, "Ext Flash" },
+            { ErrorLogId.Spi, "SPI" },
             { ErrorLogId.Luigi, "Decode Luigi" },
             { ErrorLogId.Unknown, "??" }
         };
@@ -280,7 +280,7 @@ namespace INTV.LtoFlash.Model
         {
             /*  Interpret error log.  Error log needs to be processed in reverse.   */
             /*      15:14   size of the entry (0, 1, 2, or 3 extra words)           */
-            /*      13:12   file ID (0 = FTL, 1 = LFS, 2 = ExtFlash, 3 = Luigi)     */
+            /*      13:12   file ID (0 = FTL, 1 = LFS, 2 = SPI, 3 = LUIGI)     */
             /*      11:0    line number of the error.                               */
             var errorReport = new StringBuilder();
             var errorIds = new List<ErrorLogId>();

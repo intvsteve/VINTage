@@ -1,5 +1,5 @@
 ﻿// <copyright file="ErrorLogId.cs" company="INTV Funhouse">
-// Copyright (c) 2014 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -36,9 +36,9 @@ namespace INTV.LtoFlash.Model
         Lfs,
 
         /// <summary>
-        /// Error occurred in external flash.
+        /// Error occurred in serial peripheral interface.
         /// </summary>
-        ExtFlash,
+        Spi,
 
         /// <summary>
         /// Error occurred decoding a LUIGI file.

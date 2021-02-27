@@ -93,6 +93,7 @@
     <Compile Include="Utility\PathComparer.cs" />
     <Compile Include="Utility\PathUtils.cs" />
     <Compile Include="Utility\PathUtils.Mac.cs" />
+    <Compile Include="Utility\PathUtils.Mono.cs" />
     <Compile Include="Utility\ResourceHelpers.cs" />
     <Compile Include="Utility\RunExternalProgram.cs" />
     <Compile Include="Utility\SerialPortDetector.cs" />

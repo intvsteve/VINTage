@@ -169,6 +169,7 @@
     <Compile Include="Model\DeviceStatusFlagsLo.cs" />
     <Compile Include="Model\EcsStatusFlags.cs" />
     <Compile Include="Model\ErrorLog.cs" />
+    <Compile Include="Model\ErrorLog.ErrorDatabase.Yaml.cs" />
     <Compile Include="Model\ErrorLogId.cs" />
     <Compile Include="Model\ExecuteDeviceCommandAsyncTaskData.cs" />
     <Compile Include="Model\ExecuteDeviceCommandProgressUpdateMode.cs" />

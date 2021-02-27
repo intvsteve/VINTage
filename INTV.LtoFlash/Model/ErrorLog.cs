@@ -39,11 +39,6 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public const int FlatSizeInBytes = (BufferSize * sizeof(ushort)) + sizeof(ushort);
 
-        /// <summary>
-        /// The name of the error database file.
-        /// </summary>
-        internal const string ErrorDatabaseFileName = "error_db.yaml";
-
         private const int BufferSize = 128;
 
         private static readonly Dictionary<ErrorLogId, string> ErrorLogIdStrings = new Dictionary<ErrorLogId, string>()
@@ -62,6 +57,15 @@ namespace INTV.LtoFlash.Model
         #region Properties
 
         /// <summary>
+        /// Gets the default name of the error database file or resource to use.
+        /// </summary>
+        public static string DefaultErrorDatabaseName
+        {
+            get { return _defaultErrorDatabaseName.Value; }
+        }
+        private static readonly Lazy<string> _defaultErrorDatabaseName = new Lazy<string>(GetDefaultErrorDatabaseName);
+
+        /// <summary>
         /// Gets the error IDs in the log.
         /// </summary>
         public IEnumerable<ErrorLogId> ErrorIds { get; private set; }
@@ -77,20 +81,6 @@ namespace INTV.LtoFlash.Model
         public IEnumerable<string> ErrorData { get; private set; }
 
         private IEnumerable<ErrorLogEntry> ErrorLogEntries { get; set; }
-
-        private ErrorDatabase ErrorsDatabase
-        {
-            get
-            {
-                if (_errorsDatabase == null)
-                {
-                    _errorsDatabase = ErrorDatabase.Create();
-                }
-                return _errorsDatabase;
-            }
-        }
-
-        private ErrorDatabase _errorsDatabase;
 
         /// <summary>
         /// Gets a value indicating whether the error log is empty.
@@ -475,21 +465,6 @@ namespace INTV.LtoFlash.Model
             internal IDictionary<ErrorLogId, IDictionary<int, IDictionary<int, int>>> ErrorMaps { get; private set; }
 
             internal IList<string> Strings { get; private set; }
-
-            internal static ErrorDatabase Create()
-            {
-                ErrorDatabase errorDatabase = null;
-                try
-                {
-                    var errorDatabasePath = System.IO.Path.Combine(Configuration.Instance.FirmwareUpdatesDirectory, ErrorDatabaseFileName);
-                    errorDatabase = new ErrorDatabase(errorDatabasePath);
-                }
-                catch (Exception)
-                {
-                    // If a problem arises, we'll just use the raw error log data to report any problems.
-                }
-                return errorDatabase;
-            }
 
             /// <summary>
             /// Gets the database best capable of providing meaningful error messages given a firmware version and error log identifier.

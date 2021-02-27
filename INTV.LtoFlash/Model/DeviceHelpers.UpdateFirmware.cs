@@ -1,5 +1,5 @@
 ﻿// <copyright file="DeviceHelpers.UpdateFirmware.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -87,14 +87,14 @@ namespace INTV.LtoFlash.Model
                     try
                     {
                         var configuration = Configuration.Instance;
-                        var sourceErrorDatabaseFilePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(firmwareUpdateFile), ErrorLog.ErrorDatabaseFileName);
+                        var sourceErrorDatabaseFilePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(firmwareUpdateFile), ErrorLog.DefaultErrorDatabaseName);
                         if (System.IO.File.Exists(sourceErrorDatabaseFilePath))
                         {
                             if (!System.IO.Directory.Exists(configuration.FirmwareUpdatesDirectory))
                             {
                                 System.IO.Directory.CreateDirectory(configuration.FirmwareUpdatesDirectory);
                             }
-                            var destinationErrorDatabaseFilePath = System.IO.Path.Combine(configuration.FirmwareUpdatesDirectory, ErrorLog.ErrorDatabaseFileName);
+                            var destinationErrorDatabaseFilePath = System.IO.Path.Combine(configuration.FirmwareUpdatesDirectory, ErrorLog.DefaultErrorDatabaseName);
                             var crcOfSource = INTV.Core.Utility.Crc32.OfFile(sourceErrorDatabaseFilePath);
                             var crcOfDestination = 0u;
                             if (System.IO.File.Exists(destinationErrorDatabaseFilePath))

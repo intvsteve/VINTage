@@ -199,7 +199,7 @@ namespace INTV.LtoFlash.Model
                             if (addIndexData)
                             {
                                 var nameParts = firmwareVersionNode.Name.Split('-');
-                                addIndexData = (nameParts.Length > 1);
+                                addIndexData = nameParts.Length > 1;
                                 if (addIndexData)
                                 {
                                     lineNumberValue = nameParts[1];

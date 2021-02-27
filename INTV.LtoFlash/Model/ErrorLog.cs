@@ -50,6 +50,8 @@ namespace INTV.LtoFlash.Model
             { ErrorLogId.Unknown, "??" }
         };
 
+        private static readonly Lazy<string> DefaultDatabaseName = new Lazy<string>(GetDefaultErrorDatabaseName);
+
         #endregion // Constants
 
         private ushort[] _errorBuffer = new ushort[BufferSize];
@@ -61,39 +63,8 @@ namespace INTV.LtoFlash.Model
         /// </summary>
         public static string DefaultErrorDatabaseName
         {
-            get { return _defaultErrorDatabaseName.Value; }
+            get { return DefaultDatabaseName.Value; }
         }
-        private static readonly Lazy<string> _defaultErrorDatabaseName = new Lazy<string>(GetDefaultErrorDatabaseName);
-
-        /// <summary>
-        /// Gets the error IDs in the log.
-        /// </summary>
-        public IEnumerable<ErrorLogId> ErrorIds { get; private set; }
-
-        /// <summary>
-        /// Gets the error line numbers.
-        /// </summary>
-        public IEnumerable<int> ErrorLineNumbers { get; private set; }
-
-        /// <summary>
-        /// Gets the error data.
-        /// </summary>
-        public IEnumerable<string> ErrorData { get; private set; }
-
-        private IEnumerable<ErrorLogEntry> ErrorLogEntries { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether the error log is empty.
-        /// </summary>
-        public bool IsEmpty
-        {
-            get { return (ErrorLogEntries == null) || !ErrorLogEntries.Any(); }
-        }
-
-        /// <summary>
-        /// Gets the index of the error in the log.
-        /// </summary>
-        public ushort ErrorIndex { get; private set; }
 
         #region ByteSerializer Properties
 
@@ -110,6 +81,36 @@ namespace INTV.LtoFlash.Model
         }
 
         #endregion // ByteSerializer Properties
+
+        /// <summary>
+        /// Gets the error IDs in the log.
+        /// </summary>
+        public IEnumerable<ErrorLogId> ErrorIds { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the error log is empty.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return (ErrorLogEntries == null) || !ErrorLogEntries.Any(); }
+        }
+
+        /// <summary>
+        /// Gets or sets the error line numbers.
+        /// </summary>
+        private IEnumerable<int> ErrorLineNumbers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the error data.
+        /// </summary>
+        private IEnumerable<string> ErrorData { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index of the error in the log.
+        /// </summary>
+        private ushort ErrorIndex { get; set; }
+
+        private IEnumerable<ErrorLogEntry> ErrorLogEntries { get; set; }
 
         #endregion Properties
 
@@ -340,33 +341,56 @@ namespace INTV.LtoFlash.Model
             ErrorLogEntries = errorLogEntries;
         }
 
+        /// <summary>
+        /// Describes a decoded error log entry.
+        /// </summary>
         private class ErrorLogEntry : Tuple<ushort, ErrorLogId, int, IEnumerable<int>>
         {
+            /// <summary>
+            /// Initialize a new instance with specific values.
+            /// </summary>
+            /// <param name="logIndex">The index of the error log entry.</param>
+            /// <param name="logId">The identifier of which specific part of the firmware the firmware error originated in.</param>
+            /// <param name="lineNumber">The original line number in the firmware source where the error occurred.</param>
+            /// <param name="errorDetails">Data to provide for the error format string from the error database.</param>
             public ErrorLogEntry(ushort logIndex, ErrorLogId logId, int lineNumber, IEnumerable<int> errorDetails)
                 : base(logIndex, logId, lineNumber, errorDetails)
             {
             }
 
+            /// <summary>
+            /// Gets the error log index.
+            /// </summary>
             public ushort LogIndex
             {
                 get { return Item1; }
             }
 
+            /// <summary>
+            /// Gets the area of firmware in which the error occurred.
+            /// </summary>
             public ErrorLogId LogId
             {
                 get { return Item2; }
             }
 
+            /// <summary>
+            /// Gets the line number in the firmware source where the error occurred.
+            /// </summary>
             public int LineNumber
             {
                 get { return Item3; }
             }
 
+            /// <summary>
+            /// Gets data values to provide to the error format string, if any.
+            /// </summary>
             public IEnumerable<int> ErrorDetails
             {
                 get { return Item4; }
             }
 
+            /// <inheritdoc />
             public override string ToString()
             {
                 var entryStringBuilder = new StringBuilder();
@@ -435,7 +459,7 @@ namespace INTV.LtoFlash.Model
             /// <summary>
             /// Initialize a new instance of an error database from a file on disk or embedded resource.
             /// </summary>
-            /// <param name="errorDatabasePath">Absolute path to an error database file, or name of resource embedded in this assembly.</param>
+            /// <param name="errorDatabaseSource">Absolute path to an error database file, or name of resource embedded in this assembly.</param>
             /// <remarks>Supported formats are XML and YAML. Note that at this time, YAML support is not shipped in the release product
             /// due to Ms-PL / GPL license incompatibility problems.</remarks>
             private ErrorDatabase(string errorDatabaseSource)
@@ -464,6 +488,9 @@ namespace INTV.LtoFlash.Model
             /// string in the Strings list. The string may contain format specifiers for more detail in the error string.</remarks>
             internal IDictionary<ErrorLogId, IDictionary<int, IDictionary<int, int>>> ErrorMaps { get; private set; }
 
+            /// <summary>
+            /// Gets the error message strings.
+            /// </summary>
             internal IList<string> Strings { get; private set; }
 
             /// <summary>
@@ -588,8 +615,12 @@ namespace INTV.LtoFlash.Model
 
             private static string MakeVersionedDatabaseSourceName(int userFriendyFirmwareVersion, string databaseType)
             {
-                var versionedDatabaseSourceName = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}-{1}{2}",
-                                                                ErrorDatabaseRootName, userFriendyFirmwareVersion, databaseType);
+                var versionedDatabaseSourceName = string.Format(
+                                                                System.Globalization.CultureInfo.InvariantCulture,
+                                                                "{0}-{1}{2}",
+                                                                ErrorDatabaseRootName,
+                                                                userFriendyFirmwareVersion,
+                                                                databaseType);
                 return versionedDatabaseSourceName;
             }
 
@@ -679,7 +710,7 @@ namespace INTV.LtoFlash.Model
 
             private static int GetFirmwareVersionForResource(int firmwareVersion)
             {
-                var baseFirmwareVersionNumber = ((firmwareVersion & FirmwareRevisions.BaseVersionMask) >> FirmwareRevisions.BaseVersionBitOffset);
+                var baseFirmwareVersionNumber = (firmwareVersion & FirmwareRevisions.BaseVersionMask) >> FirmwareRevisions.BaseVersionBitOffset;
                 return baseFirmwareVersionNumber;
             }
 
@@ -829,6 +860,7 @@ namespace INTV.LtoFlash.Model
                 }
             }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "IDispose.Dispose() should be handling properly.")]
             private void InitializeDatabaseFromResource(string errorDatabaseResource, string databaseType)
             {
                 var schema = GetErrorDatabaseSchemaName(errorDatabaseResource);

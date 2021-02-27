@@ -1,0 +1,873 @@
+<?xml version="1.0"?>
+<error_db>
+  <err_map>
+    <row-10100>
+      <row-182>0</row-182>
+      <row-193>1</row-193>
+      <row-203>2</row-203>
+      <row-208>1</row-208>
+      <row-339>3</row-339>
+      <row-365>4</row-365>
+      <row-366>5</row-366>
+      <row-383>6</row-383>
+      <row-392>7</row-392>
+      <row-393>8</row-393>
+      <row-394>9</row-394>
+      <row-431>10</row-431>
+      <row-443>11</row-443>
+      <row-444>12</row-444>
+      <row-461>13</row-461>
+      <row-472>14</row-472>
+      <row-479>15</row-479>
+      <row-480>16</row-480>
+      <row-488>17</row-488>
+      <row-489>16</row-489>
+      <row-500>14</row-500>
+      <row-507>18</row-507>
+      <row-508>16</row-508>
+      <row-534>19</row-534>
+      <row-572>20</row-572>
+      <row-579>21</row-579>
+      <row-588>22</row-588>
+      <row-596>23</row-596>
+      <row-606>24</row-606>
+      <row-613>25</row-613>
+      <row-624>26</row-624>
+      <row-642>27</row-642>
+      <row-650>28</row-650>
+      <row-655>29</row-655>
+      <row-662>30</row-662>
+      <row-669>31</row-669>
+      <row-711>32</row-711>
+      <row-722>33</row-722>
+      <row-731>34</row-731>
+      <row-741>35</row-741>
+      <row-747>36</row-747>
+      <row-757>37</row-757>
+      <row-772>38</row-772>
+      <row-782>39</row-782>
+      <row-810>40</row-810>
+      <row-818>41</row-818>
+      <row-842>42</row-842>
+      <row-880>43</row-880>
+      <row-895>44</row-895>
+      <row-904>45</row-904>
+      <row-929>46</row-929>
+      <row-944>47</row-944>
+      <row-951>48</row-951>
+      <row-1001>49</row-1001>
+      <row-1030>50</row-1030>
+      <row-1065>51</row-1065>
+      <row-1073>52</row-1073>
+      <row-1091>53</row-1091>
+      <row-1098>54</row-1098>
+      <row-1129>55</row-1129>
+      <row-1190>56</row-1190>
+      <row-1198>57</row-1198>
+      <row-1222>58</row-1222>
+      <row-1230>59</row-1230>
+      <row-1237>60</row-1237>
+      <row-1244>61</row-1244>
+      <row-1251>62</row-1251>
+      <row-1272>63</row-1272>
+      <row-1287>64</row-1287>
+      <row-1294>65</row-1294>
+      <row-1303>66</row-1303>
+      <row-1311>67</row-1311>
+      <row-1318>68</row-1318>
+      <row-1340>63</row-1340>
+      <row-1363>69</row-1363>
+      <row-1371>70</row-1371>
+      <row-1379>71</row-1379>
+      <row-1387>72</row-1387>
+      <row-1395>73</row-1395>
+      <row-1420>69</row-1420>
+      <row-1428>70</row-1428>
+      <row-1436>71</row-1436>
+      <row-1444>74</row-1444>
+      <row-1452>73</row-1452>
+      <row-1495>56</row-1495>
+      <row-1502>75</row-1502>
+      <row-1541>76</row-1541>
+      <row-1542>77</row-1542>
+      <row-1585>78</row-1585>
+      <row-1596>79</row-1596>
+      <row-1775>80</row-1775>
+      <row-1793>81</row-1793>
+      <row-1794>82</row-1794>
+      <row-1809>83</row-1809>
+      <row-1819>84</row-1819>
+      <row-1850>85</row-1850>
+      <row-1866>86</row-1866>
+      <row-1876>87</row-1876>
+      <row-1890>88</row-1890>
+      <row-1896>89</row-1896>
+      <row-1910>90</row-1910>
+      <row-1924>91</row-1924>
+      <row-1943>92</row-1943>
+      <row-1949>93</row-1949>
+      <row-1956>94</row-1956>
+      <row-1962>95</row-1962>
+      <row-1970>96</row-1970>
+      <row-1985>97</row-1985>
+      <row-2003>98</row-2003>
+      <row-2010>99</row-2010>
+      <row-2025>100</row-2025>
+      <row-2059>101</row-2059>
+      <row-2068>102</row-2068>
+      <row-2082>103</row-2082>
+      <row-2092>104</row-2092>
+      <row-2113>105</row-2113>
+      <row-2124>106</row-2124>
+      <row-2133>107</row-2133>
+      <row-2141>108</row-2141>
+      <row-2148>109</row-2148>
+      <row-2156>110</row-2156>
+      <row-2184>111</row-2184>
+      <row-2190>112</row-2190>
+      <row-2196>113</row-2196>
+      <row-2202>114</row-2202>
+      <row-2222>115</row-2222>
+      <row-2230>116</row-2230>
+      <row-2242>117</row-2242>
+      <row-2258>118</row-2258>
+      <row-2265>119</row-2265>
+      <row-2281>120</row-2281>
+      <row-2288>121</row-2288>
+      <row-2301>122</row-2301>
+      <row-2332>123</row-2332>
+      <row-2338>124</row-2338>
+      <row-2344>124</row-2344>
+      <row-2353>125</row-2353>
+      <row-2359>126</row-2359>
+      <row-2367>127</row-2367>
+      <row-2377>128</row-2377>
+      <row-2396>129</row-2396>
+      <row-2403>130</row-2403>
+      <row-2413>131</row-2413>
+      <row-2433>132</row-2433>
+      <row-2443>133</row-2443>
+      <row-2462>134</row-2462>
+      <row-2469>135</row-2469>
+      <row-2519>136</row-2519>
+      <row-2552>137</row-2552>
+      <row-2558>138</row-2558>
+      <row-2585>139</row-2585>
+      <row-2591>140</row-2591>
+      <row-2599>141</row-2599>
+      <row-2602>142</row-2602>
+      <row-2610>143</row-2610>
+      <row-2614>144</row-2614>
+      <row-2624>145</row-2624>
+      <row-2638>146</row-2638>
+      <row-2661>147</row-2661>
+      <row-2668>148</row-2668>
+      <row-2681>149</row-2681>
+      <row-2697>147</row-2697>
+      <row-2704>148</row-2704>
+      <row-2716>150</row-2716>
+      <row-2722>151</row-2722>
+      <row-2753>152</row-2753>
+      <row-2761>153</row-2761>
+      <row-2769>154</row-2769>
+      <row-2783>155</row-2783>
+      <row-2795>156</row-2795>
+      <row-2813>157</row-2813>
+      <row-2820>158</row-2820>
+      <row-2830>159</row-2830>
+      <row-2837>160</row-2837>
+      <row-2868>161</row-2868>
+      <row-2890>162</row-2890>
+      <row-2911>163</row-2911>
+      <row-2918>164</row-2918>
+      <row-2930>165</row-2930>
+      <row-2941>166</row-2941>
+      <row-2951>167</row-2951>
+      <row-2985>168</row-2985>
+      <row-3006>169</row-3006>
+      <row-3031>170</row-3031>
+      <row-3052>171</row-3052>
+      <row-3076>172</row-3076>
+      <row-3084>173</row-3084>
+      <row-3093>174</row-3093>
+      <row-3207>175</row-3207>
+      <row-3224>176</row-3224>
+      <row-3235>177</row-3235>
+      <row-3269>178</row-3269>
+      <row-3281>179</row-3281>
+      <row-3290>180</row-3290>
+      <row-3306>181</row-3306>
+      <row-3317>182</row-3317>
+      <row-3328>183</row-3328>
+      <row-3348>184</row-3348>
+      <row-3354>185</row-3354>
+      <row-3365>186</row-3365>
+      <row-3375>187</row-3375>
+      <row-3398>188</row-3398>
+      <row-3405>189</row-3405>
+      <row-3445>190</row-3445>
+      <row-3452>191</row-3452>
+      <row-3464>192</row-3464>
+      <row-3554>193</row-3554>
+      <row-3581>193</row-3581>
+      <row-3623>194</row-3623>
+      <row-3629>195</row-3629>
+      <row-3635>196</row-3635>
+      <row-3643>197</row-3643>
+      <row-3669>198</row-3669>
+      <row-3695>199</row-3695>
+      <row-3708>200</row-3708>
+      <row-3722>201</row-3722>
+      <row-3730>202</row-3730>
+      <row-3740>203</row-3740>
+      <row-3749>204</row-3749>
+      <row-3758>205</row-3758>
+      <row-3778>206</row-3778>
+      <row-3791>207</row-3791>
+      <row-3800>208</row-3800>
+      <row-3808>209</row-3808>
+      <row-3814>210</row-3814>
+      <row-3829>211</row-3829>
+      <row-3851>211</row-3851>
+      <row-3877>212</row-3877>
+      <row-3890>213</row-3890>
+      <row-3897>214</row-3897>
+      <row-3928>213</row-3928>
+      <row-3936>214</row-3936>
+      <row-3990>215</row-3990>
+      <row-4019>216</row-4019>
+      <row-4074>217</row-4074>
+      <row-4080>218</row-4080>
+    </row-10100>
+  </err_map>
+  <err_map>
+    <row-10100>
+      <row-45>219</row-45>
+      <row-52>220</row-52>
+      <row-65>221</row-65>
+      <row-77>222</row-77>
+      <row-84>223</row-84>
+      <row-99>224</row-99>
+      <row-164>225</row-164>
+      <row-324>226</row-324>
+      <row-378>227</row-378>
+      <row-405>228</row-405>
+      <row-414>229</row-414>
+      <row-424>230</row-424>
+      <row-433>231</row-433>
+      <row-471>232</row-471>
+      <row-497>233</row-497>
+      <row-506>234</row-506>
+      <row-517>235</row-517>
+      <row-536>236</row-536>
+      <row-634>237</row-634>
+      <row-732>238</row-732>
+      <row-746>239</row-746>
+      <row-768>240</row-768>
+      <row-775>241</row-775>
+      <row-782>242</row-782>
+      <row-789>243</row-789>
+      <row-819>244</row-819>
+      <row-838>245</row-838>
+      <row-851>246</row-851>
+      <row-859>247</row-859>
+      <row-867>248</row-867>
+      <row-875>249</row-875>
+      <row-891>250</row-891>
+      <row-907>251</row-907>
+      <row-937>250</row-937>
+      <row-968>252</row-968>
+      <row-980>253</row-980>
+      <row-994>244</row-994>
+      <row-1002>245</row-1002>
+      <row-1011>254</row-1011>
+      <row-1018>247</row-1018>
+      <row-1030>255</row-1030>
+      <row-1055>256</row-1055>
+      <row-1098>257</row-1098>
+      <row-1107>258</row-1107>
+      <row-1113>259</row-1113>
+      <row-1205>260</row-1205>
+      <row-1236>261</row-1236>
+      <row-1251>262</row-1251>
+      <row-1258>263</row-1258>
+      <row-1262>264</row-1262>
+      <row-1278>265</row-1278>
+      <row-1282>264</row-1282>
+      <row-1293>266</row-1293>
+      <row-1301>267</row-1301>
+      <row-1305>264</row-1305>
+      <row-1315>268</row-1315>
+      <row-1322>269</row-1322>
+      <row-1326>264</row-1326>
+      <row-1342>270</row-1342>
+      <row-1369>271</row-1369>
+      <row-1392>272</row-1392>
+      <row-1401>273</row-1401>
+      <row-1412>274</row-1412>
+      <row-1413>275</row-1413>
+      <row-1419>276</row-1419>
+      <row-1422>277</row-1422>
+      <row-1471>278</row-1471>
+      <row-1494>279</row-1494>
+      <row-1546>280</row-1546>
+      <row-1553>281</row-1553>
+      <row-1571>282</row-1571>
+      <row-1584>283</row-1584>
+      <row-1604>282</row-1604>
+      <row-1611>284</row-1611>
+      <row-1624>285</row-1624>
+      <row-1631>286</row-1631>
+      <row-1648>287</row-1648>
+      <row-1659>288</row-1659>
+      <row-1676>287</row-1676>
+      <row-1683>289</row-1683>
+      <row-1699>290</row-1699>
+      <row-1706>291</row-1706>
+      <row-1724>292</row-1724>
+      <row-1738>293</row-1738>
+      <row-1758>292</row-1758>
+      <row-1765>294</row-1765>
+      <row-1794>295</row-1794>
+      <row-1800>296</row-1800>
+      <row-1806>297</row-1806>
+      <row-1818>298</row-1818>
+      <row-1825>299</row-1825>
+      <row-1849>295</row-1849>
+      <row-1855>296</row-1855>
+      <row-1861>297</row-1861>
+      <row-1872>300</row-1872>
+      <row-1879>299</row-1879>
+      <row-1893>298</row-1893>
+      <row-1900>299</row-1900>
+      <row-1930>301</row-1930>
+      <row-1937>302</row-1937>
+      <row-1944>303</row-1944>
+      <row-1955>304</row-1955>
+      <row-1962>305</row-1962>
+      <row-1991>306</row-1991>
+      <row-1997>307</row-1997>
+      <row-2003>308</row-2003>
+      <row-2018>309</row-2018>
+      <row-2053>310</row-2053>
+      <row-2059>311</row-2059>
+      <row-2066>312</row-2066>
+      <row-2079>313</row-2079>
+      <row-2104>314</row-2104>
+      <row-2126>315</row-2126>
+      <row-2148>316</row-2148>
+      <row-2156>317</row-2156>
+      <row-2189>318</row-2189>
+      <row-2195>319</row-2195>
+      <row-2202>320</row-2202>
+      <row-2212>321</row-2212>
+      <row-2220>322</row-2220>
+      <row-2252>323</row-2252>
+      <row-2272>324</row-2272>
+      <row-2290>325</row-2290>
+      <row-2298>326</row-2298>
+      <row-2332>327</row-2332>
+      <row-2338>328</row-2338>
+      <row-2344>329</row-2344>
+      <row-2350>330</row-2350>
+      <row-2359>331</row-2359>
+      <row-2374>332</row-2374>
+      <row-2381>333</row-2381>
+      <row-2418>334</row-2418>
+      <row-2463>335</row-2463>
+      <row-2472>336</row-2472>
+      <row-2498>337</row-2498>
+      <row-2514>338</row-2514>
+      <row-2524>339</row-2524>
+      <row-2561>340</row-2561>
+      <row-2567>341</row-2567>
+      <row-2573>342</row-2573>
+      <row-2579>343</row-2579>
+      <row-2587>344</row-2587>
+      <row-2588>345</row-2588>
+      <row-2594>346</row-2594>
+      <row-2609>347</row-2609>
+      <row-2623>348</row-2623>
+      <row-2633>349</row-2633>
+      <row-2634>350</row-2634>
+      <row-2636>351</row-2636>
+      <row-2675>352</row-2675>
+      <row-2694>353</row-2694>
+      <row-2727>354</row-2727>
+      <row-2742>355</row-2742>
+      <row-2771>356</row-2771>
+      <row-2780>357</row-2780>
+      <row-2788>358</row-2788>
+      <row-2795>359</row-2795>
+      <row-2823>360</row-2823>
+      <row-2847>361</row-2847>
+      <row-2875>362</row-2875>
+      <row-2905>363</row-2905>
+      <row-2955>364</row-2955>
+      <row-2964>365</row-2964>
+      <row-2974>366</row-2974>
+      <row-2985>367</row-2985>
+      <row-3000>368</row-3000>
+      <row-3026>369</row-3026>
+      <row-3038>370</row-3038>
+      <row-3059>371</row-3059>
+      <row-3065>372</row-3065>
+      <row-3094>373</row-3094>
+      <row-3101>374</row-3101>
+      <row-3108>375</row-3108>
+      <row-3167>376</row-3167>
+      <row-3173>377</row-3173>
+      <row-3182>378</row-3182>
+      <row-3199>379</row-3199>
+      <row-3205>380</row-3205>
+      <row-3217>381</row-3217>
+      <row-3224>382</row-3224>
+      <row-3231>383</row-3231>
+      <row-3247>384</row-3247>
+      <row-3257>385</row-3257>
+      <row-3284>386</row-3284>
+      <row-3293>387</row-3293>
+      <row-3310>388</row-3310>
+      <row-3320>389</row-3320>
+      <row-3357>390</row-3357>
+      <row-3401>391</row-3401>
+      <row-3411>392</row-3411>
+      <row-3425>393</row-3425>
+      <row-3435>394</row-3435>
+    </row-10100>
+  </err_map>
+  <err_map/>
+  <err_map>
+    <row-10100>
+      <row-94>395</row-94>
+      <row-103>396</row-103>
+      <row-144>397</row-144>
+      <row-156>398</row-156>
+      <row-203>399</row-203>
+      <row-211>400</row-211>
+      <row-221>401</row-221>
+      <row-295>402</row-295>
+      <row-319>403</row-319>
+      <row-329>404</row-329>
+      <row-374>405</row-374>
+      <row-417>406</row-417>
+      <row-445>406</row-445>
+      <row-481>406</row-481>
+      <row-494>407</row-494>
+      <row-582>408</row-582>
+      <row-584>409</row-584>
+      <row-590>410</row-590>
+    </row-10100>
+  </err_map>
+  <strings>ftl_mark_clean: pblk must be mult of 8\n</strings>
+  <strings>ftl_mark_clean: Attempt to clean allocated block: %.4X %.2X\n</strings>
+  <strings>pblk %.4X vblk %.4X\n</strings>
+  <strings>ftl_get_word: error reading flash at %.4X%.4X\n</strings>
+  <strings>ftl_put_word: writing to non-empty word %.4X%.4X\n</strings>
+  <strings>prev:  %.4X%.4X\n</strings>
+  <strings>ftl_put_word: error writing flash at %.4X%.4X\n</strings>
+  <strings>ftl_put_word: Wrote %.4X%.4X</strings>
+  <strings>Got %.4X%.4X</strings>
+  <strings>at %.4X%.4X\n</strings>
+  <strings>ftl_v2pu_put_word: failed first attempt at %.4X%.4X\n</strings>
+  <strings>ftl_v2pu_put_word: failed second attempt at %.4X%.4X\n</strings>
+  <strings>data: %.4X%.4X\n</strings>
+  <strings>ftl_v2pu_put_bytes: invalid args %.4X %.4X\n</strings>
+  <strings>ftl_v2pu_put_bytes: error reading %.4X%.4X\n</strings>
+  <strings>ftl_v2pu_put_bytes: buffer not empty at %.4X%.4X. </strings>
+  <strings>data: %.2X %.2X %.2X</strings>
+  <strings>ftl_v2pu_put_bytes: error writing %d bytes to %.4X%.4X\n</strings>
+  <strings>ftl_v2pu_put_bytes: buffer miscompare at %.4X%.4X. </strings>
+  <strings>ftl_v2pm_get_ver: argument out of range\n</strings>
+  <strings>ftl_v2pm_read: unable to get V2PM version\n</strings>
+  <strings>ftl_v2pm_read: WARNING: reading older ver %d vs. %d\n</strings>
+  <strings>ftl_v2pm_read: unable to read V2PM\n</strings>
+  <strings>ftl_v2pm_read: unable to read PBDM\n</strings>
+  <strings>ftl_v2pm_read: unable to read ftl_ms_erase\n</strings>
+  <strings>ftl_v2pm_read: unable to read ftl_ps_erase\n</strings>
+  <strings>ftl_v2pm_read: unable to read ftl_cfgw\n</strings>
+  <strings>ftl_v2pm_read: phys block %d double alloc'd\n</strings>
+  <strings>ftl_v2pm_read: phys block %d allocated, but not dirty\n</strings>
+  <strings>ftl_v2pm_read: error marking %d dirty also.\n</strings>
+  <strings>ftl_v2pm_read: could not mark %d allocated\n</strings>
+  <strings>ftl_v2pm_read: aborting after %d errors\n</strings>
+  <strings>ftl_v2pm_write: could not erase sector\n</strings>
+  <strings>ftl_v2pm_write: unable to write V2PM\n</strings>
+  <strings>ftl_v2pm_write: unable to write PBDM\n</strings>
+  <strings>ftl_v2pm_write: unable to write ftl_ms_erase\n</strings>
+  <strings>ftl_v2pm_write: unable to write ftl_ps_erase\n</strings>
+  <strings>ftl_v2pm_write: unable to write ftl_cfgw\n</strings>
+  <strings>ftl_v2pm_write: unable to write V2PM version #\n</strings>
+  <strings>ftl_v2pm_write: could not restart V2PU\n</strings>
+  <strings>ftl_v2pu_reinit: could not erase old V2PU\n</strings>
+  <strings>ftl_v2pu_reinit: could not init version on V2PU\n</strings>
+  <strings>ftl_v2pu_wrap: wrap during active trans %.4X\n</strings>
+  <strings>ftl_v2pu_idx_check: V2PU overflow.  Active trans %.4X.\n</strings>
+  <strings>ftl_v2pu_idx_check: error during read\n</strings>
+  <strings>ftl_v2pu_idx_check: could not erase sector\n</strings>
+  <strings>ftl_v2pu_process: error reading V2PU version\n</strings>
+  <strings>ftl_v2pu_process: V2PU has higher ver than V2PM: %d vs. %d\n</strings>
+  <strings>ftl_v2pu_process: could not restart V2PU\n</strings>
+  <strings>ftl_v2pu_process: arg expected to be 1, but was %.4X at </strings>
+  <strings>ftl_v2pu_process: Warning FFFFFFFF in log at %.4X%.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: ERASE pblk out of range %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: could not mark clean %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: TRANS_START inside TRANS\n</strings>
+  <strings>ftl_v2pu_process %.4X: TRANS_START inside INTTR\n</strings>
+  <strings>ftl_v2pu_process %.4X: INTTR_START inside INTTR\n</strings>
+  <strings>ftl_v2pu_process %.4X: invalid allocate %.4X, %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: allocating new block during internal transaction!!\n</strings>
+  <strings>ftl_v2pu_process %.4X:  Could not mark %.4X free\n</strings>
+  <strings>ftl_v2pu_process %.4X: allocating already allocated pblk %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: allocating dirty pblk %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: could not mark alloc %.4X (a)\n</strings>
+  <strings>ftl_v2pu_process %.4X: could not mark dirty %.4X (a)\n</strings>
+  <strings>ftl_v2pu_process %.4X: arg %.4X too big\n</strings>
+  <strings>ftl_v2pu_process %.4X: invalid dealloc: %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: Deallocating not-allocated block %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: Deallocating %.4X from %.4X but isn't allocated\n</strings>
+  <strings>ftl_v2pu_process %.4X: Deallocating %.4X from %.4X but isn't dirty\n</strings>
+  <strings>ftl_v2pu_process %.4X: could not mark %.4X free\n</strings>
+  <strings>ftl_v2pu_process %.4X: Reassoc out of range.  %.4X, %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: Reassoc to unallocated virtual block: %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: Reassoc to already allocated virtual block: %.4X, %.4X\n</strings>
+  <strings>ftl_v2pu_process %.4X: V2PM says %.4X maps to %.4X but it isn't marked allocated\n</strings>
+  <strings>ftl_v2pu_process %.4X: V2PM says %.4X maps to %.4X but it isn't marked dirty\n</strings>
+  <strings>ftl_v2pu_process %.4X: V2PM says %.4X maps to %.4X but id isn't marked allocated\n</strings>
+  <strings>ftl_v2pu_process %.4X: could not mark dirty %.4X (b)\n</strings>
+  <strings>ftl_v2pu_process: Unhandled record %.4X %.4X\n</strings>
+  <strings>index: %.4X tent %d\n</strings>
+  <strings>ftl_v2pu_process: could not end open transaction.\n</strings>
+  <strings>ftl_v2pu_process: overran V2PU somehow\n</strings>
+  <strings>ftl_init: Error erasing msector on blank flash\n</strings>
+  <strings>ftl_init: Non-blank msector after init erase at %.4X%.4X, </strings>
+  <strings>data = %.4X %.4X\n</strings>
+  <strings>ftl_init: Error erasing psector on blank flash\n</strings>
+  <strings>ftl_init: Failed to initialize blank flash\n</strings>
+  <strings>ftl_init: Failed to read V2PM copy %d\n</strings>
+  <strings>ftl_init: Failed to process V2PU\n</strings>
+  <strings>ftl_init: Failed to wrap V2PU\n</strings>
+  <strings>ftl_init: Failed collecting garbage\n</strings>
+  <strings>ftl_init: Too many garbage collection tries\n</strings>
+  <strings>ftl_init: No clean physical blocks\n</strings>
+  <strings>ftl_init: Error initializing config words\n</strings>
+  <strings>ftl_read_virt_block: Read while erasure active\n</strings>
+  <strings>ftl_read_virt_block: vblock %.4X out of range\n</strings>
+  <strings>ftl_read_virt_block: span o=%.4X l=%.4X exceeds block bounds\n</strings>
+  <strings>ftl_read_virt_block: length must be positive\n</strings>
+  <strings>ftl_read_virt_block: %.4X is empty\n</strings>
+  <strings>ftl_is_alloc_virt_block: vblock %.4X out of range\n</strings>
+  <strings>ftl_schedule_deferred_erase: pblk %.4X isn't aligned\n</strings>
+  <strings>ftl_schedule_deferred_erase: invalid block number %.4X\n</strings>
+  <strings>ftl_schedule_deferred_erase: block still alloc'd in sector %.4X\n</strings>
+  <strings>ftl_begin_deferred_erase: erasure already in progress\n</strings>
+  <strings>ftl_begin_deferred_erase: erasure during int trans\n</strings>
+  <strings>ftl_begin_deferred_erase: could not write ERASE_START\n</strings>
+  <strings>ftl_begin_deferred_erase: could not actually erase sector %.4X\n</strings>
+  <strings>ftl_wait_deferred_erase: erasure during int trans\n</strings>
+  <strings>ftl_wait_for_deferred_erase: could not actually erase sector %.4X\n</strings>
+  <strings>ftl_wait_for_deferred_erase: error waiting for erasure to complete\n</strings>
+  <strings>ftl_wait_for_deferred_erase: invalid eraseidx %.4X\n</strings>
+  <strings>ftl_wait_for_deferred_erase: error writing ERASE_COMPL\n</strings>
+  <strings>ftl_wait_for_deferred_erase: error marking sector clean\n</strings>
+  <strings>ftl_synchronous_erase: error waiting for earlier erasure\n</strings>
+  <strings>ftl_synchronous_erase: could not schedule erasure\n</strings>
+  <strings>ftl_synchronous_erase: could not begin erasure\n</strings>
+  <strings>ftl_synchronous_erase: error waiting for completion\n</strings>
+  <strings>ftl_start_internal_transaction: inttr already active %.4X\n</strings>
+  <strings>ftl_start_internal_transaction: error wrapping V2PU\n</strings>
+  <strings>ftl_start_internal_transaction: error writing TRANS_START\n</strings>
+  <strings>ftl_end_internal_transaction: no transaction active\n</strings>
+  <strings>ftl_end_internal_transaction: invalid inttridx %.4X\n</strings>
+  <strings>ftl_end_internal_transaction: coult not mark %.4X allocated\n</strings>
+  <strings>ftl_end_internal_transaction: could not mark %.4X free\n</strings>
+  <strings>ftl_end_internal_transaction: error writing INTTR_COMPL\n</strings>
+  <strings>ftl_start_transaction: could not GC under duress\n</strings>
+  <strings>ftl_start_transaction: could not begin deferred erase\n</strings>
+  <strings>ftl_start_transaction: trans already active %.4X\n</strings>
+  <strings>ftl_start_transaction: tentative free list nonempty\n</strings>
+  <strings>ftl_start_transaction: error wrapping V2PU\n</strings>
+  <strings>ftl_start_transaction: error writing TRANS_START\n</strings>
+  <strings>ftl_end_transaction: no transaction active\n</strings>
+  <strings>ftl_end_transaction: invalid transidx %.4X\n</strings>
+  <strings>ftl_end_transaction: error writing TRANS_COMPL\n</strings>
+  <strings>ftl_end_transaction: could not mark %.4X allocated\n</strings>
+  <strings>ftl_end_transaction: could not mark %.4X free\n</strings>
+  <strings>ftl_abort_transaction: no transaction active\n</strings>
+  <strings>ftl_abort_transaction: invalid transidx %.4X\n</strings>
+  <strings>ftl_write_no_ff: error writing data at %.4X%.4X, %.4X\n</strings>
+  <strings>ftl_put_alloc_rec: could not write (re)alloc %.4X %.4X\n</strings>
+  <strings>ftl_put_alloc_rec: error updating V2PU\n</strings>
+  <strings>ftl_cow_block: migration outside active external transaction\n</strings>
+  <strings>ftl_cow_block: copy-on-write from an empty block!\n</strings>
+  <strings>ftl_cow_block: attempt to COW %.4X to allocated or dirty block %.4X\n</strings>
+  <strings>dirty=%d alloc=%d nxtalloc=%.4X\n</strings>
+  <strings>ftl_cow_block: attempt to COW not-alloc/dirty %.4X to %.4X: </strings>
+  <strings>%d %d %d\n</strings>
+  <strings>ftl_cow_block: ovblk %.4X doesn't map to opblk %.4X\n</strings>
+  <strings>ftl_cow_block: could not write realloc %.4X %.4X\n</strings>
+  <strings>ftl_cow_block: error reading data at %.4X, %.4X%.4X\n</strings>
+  <strings>ftl_cow_block: error writing data at %.4X, %.4X%.4X\n</strings>
+  <strings>ftl_cow_block: error writing splice at %.4X, %.4X%.4X\n</strings>
+  <strings>ftl_cow_block: could not mark %.4X dirty\n</strings>
+  <strings>ftl_cow_block: ftl_tfre overflow\n</strings>
+  <strings>ftl_migrate_block: migration outside active internal transaction\n</strings>
+  <strings>ftl_migrate_block: attempt to migrate %.4X to allocated or dirty block %.4X\n</strings>
+  <strings>ftl_migrate_block: attempt to migrate not-alloc/dirty %.4X to %.4X\n</strings>
+  <strings>ftl_migrate_block: could not find vblk for pblk %.4X\n</strings>
+  <strings>ftl_migrate_block: could not write realloc %.4X %.4X\n</strings>
+  <strings>ftl_migrate_block: error reading data at %.4X, %.4X%.4X\n</strings>
+  <strings>ftl_migrate_block: error writing data at %.4X, %.4X.%.4X\n</strings>
+  <strings>ftl_migrate_block: could not mark %.4X dirty\n</strings>
+  <strings>ftl_migrate_block: ftl_tfre overflow\n</strings>
+  <strings>ftl_migrate_sector_co: start_pblk out of range %.4X\n</strings>
+  <strings>ftl_migrate_sector_co: attempted to migrate sector with blocks in tfree list\n</strings>
+  <strings>ftl_migrate_sector_co: no clean sectors\n</strings>
+  <strings>ftl_migrate_sector_co: %.4X is clean but has allocated blocks\n</strings>
+  <strings>ftl_migrate_sector_co: could not start internal transaction\n</strings>
+  <strings>ftl_migrate_sector_co: migrating from %.4X to %.4X: same sector!\n</strings>
+  <strings>ftl_migrate_sector_co: could not migrate block\n</strings>
+  <strings>ftl_migrate_sector_co: could not end int trans\n</strings>
+  <strings>ftl_migrate_sector_any: start_pblk out of range %.4X\n</strings>
+  <strings>ftl_migrate_sector_any: attempted to migrate sector with blocks in tfree list\n</strings>
+  <strings>ftl_migrate_sector_any: could not start internal transaction\n</strings>
+  <strings>ftl_migrate_sector_any: could not find block to migrate to!\n</strings>
+  <strings>ftl_migrate_sector_any: could not migrate block\n</strings>
+  <strings>ftl_migrate_sector_any: could not end transaction\n</strings>
+  <strings>ftl_garbage_collection_scan: error waiting for deferred erasure\n</strings>
+  <strings>ftl_garbage_collection_scan: error finding first dirty block\n</strings>
+  <strings>ftl_garbage_collection_scan: error finding first emergency migrate block\n</strings>
+  <strings>ftl_garbage_collection_scan: could not migrate sectors from to_erase (non-emergency)\n</strings>
+  <strings>ftl_garbage_collection_scan: could not migrate sectors from to_erase (emergency)\n</strings>
+  <strings>ftl_garbage_collection_scan: sector not empty after migration\n</strings>
+  <strings>ftl_garbage_collection_scan: error synchronously erasing deferred erasure\n</strings>
+  <strings>ftl_garbage_collection_scan: error synchronously erasing current erasure\n</strings>
+  <strings>ftl_garbage_collection_scan: could not schedule deferred erasure\n</strings>
+  <strings>ftl_free_virt_block: Free while erasure active\n</strings>
+  <strings>ftl_free_virt_block: vblk %.4X out of range\n</strings>
+  <strings>ftl_free_virt_block: unable to write dealloc arg record %.4X\n</strings>
+  <strings>ftl_free_virt_block: unable to write dealloc record for %.4X\n</strings>
+  <strings>ftl_free_virt_block: could not mark block %.4X free in PBAM\n</strings>
+  <strings>ftl_free_virt_block: ftl_tfre overflow\n</strings>
+  <strings>ftl_allocate_pblk: allocation attempted before ftl_nxtalloc initialized\n</strings>
+  <strings>ftl_allocate_pblk: allocation pointer points beyond physical block range\n</strings>
+  <strings>ftl_allocate_pblk: error during emergency GC scan\n</strings>
+  <strings>ftl_pb_span_is_empty: could not read from %.4X%.4X\n</strings>
+  <strings>ftl_write_virt_block: inside internal transaction\n</strings>
+  <strings>ftl_write_virt_block: Write while erasure active\n</strings>
+  <strings>ftl_write_virt_block: vblk %.4X out of range\n</strings>
+  <strings>ftl_write_virt_block: ofs and len span outside block (%.4X,%.4X)\n</strings>
+  <strings>ftl_write_virt_block: error encountered checking span for emptiness\n</strings>
+  <strings>ftl_write_virt_block: could not allocate pblk\n</strings>
+  <strings>ftl_write_virt_block: could not start transaction\n</strings>
+  <strings>ftl_write_virt_block: could not mark %.4X alloc'd/dirty\n</strings>
+  <strings>ftl_write_virt_block: could not write allocation record for %.4X, %.4X\n</strings>
+  <strings>ftl_write_virt_block: could not write to fresh block %.4X\n</strings>
+  <strings>ftl_write_virt_block: could not migrate pblk %.4X to %.4X\n</strings>
+  <strings>ftl_write_virt_block: could not end transaction\n</strings>
+  <strings>ftl_reassoc_virt_block: Write while erasure active\n</strings>
+  <strings>ftl_reassoc_virt_block: ovblk %.4X is empty.\n</strings>
+  <strings>ftl_reassoc_virt_block: nvblk %.4X is not empty.\n</strings>
+  <strings>ftl_reassoc_virt_block: unable to log argument %.4X for reassoc.\n</strings>
+  <strings>ftl_reassoc_virt_block: unable to log reassoc.\n</strings>
+  <strings>ftl_reassoc_virt_block: ftl_tfre overflow\n</strings>
+  <strings>ftl_set_config_word: idx %d out of range\n</strings>
+  <strings>ftl_set_config_word: could not set config %d lsb to %.4X\n</strings>
+  <strings>ftl_set_config_word: could not set config %d msb to %.4X\n</strings>
+  <strings>ftl_lowlevel_format: Bad magic %.4X %.4X\n</strings>
+  <strings>ftl_lowlevel_format: Couldn't wrap log; muddling on!\n</strings>
+  <strings>ftl_stress_bogus_trans called with transaction open\n</strings>
+  <strings>ftl_stress_bogus_trans: could not start transaction\n</strings>
+  <strings>er_get_half: misaligned address %.4X%.4X\n</strings>
+  <strings>er_get_half: out of range addr %.4X%.4X\n</strings>
+  <strings>er_get_byte: out of range addr %.4X%.4X\n</strings>
+  <strings>er_put_word: misaligned address %.4X%.4X\n</strings>
+  <strings>er_put_word: out of range addr %.4X%.4X\n</strings>
+  <strings>er_put_byte: out of range addr %.4X%.4X\n</strings>
+  <strings>lfs_pc_checksum_data_block_in_ram: failed reading RAM during checksum\n</strings>
+  <strings>lfs_copy_vblks_to_ram: error reading VBLK %.4X, OFS %.4X, LEN %.4X\n</strings>
+  <strings>lfs_copy_ram_to_vblks: error writing VBLK %.4X, OFS %.4X, LEN %.4X\n</strings>
+  <strings>lfs_gkt_to_ram: error determining if VBLK %.4X is allocated\n</strings>
+  <strings>lfs_gkt_to_ram: error freeing VBLK %.4X\n</strings>
+  <strings>lfs_gkt_to_ram: could not copy RAM out to SWAP\n</strings>
+  <strings>lfs_gkt_to_ram: could not copy GKT into RAM\n</strings>
+  <strings>lfs_check_ram_v2pm: ftl_v2pm[%.4X] = %.4X vs. %.4X\n</strings>
+  <strings>lfs_ram_to_gkt: error determining if VBLK %.4X is allocated\n</strings>
+  <strings>lfs_ram_to_gkt: error freeing VBLK %.4X\n</strings>
+  <strings>lfs_ram_to_gkt: could not copy RAM out to GKT\n</strings>
+  <strings>lfs_swap_to_ram: could not copy SWAP into RAM\n</strings>
+  <strings>gap_vblk beyond end: %.4X\n</strings>
+  <strings>lfs_defrag: could not cache GKT in RAM\n</strings>
+  <strings>lfs_defrag: could not make tentative V2PM in RAM\n</strings>
+  <strings>lfs_defrag: illegal move %.4X to %.4X\n</strings>
+  <strings>lfs_defrag: move to out of range %.4X\n</strings>
+  <strings>lfs_defrag: move from out of range %.4X\n</strings>
+  <strings>lfs_defrag: fork vblks out of range: %.4X\n</strings>
+  <strings>lfs_defrag: could not start transaction\n</strings>
+  <strings>lfs_defrag: could not reassoc VBLKs %.4X %.4X %.4X\n</strings>
+  <strings>lfs_defrag: could not update GKT from RAM\n</strings>
+  <strings>lfs_defrag: error ending transaction\n</strings>
+  <strings>lfs_defrag: tentative V2PM doesn't match actual after commit\n</strings>
+  <strings>lfs_defrag: could not restore RAM from SWAP\n</strings>
+  <strings>lfs_defrag: error determining if VBLK %.4X is allocated\n</strings>
+  <strings>lfs_defrag: didn't fully defrag. end_gap %d, avail %d\n</strings>
+  <strings>lfs_defrag: error reading GKN %.4X\n</strings>
+  <strings>lfs_defrag: could not find GKN for VBLK %.4X\n</strings>
+  <strings>lfs_defrag: error updating GKT %.4X %.4X\n</strings>
+  <strings>lfs_defrag: file system is completely full\n</strings>
+  <strings>lfs_alloc: error determining if VBLK %.4X is allocated\n</strings>
+  <strings>lfs_alloc: num_free=%.4X lfs_vblks_avail=%.4X\n</strings>
+  <strings>lfs_alloc: error defragmenting filesystem\n</strings>
+  <strings>lfs_alloc: could not find space even after defrag\n</strings>
+  <strings>LFS: error waiting for deferred erasure\n</strings>
+  <strings>lfs_fm_initialize: error waiting for deferred erasures\n</strings>
+  <strings>lfs_fm_initialize: error determining if VBLK %.4X is allocated.\n</strings>
+  <strings>lfs_fm_initialize: VBLK %.4X is not allocated. (Re)initializing file system.\n</strings>
+  <strings>lfs_fm_initialize: failed to reinit fs\n</strings>
+  <strings>lfs_fm_initialize: couldn't initialize VBLK swap area at %d\n</strings>
+  <strings>lfs_fm_initialize: error reading GDT[0] parent\n</strings>
+  <strings>lfs_fm_initialze: GDT[0] doesn't point to 0. (Re)initializing file system.\n</strings>
+  <strings>lfs_fm_initialize: error reading GFT[0] type\n</strings>
+  <strings>lfs_fm_initialze: GFT[0] has unexpected type %.2X. (Re)initializing file system.\n</strings>
+  <strings>lfs_fm_initialize: error scanning for free blocks\n</strings>
+  <strings>lfs_fm_initialize: error reading GKT[%.4X\n]</strings>
+  <strings>lfs_fm_initialize: error scanning GKT free block\n</strings>
+  <strings>lfs_fm_initialize: GKT[%.4X] says VBLK %.4X should be allocated, but appears free\n</strings>
+  <strings>lfs_fm_initialize: Orphaned VBLKs!  %.4X %.4X</strings>
+  <strings> %.4X %.4X\n</strings>
+  <strings>lfs_fm_initialize: reinitializing due to previous errors\n</strings>
+  <strings>lfs_fm_reinitialize: Could not reinitialize LFS\n</strings>
+  <strings>ftl_pc_get_filesystem_statistics: error sending data\n</strings>
+  <strings>lfs_get_dirty_flags: failed sending flags\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send 'GDT' string\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send GDT size\n</strings>
+  <strings>lfs_pc_download_global_tables: could not read GDT[%.3X]\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send GDT present byte\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send GDT entry %.3X\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send 'GFT' string\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send GFT size\n</strings>
+  <strings>lfs_pc_download_global_tables: could not read GFT[%.3X]\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send GFT present byte\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send GFT entry %.3X\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send 'GKT' string\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send GKT size\n</strings>
+  <strings>lfs_pc_download_global_tables: could not read GKT[%.3X]\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send GKT present byte\n</strings>
+  <strings>lfs_pc_download_global_tables: could not send GKT entry %.3X\n</strings>
+  <strings>lfs_pc_upload_data_block_to_ram: span is out of range\n</strings>
+  <strings>lfs_pc_upload_data_block_to_ram: length is too large\n</strings>
+  <strings>lfs_pc_upload_data_block_to_ram: addr is not aligned\n</strings>
+  <strings>lfs_pc_upload_data_block_to_ram: failed receiving byte\n</strings>
+  <strings>lfs_pc_upload_data_block_to_ram: failed writing to RAM\n</strings>
+  <strings>lfs_pc_upload_data_block_to_ram: failed receiving halfword\n</strings>
+  <strings>lfs_pc_download_data_block_from_ram: span is out of range\n</strings>
+  <strings>lfs_pc_download_data_block_from_ram: length is too large\n</strings>
+  <strings>lfs_pc_download_data_block_from_ram: addr is not aligned\n</strings>
+  <strings>lfs_pc_download_data_block_from_ram: failed reading byte\n</strings>
+  <strings>lfs_pc_upload_data_block_from_ram: failed sending byte\n</strings>
+  <strings>lfs_pc_checksum_block_in_ram: span is out of range\n</strings>
+  <strings>lfs_pc_checksum_block_in_ram: length is too large\n</strings>
+  <strings>lfs_pc_checksum_block_in_ram: addr is not aligned\n</strings>
+  <strings>lfs_pc_checksum_data_block_in_ram: failed sending checksum\n</strings>
+  <strings>lfs_update_gdt_from_ram: gdn / count out of range %.4X %.4X\n</strings>
+  <strings>lfs_pc_update_gdt_from_ram: address misaligned\n</strings>
+  <strings>lfs_pc_update_gdt_from_ram: address out of range\n</strings>
+  <strings>lfs_pc_update_gdt_from_ram: could not start transaction\n</strings>
+  <strings>lfs_pc_update_gdt_from_ram: could not blank span (%.4X, %.4X, %.4X)\n</strings>
+  <strings>lfs_pc_update_gdt_from_ram: error reading RAM at %.4X%.4X\n</strings>
+  <strings>lfs_pc_update_gdt_from_ram: error writing GDN %.4X\n</strings>
+  <strings>lfs_pc_update_gdt_from_ram: Could not end transaction\n</strings>
+  <strings>lfs_update_gft_from_ram: gfn / count out of range\n</strings>
+  <strings>lfs_pc_update_gft_from_ram: address misaligned\n</strings>
+  <strings>lfs_pc_update_gft_from_ram: address out of range\n</strings>
+  <strings>lfs_pc_update_gft_from_ram: error waiting for deferred erasure\n</strings>
+  <strings>lfs_pc_update_gft_from_ram: could not start transaction\n</strings>
+  <strings>lfs_pc_update_gft_from_ram: could not blank span (%.4X, %.4X, %.4X)\n</strings>
+  <strings>lfs_pc_update_gft_from_ram: error reading RAM at %.4X%.4X\n</strings>
+  <strings>lfs_pc_update_gft_from_ram: error writing gfn %.4X to media\n</strings>
+  <strings>lfs_pc_update_gft_from_ram: Could not end transaction\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: gkn out of range\n</strings>
+  <strings>lfs_pc_create_fork_from: address misaligned\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: zero-length fork\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: address out of range\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: fork larger than available free space\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: error reading GKT[%.4X]\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: GKT[%.4X] is not empty.\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: could not allocate %.4X VBLKs\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: couldn't start transaction\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: could not write GKT[%.4X]\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: writing over already allocated vblk %.4X; alloc'd %.4X-%.4X</strings>
+  <strings>lfs_pc_create_fork_from_ram: could not write data block to media\n</strings>
+  <strings>lfs_pc_create_fork_from_ram: could not end transaction\n</strings>
+  <strings>lfs_pc_read_fork_to_ram: gkn out of range\n</strings>
+  <strings>lfs_pc_read_fork_to_ram: address misaligned\n</strings>
+  <strings>lfs_pc_read_fork_to_ram: ofs misaligned\n</strings>
+  <strings>lfs_pc_read_fork_to_ram: zero-length read\n</strings>
+  <strings>lfs_pc_read_fork_to_ram: address / length  out of range\nlength = %.4X%.4X\n</strings>
+  <strings>addr = %.4X%.4X\n</strings>
+  <strings>lfs_pc_read_fork_to_ram: length out of range\n</strings>
+  <strings>lfs_pc_read_fork_to_ram: error reading GKN %.4X\n</strings>
+  <strings>lfs_pc_read_fork_to_ram: attempted to read empty fork %.4X\n</strings>
+  <strings>lfs_pc_read_fork_to_ram: attempted to read span that extends beyond fork\nstart_ofs = %.4X%.4X\n</strings>
+  <strings>length = %.4X%.4X\n</strings>
+  <strings>fork_length = %.4X%.4X\n</strings>
+  <strings>lfs_pc_update_fork_uid: gkn out of range\n</strings>
+  <strings>lfs_pc_update_fork_uid: unable to write new UID\n</strings>
+  <strings>lfs_pc_delete_fork: gkn out of range\n</strings>
+  <strings>lfs_pc_delete_fork: unable to read GKN %.4X\n</strings>
+  <strings>lfs_pc_delete_fork: unable to start transaction\n</strings>
+  <strings>lfs_pc_delete_fork: unable to overwrite GKN entry\n</strings>
+  <strings>lfs_pc_delete_fork: unable to free VBLKs\n</strings>
+  <strings>lfs_pc_delete_fork: unable to end transaction\n</strings>
+  <strings>lfs_pc_delete_file: GFN %.4X out of range\n</strings>
+  <strings>lfs_pc_delete_file: error writing empty GFN\n</strings>
+  <strings>lfs_pc_delete_directory: GDN %.4X out of range\n</strings>
+  <strings>lfs_pc_delete_directory: error writing empty GDN\n</strings>
+  <strings>lfs_pc_reinitialize: error determining if VBLK %.4X is allocated\n</strings>
+  <strings>lfs_pc_reinitialize: error freeing VBLK %.4X\n</strings>
+  <strings>lfs_pc_reinitialize: error marking PBLKs dirty\n</strings>
+  <strings>lfs_pc_reinitialize: error forcing FTL log wrap\n</strings>
+  <strings>lfs_pc_reinitialize: error allocating metadata\n</strings>
+  <strings>lfs_pc_reinitialize: error initializing root directory\n</strings>
+  <strings>lfs_pc_reinitialize: error setting root dir parent GDN\n</strings>
+  <strings>lfs_pc_reinitalize:  Failed after trying hard reinit. Giving up.\n</strings>
+  <strings>lfs_pc_reinitialize:  Low-level format failed\n</strings>
+  <strings>lfs_pc_garbage_collect: error while waiting for deferred erase\n</strings>
+  <strings>lfs_pc_garbage_collect: error while waiting for garbage collection scan\n</strings>
+  <strings>lfs_pc_garbage_collect: error while beginning deferred erasure\n</strings>
+  <strings>lfs_mm_get_fork_gkn: GFN %.4X out of range\n</strings>
+  <strings>lfs_mm_get_fork_gkn: fork #%d out of range\n</strings>
+  <strings>lfs_mm_get_fork_gkn: error reading GFN %.4X\n</strings>
+  <strings>lfs_mm_put_fork_gkn: GFN %.4X out of range\n</strings>
+  <strings>lfs_mm_put_fork_gkn: fork #%d out of range\n</strings>
+  <strings>lfs_mm_put_fork_gkn: couldn't start transaction\n</strings>
+  <strings>lfs_mm_put_fork_gkn: error writing GFN %.4X\n</strings>
+  <strings>lfs_mm_put_fork_gkn: couldn't end transaction\n</strings>
+  <strings>lfs_mm_get_fork_info: GKN %.4X out of range\n</strings>
+  <strings>lfs_mm_get_fork_info: unable to read GKN %.4X\n</strings>
+  <strings>lfs_mm_alloc_and_create_empty_fork: zero-length fork\n</strings>
+  <strings>lfs_mm_alloc_and_create_empty_fork: fork larger than available free space\n</strings>
+  <strings>lfs_mm_alloc_and_create_empty_fork: error reading GKT[%.4X]\n</strings>
+  <strings>lfs_mm_alloc_and_create_empty_fork: no forks available\n</strings>
+  <strings>lfs_mm_alloc_and_create_empty_fork: could not allocate %.4X VBLKs\n</strings>
+  <strings>lfs_mm_alloc_and_create_empty_fork: couldn't start transaction\n</strings>
+  <strings>lfs_mm_alloc_and_create_empty_fork: could not write GKT[%.4X]\n</strings>
+  <strings>lfs_mm_alloc_and_create_empty_fork: could not write VBLK%.4X]\n</strings>
+  <strings>lfs_mm_alloc_and_create_empty_fork: could not end transaction\n</strings>
+  <strings>dl_get_file_header: No LTO magic\n</strings>
+  <strings>dl_get_file_header: bad version %.2X\n</strings>
+  <strings>dl_get_file_header: reserved header bytes non-zero %.2X %.2X %.2X\n</strings>
+  <strings>dl_get_file_header: header CRC mismatch %.2X %.2X\n</strings>
+  <strings>dl_get_block_header: header CRC mismatch %.2X %.2X\n</strings>
+  <strings>dl_get_block_header: unsupported type %d\n</strings>
+  <strings>dl_get_block_header: block longer than rest of file: %.4X vs. %.4X%.4X\n</strings>
+  <strings>invalid count %d\n</strings>
+  <strings>Non-complementary DRUID\n</strings>
+  <strings>Mismatch device DRUID\n</strings>
+  <strings>dl_get_memmap_table: invalid block length %.4X\n</strings>
+  <strings>dl_get_data_hunk: truncated span: %.4X %.4X\n</strings>
+  <strings>dl_get_data_hunk: unexpected byte: %.4X\n</strings>
+  <strings>dl_exe_command: CRC mismatch, block type %d: %.4X%.4X </strings>
+  <strings>vs %.4X%.4X </strings>
+  <strings>dl_exe_command: Unprocessed bytes in block type %d: %.4X of %.4X\n</strings>
+</error_db>

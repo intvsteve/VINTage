@@ -157,6 +157,6 @@ implementation there is as follows:
 
 OTHER
 =============================================================================
-Intellivision (R) is a registered trademark of Intellivision Productions.
+Intellivision (R) is a registered trademark of Intellivision Entertainment.
 Steven A. Orth and the software and products created from this code are not
-affiliated with Intellivision Productions.
+affiliated with Intellivision Entertainment.

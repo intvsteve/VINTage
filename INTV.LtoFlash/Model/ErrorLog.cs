@@ -272,7 +272,7 @@ namespace INTV.LtoFlash.Model
 
         private static string GetDefaultErrorDatabaseName()
         {
-            var defaultErrorDatabaseName = IsYamlSupported() ? ErrorDatabase.ErrorDatabaseYamlFileName : null;
+            var defaultErrorDatabaseName = IsYamlSupported() ? ErrorDatabase.ErrorDatabaseYamlFileName : ErrorDatabase.ErrorDatabaseXmlFileName;
             return defaultErrorDatabaseName;
         }
 
@@ -405,13 +405,19 @@ namespace INTV.LtoFlash.Model
             internal const string ErrorDatabaseYamlFileName = ErrorDatabaseRootName + YamlFileExtension;
 
             /// <summary>
+            /// The name of the XML error database file.
+            /// </summary>
+            internal const string ErrorDatabaseXmlFileName = ErrorDatabaseRootName + XmlFileExtension;
+
+            /// <summary>
             /// Gets the default error database.
             /// </summary>
-            /// <remarks>The default database is the one defined by an embedded resource in this assembly, named
-            /// error_db.yaml. The YAML format is the canonical form.
-            /// Starting around version 5050, the error database format was upgraded:
+            /// <remarks>The default database is the one defined by an embedded resource in this assembly, named either
+            /// error_db.yaml or error_db.xml, depending on the supported formats. The YAML format is the canonical form,
+            /// with XML being added later to avoid licensing conflicts between the YAML assemblies initially adopted.
+            /// Starting around version 5050, the error database format was upgraded in two ways:
             /// The format became inclusive of all prior firmware releases (tools improvement by Joe Zbiciak)
-            /// </remarks>
+            /// XML format and schema were established for more widely supportable error database in C# (Steve Orth, Joe Zbiciak)</remarks>
             internal static ErrorDatabase Default
             {
                 get { return DefaultErrorDatabase.Value; }
@@ -427,18 +433,20 @@ namespace INTV.LtoFlash.Model
             private static readonly Dictionary<string, string> ErrorDatabaseFileTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 { YamlFileExtension, YamlFileExtension },
+                { XmlFileExtension, XmlFileExtension },
             };
             private const string StringsKey = "strings";
             private const string ErrorMapKey = "err_map";
 
             private const string DefaultBaseDatabaseResourceName = FirmwareRevisions.FirmwareUpdateResourcePrefix + ErrorDatabaseRootName;
+            private const string DefaultXmlDatabaseResourceName = DefaultBaseDatabaseResourceName + XmlFileExtension;
             private const string DefaultYamlDatabaseResourceName = DefaultBaseDatabaseResourceName + YamlFileExtension;
 
             /// <summary>
             /// Initialize a new instance of an error database from a file on disk or embedded resource.
             /// </summary>
             /// <param name="errorDatabasePath">Absolute path to an error database file, or name of resource embedded in this assembly.</param>
-            /// <remarks>Supported format is YAML. Note that at this time, YAML support is not shipped in the release product
+            /// <remarks>Supported formats are XML and YAML. Note that at this time, YAML support is not shipped in the release product
             /// due to Ms-PL / GPL license incompatibility problems.</remarks>
             private ErrorDatabase(string errorDatabaseSource)
             {
@@ -574,7 +582,7 @@ namespace INTV.LtoFlash.Model
 
             private static string GetDefaultErrorDatabaseResource()
             {
-                var defaultErrorDatabaseResource = IsYamlSupported() ? DefaultYamlDatabaseResourceName : null;
+                var defaultErrorDatabaseResource = IsYamlSupported() ? DefaultYamlDatabaseResourceName : DefaultXmlDatabaseResourceName;
                 return defaultErrorDatabaseResource;
             }
 
@@ -644,6 +652,9 @@ namespace INTV.LtoFlash.Model
                 var isFileTypeSupported = false;
                 switch (databaseType)
                 {
+                    case XmlFileExtension:
+                        isFileTypeSupported = IsXmlSupported();
+                        break;
                     case YamlFileExtension:
                         isFileTypeSupported = IsYamlSupported();
                         break;
@@ -656,6 +667,17 @@ namespace INTV.LtoFlash.Model
             private static string GetOtherDatabaseType(string databaseType)
             {
                 string otherFileType = null;
+                switch (databaseType)
+                {
+                    case XmlFileExtension:
+                        otherFileType = YamlFileExtension;
+                        break;
+                    case YamlFileExtension:
+                        otherFileType = XmlFileExtension;
+                        break;
+                    default:
+                        break;
+                }
                 return otherFileType;
             }
 
@@ -694,6 +716,9 @@ namespace INTV.LtoFlash.Model
                     var errorDatabaseFormat = GetErrorDatabaseType(errorDatabase);
                     switch (errorDatabaseFormat)
                     {
+                        case XmlFileExtension:
+                            schema = System.IO.Path.ChangeExtension(errorDatabase, XmlSchemaFileExtension);
+                            break;
                         case YamlFileExtension:
                             schema = System.IO.Path.ChangeExtension(errorDatabase, YamlSchemaFileExtension);
                             break;
@@ -849,6 +874,9 @@ namespace INTV.LtoFlash.Model
 
                 switch (databaseType)
                 {
+                    case XmlFileExtension:
+                        PopulateFromXml(textReader, schemaReader);
+                        break;
                     case YamlFileExtension:
                         PopulateFromYaml(textReader, schemaReader);
                         break;

@@ -726,6 +726,7 @@
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-4764.xml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5050.xml" />
     <EmbeddedResource Include="Resources\FirmwareUpdates\error_db-5505.xml" />
+    <EmbeddedResource Include="Resources\FirmwareUpdates\error_db.xml" />
     <Resource Include="Resources\Images\randomize_ram_16xLG.png" />
     <Resource Include="Resources\Images\check-for-firmware-update_16xLG.png" />
     <Resource Include="Resources\Images\check-for-firmware-update_32xLG.png" />

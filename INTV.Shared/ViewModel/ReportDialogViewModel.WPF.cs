@@ -18,6 +18,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 // </copyright>
 
+using System.Linq;
+using System.Management;
+
 namespace INTV.Shared.ViewModel
 {
     /// <summary>
@@ -52,6 +55,48 @@ namespace INTV.Shared.ViewModel
         static partial void PlaformOnCloseDialog(object parameter)
         {
             (parameter as System.Windows.Window).DialogResult = true;
+        }
+
+        /// <summary>
+        /// WPF-specific implementation.
+        /// </summary>
+        /// <param name="message">The string builder used to generate the message.</param>
+        static partial void AppendSystemInformation(System.Text.StringBuilder message)
+        {
+            var systemManufacturer = string.Empty;
+            var systemModel = string.Empty;
+            using (var systemInfo = INTV.Shared.Utility.OSVersion.GetWmiObjectSearcher("Win32_ComputerSystem"))
+            {
+                systemManufacturer = INTV.Shared.Utility.OSVersion.GetObjectProperty(systemInfo, "Manufacturer", "Unknown");
+                systemModel = INTV.Shared.Utility.OSVersion.GetObjectProperty(systemInfo, "Model", "Unknown");
+            }
+
+            var cpuKinds = Enumerable.Empty<string>();
+            using (var processorInfo = INTV.Shared.Utility.OSVersion.GetWmiObjectSearcher("Win32_Processor"))
+            {
+                cpuKinds = INTV.Shared.Utility.OSVersion.GetObjectPropertyValues<string>(processorInfo, "Name");
+            }
+            var cpuKind = string.Join(", ", cpuKinds);
+            if (string.IsNullOrEmpty(cpuKind))
+            {
+                cpuKind = "Unknown";
+            }
+
+            var ramAmounts = Enumerable.Empty<ulong>();
+            using (var memoryInfo = INTV.Shared.Utility.OSVersion.GetWmiObjectSearcher("Win32_PhysicalMemory"))
+            {
+                ramAmounts = INTV.Shared.Utility.OSVersion.GetObjectPropertyValues<ulong>(memoryInfo, "Capacity");
+            }
+            var ram = ramAmounts.Select(r => (double)r).Sum() / (1024d * 1024d * 1024d);
+
+            message.AppendFormat(
+                System.Globalization.CultureInfo.InvariantCulture,
+                "Computer: Manufacturer: {0} Model: {1}; Processor: {2}; RAM: {3:N1} GB",
+                systemManufacturer,
+                systemModel,
+                cpuKind,
+                ram);
+            message.AppendLine();
         }
 
         private void Initialize()

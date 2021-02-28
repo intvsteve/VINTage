@@ -1,5 +1,5 @@
 ﻿// <copyright file="ReportDialogViewModel.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -138,6 +138,7 @@ namespace INTV.Shared.ViewModel
             var viewModel = parameter as ReportDialogViewModel;
             viewModel.SendEmailEnabled = false;
             viewModel.SendEmailButtonLabelText = Resources.Strings.ReportDialog_SendingErrorReport;
+            var fullMessageReport = string.Empty;
 #if SMTP_SUPPORT
             // While sending email, disable the close button until we return. Hope this never hangs!
             viewModel.CloseDialogButtonEnabled = false;
@@ -167,7 +168,8 @@ namespace INTV.Shared.ViewModel
                 var message = new System.Text.StringBuilder(subject);
                 message.AppendLine().AppendLine("-----------------------------------------------");
                 message.AppendFormat("{0} (Version: {1})", System.Reflection.Assembly.GetEntryAssembly().FullName, SingleInstanceApplication.Version).AppendLine();
-                message.AppendFormat("{0} {1} ({2}) (64-bit app: {3})", OSVersion.Name, OSVersion.Current, Environment.OSVersion, Environment.Is64BitOperatingSystem).AppendLine();
+                message.AppendFormat("Operating system: {0} {1} ({2}) (64-bit app: {3})", OSVersion.Name, OSVersion.Current, Environment.OSVersion, Environment.Is64BitOperatingSystem).AppendLine();
+                AppendSystemInformation(message);
                 message.AppendFormat("CLR Version: {0}", Environment.Version).AppendLine();
                 var attachments = new List<string>(viewModel.Attachments.Distinct(PathComparer.Instance).Where(a => System.IO.File.Exists(a)));
 
@@ -195,17 +197,18 @@ namespace INTV.Shared.ViewModel
                 message.AppendLine("--------------------------------------------------------------------").AppendLine();
                 message.AppendLine(viewModel.Message).AppendLine();
                 message.AppendLine(viewModel.ReportText);
+                fullMessageReport = message.ToString();
 
                 var reportRecipient = "support@intvfunhouse.com";
 #if SMTP_SUPPORT
-                RunExternalProgram.SendEmailUsingSMTP(sender, reportRecipient, viewModel.EmailCCRecipients, subject, message.ToString(), attachments, viewModel, SendErrorReportComplete);
+                RunExternalProgram.SendEmailUsingSMTP(sender, reportRecipient, viewModel.EmailCCRecipients, subject, fullMessageReport, attachments, viewModel, SendErrorReportComplete);
 #else
-                RunExternalProgram.SendEmail(sender, reportRecipient, viewModel.EmailCCRecipients, subject, message.ToString(), attachments);
+                RunExternalProgram.SendEmail(sender, reportRecipient, viewModel.EmailCCRecipients, subject, fullMessageReport, attachments);
 #endif // SMTP_SUPPORT
             }
             catch (Exception e)
             {
-                ReportSendErrorReportFailure(viewModel, e);
+                ReportSendErrorReportFailure(viewModel, fullMessageReport, e);
                 viewModel.CloseDialogButtonEnabled = true;
             }
         }
@@ -228,13 +231,51 @@ namespace INTV.Shared.ViewModel
 
 #endif // SMTP_SUPPORT
 
-        private static void ReportSendErrorReportFailure(ReportDialogViewModel viewModel, Exception exception)
+        private static void ReportSendErrorReportFailure(ReportDialogViewModel viewModel, string fullMessageReport, Exception exception)
         {
             viewModel.SendEmailButtonLabelText = Resources.Strings.ReportDialog_SendMessageFailed;
             var firstLineOfError = string.IsNullOrEmpty(exception.Message) ? string.Empty : exception.Message.Split(System.Environment.NewLine.ToCharArray()).First();
-            var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.ReportDialog_UnableToSendReport_MessageFormat, firstLineOfError);
+            var errorReportEmailBodyFilePath = SaveErrorReportEmailBodyToErrorLogDirectory(viewModel.ErrorLogPath, fullMessageReport);
+            var message = string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources.Strings.ReportDialog_UnableToSendReport_MessageFormat, firstLineOfError, errorReportEmailBodyFilePath);
             PlatformPanic(message, Resources.Strings.ReportDialog_UnableToSendReport_Title);
         }
+
+        private static string SaveErrorReportEmailBodyToErrorLogDirectory(string existingErrorLogPath, string errorReportEmailBody)
+        {
+            string errorReportEmailBodyFilePath = Resources.Strings.ReportDialog_UnableToSendReport_SaveEmailBodyFailed;
+            try
+            {
+                if (!string.IsNullOrEmpty(errorReportEmailBody))
+                {
+                    var path = GetErrorReportEmailBodyFilePath(existingErrorLogPath);
+                    System.IO.File.AppendAllText(path, errorReportEmailBody);
+                    errorReportEmailBodyFilePath = path;
+                }
+            }
+            catch (Exception)
+            {
+                // ignore all errors
+            }
+            return errorReportEmailBodyFilePath;
+        }
+
+        private static string GetErrorReportEmailBodyFilePath(string existingErrorLogPath)
+        {
+            var directory = System.IO.Path.GetDirectoryName(existingErrorLogPath);
+            var errorReportFileNameExtension = System.IO.Path.GetExtension(existingErrorLogPath);
+            var errorReportFileName = System.IO.Path.GetFileNameWithoutExtension(existingErrorLogPath);
+            errorReportFileName += "_EmailBody";
+            var errorReportEmailBodyFilePath = System.IO.Path.Combine(directory, System.IO.Path.ChangeExtension(errorReportFileName, errorReportFileNameExtension));
+            return errorReportEmailBodyFilePath;
+        }
+
+        /// <summary>
+        /// Appends system information to the message.
+        /// </summary>
+        /// <param name="message">The string builder used to generate the message.</param>
+        /// <remarks>Implementations will use operating-system-specific mechanisms to get information
+        /// such as hardware model, memory, CPU architecture, etc.</remarks>
+        static partial void AppendSystemInformation(System.Text.StringBuilder message);
 
         #endregion // SendErrorReportEmailCommand
 

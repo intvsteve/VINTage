@@ -1246,9 +1246,14 @@ Max (JLP): {4}; Max (LTO Flash!): {5}</value>
 
 Exception message: '{0}'
 
-Copy the text in the error dialog and send it to:
+A copy of the email body that failed to send may be found at:
+    {1}
+
+Copy the text in the error dialog or the contents of the above file and send it to:
 
   support@intvfunhouse.com</value>
+    <comment>{0} is an exception message
+{1} is a file path</comment>
   </data>
   <data name="ReportDialog_UnableToSendReport_Title" xml:space="preserve">
     <value>Unable to Send Error Report</value>
@@ -1762,8 +1767,12 @@ The following formats were not processed:
   <data name="WindowState" xml:space="preserve">
     <value>Last state of the main application window (0, Iconified, Maximized, Fullscreen)</value>
   </data>
-  <data name="SettingsDescriptionHeader" xml:space="preserve"># Common application settings
+  <data name="SettingsDescriptionHeader" xml:space="preserve">
+    <value># Common application settings
 # Settings are provided by various components in individual sections.
-#
+#</value>
+  </data>
+  <data name="ReportDialog_UnableToSendReport_SaveEmailBodyFailed" xml:space="preserve">
+    <value>&lt;Failed to save error report email body to file&gt;</value>
   </data>
 </root>

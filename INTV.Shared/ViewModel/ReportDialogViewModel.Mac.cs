@@ -1,5 +1,5 @@
 ﻿// <copyright file="ReportDialogViewModel.Mac.cs" company="INTV Funhouse">
-// Copyright (c) 2014-2017 All Rights Reserved
+// Copyright (c) 2014-2021 All Rights Reserved
 // <author>Steven A. Orth</author>
 //
 // This program is free software: you can redistribute it and/or modify it
@@ -23,6 +23,8 @@ using AppKit;
 #else
 using MonoMac.AppKit;
 #endif // __UNIFIED__
+
+using INTV.Shared.Interop;
 
 namespace INTV.Shared.ViewModel
 {
@@ -54,6 +56,19 @@ namespace INTV.Shared.ViewModel
             messageBox.InformativeText = message;
             messageBox.AlertStyle = NSAlertStyle.Critical;
             messageBox.RunModal();
+        }
+
+        /// <summary>
+        /// Mac-specific implementation.
+        /// </summary>
+        /// <param name="message">The string builder used to generate the message.</param>
+        static partial void AppendSystemInformation(System.Text.StringBuilder message)
+        {
+            var macModelIdentifier = NativeMethods.GetSystemProperty(NativeMethods.SystemModel);
+            var cpuKind = NativeMethods.GetSystemProperty(NativeMethods.SystemMachine);
+            var memory = NativeMethods.GetSystemProperty(NativeMethods.SystemRamSize);
+            message.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "Computer: Model Id: {0}; Processor: {1}; RAM: {2}", macModelIdentifier, cpuKind, memory);
+            message.AppendLine();
         }
 
         private void Initialize()

@@ -191,6 +191,11 @@ $RECYCLE.BIN/
 /custom.mak
 
 # =========================
+# Copied jzIntv tools
+# =========================
+/INTV.jzIntv/tools/**
+
+# =========================
 # Copied from jzIntv build
 # =========================
 /INTV.jzIntvUI/jzIntv/Win/doc/jzintv

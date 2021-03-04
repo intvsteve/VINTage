@@ -82,6 +82,11 @@ the following tools are included in the source distribution:
   rom2bin
   rom2luigi
 
+These binaries are retrieved if not available locally. Consult the
+'custom_jzintv.mak' file in this directory for documentation regarding
+how to configure the build to pull a different version of the jzIntv
+and related binaries.
+
 If you also have the sources for jzIntv, you can OPTIONALLY provide local
 configuration values to have this project locally build the utility programs,
 rather than using those included with this component. To do this, you must

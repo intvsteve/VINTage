@@ -20,7 +20,7 @@ The artwork used was created by Klay, and is a modified version of the
 work used for the box and manual design.
 
 To build the Visual Studio makefile project, the current Installer.vcxproj
-assumes you have configured MinGW / MSYS on your system, along with
+assumes you have configured MinGW / MSYS2 on your system, along with
 ensuring that the zip utility is installed. Details of that configuration
 are in the install_zip.bat and install_zip.mak files.
 

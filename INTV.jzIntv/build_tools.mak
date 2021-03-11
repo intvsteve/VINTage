@@ -1,9 +1,9 @@
 #############################################################################
 # jzIntv Tools Build                                                        #
 # ------------------------------------------------------------------------- #
-# When properly configured via custom.mak, produces the tools used by the   #
-# INTV.jzIntv assembly that is part of the VINTage / LUI project.           #
-# The root common.mak file determines the operating system.                 #
+# When properly configured via custom.mak and custom_jzintv.mak, produces   #
+# the tools used by the INTV.jzIntv assembly that is part of the VINTage /  #
+# LUI project. The root common.mak file determines the operating system.    #
 #                                                                           #
 #############################################################################
 
@@ -143,7 +143,7 @@ endif
 	@echo
 else
 	@echo Extracting $$@ from $$<
-	@unzip -uqqo $$< $(JZINTV_UNZIP_TARGET_DIR)/bin/$(1) -d $$(dir $$<)
+	@unzip -qquo $$< $(JZINTV_UNZIP_TARGET_DIR)/bin/$(1) -d $$(dir $$<)
 endif
 
 endef

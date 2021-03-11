@@ -201,7 +201,7 @@ $RECYCLE.BIN/
 /INTV.jzIntvUI/jzIntv/Win/doc/jzintv
 /INTV.jzIntvUI/jzIntv/Win/COPYING.txt
 /INTV.jzIntvUI/jzIntv/Win/README.txt
-/INTV.jzIntvUI/jzIntv/Win/Release-Notes.txt
+/INTV.jzIntvUI/jzIntv/Win/Release*.txt
 
 # =========================
 # Used for source ZIP

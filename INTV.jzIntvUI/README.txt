@@ -93,19 +93,111 @@ This assembly provides the following general categories of services:
 
 NOTE:
 -----
-This project supports locally building the jzIntv emulator to include in
-the installed version of the overall project.
+This project supports inclusion of the jzIntv emulator via several
+mechanisms, including via automatic download of binary or source
+distributions as well as direct access to the jzIntv SVN repo. It does NOT
+include a copy of the emulator and its support files directly in the source
+repository!
 
-If you also have the sources for jzIntv, you can OPTIONALLY provide local
-configuration values to have this project locally build the emulator,
-rather than using a copy downloaded or built elsewhere. To do this, you must
-already be able to build jzIntv. Once you have ensured you can locally build
-jzIntv, it is a simple matter to integrate building it locally by modifying
-the files named:
+Enabling one of the mechanisms available to automatically include jzIntv
+provides for the redistribution of jzIntv in the installed version of the
+overall project.
+
+Several mechanisms to include jzIntv along with this project are outlined.
+
+I: Manual Installation
+----------------------
+Place a copy of the necessary parts of a jzIntv distribution, preserving its
+file system structure, into the appropriate subdirectory relative to the
+directory containing this file:
+  Linux:   jzIntv/Linux
+  Mac:     jzIntv/Mac
+  Windows: jzIntv/Win
+
+You can find recent jzIntv distributions here:
+  http://spatula-city.org/~im14u2c/intv/
+
+II: Install via make During Build
+---------------------------------
+The necessary jzIntv binaries and companion files may be retrieved by the
+project build if not available locally, if you configure your system
+appropriately. Consult the 'custom_jzintv.mak' file in the root directory
+for documentation regarding how to configure the build to retrieve the
+necessary distribution.
+
+On Mac and Linux platforms, it is presumed that standard tools are already
+available or can be installed via the platform's package manager. These
+tools are:
+  GNU make
+  curl
+  unzip
+
+A truly clean Windows build will REQUIRE a valid MSYS2 environment to be
+configured on your Windows system and that it have the aforementioned tools
+installed in it.
+
+The following notes attempt to provide guidance on setting up from a clean
+MSYS2 environment on a Windows system so that  you can invoke the make files
+the build uses:
+
+  pacman -S base-devel
+  pacman -S curl
+  pacman -S unzip
+
+This minimal setup is enough to have the build download a jzIntv binary
+distribution and extract the necessary files so this library can include the
+jzIntv distribution. The default download location used to retrieve a jzIntv
+distributions is declared in the custom_jzintv.mak file, and is:
+  http://spatula-city.org/~im14u2c/intv/
+
+You may alter the settings in that makefile as appropriate.
+
+III: Build from Source and Install via make During Build
+--------------------------------------------------------
+If you wish to build jzIntv from source, you may do so. Two options exist:
+  1. Download a source distribution from:
+       http://spatula-city.org/~im14u2c/intv/
+  2. Specify some other source repo, e.g. the official SVN repo if one has
+     access, or some other form of source control or simple local copy
+
+On all platforms, you need to ensure that the SDL2 and, optionally, SDL
+development packages are available.
+
+To build the jzIntv source in MSYS2 in a Windows environment, you will
+also need the following packages:
+
+  pacman -S mingw-w64-i686-SDL
+  pacman -S mingw-w64-i686-SDL2
+  pacman -S mingw-w64-i686-gcc
+  pacman -S mingw-w64-i686-readline
+
+Note that at this time, only 32-bit builds of jzIntv for Windows are
+supported. That said, if you're setting up your environment just prepare
+for the future and install the 64-bit packages as well:
+
+  pacman -S mingw-w64-x86_64-SDL
+  pacman -S mingw-w64-x86_64-SDL2
+  pacman -S mingw-w64-x86_64-gcc
+  pacman -S mingw-w64-x86_64-readline
+
+Note that the above list specifies both SDL and SDL2. For all intents and
+purposes, consider the SDL builds obsolete. It is mentioned only for
+completeness.
+
+It will probably also be necessary to have one or both of the SVN and Git
+source control tools installed on your system as well.
+
+To build from the jzIntv source, you must provide provide configuration
+data so this project can build the emulator. Ensure that you are able to build
+in a standard command line environment (or MSYS2 on Windows). Once you have
+ensured you can build, it is relatively simple to integrate building jzIntv
+locally by defining variables in these files:
   custom.mak (all platforms)
-  build_jzIntv.bat (Windows)
-which can be found in the same directory as this REAMDE file. Instructions
-for the necessary changes are included in custom.mak and build_jzIntv.bat
+  custom_jzIntv.mak (all platforms)
+  custom.bat (Windows)
+
+These files can be found in the root directory. Instructions for the necessary
+changes are included in custom.mak, custom_jzIntv.mak and custom.bat files
 respectively.
 
 OTHER
@@ -113,4 +205,3 @@ OTHER
 Intellivision (R) is a registered trademark of Intellivision Entertainment.
 Steven A. Orth and the software and products created from this code are not
 affiliated with Intellivision Entertainment.
-

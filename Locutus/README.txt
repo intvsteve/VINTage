@@ -60,6 +60,9 @@ could be built using Microsoft Visual Studio Express as well.
 Newer versions of Visual Studio have not been tested. Perhaps support for
 Portable Class Libraries is available in the free editions now, too.
 
+You will also need a minimal MSYS2 setup in order to build the entire
+solution. See the notes in the INTV.jzIntv and INTV.jzIntvUI projects.
+
 macOS
 -----
 The Mac OS X projects have been built using Xamarin Studio 5.8.3 (as well as

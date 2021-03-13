@@ -3,8 +3,8 @@ INTV.jzIntv
 =============================================================================
 
 The INTV.jzIntv assembly defines features to access utilities provided by
-Joe Zbiciak's jzIntv emulator. It is designed to provide such functionality
-to various Intellivision (R)-related software projects that fall under the
+Joe Zbiciak's SDK-1600. It is designed to provide such functionality to
+various Intellivision (R)-related software projects that fall under the
 general VINTage banner.
 
 HISTORY
@@ -73,30 +73,99 @@ to port the Mac version to full Xamarin.Mac now exists!
 
 NOTE:
 -----
-In order to provide a fully functional out-of-the-box build, binaries for
-the following tools are included in the source distribution:
+Binaries for the following tools from the SDK-1600 ARE NOT included in the
+source distribution, nor committed to the source repository:
   bin2luigi
   bin2rom
   intvname
   luigi2bin
+  rom_merge
   rom2bin
   rom2luigi
 
-These binaries are retrieved if not available locally. Consult the
-'custom_jzintv.mak' file in this directory for documentation regarding
-how to configure the build to pull a different version of the jzIntv
-and related binaries.
+The above tools are REQUIRED for this library to function! These tools can
+be provided via several mechanisms as detailed here.
 
-If you also have the sources for jzIntv, you can OPTIONALLY provide local
-configuration values to have this project locally build the utility programs,
-rather than using those included with this component. To do this, you must
-already be able to build jzIntv -- or at least the programs listed above.
-Once you have ensured you can locally build these, it is a simple matter
-to integrate building these tools locally by modifying the files named:
+I: Manual Installation
+----------------------
+Place the above executables into the appropriate subdirectory relative to
+the directory containing this file:
+  Linux:   tools/Linux
+  Mac:     tools/Mac
+  Windows: tools
+
+You can find these tools in SDK-1600 distributions located here:
+  http://spatula-city.org/~im14u2c/intv/
+
+II: Install via make During Build
+---------------------------------
+These binaries may be retrieved by the project build if not available locally,
+if you configure your system appropriately. Consult the 'custom_jzintv.mak'
+file in the root directory for documentation regarding how to configure the
+build to retrieve the necessary tools from SDK-1600.
+
+On Mac and Linux platforms, it is presumed that standard tools are already
+available or can be installed via the platform's package manager. These
+tools are:
+  GNU make
+  curl
+  unzip
+
+A truly clean Windows build will REQUIRE a valid MSYS2 environment to be
+configured on your Windows system and that it have the aforementioned tools
+installed in it.
+
+The following notes attempt to provide guidance on setting up from a clean
+MSYS2 environment on a Windows system so that  you can invoke the make files
+the build uses:
+
+  pacman -S base-devel
+  pacman -S curl
+  pacman -S unzip
+
+This minimal setup is enough to have the build download a jzIntv binary
+distribution and extract the necessary files so this library can function.
+The default download location used to retrieve a SDK-1600 distributions is
+declared in the custom_jzintv.mak file, and is:
+  http://spatula-city.org/~im14u2c/intv/
+
+You may alter the settings in that makefile as appropriate.
+
+III: Build from Source and Install via make During Build
+--------------------------------------------------------
+If you wish to build the tools from source, you may do so. Two options exist:
+  1. Download a source distribution, such as the one available here:
+       http://spatula-city.org/~im14u2c/intv/
+  2. Specify some other source repo, e.g. the official SVN repo if one has
+     access, or some other form of source control or simple local copy
+
+To build the SDK-1600 source in MSYS2 in a Windows environment, you will
+also need the following packages in addition to those listed above:
+
+  pacman -S mingw-w64-i686-gcc
+  pacman -S mingw-w64-i686-readline
+
+Note that at this time, only 32-bit builds of jzIntv for Windows are
+supported. That said, if you're setting up your environment just prepare
+for the future and install the 64-bit packages as well:
+
+  pacman -S mingw-w64-x86_64-gcc
+  pacman -S mingw-w64-x86_64-readline
+
+It will probably also be necessary to have one or both of the SVN and Git
+source control tools installed on your system as well.
+
+To build from the SDK-1600 source, you must provide provide configuration
+data so this project can build the tools. Ensure that you are able to build
+in a standard command line environment (or MSYS2 on Windows). Once you have
+ensured you can build, it is relatively simple to integrate building the tools
+locally by defining variables in these files:
   custom.mak (all platforms)
-  build_tools.bat (Windows)
-which can be found in the same directory as this REAMDE file. Instructions
-for the necessary changes are included in custom.mak and build_tools.bat
+  custom_jzIntv.mak (all platforms)
+  custom.bat (Windows)
+
+These files can be found in the root directory. Instructions for the necessary
+changes are included in custom.mak, custom_jzIntv.mak and custom.bat files
 respectively.
 
 NOTE:
@@ -107,10 +176,10 @@ These features can be disabled with appropriate modifications to the projects.
 
 NOTE:
 -----
-If you've retrieved the sources from a source control repository, you must
-ensure that the programs in the tools/Mac subdirectory have properly retained
-the executable bit. If these programs do not have execute permissions, Mono
-may crash in native code when attempting to execute the program from C#.
+Ensure that the programs in the tools/Mac and / or tools/Linux subdirectory have
+properly retained the executable bit. If these programs do not have execute
+permissions, Mono may crash in native code when attempting to execute the program
+from C#. See the bug report here:
 See the bug report here:
 
   https://bugzilla.xamarin.com/show_bug.cgi?id=37138
@@ -131,20 +200,21 @@ BASIC OVERVIEW
 This assembly provides the following general categories of services:
 
  - Model: Provides a software model to drive the jzIntv emulator and access
-          various command line utilities that it includes. The jzIntv driver
-          is not presently in use. (See comments above.)
+          various SDK-1600 command line utilities that it includes. Although
+          this provides a way to launch jzIntv, it does not provide a UI from
+          which to do so. See the INTV.jzIntvUI project for that capability.
 
  - Properties: Contains assembly information.
 
  - Resources: Contains strings intended for display in the user interface.
 
- - tools: This directory contains a snapshot of various tools that ship with
-          jzIntv that are currently supported by the library. Future updates
-          will provide a means to configure the library to use the tools
+ - tools: This directory contains a snapshot of various tools from the SDK-1600
+          that are supported by the library. The larger VINTage software suite
+          makes use of these tools.
           from another location so support for updated versions of jzIntv
           can be easily accomplished.
 
-NOTE: INTV.jzIntv provides no user-interface-facing elements at this time.
+NOTE: INTV.jzIntv provides no user-interface-facing elements.
 
 OTHER
 =============================================================================

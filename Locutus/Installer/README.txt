@@ -2,9 +2,9 @@
 Installer Support Files
 =============================================================================
 
-This directory contains assets used to create the installers. as well as
+This directory contains assets used to create the installers as well as
 a Visual Studio makefile project to place setup.exe installers into a
-.zip file for distribution.
+ZIP file for distribution.
 
 REQUIREMENTS
 =============================================================================
@@ -20,9 +20,9 @@ The artwork used was created by Klay, and is a modified version of the
 work used for the box and manual design.
 
 To build the Visual Studio makefile project, the current Installer.vcxproj
-assumes you have configured MinGW / MSYS2 on your system, along with
-ensuring that the zip utility is installed. Details of that configuration
-are in the install_zip.bat and install_zip.mak files.
+assumes you have configured MSYS2 on your system, along with ensuring that
+the zip utility is installed. Details of that configuration are in the
+install_zip.bat and install_zip.mak files.
 
 BASIC_OVERVIEW
 =============================================================================
@@ -30,7 +30,7 @@ The various installer_*.jpg files are used by the InstallShield LE 2013
 scripts.
 
 The batch and makefiles are used to place setup.exe into an appropriately
-named .zip file for simpler distribution.
+named ZIP file for simpler distribution.
 
 NOTE (Windows InstallShield LE Installer Projects):
 ---------------------------------------------------
@@ -69,7 +69,6 @@ NOTE (Mac OS X Disk Image (.dmg) Installer):
 --------------------------------------------
 The LTOFlashBackground-with-instructions.png file is used to provide the
 background image for the disk image (DMG) used for Mac OS X distribution.
-
 
 NOTE:
 -----

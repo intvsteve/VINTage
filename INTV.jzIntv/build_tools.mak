@@ -16,6 +16,11 @@ include $(ROOT_DIR)/common.mak
 -include $(ROOT_DIR)/custom_jzIntv.mak
 
 # ------------------------------------------------------------------------- #
+# If SKIP_BUILD == 1, do nothing. Otherwise, carry on!
+# ------------------------------------------------------------------------- #
+ifneq (1,$(SKIP_BUILD))
+
+# ------------------------------------------------------------------------- #
 # Define the destination directory to use for the tool executables.
 # ------------------------------------------------------------------------- #
 TOOL_OUTPUT_DIR_WIN   = tools
@@ -36,12 +41,6 @@ endif
 TOOL_INPUT_DIR = $(JZINTV_DIR)/bin
 
 # ------------------------------------------------------------------------- #
-# Define the prerequisite for producing the tools. By default assume local
-# source build. If a jzIntv distribution is used, this is updated later.
-# ------------------------------------------------------------------------- #
-TOOL_INPUT_PREREQ = $(addprefix $(JZINTV_DIR)/src/,$(TARGET_MAKEFILE))
-
-# ------------------------------------------------------------------------- #
 # Declare jzIntv tools to build and include in the INTV.jzIntv output.
 # ------------------------------------------------------------------------- #
 JZINTV_UTILITIES = \
@@ -54,26 +53,53 @@ JZINTV_UTILITIES = \
   rom2luigi
 
 # ------------------------------------------------------------------------- #
-# Define the actual tool executable names. $(EXE_SUFFIX) is in common.mak.
+# Define the actual tool executable names. EXE_SUFFIX is in common.mak.
 # ------------------------------------------------------------------------- #
 JZINTV_APPS = $(addsuffix $(EXE_SUFFIX), $(JZINTV_UTILITIES))
 
 # ------------------------------------------------------------------------- #
-# If SKIP_BUILD == 1, do nothing. Otherwise, carry on!
+# The directory in which the jzIntv / SDK-1600 source is found.
 # ------------------------------------------------------------------------- #
-ifneq (1,$(SKIP_BUILD))
+JZINTV_SRC = $(JZINTV_DIR)/src
 
 # ------------------------------------------------------------------------- #
-# Set up variables if pulling from distribution or building locally. If a
-# distribution is used rather than a build directly from source, modify any
-# existing variables as needed and set up those required for distribution.
+# Define the prerequisite for producing the tools. By default assume local
+# source build. If a jzIntv binary distribution is used, this is updated.
+# ------------------------------------------------------------------------- #
+TOOL_INPUT_PREREQ = $(addprefix $(JZINTV_SRC)/,$(TARGET_MAKEFILE))
+
+# ------------------------------------------------------------------------- #
+# Set up variables if using a distribution.
 # ------------------------------------------------------------------------- #
 ifneq (,$(JZINTV_DIST_URL))
   USING_JZINTV_DIST       = 1
   JZINTV_DOWNLOAD_TARGET  = $(JZINTV_DIR)/$(JZINTV_DIST_FILENAME)
   JZINTV_UNZIP_TARGET_DIR = $(basename $(JZINTV_DIST_FILENAME))
   TOOL_INPUT_DIR          = $(JZINTV_DIR)/$(JZINTV_UNZIP_TARGET_DIR)/bin
-  TOOL_INPUT_PREREQ       = $(JZINTV_DOWNLOAD_TARGET)
+
+  # ----------------------------------------------------------------------- #
+  # For a binary distribution, we need to alter the prerequisite to be the
+  # distribution ZIP file.
+  # ----------------------------------------------------------------------- #
+  ifeq (BIN,$(JZINTV_DIST_TYPE))
+    TOOL_INPUT_PREREQ = $(JZINTV_DOWNLOAD_TARGET)
+  endif
+
+  # ----------------------------------------------------------------------- #
+  # For a source distribution, we need to alter the JZINTV_SRC directory to
+  # be the location at which the unzipped source from the distribution ZIP
+  # file will land. Also, disable the sync command if it was defined.
+  # ----------------------------------------------------------------------- #
+  ifeq (SRC,$(JZINTV_DIST_TYPE))
+    JZINTV_SRC  = $(JZINTV_DIR)/$(JZINTV_UNZIP_TARGET_DIR)/src
+    SYNC_JZINTV = 
+  endif
+else
+  # ----------------------------------------------------------------------- #
+  # Reset the value of JZINTV_DIST_TYPE in order to preserve build-from-svn
+  # repo behavior.
+  # ----------------------------------------------------------------------- #
+  JZINTV_DIST_TYPE = 
 endif
 
 # ------------------------------------------------------------------------- #
@@ -84,13 +110,26 @@ endif
 all: $(addprefix $(TOOL_OUTPUT_DIR)/, $(JZINTV_APPS))
 
 # ------------------------------------------------------------------------- #
-# Define the rule to download the distribution if necessary.
+# Define the rules for distribution-based builds.
 # ------------------------------------------------------------------------- #
 ifeq (1,$(USING_JZINTV_DIST))
+# ------------------------------------------------------------------------- #
+# Rule to download a distribution.
+# ------------------------------------------------------------------------- #
 $(JZINTV_DOWNLOAD_TARGET):
 	@echo Retrieving jzIntv Distribution: $@ ...
 	@curl -o $@ $(JZINTV_DIST_URL)
 
+# ----------------------------------------------------------------------- #
+# Define the rule to extract source. It is triggered by the makefile
+# prerequisite for the target tool being built.
+# ----------------------------------------------------------------------- #
+  ifeq (SRC,$(JZINTV_DIST_TYPE))
+$(TOOL_INPUT_PREREQ): $(JZINTV_DOWNLOAD_TARGET)
+	@echo Extracting jzIntv source from $< ...
+	@unzip -qquo $< -d $(dir $<)
+
+  endif
 endif
 
 # ------------------------------------------------------------------------- #
@@ -102,7 +141,7 @@ endif
 # ------------------------------------------------------------------------- #
 define CreateToolPrerequisiteRule
 $(addprefix $(TOOL_OUTPUT_DIR)/,$(1)): $(addprefix $(TOOL_INPUT_DIR)/,$(1))
-	@echo Updating $(1)...
+	@echo Updating $(1) ...
 	@echo Copying $$^ to $$@
 	@mkdir -p $$(dir $$@)
 	@cp -fp $$^ $$@
@@ -122,6 +161,7 @@ $(foreach tool,$(JZINTV_APPS),$(eval $(call CreateToolPrerequisiteRule,$(tool)))
 # This function defines a rule for a specific jzIntv build target that acts
 # as the prerequisite for the tool to copy into the appropriate INTV.jzIntv
 # tools directory.
+#
 # If SYNC_JZINTV is defined, the jzIntv source is synchronized first.
 #
 # If pulling from a distribution, the prerequisite rule will fetch the
@@ -132,13 +172,13 @@ $(foreach tool,$(JZINTV_APPS),$(eval $(call CreateToolPrerequisiteRule,$(tool)))
 # ------------------------------------------------------------------------- #
 define CreateBuildToolRule
 $(addprefix $(TOOL_INPUT_DIR)/,$(1)): $(TOOL_INPUT_PREREQ)
-ifeq (,$(USING_JZINTV_DIST))
+ifneq (BIN,$(JZINTV_DIST_TYPE))
 ifneq (,$(SYNC_JZINTV))
 	@echo Syncing $(JZINTV_DIR) ...
 	$(SYNC_JZINTV)
 endif
-	@echo Building $(1)...
-	make -C $(JZINTV_DIR)/src -f $$(notdir $$^) ../bin/$(1)
+	@echo Building $(1) ...
+	make -C $(JZINTV_SRC) -f $$(notdir $$^) ../bin/$(1)
 	strip $$@
 	@echo
 else
@@ -160,16 +200,15 @@ $(foreach tool,$(JZINTV_APPS),$(eval $(call CreateBuildToolRule,$(tool))))
 # ------------------------------------------------------------------------- #
 clean:
 	@echo Cleaning jzIntv tools ...
-ifeq (,$(USING_JZINTV_DIST))
-	make -C $(JZINTV_DIR)/src -f $(TARGET_MAKEFILE) clean
-else
-ifeq (1,$(JZINTV_CLEAN_DIST))
+ifneq (BIN,$(JZINTV_DIST_TYPE))
+	make -C $(JZINTV_SRC) -f $(TARGET_MAKEFILE) clean
+endif
+ifeq (11,$(JZINTV_CLEAN_DIST)$(USING_JZINTV_DIST))
 	@echo Removing $(notdir $(JZINTV_DOWNLOAD_TARGET)) in $(dir $(JZINTV_DOWNLOAD_TARGET))
 	@rm -f $(JZINTV_DOWNLOAD_TARGET)
 	@echo Removing jzIntv tools previously extracted from $(notdir $(JZINTV_DOWNLOAD_TARGET)) ...
 	@rm -f $(addprefix $(TOOL_INPUT_DIR)/, $(JZINTV_APPS))
 	@rm -frd $(JZINTV_DIR)/$(JZINTV_UNZIP_TARGET_DIR)
-endif
 endif
 	@echo Cleaning tools from $(CURDIR)/$(TOOL_OUTPUT_DIR) ...
 	@rm -f $(addprefix $(TOOL_OUTPUT_DIR)/, $(JZINTV_APPS))

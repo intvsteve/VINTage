@@ -16,6 +16,11 @@ include $(ROOT_DIR)/common.mak
 -include $(ROOT_DIR)/custom_jzIntv.mak
 
 # ------------------------------------------------------------------------- #
+# If SKIP_BUILD == 1, do nothing.
+# ------------------------------------------------------------------------- #
+ifneq (1,$(SKIP_BUILD))
+
+# ------------------------------------------------------------------------- #
 # Define the target directory to put jzIntv into.
 # ------------------------------------------------------------------------- #
 TARGET_DIR_WIN   = jzIntv/Win
@@ -70,15 +75,15 @@ JZINTV_EXECUTABLE = jzintv
 JZINTV_APP = $(addsuffix $(EXE_SUFFIX), $(JZINTV_EXECUTABLE))
 
 # ------------------------------------------------------------------------- #
-# If SKIP_BUILD == 1, do nothing.
+# The directory in which the jzIntv source is found.
 # ------------------------------------------------------------------------- #
-ifneq (1,$(SKIP_BUILD))
+JZINTV_SRC = $(JZINTV_DIR)/src
 
 # ------------------------------------------------------------------------- #
 # Define the prerequisite for producing jzIntv. By default assume local
 # source build. If a jzIntv distribution is used, this is updated later.
 # ------------------------------------------------------------------------- #
-JZINTV_PREREQ = $(addprefix $(JZINTV_DIR)/src/,$(TARGET_MAKEFILE))
+JZINTV_PREREQ = $(addprefix $(JZINTV_SRC)/,$(TARGET_MAKEFILE))
 
 # ----------------------------------------------------------------------- #
 # If CONTENT_DIR is defined, set CONTENT_COPY_FILES to be the collection
@@ -93,16 +98,13 @@ ifneq (,$(CONTENT_DIR))
 endif
 
 # ------------------------------------------------------------------------- #
-# Set up variables if pulling from distribution or building locally. If a
-# distribution is used rather than a build directly from source, modify any
-# existing variables as needed and set up those required for distribution.
+# Set up variables if using a distribution.
 # ------------------------------------------------------------------------- #
 ifneq (,$(JZINTV_DIST_URL))
   USING_JZINTV_DIST       = 1
   JZINTV_DOWNLOAD_TARGET  = $(JZINTV_DIR)/$(JZINTV_DIST_FILENAME)
   JZINTV_UNZIP_TARGET_DIR = $(basename $(JZINTV_DIST_FILENAME))
   JZINTV_OUTPUT_DIR       = $(JZINTV_DIR)/$(JZINTV_UNZIP_TARGET_DIR)
-  JZINTV_PREREQ           = $(JZINTV_DOWNLOAD_TARGET)
   JZINTV_SUPPORT_PREREQ   = $(JZINTV_DOWNLOAD_TARGET)
 
   # ----------------------------------------------------------------------- #
@@ -126,8 +128,31 @@ ifneq (,$(JZINTV_DIST_URL))
   # Add the jzintv documentation files to the support files list.
   # ----------------------------------------------------------------------- #
   JZINTV_SUPPORT_FILES += $(JZINTV_DOCUMENTATION)
+  
+  # ----------------------------------------------------------------------- #
+  # For a binary distribution, we need to alter the prerequisite to be the
+  # distribution ZIP file.
+  # ----------------------------------------------------------------------- #
+  ifeq (BIN,$(JZINTV_DIST_TYPE))
+    JZINTV_PREREQ = $(JZINTV_DOWNLOAD_TARGET)
+  endif
+
+  # ----------------------------------------------------------------------- #
+  # For a source distribution, we need to alter the JZINTV_SRC directory to
+  # be the location at which the unzipped source from the distribution ZIP
+  # file will land. Also, disable the sync command if it was defined.
+  # ----------------------------------------------------------------------- #
+  ifeq (SRC,$(JZINTV_DIST_TYPE))
+    JZINTV_SRC  = $(JZINTV_DIR)/$(JZINTV_UNZIP_TARGET_DIR)/src
+    SYNC_JZINTV = 
+  endif
 
 else
+  # ----------------------------------------------------------------------- #
+  # Reset the value of JZINTV_DIST_TYPE in order to preserve build-from-svn
+  # repo behavior.
+  # ----------------------------------------------------------------------- #
+  JZINTV_DIST_TYPE = 
 
   # ----------------------------------------------------------------------- #
   # Gather all the release notes from the root directory.
@@ -169,6 +194,17 @@ $(JZINTV_DOWNLOAD_TARGET):
 	@echo Retrieving jzIntv Distribution: $@ ...
 	@curl -o $@ $(JZINTV_DIST_URL)
 
+# ----------------------------------------------------------------------- #
+# Define the rule to extract source. It is triggered by the makefile
+# prerequisite for the jzintv application build.
+# ----------------------------------------------------------------------- #
+  ifeq (SRC,$(JZINTV_DIST_TYPE))
+$(JZINTV_PREREQ): $(JZINTV_DOWNLOAD_TARGET)
+	@echo Extracting jzIntv source from $< ...
+	@unzip -qquo $< -d $(dir $<)
+
+  endif
+
 # ------------------------------------------------------------------------- #
 # Function: ExtractSupportFileRule
 # ------------------------------------------------------------------------- #
@@ -178,7 +214,7 @@ $(JZINTV_DOWNLOAD_TARGET):
 #   $(1) : the support file to be extracted
 # ------------------------------------------------------------------------- #
 define ExtractSupportFileRule
-$(JZINTV_OUTPUT_DIR)/$(1) : $(JZINTV_PREREQ)
+$(JZINTV_OUTPUT_DIR)/$(1): $(JZINTV_SUPPORT_PREREQ)
 	@echo Extracting $$@ from $$<
 	@unzip -qquo $$< $(JZINTV_UNZIP_TARGET_DIR)/$1 -d $$(dir $$<)
 
@@ -200,7 +236,7 @@ endif
 #   $(1) : the support file to be copied
 # ------------------------------------------------------------------------- #
 define CopySupportFileRule
-$(TARGET_DIR)/$(1) : $(JZINTV_OUTPUT_DIR)/$(1)
+$(TARGET_DIR)/$(1): $(JZINTV_OUTPUT_DIR)/$(1)
 	@echo Copying $(1) ...
 	@mkdir -p $$(dir $$@)
 	@cp -fpR $$^ $$(dir $$@)
@@ -220,7 +256,7 @@ $(foreach f,$(JZINTV_SUPPORT_FILES),$(eval $(call CopySupportFileRule,$(f))))
 # This rule copies the jzintv executable from the jzintv build output to
 # the defined target directory.
 # ------------------------------------------------------------------------- #
-$(TARGET_DIR)/bin/$(JZINTV_APP) : $(JZINTV_OUTPUT_DIR)/bin/$(JZINTV_APP)
+$(TARGET_DIR)/bin/$(JZINTV_APP): $(JZINTV_OUTPUT_DIR)/bin/$(JZINTV_APP)
 	@echo Copying $^ ...
 	@cp -fp $^ $(dir $@)
 	@echo
@@ -232,14 +268,14 @@ $(TARGET_DIR)/bin/$(JZINTV_APP) : $(JZINTV_OUTPUT_DIR)/bin/$(JZINTV_APP)
 # it invokes the jzIntv build at its source. If SYNC_JZINTV is defined when
 # building from source, the jzIntv source is synchronized first.
 # ------------------------------------------------------------------------- #
-$(JZINTV_OUTPUT_DIR)/bin/$(JZINTV_APP) : $(JZINTV_PREREQ)
-ifeq (,$(USING_JZINTV_DIST))
+$(JZINTV_OUTPUT_DIR)/bin/$(JZINTV_APP): $(JZINTV_PREREQ)
+ifneq (BIN,$(JZINTV_DIST_TYPE))
 ifneq (,$(SYNC_JZINTV))
 	@echo Syncing $(JZINTV_DIR) ...
 	$(SYNC_JZINTV)
 endif
 	@echo Building jzIntv ...
-	make -C $(JZINTV_DIR)/src -f $(notdir $^) ../bin/$(JZINTV_APP)
+	make -C $(JZINTV_SRC) -f $(notdir $^) ../bin/$(JZINTV_APP)
 	strip $@
 else
 	@echo Extracting $@ from $<
@@ -267,7 +303,7 @@ endif
 #   $(1) : the content file to copy
 # ------------------------------------------------------------------------- #
 define CopyContentSupportFileRule
-$(CONTENT_DIR)/$(1) : $(TARGET_DIR)/$(1)
+$(CONTENT_DIR)/$(1): $(TARGET_DIR)/$(1)
 	@echo Copying to Content $(1) ...
 	@mkdir -p $$(dir $$@)
 	@cp -fpR $$^ $$(dir $$@)
@@ -286,7 +322,7 @@ $(foreach f,$(JZINTV_SUPPORT_FILES),$(eval $(call CopyContentSupportFileRule,$(f
 # ------------------------------------------------------------------------- #
 # This rule copies the jzIntv emulator executable to the content directory.
 # ------------------------------------------------------------------------- #
-$(CONTENT_DIR)/bin/$(JZINTV_APP) : $(TARGET_DIR)/bin/$(JZINTV_APP)
+$(CONTENT_DIR)/bin/$(JZINTV_APP): $(TARGET_DIR)/bin/$(JZINTV_APP)
 	@echo Copying to Content $^ ...
 	@mkdir -p $(dir $@)
 	@cp -fp $^ $(dir $@)
@@ -300,11 +336,10 @@ endif
 # Clean the output of the jzIntv build. NUKE THE MOON!
 # ------------------------------------------------------------------------- #
 clean:
-ifeq (,$(USING_JZINTV_DIST))
+ifneq (BIN,$(JZINTV_DIST_TYPE))
 	@echo Cleaning jzIntv ...
-	make -C $(JZINTV_DIR)/src -f $(TARGET_MAKEFILE) clean
-	rm -rf $(TARGET_DIR)/bin/$(JZINTV_APP) $(addprefix $(TARGET_DIR)/,$(JZINTV_SUPPORT_FILES)) $(CONTENT_DIR)
-else
+	make -C $(JZINTV_SRC) -f $(TARGET_MAKEFILE) clean
+endif
 ifeq (1,$(JZINTV_CLEAN_DIST))
 	@echo Removing $(notdir $(JZINTV_DOWNLOAD_TARGET)) in $(dir $(JZINTV_DOWNLOAD_TARGET))
 	@rm -f $(JZINTV_DOWNLOAD_TARGET)
@@ -312,9 +347,8 @@ ifeq (1,$(JZINTV_CLEAN_DIST))
 	@rm -f $(addprefix $(JZINTV_OUTPUT_DIR)/, bin/$(JZINTV_APP) $(JZINTV_SUPPORT_FILES))
 	@rm -frd $(JZINTV_DIR)/$(JZINTV_UNZIP_TARGET_DIR)
 endif
-endif
 	@echo Cleaning jzintv from $(CURDIR)/$(TARGET_DIR) ...
-	@rm -frd $(addprefix $(TARGET_DIR)/, bin/$(JZINTV_APP) $(JZINTV_SUPPORT_FILES) $(JZINTV_DOCUMENTATION_DIR))
+	@rm -frd $(addprefix $(TARGET_DIR)/, bin/$(JZINTV_APP) $(JZINTV_SUPPORT_FILES) *.txt $(JZINTV_DOCUMENTATION_DIR)) $(CONTENT_DIR)
 	@echo
 
 else

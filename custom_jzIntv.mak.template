@@ -34,17 +34,19 @@ ROOT_DIR ?= .
 # Using an Official Distribution
 # ------------------------------------------------------------------------- #
 # The default configuration of this stage of the build presumes that you do
-# not have access to the jzIntv sources, and instead will fetch a somewhat
-# recent version of it from its common download site:
+# not wish to build from the jzIntv source, and instead will fetch a
+# somewhat recent version from its common download site:
 #   http://spatula-city.org/~im14u2c/intv/
 #
-# Distributions located there contain not only the emulator but also the
-# SDK-1600 tools required for this project.
+# Both source and binary distributions located there contain not only the
+# emulator but also the SDK-1600 tools required for this project.
 #
 # When consuming a jzIntv distribution, it is assumed that the curl utility
 # is available on the system.
 #
-# The following variables specify a known valid default distribution.
+# The following variables specify a known valid default distribution. You
+# can override the default values via the command line or some other
+# mechanism visible to GNU make.
 # ------------------------------------------------------------------------- #
 # jzIntv Distribution Date
 # ------------------------------------------------------------------------- #
@@ -64,22 +66,54 @@ JZINTV_DIST_PLATFORM_LINUX = linux-x86-64
 JZINTV_DIST_PLATFORM       = $(JZINTV_DIST_PLATFORM_$(TARGET_OS))
 
 # ------------------------------------------------------------------------- #
-# jzIntv Distribution Filename
+# jzIntv Distribution Type
 # ------------------------------------------------------------------------- #
-# Note that only SDL2 builds are considered.
+# Two distribution types are supported:
+#   BIN : a pre-built binary distribution
+#   SRC : a source code distribution
 # ------------------------------------------------------------------------- #
-JZINTV_DIST_FILENAME = jzintv-$(JZINTV_DIST_DATE)-$(JZINTV_DIST_PLATFORM)-sdl2.zip
+JZINTV_DIST_TYPE ?= BIN
 
 # ------------------------------------------------------------------------- #
-# jzIntv Download Distribution Location
+# Validate distribution type.
 # ------------------------------------------------------------------------- #
-# NOTE: To disable fetching the remote distribution and use the jzIntv source
-# build feature, comment out the JZINTV_DIST_URL variable. Also, be sure to
-# use the desired directory for JZINTV_DIR! The JZINTV_DIR variable is used
-# to stage files for the build.
+ifneq (BIN,$(JZINTV_DIST_TYPE))
+  ifneq (SRC,$(JZINTV_DIST_TYPE))
+    $(error Set the JZINTV_DIST_TYPE variable to either BIN or SRC)
+  endif
+endif
+
+# ------------------------------------------------------------------------- #
+# jzIntv Binary Distribution Filename
+# ------------------------------------------------------------------------- #
+# Note that only SDL2 distributions are considered.
+# ------------------------------------------------------------------------- #
+JZINTV_BIN_DIST_FILENAME ?= jzintv-$(JZINTV_DIST_DATE)-$(JZINTV_DIST_PLATFORM)-sdl2.zip
+
+# ------------------------------------------------------------------------- #
+# jzIntv Source Distribution Filename
+# ------------------------------------------------------------------------- #
+JZINTV_SRC_DIST_FILENAME ?= jzintv-$(JZINTV_DIST_DATE)-src.zip
+
+# ------------------------------------------------------------------------- #
+# jzIntv Download Distribution File Name
+# ------------------------------------------------------------------------- #
+# NOTE: To disable fetching a remote distribution and build using a local
+# copy of the jzIntv source, comment out the JZINTV_DIST_FILENAME variable.
+# ------------------------------------------------------------------------- #
+JZINTV_DIST_FILENAME ?= $(JZINTV_$(JZINTV_DIST_TYPE)_DIST_FILENAME)
+
+# ------------------------------------------------------------------------- #
+# jzIntv Download Distribution Origin
 # ------------------------------------------------------------------------- #
 JZINTV_DIST_BASE_URL ?= http://spatula-city.org/~im14u2c/intv/dl
-JZINTV_DIST_URL = $(JZINTV_DIST_BASE_URL)/$(JZINTV_DIST_FILENAME)
+
+# ------------------------------------------------------------------------- #
+# jzIntv Download Distribution URL
+# ------------------------------------------------------------------------- #
+ifneq (,$(JZINTV_DIST_FILENAME))
+  JZINTV_DIST_URL ?= $(JZINTV_DIST_BASE_URL)/$(JZINTV_DIST_FILENAME)
+endif
 
 # ------------------------------------------------------------------------- #
 # jzIntv Clean Downloaded Distribution
@@ -89,7 +123,7 @@ JZINTV_DIST_URL = $(JZINTV_DIST_BASE_URL)/$(JZINTV_DIST_FILENAME)
 # archive file. Doing this will force a re-download of the distribution
 # from the location specified by JZINTV_DIST_URL.
 # ------------------------------------------------------------------------- #
-#JZINTV_CLEAN_DIST = 1
+#JZINTV_CLEAN_DIST ?= 1
 
 # ------------------------------------------------------------------------- #
 # Local builds of these tools from the jzIntv source can be accomplished
@@ -102,10 +136,13 @@ JZINTV_DIST_URL = $(JZINTV_DIST_BASE_URL)/$(JZINTV_DIST_FILENAME)
 # download as well as the staging area into which files from the download
 # are extracted for consumption by the build.
 #
-# For builds from the jzIntv source, it may be necessary to make other
-# changes to variables in this make file in order for your jzIntv build to
-# succeed. A prerequisite is that you must be able to build jzIntv on your
-# computer already.
+# Similarly, if a source distribution is used, then the source will be
+# extracted to this directory and the build from source will commence
+# from the provided location.
+#
+# For builds from the jzIntv source accessed directly from a source
+# repository, it may be necessary to make other changes to variables in this
+# makefile in order for your jzIntv build to succeed.
 # ------------------------------------------------------------------------- #
 # Supported Operating Systems
 # ------------------------------------------------------------------------- #
@@ -125,10 +162,17 @@ JZINTV_DIST_URL = $(JZINTV_DIST_BASE_URL)/$(JZINTV_DIST_FILENAME)
 # The following variable acts either as the location to which a jzIntv
 # distribution is downloaded, OR as the location of the jzIntv source code.
 # If the value of the JZINTV_DIST_URL variable is empty, then the build
-# process expects to build from sources.
+# process expects to build from source already set up on your system, and by
+# implication, pulled from the 'official' svn repo.
 #
-# Set this variable to the absolute path to the jzIntv source code or
-# download location. The variable name must be of the form:
+# Note that a build from source in all cases will attempt to determine the
+# value of certain make variables based on a call to svn. When source is
+# not in an SVN repo, this will cause build warnings. If it is in a repo,
+# but not the official one, version numbers may not be correct.
+#
+# Set one or more of the following variables to the absolute path to the
+# jzIntv source code or distribution download location. The variable name
+# must be of the form:
 #
 #   JZINTV_DIR_$(TARGET_OS)
 #
@@ -136,10 +180,10 @@ JZINTV_DIST_URL = $(JZINTV_DIST_BASE_URL)/$(JZINTV_DIST_FILENAME)
 #       VINTage tools only support builds therein. As of March 2, 2021
 #       Windows builds in MSYS are no longer considered viable.
 # ------------------------------------------------------------------------- #
-JZINTV_DIR_MAC   = 
-JZINTV_DIR_WIN   = 
-JZINTV_DIR_LINUX = 
-JZINTV_DIR       = $(JZINTV_DIR_$(TARGET_OS))
+JZINTV_DIR_MAC   ?= 
+JZINTV_DIR_WIN   ?= 
+JZINTV_DIR_LINUX ?= 
+JZINTV_DIR       ?= $(JZINTV_DIR_$(TARGET_OS))
 
 # ------------------------------------------------------------------------- #
 # This value defaults to 1 to skip the local jzIntv build when the path to
@@ -152,7 +196,7 @@ SKIP_IF_JZINTV_EMPTY ?= 1
 # ------------------------------------------------------------------------- #
 ifeq (,$(JZINTV_DIR))
   ifneq (1,$(SKIP_IF_JZINTV_EMPTY))
-    $(error Set the JZINTV_DIR_$(TARGET_OS) variable to the directory containing the jzIntv src directory)
+    $(error Set the JZINTV_DIR_$(TARGET_OS) variable to a valid directory)
   else
     SKIP_BUILD = 1
   endif
@@ -161,10 +205,10 @@ endif
 # ------------------------------------------------------------------------- #
 # PATH Environment Changes
 # ------------------------------------------------------------------------- #
-# You may need to ensure proper a version of gcc can be found by the jzIntv
-# build. If you define this variable, the value will be PREPENDED to the
-# PATH environment variable during the build. The variable name must be
-# of the form:
+# You may need to ensure a proper version of gcc and other tools (curl,
+# zip, unzip, et. al.) can be found by the jzIntv build. If you define this
+# variable, the value will be PREPENDED to the PATH environment variable
+# during the build. The variable name must be of the form:
 #
 #   ADD_ENVIRONMENT_PATH_$(TARGET_OS)
 #
@@ -172,10 +216,10 @@ endif
 #       VINTage tools only support builds therein. As of March 2, 2021
 #       Windows builds in MSYS are no longer considered viable.
 # ------------------------------------------------------------------------- #
-ADD_ENVIRONMENT_PATH_MAC   = 
-ADD_ENVIRONMENT_PATH_WIN   = 
-ADD_ENVIRONMENT_PATH_LINUX =
-ADD_ENVIRONMENT_PATH       = $(ADD_ENVIRONMENT_PATH_$(TARGET_OS))
+ADD_ENVIRONMENT_PATH_MAC   ?= 
+ADD_ENVIRONMENT_PATH_WIN   ?= 
+ADD_ENVIRONMENT_PATH_LINUX ?=
+ADD_ENVIRONMENT_PATH       ?= $(ADD_ENVIRONMENT_PATH_$(TARGET_OS))
 
 # ----------------------------------------------------------------------- #
 # If an additional environment path is defined, prepend it to PATH.
@@ -191,7 +235,8 @@ endif
 # common performance concerns arising on modern Mac platforms, as well as
 # bringing the project up to using a much more modern -- and supported(!)
 # version of the SDL. The build will default to version 2, but this may
-# overridden by specifying version 1 here.
+# overridden by specifying version 1 here. Note that this is only applicable
+# when building from source, not when using a binary distribution.
 # ------------------------------------------------------------------------- #
 JZINTV_SDL_VERSION ?= 2
 
@@ -242,11 +287,11 @@ ifneq ($(SVN_PASSPHRASE),)
 endif
 
 # ------------------------------------------------------------------------- #
-# Syncing the jzIntv Sources
+# Syncing the jzIntv Source
 # ------------------------------------------------------------------------- #
 # If you have set up access to a source control system for the jzIntv code
 # (either for your own private purposes, some public location, or otherwise)
-# you can define the 'sync' command to get the most recent sources prior to
+# you can define the 'sync' command to get the most recent source prior to
 # building the jzIntv components.
 # ------------------------------------------------------------------------- #
 SYNC_JZINTV = svn $(SVN_CREDENTIALS) update $(JZINTV_DIR)

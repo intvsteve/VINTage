@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -224,7 +224,7 @@ The error message was:
     <value>An error occurred running jzIntv.</value>
   </data>
   <data name="LaunchInJzIntvCommand_Failed_Title" xml:space="preserve">
-    <value>jzInv Error</value>
+    <value>jzIntv Error</value>
   </data>
   <data name="LaunchInJzIntvCommand_Failed_UnknownError_Format" xml:space="preserve">
     <value>jzIntv is unable to run '{0}'. No further information is available.</value>
@@ -502,7 +502,7 @@ The error message was:
     <comment>{0} is ROM path, {1} is exception message.</comment>
   </data>
   <data name="UnableToLaunchJzIntv_Error_Title" xml:space="preserve">
-    <value>Error Launching jzInv</value>
+    <value>Error Launching jzIntv</value>
   </data>
   <data name="UnknownROM" xml:space="preserve">
     <value>&lt;Unknown Program&gt;</value>

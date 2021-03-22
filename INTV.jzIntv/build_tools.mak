@@ -113,6 +113,7 @@ all: $(addprefix $(TOOL_OUTPUT_DIR)/, $(JZINTV_APPS))
 # Define the rules for distribution-based builds.
 # ------------------------------------------------------------------------- #
 ifeq (1,$(USING_JZINTV_DIST))
+ifneq ($(MAKECMDGOALS),clean)
 # ------------------------------------------------------------------------- #
 # Rule to download a distribution.
 # ------------------------------------------------------------------------- #
@@ -130,6 +131,7 @@ $(TOOL_INPUT_PREREQ): $(JZINTV_DOWNLOAD_TARGET)
 	@unzip -qquo $< -d $(dir $<)
 
   endif
+endif
 endif
 
 # ------------------------------------------------------------------------- #
@@ -199,18 +201,20 @@ $(foreach tool,$(JZINTV_APPS),$(eval $(call CreateBuildToolRule,$(tool))))
 # Clean the output of the jzIntv build. NUKE THE MOON!
 # ------------------------------------------------------------------------- #
 clean:
-	@echo Cleaning jzIntv tools ...
+	@echo Cleaning SDK-1600 tools ...
 ifneq (BIN,$(JZINTV_DIST_TYPE))
+ifneq ("$(wildcard $(JZINTV_SRC)/$(TARGET_MAKEFILE))","")
 	make -C $(JZINTV_SRC) -f $(TARGET_MAKEFILE) clean
+endif
 endif
 ifeq (11,$(JZINTV_CLEAN_DIST)$(USING_JZINTV_DIST))
 	@echo Removing $(notdir $(JZINTV_DOWNLOAD_TARGET)) in $(dir $(JZINTV_DOWNLOAD_TARGET))
 	@rm -f $(JZINTV_DOWNLOAD_TARGET)
-	@echo Removing jzIntv tools previously extracted from $(notdir $(JZINTV_DOWNLOAD_TARGET)) ...
+	@echo Removing SDK-1600 tools previously extracted from $(notdir $(JZINTV_DOWNLOAD_TARGET)) ...
 	@rm -f $(addprefix $(TOOL_INPUT_DIR)/, $(JZINTV_APPS))
 	@rm -frd $(JZINTV_DIR)/$(JZINTV_UNZIP_TARGET_DIR)
 endif
-	@echo Cleaning tools from $(CURDIR)/$(TOOL_OUTPUT_DIR) ...
+	@echo Cleaning SDK-1600 tools from $(CURDIR)/$(TOOL_OUTPUT_DIR) ...
 	@rm -f $(addprefix $(TOOL_OUTPUT_DIR)/, $(JZINTV_APPS))
 	@echo
 
@@ -221,7 +225,7 @@ else
 # No-op the build.
 # ------------------------------------------------------------------------- #
 all:
-	@echo build_tools.mak: Skipped jzIntv Tools build.
+	@echo build_tools.mak: Skipped SDK-1600 Tools build.
 
 # ------------------------------------------------------------------------- #
 # Rule: clean:
@@ -229,7 +233,7 @@ all:
 # No-op the clean.
 # ------------------------------------------------------------------------- #
 clean:
-	@echo build_tools.mak: Skipped jzIntv Tools clean.
+	@echo build_tools.mak: Skipped SDK-1600 Tools clean.
 
 endif
 

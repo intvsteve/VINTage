@@ -242,11 +242,39 @@ JZINTV_SDL_VERSION ?= 2
 
 # ------------------------------------------------------------------------- #
 # Validate configuration for JZINTV_SDL_VERSION.
+# If you're feeling adventurous, disable the Mac-specific check that allows
+# only SDL2 support. You may need to also modify the corresponding makefile
+# for Mac to enable the build, and / or specify some alternate location for
+# your jzIntv binaries, as only SDL2 builds are now "officially" supported.
 # ------------------------------------------------------------------------- #
 ifneq (2,$(JZINTV_SDL_VERSION))
+  ifeq (MAC,$(TARGET_OS))
+    $(error SDL $(JZINTV_SDL_VERSION) is not supported for Mac builds)
+  endif
   ifneq (1,$(JZINTV_SDL_VERSION))
     $(error Set the JZINTV_SDL_VERSION variable to either 1 or 2; no other values are supported)
   endif
+endif
+
+# ------------------------------------------------------------------------- #
+# Support fetching SDL via curl. At this time, it is only used on Mac.
+# ------------------------------------------------------------------------- #
+SDL_DOWNLOAD_URL ?= https://www.libsdl.org/release
+
+# ------------------------------------------------------------------------- #
+# For Mac builds, you can specify which version of the SDL disk image to
+# download for inclusion in the INTV.jzIntvUI build. Although SDL2 is,
+# for all practical purposes, the only game in town, the last released
+# version of the initial SDL is still listed.
+#
+# If a newer version of SDL is desired, simply override SDL_DMG_VERSION or
+# alter the version declared in this file.
+# ------------------------------------------------------------------------- #
+ifeq (MAC2,$(TARGET_OS)$(JZINTV_SDL_VERSION))
+  SDL_DMG_VERSION = 2.0.14
+endif
+ifeq (MAC1,$(TARGET_OS)$(JZINTV_SDL_VERSION))
+  SDL_DMG_VERSION = 1.2.15
 endif
 
 TARGET_SDL_VERSION = sdl$(JZINTV_SDL_VERSION)
@@ -272,7 +300,7 @@ endif
 # You may need an svn user name for sync operations. This is more likely
 # if you've got SVN set up for your jzIntv source and Git for VINTage.
 # ------------------------------------------------------------------------- #
-SVN_USERNAME ?= 
+SVN_USERNAME   ?= 
 SVN_PASSPHRASE ?= 
 
 # ------------------------------------------------------------------------- #

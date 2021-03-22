@@ -45,15 +45,44 @@ JZINTV_OUTPUT_DIR = $(JZINTV_DIR)
 # Define the SDL library version suffix. More details regarding valid values
 # for JZINTV_SDL_VERSION are in custom_jzintv.mak.
 # ------------------------------------------------------------------------- #
-SDL_LIB_VER_1 = 
-SDL_LIB_VER_2 = 2
-SDL_LIB_VER = $(SDL_LIB_VER_$(JZINTV_SDL_VERSION))
+SDL_LIB_VER_1        = 
+SDL_LIB_VER_2        = 2
+SDL_LIB_VER          = $(SDL_LIB_VER_$(JZINTV_SDL_VERSION))
+
+# ------------------------------------------------------------------------- #
+# Define SDL support file name. This depends on platform:
+#   Mac:     We include a .dmg from libsdl.org
+#   Windows: We include the appropriate DLL, presently from jzIntv directly
+#   Linux:   SDL is statically linked so no support file is needed
+#
+# Until 64-bit Windows builds of jzIntv are supported, and / or the jzIntv
+# source discontinues including the SDL DLLs directly, we won't need to
+# fetch the binaries directly from the SDL site. If we do, though, the
+# 32-bit and 64-bit downloads follow the same naming pattern as the others -
+# we just would need to choose based on the platform. Just in case that
+# arises, the following full URLs can act as examples for Windows:
+#   https://www.libsdl.org/release/SDL2-2.0.14-win32-x86.zip
+#   https://www.libsdl.org/release/SDL2-2.0.14-win32-x64.zip
+#   https://www.libsdl.org/release/SDL-1.2.15-win32.zip
+#   https://www.libsdl.org/release/SDL-1.2.15-win32-x64.zip
+# ------------------------------------------------------------------------- #
+SDL_LIB_FILENAME_WIN = SDL$(SDL_LIB_VER).dll
+SDL_LIB_FILENAME_MAC = SDL$(SDL_LIB_VER)-$(SDL_DMG_VERSION).dmg
+SDL_LIB_FILENAME     = $(SDL_LIB_FILENAME_$(TARGET_OS))
+
+# ------------------------------------------------------------------------- #
+# Define whether or not the SDL support file must be downloaded via curl.
+# ------------------------------------------------------------------------- #
+SDL_DOWNLOAD_REQUIRED_WIN   = 
+SDL_DOWNLOAD_REQUIRED_MAC   = 1
+SDL_DOWNLOAD_REQUIRED_LINUX = 
+SDL_DOWNLOAD_REQUIRED       = $(SDL_DOWNLOAD_REQUIRED_$(TARGET_OS))
 
 # ------------------------------------------------------------------------- #
 # Define files required for jzIntv to run, readme files, et. al.
 # ------------------------------------------------------------------------- #
-JZINTV_SUPPORT_FILES_WIN   = bin/SDL$(SDL_LIB_VER).dll
-JZINTV_SUPPORT_FILES_MAC   =
+JZINTV_SUPPORT_FILES_WIN   = bin/$(SDL_LIB_FILENAME)
+JZINTV_SUPPORT_FILES_MAC   = bin/$(SDL_LIB_FILENAME)
 JZINTV_SUPPORT_FILES_LINUX =
 JZINTV_SUPPORT_FILES       = $(JZINTV_SUPPORT_FILES_$(TARGET_OS)) \
                              COPYING.txt \
@@ -113,6 +142,7 @@ ifneq (,$(JZINTV_DIST_URL))
   JZINTV_ZIP_LIST_ARG = $(JZINTV_DOWNLOAD_TARGET) $(JZINTV_UNZIP_TARGET_DIR)
   AWK_UNZIP_FILTER    = /-----/ {p = ++p % 2; next} p {print $$NF}
 
+  ifneq ($(MAKECMDGOALS),clean)
   # ----------------------------------------------------------------------- #
   # Release notes are split across multiple files.
   # ----------------------------------------------------------------------- #
@@ -122,6 +152,8 @@ ifneq (,$(JZINTV_DIST_URL))
   # Enumerate documentation files explicitly.
   # ----------------------------------------------------------------------- #
   JZINTV_DOCFILES = $(notdir $(shell unzip -l $(JZINTV_ZIP_LIST_ARG)/$(JZINTV_DOCUMENTATION_DIR)/* | awk '$(AWK_UNZIP_FILTER)'))
+  endif
+
   JZINTV_DOCUMENTATION = $(addprefix $(JZINTV_DOCUMENTATION_DIR)/, $(JZINTV_DOCFILES))
 
   # ----------------------------------------------------------------------- #
@@ -190,6 +222,7 @@ all: $(addprefix $(TARGET_DIR)/, bin/$(JZINTV_APP) $(JZINTV_SUPPORT_FILES)) $(CO
 # Define the rule to download the distribution if necessary.
 # ------------------------------------------------------------------------- #
 ifeq (1,$(USING_JZINTV_DIST))
+ifneq ($(MAKECMDGOALS),clean)
 $(JZINTV_DOWNLOAD_TARGET):
 	@echo Retrieving jzIntv Distribution: $@ ...
 	@curl -o $@ $(JZINTV_DIST_URL)
@@ -212,12 +245,18 @@ $(JZINTV_PREREQ): $(JZINTV_DOWNLOAD_TARGET)
 # from the jzIntv distribution to JZINTV_OUTPUT_DIR. It requires the
 # following arguments:
 #   $(1) : the support file to be extracted
+#
+# NOTE: If the SDL support file must be downloaded, rather than copied from
+#       the jzIntv distribution / build, it is excluded from this rule
+#       generator. A bespoke rule for this case will be defined later.
 # ------------------------------------------------------------------------- #
 define ExtractSupportFileRule
+ifneq (1$(SDL_LIB_FILENAME),$(SDL_DOWNLOAD_REQUIRED)$(1))
 $(JZINTV_OUTPUT_DIR)/$(1): $(JZINTV_SUPPORT_PREREQ)
 	@echo Extracting $$@ from $$<
 	@unzip -qquo $$< $(JZINTV_UNZIP_TARGET_DIR)/$1 -d $$(dir $$<)
 
+endif
 endef
 
 # ------------------------------------------------------------------------- #
@@ -226,6 +265,22 @@ endef
 # ------------------------------------------------------------------------- #
 $(foreach f,$(JZINTV_SUPPORT_FILES),$(eval $(call ExtractSupportFileRule,$(f))))
 
+endif
+endif
+
+# ------------------------------------------------------------------------- #
+# Rule: Download SDL support file
+# ------------------------------------------------------------------------- #
+# If the SDL support file for the target build is not included as part of
+# jzIntv, but rather must be downloaded directly, define the rule to do so.
+# ------------------------------------------------------------------------- #
+ifeq (1,$(SDL_DOWNLOAD_REQUIRED))
+ifneq ($(MAKECMDGOALS),clean)
+$(JZINTV_OUTPUT_DIR)/bin/$(SDL_LIB_FILENAME):
+	@echo Downloading $(notdir $@) from $(SDL_DOWNLOAD_URL) ...
+	@curl -o $@ $(SDL_DOWNLOAD_URL)/$(SDL_LIB_FILENAME)
+
+endif
 endif
 
 # ------------------------------------------------------------------------- #
@@ -336,9 +391,11 @@ endif
 # Clean the output of the jzIntv build. NUKE THE MOON!
 # ------------------------------------------------------------------------- #
 clean:
-ifneq (BIN,$(JZINTV_DIST_TYPE))
 	@echo Cleaning jzIntv ...
+ifneq (BIN,$(JZINTV_DIST_TYPE))
+ifneq ("$(wildcard $(JZINTV_SRC)/$(TARGET_MAKEFILE))","")
 	make -C $(JZINTV_SRC) -f $(TARGET_MAKEFILE) clean
+endif
 endif
 ifeq (1,$(JZINTV_CLEAN_DIST))
 	@echo Removing $(notdir $(JZINTV_DOWNLOAD_TARGET)) in $(dir $(JZINTV_DOWNLOAD_TARGET))

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -517,35 +517,34 @@ The error message was:
     <value>Show a brief guide for further information about how to set up integration with jzIntv.</value>
   </data>
   <data name="SDLNotFound_ErrorMessage" xml:space="preserve">
-    <value>The jzIntv emulator requires the SDL library to be installed. A copy of a compatible SDL disk image has been included.
+    <value>The jzIntv emulator requires the {0} library to be installed. A copy of a compatible {0} disk image has been included.
 
-WARNING: If SDL is already in your ~/Library/Frameworks folder, it will be replaced!
-NOTE: The solution will only apply for the currently logged in user.
+NOTE: This solution will only apply for the currently logged in user.
 
-Would you like to have LUI attempt to automatically resolve the problem?</value>
+Would you like to attempt to automatically resolve the problem?</value>
   </data>
   <data name="SDLNotFound_ErrorTitle" xml:space="preserve">
-    <value>SDL Not Installed</value>
+    <value>{0} Not Installed</value>
   </data>
   <data name="SDLInstall_Title" xml:space="preserve">
-    <value>Installing SDL to ~/Library/Frameworks ...</value>
+    <value>Installing {0} to ~/Library/Frameworks ...</value>
   </data>
   <data name="SDLInstall_Update_Mounting" xml:space="preserve">
-    <value>Attaching SDL-1.2.15.dmg ...</value>
+    <value>Attaching {0} ...</value>
   </data>
   <data name="SDLInstall_Update_Copying" xml:space="preserve">
-    <value>Installing SDL.framwork to ~/Library/Frameworks ...</value>
+    <value>Installing {0} to ~/Library/Frameworks ...</value>
   </data>
   <data name="SDLInstall_Update_Unmounting" xml:space="preserve">
-    <value>Detaching SDL-1.2.15.dmg ...</value>
+    <value>Detaching {0} ...</value>
   </data>
   <data name="SDLInstall_Failed_Format" xml:space="preserve">
-    <value>SDL installation failed. Reason:
+    <value>{0} installation failed. Reason:
 
-{0}</value>
+{1}</value>
   </data>
   <data name="SDLInstall_Failed_Title" xml:space="preserve">
-    <value>Detaching SDL-1.2.15.dmg ...</value>
+    <value>Detaching {0} ...</value>
   </data>
   <data name="SDLInstall_UnableToGetUserLibraryDirectory" xml:space="preserve">
     <value>Unable to get the user-specific Library directory (~/Library).</value>
@@ -557,24 +556,24 @@ Would you like to have LUI attempt to automatically resolve the problem?</value>
 does not exist!</value>
   </data>
   <data name="SDLInstall_FailedToMount_Format" xml:space="preserve">
-    <value>Failed to mount the SDL disk image located at:
-  {0}
+    <value>Failed to mount the {0} disk image located at:
+  {1}
 
 The call to hdiutil returned:
 
-{1}</value>
+{2}</value>
   </data>
   <data name="SDLInstall_GeneralFailureMessage" xml:space="preserve">
-    <value>An error occurred while attempting to install the SDL framework.</value>
+    <value>An error occurred while attempting to install the {0} framework.</value>
   </data>
   <data name="SDLInstall_Failure_Title" xml:space="preserve">
-    <value>SDL Install Failed</value>
+    <value>{0} Install Failed</value>
   </data>
   <data name="SDLInstall_Success_Title" xml:space="preserve">
-    <value>SDL Install Succeeded</value>
+    <value>{0} Install Succeeded</value>
   </data>
   <data name="SDLInstall_Success_Message" xml:space="preserve">
-    <value>The SDL framework was installed to your ~/Library/Frameworks directory. You should now be able to run jzIntv.</value>
+    <value>The {0} framework was installed to your ~/Library/Frameworks directory. You should now be able to run jzIntv.</value>
   </data>
   <data name="ShowInstalledDocumentsCommand_Name" xml:space="preserve">
     <value>Show Documentation</value>
@@ -616,5 +615,19 @@ The call to hdiutil returned:
     <value>jzIntv will execute the ROM '{0}' with the following command line, based on the current settings:
 
 {1}</value>
+  </data>
+  <data name="SDLNotFound_DownloadMissingVersion_Format" xml:space="preserve">
+    <value>The jzIntv emulator requires the {0} library to be installed. A copy of a compatible {0} disk image has not been included with this application, but may be downloaded.
+
+NOTE: Version {1} of {0} will be downloaded from the following location:
+    {2}
+and installed to the ~/Library/Frameworks folder.
+
+NOTE: This solution will only apply for the currently logged in user.
+
+Would you like to attempt to automatically resolve the problem?</value>
+  </data>
+  <data name="SDLNotFound_Downloading_Format">
+    <value>Downloading {0} from {1} to '{2}' ...</value>
   </data>
 </root>

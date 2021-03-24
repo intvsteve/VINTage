@@ -330,7 +330,7 @@ ifneq (,$(SYNC_JZINTV))
 	$(SYNC_JZINTV)
 endif
 	@echo Building jzIntv ...
-	make -C $(JZINTV_SRC) -f $(notdir $^) ../bin/$(JZINTV_APP)
+	make -C $(JZINTV_SRC) -f $(notdir $^) ../bin/$(JZINTV_APP) $(CUSTOM_BUILD_FLAGS)
 	strip $@
 else
 	@echo Extracting $@ from $<
@@ -397,7 +397,7 @@ ifneq ("$(wildcard $(JZINTV_SRC)/$(TARGET_MAKEFILE))","")
 	make -C $(JZINTV_SRC) -f $(TARGET_MAKEFILE) clean
 endif
 endif
-ifeq (1,$(JZINTV_CLEAN_DIST))
+ifeq (11,$(JZINTV_CLEAN_DIST)$(USING_JZINTV_DIST))
 	@echo Removing $(notdir $(JZINTV_DOWNLOAD_TARGET)) in $(dir $(JZINTV_DOWNLOAD_TARGET))
 	@rm -f $(JZINTV_DOWNLOAD_TARGET)
 	@echo Removing jzIntv files previously extracted from $(notdir $(JZINTV_DOWNLOAD_TARGET)) ...

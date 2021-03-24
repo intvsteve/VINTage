@@ -180,7 +180,7 @@ ifneq (,$(SYNC_JZINTV))
 	$(SYNC_JZINTV)
 endif
 	@echo Building $(1) ...
-	make -C $(JZINTV_SRC) -f $$(notdir $$^) ../bin/$(1)
+	make -C $(JZINTV_SRC) -f $$(notdir $$^) ../bin/$(1) $(CUSTOM_BUILD_FLAGS)
 	strip $$@
 	@echo
 else

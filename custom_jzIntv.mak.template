@@ -295,6 +295,16 @@ ifeq (,$(TARGET_MAKEFILE))
 endif
 
 # ------------------------------------------------------------------------- #
+# Define any custom make variables to control features in the build.
+# ------------------------------------------------------------------------- #
+# The most common option is to set GNU_READLINE=0
+# ------------------------------------------------------------------------- #
+CUSTOM_BUILD_FLAGS_WIN   ?= 
+CUSTOM_BUILD_FLAGS_MAC   ?= 
+CUSTOM_BUILD_FLAGS_LINUX ?= 
+CUSTOM_BUILD_FLAGS       ?= $(CUSTOM_BUILD_FLAGS_$(TARGET_OS))
+
+# ------------------------------------------------------------------------- #
 # SVN Authentication
 # ------------------------------------------------------------------------- #
 # You may need an svn user name for sync operations. This is more likely
@@ -315,6 +325,15 @@ ifneq ($(SVN_PASSPHRASE),)
 endif
 
 # ------------------------------------------------------------------------- #
+# Update to a specific revision in SVN.
+# ------------------------------------------------------------------------- #
+SVN_REVISION ?=
+
+ifneq (,$(SVN_REVISION))
+  SVN_UPDATE_ARGS += -r $(SVN_REVISION)
+endif
+
+# ------------------------------------------------------------------------- #
 # Syncing the jzIntv Source
 # ------------------------------------------------------------------------- #
 # If you have set up access to a source control system for the jzIntv code
@@ -322,4 +341,4 @@ endif
 # you can define the 'sync' command to get the most recent source prior to
 # building the jzIntv components.
 # ------------------------------------------------------------------------- #
-SYNC_JZINTV = svn $(SVN_CREDENTIALS) update $(JZINTV_DIR)
+SYNC_JZINTV = svn $(SVN_CREDENTIALS) update $(SVN_UPDATE_ARGS) $(JZINTV_DIR)

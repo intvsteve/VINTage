@@ -66,11 +66,7 @@ solution. See the notes in the INTV.jzIntv and INTV.jzIntvUI projects.
 macOS
 -----
 The Mac OS X projects have been built using Xamarin Studio 5.8.3 (as well as
-some previous versions). Newer versions of Xamarin Studio have not been
-tested, as they require OS X 10.9 or newer, and the primary Mac developer
-machine is running Mac OS X 10.8.5. The Mac source base is built around the
-MonoMac frameworks, *NOT* the Xamarin.Mac frameworks. Because of this, the
-Mac OS X release is a 32-bit application.
+some previous versions), and the 64-bit releases use Visual Studio for Mac.
 
 The development environments should install .NET / Mono.
 
@@ -86,13 +82,11 @@ release can be found here:
 
 Linux
 -----
-The Linux version is built using MonoDevelop, GtkSharp and GConfSharp.
+The Linux version is built using MonoDevelop and GtkSharp.
   See: http://www.mono-project.com/docs/gui/gtksharp/
 
-You may need to install gnome-sharp2 to get the GConf bindings.
-
-To this point, development and testing for Linux has only beed done using
-Ubuntu 16.04.2.
+To this point, development and testing for Linux has only been done using
+Ubuntu 16.04.2 and explored on Arch Linux (2019.09.01).
 
  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -108,7 +102,7 @@ The solutions and projects generally follow a simple naming convention:
 
 Target platforms are:
 ---------------------
-  Mac       : Mac OS X 10.7 and newer
+  Mac       : Mac OS X 10.7 (or 10.9) and newer
   xp        : Windows xp - restricted to .NET 4.0
   desktop   : Windows Vista and newer
   Linux/GTK : GTK2 ????
@@ -118,32 +112,46 @@ If no target is explicitly declared in a project's name, presume it is
 targeted to Windows desktop.
 _____________________________________________________________________________
   Locutus.svn.sln | Visual Studio 2012 solution to build application and
-                  | support libraries; if building sources for SDK-1600
+  Locutus.git.sln | support libraries; if building source for SDK-1600
                   | and/or jzIntv, you will need to specify their location;
                   | requires .NET 4.5 and the ability to build
                   | Portable Class Libraries; targets Windows Vista+
   -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
   Locutus.installer.svn.sln | Same as Locutus.svn.sln, but includes projects
-                            | for InstallShield LE 2013 installers
+  Locutus.installer.git.sln | for InstallShield LE 2013 installers
  ---------------------------------------------------------------------------
   Locutus.xp.svn.sln | Visual Studio 2012 solution to build application and
-                     | support libraries; if building sources for SDK-1600
+  Locutus.xp.git.sln | support libraries; if building source for SDK-1600
                      | and/or jzIntv, you will need to specify their
                      | location;requires .NET 4.0; targets Windows xp
   -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
   Locutus.xp.installer.svn.sln | Same as Locutus.xp.svn.sln, but includes
-                               | projects for InstallShield LE 2013 installers
+  Locutus.xp.installer.git.sln | projects for InstallShield LE 2013 installers
  ---------------------------------------------------------------------------
   Locutus.Mac.svn.sln | Xamarin Studio 5.8.3 solution to build application and
-                      | support libraries; if building sources for SDK-1600
+  Locutus.Mac.git.sln | support libraries; if building source for SDK-1600
                       | and/or jzIntv, you will need to specify their location;
-                      | requires MonoMac 4.2; targets Mac OS X 10.7 and newer
+                      | requires MonoMac 4.2; targets Mac OS X 10.7 and newer;
+                      | NOTE: 32-bit only!
+  Locutus.XamMac.svn.sln | Xamarin Studio 6.3 solution to build application
+  Locutus.XamMac.git.sln | and support libraries; if building source for
+                         | SDK-1600 and/or jzIntv, you will need to specify
+                         | their location; requires Xamarin.Mac; targets
+                         | Mac OS X 10.9 and newer; will be retired due to
+                         | Visual Studio for Mac replacing Xamarin Studio
+                         | NOTE: 64-bit only!
+  Locutus.VSMac.svn.sln | Visual Studio for Mac 8.0.6 solution to build
+  Locutus.VSMac.git.sln | application and support libraries; if building
+                        | source for SDK-1600 and/or jzIntv, you will need to
+                        | specify their location; requires Xamarin.Mac;
+                        | targets Mac OS X 10.9 and newer
+                        | NOTE: 64-bit only!
   -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
   Locutus.Mac.installer.svn.sln | Same as Locutus.Mac.svn.sln, but includes
-                                | projects for installers
+  Locutus.Mac.installer.git.sln | projects for installers
  ---------------------------------------------------------------------------
   Locutus.Gtk.svn.sln | MonoDevelop 5.10 solution to build application and
-                      | support libraries; if building sources for SDK-1600
+  Locutus.Gtk.git.sln | support libraries; if building source for SDK-1600
                       | and/or jzIntv, you will need to specify their location
 _____________________________________________________________________________
 
@@ -188,15 +196,19 @@ the various installer project directories for further details.
 
 Mac OS X Installers:
 --------------------
-The software for Mac OS X is distributed via a Disk Image (DMG). The DMG
-is produced via a GNU makefile.
+The 32-bit software for Mac OS X is distributed via a Disk Image (DMG).
+The DMG is produced via a GNU makefile.
+
+At present, the process to produce a fancy DMG for the 64-bit macOS builds
+has not been defined. The blank disk image is not at present large enough,
+and the process of creating and automating its creation has not been
+undertaken. At this time, simple ZIP distribution without additional
+"installation" instructions is used.
 
 Source Code Distribution:
 -------------------------
-The simplest source code distribution is accomplished via a .zip file, which
-can be created via a GNU makefile. An InstallShield LE 2013 installer project
-may also be used. Note, however, that it requires constant manual effort
-to maintain, and therefore may be out of sync.
+The simplest source code distribution is accomplished via a ZIP file, which
+can be created via a GNU makefile.
 
 Other Build Notes and Questions:
 --------------------------------
@@ -207,26 +219,31 @@ Microsoft Ribbon library looks dated on modern operating systems. With a
 relatively small amount of effort (the INTV.Ribbon component) and a bit more
 diligence in maintaining projects, the tradeoff is worth it.
 
-QUESTION: Why not use Xamarin.Mac?
-----------------------------------
-One reason is the cost of a seat that will support p/Invoke. Perhaps it is
-possible to negotiate a free or very low-cost license, but the time and
-effort to do so has not been spent. Moving to Xamarin.Mac will not be a
-trivial effort. When initially explored, the one-way nature of the code
-conversion, along with the expense of a license that supported the necessary
-p/Invoke features, precluded such a move.
+QUESTION: Why are there three Mac projects and solutions?
+---------------------------------------------------------
+When this project started, Xamarin.Mac was not available for projects such
+as this one in a form that supported the features it needed. Another reason
+was the cost of a seat that would support p/Invoke. At the time of initial
+development and release, the Mac version of the software had to use the
+MonoMac libraries, rather than Xamarin.Mac, to remain free. Also, as a
+consequence of this, the Mac software from that build runs as a 32-bit
+application.
 
-Because the Mac OS X projects make use of p/Invoke to call native
-system libraries, at this time the Mac version of the software must use
-the MonoMac libraries, rather than Xamarin.Mac, to remain free. The standard
-free version of Xamarin.Mac does not support p/Invoke. Also, as a
-consequence of this, the Mac software runs as a 32-bit application. This may
-change in the future.
+In subsequent years, Microsoft purchased Xamarin, Xamarin.Mac became free,
+created the unified API, and support for 64-bit applications. Eventually
+Microsoft rebranded Xamarin Studio to be Visual Studio for Mac. With each
+of these epochs, parallel projects and solutions were created to ensure
+functioning projects for "known good" tools stayed available. Through all
+this, the mission to continue supporting macOS as far back as 10.7 has
+persisted. This is still the case, despite the fact that Visual Studio for
+Mac (and prior, Xamarin Studio) and the Xamarin.Mac platform no longer
+allow targeting anything prior to macOS 10.9.
 
-NOTE:
------
-With Microsoft's acquisition of Xamarin in March of 2016, the opportunity
-to port the Mac version to full Xamarin.Mac now exists!
+Further, Apple eventually killed off 32-bit application support in an OS
+update. Thus, at least two different parallel solutions must exist, as
+long as macOS prior to 10.9 is still supported. The ancient and venerable
+machine still running a woefully outdated release of Xamarin Studio in
+macOS 10.8.5 is keeping this alive.
 
 QUESTION: Who do I talk to about this pile of code?
 ---------------------------------------------------
@@ -247,6 +264,19 @@ The most recent version is available via a nuget package here:
   http://www.nuget.org/packages/winapicp/
 
 Other distributions may be out in the great wide world, too.
+
+All versions also consume the ICSharpCode.SharpZipLib, whose official home
+can be found on GitHub:
+
+  https://github.com/icsharpcode/SharpZipLib
+
+Because this project targets multiple platforms AND as a bonus, super old
+.NET 4.0, AND uses old tools, by necessity a back-ported clone of the source
+for ICSharpZipLib is included in this repo, and projects to build on Mac and
+Linux are provided.
+
+When this project is modernized to use .NET 5 or later and Windows xp
+support is dropped, these external dependencies will be removed.
 
 OTHER
 =============================================================================

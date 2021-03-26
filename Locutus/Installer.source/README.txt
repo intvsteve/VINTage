@@ -17,7 +17,6 @@ Target Platforms:
 --------------------
 Mac OS X, Windows
 
-	
 DEPENDENCIES
 =============================================================================
 The integration with Visual Studio requires inclusion in a Visual Studio

@@ -43,44 +43,41 @@ Windows Vista, Windows 7, Windows 8, , Windows 8.1, Windows 10
 Mac OS X 10.7 and later
 
 INTV.Shared.desktop.csproj: Used for Windows Vista and later
------------------------------------------------------------------
+------------------------------------------------------------
 This version of the project is used to build for Windows Vista and newer
 Windows operating system targets. It also requires two components from
 the WindowsAPICodePack, the most recent version to be found here:
   http://www.nuget.org/packages/winapicp/
 
 INTV.Shared.xp.csproj: Used for Windows xp
------------------------------------------------
+------------------------------------------
 This version of the project is used to build for Windows xp. It may be
 built using Microsoft Visual Studio Express 2010 and newer. This version
 cannot support any version of .NET later than 4.0, which was the final
 .NET release supported on Windows xp.
 
 INTV.Shared.Mac.csproj: Used for Mac OS X
-----------------------------------------------
-This version of the project is used to build for Mac OS X deployments. It
-has been developed using MonoMac 4.2.1.102 and Xamarin Studio 5.8.3. You
-can find MonoMac at: http://www.mono-project.com/download/ and Xamarin
-Studio at: http://xamarin.com/download
+-----------------------------------------
+This version of the project is used to build for 32-bit Mac OS X
+deployments. It has been developed using MonoMac 4.2.1.102 and Xamarin
+Studio 5.8.3. Good luck finding those old tools!
 
-Development of the Mac OS X version of the software was done on a MacBook
-Pro running Mac OS X 10.8.5. Versions of Xamarin Studio newer than 5.8.3
-dropped support for Mac OS X 10.8. It is unknown if there are compatibility
-issues with this project in newer versions of Xamarin Studio.
+Development of the 32-bit Mac OS X version of the software was done on a
+MacBook Pro running Mac OS X 10.8.5. Versions of Xamarin Studio newer than
+5.8.3 dropped support for Mac OS X 10.8. 
 
-NOTE:
------
-Because the Mac OS X projects make use of p/Invoke to call native
-system libraries, at this time the Mac version of the software must use
-the MonoMac libraries, rather than Xamarin.Mac, to remain free. The standard
-free version of Xamarin.Mac does not support p/Invoke. Also, as a
-consequence of this, the Mac software runs as a 32-bit application. This may
-change in the future.
+INTV.Shared.XamMac.csproj: Used for macOS
+-----------------------------------------
+This project was the initial port to Xamarin.Mac after it became freely
+available. It represents the transition from MonoMac to the early unified
+Xamarin.Mac platform, prior to Xamarin Studio being rebranded to Visual
+Studio for Mac after Microsoft's acquisition of Xamarin. For all practical
+purposes, this is identical to the Visual Studio for Mac project.
 
-NOTE:
------
-With Microsoft's acquisition of Xamarin in March of 2016, the opportunity
-to port the Mac version to full Xamarin.Mac now exists!
+INTV.Shared.VSMac.csproj: Used for macOS
+----------------------------------------
+Newer versions targeting 64-bit macOS are built using Visual Studio for Mac
+and will only run in macOS 10.9 or later, and use this project.
 
 NOTE:
 -----
@@ -102,9 +99,15 @@ in question.
 
 DEPENDENCIES
 =============================================================================
-The INTV.Shared project depends on other assemblies that are part of the
+The INTV.Shared project implements an abstraction around compressed library
+access and uses the ICSharpCode.SharpZipLib library to do so. Therefore, all
+builds of INTV.Shared have a dependency on:
+
+ICSharpCode.SharpZipLib
+
+The INTV.Shared project also depends on other assemblies that are part of the
 general VINTage umbrella. In addition to standard system libraries, and
-MonoMac for the OS X build, INTV.Shared requires the following:
+MonoMac / Xamarin.Mac for the OS X build, INTV.Shared requires the following:
 
 INTV.Core
 INTV.jzIntv
@@ -113,7 +116,9 @@ In addition, there are some platform-specific dependencies which vary.
 
 INTV.Shared.xp:
 INTV.Shared.Mac:
-----------------
+INTV.Shared.VSMac:
+INTV.Shared.XamMac:
+-------------------
 No further external dependencies beyond what is available with the tools.
 
 INTV.Shared.desktop:
@@ -146,9 +151,7 @@ This assembly provides the following general categories of services:
              of the command system, the namespace also includes numerous
              commands used for ROM library management and standard
              application control. It also provides services to assist with
-             the definition of data-driven command creation. This strategy is
-             more successfully adopted in the Mac OS X implementation, as it
-             started later than the initial WPF version. The command system
+             the definition of data-driven command creation. The command system
              could still use some improvements (e.g. the
              INTV.Shared.Commands.ICommandProvider interface can likely be
              merged with ICommandGroup).
@@ -188,12 +191,6 @@ This assembly provides the following general categories of services:
             as XML text, which could be parsed. As both the IOKit and file
             system watch mechanisms meet the needs of current applications,
             no further effort has been expended on this.
-
-            Because the IOKit approach requires the use of p/Invoke -- it is
-            not part of the Cocoa API and therefore C# bindings cannot be
-            implemented using the Cocoa messaging APIs already available in
-            MonoMac / Xamarin.Mac, it limits the possibility (currently) of
-            moving to a free version of Xamarin.Mac.
  
  - Model: Provides helper functions for working with the IRom interface,
           user-specified configuration options, and an abstraction for
@@ -215,19 +212,27 @@ This assembly provides the following general categories of services:
 
  - Utility: Many general-purpose utility classes reside in this namespace.
             Some of the more important ones include:
-            SingleInstanceApplication: a wrapper around the OS-specific
-            application class
-            IFileBrowserDialog: an interface used for file system dialogs
-            Logger: used for gathering and reporting debug information
-            AsyncTaskWithProgress: a workhorse for performing potentially
-            long-running tasks in a thread pool, which will display a
-            progress dialog as necessary
+              SingleInstanceApplication: a wrapper around the OS-specific
+                application class
+
+              IFileBrowserDialog: an interface used for file system dialogs
+
+              Logger: used for gathering and reporting debug information
+
+              AsyncTaskWithProgress: a workhorse for performing potentially
+                long-running tasks in a thread pool, which will display a
+                progress dialog as necessary
+
+              OS* types: operating system abstractions
+
+              ICompressedArchiveAccess: an interface (and some companion
+                interfaces) to be used to better integrate compressed archive
+                usage (e.g. ZIP files) into various parts of the project
 
  - View: This namespace contains numerous user interface elements, such as
          controls to configure ROM features, a cross-platform message box,
          error report dialog, application settings dialog framework, and
          a ROM list presenter and editor.
-         TODO: Split this to a separate assembly.
 
  - ViewModel: This namespace contains the ViewModels used to communicate
               between the various models and user interface elements.

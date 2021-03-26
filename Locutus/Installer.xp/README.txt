@@ -61,6 +61,8 @@ Framework 4.0 Full redistributable.
 In order to get a complete installer that includes jzIntv, you must do
 the following:
   1. Ensure you have configured your system to build the jzIntv sources
+     or place a copy of jzIntvUI in the appropriate location (see the
+     README.txt for the INTV.jzIntv project)
   2. Build the INTV.jzIntvUI component BEFORE building everything
   3. THEN 'Rebuild Solution'
 

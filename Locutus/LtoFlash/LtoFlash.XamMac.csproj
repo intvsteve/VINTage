@@ -38,7 +38,7 @@
       <CustomCommands>
         <Command>
           <type>AfterBuild</type>
-          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
+          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/XamMac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
           <workingdir>${ProjectDir}</workingdir>
         </Command>
       </CustomCommands>
@@ -69,7 +69,7 @@
       <CustomCommands>
         <Command>
           <type>AfterBuild</type>
-          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/Mac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
+          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/XamMac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
           <workingdir>${ProjectDir}</workingdir>
         </Command>
       </CustomCommands>
@@ -112,6 +112,15 @@
     <XamMacArch>x86_64</XamMacArch>
     <CodeSigningKey>Mac Developer</CodeSigningKey>
     <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>AfterBuild</type>
+          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/XamMac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>false</Optimize>
@@ -126,6 +135,15 @@
     <LinkMode>None</LinkMode>
     <XamMacArch></XamMacArch>
     <MonoBundlingExtraArgs>--registrar=dynamic</MonoBundlingExtraArgs>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>AfterBuild</type>
+          <command>ditto ../../INTV.jzIntvUI/bin/${ProjectConfigName}/XamMac/jzIntv ${TargetDir}/LtoFlash.app/Contents/MonoBundle/jzIntv</command>
+          <workingdir>${ProjectDir}</workingdir>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -85,6 +85,8 @@ uses to determine whether it is able to install a specific version of .NET.
 In order to get a complete installer that includes jzIntv, you must do
 the following:
   1. Ensure you have configured your system to build the jzIntv sources
+     or place a copy of jzIntv in the appropriate location (see the
+     README.txt for the INTV.jzIntvUI project)
   2. Build the INTV.jzIntvUI component BEFORE building everything
   3. THEN 'Rebuild Solution'
 

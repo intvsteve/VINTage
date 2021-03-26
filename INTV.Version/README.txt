@@ -19,10 +19,10 @@ emulator never died.
 REQUIREMENTS
 =============================================================================
 This project invokes GNU make. On Windows systems, this means (most likely)
-having MSYS or MSYS2 configured on your system. For automated updating of
-the version number, configuration of an SVN or Git repo is required as well.
-Detailed notes are in the various makefiles and batch files at the root of
-the code repository.
+having MSYS2 configured on your system. For automated updating of the version
+number, configuration of an SVN or Git repo is required as well. Detailed
+notes are in the various makefiles and batch files at the root of the code
+repository.
 
 Supported Platforms:
 --------------------
@@ -38,7 +38,7 @@ Easy peasy. Runs the version_tools.mak.
 INTV.Version.Win.vcxproj: Used for Windows
 ----------------------------------------------
 Runs version_tools.bat, which then runs version_tools.mak using
-the bash provided with MSYS.
+the bash provided with MSYS2.
 
 PREREQUISITES
 =============================================================================
@@ -60,7 +60,7 @@ GNU make is needed.
 Windows:
 ------------
 To this point, the makefile has only been verified working using GNU make
-run in the bash provided with MSYS.
+run in the bash provided with MSYS2.
 
 OTHER
 =============================================================================

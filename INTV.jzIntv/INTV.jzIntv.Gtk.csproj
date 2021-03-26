@@ -21,7 +21,7 @@
     <CustomCommands>
       <CustomCommands>
         <Command>
-          <type>AfterBuild</type>
+          <type>BeforeBuild</type>
           <command>make -f build_tools.mak SKIP_IF_JZINTV_EMPTY=1</command>
           <workingdir>${ProjectDir}</workingdir>
         </Command>

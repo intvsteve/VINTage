@@ -71,6 +71,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -202,9 +203,6 @@
   <ItemGroup>
     <None Include="jzIntv\Mac\bin\.readme.txt" />
     <None Include="jzIntv\Mac\doc\.readme.txt" />
-    <None Include="jzIntv\Mac\bin\SDL-1.2.15.dmg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\custom_jzIntv.mak">
       <Link>custom_jzIntv.mak</Link>
     </None>

@@ -191,12 +191,21 @@ $RECYCLE.BIN/
 /custom.mak
 
 # =========================
+# Copied jzIntv tools
+# =========================
+/INTV.jzIntv/tools/**
+
+# =========================
 # Copied from jzIntv build
 # =========================
 /INTV.jzIntvUI/jzIntv/Win/doc/jzintv
 /INTV.jzIntvUI/jzIntv/Win/COPYING.txt
 /INTV.jzIntvUI/jzIntv/Win/README.txt
-/INTV.jzIntvUI/jzIntv/Win/Release-Notes.txt
+/INTV.jzIntvUI/jzIntv/Win/Release*.txt
+/INTV.jzIntvUI/jzIntv/Mac/doc/jzintv
+/INTV.jzIntvUI/jzIntv/Mac/COPYING.txt
+/INTV.jzIntvUI/jzIntv/Mac/README.txt
+/INTV.jzIntvUI/jzIntv/Mac/Release*.txt
 
 # =========================
 # Used for source ZIP

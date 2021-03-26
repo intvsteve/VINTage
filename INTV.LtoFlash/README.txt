@@ -32,42 +32,39 @@ Windows Vista, Windows 7, Windows 8, , Windows 8.1, Windows 10
 Mac OS X 10.7 and later
 
 INTV.LtoFlash.desktop.csproj: Used for Windows Vista and later
-------------------------------------------------------------
+--------------------------------------------------------------
 This version of the project is used to build for Windows Vista and newer
 Windows operating system targets.
 
 INTV.LtoFlash.xp.csproj: Used for Windows xp
-------------------------------------------
+--------------------------------------------
 This version of the project is used to build for Windows xp. It may be
 built using Microsoft Visual Studio Express 2010 and newer. This version
 cannot support any version of .NET later than 4.0, which was the final
 .NET release supported on Windows xp.
 
 INTV.LtoFlash.Mac.csproj: Used for Mac OS X
------------------------------------------
-This version of the project is used to build for Mac OS X deployments. It
-has been developed using MonoMac 4.2.1.102 and Xamarin Studio 5.8.3. You
-can find MonoMac at: http://www.mono-project.com/download/ and Xamarin
-Studio at: http://xamarin.com/download
+-------------------------------------------
+This version of the project is used to build for 32-bit Mac OS X
+deployments. It has been developed using MonoMac 4.2.1.102 and Xamarin
+Studio 5.8.3. Good luck finding those old tools!
 
-Development of the Mac OS X version of the software was done on a MacBook
-Pro running Mac OS X 10.8.5. Versions of Xamarin Studio newer than 5.8.3
-dropped support for Mac OS X 10.8. It is unknown if there are compatibility
-issues with this project in newer versions of Xamarin Studio.
+Development of the 32-bit Mac OS X version of the software was done on a
+MacBook Pro running Mac OS X 10.8.5. Versions of Xamarin Studio newer than
+5.8.3 dropped support for Mac OS X 10.8. 
 
-NOTE:
------
-Because the Mac OS X projects make use of p/Invoke to call native
-system libraries, at this time the Mac version of the software must use
-the MonoMac libraries, rather than Xamarin.Mac, to remain free. The standard
-free version of Xamarin.Mac does not support p/Invoke. Also, as a
-consequence of this, the Mac software runs as a 32-bit application. This may
-change in the future.
+INTV.LtoFlash.XamMac.csproj: Used for macOS
+-------------------------------------------
+This project was the initial port to Xamarin.Mac after it became freely
+available. It represents the transition from MonoMac to the early unified
+Xamarin.Mac platform, prior to Xamarin Studio being rebranded to Visual
+Studio for Mac after Microsoft's acquisition of Xamarin. For all practical
+purposes, this is identical to the Visual Studio for Mac project.
 
-NOTE:
------
-With Microsoft's acquisition of Xamarin in March of 2016, the opportunity
-to port the Mac version to full Xamarin.Mac now exists!
+INTV.LtoFlash.VSMac.csproj: Used for macOS
+------------------------------------------
+Newer versions targeting 64-bit macOS are built using Visual Studio for Mac
+and will only run in macOS 10.9 or later, and use this project.
 
 NOTE:
 -----
@@ -79,8 +76,8 @@ DEPENDENCIES
 =============================================================================
 The INTV.LtoFlash project depends on several other assemblies that are
 part of the general VINTage umbrella. In addition to standard system
-libraries, and MonoMac for the OS X build, INTV.LtoFlash requires
-the following:
+libraries, and MonoMac / Xamarin.Mac for the OS X build, INTV.LtoFlash
+requires the following:
 
 INTV.Core
 INTV.jzIntv
@@ -110,7 +107,7 @@ This assembly provides the following general categories of services:
           Individual serial protocol level commands, implemented in the
           Model.Commands namespace, are pooled together to form higher-
           level user-digestible tasks, such as a file system update, via
-          the INTV.Shared.Utility.AsyncTaskWithProgress along with the
+          the INTV.Shared.Utility.AsyncTaskWithProgress type, along with the
           INTV.LtoFlash.Model.ExecuteDeviceCommandAsyncTaskData type.
           User-interface driven commands specified in the Commands namespace
           ultimately are performed by the implementation in the DeviceHelpers
@@ -147,7 +144,6 @@ This assembly provides the following general categories of services:
  - View: The user interface elements for LTO Flash! are implemented by the
          classes in this namespace. These include configuration dialogs and
          user settings pages.
-         TODO: Split this to a separate assembly.
 
  - ViewModel: The ViewModel namespace bridges between the Model and View
               namespaces, presenting access to the Model in a fashion more
@@ -219,6 +215,11 @@ by dragging and dropping among the various nodes in this tree.
 
 A simpler improvement will be to allow multiple item selection in the
 Menu Layout editor in Windows.
+
+Offering "Live Mode" editing in addition to "Offline Mode" editing is another
+requested feature, in which edits to the menu layout when the appropriate
+LTO Flash! hardware is connected to the system would be applied immediately,
+rather than requiring clicking the 'Send to LTO Flash!' button.
 
 OTHER
 =============================================================================

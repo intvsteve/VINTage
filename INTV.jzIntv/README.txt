@@ -48,28 +48,26 @@ cannot support any version of .NET later than 4.0, which was the final
 
 INTV.jzIntv.Mac.csproj: Used for Mac OS X
 -----------------------------------------
-This version of the project is used to build for Mac OS X deployments. It
-has been developed Xamarin Studio 5.8.3. You can find Xamarin Studio at:
-http://xamarin.com/download
+This version of the project is used to build for 32-bit Mac OS X
+deployments. It has been developed using MonoMac 4.2.1.102 and Xamarin
+Studio 5.8.3. Good luck finding those old tools!
 
-Development of the Mac OS X version of the software was done on a MacBook
-Pro running Mac OS X 10.8.5. Versions of Xamarin Studio newer than 5.8.3
-dropped support for Mac OS X 10.8. It is unknown if there are compatibility
-issues with this project in newer versions of Xamarin Studio.
+Development of the 32-bit Mac OS X version of the software was done on a
+MacBook Pro running Mac OS X 10.8.5. Versions of Xamarin Studio newer than
+5.8.3 dropped support for Mac OS X 10.8. 
 
-NOTE:
------
-Because the Mac OS X projects make use of p/Invoke to call native
-system libraries, at this time the Mac version of the software must use
-the MonoMac libraries, rather than Xamarin.Mac, to remain free. The standard
-free version of Xamarin.Mac does not support p/Invoke. Also, as a
-consequence of this, the Mac software runs as a 32-bit application. This may
-change in the future.
+INTV.jzIntv.XamMac.csproj: Used for macOS
+-----------------------------------------
+This project was the initial port to Xamarin.Mac after it became freely
+available. It represents the transition from MonoMac to the early unified
+Xamarin.Mac platform, prior to Xamarin Studio being rebranded to Visual
+Studio for Mac after Microsoft's acquisition of Xamarin. For all practical
+purposes, this is identical to the Visual Studio for Mac project.
 
-NOTE:
------
-With Microsoft's acquisition of Xamarin in March of 2016, the opportunity
-to port the Mac version to full Xamarin.Mac now exists!
+INTV.jzIntv.VSMac.csproj: Used for macOS
+----------------------------------------
+Newer versions targeting 64-bit macOS are built using Visual Studio for Mac
+and will only run in macOS 10.9 or later, and use this project.
 
 NOTE:
 -----
@@ -180,7 +178,6 @@ Ensure that the programs in the tools/Mac and / or tools/Linux subdirectory have
 properly retained the executable bit. If these programs do not have execute
 permissions, Mono may crash in native code when attempting to execute the program
 from C#. See the bug report here:
-See the bug report here:
 
   https://bugzilla.xamarin.com/show_bug.cgi?id=37138
 
@@ -211,8 +208,6 @@ This assembly provides the following general categories of services:
  - tools: This directory contains a snapshot of various tools from the SDK-1600
           that are supported by the library. The larger VINTage software suite
           makes use of these tools.
-          from another location so support for updated versions of jzIntv
-          can be easily accomplished.
 
 NOTE: INTV.jzIntv provides no user-interface-facing elements.
 
